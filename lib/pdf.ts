@@ -7,11 +7,23 @@ let fontsLoaded = false;
 
 async function loadFontBase64(fileName: string): Promise<string> {
   const filePath = path.join(process.cwd(), 'public', 'fonts', fileName);
-  const file = await readFile(filePath);
-  return file.toString('base64');
+
+  try {
+    const file = await readFile(filePath);
+    return file.toString('base64');
+  } catch (error) {
+    console.error(`Nepodařilo se načíst font ${fileName} z cesty ${filePath}:`, error);
+    throw new Error(`Font ${fileName} nebyl nalezen.`);
+  }
 }
 
 async function ensurePdfFonts(doc: jsPDF): Promise<void> {
+  const internal = (doc as any).internal;
+
+  if (!internal.vFS) {
+    internal.vFS = {};
+  }
+
   if (fontsLoaded) {
     doc.setFont('Roboto', 'normal');
     return;
@@ -22,15 +34,13 @@ async function ensurePdfFonts(doc: jsPDF): Promise<void> {
     loadFontBase64('Roboto-Bold.ttf'),
   ]);
 
-  const api = jsPDF.API as unknown as {
-    addFileToVFS: (name: string, data: string) => void;
-    addFont: (file: string, family: string, style: string) => void;
-  };
+  const pdfDoc = doc as any;
 
-  api.addFileToVFS('Roboto-Regular.ttf', regular);
-  api.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
-  api.addFileToVFS('Roboto-Bold.ttf', bold);
-  api.addFont('Roboto-Bold.ttf', 'Roboto', 'bold');
+  pdfDoc.addFileToVFS('Roboto-Regular.ttf', regular);
+  pdfDoc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
+
+  pdfDoc.addFileToVFS('Roboto-Bold.ttf', bold);
+  pdfDoc.addFont('Roboto-Bold.ttf', 'Roboto', 'bold');
 
   fontsLoaded = true;
   doc.setFont('Roboto', 'normal');
