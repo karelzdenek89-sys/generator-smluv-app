@@ -26,7 +26,6 @@ export async function GET(req: NextRequest) {
     }
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
-
     const draftId = session.metadata?.draftId || session.client_reference_id;
 
     if (!draftId) {
@@ -58,22 +57,22 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    if (!draft.payload) {
-      return NextResponse.json(
-        { error: 'Draft neobsahuje payload.' },
-        { status: 500 }
-      );
-    }
+    const fullData: StoredContractData = {
+      ...draft.payload,
+      contractType: draft.payload.contractType || draft.contractType,
+      notaryUpsell:
+        draft.notaryUpsell === true || draft.payload.notaryUpsell === true,
+    };
 
-    if (!draft.payload.contractType) {
+    if (!fullData.contractType) {
       return NextResponse.json(
         { error: 'Payload neobsahuje contractType.' },
         { status: 500 }
       );
     }
 
-    const pdf = await renderContractPdf(draft.payload);
-    const meta = getContractMeta(draft.payload.contractType);
+    const pdf = await renderContractPdf(fullData);
+    const meta = getContractMeta(fullData.contractType);
 
     await redis.expire(`contract:draft:${draftId}`, 60 * 60);
 

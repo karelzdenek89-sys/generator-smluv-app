@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { jsPDF } from 'jspdf';
-import { buildContractSections, getContractMeta, type StoredContractData } from './contracts';
+import { getContractMeta, buildContractSections, type StoredContractData } from './contracts';
 
 let fontsLoaded = false;
 
@@ -47,22 +47,35 @@ async function ensurePdfFonts(doc: jsPDF): Promise<void> {
 }
 
 function drawHeader(doc: jsPDF, title: string): void {
+  const pageWidth = doc.internal.pageSize.getWidth();
+
   doc.setFont('Roboto', 'bold');
-  doc.setFontSize(18);
-  doc.text(title.toUpperCase(), 105, 22, { align: 'center' });
-  doc.setDrawColor(180);
-  doc.line(20, 28, 190, 28);
+  doc.setFontSize(20);
+  doc.text(title.toUpperCase(), pageWidth / 2, 20, { align: 'center' });
+
+  doc.setDrawColor(185);
+  doc.line(20, 27, pageWidth - 20, 27);
 }
 
 function drawFooter(doc: jsPDF): void {
   const pageCount = doc.getNumberOfPages();
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
 
   for (let i = 1; i <= pageCount; i += 1) {
     doc.setPage(i);
     doc.setFont('Roboto', 'normal');
     doc.setFontSize(9);
-    doc.text(`Strana ${i} z ${pageCount}`, 105, 290, { align: 'center' });
+    doc.setTextColor(110);
+    doc.text(`Strana ${i} z ${pageCount}`, pageWidth / 2, pageHeight - 8, {
+      align: 'center',
+    });
+    doc.setTextColor(0);
   }
+}
+
+function isSignatureSection(title: string): boolean {
+  return title.toUpperCase().includes('PODPISY');
 }
 
 export async function renderContractPdf(data: StoredContractData): Promise<Buffer> {
@@ -76,43 +89,88 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
   });
 
   await ensurePdfFonts(doc);
+
+  const margin = 20;
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  let y = 35;
+
   drawHeader(doc, meta.title);
 
-  let y = 40;
-
   for (const section of sections) {
-    if (y > 260) {
+    if (y > 255) {
       doc.addPage();
       drawHeader(doc, meta.title);
-      y = 40;
+      y = 35;
+    }
+
+    if (isSignatureSection(section.title)) {
+      if (y > 235) {
+        doc.addPage();
+        drawHeader(doc, meta.title);
+        y = 35;
+      }
+
+      doc.setFont('Roboto', 'bold');
+      doc.setFontSize(12);
+      doc.text(section.title, margin, y);
+      y += 10;
+
+      doc.setFont('Roboto', 'normal');
+      doc.setFontSize(10);
+
+      const dateLine =
+        section.body.find((line) => line.includes('V __________________')) ||
+        'V ________________________ dne __________________';
+
+      const splitDateLine = doc.splitTextToSize(dateLine, pageWidth - margin * 2);
+      doc.text(splitDateLine, margin, y);
+      y += splitDateLine.length * 5 + 14;
+
+      const lineWidth = 60;
+      const leftX = margin;
+      const rightX = pageWidth - margin - lineWidth;
+
+      doc.setDrawColor(0);
+      doc.line(leftX, y, leftX + lineWidth, y);
+      doc.line(rightX, y, rightX + lineWidth, y);
+
+      y += 6;
+
+      doc.setFontSize(9);
+      doc.text('Pronajímatel / smluvní strana', leftX, y);
+      doc.text('Nájemce / smluvní strana', rightX, y);
+
+      y += 14;
+      continue;
     }
 
     doc.setFont('Roboto', 'bold');
     doc.setFontSize(12);
-    doc.text(section.title, 20, y);
-    y += 8;
+    doc.text(section.title, margin, y);
+    y += 7;
 
     doc.setFont('Roboto', 'normal');
     doc.setFontSize(10);
 
     for (const line of section.body) {
-      const lines = doc.splitTextToSize(line, 170);
+      const safeLine = line?.trim() ? line : ' ';
+      const splitLines = doc.splitTextToSize(safeLine, pageWidth - margin * 2);
 
-      if (y + lines.length * 6 > 280) {
+      if (y + splitLines.length * 5 > 275) {
         doc.addPage();
         drawHeader(doc, meta.title);
-        y = 40;
+        y = 35;
       }
 
-      doc.text(lines, 20, y);
-      y += lines.length * 5.8 + 4;
+      doc.text(splitLines, margin, y);
+      y += splitLines.length * 5 + 3;
     }
 
-    y += 8;
+    y += 4;
   }
 
   drawFooter(doc);
 
-  const arrayBuffer = doc.output('arraybuffer');
-  return Buffer.from(arrayBuffer);
+  return Buffer.from(doc.output('arraybuffer'));
 }
