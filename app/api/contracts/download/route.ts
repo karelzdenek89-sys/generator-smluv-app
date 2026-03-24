@@ -26,10 +26,14 @@ export async function GET(req: NextRequest) {
     }
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
-    const draftId = session.metadata?.draftId;
+
+    const draftId = session.metadata?.draftId || session.client_reference_id;
 
     if (!draftId) {
-      return NextResponse.json({ error: 'Session neobsahuje draftId.' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Session neobsahuje draftId.' },
+        { status: 400 }
+      );
     }
 
     const draft = await redis.get<DraftRecord>(`contract:draft:${draftId}`);
@@ -45,8 +49,26 @@ export async function GET(req: NextRequest) {
 
     if (!isPaid) {
       return NextResponse.json(
-        { error: 'Platba ještě nebyla potvrzena.' },
+        {
+          error: 'Platba ještě nebyla potvrzena.',
+          paymentStatus: session.payment_status,
+          paidFlag: draft.paid,
+        },
         { status: 403 }
+      );
+    }
+
+    if (!draft.payload) {
+      return NextResponse.json(
+        { error: 'Draft neobsahuje payload.' },
+        { status: 500 }
+      );
+    }
+
+    if (!draft.payload.contractType) {
+      return NextResponse.json(
+        { error: 'Payload neobsahuje contractType.' },
+        { status: 500 }
       );
     }
 
@@ -65,8 +87,15 @@ export async function GET(req: NextRequest) {
     });
   } catch (error) {
     console.error('Download PDF error:', error);
+
+    const message =
+      error instanceof Error ? error.message : 'Unknown error';
+
     return NextResponse.json(
-      { error: 'Nepodařilo se vygenerovat PDF.' },
+      {
+        error: 'Nepodařilo se vygenerovat PDF.',
+        details: message,
+      },
       { status: 500 }
     );
   }
