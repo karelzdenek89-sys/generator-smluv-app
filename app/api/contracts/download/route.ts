@@ -1,50 +1,72 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { redis } from '../../../../lib/redis';
-import { generatePDF } from '../../../../lib/pdf'; 
+import { redis } from '@/lib/redis';
+import { stripe } from '@/lib/stripe';
+import { getContractMeta, type StoredContractData } from '@/lib/contracts';
+import { renderContractPdf } from '@/lib/pdf';
+
+export const runtime = 'nodejs';
+
+type DraftRecord = {
+  contractType: StoredContractData['contractType'];
+  notaryUpsell?: boolean;
+  payload: StoredContractData;
+  paid: boolean;
+  createdAt: string;
+  paidAt?: string;
+  stripeSessionId?: string;
+  paymentStatus?: string;
+};
 
 export async function GET(req: NextRequest) {
   try {
-    const { searchParams } = new URL(req.url);
-    const draftId = searchParams.get('draftId');
+    const sessionId = req.nextUrl.searchParams.get('session_id');
+
+    if (!sessionId) {
+      return NextResponse.json({ error: 'Missing session_id.' }, { status: 400 });
+    }
+
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    const draftId = session.metadata?.draftId;
 
     if (!draftId) {
-      return NextResponse.json({ error: 'Missing draftId' }, { status: 400 });
+      return NextResponse.json({ error: 'Session neobsahuje draftId.' }, { status: 400 });
     }
 
-    // 1. Získání dat z Redis
-    const draftData = await redis.get(`contract:draft:${draftId}`);
+    const draft = await redis.get<DraftRecord>(`contract:draft:${draftId}`);
 
-    if (!draftData) {
-      return NextResponse.json({ error: 'Smlouva nenalezena nebo vypršela' }, { status: 404 });
+    if (!draft) {
+      return NextResponse.json(
+        { error: 'Draft nebyl nalezen nebo expiroval.' },
+        { status: 404 }
+      );
     }
 
-    // 2. Kontrola platby (zakomentováno pro testování)
-    /*
-    if ((draftData as any).status !== 'paid') {
-      return NextResponse.json({ error: 'Platba nebyla potvrzena' }, { status: 402 });
+    const isPaid = draft.paid === true && session.payment_status === 'paid';
+
+    if (!isPaid) {
+      return NextResponse.json(
+        { error: 'Platba ještě nebyla potvrzena.' },
+        { status: 403 }
+      );
     }
-    */
 
-    // 3. Generování PDF dat
-    const pdf = await generatePDF(draftData as any);
+    const pdf = await renderContractPdf(draft.payload);
+    const meta = getContractMeta(draft.payload.contractType);
 
-    // 4. Prodloužení expirace v Redis
     await redis.expire(`contract:draft:${draftId}`, 60 * 60);
 
-    // 5. VRÁCENÍ PDF
-    return new NextResponse(pdf as any, {
+    return new NextResponse(new Uint8Array(pdf), {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="smlouva-${draftId.slice(0, 8)}.pdf"`,
+        'Content-Disposition': `attachment; filename="${meta.fileName}"`,
         'Cache-Control': 'no-store, max-age=0',
       },
     });
-
   } catch (error) {
-    console.error('Chyba při stahování PDF:', error);
+    console.error('Download PDF error:', error);
     return NextResponse.json(
-      { error: 'Nepodařilo se vygenerovat dokument' },
+      { error: 'Nepodařilo se vygenerovat PDF.' },
       { status: 500 }
     );
   }

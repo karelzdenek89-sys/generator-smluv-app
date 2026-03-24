@@ -1,17 +1,17 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { jsPDF } from 'jspdf';
-import { buildContractSections, getContractMeta, StoredContractData } from './contracts';
+import { buildContractSections, getContractMeta, type StoredContractData } from './contracts';
 
 let fontsLoaded = false;
 
-async function loadFontBase64(fileName: string) {
+async function loadFontBase64(fileName: string): Promise<string> {
   const filePath = path.join(process.cwd(), 'public', 'fonts', fileName);
   const file = await readFile(filePath);
   return file.toString('base64');
 }
 
-async function ensurePdfFonts(doc: jsPDF) {
+async function ensurePdfFonts(doc: jsPDF): Promise<void> {
   if (fontsLoaded) {
     doc.setFont('Roboto', 'normal');
     return;
@@ -36,7 +36,7 @@ async function ensurePdfFonts(doc: jsPDF) {
   doc.setFont('Roboto', 'normal');
 }
 
-function drawHeader(doc: jsPDF, title: string) {
+function drawHeader(doc: jsPDF, title: string): void {
   doc.setFont('Roboto', 'bold');
   doc.setFontSize(18);
   doc.text(title.toUpperCase(), 105, 22, { align: 'center' });
@@ -44,7 +44,7 @@ function drawHeader(doc: jsPDF, title: string) {
   doc.line(20, 28, 190, 28);
 }
 
-function drawFooter(doc: jsPDF) {
+function drawFooter(doc: jsPDF): void {
   const pageCount = doc.getNumberOfPages();
 
   for (let i = 1; i <= pageCount; i += 1) {
