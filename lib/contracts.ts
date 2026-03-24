@@ -37,13 +37,25 @@ function buildGiftContractSections(d: StoredContractData): ContractSection[] {
       case 'money':
         return `peněžní částku ve výši ${formatAmount(d.amount)} ${String(d.currency || 'Kč')}`;
       case 'car':
-        return `motorové vozidlo ${String(d.carMake || '')} ${String(d.carModel || '')}, VIN: ${String(d.carVIN || '__________')}, SPZ: ${String(d.carPlate || '__________')}`;
+        return `motorové vozidlo ${String(d.carMake || '')} ${String(d.carModel || '')}, VIN: ${String(d.carVIN || '__________')}, SPZ: ${String(d.carPlate || '__________')}, rok výroby ${String(d.carYear || '____')}`;
       case 'property':
-        return `nemovitost na adrese ${String(d.propertyAddress || '__________')}, LV č. ${String(d.propertyLV || '__________')}, k.ú. ${String(d.propertyCadastre || '__________')}`;
+        return `nemovitost na adrese ${String(d.propertyAddress || '__________')}, list vlastnictví č. ${String(d.propertyLV || '__________')}, katastrální území ${String(d.propertyCadastre || '__________')}`;
       default:
         return `movitou věc: ${String(d.thingDescription || 'specifikována níže')}`;
     }
   };
+
+  const premiumSection: ContractSection[] = d.notaryUpsell
+    ? [
+        {
+          title: 'V. ROZŠÍŘENÁ DOPORUČENÍ K PODPISU',
+          body: [
+            'V rámci rozšířeného balíčku se doporučuje podpisy smluvních stran úředně ověřit, zejména pokud jde o darování majetku vyšší hodnoty nebo nemovitosti.',
+            'Strany berou na vědomí, že samotné ověření podpisů může být provedeno samostatně u notáře nebo na kontaktním místě veřejné správy.',
+          ],
+        },
+      ]
+    : [];
 
   return [
     {
@@ -67,17 +79,19 @@ function buildGiftContractSections(d: StoredContractData): ContractSection[] {
         d.withReservation
           ? `Dar je poskytován s výminkem: ${String(d.reservationDescription || '____________________')}`
           : 'Dar je poskytován bez výminků a bez právních vad.',
-        'Smlouva byla uzavřena dobrovolně v plném rozsahu svéprávnosti obou stran.',
+        d.giftDate ? `Smlouva byla uzavřena dne ${String(d.giftDate)}.` : 'Smlouva byla uzavřena dne __________________.',
+        'Smluvní strany prohlašují, že smlouvu uzavírají dobrovolně a že jejímu obsahu rozumí.',
       ],
     },
     {
       title: 'IV. PODPISY',
       body: [
-        `V ________________________ dne ${String(d.giftDate || '__________________')}`,
+        'V ________________________ dne __________________',
         '\n\n_______________________________          _______________________________',
         'Dárce                                      Obdarovaný',
       ],
     },
+    ...premiumSection,
   ];
 }
 
@@ -99,8 +113,21 @@ function buildWorkContractSections(d: StoredContractData): ContractSection[] {
   const finalProvisions = [
     d.handoverProtocol ? 'Předání díla proběhne písemným protokolem o předání a převzetí.' : '',
     d.insuranceRequired ? 'Zhotovitel má po celou dobu provádění díla sjednáno pojištění odpovědnosti za škodu.' : '',
+    d.withdrawalRight ? 'Smluvní strany sjednávají možnost odstoupení od smlouvy v případech stanovených smlouvou a právními předpisy.' : '',
     'Smlouva se řídí ustanoveními § 2586 a násl. občanského zákoníku.',
   ].filter(Boolean) as string[];
+
+  const premiumSection: ContractSection[] = d.notaryUpsell
+    ? [
+        {
+          title: 'VIII. ROZŠÍŘENÁ DOPORUČENÍ K PODPISU',
+          body: [
+            'V rámci rozšířeného balíčku se doporučuje využít úřední ověření podpisů nebo samostatné přílohy pro posílení důkazní jistoty smluvních stran.',
+            'Doporučuje se také důsledně evidovat předání díla, vícepráce, změny rozsahu a veškerou komunikaci o termínech a vadách.',
+          ],
+        },
+      ]
+    : [];
 
   return [
     {
@@ -155,10 +182,28 @@ function buildWorkContractSections(d: StoredContractData): ContractSection[] {
         'Objednatel                                      Zhotovitel',
       ],
     },
+    ...premiumSection,
   ];
 }
 
 function buildCarContractSections(d: StoredContractData): ContractSection[] {
+  const paymentText =
+    d.paymentMethod === 'cash'
+      ? 'V hotovosti při podpisu smlouvy'
+      : 'Bankovním převodem na účet prodávajícího';
+
+  const premiumSection: ContractSection[] = d.notaryUpsell
+    ? [
+        {
+          title: 'VII. ROZŠÍŘENÁ OCHRANA A DOPORUČENÍ',
+          body: [
+            'Součástí rozšířeného balíčku jsou doporučené doplňkové podklady k předání vozidla, evidenci stavu tachometru a shrnutí klíčových údajů pro bezpečnější převod.',
+            'Stranám se doporučuje potvrdit technický stav, předané doklady, příslušenství a stav kilometrů i v samostatném předávacím protokolu.',
+          ],
+        },
+      ]
+    : [];
+
   return [
     {
       title: 'I. SMLUVNÍ STRANY',
@@ -178,21 +223,30 @@ function buildCarContractSections(d: StoredContractData): ContractSection[] {
     {
       title: 'III. KUPNÍ CENA A PŘEDÁNÍ',
       body: [
-        `Kupní cena je stanovena dohodou na ${formatAmount(d.purchasePrice)} Kč.`,
-        `Platba proběhne: ${d.paymentMethod === 'cash' ? 'V hotovosti při podpisu smlouvy' : 'Bankovním převodem na účet prodávajícího'}.`,
-      ],
+        `Kupní cena je stanovena dohodou na ${formatAmount(d.priceAmount ?? d.purchasePrice)} Kč.`,
+        `Platba proběhne: ${paymentText}.`,
+        d.handoverDate ? `Datum předání: ${String(d.handoverDate)}.` : '',
+        d.handoverPlace ? `Místo předání: ${String(d.handoverPlace)}.` : '',
+      ].filter(Boolean) as string[],
     },
     {
       title: 'IV. TECHNICKÝ STAV',
       body: [
-        'Kupující se seznámil s technickým stavem vozidla a absolvoval zkušební jízdu.',
+        d.buyerInspectedVehicle === false
+          ? 'Kupující nepotvrzuje, že se seznámil s technickým stavem vozidla.'
+          : 'Kupující se seznámil s technickým stavem vozidla a absolvoval zkušební jízdu.',
         `Známé vady: ${String(d.knownDefects || 'Žádné zjevné vady nad rámec běžného opotřebení')}.`,
+        d.odometerGuaranteed === false
+          ? 'Prodávající negarantuje stav tachometru.'
+          : 'Prodávající prohlašuje, že údaje o stavu tachometru odpovídají jeho vědomosti.',
       ],
     },
     {
-      title: 'V. ZÁVĚREČNÁ USTANOVENÍ',
+      title: 'V. PRÁVNÍ PROHLÁŠENÍ',
       body: [
-        'Vlastnické právo přechází na kupujícího úplným zaplacením kupní ceny. Prodávající dodá plnou moc k přepisu v registru vozidel.',
+        `Zástava / právní omezení: ${d.isPledged ? 'ano' : 'ne'}.`,
+        `Leasing / financování: ${d.isInLeasing ? 'ano' : 'ne'}.`,
+        `Práva třetích osob: ${d.hasThirdPartyRights ? 'ano' : 'ne'}.`,
       ],
     },
     {
@@ -203,49 +257,172 @@ function buildCarContractSections(d: StoredContractData): ContractSection[] {
         'Prodávající                                      Kupující',
       ],
     },
+    ...premiumSection,
   ];
 }
 
 function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
-  return [
+  const propertyAddress = String(d.propertyAddress || d.flatAddress || '____________________');
+  const propertyLayout = String(d.propertyLayout || d.flatLayout || '__________');
+  const utilitiesAmount = d.utilitiesAmount ?? d.utilityAmount ?? '';
+  const paymentDay =
+    d.paymentDay !== undefined && d.paymentDay !== null && String(d.paymentDay).trim() !== ''
+      ? String(d.paymentDay)
+      : '5';
+
+  const leaseDuration =
+    d.leaseDuration
+      ? String(d.leaseDuration)
+      : d.duration === 'indefinite'
+        ? 'neurčitou'
+        : d.duration === 'fixed'
+          ? `určitou do ${String(d.endDate || '__________')}`
+          : 'určitou do ____________';
+
+  const animalsText = d.allowPets ? 'povolena' : 'nepovolena';
+  const smokingText = d.allowSmoking ? 'povoleno' : 'zakázáno';
+  const airbnbText = d.allowAirbnb ? 'povolen' : 'zakázán';
+  const businessText = d.businessUseAllowed ? 'povoleno' : 'zakázáno';
+  const inspectionText = d.inspectionAllowed
+    ? 'Pronajímatel je oprávněn po předchozím oznámení provést přiměřenou kontrolu stavu bytu.'
+    : 'Právo pravidelné kontroly bytu není výslovně sjednáno.';
+  const penaltiesText = d.strictPenalties
+    ? 'Strany sjednávají přísnější režim odpovědnosti nájemce za porušení povinností vyplývajících ze smlouvy a právních předpisů.'
+    : 'Smlouva neobsahuje rozšířený režim smluvních sankcí nad rámec základních povinností.';
+
+  const sections: ContractSection[] = [
     {
       title: 'I. SMLUVNÍ STRANY',
       body: [
         `Pronajímatel: ${String(d.landlordName || '____________________')}, nar./IČO: ${String(d.landlordId || '__________')}, bytem: ${String(d.landlordAddress || '____________________')}`,
+        d.landlordOP ? `Číslo OP pronajímatele: ${String(d.landlordOP)}` : '',
+        d.landlordEmail ? `E-mail pronajímatele: ${String(d.landlordEmail)}` : '',
+        d.landlordPhone ? `Telefon pronajímatele: ${String(d.landlordPhone)}` : '',
         `Nájemce: ${String(d.tenantName || '____________________')}, nar./IČO: ${String(d.tenantId || '__________')}, bytem: ${String(d.tenantAddress || '____________________')}`,
-      ],
+        d.tenantOP ? `Číslo OP nájemce: ${String(d.tenantOP)}` : '',
+        d.tenantEmail ? `E-mail nájemce: ${String(d.tenantEmail)}` : '',
+        d.tenantPhone ? `Telefon nájemce: ${String(d.tenantPhone)}` : '',
+      ].filter(Boolean) as string[],
     },
     {
       title: 'II. PŘEDMĚT NÁJMU',
       body: [
-        `Pronajímatel přenechává nájemci do užívání byt/prostory na adrese: ${String(d.propertyAddress || '____________________')}.`,
-        `Dispozice: ${String(d.propertyLayout || '__________')}.`,
-      ],
+        `Pronajímatel přenechává nájemci do užívání byt/prostory na adrese: ${propertyAddress}.`,
+        `Dispozice: ${propertyLayout}.`,
+        d.flatUnitNumber ? `Číslo jednotky: ${String(d.flatUnitNumber)}.` : '',
+        d.cadastralArea ? `Katastrální území: ${String(d.cadastralArea)}.` : '',
+        d.ownershipSheet ? `List vlastnictví: ${String(d.ownershipSheet)}.` : '',
+        d.floor ? `Podlaží / patro: ${String(d.floor)}.` : '',
+        'Nájemce prohlašuje, že se seznámil se stavem bytu a přebírá jej ve stavu popsaném ve smlouvě a předávacím protokolu.',
+      ].filter(Boolean) as string[],
     },
     {
-      title: 'III. NÁJEMNÉ A ÚHRADY ZA SLUŽBY',
+      title: 'III. DOBA NÁJMU',
+      body: [
+        `Nájem se sjednává na dobu: ${leaseDuration}.`,
+        d.startDate ? `Začátek nájmu: ${String(d.startDate)}.` : '',
+        d.handoverDate ? `Předání bytu: ${String(d.handoverDate)}.` : '',
+        d.duration === 'fixed'
+          ? 'Po uplynutí sjednané doby nájmu nájem končí, nebude-li prodloužen novou dohodou stran.'
+          : 'Nájem je sjednán na dobu neurčitou a může být ukončen způsobem stanoveným smlouvou a právními předpisy.',
+      ].filter(Boolean) as string[],
+    },
+    {
+      title: 'IV. NÁJEMNÉ A ÚHRADY ZA SLUŽBY',
       body: [
         `Měsíční nájemné činí ${formatAmount(d.rentAmount)} Kč.`,
-        `Měsíční zálohy na služby činí ${formatAmount(d.utilitiesAmount)} Kč.`,
-        `Nájemné a zálohy jsou splatné vždy do ${String(d.paymentDay || '5.')} dne příslušného měsíce.`,
+        `Měsíční zálohy na služby činí ${formatAmount(utilitiesAmount)} Kč.`,
+        `Celková pravidelná měsíční platba činí ${formatAmount((Number(d.rentAmount || 0) + Number(utilitiesAmount || 0)).toString())} Kč.`,
+        `Nájemné a zálohy jsou splatné vždy do ${paymentDay}. dne příslušného měsíce.`,
+        d.bankAccount ? `Bankovní účet pronajímatele: ${String(d.bankAccount)}.` : '',
+        d.variableSymbol ? `Variabilní symbol: ${String(d.variableSymbol)}.` : '',
+        d.utilitiesIncludedText
+          ? `Specifikace služeb a záloh: ${String(d.utilitiesIncludedText)}`
+          : 'Specifikace služeb a záloh bude určena podle skutečného rozsahu poskytovaných plnění.',
+      ].filter(Boolean) as string[],
+    },
+    {
+      title: 'V. JISTOTA (KAUCE)',
+      body: [
+        `Nájemce skládá pronajímateli jistotu (kauci) ve výši ${formatAmount(d.depositAmount)} Kč.`,
+        'Jistota slouží k zajištění pohledávek pronajímatele vzniklých z nájmu, zejména dluhů na nájemném, službách, náhradě škody, smluvních pokutách a nákladech spojených s neřádným odevzdáním bytu.',
+        'Po skončení nájmu bude nevyčerpaná část jistoty vrácena nájemci po vypořádání všech závazků.',
       ],
     },
     {
-      title: 'IV. JISTOTA (KAUCE) A DOBA NÁJMU',
+      title: 'VI. PRAVIDLA UŽÍVÁNÍ BYTU',
       body: [
-        `Nájemce uhradil jistotu (kauci) ve výši ${formatAmount(d.depositAmount)} Kč.`,
-        `Nájem se sjednává na dobu: ${String(d.leaseDuration || 'určitou do ____________')}.`,
-      ],
+        d.maxOccupants ? `Maximální počet osob užívajících byt: ${String(d.maxOccupants)}.` : '',
+        `Domácí zvířata: ${animalsText}.`,
+        `Kouření v bytě: ${smokingText}.`,
+        `Airbnb / krátkodobý podnájem: ${airbnbText}.`,
+        `Podnikání v bytě: ${businessText}.`,
+        inspectionText,
+        penaltiesText,
+        'Nájemce je povinen užívat byt řádně, šetrně a v souladu s účelem nájmu, předcházet vzniku škod a bez zbytečného odkladu hlásit závady a havárie.',
+      ].filter(Boolean) as string[],
     },
     {
-      title: 'V. PODPISY',
+      title: 'VII. PŘEDÁNÍ BYTU A VYBAVENÍ',
       body: [
-        'V ________________________ dne __________________',
-        '\n\n_______________________________          _______________________________',
-        'Pronajímatel                                      Nájemce',
-      ],
+        d.keysCount ? `Počet předávaných klíčů: ${String(d.keysCount)}.` : '',
+        d.electricityMeter ? `Stav elektroměru při předání: ${String(d.electricityMeter)}.` : '',
+        d.gasMeter ? `Stav plynoměru při předání: ${String(d.gasMeter)}.` : '',
+        d.waterMeter ? `Stav vodoměru při předání: ${String(d.waterMeter)}.` : '',
+        d.equipmentList ? `Předávané vybavení bytu: ${String(d.equipmentList)}` : '',
+        d.knownDefects ? `Známé vady a poznámky: ${String(d.knownDefects)}` : 'Byt je předáván bez výslovně uvedených vad nad rámec běžného opotřebení.',
+      ].filter(Boolean) as string[],
     },
   ];
+
+  if (d.notaryUpsell) {
+    sections.push({
+      title: 'VIII. ROZŠÍŘENÁ OCHRANA PRONAJÍMATELE',
+      body: [
+        'Strany berou na vědomí, že součástí rozšířeného balíčku je doporučené zesílení vymahatelnosti práv pronajímatele formou samostatných podkladů pro notářský zápis se svolením k vykonatelnosti, pokud se pro tento postup rozhodnou.',
+        'Nájemce prohlašuje, že si je vědom své povinnosti byt po skončení nájmu včas a řádně vyklidit a odevzdat jej ve stavu odpovídajícím smlouvě a běžnému opotřebení.',
+        'Rozšířený balíček doporučuje i důsledné doložení předání bytu, stavu měřidel, vybavení a případných vad pro případ pozdějšího sporu.',
+      ],
+    });
+  }
+
+  sections.push({
+    title: d.notaryUpsell ? 'IX. PODPISY' : 'VIII. PODPISY',
+    body: [
+      'V ________________________ dne __________________',
+      '\n\n_______________________________          _______________________________',
+      'Pronajímatel                                      Nájemce',
+    ],
+  });
+
+  sections.push({
+    title: d.notaryUpsell ? 'PŘÍLOHA Č. 1 – PŘEDÁVACÍ PROTOKOL' : 'PŘÍLOHA – PŘEDÁVACÍ PROTOKOL',
+    body: [
+      `Adresa bytu: ${propertyAddress}`,
+      d.handoverDate ? `Datum předání: ${String(d.handoverDate)}` : 'Datum předání: __________________',
+      `Pronajímatel: ${String(d.landlordName || '____________________')}`,
+      `Nájemce: ${String(d.tenantName || '____________________')}`,
+      '',
+      '1. Stav měřidel:',
+      `- Elektroměr: ${String(d.electricityMeter || '____________________')}`,
+      `- Plynoměr: ${String(d.gasMeter || '____________________')}`,
+      `- Vodoměr: ${String(d.waterMeter || '____________________')}`,
+      '',
+      `2. Počet předaných klíčů: ${String(d.keysCount || '____________________')}`,
+      '',
+      '3. Předané vybavení:',
+      `${String(d.equipmentList || '____________________')}`,
+      '',
+      '4. Zjištěné vady / poškození / poznámky:',
+      `${String(d.knownDefects || 'Bez zjevných vad.')}`,
+      '',
+      'Potvrzujeme, že byt byl předán / převzat v rozsahu uvedeném v tomto protokolu.',
+      '\n\n_______________________________          _______________________________',
+      'Pronajímatel                                      Nájemce',
+    ],
+  });
+
+  return sections;
 }
 
 export function buildContractSections(data: StoredContractData): ContractSection[] {
