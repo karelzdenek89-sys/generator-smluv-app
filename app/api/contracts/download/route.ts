@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { redis } from '@/lib/redis';
-import { generatePDF } from '@/lib/pdf'; // Opraveno: tvůj soubor se jmenuje pdf.ts
+import { redis } from '../../../../lib/redis';
+import { generatePDF } from '../../../../lib/pdf'; 
 
 export async function GET(req: NextRequest) {
   try {
@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
     // 4. Prodloužení expirace v Redis
     await redis.expire(`contract:draft:${draftId}`, 60 * 60);
 
-    // 5. VRÁCENÍ PDF (s "as any" pro TypeScript a správnými hlavičkami)
+    // 5. VRÁCENÍ PDF
     return new NextResponse(pdf as any, {
       status: 200,
       headers: {
