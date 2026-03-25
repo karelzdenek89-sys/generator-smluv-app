@@ -48,6 +48,22 @@ function getSignatureLabels(contractType: ContractType): [string, string] {
       return ['Věřitel (půjčující)', 'Dlužník (příjemce)'];
     case 'nda':
       return ['Strana poskytující informace', 'Strana přijímající informace'];
+    case 'general_sale':
+      return ['Prodávající', 'Kupující'];
+    case 'employment':
+      return ['Zaměstnavatel', 'Zaměstnanec'];
+    case 'dpp':
+      return ['Zaměstnavatel', 'Zaměstnanec'];
+    case 'service':
+      return ['Poskytovatel', 'Objednatel'];
+    case 'sublease':
+      return ['Nájemce (podnajímatel)', 'Podnájemce'];
+    case 'power_of_attorney':
+      return ['Zmocnitel', 'Zmocněnec'];
+    case 'debt_acknowledgment':
+      return ['Věřitel', 'Dlužník'];
+    case 'cooperation':
+      return ['Strana A', 'Strana B'];
     default:
       return ['Smluvní strana I.', 'Smluvní strana II.'];
   }

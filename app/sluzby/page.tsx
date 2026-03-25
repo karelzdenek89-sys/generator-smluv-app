@@ -1,0 +1,236 @@
+'use client';
+
+import { useMemo, useState } from 'react';
+
+type FormData = {
+  providerName: string; providerIco: string; providerAddress: string; providerEmail: string; providerPhone: string;
+  clientName: string; clientId: string; clientAddress: string; clientEmail: string;
+  serviceDescription: string; serviceDetails: string; deliverables: string;
+  startDate: string; durationType: 'fixed' | 'indefinite'; endDate: string; noticePeriod: string;
+  pricingType: 'hourly' | 'monthly_flat' | 'lump_sum';
+  hourlyRate: string; monthlyFee: string; totalPrice: string; payDay: string;
+  invoicePeriod: string; invoiceDueDays: string; lateInterest: string;
+  vatPayer: 'yes' | 'no'; penaltyRate: string;
+  ipOwnership: 'client' | 'provider';
+  contractDate: string; notaryUpsell: boolean;
+};
+
+const inputClass = 'w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition';
+const cardClass = 'bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]';
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div><label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</label>{children}</div>
+  );
+}
+function SectionTitle({ index, title, subtitle }: { index: string; title: string; subtitle?: string }) {
+  return (
+    <div className="mb-6">
+      <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90">{index}. {title}</div>
+      {subtitle && <p className="mt-2 text-sm text-slate-400">{subtitle}</p>}
+    </div>
+  );
+}
+
+export default function SluzbyPage() {
+  const [form, setForm] = useState<FormData>({
+    providerName: '', providerIco: '', providerAddress: '', providerEmail: '', providerPhone: '',
+    clientName: '', clientId: '', clientAddress: '', clientEmail: '',
+    serviceDescription: '', serviceDetails: '', deliverables: '',
+    startDate: '', durationType: 'indefinite', endDate: '', noticePeriod: '1',
+    pricingType: 'monthly_flat',
+    hourlyRate: '', monthlyFee: '', totalPrice: '', payDay: '15',
+    invoicePeriod: 'měsíčně', invoiceDueDays: '14', lateInterest: '0,05',
+    vatPayer: 'no', penaltyRate: '0,05',
+    ipOwnership: 'client',
+    contractDate: '', notaryUpsell: false,
+  });
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const set = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value, type } = e.target;
+    setForm(p => ({ ...p, [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value }));
+  };
+
+  const risk = useMemo(() => {
+    let score = 100;
+    const warnings: { text: string; level: 'high' | 'medium' | 'low' }[] = [];
+    if (!form.serviceDescription) { score -= 25; warnings.push({ text: 'Chybí popis služeb — nejdůležitější část smlouvy.', level: 'high' }); }
+    if (!form.providerIco && !form.clientId) { score -= 15; warnings.push({ text: 'Chybí identifikace stran (IČO/datum nar.).', level: 'high' }); }
+    if (!form.hourlyRate && !form.monthlyFee && !form.totalPrice) { score -= 20; warnings.push({ text: 'Neuvedena cena — smlouva je nekompletní.', level: 'high' }); }
+    if (!form.deliverables) { score -= 8; warnings.push({ text: 'Bez specifikace výstupů mohou vzniknout spory o plnění.', level: 'medium' }); }
+    return { score: Math.max(0, score), warnings, label: score >= 85 ? 'Silná smlouva' : score >= 65 ? 'Průměrná ochrana' : 'Doplňte údaje' };
+  }, [form]);
+
+  const handlePayment = async () => {
+    try {
+      setIsProcessing(true);
+      const res = await fetch('/api/checkout', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contractType: 'service', notaryUpsell: form.notaryUpsell, payload: { ...form, contractType: 'service' }, email: form.clientEmail || form.providerEmail }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data?.url) throw new Error();
+      window.location.href = data.url;
+    } catch { alert('Chyba platební brány.'); setIsProcessing(false); }
+  };
+
+  const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-rose-400';
+
+  return (
+    <main className="min-h-screen bg-[#05080f] text-slate-200 font-sans pb-24">
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#08101e]/90 backdrop-blur">
+        <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500 text-slate-900 font-black text-sm">SH</div>
+            <div>
+              <div className="font-bold tracking-tight text-white">SmlouvaHned Builder</div>
+              <div className="text-[11px] text-slate-500">Smlouva o poskytování služeb — § 1746 OZ</div>
+            </div>
+          </div>
+          <button onClick={() => window.location.href = '/'} className="text-sm text-slate-400 hover:text-white transition">Zavřít</button>
+        </div>
+      </header>
+
+      <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8">
+        <div className="grid lg:grid-cols-12 gap-8 items-start">
+          <div className="lg:col-span-7 space-y-6">
+
+            <section className={cardClass}>
+              <SectionTitle index="01" title="Poskytovatel služeb" subtitle="Freelancer, agentura nebo firma poskytující služby." />
+              <div className="grid sm:grid-cols-2 gap-4">
+                <Field label="Jméno / název *"><input className={inputClass} name="providerName" value={form.providerName} onChange={set} placeholder="Jan Novák, webdesigner" /></Field>
+                <Field label="IČO (OSVČ/firma)"><input className={inputClass} name="providerIco" value={form.providerIco} onChange={set} placeholder="12345678" /></Field>
+                <Field label="Adresa / sídlo *"><input className={inputClass} name="providerAddress" value={form.providerAddress} onChange={set} placeholder="Ulice 1, Praha 5" /></Field>
+                <Field label="E-mail *"><input className={inputClass} name="providerEmail" value={form.providerEmail} onChange={set} type="email" placeholder="jan@studio.cz" /></Field>
+                <Field label="Telefon"><input className={inputClass} name="providerPhone" value={form.providerPhone} onChange={set} placeholder="+420 600 000 000" /></Field>
+                <Field label="Plátce DPH">
+                  <select className={inputClass} name="vatPayer" value={form.vatPayer} onChange={set}>
+                    <option value="no">Neplátce DPH</option>
+                    <option value="yes">Plátce DPH</option>
+                  </select>
+                </Field>
+              </div>
+            </section>
+
+            <section className={cardClass}>
+              <SectionTitle index="02" title="Objednatel" />
+              <div className="grid sm:grid-cols-2 gap-4">
+                <Field label="Jméno / název *"><input className={inputClass} name="clientName" value={form.clientName} onChange={set} placeholder="XYZ s.r.o." /></Field>
+                <Field label="IČO / datum nar. *"><input className={inputClass} name="clientId" value={form.clientId} onChange={set} placeholder="87654321" /></Field>
+                <Field label="Adresa / sídlo *"><input className={inputClass} name="clientAddress" value={form.clientAddress} onChange={set} placeholder="Náměstí 5, Brno" /></Field>
+                <Field label="E-mail"><input className={inputClass} name="clientEmail" value={form.clientEmail} onChange={set} type="email" placeholder="info@firma.cz" /></Field>
+              </div>
+            </section>
+
+            <section className={cardClass}>
+              <SectionTitle index="03" title="Předmět a rozsah služeb" subtitle="Čím přesnější, tím menší riziko sporů o rozsah plnění." />
+              <div className="space-y-4">
+                <Field label="Název / popis služeb *">
+                  <textarea className="w-full min-h-[80px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="serviceDescription" value={form.serviceDescription} onChange={set} placeholder="Správa sociálních sítí, tvorba obsahu, SEO optimalizace…" />
+                </Field>
+                <Field label="Podrobná specifikace">
+                  <textarea className="w-full min-h-[70px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="serviceDetails" value={form.serviceDetails} onChange={set} placeholder="2× týdně příspěvky na Instagram a Facebook, měsíční report, 4 blogové články/měsíc…" />
+                </Field>
+                <Field label="Výstupy / dodávky (co konkrétně objednatel dostane)">
+                  <input className={inputClass} name="deliverables" value={form.deliverables} onChange={set} placeholder="Reporty, zdrojové soubory, přístup k analytics…" />
+                </Field>
+                <Field label="Zahájení služeb"><input className={inputClass} name="startDate" value={form.startDate} onChange={set} type="date" /></Field>
+              </div>
+            </section>
+
+            <section className={cardClass}>
+              <SectionTitle index="04" title="Trvání smlouvy" />
+              <div className="grid sm:grid-cols-2 gap-4">
+                <Field label="Typ smlouvy">
+                  <select className={inputClass} name="durationType" value={form.durationType} onChange={set}>
+                    <option value="indefinite">Na dobu neurčitou</option>
+                    <option value="fixed">Na dobu určitou</option>
+                  </select>
+                </Field>
+                {form.durationType === 'fixed'
+                  ? <Field label="Konec smlouvy"><input className={inputClass} name="endDate" value={form.endDate} onChange={set} type="date" /></Field>
+                  : <Field label="Výpovědní doba (měsíce)"><input className={inputClass} name="noticePeriod" value={form.noticePeriod} onChange={set} type="number" /></Field>
+                }
+              </div>
+            </section>
+
+            <section className={cardClass}>
+              <SectionTitle index="05" title="Cena a fakturace" />
+              <div className="grid sm:grid-cols-2 gap-4">
+                <Field label="Model ceny">
+                  <select className={inputClass} name="pricingType" value={form.pricingType} onChange={set}>
+                    <option value="monthly_flat">Měsíční paušál</option>
+                    <option value="hourly">Hodinová sazba</option>
+                    <option value="lump_sum">Pevná cena za projekt</option>
+                  </select>
+                </Field>
+                {form.pricingType === 'hourly' && <Field label="Sazba (Kč/hod.)"><input className={inputClass} name="hourlyRate" value={form.hourlyRate} onChange={set} type="number" placeholder="1500" /></Field>}
+                {form.pricingType === 'monthly_flat' && <Field label="Měsíční paušál (Kč)"><input className={inputClass} name="monthlyFee" value={form.monthlyFee} onChange={set} type="number" placeholder="20000" /></Field>}
+                {form.pricingType === 'lump_sum' && <Field label="Celková cena (Kč)"><input className={inputClass} name="totalPrice" value={form.totalPrice} onChange={set} type="number" placeholder="80000" /></Field>}
+                {form.pricingType === 'monthly_flat' && <Field label="Splatnost (den v měsíci)"><input className={inputClass} name="payDay" value={form.payDay} onChange={set} type="number" /></Field>}
+                <Field label="Splatnost faktur (dní)"><input className={inputClass} name="invoiceDueDays" value={form.invoiceDueDays} onChange={set} type="number" /></Field>
+              </div>
+            </section>
+
+            <section className={cardClass}>
+              <SectionTitle index="06" title="Duševní vlastnictví" />
+              <div className="grid sm:grid-cols-2 gap-4">
+                <Field label="Vlastnictví výstupů">
+                  <select className={inputClass} name="ipOwnership" value={form.ipOwnership} onChange={set}>
+                    <option value="client">Objednatel (výstupy patří klientovi)</option>
+                    <option value="provider">Poskytovatel (licence klientovi)</option>
+                  </select>
+                </Field>
+              </div>
+            </section>
+
+            <section className={cardClass}>
+              <label className={`flex items-start gap-4 cursor-pointer rounded-2xl border p-5 transition ${form.notaryUpsell ? 'border-amber-500/70 bg-amber-500/10' : 'border-slate-700/60 bg-[#111c31]'}`}>
+                <input type="checkbox" name="notaryUpsell" checked={form.notaryUpsell} onChange={set} className="mt-1 h-5 w-5 accent-amber-500" />
+                <div className="flex-1">
+                  <div className="font-bold text-white">Prémiový balíček +299 Kč</div>
+                  <div className="mt-1 text-sm text-slate-400">SLA s pokutami za výpadek, silná doložka mlčenlivosti s pokutou 50 000 Kč, ochrana dat.</div>
+                </div>
+                <div className="text-amber-400 font-bold text-lg">598 Kč</div>
+              </label>
+            </section>
+          </div>
+
+          {/* Sidebar */}
+          <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-24">
+            <div className={cardClass}>
+              <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90 mb-4">Analýza smlouvy</div>
+              <div className="flex items-center gap-4 mb-4">
+                <div className={`text-5xl font-black ${scoreColor}`}>{risk.score}</div>
+                <div><div className={`font-bold ${scoreColor}`}>{risk.label}</div><div className="text-xs text-slate-500">ze 100 bodů</div></div>
+              </div>
+              {risk.warnings.length === 0
+                ? <p className="text-sm text-emerald-400">✓ Smlouva je kompletní.</p>
+                : <ul className="space-y-2">{risk.warnings.map((w, i) => (
+                    <li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-rose-500/10 text-rose-300' : 'bg-amber-500/10 text-amber-300'}`}>
+                      {w.level === 'high' ? '⚠ ' : '▲ '}{w.text}
+                    </li>
+                  ))}</ul>
+              }
+            </div>
+
+            <div className={cardClass}>
+              <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90 mb-4">Shrnutí</div>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between"><span className="text-slate-400">Smlouva o službách</span><span className="text-white font-bold">299 Kč</span></div>
+                {form.notaryUpsell && <div className="flex justify-between"><span className="text-slate-400">Prémiový balíček</span><span className="text-amber-400 font-bold">+299 Kč</span></div>}
+                <div className="border-t border-slate-700 pt-2 flex justify-between font-bold text-lg"><span>Celkem</span><span className="text-amber-400">{form.notaryUpsell ? '598' : '299'} Kč</span></div>
+              </div>
+              <button onClick={handlePayment} disabled={isProcessing || !form.providerName || !form.clientName || !form.serviceDescription}
+                className="mt-5 w-full rounded-2xl bg-amber-500 px-6 py-4 font-bold text-slate-900 text-lg hover:bg-amber-400 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed">
+                {isProcessing ? 'Přesměrování…' : 'Zaplatit a stáhnout PDF →'}
+              </button>
+              <p className="mt-3 text-center text-xs text-slate-500">Platba kartou přes Stripe · PDF ihned</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+}

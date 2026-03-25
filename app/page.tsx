@@ -13,15 +13,23 @@ export const metadata: Metadata = {
   },
 };
 
-type AccentKey = 'lease' | 'car' | 'gift' | 'work' | 'loan' | 'nda';
+type AccentKey = 'lease' | 'car' | 'gift' | 'work' | 'loan' | 'nda' | 'sale' | 'employment' | 'dpp' | 'service' | 'sublease' | 'poa' | 'debt' | 'coop';
 
 const accentMap: Record<AccentKey, string> = {
-  lease:  'from-amber-500/20 to-yellow-500/5',
-  car:    'from-sky-500/20 to-cyan-500/5',
-  gift:   'from-emerald-500/20 to-green-500/5',
-  work:   'from-fuchsia-500/20 to-purple-500/5',
-  loan:   'from-rose-500/20 to-red-500/5',
-  nda:    'from-violet-500/20 to-indigo-500/5',
+  lease:      'from-amber-500/20 to-yellow-500/5',
+  car:        'from-sky-500/20 to-cyan-500/5',
+  gift:       'from-emerald-500/20 to-green-500/5',
+  work:       'from-fuchsia-500/20 to-purple-500/5',
+  loan:       'from-rose-500/20 to-red-500/5',
+  nda:        'from-violet-500/20 to-indigo-500/5',
+  sale:       'from-teal-500/20 to-cyan-500/5',
+  employment: 'from-blue-500/20 to-sky-500/5',
+  dpp:        'from-orange-500/20 to-amber-500/5',
+  service:    'from-pink-500/20 to-rose-500/5',
+  sublease:   'from-yellow-500/20 to-amber-500/5',
+  poa:        'from-slate-500/20 to-gray-500/5',
+  debt:       'from-red-600/20 to-rose-500/5',
+  coop:       'from-lime-500/20 to-green-500/5',
 };
 
 const contracts = [
@@ -83,9 +91,96 @@ const contracts = [
     price: '299 Kč',
     category: 'Byznys',
     accentKey: 'nda' as AccentKey,
-    badge: 'NOVÉ',
     highlight: 'Non-compete a non-solicitation',
     paragraph: '§ 504 OZ + GDPR',
+  },
+  {
+    title: 'KUPNÍ SMLOUVA',
+    description: 'Prodej jakékoli movité věci — elektroniky, nábytku, kola i auta. Záruka, odpovědnost za vady, bezpečné předání.',
+    href: '/kupni',
+    price: '299 Kč',
+    category: 'Obchod',
+    accentKey: 'sale' as AccentKey,
+    badge: 'NOVÉ',
+    highlight: 'Vady, záruka a prohlášení',
+    paragraph: '§ 2079 a násl. OZ',
+  },
+  {
+    title: 'PRACOVNÍ SMLOUVA',
+    description: 'Zaměstnanecká smlouva se všemi zákonnými náležitostmi. Mzda, pracovní doba, zkušební doba, výpovědní doba.',
+    href: '/pracovni',
+    price: '299 Kč',
+    category: 'HR',
+    accentKey: 'employment' as AccentKey,
+    badge: 'NOVÉ',
+    highlight: 'Zákonné náležitosti § 34 ZP',
+    paragraph: '§ 34 zákoníku práce',
+  },
+  {
+    title: 'DOHODA O PROVEDENÍ PRÁCE',
+    description: 'DPP pro brigády a jednorázové úkoly. Max. 300 hod./rok bez odvodů. S IP doložkou pro kreativní práce.',
+    href: '/dpp',
+    price: '299 Kč',
+    category: 'HR',
+    accentKey: 'dpp' as AccentKey,
+    badge: 'NOVÉ',
+    highlight: 'Max. 300 hod./rok bez SP/ZP',
+    paragraph: '§ 75 zákoníku práce',
+  },
+  {
+    title: 'SMLOUVA O POSKYTOVÁNÍ SLUŽEB',
+    description: 'Pro freelancery a agentury. Paušál, hodinová sazba nebo pevná cena. SLA, IP práva, mlčenlivost a sankce.',
+    href: '/sluzby',
+    price: '299 Kč',
+    category: 'Podnikání',
+    accentKey: 'service' as AccentKey,
+    badge: 'NOVÉ',
+    highlight: 'SLA, IP, mlčenlivost',
+    paragraph: '§ 1746 odst. 2 OZ',
+  },
+  {
+    title: 'PODNÁJEMNÍ SMLOUVA',
+    description: 'Legální podnájem bytu se souhlasem pronajímatele. Kauce, pravidla, předávací protokol, ochrana obou stran.',
+    href: '/podnajem',
+    price: '299 Kč',
+    category: 'Bydlení',
+    accentKey: 'sublease' as AccentKey,
+    badge: 'NOVÉ',
+    highlight: 'Souhlas pronajímatele + kauce',
+    paragraph: '§ 2274 a násl. OZ',
+  },
+  {
+    title: 'PLNÁ MOC',
+    description: 'Obecná, ověřená nebo jednorázová plná moc pro nemovitosti, soud, banku nebo jednání za firmu.',
+    href: '/plna-moc',
+    price: '299 Kč',
+    category: 'Obecné',
+    accentKey: 'poa' as AccentKey,
+    badge: 'NOVÉ',
+    highlight: 'Ověřená verze pro úřady',
+    paragraph: '§ 441 OZ',
+  },
+  {
+    title: 'UZNÁNÍ DLUHU',
+    description: 'Obnoví promlčecí lhůtu na 10 let. Splátky, exekuční doložka, smluvní pokuta. Nejsilnější nástroj věřitele.',
+    href: '/uznani-dluhu',
+    price: '299 Kč',
+    category: 'Finance',
+    accentKey: 'debt' as AccentKey,
+    badge: 'NOVÉ',
+    highlight: 'Promlčení 10 let + exekuce',
+    paragraph: '§ 2053 OZ',
+  },
+  {
+    title: 'SMLOUVA O SPOLUPRÁCI',
+    description: 'Spolupráce OSVČ a firem s jasnými pravidly. Podíl na výnosech, IP práva, mlčenlivost, exit klauzule.',
+    href: '/spoluprace',
+    price: '299 Kč',
+    category: 'Podnikání',
+    accentKey: 'coop' as AccentKey,
+    badge: 'NOVÉ',
+    highlight: 'IP, výnosy, zákaz konkurence',
+    paragraph: '§ 1746 odst. 2 OZ',
   },
 ];
 
@@ -173,7 +268,7 @@ export default function Home() {
               className="inline-flex items-center justify-center rounded-2xl bg-amber-500 px-8 py-4 text-lg font-black uppercase tracking-tight text-black shadow-[0_0_40px_rgba(245,158,11,0.28)] transition hover:bg-amber-400">
               Začít generovat
             </Link>
-            <div className="text-sm text-slate-500">6 typů smluv • od 299 Kč • okamžitě online</div>
+            <div className="text-sm text-slate-500">14 typů smluv • od 299 Kč • okamžitě online</div>
           </div>
         </section>
 
@@ -264,7 +359,7 @@ export default function Home() {
 
             <div className="grid gap-8 md:grid-cols-4">
               {[
-                { step: '01', title: 'Vyberete smlouvu', desc: 'Zvolíte dokument podle situace — nájem, auto, darování, dílo, zápůjčka nebo NDA.' },
+                { step: '01', title: 'Vyberete smlouvu', desc: 'Zvolíte z 14 dokumentů podle situace — nájem, práce, podnikání, finance nebo obecné.' },
                 { step: '02', title: 'Vyplníte formulář', desc: 'Systém vás vede krok za krokem a průběžně skládá výsledný dokument s analýzou rizik.' },
                 { step: '03', title: 'Zaplatíte 299 Kč', desc: 'Bezpečná platba kartou přes Stripe. Platba trvá 30 sekund.' },
                 { step: '04', title: 'Stáhnete PDF', desc: 'Finální profesionální smlouva s paragrafy OZ je okamžitě ke stažení.' },
@@ -364,7 +459,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="grid gap-8 sm:grid-cols-3">
+            <div className="grid gap-8 sm:grid-cols-4">
               <div>
                 <div className="text-xs font-black uppercase tracking-[0.18em] text-slate-500">Navigace</div>
                 <div className="mt-3 flex flex-col gap-2 text-sm text-slate-400">
@@ -372,25 +467,39 @@ export default function Home() {
                   <Link href="#jak-to-funguje" className="hover:text-white transition">Jak to funguje</Link>
                   <Link href="#faq" className="hover:text-white transition">FAQ</Link>
                   <Link href="/zakaznicka-zona" className="hover:text-white transition">Moje dokumenty</Link>
+                  <Link href="/kontakt" className="hover:text-white transition">Kontakt</Link>
                 </div>
               </div>
 
               <div>
-                <div className="text-xs font-black uppercase tracking-[0.18em] text-slate-500">Dokumenty</div>
+                <div className="text-xs font-black uppercase tracking-[0.18em] text-slate-500">Bydlení & Majetek</div>
                 <div className="mt-3 flex flex-col gap-2 text-sm text-slate-400">
                   <Link href="/najem" className="hover:text-white transition">Nájemní smlouva</Link>
+                  <Link href="/podnajem" className="hover:text-white transition">Podnájemní smlouva</Link>
                   <Link href="/auto" className="hover:text-white transition">Kupní smlouva (auto)</Link>
+                  <Link href="/kupni" className="hover:text-white transition">Kupní smlouva</Link>
                   <Link href="/darovaci" className="hover:text-white transition">Darovací smlouva</Link>
-                  <Link href="/smlouva-o-dilo" className="hover:text-white transition">Smlouva o dílo</Link>
-                  <Link href="/pujcka" className="hover:text-white transition">Smlouva o zápůjčce</Link>
-                  <Link href="/nda" className="hover:text-white transition">NDA smlouva</Link>
                 </div>
               </div>
 
               <div>
-                <div className="text-xs font-black uppercase tracking-[0.18em] text-slate-500">Informace</div>
+                <div className="text-xs font-black uppercase tracking-[0.18em] text-slate-500">Práce & Podnikání</div>
                 <div className="mt-3 flex flex-col gap-2 text-sm text-slate-400">
-                  <Link href="/kontakt" className="hover:text-white transition">Kontakt</Link>
+                  <Link href="/pracovni" className="hover:text-white transition">Pracovní smlouva</Link>
+                  <Link href="/dpp" className="hover:text-white transition">DPP</Link>
+                  <Link href="/sluzby" className="hover:text-white transition">Smlouva o službách</Link>
+                  <Link href="/smlouva-o-dilo" className="hover:text-white transition">Smlouva o dílo</Link>
+                  <Link href="/spoluprace" className="hover:text-white transition">Smlouva o spolupráci</Link>
+                </div>
+              </div>
+
+              <div>
+                <div className="text-xs font-black uppercase tracking-[0.18em] text-slate-500">Finance & Ostatní</div>
+                <div className="mt-3 flex flex-col gap-2 text-sm text-slate-400">
+                  <Link href="/pujcka" className="hover:text-white transition">Zápůjčka</Link>
+                  <Link href="/uznani-dluhu" className="hover:text-white transition">Uznání dluhu</Link>
+                  <Link href="/nda" className="hover:text-white transition">NDA smlouva</Link>
+                  <Link href="/plna-moc" className="hover:text-white transition">Plná moc</Link>
                   <Link href="/obchodni-podminky" className="hover:text-white transition">Obchodní podmínky</Link>
                   <Link href="/gdpr" className="hover:text-white transition">Ochrana osobních údajů</Link>
                 </div>

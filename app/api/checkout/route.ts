@@ -8,7 +8,7 @@ import { stripe } from '@/lib/stripe';
 export const runtime = 'nodejs';
 
 const checkoutSchema = z.object({
-  contractType: z.enum(['lease', 'car_sale', 'gift', 'work_contract', 'loan', 'nda']),
+  contractType: z.enum(['lease', 'car_sale', 'gift', 'work_contract', 'loan', 'nda', 'general_sale', 'employment', 'dpp', 'service', 'sublease', 'power_of_attorney', 'debt_acknowledgment', 'cooperation']),
   notaryUpsell: z.boolean().optional().default(false),
   payload: z.record(z.string(), z.unknown()),
   email: z.string().email().optional(),
@@ -21,6 +21,14 @@ const CONTRACT_TITLES: Record<ContractType, string> = {
   lease: 'Nájemní smlouva (2026)',
   loan: 'Smlouva o zápůjčce (2026)',
   nda: 'Smlouva o mlčenlivosti – NDA (2026)',
+  general_sale: 'Kupní smlouva (2026)',
+  employment: 'Pracovní smlouva (2026)',
+  dpp: 'Dohoda o provedení práce – DPP (2026)',
+  service: 'Smlouva o poskytování služeb (2026)',
+  sublease: 'Podnájemní smlouva (2026)',
+  power_of_attorney: 'Plná moc (2026)',
+  debt_acknowledgment: 'Uznání dluhu (2026)',
+  cooperation: 'Smlouva o spolupráci (2026)',
 };
 
 const CONTRACT_CANCEL_URLS: Record<ContractType, string> = {
@@ -30,6 +38,14 @@ const CONTRACT_CANCEL_URLS: Record<ContractType, string> = {
   lease: '/najem',
   loan: '/pujcka',
   nda: '/nda',
+  general_sale: '/kupni',
+  employment: '/pracovni',
+  dpp: '/dpp',
+  service: '/sluzby',
+  sublease: '/podnajem',
+  power_of_attorney: '/plna-moc',
+  debt_acknowledgment: '/uznani-dluhu',
+  cooperation: '/spoluprace',
 };
 
 function getPrice(contractType: ContractType, notaryUpsell: boolean) {
