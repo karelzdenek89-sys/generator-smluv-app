@@ -50,8 +50,9 @@ const CONTRACT_CANCEL_URLS: Record<ContractType, string> = {
 
 function getPrice(contractType: ContractType, notaryUpsell: boolean) {
   const basePrice = 299;
-  // Prémiový balíček: extra klauzule, detailní zajišťovací ustanovení, doporučení k notáři
-  const premiumPrice = 299; // celkem 598 Kč
+  // Nájemní smlouva má prémiový balíček "Exekuční ochrana" za 490 Kč (celkem 789 Kč)
+  // Ostatní smlouvy mají prémiový balíček za 299 Kč (celkem 598 Kč)
+  const premiumPrice = contractType === 'lease' ? 490 : 299;
 
   return {
     amountCzk: basePrice + (notaryUpsell ? premiumPrice : 0),

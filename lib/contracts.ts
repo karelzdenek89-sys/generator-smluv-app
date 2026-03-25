@@ -361,6 +361,26 @@ function buildCarContractSections(d: StoredContractData): ContractSection[] {
         `Počet předaných klíčů: ${asText(d.keysCount, '__________')}.`,
       ],
     },
+    {
+      title: 'VII. SMLUVNÍ POKUTY A ODPOVĚDNOST ZA ZATAJENÉ VADY',
+      body: [
+        'Prodávající odpovídá kupujícímu za vady, které existovaly v době přechodu nebezpečí škody na kupujícího, i když se vada projeví až poté (§ 2161 a násl. OZ).',
+        `Zatají-li prodávající vědomě vadu, na niž neupozornil, je povinen zaplatit kupujícímu smluvní pokutu ve výši ${formatAmount(d.hiddenDefectPenalty || 30000)} Kč. Zaplacením pokuty není dotčen nárok na náhradu škody ani právo z vad.`,
+        `Smluvní pokuta za prodlení kupujícího s úhradou kupní ceny: ${asText(d.buyerLatePenalty, '0,05')} % z dlužné částky za každý den prodlení.`,
+        `Smluvní pokuta za prodlení prodávajícího s předáním vozidla po sjednané lhůtě: ${formatAmount(d.sellerLatePenalty || 500)} Kč za každý den prodlení.`,
+        'Prodávající prohlašuje, že vozidlo není předmětem exekuce, zástavního práva, ani jiného omezení dispozice, o němž by nevěděl. Za pravdivost tohoto prohlášení nese plnou odpovědnost.',
+      ],
+    },
+    {
+      title: 'VIII. PŘEPIS VOZIDLA, POJISTNÉ UDÁLOSTI A PROHLÁŠENÍ O BEZDLUHOVOSTI',
+      body: [
+        'Smluvní strany jsou povinny společně, nejpozději do 10 pracovních dnů od podpisu smlouvy, dostavit se na příslušný obecní úřad obce s rozšířenou působností a provést přepis vlastnictví vozidla v registru silničních vozidel (§ 8 odst. 2 zákona č. 56/2001 Sb.).',
+        'Kupující je povinen od okamžiku přechodu vlastnictví sjednat na vozidlo nové povinné ručení (POV). Prodávající zajistí ukončení stávajícího POV ke dni přechodu vlastnictví.',
+        'Prodávající prohlašuje, že na vozidle nevázne žádný dosud nevypořádaný závazek vůči leasingové společnosti, bance ani jiné třetí osobě vyplývající z dřívějšího financování vozidla.',
+        'Prodávající dále prohlašuje, že vozidlo nebylo ke dni podpisu smlouvy přihlášeno k účasti v pojistné události, jejíž likvidace by dosud nebyla ukončena.',
+        `V případě nepravdivosti výše uvedených prohlášení je prodávající povinen uhradit kupujícímu veškerou vzniklou škodu a smluvní pokutu ve výši ${formatAmount(d.declarationPenalty || 50000)} Kč.`,
+      ],
+    },
   ] : [];
 
   const sections: ContractSection[] = [
@@ -431,7 +451,7 @@ function buildCarContractSections(d: StoredContractData): ContractSection[] {
     },
     ...premiumContent,
     {
-      title: `${d.notaryUpsell ? 'VII' : 'VI'}. ZÁVĚREČNÁ USTANOVENÍ`,
+      title: `${d.notaryUpsell ? 'IX' : 'VI'}. ZÁVĚREČNÁ USTANOVENÍ`,
       body: [
         'Tato smlouva se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., OZ.',
         'Případné spory budou řešeny přednostně smírnou cestou; jinak věcně a místně příslušným soudem.',
@@ -442,7 +462,7 @@ function buildCarContractSections(d: StoredContractData): ContractSection[] {
   ];
 
   sections.push({
-    title: `${d.notaryUpsell ? 'VIII' : 'VII'}. PODPISY`,
+    title: `${d.notaryUpsell ? 'X' : 'VII'}. PODPISY`,
     body: [],
   });
 
@@ -483,11 +503,44 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
       ],
     },
     {
-      title: 'XI. NOTÁŘSKÝ ZÁPIS SE SVOLENÍM K VYKONATELNOSTI',
+      title: 'XI. SMLUVNÍ POKUTY A SANKCE',
       body: [
-        'V rámci prémiového balíčku se pronajímateli doporučuje uzavřít s nájemcem notářský zápis se svolením k přímé vykonatelnosti (§ 71b notářského řádu) týkající se povinnosti nájemce vyklidit byt a uhradit dlužné nájemné po skončení nájmu.',
-        'Notářský zápis výrazně zjednodušuje a urychluje vymáhání práv pronajímatele bez nutnosti podávat žalobu.',
-        'Doporučujeme sjednat notářský zápis ve lhůtě 30 dnů od podpisu nájemní smlouvy.',
+        'Smluvní strany sjednávají následující smluvní pokuty (§ 2048 a násl. OZ):',
+        `a) Prodlení s platbou nájemného nebo záloh na služby: úrok z prodlení ve výši 0,1 % z dlužné částky za každý den prodlení, a to ode dne splatnosti do dne úhrady.`,
+        `b) Neoprávněný podnájem nebo přenechání bytu třetí osobě bez souhlasu pronajímatele: jednorázová smluvní pokuta ve výši 25 000 Kč splatná do 7 dnů od výzvy pronajímatele.`,
+        `c) Neoprávněné stavební úpravy nebo zásahy do bytu bez písemného souhlasu pronajímatele: smluvní pokuta ve výši 50 000 Kč a povinnost uvést byt do původního stavu na náklady nájemce.`,
+        `d) Prodlení s vyklizením bytu po skončení nájmu: smluvní pokuta ve výši dvojnásobku denního nájemného za každý den prodlení, a to nad rámec náhrady škody.`,
+        `e) Porušení zákazu kouření nebo chovu zvířat (bylo-li sjednáno): smluvní pokuta 5 000 Kč za každý prokázaný případ.`,
+        'Zaplacením smluvní pokuty nezaniká povinnost uhradit dlužné plnění ani právo na náhradu škody přesahující smluvní pokutu (§ 2050 OZ).',
+      ],
+    },
+    {
+      title: 'XII. EXEKUČNÍ OCHRANA PRONAJÍMATELE',
+      body: [
+        'Nájemce výslovně souhlasí s tím, aby pohledávky pronajímatele vzniklé z tohoto nájemního vztahu — zejména dlužné nájemné, zálohy na služby, smluvní pokuty a náhrada škody — byly zajištěny notářským zápisem se svolením k přímé vykonatelnosti podle § 71b zákona č. 358/1992 Sb., notářský řád.',
+        'Nájemce se zavazuje uzavřít takový notářský zápis nejpozději do 30 dnů od podpisu této smlouvy, a to na výzvu pronajímatele. Odmítnutí uzavřít notářský zápis se považuje za podstatné porušení smlouvy opravňující pronajímatele k výpovědi bez výpovědní doby dle § 2291 OZ.',
+        'Pro případ prodlení nájemce s úhradou nájemného nebo zálohy na služby po dobu delší než 30 dnů se nájemce zavazuje, že pronajímatel je oprávněn přistoupit k zajištění pohledávky ze složené jistoty (kauce) bez předchozí soudní výzvy, a nájemce je povinen jistotu do 15 dnů doplnit na původní výši.',
+        `Pro případ, že nájemce nevyklidí byt po skončení nájmu ve lhůtě stanovené zákonem nebo dohodou, výslovně souhlasí s tím, že pronajímatel je oprávněn obrátit se s návrhem na nařízení exekuce přímo na soudního exekutora na základě notářského zápisu se svolením k vykonatelnosti, a to bez nutnosti předchozího soudního řízení (§ 40 odst. 1 písm. d) exekučního řádu, zákon č. 120/2001 Sb.).`,
+        'Nájemce prohlašuje, že si je vědom důsledků tohoto ustanovení, byl poučen o svých právech a podepisuje tuto smlouvu svobodně, vážně a bez nátlaku.',
+      ],
+    },
+    {
+      title: 'XIII. ZAJIŠŤOVACÍ MECHANISMY A ODPOVĚDNOST ZA ŠKODU',
+      body: [
+        'Nájemce odpovídá pronajímateli za veškerou škodu způsobenou na předmětu nájmu, na zařízení bytu, na společných částech domu i na majetku třetích osob, a to bez ohledu na zavinění (objektivní odpovědnost za škodu způsobenou užíváním bytu).',
+        'Nad rámec zákonné odpovědnosti se nájemce zavazuje, že na vlastní náklady sjedná a po celou dobu trvání nájmu udržuje pojištění domácnosti zahrnující: (a) odpovědnost za škodu způsobenou třetím osobám při užívání bytu, a to s pojistným limitem min. 500 000 Kč, (b) pojištění věcí v bytě. Doklad o pojištění předloží nájemce na výzvu pronajímatele do 7 dnů.',
+        'Smluvní strany se dohodly, že při ukončení nájmu pronajímatel provede soupis škod přesahujících obvyklé opotřebení a předloží nájemci písemný přehled s vyčíslenou náhradou. Nájemce je povinen tuto náhradu uhradit do 14 dnů od doručení přehledu, jinak je pronajímatel oprávněn provést zápočet vůči složené jistotě.',
+        `Pronajímatel si vyhrazuje právo nechat provést na náklady nájemce odborné znalecké ocenění škod přesahujících 10 000 Kč. Náklady na znalecký posudek nese nájemce, pokud výsledná škoda přesáhne 70 % znalcem odhadnuté částky.`,
+      ],
+    },
+    {
+      title: 'XIV. NOTÁŘSKÝ ZÁPIS SE SVOLENÍM K VYKONATELNOSTI — POSTUP',
+      body: [
+        'Smluvní strany se výslovně dohodly, že bezprostředně po podpisu této smlouvy (nejpozději do 30 dnů) společně navštíví notáře za účelem sepsání notářského zápisu se svolením nájemce k přímé vykonatelnosti (§ 71b notářského řádu).',
+        'Notářský zápis bude obsahovat zejména: (a) identifikaci smluvních stran a předmětu nájmu, (b) výši nájemného a zálohy, (c) závazek nájemce vyklidit byt ke dni skončení nájmu, (d) souhlas nájemce s přímou vykonatelností pro případ nesplnění výše uvedených povinností.',
+        'Náklady notářského zápisu se svolením k vykonatelnosti nese pronajímatel.',
+        'Odmítne-li nájemce notářský zápis podepsat, je pronajímatel oprávněn od této smlouvy odstoupit nebo podat výpověď z nájmu dle § 2291 OZ bez výpovědní doby, a to písemným oznámením doručeným nájemci.',
+        'Notářský zápis se svolením k vykonatelnosti je nejsilnějším nástrojem ochrany pronajímatele v ČR — umožňuje vymáhat pohledávky a zajistit vyklizení bytu bez zdlouhavého soudního řízení (průměrně 3–6 měsíců oproti standardním 1–3 letům).',
       ],
     },
   ] : [];
@@ -615,7 +668,7 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
     },
     ...premiumContent,
     {
-      title: `${d.notaryUpsell ? 'XII' : 'X'}. ZÁVĚREČNÁ USTANOVENÍ`,
+      title: `${d.notaryUpsell ? 'XV' : 'X'}. ZÁVĚREČNÁ USTANOVENÍ`,
       body: [
         'Tato smlouva se řídí právním řádem České republiky.',
         'Případné spory budou řešeny přednostně smírnou cestou; jinak věcně a místně příslušným soudem.',
@@ -627,7 +680,7 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
   ];
 
   sections.push({
-    title: `${d.notaryUpsell ? 'XIII' : 'XI'}. PODPISY`,
+    title: `${d.notaryUpsell ? 'XVI' : 'XI'}. PODPISY`,
     body: [],
   });
 
@@ -1145,15 +1198,27 @@ function buildDppContractSections(d: StoredContractData): ContractSection[] {
     {
       title: 'VI. MLČENLIVOST A OCHRANA INFORMACÍ',
       body: [
-        'Zaměstnanec je povinen zachovávat mlčenlivost o všech skutečnostech, s nimiž se v rámci plnění dohody seznámí a které jsou označeny jako důvěrné nebo jejichž povaha jejich důvěrnost zakládá.',
-        'Tato povinnost trvá i po skončení dohody, a to po dobu 2 let.',
+        'Zaměstnanec je povinen zachovávat mlčenlivost o všech skutečnostech, s nimiž se v rámci plnění dohody seznámí a které jsou označeny jako důvěrné nebo jejichž povaha jejich důvěrnost zakládá (obchodní strategie, ceny, zákaznické databáze, interní procesy, osobní údaje zaměstnanců a zákazníků).',
+        'Tato povinnost mlčenlivosti trvá i po skončení dohody, a to po dobu 2 let od jejího skončení.',
+        `Za každý prokázaný případ porušení povinnosti mlčenlivosti je zaměstnanec povinen zaplatit zaměstnavateli smluvní pokutu ve výši ${formatAmount(d.ndaPenalty || 50000)} Kč. Zaplacením smluvní pokuty není dotčen nárok zaměstnavatele na náhradu skutečně vzniklé škody.`,
+        'Zaměstnanec je povinen po skončení dohody vrátit veškeré dokumenty, nosiče dat a jiné materiály obsahující důvěrné informace a vymazat důvěrné informace ze svých soukromých zařízení.',
       ],
     },
     {
       title: 'VII. DUŠEVNÍ VLASTNICTVÍ',
       body: [
-        'Výsledky práce (díla, výtvory, software, texty, grafika apod.) vytvořené zaměstnancem v rámci plnění dohody jsou zaměstnaneckými díly ve smyslu § 58 zákona č. 121/2000 Sb., autorský zákon. Zaměstnavatel vykonává majetková práva k těmto dílům.',
-        'Zaměstnanec se vzdává práva na změnu díla, na nedotknutelnost díla a práva na autorský dohled, pokud to není v rozporu s dobrými mravy.',
+        'Výsledky práce (díla, výtvory, software, texty, grafika, databáze apod.) vytvořené zaměstnancem v rámci plnění dohody jsou zaměstnaneckými díly ve smyslu § 58 zákona č. 121/2000 Sb., autorský zákon. Zaměstnavatel vykonává veškerá majetková autorská práva k těmto dílům ode dne jejich vzniku.',
+        'Zaměstnanec se vzdává práva na změnu díla, na nedotknutelnost díla a práva na autorský dohled v rozsahu, který není v rozporu s dobrými mravy.',
+        'Výše uvedené platí i pro zaměstnancem vyvinutý software, algoritmy a technická řešení; zaměstnanec je povinen zdrojové kódy, dokumentaci a know-how předat zaměstnavateli nejpozději ke dni skončení dohody.',
+      ],
+    },
+    {
+      title: 'VIII. SMLUVNÍ POKUTA ZA PORUŠENÍ DOHODY',
+      body: [
+        `Nesplní-li zaměstnanec sjednaný pracovní úkol řádně a včas bez závažného důvodu, je povinen zaplatit zaměstnavateli smluvní pokutu ve výši ${formatAmount(d.taskFailPenalty || 5000)} Kč.`,
+        `Prodlení zaměstnance s předáním výsledků práce o více než 7 kalendářních dnů: smluvní pokuta ve výši ${formatAmount(d.delayPenaltyPerDay || 500)} Kč za každý den prodlení.`,
+        'Zaplacením smluvní pokuty není dotčen nárok zaměstnavatele na náhradu škody, která mu pozdním nebo vadným plněním prokazatelně vznikla.',
+        'Smluvní pokuta je splatná do 14 dnů od písemné výzvy zaměstnavatele k jejímu zaplacení.',
       ],
     },
   ] : [];
@@ -1211,7 +1276,7 @@ function buildDppContractSections(d: StoredContractData): ContractSection[] {
     },
     ...premiumContent,
     {
-      title: `${d.notaryUpsell ? 'VIII' : 'VI'}. ZÁVĚREČNÁ USTANOVENÍ`,
+      title: `${d.notaryUpsell ? 'IX' : 'VI'}. ZÁVĚREČNÁ USTANOVENÍ`,
       body: [
         'Dohoda se řídí zákonem č. 262/2006 Sb., zákoník práce.',
         'Dohoda je vyhotovena ve dvou stejnopisech; každá strana obdrží jedno (§ 77 odst. 1 ZP).',
@@ -1220,7 +1285,7 @@ function buildDppContractSections(d: StoredContractData): ContractSection[] {
     },
   ];
 
-  sections.push({ title: `${d.notaryUpsell ? 'IX' : 'VII'}. PODPISY`, body: [] });
+  sections.push({ title: `${d.notaryUpsell ? 'X' : 'VII'}. PODPISY`, body: [] });
   return sections;
 }
 
@@ -1358,11 +1423,31 @@ function buildSubleaseContractSections(d: StoredContractData): ContractSection[]
 
   const premiumContent: ContractSection[] = d.notaryUpsell ? [
     {
-      title: 'IX. ZVLÁŠTNÍ SMLUVNÍ UJEDNÁNÍ',
+      title: 'IX. ZVLÁŠTNÍ SMLUVNÍ UJEDNÁNÍ A VZTAH K HLAVNÍMU NÁJMU',
       body: [
-        `Podnájemce bere na vědomí, že nájemce (jeho smluvní protistrana) je vůči vlastníkovi nemovitosti vázán nájemní smlouvou ze dne ${asText(d.mainLeaseDate, '__________')}. V případě zániku hlavního nájmu zaniká i podnájem.`,
-        'Podnájemce se zavazuje neporušovat podmínky hlavní nájemní smlouvy, se kterou byl seznámen.',
-        `Smluvní pokuta za porušení zákazu podnájmu či podmínek hlavní smlouvy: ${formatAmount(d.breachPenalty || 50000)} Kč.`,
+        `Podnájemce bere na vědomí, že nájemce (jeho smluvní protistrana) je vůči vlastníkovi nemovitosti vázán nájemní smlouvou ze dne ${asText(d.mainLeaseDate, '__________')}. V případě zániku hlavního nájmu zaniká i podnájem (§ 2277 OZ).`,
+        'Podnájemce se zavazuje neporušovat podmínky hlavní nájemní smlouvy, se kterou byl před podpisem této smlouvy řádně seznámen a jejíž relevantní části mu byly předány.',
+        'Nájemce je povinen neprodleně informovat podnájemce o jakékoli změně hlavní nájemní smlouvy, která by mohla mít vliv na práva a povinnosti podnájemce.',
+        'Podnájemce není oprávněn dát podnajatý prostor do dalšího podnájmu třetí osobě bez předchozího písemného souhlasu nájemce i pronajímatele.',
+        `Smluvní pokuta za neoprávněné dalšípodnajímání nebo jiné porušení podmínek hlavní smlouvy: ${formatAmount(d.breachPenalty || 50000)} Kč.`,
+      ],
+    },
+    {
+      title: 'X. SMLUVNÍ POKUTY A SANKCE',
+      body: [
+        `Prodlení podnájemce s úhradou podnájemného: smluvní pokuta ve výši 0,1 % z dlužné částky za každý den prodlení (min. ${formatAmount(d.minLatePenalty || 200)} Kč/den).`,
+        `Prodlení podnájemce s vyklizením po skončení podnájmu: smluvní pokuta ve výši ${formatAmount((Number(d.rentAmount) || 0) > 0 ? Math.round(Number(d.rentAmount) * 2 / 30) : 500)} Kč za každý den prodlení.`,
+        `Neoprávněná změna nebo poškození prostor bez souhlasu nájemce: smluvní pokuta ${formatAmount(d.damagePenalty || 10000)} Kč + náhrada skutečné škody.`,
+        'Zaplacením smluvní pokuty není dotčen nárok na náhradu vzniklé škody v plné výši.',
+        'Nájemce je oprávněn prohlásit smluvní pokutu za okamžitě splatnou a rovněž od smlouvy okamžitě odstoupit, prodlí-li podnájemce s úhradou déle než 30 dnů nebo poruší-li závažně podmínky hlavní nájemní smlouvy.',
+      ],
+    },
+    {
+      title: 'XI. DORUČOVÁNÍ PÍSEMNOSTÍ',
+      body: [
+        'Veškeré písemnosti (výpovědi, oznámení, upomínky, faktury) se doručují na adresy smluvních stran uvedené v této smlouvě, nebo na e-mailové adresy, pokud je strana sdělila.',
+        'Písemnost zaslaná doporučeným dopisem se považuje za doručenou třetím pracovním dnem po odeslání, i když ji adresát nepřevzal.',
+        'Změnu doručovací adresy je strana povinna oznámit druhé straně písemně bez zbytečného odkladu; do doby doručení oznámení platí původní adresa.',
       ],
     },
   ] : [];
@@ -1452,7 +1537,7 @@ function buildSubleaseContractSections(d: StoredContractData): ContractSection[]
     },
     ...premiumContent,
     {
-      title: `${d.notaryUpsell ? 'X' : 'IX'}. ZÁVĚREČNÁ USTANOVENÍ`,
+      title: `${d.notaryUpsell ? 'XII' : 'IX'}. ZÁVĚREČNÁ USTANOVENÍ`,
       body: [
         'Smlouva se řídí zákonem č. 89/2012 Sb., OZ.',
         'Smlouva je vyhotovena ve dvou stejnopisech.',
@@ -1461,7 +1546,7 @@ function buildSubleaseContractSections(d: StoredContractData): ContractSection[]
     },
   ];
 
-  sections.push({ title: `${d.notaryUpsell ? 'XI' : 'X'}. PODPISY`, body: [] });
+  sections.push({ title: `${d.notaryUpsell ? 'XIII' : 'X'}. PODPISY`, body: [] });
   return sections;
 }
 
@@ -1543,14 +1628,34 @@ function buildPowerOfAttorneyContractSections(d: StoredContractData): ContractSe
         'a) uděluje tuto plnou moc svobodně, vážně a bez donucení,',
         'b) je plně způsobilý k právnímu jednání,',
         'c) si je vědom rozsahu udělených oprávnění a jejich právních důsledků.',
-        d.notaryUpsell ? 'Pravost podpisu zmocnitele je ověřena notářem/Czech Pointem (ověřená plná moc).' : '',
+        d.notaryUpsell ? 'Pravost podpisu zmocnitele je ověřena notářem/Czech Pointem dle § 74 odst. 1 zákona č. 358/1992 Sb., notářský řád. Ověřená plná moc je uznávána všemi orgány veřejné moci, finančními institucemi a třetími stranami.' : '',
       ].filter(Boolean) as string[],
     },
-    {
-      title: 'VI. PODPISY',
-      body: [],
-    },
   ];
+
+  const premiumContent: ContractSection[] = d.notaryUpsell ? [
+    {
+      title: 'VI. ÚŘEDNÍ OVĚŘENÍ PODPISU A PRÁVNÍ ÚČINKY VŮčI TŘETÍM STRANÁM',
+      body: [
+        'Tato plná moc je opatřena úředně ověřeným podpisem zmocnitele (notářem nebo Czech Point / matrikou). Ověření podpisu je povinné zejména pro: právní jednání týkající se nemovitostí zapisovaných do katastru nemovitostí, zastupování v řízení před soudy a orgány státní správy, nakládání s bankovními účty a finanční aktiva třetích stran.',
+        'Ověřená plná moc je platná i vůči osobám a institucím, které nebyly přítomny jejímu udělení, a nelze ji odmítnout jako nedostatečnou, pokud splňuje zákonem stanovené náležitosti.',
+        'Zmocnitel nese plnou odpovědnost za jednání zmocněnce učiněná v mezích udělené plné moci. Překročí-li zmocněnec rozsah zmocnění, je tento přesah závazný pouze tehdy, pokud jej zmocnitel dodatečně schválí (§ 440 OZ).',
+        'Plná moc je sepsána ve dvou vyhotoveních: jedno obdrží zmocněnec jako průkazní listinu, druhé si ponechá zmocnitel.',
+      ],
+    },
+    {
+      title: 'VII. ODPOVĚDNOST ZMOCNĚNCE A POVINNOST INFORMOVAT',
+      body: [
+        'Zmocněnec je povinen jednat s péčí řádného hospodáře, v nejlepším zájmu zmocnitele a v souladu s jeho pokyny.',
+        'Zmocněnec je povinen zmocnitele neprodleně informovat o každém právním jednání, které jménem zmocnitele učinil, a předat mu veškerou dokumentaci, korespondenci a výnosy.',
+        'Zmocněnec nesmí jménem zmocnitele uzavírat smlouvy nebo přijímat závazky přesahující rozsah udělené plné moci, ani převádět, zastavovat nebo jinak zatěžovat majetek zmocnitele nad rámec výslovného zmocnění.',
+        `Za škodu způsobenou překročením rozsahu zmocnění nebo nedbalým výkonem plné moci odpovídá zmocněnec zmocniteli v plné výši. Smluvní pokuta za vědomé překročení rozsahu zmocnění: ${formatAmount(d.agentPenalty || 50000)} Kč.`,
+      ],
+    },
+  ] : [];
+
+  sections.push(...premiumContent);
+  sections.push({ title: `${d.notaryUpsell ? 'VIII' : 'VI'}. PODPISY`, body: [] });
 
   return sections;
 }
