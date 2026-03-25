@@ -183,8 +183,16 @@ export default function UznanidluhuPage() {
                 {form.notaryUpsell && <div className="flex justify-between"><span className="text-slate-400">Exekuční doložka</span><span className="text-amber-400 font-bold">+299 Kč</span></div>}
                 <div className="border-t border-slate-700 pt-2 flex justify-between font-bold text-lg"><span>Celkem</span><span className="text-amber-400">{form.notaryUpsell ? '598' : '299'} Kč</span></div>
               </div>
+              {(!form.creditorName || !form.debtorName || !form.debtAmount) && !isProcessing && (
+                <div className="mt-4 rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-3 text-xs text-rose-300 space-y-1">
+                  <div className="font-semibold mb-1">Před platbou vyplňte:</div>
+                  {!form.creditorName && <div>• Jméno věřitele</div>}
+                  {!form.debtorName && <div>• Jméno dlužníka</div>}
+                  {!form.debtAmount && <div>• Výše dluhu</div>}
+                </div>
+              )}
               <button onClick={handlePayment} disabled={isProcessing || !form.creditorName || !form.debtorName || !form.debtAmount}
-                className="mt-5 w-full rounded-2xl bg-amber-500 px-6 py-4 font-bold text-slate-900 text-lg hover:bg-amber-400 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed">
+                className="mt-4 w-full rounded-2xl bg-amber-500 px-6 py-4 font-bold text-slate-900 text-lg hover:bg-amber-400 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed">
                 {isProcessing ? 'Přesměrování…' : 'Zaplatit a stáhnout PDF →'}
               </button>
               <p className="mt-3 text-center text-xs text-slate-500">Platba kartou přes Stripe · PDF ihned</p>
