@@ -5,10 +5,13 @@ import { stripe } from '@/lib/stripe';
 
 export const runtime = 'nodejs';
 
+const TTL_SECONDS = 60 * 60 * 24 * 7; // 7 dní po zaplacení
+
 export async function POST(req: Request) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
   if (!webhookSecret) {
+    console.error('STRIPE_WEBHOOK_SECRET není nastaveno!');
     return NextResponse.json(
       { error: 'Missing STRIPE_WEBHOOK_SECRET.' },
       { status: 500 },
@@ -50,9 +53,24 @@ export async function POST(req: Request) {
               paidAt: new Date().toISOString(),
               stripeSessionId: session.id,
               paymentStatus: session.payment_status,
+              customerEmail: session.customer_email || (existing.email as string) || null,
             },
-            { ex: 60 * 60 * 24 },
+            { ex: TTL_SECONDS },
           );
+
+          // Volitelné: odeslat e-mail zákazníkovi přes Resend
+          // Pokud je nastaveno RESEND_API_KEY, odešleme e-mail
+          const resendKey = process.env.RESEND_API_KEY;
+          const customerEmail = session.customer_email || (existing.email as string);
+          if (resendKey && customerEmail) {
+            await sendDownloadEmail(
+              resendKey,
+              customerEmail,
+              session.id,
+              session.metadata?.contractType || 'dokument',
+              process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz',
+            ).catch((err) => console.error('E-mail error:', err));
+          }
         }
       }
     }
@@ -65,4 +83,69 @@ export async function POST(req: Request) {
       { status: 400 },
     );
   }
+}
+
+async function sendDownloadEmail(
+  apiKey: string,
+  to: string,
+  sessionId: string,
+  contractType: string,
+  baseUrl: string,
+): Promise<void> {
+  const contractNames: Record<string, string> = {
+    lease: 'Nájemní smlouva',
+    car_sale: 'Kupní smlouva na vozidlo',
+    gift: 'Darovací smlouva',
+    work_contract: 'Smlouva o dílo',
+    loan: 'Smlouva o zápůjčce',
+    nda: 'Smlouva o mlčenlivosti (NDA)',
+  };
+
+  const contractName = contractNames[contractType] || 'Právní dokument';
+  const downloadUrl = `${baseUrl}/success?session_id=${sessionId}`;
+
+  await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: 'SmlouvaHned <dokumenty@smlouvahned.cz>',
+      to: [to],
+      subject: `✅ Váš dokument je připraven ke stažení — ${contractName}`,
+      html: `
+        <!DOCTYPE html>
+        <html lang="cs">
+        <head><meta charset="UTF-8"><title>Váš dokument SmlouvaHned</title></head>
+        <body style="background:#05080f;font-family:Arial,sans-serif;color:#e2e8f0;padding:40px 20px;margin:0;">
+          <div style="max-width:580px;margin:0 auto;background:#0c1426;border-radius:24px;border:1px solid #1e2940;padding:40px;">
+            <div style="text-align:center;margin-bottom:32px;">
+              <div style="display:inline-block;background:#f59e0b;color:#000;font-weight:900;font-size:18px;padding:10px 18px;border-radius:12px;letter-spacing:-0.5px;">
+                SmlouvaHned
+              </div>
+            </div>
+            <h1 style="color:#fff;font-size:26px;font-weight:900;margin:0 0 12px;text-align:center;">
+              Vaše platba byla přijata ✓
+            </h1>
+            <p style="color:#94a3b8;font-size:15px;text-align:center;margin-bottom:32px;">
+              ${contractName} je připravena ke stažení.
+            </p>
+            <a href="${downloadUrl}"
+               style="display:block;text-align:center;background:linear-gradient(135deg,#f59e0b,#eab308);color:#000;font-weight:900;font-size:18px;padding:18px 32px;border-radius:16px;text-decoration:none;margin-bottom:24px;letter-spacing:-0.3px;">
+              STÁHNOUT PDF DOKUMENT
+            </a>
+            <p style="color:#64748b;font-size:12px;text-align:center;margin:0;">
+              Odkaz ke stažení je platný 7 dní od zaplacení.<br>
+              V případě dotazů nás kontaktujte na <a href="mailto:info@smlouvahned.cz" style="color:#f59e0b;">info@smlouvahned.cz</a>
+            </p>
+          </div>
+          <p style="color:#334155;font-size:11px;text-align:center;margin-top:24px;">
+            © 2026 SmlouvaHned. Dokumenty jsou generovány automaticky a neslouží jako individuální právní poradenství.
+          </p>
+        </body>
+        </html>
+      `,
+    }),
+  });
 }

@@ -1,21 +1,71 @@
-import type { Metadata } from "next";
-import "./globals.css"; // Zajišťuje, že funguje Tailwind a naše animace
+import type { Metadata } from 'next';
+import './globals.css';
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
 export const metadata: Metadata = {
-  title: "SmlouvaHned | Neprůstřelné právní smlouvy",
-  description: "Vygenerujte si právně bezpečnou smlouvu na auto nebo nájem za 3 minuty. Aktualizováno pro legislativu 2026.",
+  metadataBase: new URL(BASE_URL),
+  title: {
+    default: 'SmlouvaHned | Profesionální smlouvy online — od 299 Kč',
+    template: '%s | SmlouvaHned',
+  },
+  description:
+    'Vygenerujte si nájemní smlouvu, kupní smlouvu, darovací smlouvu, smlouvu o dílo, zápůjčce nebo NDA za 3 minuty. Aktualizováno pro legislativu 2026. Od 299 Kč.',
+  keywords: [
+    'nájemní smlouva', 'kupní smlouva', 'darovací smlouva', 'smlouva o dílo',
+    'smlouva o zápůjčce', 'NDA', 'mlčenlivost', 'generátor smluv', 'online smlouva',
+    'šablona smlouvy', 'právní dokument', 'smlouva PDF', '2026',
+  ],
+  authors: [{ name: 'SmlouvaHned', url: BASE_URL }],
+  creator: 'SmlouvaHned',
+  openGraph: {
+    type: 'website',
+    locale: 'cs_CZ',
+    url: BASE_URL,
+    siteName: 'SmlouvaHned',
+    title: 'SmlouvaHned | Profesionální smlouvy online — od 299 Kč',
+    description: 'Nájemní smlouva, kupní smlouva, NDA a další — s paragrafy OZ, okamžité PDF ke stažení.',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'SmlouvaHned — Generátor smluv',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'SmlouvaHned | Profesionální smlouvy online',
+    description: '6 typů smluv s paragrafy OZ. Formulář → PDF. Od 299 Kč.',
+    images: ['/og-image.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  alternates: {
+    canonical: BASE_URL,
+  },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="cs">
-      {/* antialiased vyhladí písmo, aby vypadalo víc jako na Macu/iPhonech */}
-      <body className="antialiased bg-[#0a0f1c] text-slate-200">
-        {/* Zde se vykreslí naše hlavní stránka (page.tsx) */}
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <meta name="theme-color" content="#05080f" />
+      </head>
+      <body className="antialiased bg-[#05080f] text-slate-200">
         {children}
       </body>
     </html>

@@ -1,13 +1,10 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { jsPDF } from 'jspdf';
-import { getContractMeta, buildContractSections, type StoredContractData } from './contracts';
-
-let fontsLoaded = false;
+import { getContractMeta, buildContractSections, type StoredContractData, type ContractType } from './contracts';
 
 async function loadFontBase64(fileName: string): Promise<string> {
   const filePath = path.join(process.cwd(), 'public', 'fonts', fileName);
-
   try {
     const file = await readFile(filePath);
     return file.toString('base64');
@@ -18,43 +15,57 @@ async function loadFontBase64(fileName: string): Promise<string> {
 }
 
 async function ensurePdfFonts(doc: jsPDF): Promise<void> {
-  const internal = (doc as any).internal;
-
-  if (!internal.vFS) {
-    internal.vFS = {};
+  const pdfDoc = doc as any;
+  if (!pdfDoc.internal.vFS) {
+    pdfDoc.internal.vFS = {};
   }
 
-  if (fontsLoaded) {
-    doc.setFont('Roboto', 'normal');
-    return;
-  }
-
+  // Load fonts fresh every call — safe for serverless environments
   const [regular, bold] = await Promise.all([
     loadFontBase64('Roboto-Regular.ttf'),
     loadFontBase64('Roboto-Bold.ttf'),
   ]);
 
-  const pdfDoc = doc as any;
-
   pdfDoc.addFileToVFS('Roboto-Regular.ttf', regular);
   pdfDoc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
-
   pdfDoc.addFileToVFS('Roboto-Bold.ttf', bold);
   pdfDoc.addFont('Roboto-Bold.ttf', 'Roboto', 'bold');
 
-  fontsLoaded = true;
   doc.setFont('Roboto', 'normal');
+}
+
+function getSignatureLabels(contractType: ContractType): [string, string] {
+  switch (contractType) {
+    case 'lease':
+      return ['Pronajímatel', 'Nájemce'];
+    case 'car_sale':
+      return ['Prodávající', 'Kupující'];
+    case 'gift':
+      return ['Dárce', 'Obdarovaný'];
+    case 'work_contract':
+      return ['Objednatel', 'Zhotovitel'];
+    case 'loan':
+      return ['Věřitel (půjčující)', 'Dlužník (příjemce)'];
+    case 'nda':
+      return ['Strana poskytující informace', 'Strana přijímající informace'];
+    default:
+      return ['Smluvní strana I.', 'Smluvní strana II.'];
+  }
 }
 
 function drawHeader(doc: jsPDF, title: string): void {
   const pageWidth = doc.internal.pageSize.getWidth();
 
   doc.setFont('Roboto', 'bold');
-  doc.setFontSize(20);
+  doc.setFontSize(18);
+  doc.setTextColor(20, 20, 20);
   doc.text(title.toUpperCase(), pageWidth / 2, 20, { align: 'center' });
 
-  doc.setDrawColor(185);
-  doc.line(20, 27, pageWidth - 20, 27);
+  doc.setDrawColor(200, 160, 40);
+  doc.setLineWidth(0.7);
+  doc.line(20, 26, pageWidth - 20, 26);
+  doc.setLineWidth(0.2);
+  doc.setDrawColor(180, 180, 180);
 }
 
 function drawFooter(doc: jsPDF): void {
@@ -65,11 +76,11 @@ function drawFooter(doc: jsPDF): void {
   for (let i = 1; i <= pageCount; i += 1) {
     doc.setPage(i);
     doc.setFont('Roboto', 'normal');
-    doc.setFontSize(9);
-    doc.setTextColor(110);
-    doc.text(`Strana ${i} z ${pageCount}`, pageWidth / 2, pageHeight - 8, {
-      align: 'center',
-    });
+    doc.setFontSize(8);
+    doc.setTextColor(150);
+    doc.text(`Strana ${i} z ${pageCount}`, pageWidth / 2, pageHeight - 8, { align: 'center' });
+    doc.text('SmlouvaHned.cz', 20, pageHeight - 8);
+    doc.text('Generováno ' + new Date().toLocaleDateString('cs-CZ'), pageWidth - 20, pageHeight - 8, { align: 'right' });
     doc.setTextColor(0);
   }
 }
@@ -78,9 +89,14 @@ function isSignatureSection(title: string): boolean {
   return title.toUpperCase().includes('PODPISY');
 }
 
+function isProtocolSection(title: string): boolean {
+  return title.toUpperCase().includes('PŘEDÁVACÍ PROTOKOL') || title.toUpperCase().includes('PŘÍLOHA');
+}
+
 export async function renderContractPdf(data: StoredContractData): Promise<Buffer> {
   const meta = getContractMeta(data.contractType);
   const sections = buildContractSections(data);
+  const [labelLeft, labelRight] = getSignatureLabels(data.contractType);
 
   const doc = new jsPDF({
     unit: 'mm',
@@ -92,12 +108,30 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
 
   const margin = 20;
   const pageWidth = doc.internal.pageSize.getWidth();
+  const contentWidth = pageWidth - margin * 2;
 
   let y = 35;
+  let inProtocol = false;
 
   drawHeader(doc, meta.title);
 
   for (const section of sections) {
+    // Start protocol/annex on a new page
+    if (isProtocolSection(section.title) && !inProtocol) {
+      inProtocol = true;
+      doc.addPage();
+      drawHeader(doc, meta.title);
+      y = 35;
+
+      // Protocol separator line
+      doc.setDrawColor(200, 160, 40);
+      doc.setLineWidth(0.5);
+      doc.line(margin, y, pageWidth - margin, y);
+      doc.setLineWidth(0.2);
+      doc.setDrawColor(180, 180, 180);
+      y += 8;
+    }
+
     if (y > 255) {
       doc.addPage();
       drawHeader(doc, meta.title);
@@ -105,57 +139,68 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
     }
 
     if (isSignatureSection(section.title)) {
-      if (y > 235) {
+      if (y > 230) {
         doc.addPage();
         drawHeader(doc, meta.title);
         y = 35;
       }
 
+      // Signature section heading
       doc.setFont('Roboto', 'bold');
-      doc.setFontSize(12);
+      doc.setFontSize(11);
+      doc.setTextColor(20, 20, 20);
       doc.text(section.title, margin, y);
       y += 10;
 
+      // Date/place line
       doc.setFont('Roboto', 'normal');
       doc.setFontSize(10);
+      const dateLine = 'V ________________________ dne __________________';
+      doc.text(dateLine, margin, y);
+      y += 18;
 
-      const dateLine =
-        section.body.find((line) => line.includes('V __________________')) ||
-        'V ________________________ dne __________________';
-
-      const splitDateLine = doc.splitTextToSize(dateLine, pageWidth - margin * 2);
-      doc.text(splitDateLine, margin, y);
-      y += splitDateLine.length * 5 + 14;
-
-      const lineWidth = 60;
+      // Two signature lines
+      const lineWidth = 65;
       const leftX = margin;
       const rightX = pageWidth - margin - lineWidth;
 
-      doc.setDrawColor(0);
+      doc.setDrawColor(80);
+      doc.setLineWidth(0.4);
       doc.line(leftX, y, leftX + lineWidth, y);
       doc.line(rightX, y, rightX + lineWidth, y);
-
-      y += 6;
+      y += 5;
 
       doc.setFontSize(9);
-      doc.text('Pronajímatel / smluvní strana', leftX, y);
-      doc.text('Nájemce / smluvní strana', rightX, y);
+      doc.setTextColor(80);
+      doc.text(labelLeft, leftX, y);
+      doc.text(labelRight, rightX, y);
+      doc.setTextColor(0);
 
       y += 14;
       continue;
     }
 
-    doc.setFont('Roboto', 'bold');
-    doc.setFontSize(12);
+    // Protocol sections use slightly different styling
+    if (inProtocol) {
+      doc.setFont('Roboto', 'bold');
+      doc.setFontSize(11);
+      doc.setTextColor(40, 40, 40);
+    } else {
+      doc.setFont('Roboto', 'bold');
+      doc.setFontSize(11);
+      doc.setTextColor(20, 20, 20);
+    }
+
     doc.text(section.title, margin, y);
     y += 7;
 
     doc.setFont('Roboto', 'normal');
     doc.setFontSize(10);
+    doc.setTextColor(30, 30, 30);
 
     for (const line of section.body) {
       const safeLine = line?.trim() ? line : ' ';
-      const splitLines = doc.splitTextToSize(safeLine, pageWidth - margin * 2);
+      const splitLines = doc.splitTextToSize(safeLine, contentWidth);
 
       if (y + splitLines.length * 5 > 275) {
         doc.addPage();
@@ -167,7 +212,7 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
       y += splitLines.length * 5 + 3;
     }
 
-    y += 4;
+    y += 5;
   }
 
   drawFooter(doc);

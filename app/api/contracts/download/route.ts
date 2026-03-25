@@ -6,6 +6,8 @@ import { renderContractPdf } from '@/lib/pdf';
 
 export const runtime = 'nodejs';
 
+const TTL_AFTER_DOWNLOAD = 60 * 60 * 24 * 7; // 7 dní po stažení
+
 type DraftRecord = {
   contractType: StoredContractData['contractType'];
   notaryUpsell?: boolean;
@@ -15,6 +17,7 @@ type DraftRecord = {
   paidAt?: string;
   stripeSessionId?: string;
   paymentStatus?: string;
+  downloadCount?: number;
 };
 
 export async function GET(req: NextRequest) {
@@ -25,6 +28,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'Missing session_id.' }, { status: 400 });
     }
 
+    // Ověření platby přes Stripe (spolehlivější než jen Redis flag)
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     const draftId = session.metadata?.draftId || session.client_reference_id;
 
@@ -39,22 +43,36 @@ export async function GET(req: NextRequest) {
 
     if (!draft) {
       return NextResponse.json(
-        { error: 'Draft nebyl nalezen nebo expiroval.' },
+        {
+          error: 'Draft nebyl nalezen nebo expiroval.',
+          hint: 'Dokument je dostupný 7 dní od zaplacení. Pro opětovné zaslání kontaktujte info@smlouvahned.cz',
+        },
         { status: 404 }
       );
     }
 
+    // Dvojitá kontrola: Redis flag + Stripe payment_status
     const isPaid = draft.paid === true && session.payment_status === 'paid';
 
     if (!isPaid) {
-      return NextResponse.json(
-        {
-          error: 'Platba ještě nebyla potvrzena.',
-          paymentStatus: session.payment_status,
-          paidFlag: draft.paid,
-        },
-        { status: 403 }
-      );
+      // Failsafe: zkusit aktualizovat Redis pokud Stripe říká paid
+      if (session.payment_status === 'paid' && !draft.paid) {
+        await redis.set(
+          `contract:draft:${draftId}`,
+          { ...draft, paid: true, paidAt: new Date().toISOString(), paymentStatus: 'paid' },
+          { ex: TTL_AFTER_DOWNLOAD },
+        );
+        // Pokračuj s generováním
+      } else {
+        return NextResponse.json(
+          {
+            error: 'Platba ještě nebyla potvrzena.',
+            paymentStatus: session.payment_status,
+            hint: 'Platba se zpracovává. Zkuste to za 30 sekund.',
+          },
+          { status: 403 }
+        );
+      }
     }
 
     const fullData: StoredContractData = {
@@ -74,7 +92,17 @@ export async function GET(req: NextRequest) {
     const pdf = await renderContractPdf(fullData);
     const meta = getContractMeta(fullData.contractType);
 
-    await redis.expire(`contract:draft:${draftId}`, 60 * 60);
+    // Počítač stažení + obnovit TTL na 7 dní
+    await redis.set(
+      `contract:draft:${draftId}`,
+      {
+        ...draft,
+        paid: true,
+        downloadCount: (draft.downloadCount || 0) + 1,
+        lastDownloadAt: new Date().toISOString(),
+      },
+      { ex: TTL_AFTER_DOWNLOAD },
+    );
 
     return new NextResponse(new Uint8Array(pdf), {
       status: 200,

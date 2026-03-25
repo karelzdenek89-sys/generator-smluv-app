@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Disallow: /api/
+Disallow: /success
+Disallow: /zakaznicka-zona
+
+Sitemap: https://smlouvahned.cz/sitemap.xml
