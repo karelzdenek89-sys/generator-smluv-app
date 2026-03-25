@@ -467,7 +467,10 @@ export default function Home() {
                   <Link href="#jak-to-funguje" className="hover:text-white transition">Jak to funguje</Link>
                   <Link href="#faq" className="hover:text-white transition">FAQ</Link>
                   <Link href="/zakaznicka-zona" className="hover:text-white transition">Moje dokumenty</Link>
-                  <Link href="/kontakt" className="hover:text-white transition">Kontakt</Link>
+                </div>
+                <div className="mt-5 text-xs font-black uppercase tracking-[0.18em] text-slate-500">Podpora</div>
+                <div className="mt-3 flex flex-col gap-2 text-sm text-slate-400">
+                  <a href="mailto:karelzdenek89@gmail.com" className="hover:text-amber-400 transition break-all">karelzdenek89@gmail.com</a>
                 </div>
               </div>
 
