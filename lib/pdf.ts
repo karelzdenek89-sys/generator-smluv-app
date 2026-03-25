@@ -138,6 +138,10 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
       doc.addPage();
       drawHeader(doc, meta.title);
       y = 35;
+      // Reset font state after drawHeader
+      doc.setFont('Roboto', 'normal');
+      doc.setFontSize(10);
+      doc.setTextColor(30, 30, 30);
 
       // Protocol separator line
       doc.setDrawColor(200, 160, 40);
@@ -152,6 +156,9 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
       doc.addPage();
       drawHeader(doc, meta.title);
       y = 35;
+      doc.setFont('Roboto', 'normal');
+      doc.setFontSize(10);
+      doc.setTextColor(30, 30, 30);
     }
 
     if (isSignatureSection(section.title)) {
@@ -159,6 +166,9 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
         doc.addPage();
         drawHeader(doc, meta.title);
         y = 35;
+        doc.setFont('Roboto', 'normal');
+        doc.setFontSize(10);
+        doc.setTextColor(30, 30, 30);
       }
 
       // Signature section heading
@@ -207,8 +217,9 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
       doc.setTextColor(20, 20, 20);
     }
 
-    doc.text(section.title, margin, y);
-    y += 7;
+    const titleLines = doc.splitTextToSize(section.title, contentWidth);
+    doc.text(titleLines, margin, y);
+    y += titleLines.length * 6 + 1;
 
     doc.setFont('Roboto', 'normal');
     doc.setFontSize(10);
@@ -218,14 +229,18 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
       const safeLine = line?.trim() ? line : ' ';
       const splitLines = doc.splitTextToSize(safeLine, contentWidth);
 
-      if (y + splitLines.length * 5 > 275) {
+      if (y + splitLines.length * 5.5 > 275) {
         doc.addPage();
         drawHeader(doc, meta.title);
         y = 35;
+        // Reset font state — drawHeader leaves font as Bold 18pt
+        doc.setFont('Roboto', 'normal');
+        doc.setFontSize(10);
+        doc.setTextColor(30, 30, 30);
       }
 
-      doc.text(splitLines, margin, y);
-      y += splitLines.length * 5 + 3;
+      doc.text(splitLines, margin, y, { align: 'justify', maxWidth: contentWidth });
+      y += splitLines.length * 5.5 + 3;
     }
 
     y += 5;

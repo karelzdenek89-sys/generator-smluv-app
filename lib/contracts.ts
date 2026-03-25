@@ -42,6 +42,19 @@ const asText = (value: unknown, fallback = emptyLine) => {
 
 const yesNo = (value: unknown, yes = 'ano', no = 'ne') => (value ? yes : no);
 
+/** Converts ISO date string (YYYY-MM-DD) from HTML date inputs to Czech format (D. M. YYYY). */
+const formatDate = (value: unknown, fallback = emptyLine): string => {
+  if (value === null || value === undefined) return fallback;
+  const str = String(value).trim();
+  if (!str) return fallback;
+  const isoMatch = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (isoMatch) {
+    const [, year, month, day] = isoMatch;
+    return `${parseInt(day, 10)}. ${parseInt(month, 10)}. ${year}`;
+  }
+  return str;
+};
+
 const today = () => new Date().toLocaleDateString('cs-CZ');
 
 export function getContractMeta(contractType: ContractType) {
@@ -124,7 +137,7 @@ function buildGiftContractSections(d: StoredContractData): ContractSection[] {
       title: 'ZÁHLAVÍ SMLOUVY',
       body: [
         'Tato darovací smlouva (dále jen „smlouva") je uzavírána podle § 2055 a násl. zákona č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů (dále jen „OZ").',
-        `Datum uzavření smlouvy: ${d.giftDate ? asText(d.giftDate) : today()}`,
+        `Datum uzavření smlouvy: ${d.giftDate ? formatDate(d.giftDate) : today()}`,
       ],
     },
     {
@@ -261,8 +274,8 @@ function buildWorkContractSections(d: StoredContractData): ContractSection[] {
     {
       title: 'IV. HARMONOGRAM A TERMÍNY PLNĚNÍ',
       body: [
-        `Zahájení prací: ${asText(d.startDate, '__________')}`,
-        `Dokončení a předání díla nejpozději dne: ${asText(d.endDate, '__________')}`,
+        `Zahájení prací: ${formatDate(d.startDate, '__________')}`,
+        `Dokončení a předání díla nejpozději dne: ${formatDate(d.endDate, '__________')}`,
         d.milestones ? `Průběžné milníky: ${asText(d.milestones)}` : '',
         'Termíny jsou závazné. Zhotovitel je povinen neprodleně informovat objednatele o okolnostech, které by mohly ohrozit jejich splnění.',
       ].filter(Boolean) as string[],
@@ -386,7 +399,7 @@ function buildCarContractSections(d: StoredContractData): ContractSection[] {
         `Kupní cena vozidla je sjednána ve výši ${formatAmount(d.priceAmount ?? d.purchasePrice)} Kč (slovy: ${asText(d.priceWords, '__________')}).`,
         `Způsob úhrady: ${paymentText}`,
         ownershipTransfer,
-        d.handoverDate ? `Sjednané datum fyzického předání vozidla: ${asText(d.handoverDate)}.` : '',
+        d.handoverDate ? `Sjednané datum fyzického předání vozidla: ${formatDate(d.handoverDate)}.` : '',
         d.handoverPlace ? `Místo předání: ${asText(d.handoverPlace)}.` : '',
       ].filter(Boolean) as string[],
     },
@@ -454,7 +467,7 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
       : d.duration === 'indefinite'
         ? 'neurčitou'
         : d.duration === 'fixed'
-          ? `určitou, a to do ${asText(d.endDate, '__________')}`
+          ? `určitou, a to do ${formatDate(d.endDate, '__________')}`
           : 'určitou do ____________';
 
   const monthlyTotal = (Number(d.rentAmount || 0) + Number(utilitiesAmount || 0)).toString();
@@ -517,8 +530,8 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
       title: 'III. DOBA NÁJMU',
       body: [
         `Nájem se sjednává na dobu: ${leaseDuration}.`,
-        d.startDate ? `Počátek nájmu: ${asText(d.startDate)}.` : '',
-        d.handoverDate ? `Datum fyzického předání bytu: ${asText(d.handoverDate)}.` : '',
+        d.startDate ? `Počátek nájmu: ${formatDate(d.startDate)}.` : '',
+        d.handoverDate ? `Datum fyzického předání bytu: ${formatDate(d.handoverDate)}.` : '',
         d.duration === 'fixed'
           ? 'Po uplynutí sjednané doby nájmu nájem končí, nedohodnou-li se strany písemně jinak. Pokračuje-li nájemce v užívání bytu po dobu delší než tři měsíce po skončení nájmu bez námitek pronajímatele, platí, že byl nájem znovu ujednán na tutéž dobu (max. 2 roky) a za týchž podmínek (§ 2230 OZ).'
           : 'Nájem sjednaný na dobu neurčitou může pronajímatel vypovědět v tříměsíční výpovědní době, a to pouze z důvodů stanovených zákonem (§ 2288 OZ). Nájemce může nájem vypovědět s tříměsíční výpovědní dobou bez udání důvodu.',
@@ -543,7 +556,7 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
     {
       title: 'V. JISTOTA (KAUCE)',
       body: [
-        `Nájemce je povinen před převzetím bytu (nejpozději při podpisu smlouvy) složit pronajímateli peněžitou jistotu ve výši ${formatAmount(d.depositAmount)} Kč (tj. ${asText(d.depositMonths, '__')} násobek měsíčního nájemného).`,
+        `Nájemce je povinen před převzetím bytu (nejpozději při podpisu smlouvy) složit pronajímateli peněžitou jistotu ve výši ${formatAmount(d.depositAmount)} Kč (tj. ${(d.depositAmount && d.rentAmount && Number(d.rentAmount) > 0) ? Math.round(Number(d.depositAmount) / Number(d.rentAmount)) : '__'} násobek měsíčního nájemného).`,
         'Jistota slouží k zajištění pohledávek pronajímatele vzniklých z nájmu (dlužné nájemné a zálohy, náhrada škody, náklady nezbytné opravy či uvedení bytu do původního stavu, smluvní pokuty).',
         'Pronajímatel je povinen vrátit nevyčerpanou část jistoty nejpozději do 1 měsíce od ukončení nájmu a předání bytu, po odečtení prokázaných pohledávek.',
         'Jistota je uložena na samostatném bankovním účtu pronajímatele a nepřináší nájemci úroky.',
@@ -623,7 +636,7 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
     title: `PŘÍLOHA Č. 1 – PŘEDÁVACÍ PROTOKOL K NÁJEMNÍ SMLOUVĚ`,
     body: [
       `Adresa bytu: ${propertyAddress}`,
-      d.handoverDate ? `Datum předání: ${asText(d.handoverDate)}` : 'Datum předání: __________________',
+      d.handoverDate ? `Datum předání: ${formatDate(d.handoverDate)}` : 'Datum předání: __________________',
       `Pronajímatel: ${asText(d.landlordName)}`,
       `Nájemce: ${asText(d.tenantName)}`,
       '',
@@ -666,8 +679,8 @@ function buildLoanContractSections(d: StoredContractData): ContractSection[] {
 
   const repaymentDesc =
     d.repaymentType === 'installments'
-      ? `Vydlužitel se zavazuje vrátit zápůjčku ve ${asText(d.installmentCount, '__________')} pravidelných měsíčních splátkách po ${formatAmount(d.installmentAmount)} Kč, splatných vždy ${asText(d.paymentDay, '15')}. dne každého měsíce, počínaje ${asText(d.firstPaymentDate, '__________')}.`
-      : `Vydlužitel se zavazuje vrátit celou zápůjčku jednorázově nejpozději dne ${asText(d.repaymentDate, '__________')}.`;
+      ? `Vydlužitel se zavazuje vrátit zápůjčku ve ${asText(d.installmentCount, '__________')} pravidelných měsíčních splátkách po ${formatAmount(d.installmentAmount)} Kč, splatných vždy ${asText(d.paymentDay, '15')}. dne každého měsíce, počínaje ${formatDate(d.firstPaymentDate, '__________')}.`
+      : `Vydlužitel se zavazuje vrátit celou zápůjčku jednorázově nejpozději dne ${formatDate(d.repaymentDate, '__________')}.`;
 
   const premiumContent: ContractSection[] = d.notaryUpsell ? [
     {
@@ -929,7 +942,7 @@ function buildGeneralSaleContractSections(d: StoredContractData): ContractSectio
       title: 'ZÁHLAVÍ SMLOUVY',
       body: [
         'Tato kupní smlouva (dále jen „smlouva") je uzavírána podle § 2079 a násl. zákona č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů (dále jen „OZ").',
-        `Datum uzavření smlouvy: ${d.contractDate ? asText(d.contractDate) : today()}`,
+        `Datum uzavření smlouvy: ${d.contractDate ? formatDate(d.contractDate) : today()}`,
       ],
     },
     {
@@ -963,7 +976,7 @@ function buildGeneralSaleContractSections(d: StoredContractData): ContractSectio
       title: 'IV. PŘEDÁNÍ PŘEDMĚTU PRODEJE',
       body: [
         d.handoverDate
-          ? `Prodávající se zavazuje předat předmět prodeje kupujícímu dne ${asText(d.handoverDate)} na adrese: ${asText(d.handoverPlace, '__________')}.`
+          ? `Prodávající se zavazuje předat předmět prodeje kupujícímu dne ${formatDate(d.handoverDate)} na adrese: ${asText(d.handoverPlace, '__________')}.`
           : `Předání předmětu prodeje proběhne dohodnutým způsobem po úhradě kupní ceny.`,
         'O předání bude sepsán předávací protokol podepsaný oběma smluvními stranami.',
         d.itemType === 'car'
@@ -1003,7 +1016,7 @@ function buildEmploymentContractSections(d: StoredContractData): ContractSection
     : 'Zkušební doba se nesjednává.';
 
   const durationClause = d.employmentType === 'fixed'
-    ? `na dobu určitou do ${asText(d.endDate, '__________')} (§ 39 ZP)`
+    ? `na dobu určitou do ${formatDate(d.endDate, '__________')} (§ 39 ZP)`
     : 'na dobu neurčitou';
 
   const salaryDesc = d.salaryType === 'monthly'
@@ -1038,7 +1051,7 @@ function buildEmploymentContractSections(d: StoredContractData): ContractSection
       title: 'ZÁHLAVÍ SMLOUVY',
       body: [
         'Tato pracovní smlouva (dále jen „smlouva") je uzavírána podle § 34 a násl. zákona č. 262/2006 Sb., zákoník práce, ve znění pozdějších předpisů (dále jen „ZP").',
-        `Datum uzavření smlouvy: ${d.contractDate ? asText(d.contractDate) : today()}`,
+        `Datum uzavření smlouvy: ${d.contractDate ? formatDate(d.contractDate) : today()}`,
       ],
     },
     {
@@ -1062,7 +1075,7 @@ function buildEmploymentContractSections(d: StoredContractData): ContractSection
     {
       title: 'III. VZNIK PRACOVNÍHO POMĚRU A TRVÁNÍ',
       body: [
-        `Pracovní poměr vzniká dnem nástupu do práce: ${asText(d.startDate, '__________')}`,
+        `Pracovní poměr vzniká dnem nástupu do práce: ${formatDate(d.startDate, '__________')}`,
         `Pracovní poměr se sjednává ${durationClause}.`,
         trialPeriodClause,
       ],
@@ -1150,7 +1163,7 @@ function buildDppContractSections(d: StoredContractData): ContractSection[] {
       title: 'ZÁHLAVÍ DOHODY',
       body: [
         'Tato dohoda o provedení práce (dále jen „dohoda") je uzavírána podle § 75 a násl. zákona č. 262/2006 Sb., zákoník práce, ve znění pozdějších předpisů (dále jen „ZP").',
-        `Datum uzavření dohody: ${d.contractDate ? asText(d.contractDate) : today()}`,
+        `Datum uzavření dohody: ${d.contractDate ? formatDate(d.contractDate) : today()}`,
         'Upozornění: Rozsah práce na základě dohody o provedení práce nesmí být větší než 300 hodin v kalendářním roce u jednoho zaměstnavatele (§ 75 odst. 2 ZP).',
       ],
     },
@@ -1175,7 +1188,7 @@ function buildDppContractSections(d: StoredContractData): ContractSection[] {
     {
       title: 'III. DOBA TRVÁNÍ A TERMÍN SPLNĚNÍ',
       body: [
-        `Dohoda se uzavírá na dobu: ${d.durationType === 'fixed' ? `určitou od ${asText(d.startDate, '__________')} do ${asText(d.endDate, '__________')}` : 'neurčitou (lze ukončit dohodou nebo výpovědí s 15denní výpovědní dobou)'}`,
+        `Dohoda se uzavírá na dobu: ${d.durationType === 'fixed' ? `určitou od ${formatDate(d.startDate, '__________')} do ${formatDate(d.endDate, '__________')}` : 'neurčitou (lze ukončit dohodou nebo výpovědí s 15denní výpovědní dobou)'}`,
         d.deadline ? `Pracovní úkol musí být splněn nejpozději do: ${asText(d.deadline)}` : '',
       ].filter(Boolean) as string[],
     },
@@ -1252,7 +1265,7 @@ function buildServiceContractSections(d: StoredContractData): ContractSection[] 
       title: 'ZÁHLAVÍ SMLOUVY',
       body: [
         'Tato smlouva o poskytování služeb (dále jen „smlouva") je uzavírána podle § 1746 odst. 2 zákona č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů (dále jen „OZ").',
-        `Datum uzavření smlouvy: ${d.contractDate ? asText(d.contractDate) : today()}`,
+        `Datum uzavření smlouvy: ${d.contractDate ? formatDate(d.contractDate) : today()}`,
       ],
     },
     {
@@ -1271,14 +1284,14 @@ function buildServiceContractSections(d: StoredContractData): ContractSection[] 
         `Poskytovatel se zavazuje poskytovat objednateli tyto služby: ${asText(d.serviceDescription, '__________')}`,
         d.serviceDetails ? `Podrobná specifikace: ${asText(d.serviceDetails)}` : '',
         d.deliverables ? `Výstupy/dodávky: ${asText(d.deliverables)}` : '',
-        `Zahájení poskytování služeb: ${asText(d.startDate, '__________')}`,
+        `Zahájení poskytování služeb: ${formatDate(d.startDate, '__________')}`,
       ].filter(Boolean) as string[],
     },
     {
       title: 'III. TRVÁNÍ SMLOUVY',
       body: [
         d.durationType === 'fixed'
-          ? `Smlouva se uzavírá na dobu určitou do ${asText(d.endDate, '__________')}.`
+          ? `Smlouva se uzavírá na dobu určitou do ${formatDate(d.endDate, '__________')}.`
           : 'Smlouva se uzavírá na dobu neurčitou.',
         d.durationType === 'indefinite'
           ? `Každá strana může smlouvu vypovědět s výpovědní dobou ${asText(d.noticePeriod, '1')} měsíce. Výpovědní doba počíná prvním dnem měsíce následujícího po doručení výpovědi.`
@@ -1360,7 +1373,7 @@ function buildSubleaseContractSections(d: StoredContractData): ContractSection[]
       body: [
         'Tato podnájemní smlouva (dále jen „smlouva") je uzavírána podle § 2274 a násl. zákona č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů (dále jen „OZ").',
         consentNote,
-        `Datum uzavření smlouvy: ${d.contractDate ? asText(d.contractDate) : today()}`,
+        `Datum uzavření smlouvy: ${d.contractDate ? formatDate(d.contractDate) : today()}`,
       ],
     },
     {
@@ -1383,8 +1396,8 @@ function buildSubleaseContractSections(d: StoredContractData): ContractSection[]
       title: 'III. DOBA PODNÁJMU',
       body: [
         d.duration === 'fixed'
-          ? `Podnájem se sjednává na dobu určitou od ${asText(d.startDate, '__________')} do ${asText(d.endDate, '__________')}.`
-          : `Podnájem se sjednává na dobu neurčitou od ${asText(d.startDate, '__________')}.`,
+          ? `Podnájem se sjednává na dobu určitou od ${formatDate(d.startDate, '__________')} do ${formatDate(d.endDate, '__________')}.`
+          : `Podnájem se sjednává na dobu neurčitou od ${formatDate(d.startDate, '__________')}.`,
         d.duration === 'indefinite'
           ? `Výpovědní doba: ${asText(d.noticePeriod, '3')} měsíce; výpovědní doba počíná prvním dnem měsíce následujícího po doručení výpovědi.`
           : '',
@@ -1415,7 +1428,7 @@ function buildSubleaseContractSections(d: StoredContractData): ContractSection[]
     {
       title: 'VI. PŘEDÁNÍ PROSTOR',
       body: [
-        `Předání prostor proběhne dne ${asText(d.handoverDate, '__________')}.`,
+        `Předání prostor proběhne dne ${formatDate(d.handoverDate, '__________')}.`,
         `Počet předaných klíčů: ${asText(d.keysCount, '1')}`,
         d.equipmentList ? `Předávané vybavení: ${asText(d.equipmentList)}` : '',
         d.knownDefects ? `Známé vady: ${asText(d.knownDefects)}` : 'Prostory jsou předávány bez zjevných vad.',
@@ -1486,7 +1499,7 @@ function buildPowerOfAttorneyContractSections(d: StoredContractData): ContractSe
       title: 'PLNÁ MOC',
       body: [
         'Tato plná moc je udělována podle § 441 a násl. zákona č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů.',
-        `Datum udělení: ${d.contractDate ? asText(d.contractDate) : today()}`,
+        `Datum udělení: ${d.contractDate ? formatDate(d.contractDate) : today()}`,
       ],
     },
     {
@@ -1547,19 +1560,19 @@ function buildPowerOfAttorneyContractSections(d: StoredContractData): ContractSe
 // ─────────────────────────────────────────────
 function buildDebtAcknowledgmentSections(d: StoredContractData): ContractSection[] {
   const debtOrigin = d.debtOrigin === 'loan'
-    ? `Dluh vznikl na základě smlouvy o zápůjčce / půjčky ze dne ${asText(d.debtDate, '__________')}.`
+    ? `Dluh vznikl na základě smlouvy o zápůjčce / půjčky ze dne ${formatDate(d.debtDate, '__________')}.`
     : d.debtOrigin === 'invoice'
-    ? `Dluh vznikl nezaplacením faktury č. ${asText(d.invoiceNumber, '__________')} ze dne ${asText(d.debtDate, '__________')}.`
+    ? `Dluh vznikl nezaplacením faktury č. ${asText(d.invoiceNumber, '__________')} ze dne ${formatDate(d.debtDate, '__________')}.`
     : d.debtOrigin === 'damage'
-    ? `Dluh vznikl jako náhrada škody způsobené dne ${asText(d.debtDate, '__________')}.`
-    : `Dluh vznikl z titulu: ${asText(d.debtOriginCustom, '__________')} (dne ${asText(d.debtDate, '__________')}).`;
+    ? `Dluh vznikl jako náhrada škody způsobené dne ${formatDate(d.debtDate, '__________')}.`
+    : `Dluh vznikl z titulu: ${asText(d.debtOriginCustom, '__________')} (dne ${formatDate(d.debtDate, '__________')}).`;
 
   const repaymentDesc = d.repaymentType === 'installments'
-    ? `Dlužník se zavazuje splácet dluh v ${asText(d.installmentCount, '__________')} pravidelných měsíčních splátkách po ${formatAmount(d.installmentAmount)} Kč, splatných vždy k ${asText(d.paymentDay, '15')}. dni každého měsíce, počínaje ${asText(d.firstPaymentDate, '__________')}.`
-    : `Dlužník se zavazuje uhradit celou dlužnou částku nejpozději dne ${asText(d.repaymentDate, '__________')} jednorázově.`;
+    ? `Dlužník se zavazuje splácet dluh v ${asText(d.installmentCount, '__________')} pravidelných měsíčních splátkách po ${formatAmount(d.installmentAmount)} Kč, splatných vždy k ${asText(d.paymentDay, '15')}. dni každého měsíce, počínaje ${formatDate(d.firstPaymentDate, '__________')}.`
+    : `Dlužník se zavazuje uhradit celou dlužnou částku nejpozději dne ${formatDate(d.repaymentDate, '__________')} jednorázově.`;
 
   const interestClause = d.interestRate && Number(d.interestRate) > 0
-    ? `Na dlužnou jistinu se sjednává úrok z prodlení ve výši ${asText(d.interestRate)} % p.a. ode dne ${asText(d.debtDate, '__________')}.`
+    ? `Na dlužnou jistinu se sjednává úrok z prodlení ve výši ${asText(d.interestRate)} % p.a. ode dne ${formatDate(d.debtDate, '__________')}.`
     : 'Na dlužnou jistinu se neúčtuje úrok (pokud není zákonem stanoveno jinak).';
 
   const premiumContent: ContractSection[] = d.notaryUpsell ? [
@@ -1579,7 +1592,7 @@ function buildDebtAcknowledgmentSections(d: StoredContractData): ContractSection
       body: [
         'Toto uznání dluhu (dále jen „listina") je sepsáno podle § 2053 zákona č. 89/2012 Sb., občanský zákoník (dále jen „OZ").',
         'Uznáním dluhu se promlčecí doba obnovuje a počíná běžet nová desetiletá promlčecí lhůta ode dne uznání (§ 639 OZ).',
-        `Datum sepsání listiny: ${d.contractDate ? asText(d.contractDate) : today()}`,
+        `Datum sepsání listiny: ${d.contractDate ? formatDate(d.contractDate) : today()}`,
       ],
     },
     {
@@ -1664,7 +1677,7 @@ function buildCooperationContractSections(d: StoredContractData): ContractSectio
       title: 'ZÁHLAVÍ SMLOUVY',
       body: [
         'Tato smlouva o spolupráci (dále jen „smlouva") je uzavírána podle § 1746 odst. 2 zákona č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů (dále jen „OZ").',
-        `Datum uzavření smlouvy: ${d.contractDate ? asText(d.contractDate) : today()}`,
+        `Datum uzavření smlouvy: ${d.contractDate ? formatDate(d.contractDate) : today()}`,
       ],
     },
     {
@@ -1682,7 +1695,7 @@ function buildCooperationContractSections(d: StoredContractData): ContractSectio
         `Smluvní strany se dohodly na spolupráci v oblasti: ${asText(d.cooperationScope, '__________')}`,
         d.cooperationDetails ? `Podrobný popis předmětu spolupráce: ${asText(d.cooperationDetails)}` : '',
         `Cíl spolupráce: ${asText(d.cooperationGoal, '__________')}`,
-        d.startDate ? `Zahájení spolupráce: ${asText(d.startDate)}` : '',
+        d.startDate ? `Zahájení spolupráce: ${formatDate(d.startDate)}` : '',
       ].filter(Boolean) as string[],
     },
     {
@@ -1709,7 +1722,7 @@ function buildCooperationContractSections(d: StoredContractData): ContractSectio
       title: 'VI. TRVÁNÍ A UKONČENÍ SMLOUVY',
       body: [
         d.durationType === 'fixed'
-          ? `Smlouva se uzavírá na dobu určitou do ${asText(d.endDate, '__________')}.`
+          ? `Smlouva se uzavírá na dobu určitou do ${formatDate(d.endDate, '__________')}.`
           : `Smlouva se uzavírá na dobu neurčitou. Každá strana ji může vypovědět s výpovědní dobou ${asText(d.noticePeriod, '3')} měsíce.`,
         'Smlouva může být ukončena okamžitě vzájemnou dohodou nebo při podstatném porušení povinností jednou ze stran.',
         'V případě ukončení spolupráce se strany vypořádají vzájemné pohledávky a dluhy do 60 dnů od zániku smlouvy.',
