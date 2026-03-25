@@ -299,12 +299,12 @@ export default function LoanBuilderPage() {
               )}
             </div>
 
-            {/* Prémiový balíček */}
+            {/* Profesionální ochrana */}
             <div className={`${cardClass} ${formData.notaryUpsell ? 'border-amber-500/40 bg-amber-500/5' : ''}`}>
               <div className="flex items-start gap-3 mb-4">
                 <input type="checkbox" id="premium" checked={formData.notaryUpsell} onChange={e => set('notaryUpsell', e.target.checked)} className="mt-1 accent-amber-500 w-4 h-4" />
                 <div>
-                  <label htmlFor="premium" className="font-bold text-white cursor-pointer text-sm">Prémiový balíček +299 Kč</label>
+                  <label htmlFor="premium" className="font-bold text-white cursor-pointer text-sm">Profesionální ochrana +200 Kč</label>
                   <p className="text-xs text-slate-500 mt-0.5">Rozšířené doložky pro lepší ochranu</p>
                 </div>
               </div>
@@ -323,17 +323,17 @@ export default function LoanBuilderPage() {
               <div className="space-y-2 mb-4">
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-400">Smlouva o zápůjčce</span>
-                  <span className="font-bold text-white">299 Kč</span>
+                  <span className="font-bold text-white">249 Kč</span>
                 </div>
                 {formData.notaryUpsell && (
                   <div className="flex justify-between text-sm">
-                    <span className="text-slate-400">Prémiový balíček</span>
-                    <span className="font-bold text-amber-400">+299 Kč</span>
+                    <span className="text-slate-400">Profesionální ochrana</span>
+                    <span className="font-bold text-amber-400">+249 Kč</span>
                   </div>
                 )}
                 <div className="border-t border-white/8 pt-2 flex justify-between font-black text-lg">
                   <span>Celkem</span>
-                  <span className="text-white">{formData.notaryUpsell ? '598' : '299'} Kč</span>
+                  <span className="text-white">{formData.notaryUpsell ? '449' : '249'} Kč</span>
                 </div>
               </div>
               <button onClick={handleSubmit} disabled={isProcessing}

@@ -935,7 +935,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                     />
                     <div>
                       <div className="text-sm font-black uppercase tracking-wide text-amber-400">
-                        Exekuční ochrana +490 Kč
+                        Profesionální ochrana +200 Kč
                       </div>
                       <div className="mt-1 text-xs leading-relaxed text-slate-400">
                         Přidá závazek k notářskému zápisu se svolením k vykonatelnosti. Silný upsell pro
@@ -1072,8 +1072,8 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   {isProcessing
                     ? 'PŘESMĚROVÁNÍ NA PLATBU...'
                     : formData.notaryUpsell
-                      ? 'ZAPLATIT A VYGENEROVAT – 789 Kč'
-                      : 'ZAPLATIT A VYGENEROVAT – 299 Kč'}
+                      ? 'ZAPLATIT A VYGENEROVAT – 449 Kč'
+                      : 'ZAPLATIT A VYGENEROVAT – 249 Kč'}
                 </button>
 
                 <p className="mt-3 text-xs leading-relaxed text-slate-400">

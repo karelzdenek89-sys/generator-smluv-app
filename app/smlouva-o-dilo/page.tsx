@@ -462,7 +462,7 @@ ${formData.handoverProtocol ? '• Předání díla proběhne protokolem o před
                       onChange={(e) => updateField('notaryUpsell', e.target.checked)}
                       className="accent-amber-500 w-5 h-5"
                     />
-                    <span className="font-bold text-white">Chci notářsky ověřené podpisy (+490 Kč)</span>
+                    <span className="font-bold text-white">Chci notářsky ověřené podpisy (+200 Kč)</span>
                   </label>
                 </div>
               </div>
@@ -478,8 +478,8 @@ ${formData.handoverProtocol ? '• Předání díla proběhne protokolem o před
               {isProcessing
                 ? 'PŘESMĚROVÁNÍ NA PLATBU...'
                 : formData.notaryUpsell
-                  ? 'ZAPLATIT A VYGENEROVAT – 789 Kč'
-                  : 'ZAPLATIT A VYGENEROVAT – 299 Kč'}
+                  ? 'ZAPLATIT A VYGENEROVAT – 449 Kč'
+                  : 'ZAPLATIT A VYGENEROVAT – 249 Kč'}
             </motion.button>
           </div>
 

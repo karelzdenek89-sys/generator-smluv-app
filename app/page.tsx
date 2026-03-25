@@ -2,11 +2,11 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'SmlouvaHned | Profesionální smlouvy online — od 299 Kč',
-  description: 'Vygenerujte si nájemní smlouvu, kupní smlouvu na auto, darovací smlouvu, smlouvu o dílo, zápůjčce nebo NDA za 3 minuty. Aktualizováno pro legislativu 2026.',
+  title: 'SmlouvaHned | Právní jistota pro vaše každodenní smlouvy — od 249 Kč',
+  description: 'Vytvořte profesionálně zpracovanou smlouvu online — přesně podle vašich podmínek, v souladu s platným českým právem. Nájemní, kupní, darovací smlouva, DPP, NDA a další. Od 249 Kč.',
   openGraph: {
-    title: 'SmlouvaHned | Profesionální smlouvy online — od 299 Kč',
-    description: 'Profesionální právní smlouvy s paragrafy OZ. Formulář → PDF. Okamžitě.',
+    title: 'SmlouvaHned | Právní jistota pro vaše každodenní smlouvy',
+    description: 'Profesionálně zpracované smlouvy dle OZ. Formulář, výběr úrovně ochrany, PDF ke stažení. Od 249 Kč.',
     url: 'https://smlouvahned.cz',
     siteName: 'SmlouvaHned',
     type: 'website',
@@ -37,7 +37,7 @@ const contracts = [
     title: 'NÁJEMNÍ SMLOUVA',
     description: 'Ochrana pronajímatele, doložky pro zvířata a Airbnb, jasná pravidla užívání a předávací protokol v ceně.',
     href: '/najem',
-    price: '299 Kč',
+    price: '249 Kč',
     category: 'Bydlení',
     accentKey: 'lease' as AccentKey,
     highlight: 'Předávací protokol zdarma',
@@ -47,7 +47,7 @@ const contracts = [
     title: 'KUPNÍ SMLOUVA',
     description: 'Prodej ojetého vozidla s důrazem na stav vozidla, vady, kilometry a bezpečné předání. Včetně příloh.',
     href: '/auto',
-    price: '299 Kč',
+    price: '249 Kč',
     category: 'Auto',
     accentKey: 'car' as AccentKey,
     highlight: 'Silnější ochrana při prodeji',
@@ -57,7 +57,7 @@ const contracts = [
     title: 'DAROVACÍ SMLOUVA',
     description: 'Bezpečný převod peněz, auta, movité věci i nemovitosti. Přehledné zpracování a právně čistý výstup.',
     href: '/darovaci',
-    price: '299 Kč',
+    price: '249 Kč',
     category: 'Převod majetku',
     accentKey: 'gift' as AccentKey,
     highlight: 'Peníze, auto i nemovitost',
@@ -67,7 +67,7 @@ const contracts = [
     title: 'SMLOUVA O DÍLO',
     description: 'Silná ochrana pro řemeslníky i objednatele. Cena, termíny, sankce, předání díla a minimalizace sporů.',
     href: '/smlouva-o-dilo',
-    price: '299 Kč',
+    price: '249 Kč',
     category: 'Podnikání',
     accentKey: 'work' as AccentKey,
     highlight: 'Termíny, sankce a předání',
@@ -77,10 +77,9 @@ const contracts = [
     title: 'SMLOUVA O ZÁPŮJČCE',
     description: 'Půjčte si nebo zapůjčte peníze bezpečně. Možnost úročení, splátkového kalendáře a zajištění pohledávky.',
     href: '/pujcka',
-    price: '299 Kč',
+    price: '249 Kč',
     category: 'Finance',
     accentKey: 'loan' as AccentKey,
-    badge: 'NOVÉ',
     highlight: 'Splátky, úroky a zajištění',
     paragraph: '§ 2390 a násl. OZ',
   },
@@ -88,7 +87,7 @@ const contracts = [
     title: 'SMLOUVA O MLČENLIVOSTI',
     description: 'NDA pro ochranu know-how, databází a obchodního tajemství. Jednostranná i oboustranná verze.',
     href: '/nda',
-    price: '299 Kč',
+    price: '249 Kč',
     category: 'Byznys',
     accentKey: 'nda' as AccentKey,
     highlight: 'Non-compete a non-solicitation',
@@ -98,10 +97,9 @@ const contracts = [
     title: 'KUPNÍ SMLOUVA',
     description: 'Prodej jakékoli movité věci — elektroniky, nábytku, kola i auta. Záruka, odpovědnost za vady, bezpečné předání.',
     href: '/kupni',
-    price: '299 Kč',
+    price: '249 Kč',
     category: 'Obchod',
     accentKey: 'sale' as AccentKey,
-    badge: 'NOVÉ',
     highlight: 'Vady, záruka a prohlášení',
     paragraph: '§ 2079 a násl. OZ',
   },
@@ -109,10 +107,9 @@ const contracts = [
     title: 'PRACOVNÍ SMLOUVA',
     description: 'Zaměstnanecká smlouva se všemi zákonnými náležitostmi. Mzda, pracovní doba, zkušební doba, výpovědní doba.',
     href: '/pracovni',
-    price: '299 Kč',
+    price: '249 Kč',
     category: 'HR',
     accentKey: 'employment' as AccentKey,
-    badge: 'NOVÉ',
     highlight: 'Zákonné náležitosti § 34 ZP',
     paragraph: '§ 34 zákoníku práce',
   },
@@ -120,10 +117,9 @@ const contracts = [
     title: 'DOHODA O PROVEDENÍ PRÁCE',
     description: 'DPP pro brigády a jednorázové úkoly. Max. 300 hod./rok bez odvodů. S IP doložkou pro kreativní práce.',
     href: '/dpp',
-    price: '299 Kč',
+    price: '249 Kč',
     category: 'HR',
     accentKey: 'dpp' as AccentKey,
-    badge: 'NOVÉ',
     highlight: 'Max. 300 hod./rok bez SP/ZP',
     paragraph: '§ 75 zákoníku práce',
   },
@@ -131,10 +127,9 @@ const contracts = [
     title: 'SMLOUVA O POSKYTOVÁNÍ SLUŽEB',
     description: 'Pro freelancery a agentury. Paušál, hodinová sazba nebo pevná cena. SLA, IP práva, mlčenlivost a sankce.',
     href: '/sluzby',
-    price: '299 Kč',
+    price: '249 Kč',
     category: 'Podnikání',
     accentKey: 'service' as AccentKey,
-    badge: 'NOVÉ',
     highlight: 'SLA, IP, mlčenlivost',
     paragraph: '§ 1746 odst. 2 OZ',
   },
@@ -142,10 +137,9 @@ const contracts = [
     title: 'PODNÁJEMNÍ SMLOUVA',
     description: 'Legální podnájem bytu se souhlasem pronajímatele. Kauce, pravidla, předávací protokol, ochrana obou stran.',
     href: '/podnajem',
-    price: '299 Kč',
+    price: '249 Kč',
     category: 'Bydlení',
     accentKey: 'sublease' as AccentKey,
-    badge: 'NOVÉ',
     highlight: 'Souhlas pronajímatele + kauce',
     paragraph: '§ 2274 a násl. OZ',
   },
@@ -153,10 +147,9 @@ const contracts = [
     title: 'PLNÁ MOC',
     description: 'Obecná, ověřená nebo jednorázová plná moc pro nemovitosti, soud, banku nebo jednání za firmu.',
     href: '/plna-moc',
-    price: '299 Kč',
+    price: '249 Kč',
     category: 'Obecné',
     accentKey: 'poa' as AccentKey,
-    badge: 'NOVÉ',
     highlight: 'Ověřená verze pro úřady',
     paragraph: '§ 441 OZ',
   },
@@ -164,10 +157,9 @@ const contracts = [
     title: 'UZNÁNÍ DLUHU',
     description: 'Obnoví promlčecí lhůtu na 10 let. Splátky, exekuční doložka, smluvní pokuta. Nejsilnější nástroj věřitele.',
     href: '/uznani-dluhu',
-    price: '299 Kč',
+    price: '249 Kč',
     category: 'Finance',
     accentKey: 'debt' as AccentKey,
-    badge: 'NOVÉ',
     highlight: 'Promlčení 10 let + exekuce',
     paragraph: '§ 2053 OZ',
   },
@@ -175,39 +167,96 @@ const contracts = [
     title: 'SMLOUVA O SPOLUPRÁCI',
     description: 'Spolupráce OSVČ a firem s jasnými pravidly. Podíl na výnosech, IP práva, mlčenlivost, exit klauzule.',
     href: '/spoluprace',
-    price: '299 Kč',
+    price: '249 Kč',
     category: 'Podnikání',
     accentKey: 'coop' as AccentKey,
-    badge: 'NOVÉ',
     highlight: 'IP, výnosy, zákaz konkurence',
     paragraph: '§ 1746 odst. 2 OZ',
   },
 ];
 
+const pricingTiers = [
+  {
+    name: 'Základní dokument',
+    price: '249 Kč',
+    description: 'Kompletní smlouva připravená k podpisu',
+    features: [
+      'Všechna zákonná povinná ustanovení dle OZ',
+      'Vyplnění přesně dle vašich podmínek',
+      'PDF ke stažení ihned po platbě',
+      'Dokument v souladu s legislativou 2026',
+    ],
+    note: 'Vhodné pro přímočaré situace, kde se strany dobře znají.',
+    cta: 'Vytvořit základní dokument',
+    href: '#vyber-smlouvy',
+    highlighted: false,
+    badge: null,
+  },
+  {
+    name: 'Profesionální ochrana',
+    price: '449 Kč',
+    description: 'Rozšířená právní ochrana pro jistý výsledek',
+    features: [
+      'Vše ze Základního dokumentu',
+      'Rozšířené ochranné klauzule',
+      'Smluvní pokuty a sankční mechanismy',
+      'Odpovědnostní a doručovací ustanovení',
+      'Podrobná prohlášení smluvních stran',
+    ],
+    note: 'Vhodné pro nájmy, prodeje vozidel, dílo, zápůjčky a podnikatelské vztahy.',
+    cta: 'Pokračovat s Profesionální ochranou',
+    href: '#vyber-smlouvy',
+    highlighted: true,
+    badge: 'Nejčastěji voleno',
+  },
+  {
+    name: 'Kompletní balíček',
+    price: '749 Kč',
+    description: 'Kompletní řešení bez zbytku',
+    features: [
+      'Vše z Profesionální ochrany',
+      'Průvodní instrukce k podpisu a archivaci',
+      'Předávací protokol (dle typu smlouvy)',
+      'Checklist: co zkontrolovat před podpisem',
+      'Archivace dokumentu po dobu 30 dnů',
+      'Prioritní e-mailová podpora',
+    ],
+    note: 'Vhodné pro vyšší hodnoty transakcí, podnikatelské vztahy nebo situace, kde chcete mít vše ošetřené.',
+    cta: 'Vytvořit kompletní balíček',
+    href: '#vyber-smlouvy',
+    highlighted: false,
+    badge: null,
+  },
+];
+
 const faqItems = [
   {
+    question: 'Jsou dokumenty právně platné?',
+    answer: 'Ano. Každá smlouva je sestavena v souladu s platným českým právem — zejména zákonem č. 89/2012 Sb. (občanský zákoník) a dalšími relevantními předpisy. Právní platnost písemné smlouvy nevyžaduje účast notáře ani advokáta, pokud zákon nestanoví jinak.',
+  },
+  {
+    question: 'Čím se liší Základní dokument od Profesionální ochrany?',
+    answer: 'Základní dokument obsahuje všechna zákonem povinná ustanovení. Profesionální ochrana přidává klauzule, které vaši smluvní pozici aktivně posilují — zejména smluvní pokuty za porušení povinností, podrobnější odpovědnostní ustanovení a sankční mechanismy. Váš protějšek ví, že smlouva má reálné právní důsledky.',
+  },
+  {
     question: 'Jak celý proces funguje?',
-    answer: 'Vyberete typ smlouvy, vyplníte chytrý formulář (krok za krokem), a po zaplacení stáhnete finální PDF s profesionálními právními paragrafy.',
+    answer: 'Vyberete typ smlouvy, vyplníte formulář krok za krokem, zvolíte úroveň ochrany a po zaplacení obdržíte hotové PDF ke stažení. U Kompletního balíčku také průvodní instrukce a checklist.',
   },
   {
-    question: 'Jsou smlouvy vhodné pro běžné použití?',
-    answer: 'Ano, šablony jsou připravené pro praktické použití a obsahují aktuální paragrafy OZ pro rok 2026. Pro atypické nebo sporné situace doporučujeme konzultaci s advokátem.',
+    question: 'Co obdržím po zaplacení?',
+    answer: 'Ihned po dokončení platby obdržíte odkaz ke stažení vygenerovaného PDF. Odkaz je platný 7 dní. U Kompletního balíčku také průvodní instrukce k podpisu, checklist a (dle typu smlouvy) předávací protokol.',
   },
   {
-    question: 'Dostanu dokument hned po zaplacení?',
-    answer: 'Ano. Po úspěšném zaplacení si PDF stáhnete okamžitě. Pokud zadáte e-mail, pošleme vám odkaz také na e-mail. Odkaz je platný 7 dní.',
-  },
-  {
-    question: 'Co je Prémiový balíček?',
-    answer: 'Prémiový balíček (598 Kč celkem) přidá do smlouvy rozšířené doložky — zajišťovací ustanovení, podrobnější odpovědnostní klauzule, doporučení k notáři apod. Pro právně složitější situace.',
+    question: 'Proč nezvolit bezplatný vzor z internetu?',
+    answer: 'Volně dostupné vzory jsou zpravidla obecné a nezohledňují vaše konkrétní podmínky. V řadě případů postrádají klauzule, které jsou pro vaši ochranu klíčové. Dokumenty na tomto webu jsou sestavovány dynamicky na základě vámi zadaných údajů a obsahují ustanovení, která vaši smluvní pozici aktivně chrání.',
   },
   {
     question: 'Jsou bezpečně uložena moje data?',
-    answer: 'Údaje jsou uloženy pouze dočasně v šifrovaném úložišti na max. 7 dní a poté automaticky smazány. Platební údaje zpracovává výhradně Stripe — na naše servery se nedostanou.',
+    answer: 'Údaje jsou uloženy pouze dočasně v šifrovaném úložišti na max. 7 dní a poté automaticky smazány. Platební údaje zpracovává výhradně Stripe — na naše servery se nikdy nedostanou.',
   },
   {
     question: 'Je to náhrada individuální právní služby?',
-    answer: 'Ne. Jde o automatizovaný generátor pro typické situace. U složitých případů je vhodné řešení konzultovat s advokátem.',
+    answer: 'Ne. Dokumenty na tomto webu představují standardní smluvní vzory pro typické situace. Nejsou náhradou za individuální právní poradenství. V případě nestandardních nebo složitějších případů doporučujeme konzultaci s advokátem.',
   },
 ];
 
@@ -225,13 +274,14 @@ export default function Home() {
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500 text-sm font-black text-black">SH</div>
             <div>
               <div className="font-black tracking-tight text-white">SmlouvaHned</div>
-              <div className="text-[11px] uppercase tracking-[0.18em] text-slate-500">Legal document builder</div>
+              <div className="text-[11px] uppercase tracking-[0.18em] text-slate-500">Právní dokumenty online</div>
             </div>
           </Link>
 
           <nav className="hidden items-center gap-6 text-sm text-slate-400 md:flex">
             <Link href="#vyber-smlouvy" className="hover:text-white transition">Smlouvy</Link>
             <Link href="#jak-to-funguje" className="hover:text-white transition">Jak to funguje</Link>
+            <Link href="#cenik" className="hover:text-white transition">Ceník</Link>
             <Link href="#faq" className="hover:text-white transition">FAQ</Link>
             <Link href="/zakaznicka-zona" className="hover:text-white transition">Moje dokumenty</Link>
           </nav>
@@ -244,19 +294,24 @@ export default function Home() {
             Aktualizováno pro legislativu 2026
           </div>
 
-          <h1 className="mx-auto max-w-5xl text-5xl font-black italic tracking-tight text-white md:text-7xl xl:text-8xl">
-            PROFESIONÁLNÍ <span className="text-amber-500">SMLOUVY</span>
-            <br />
-            BĚHEM PÁR MINUT
+          <h1 className="mx-auto max-w-4xl text-5xl font-black tracking-tight text-white md:text-6xl xl:text-7xl leading-tight">
+            Právní jistota pro vaše<br />
+            <span className="text-amber-500 italic">každodenní smlouvy.</span>
           </h1>
 
-          <p className="mx-auto mt-6 max-w-3xl text-base leading-relaxed text-slate-400 md:text-xl">
-            Vyberete typ smlouvy, vyplníte formulář a získáte hotový dokument s paragrafy OZ —
-            připravený k použití. Bez chaosu, bez čekání, bez zbytečně drahé právničiny.
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-slate-400 md:text-lg">
+            Vytvořte profesionálně zpracovanou smlouvu online — přesně podle vašich podmínek,
+            v souladu s platným českým právem. Bez zbytečné byrokracie, bez nutnosti návštěvy advokáta.
           </p>
 
+          {/* Trust badges */}
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            {['Aktualizováno pro rok 2026', 'Paragrafy OZ v dokumentu', 'Prémiový balíček dostupný', 'Okamžité stažení PDF'].map(p => (
+            {[
+              '🔒 Platba přes Stripe',
+              '📄 Dle OZ a platné legislativy',
+              '⬇️ PDF ihned ke stažení',
+              '14 typů dokumentů',
+            ].map(p => (
               <div key={p} className="rounded-full border border-white/8 bg-white/5 px-4 py-2 text-xs font-semibold text-slate-300 md:text-sm">
                 {p}
               </div>
@@ -265,10 +320,48 @@ export default function Home() {
 
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link href="#vyber-smlouvy"
-              className="inline-flex items-center justify-center rounded-2xl bg-amber-500 px-8 py-4 text-lg font-black uppercase tracking-tight text-black shadow-[0_0_40px_rgba(245,158,11,0.28)] transition hover:bg-amber-400">
-              Začít generovat
+              className="inline-flex items-center justify-center rounded-2xl bg-amber-500 px-8 py-4 text-base font-black uppercase tracking-tight text-black shadow-[0_0_40px_rgba(245,158,11,0.28)] transition hover:bg-amber-400">
+              Vybrat typ smlouvy
             </Link>
-            <div className="text-sm text-slate-500">14 typů smluv • od 299 Kč • okamžitě online</div>
+            <Link href="#jak-to-funguje" className="text-sm text-slate-400 hover:text-white transition">
+              Jak to funguje? ↓
+            </Link>
+          </div>
+        </section>
+
+        {/* Jak to funguje */}
+        <section id="jak-to-funguje" className="mb-16 md:mb-20">
+          <div className="rounded-[2rem] border border-white/8 bg-white/5 px-6 py-8 backdrop-blur-sm md:px-10 md:py-10">
+            <div className="mb-8 text-center">
+              <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Jak to funguje</div>
+              <h2 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">Tři kroky ke kompletnímu dokumentu</h2>
+            </div>
+
+            <div className="grid gap-8 md:grid-cols-3">
+              {[
+                {
+                  step: '01',
+                  title: 'Vyplňte formulář',
+                  desc: 'Zadejte údaje o smluvních stranách a podmínky dohody. Přehledný formulář vás provede každou důležitou částí dokumentu.',
+                },
+                {
+                  step: '02',
+                  title: 'Zvolte úroveň ochrany',
+                  desc: 'Základní dokument postačí pro jednoduché situace. Profesionální ochrana přidává klauzule, které vaši smluvní pozici výrazně posílí.',
+                },
+                {
+                  step: '03',
+                  title: 'Stáhněte a podepište',
+                  desc: 'Po zaplacení obdržíte kompletní PDF připravené k tisku a podpisu. U Kompletního balíčku i s průvodními instrukcemi a checklistem.',
+                },
+              ].map(s => (
+                <div key={s.step} className="text-center md:text-left">
+                  <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/10 border border-amber-500/20 text-sm font-black text-amber-400">{s.step}</div>
+                  <h3 className="mt-3 text-xl font-black text-white">{s.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-400">{s.desc}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -277,10 +370,10 @@ export default function Home() {
           <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
               <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Výběr dokumentu</div>
-              <h2 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">Vyberte, co potřebujete vyřešit</h2>
+              <h2 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">Dokumenty pro životní i podnikatelské situace</h2>
             </div>
             <p className="max-w-xl text-sm leading-relaxed text-slate-400 md:text-right">
-              Každý builder obsahuje chytrý formulář, analýzu rizik a strukturu s aktuálními právními paragrafy.
+              Každý dokument je připraven v souladu s aktuálně platným českým právem a reflektuje standardní smluvní praxi.
             </p>
           </div>
 
@@ -295,11 +388,6 @@ export default function Home() {
                     <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-300">
                       {contract.category}
                     </div>
-                    {contract.badge && (
-                      <div className="rounded-full bg-amber-500 px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-black shadow-lg">
-                        {contract.badge}
-                      </div>
-                    )}
                   </div>
 
                   <h3 className="mb-1 text-2xl font-black italic tracking-tight text-white">{contract.title}</h3>
@@ -327,79 +415,105 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Prémiový balíček CTA */}
-        <section className="mt-10">
-          <div className="rounded-3xl border border-amber-500/20 bg-gradient-to-r from-amber-500/8 to-transparent p-7 flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div>
-              <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400 mb-2">Prémiový balíček</div>
-              <h3 className="text-xl font-black text-white tracking-tight">Potřebujete silnější ochranu?</h3>
-              <p className="text-sm text-slate-400 mt-1 max-w-lg">
-                Každá smlouva má volitelný prémiový upgrade: rozšířené doložky, zajišťovací klauzule a doporučení k notáři. Celkem <strong className="text-amber-400">598 Kč</strong> místo základních 299 Kč.
-              </p>
-            </div>
-            <div className="flex-shrink-0 flex items-center gap-4">
-              <div className="text-center">
-                <div className="text-3xl font-black text-white">598 Kč</div>
-                <div className="text-xs text-slate-500 mt-0.5">prémiová smlouva</div>
-              </div>
-              <Link href="#vyber-smlouvy" className="px-6 py-3 bg-amber-500 text-black font-black uppercase text-sm rounded-2xl hover:bg-amber-400 transition whitespace-nowrap">
-                Vybrat smlouvu →
-              </Link>
-            </div>
+        {/* Ceník — 3 úrovně */}
+        <section id="cenik" className="mt-16 md:mt-20">
+          <div className="mb-10 text-center">
+            <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Ceník</div>
+            <h2 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">Vyberte úroveň zpracování</h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-400">
+              Každý dokument je odborně zpracován. Liší se hloubkou právní ochrany, doprovodným materiálem a dostupnými službami.
+            </p>
           </div>
-        </section>
 
-        {/* Jak to funguje */}
-        <section id="jak-to-funguje" className="mt-16 md:mt-20">
-          <div className="rounded-[2rem] border border-white/8 bg-white/5 px-6 py-8 backdrop-blur-sm md:px-10 md:py-10">
-            <div className="mb-8">
-              <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Jak to funguje</div>
-              <h2 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">Jednoduchý proces od výběru po stažení</h2>
-            </div>
+          <div className="grid gap-6 md:grid-cols-3">
+            {pricingTiers.map((tier) => (
+              <div
+                key={tier.name}
+                className={`relative flex flex-col rounded-3xl border p-7 ${
+                  tier.highlighted
+                    ? 'border-amber-500/40 bg-gradient-to-b from-amber-500/10 to-[#0c1426] shadow-[0_0_60px_rgba(245,158,11,0.12)]'
+                    : 'border-slate-800 bg-[#0c1426]'
+                }`}
+              >
+                {tier.badge && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <div className="rounded-full bg-amber-500 px-4 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-black shadow-lg whitespace-nowrap">
+                      {tier.badge}
+                    </div>
+                  </div>
+                )}
 
-            <div className="grid gap-8 md:grid-cols-4">
-              {[
-                { step: '01', title: 'Vyberete smlouvu', desc: 'Zvolíte z 14 dokumentů podle situace — nájem, práce, podnikání, finance nebo obecné.' },
-                { step: '02', title: 'Vyplníte formulář', desc: 'Systém vás vede krok za krokem a průběžně skládá výsledný dokument s analýzou rizik.' },
-                { step: '03', title: 'Zaplatíte 299 Kč', desc: 'Bezpečná platba kartou přes Stripe. Platba trvá 30 sekund.' },
-                { step: '04', title: 'Stáhnete PDF', desc: 'Finální profesionální smlouva s paragrafy OZ je okamžitě ke stažení.' },
-              ].map(s => (
-                <div key={s.step}>
-                  <div className="text-sm font-black uppercase tracking-[0.18em] text-amber-400">{s.step}</div>
-                  <h3 className="mt-3 text-xl font-black text-white">{s.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-400">{s.desc}</p>
+                <div className="mb-6">
+                  <div className="text-[11px] font-black uppercase tracking-[0.18em] text-slate-500 mb-1">{tier.name}</div>
+                  <div className="text-4xl font-black text-white">{tier.price}</div>
+                  <div className="mt-1 text-sm text-slate-400">{tier.description}</div>
                 </div>
-              ))}
-            </div>
+
+                <ul className="mb-6 flex-grow space-y-2">
+                  {tier.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2 text-sm text-slate-300">
+                      <span className="mt-0.5 flex-shrink-0 text-amber-400">✓</span>
+                      <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <p className="mb-6 text-xs leading-relaxed text-slate-500 border-t border-white/8 pt-4">
+                  {tier.note}
+                </p>
+
+                <Link
+                  href={tier.href}
+                  className={`block rounded-2xl py-3 text-center text-sm font-black uppercase tracking-tight transition ${
+                    tier.highlighted
+                      ? 'bg-amber-500 text-black hover:bg-amber-400'
+                      : 'border border-white/10 bg-white/5 text-white hover:bg-white/10'
+                  }`}
+                >
+                  {tier.cta}
+                </Link>
+              </div>
+            ))}
           </div>
         </section>
 
-        {/* Proč SmlouvaHned */}
+        {/* Proč SmlouvaHned — sekce důvěry */}
         <section className="mt-16 md:mt-20">
+          <div className="mb-8 text-center">
+            <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Proč SmlouvaHned</div>
+            <h2 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">Proč zvolit připravenou smlouvu<br className="hidden md:block" /> místo bezplatného vzoru?</h2>
+          </div>
+
           <div className="grid gap-6 md:grid-cols-3">
             {[
               {
                 label: 'Právní kvalita',
-                title: 'Paragrafy OZ přímo v dokumentu',
-                desc: 'Každá smlouva obsahuje přesné citace zákona č. 89/2012 Sb. — to je základ, který levné vzory na internetu nemají.',
+                title: 'Sestaveno dle aktuálního českého práva',
+                desc: 'Volně dostupné vzory jsou zpravidla obecné a neaktuální. Dokumenty na tomto webu jsou sestavovány dynamicky na základě vašich podmínek a obsahují přesné citace OZ a dalších platných předpisů.',
               },
               {
-                label: 'Bezpečnost',
-                title: 'Data nikdy nevidíme my',
-                desc: 'Citlivé osobní údaje jsou šifrované, uložené dočasně max. 7 dní a poté automaticky smazány. Platby jdou přes Stripe.',
+                label: 'Ochrana dat',
+                title: 'Vaše data jsou v bezpečí',
+                desc: 'Citlivé osobní údaje jsou šifrované a uchovávány dočasně po dobu max. 7 dní, poté automaticky smazány. Platební údaje zpracovává výhradně Stripe — na naše servery se nikdy nedostanou.',
               },
               {
-                label: 'Rychlost a cena',
-                title: 'Hotovo za 3 minuty, od 299 Kč',
-                desc: 'Advokát za smlouvu vezme 3 000–10 000 Kč. U nás dostanete profesionální výstup za zlomek ceny a okamžitě.',
+                label: 'Dostupnost',
+                title: 'Profesionální výstup za zlomek ceny',
+                desc: 'Získejte profesionálně zpracovaný dokument bez nutnosti osobní návštěvy advokátní kanceláře. Výsledek je k dispozici okamžitě po vyplnění formuláře a zaplacení.',
               },
             ].map(c => (
               <div key={c.title} className="rounded-3xl border border-white/8 bg-[#0c1426] p-7">
                 <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">{c.label}</div>
-                <h3 className="mt-3 text-xl font-black text-white">{c.title}</h3>
+                <h3 className="mt-3 text-lg font-black text-white leading-snug">{c.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-slate-400">{c.desc}</p>
               </div>
             ))}
+          </div>
+
+          {/* Legal disclaimer jako součást sekce důvěry */}
+          <div className="mt-6 rounded-2xl border border-white/8 bg-white/3 px-6 py-4 text-xs leading-relaxed text-slate-500">
+            <span className="font-bold text-slate-400">Upozornění:</span> Dokumenty generované na tomto webu představují standardní smluvní vzory a nejsou náhradou za individuální právní poradenství.
+            V případě nestandardních nebo složitějších situací doporučujeme konzultaci s advokátem.
           </div>
         </section>
 
@@ -429,16 +543,16 @@ export default function Home() {
         {/* Final CTA */}
         <section className="mt-16 md:mt-20">
           <div className="rounded-[2rem] border border-amber-500/20 bg-gradient-to-br from-amber-500/10 to-yellow-500/5 px-6 py-10 text-center md:px-10">
-            <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Připraveno k použití</div>
+            <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Připraveni začít?</div>
             <h2 className="mt-3 text-3xl font-black tracking-tight text-white md:text-4xl">
-              Vyberte smlouvu a začněte hned
+              Vytvořte svůj dokument dnes
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-slate-300 md:text-base">
-              Profesionální formulář, aktuální paragrafy OZ, okamžité PDF ke stažení.
+              Vyplnění formuláře zabere většinou méně než pět minut. Výsledkem je kompletní smlouva připravená k podpisu.
             </p>
             <Link href="#vyber-smlouvy"
-              className="mt-8 inline-flex items-center justify-center rounded-2xl bg-amber-500 px-8 py-4 text-lg font-black uppercase tracking-tight text-black transition hover:bg-amber-400">
-              Vybrat smlouvu
+              className="mt-8 inline-flex items-center justify-center rounded-2xl bg-amber-500 px-8 py-4 text-base font-black uppercase tracking-tight text-black transition hover:bg-amber-400">
+              Pokračovat k výběru dokumentu
             </Link>
           </div>
         </section>
@@ -451,11 +565,11 @@ export default function Home() {
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500 text-sm font-black text-black">SH</div>
                 <div>
                   <div className="font-black tracking-tight text-white">SmlouvaHned</div>
-                  <div className="text-[11px] uppercase tracking-[0.18em] text-slate-500">Generátor smluv</div>
+                  <div className="text-[11px] uppercase tracking-[0.18em] text-slate-500">Právní dokumenty online</div>
                 </div>
               </div>
               <p className="mt-4 text-sm leading-relaxed text-slate-400">
-                Profesionálně navržené dokumenty s paragrafy OZ pro typické životní a podnikatelské situace.
+                Profesionálně zpracované dokumenty dle platného českého práva pro typické životní a podnikatelské situace.
               </p>
             </div>
 
@@ -465,6 +579,7 @@ export default function Home() {
                 <div className="mt-3 flex flex-col gap-2 text-sm text-slate-400">
                   <Link href="#vyber-smlouvy" className="hover:text-white transition">Smlouvy</Link>
                   <Link href="#jak-to-funguje" className="hover:text-white transition">Jak to funguje</Link>
+                  <Link href="#cenik" className="hover:text-white transition">Ceník</Link>
                   <Link href="#faq" className="hover:text-white transition">FAQ</Link>
                   <Link href="/zakaznicka-zona" className="hover:text-white transition">Moje dokumenty</Link>
                 </div>

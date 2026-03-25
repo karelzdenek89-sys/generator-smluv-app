@@ -195,15 +195,15 @@ export default function KupniPage() {
               </div>
             </section>
 
-            {/* Prémiový balíček */}
+            {/* Profesionální ochrana */}
             <section className={cardClass}>
               <label className={`flex items-start gap-4 cursor-pointer rounded-2xl border p-5 transition ${form.notaryUpsell ? 'border-amber-500/70 bg-amber-500/10' : 'border-slate-700/60 bg-[#111c31]'}`}>
                 <input type="checkbox" name="notaryUpsell" checked={form.notaryUpsell} onChange={set} className="mt-1 h-5 w-5 accent-amber-500" />
                 <div>
-                  <div className="font-bold text-white">Prémiový balíček +299 Kč</div>
+                  <div className="font-bold text-white">Profesionální ochrana +200 Kč</div>
                   <div className="mt-1 text-sm text-slate-400">Rozšířená záruka s podmínkami reklamace, prohlášení o vlastnictví a bezdluhovosti, ochrana kupujícího i prodávajícího.</div>
                 </div>
-                <div className="ml-auto text-amber-400 font-bold text-lg">598 Kč</div>
+                <div className="ml-auto text-amber-400 font-bold text-lg">449 Kč</div>
               </label>
             </section>
           </div>
@@ -234,9 +234,9 @@ export default function KupniPage() {
             <div className={cardClass}>
               <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90 mb-4">Shrnutí objednávky</div>
               <div className="space-y-2 text-sm">
-                <div className="flex justify-between"><span className="text-slate-400">Kupní smlouva</span><span className="text-white font-bold">299 Kč</span></div>
-                {form.notaryUpsell && <div className="flex justify-between"><span className="text-slate-400">Prémiový balíček</span><span className="text-amber-400 font-bold">+299 Kč</span></div>}
-                <div className="border-t border-slate-700 pt-2 flex justify-between font-bold text-lg"><span>Celkem</span><span className="text-amber-400">{form.notaryUpsell ? '598' : '299'} Kč</span></div>
+                <div className="flex justify-between"><span className="text-slate-400">Kupní smlouva</span><span className="text-white font-bold">249 Kč</span></div>
+                {form.notaryUpsell && <div className="flex justify-between"><span className="text-slate-400">Profesionální ochrana</span><span className="text-amber-400 font-bold">+249 Kč</span></div>}
+                <div className="border-t border-slate-700 pt-2 flex justify-between font-bold text-lg"><span>Celkem</span><span className="text-amber-400">{form.notaryUpsell ? '449' : '249'} Kč</span></div>
               </div>
               {(!form.sellerName || !form.buyerName || !form.price) && !isProcessing && (
                 <div className="mt-4 rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-3 text-xs text-rose-300 space-y-1">

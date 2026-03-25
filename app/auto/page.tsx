@@ -960,7 +960,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     />
                     <div>
                       <div className="text-sm font-black text-amber-400 uppercase">
-                        Premium ochrana +490 Kč
+                        Premium ochrana +200 Kč
                       </div>
                       <div className="text-[11px] text-slate-400 mt-1 leading-relaxed">
                         Přidá rozšířený technický protokol, potvrzení o stavu kilometrů, checklist převodu a
@@ -978,8 +978,8 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   {isProcessing
                     ? 'PŘESMĚROVÁNÍ NA PLATBU...'
                     : formData.notaryUpsell
-                      ? 'ZAPLATIT A VYGENEROVAT – 789 Kč'
-                      : 'ZAPLATIT A VYGENEROVAT – 299 Kč'}
+                      ? 'ZAPLATIT A VYGENEROVAT – 449 Kč'
+                      : 'ZAPLATIT A VYGENEROVAT – 249 Kč'}
                 </button>
 
                 {riskAnalysis.checkoutBlocked ? (

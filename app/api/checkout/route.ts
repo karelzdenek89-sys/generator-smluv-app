@@ -49,13 +49,15 @@ const CONTRACT_CANCEL_URLS: Record<ContractType, string> = {
 };
 
 function getPrice(contractType: ContractType, notaryUpsell: boolean) {
-  const basePrice = 299;
-  // Nájemní smlouva má prémiový balíček "Exekuční ochrana" za 490 Kč (celkem 789 Kč)
-  // Ostatní smlouvy mají prémiový balíček za 299 Kč (celkem 598 Kč)
-  const premiumPrice = contractType === 'lease' ? 490 : 299;
+  // Tříúrovňový ceník:
+  // Základní dokument:        249 Kč
+  // Profesionální ochrana:    449 Kč (přidaná hodnota: +200 Kč za rozšířené klauzule)
+  const basePrice = 249;
+  const premiumUpgrade = 200; // stejná hodnota pro všechny typy smluv
 
+  void contractType; // contractType reserved for future tier-3 differentiation
   return {
-    amountCzk: basePrice + (notaryUpsell ? premiumPrice : 0),
+    amountCzk: basePrice + (notaryUpsell ? premiumUpgrade : 0),
     title: CONTRACT_TITLES[contractType],
   };
 }
@@ -143,8 +145,8 @@ export async function POST(req: Request) {
             product_data: {
               name: pricing.title,
               description: notaryUpsell
-                ? 'Prémiový balíček — rozšířené doložky, zajišťovací ustanovení a doporučení k notáři'
-                : 'Standardní balíček — profesionální smlouva s právními paragrafy',
+                ? 'Profesionální ochrana — rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení'
+                : 'Základní dokument — profesionální smlouva dle OZ, PDF ke stažení',
             },
           },
         },

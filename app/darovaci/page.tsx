@@ -421,7 +421,7 @@ Dárce: ____________________          Obdarovaný: ____________________
                   onChange={(e) => updateField('notaryUpsell', e.target.checked)}
                   className="w-5 h-5 accent-amber-500"
                 />
-                <span>Chci notářsky ověřené podpisy (+490 Kč)</span>
+                <span>Chci notářsky ověřené podpisy (+200 Kč)</span>
               </label>
             </section>
 
@@ -435,8 +435,8 @@ Dárce: ____________________          Obdarovaný: ____________________
               {isProcessing
                 ? 'PŘESMĚROVÁNÍ NA PLATBU...'
                 : formData.notaryUpsell
-                  ? 'ZAPLATIT A VYGENEROVAT – 789 Kč'
-                  : 'ZAPLATIT A VYGENEROVAT – 299 Kč'}
+                  ? 'ZAPLATIT A VYGENEROVAT – 449 Kč'
+                  : 'ZAPLATIT A VYGENEROVAT – 249 Kč'}
             </motion.button>
           </div>
 

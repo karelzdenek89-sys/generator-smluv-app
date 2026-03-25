@@ -82,8 +82,9 @@ export default function TermsPage() {
               04. Ceny a platební podmínky
             </h2>
             <div className="bg-[#0c1426]/60 border border-white/5 rounded-2xl p-5 space-y-2 text-sm mb-3">
-              <div className="flex justify-between"><span className="text-slate-400">Standardní balíček</span><span className="font-bold text-white">299 Kč vč. DPH</span></div>
-              <div className="flex justify-between"><span className="text-slate-400">Prémiový balíček</span><span className="font-bold text-white">598 Kč vč. DPH</span></div>
+              <div className="flex justify-between"><span className="text-slate-400">Základní dokument</span><span className="font-bold text-white">249 Kč vč. DPH</span></div>
+              <div className="flex justify-between"><span className="text-slate-400">Profesionální ochrana</span><span className="font-bold text-white">449 Kč vč. DPH</span></div>
+              <div className="flex justify-between"><span className="text-slate-400">Kompletní balíček</span><span className="font-bold text-white">749 Kč vč. DPH</span></div>
             </div>
             <p className="mb-3">
               Platba probíhá prostřednictvím zabezpečené platební brány <strong className="text-white">Stripe</strong> (kartou). Ihned po potvrzení platby je Zákazníkovi zpřístupněn odkaz ke stažení dokumentu na stránce a zasílán na e-mail (pokud byl zadán).
