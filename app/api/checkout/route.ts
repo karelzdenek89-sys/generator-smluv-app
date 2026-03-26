@@ -127,13 +127,12 @@ export async function POST(req: Request) {
     const cancelPath = CONTRACT_CANCEL_URLS[contractType] || '/';
 
     // Stripe Checkout Session
-    // automatic_payment_methods zajistí zobrazení všech metod povolených v Stripe Dashboardu
-    // (Google Pay, Apple Pay, bankovní převody atd.)
+    // Bez payment_method_types → Stripe použije všechny metody povolené v Dashboardu
+    // (Google Pay, Apple Pay, karty atd.) — automatic_payment_methods je jen pro PaymentIntent API
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       customer_email: email || undefined,
       locale: 'cs',
-      automatic_payment_methods: { enabled: true },
       line_items: [
         {
           price: priceId,
