@@ -37,10 +37,12 @@ const formatAmount = (amount?: unknown) => {
   return num.toLocaleString('cs-CZ');
 };
 
-const asText = (value: unknown, fallback = emptyLine) => {
+const asText = (value: unknown, fallback = emptyLine, maxLength = 1000) => {
   if (value === null || value === undefined) return fallback;
   const str = String(value).trim();
-  return str === '' ? fallback : str;
+  if (str === '') return fallback;
+  // Ochrana proti přetečení textu v PDF — max 1000 znaků na pole
+  return str.length > maxLength ? str.substring(0, maxLength) + '…' : str;
 };
 
 const yesNo = (value: unknown, yes = 'ano', no = 'ne') => (value ? yes : no);

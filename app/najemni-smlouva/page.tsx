@@ -68,7 +68,7 @@ const contents = [
 const steps = [
   { n: '01', title: 'Vyplníte údaje', desc: 'Pronajímatel, nájemce, byt, nájemné, kauce, pravidla. Formulář vás provede každou sekcí.' },
   { n: '02', title: 'Zkontrolujete souhrn', desc: 'Před platbou vidíte přehled všech podmínek. Nic nezaplatíte, dokud si vše neověříte.' },
-  { n: '03', title: 'Vyberete variantu', desc: 'Základní smlouva (249 Kč) nebo rozšířená ochrana se sankcemi (449 Kč).' },
+  { n: '03', title: 'Vyberete variantu', desc: 'Základní smlouva (249 Kč) nebo rozšířená ochrana se sankcemi (399 Kč).' },
   { n: '04', title: 'Stáhnete PDF', desc: 'Ihned po zaplacení obdržíte kompletní nájemní smlouvu včetně předávacího protokolu.' },
 ];
 
@@ -287,7 +287,7 @@ export default function NajemniSmlouvaPage() {
                 Nejčastěji voleno
               </div>
               <div className="mb-1 text-[11px] font-black uppercase tracking-widest text-amber-500">Profesionální ochrana</div>
-              <div className="mb-1 text-4xl font-black text-white">449 Kč</div>
+              <div className="mb-1 text-4xl font-black text-white">399 Kč</div>
               <p className="mb-5 text-sm text-slate-400">Rozšířená ochrana pro jistý výsledek</p>
               <ul className="mb-6 space-y-2">
                 {[

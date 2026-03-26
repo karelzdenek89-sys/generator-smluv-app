@@ -189,7 +189,7 @@ export default function PlnaMocPage() {
               <div className="space-y-3">
                 {([
                   { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální plná moc dle § 441 OZ v PDF.' },
-                  { value: 'professional', label: 'Profesionální ochrana', price: '449 Kč', desc: 'Rozšířené klauzule, odpovědnostní doložky, ověřená verze.', recommended: true },
+                  { value: 'professional', label: 'Profesionální ochrana', price: '399 Kč', desc: 'Rozšířené klauzule, odpovědnostní doložky, ověřená verze.', recommended: true },
                   { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Profesionální ochrany + instrukce k podpisu, checklist a 30denní archivace.' },
                 ] as const).map((opt) => (
                   <label key={opt.value} className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${form.tier === opt.value ? 'border-amber-500 bg-amber-500/10' : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'}`}>
@@ -230,7 +230,7 @@ export default function PlnaMocPage() {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between"><span className="text-slate-400">Plná moc</span><span className="font-bold">249 Kč</span></div>
                 {form.notaryUpsell && <div className="flex justify-between"><span className="text-slate-400">Ověřená verze</span><span className="text-amber-400 font-bold">+200 Kč</span></div>}
-                <div className="border-t border-slate-700 pt-2 flex justify-between font-bold text-lg"><span>Celkem</span><span className="text-amber-400">{form.tier === 'complete' ? '749' : form.tier === 'professional' ? '449' : '249'} Kč</span></div>
+                <div className="border-t border-slate-700 pt-2 flex justify-between font-bold text-lg"><span>Celkem</span><span className="text-amber-400">{form.tier === 'complete' ? '749' : form.tier === 'professional' ? '399' : '249'} Kč</span></div>
               </div>
               {(!form.principalName || !form.agentName) && !isProcessing && (
                 <div className="mt-4 rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-3 text-xs text-rose-300 space-y-1">
@@ -256,7 +256,7 @@ export default function PlnaMocPage() {
                     Přesměrování…
                   </span>
                 ) : (
-                  `Zaplatit ${form.tier === 'complete' ? '749 Kč' : form.tier === 'professional' ? '449 Kč' : '249 Kč'} a stáhnout PDF →`
+                  `Zaplatit ${form.tier === 'complete' ? '749 Kč' : form.tier === 'professional' ? '399 Kč' : '249 Kč'} a stáhnout PDF →`
                 )}
               </button>
               <p className="mt-3 text-center text-[11px] text-slate-500">🔒 Zabezpečená platba přes Stripe · PDF ihned</p>

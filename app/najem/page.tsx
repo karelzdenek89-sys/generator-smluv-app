@@ -951,7 +951,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
               <div className="space-y-3">
                 {([
                   { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva dle občanského zákoníku v PDF.' },
-                  { value: 'professional', label: 'Profesionální ochrana', price: '449 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
+                  { value: 'professional', label: 'Profesionální ochrana', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
                   { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Profesionální ochrany + průvodní instrukce, checklist a 30denní archivace.' },
                 ] as const).map((opt) => (
                   <label
@@ -1136,7 +1136,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   )}
                   <div className="border-t border-white/8 mt-2 pt-2 flex items-center justify-between">
                     <span className="text-sm font-black text-white">Celkem</span>
-                    <span className="text-xl font-black text-amber-400">{formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '449 Kč' : '249 Kč'}</span>
+                    <span className="text-xl font-black text-amber-400">{formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '399 Kč' : '249 Kč'}</span>
                   </div>
                 </div>
 
@@ -1169,7 +1169,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                       Přesměrování na platbu…
                     </span>
                   ) : (
-                    `Zaplatit ${formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '449 Kč' : '249 Kč'} a stáhnout PDF →`
+                    `Zaplatit ${formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '399 Kč' : '249 Kč'} a stáhnout PDF →`
                   )}
                 </button>
 

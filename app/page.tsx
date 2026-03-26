@@ -194,7 +194,7 @@ const pricingTiers = [
   },
   {
     name: 'Profesionální ochrana',
-    price: '449 Kč',
+    price: '399 Kč',
     description: 'Rozšířená právní ochrana pro jistý výsledek',
     features: [
       'Vše ze Základního dokumentu',

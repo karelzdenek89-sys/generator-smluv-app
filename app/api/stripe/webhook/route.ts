@@ -39,6 +39,21 @@ export async function POST(req: Request) {
 
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
+
+      // Idempotence: zabránit duplicitnímu zpracování při Stripe retry
+      try {
+        const dedupKey = `webhook:paid:${session.id}`;
+        const alreadyProcessed = await redis.get(dedupKey);
+        if (alreadyProcessed) {
+          console.log(`[webhook] Duplicate event for ${session.id} — skipping`);
+          return NextResponse.json({ received: true });
+        }
+        await redis.set(dedupKey, '1', { ex: 60 * 60 * 24 * 3 }); // 3 dny
+      } catch (dedupErr) {
+        // Fail-open: Redis výpadek nesmí zablokovat zpracování platby
+        console.warn('[webhook] Idempotency check fail-open:', dedupErr);
+      }
+
       const draftId = session.metadata?.draftId;
 
       if (draftId) {

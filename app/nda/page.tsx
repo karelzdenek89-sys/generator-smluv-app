@@ -180,7 +180,7 @@ export default function NdaBuilderPage() {
             <span>§ 1724 a násl. OZ + obch. tajemství § 504</span>
           </div>
           <span className="text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-full px-3 py-1">
-            {formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '449 Kč' : '249 Kč'}
+            {formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '399 Kč' : '249 Kč'}
           </span>
         </div>
       </header>
@@ -336,7 +336,7 @@ export default function NdaBuilderPage() {
               <div className="space-y-3">
                 {([
                   { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální NDA dle OZ + obchodní tajemství v PDF.' },
-                  { value: 'professional', label: 'Profesionální ochrana', price: '449 Kč', desc: 'Rozšířené klauzule, smluvní pokuty, odpovědnostní doložky.', recommended: true },
+                  { value: 'professional', label: 'Profesionální ochrana', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty, odpovědnostní doložky.', recommended: true },
                   { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Profesionální ochrany + instrukce k podpisu, checklist a 30denní archivace.' },
                 ] as const).map((opt) => (
                   <label key={opt.value} className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${formData.tier === opt.value ? 'border-amber-500 bg-amber-500/10' : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'}`}>
@@ -415,7 +415,7 @@ export default function NdaBuilderPage() {
                 )}
                 <div className="border-t border-white/8 pt-2 flex justify-between font-black text-lg">
                   <span>Celkem</span>
-                  <span className="text-white">{formData.tier === 'complete' ? '749' : formData.tier === 'professional' ? '449' : '249'} Kč</span>
+                  <span className="text-white">{formData.tier === 'complete' ? '749' : formData.tier === 'professional' ? '399' : '249'} Kč</span>
                 </div>
               </div>
 
@@ -441,7 +441,7 @@ export default function NdaBuilderPage() {
                     Přesměrování…
                   </span>
                 ) : (
-                  `Zaplatit ${formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '449 Kč' : '249 Kč'} a stáhnout PDF →`
+                  `Zaplatit ${formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '399 Kč' : '249 Kč'} a stáhnout PDF →`
                 )}
               </button>
               <p className="text-center text-xs text-slate-600 mt-3">🔒 Platba přes Stripe · PDF ke stažení ihned</p>

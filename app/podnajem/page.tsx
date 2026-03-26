@@ -147,7 +147,7 @@ export default function PodnajemuPage() {
           <div className="flex items-center gap-3">
             <span className="text-xs text-slate-400 hidden sm:block">Podnájemní smlouva</span>
             <span className="text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-full px-3 py-1">
-              {form.tier === 'complete' ? '749 Kč' : form.tier === 'professional' ? '449 Kč' : '249 Kč'}
+              {form.tier === 'complete' ? '749 Kč' : form.tier === 'professional' ? '399 Kč' : '249 Kč'}
             </span>
           </div>
         </div>
@@ -297,7 +297,7 @@ export default function PodnajemuPage() {
               <div className="space-y-3">
                 {([
                   { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální podnájemní smlouva dle OZ v PDF.' },
-                  { value: 'professional', label: 'Profesionální ochrana', price: '449 Kč', desc: 'Rozšířené klauzule, smluvní pokuty, sankce za prodlení.', recommended: true },
+                  { value: 'professional', label: 'Profesionální ochrana', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty, sankce za prodlení.', recommended: true },
                   { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Profesionální ochrany + instrukce k podpisu, checklist a 30denní archivace.' },
                 ] as const).map((opt) => (
                   <label key={opt.value} className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${form.tier === opt.value ? 'border-amber-500 bg-amber-500/10' : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'}`}>
@@ -376,7 +376,7 @@ export default function PodnajemuPage() {
                 )}
                 <div className="border-t border-slate-700 pt-2 flex justify-between font-bold text-lg">
                   <span>Celkem</span>
-                  <span className="text-amber-400">{form.tier === 'complete' ? '749' : form.tier === 'professional' ? '449' : '249'} Kč</span>
+                  <span className="text-amber-400">{form.tier === 'complete' ? '749' : form.tier === 'professional' ? '399' : '249'} Kč</span>
                 </div>
               </div>
 
@@ -402,7 +402,7 @@ export default function PodnajemuPage() {
                     Přesměrování na platbu…
                   </span>
                 ) : (
-                  `Zaplatit ${form.tier === 'complete' ? '749 Kč' : form.tier === 'professional' ? '449 Kč' : '249 Kč'} a stáhnout PDF →`
+                  `Zaplatit ${form.tier === 'complete' ? '749 Kč' : form.tier === 'professional' ? '399 Kč' : '249 Kč'} a stáhnout PDF →`
                 )}
               </button>
               <p className="mt-3 text-center text-[11px] text-slate-500">

@@ -72,16 +72,35 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const draft = await redis.get<DraftRecord>(`contract:draft:${draftId}`);
+    let draft = await redis.get<DraftRecord>(`contract:draft:${draftId}`);
 
+    // Fallback: Redis selhal nebo draft expiroval — rekonstruujeme z Stripe metadat
     if (!draft) {
-      return NextResponse.json(
-        {
-          error: 'Draft nebyl nalezen nebo expiroval.',
-          hint: 'Dokument je dostupný 7 dní od zaplacení. Pro opětovné zaslání kontaktujte info@smlouvahned.cz',
-        },
-        { status: 404 }
-      );
+      if (session.payment_status === 'paid' && session.metadata?.contractType) {
+        console.warn(`[download] Draft missing for ${draftId}, reconstructing from Stripe metadata`);
+        const fallbackTier = (session.metadata.tier as DraftRecord['tier']) || 'basic';
+        draft = {
+          contractType: session.metadata.contractType as DraftRecord['contractType'],
+          tier: fallbackTier,
+          notaryUpsell: session.metadata.notaryUpsell === 'true',
+          payload: {
+            contractType: session.metadata.contractType as DraftRecord['contractType'],
+            tier: fallbackTier,
+          },
+          paid: true,
+          createdAt: new Date().toISOString(),
+          stripeSessionId: session.id,
+          paymentStatus: session.payment_status,
+        };
+      } else {
+        return NextResponse.json(
+          {
+            error: 'Draft nebyl nalezen nebo expiroval.',
+            hint: 'Dokument je dostupný 7 dní od zaplacení. Pro opětovné zaslání kontaktujte info@smlouvahned.cz',
+          },
+          { status: 404 }
+        );
+      }
     }
 
     // Dvojitá kontrola: Redis flag + Stripe payment_status

@@ -165,7 +165,7 @@ export default function UznanidluhuPage() {
                 <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Vyberte balíček</div>
                 {([
                   { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva dle občanského zákoníku v PDF.' },
-                  { value: 'professional', label: 'Profesionální ochrana', price: '449 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
+                  { value: 'professional', label: 'Profesionální ochrana', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
                   { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Profesionální ochrany + průvodní instrukce, checklist a 30denní archivace.' },
                 ] as const).map((opt) => (
                   <label
@@ -235,7 +235,7 @@ export default function UznanidluhuPage() {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between"><span className="text-slate-400">Uznání dluhu</span><span className="font-bold">249 Kč</span></div>
                 {form.notaryUpsell && <div className="flex justify-between"><span className="text-slate-400">Exekuční doložka</span><span className="text-amber-400 font-bold">+200 Kč</span></div>}
-                <div className="border-t border-slate-700 pt-2 flex justify-between font-bold text-lg"><span>Celkem</span><span className="text-amber-400">{form.tier === 'complete' ? '749' : form.tier === 'professional' ? '449' : '249'} Kč</span></div>
+                <div className="border-t border-slate-700 pt-2 flex justify-between font-bold text-lg"><span>Celkem</span><span className="text-amber-400">{form.tier === 'complete' ? '749' : form.tier === 'professional' ? '399' : '249'} Kč</span></div>
               </div>
               {(!form.creditorName || !form.debtorName || !form.debtAmount) && !isProcessing && (
                 <div className="mt-4 rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-3 text-xs text-rose-300 space-y-1">
