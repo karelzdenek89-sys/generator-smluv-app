@@ -11,7 +11,11 @@ const TIER_VALUES = ['basic', 'professional', 'complete'] as const;
 type Tier = (typeof TIER_VALUES)[number];
 
 const checkoutSchema = z.object({
-  contractType: z.enum(['lease', 'car_sale', 'gift', 'work_contract', 'loan', 'nda', 'general_sale', 'employment', 'dpp', 'service', 'sublease', 'power_of_attorney', 'debt_acknowledgment', 'cooperation']),
+  contractType: z.enum([
+    'lease', 'car_sale', 'gift', 'work_contract', 'loan', 'nda',
+    'general_sale', 'employment', 'dpp', 'service', 'sublease',
+    'power_of_attorney', 'debt_acknowledgment', 'cooperation',
+  ]),
   tier: z.enum(TIER_VALUES).optional(),
   notaryUpsell: z.boolean().optional().default(false),
   payload: z.record(z.string(), z.unknown()),
@@ -35,25 +39,25 @@ const CONTRACT_CANCEL_URLS: Record<ContractType, string> = {
   cooperation: '/spoluprace',
 };
 
-/** Mapování tierů na Environment Variables z Vercelu */
-const TIER_PRICE_IDS: Record<Tier, string | undefined> = {
-  basic: process.env.STRIPE_PRICE_ID_BASIC,
-  professional: process.env.STRIPE_PRICE_ID_PRO,
-  complete: process.env.STRIPE_PRICE_ID_PREMIUM,
-};
+/** Čte Price IDs za běhu (ne při inicializaci modulu) — bezpečné pro Next.js build */
+function getPriceId(tier: Tier): string | undefined {
+  const map: Record<Tier, string | undefined> = {
+    basic:        process.env.STRIPE_PRICE_ID_BASIC,
+    professional: process.env.STRIPE_PRICE_ID_PRO,
+    complete:     process.env.STRIPE_PRICE_ID_PREMIUM,
+  };
+  return map[tier];
+}
 
-// Fail-safe rate limit: Pokud Redis selže, logujeme chybu, ale pustíme uživatele dál
 async function checkRateLimit(ip: string): Promise<boolean> {
   try {
     const key = `ratelimit:checkout:${ip}`;
     const count = await redis.incr(key);
-    if (count === 1) {
-      await redis.expire(key, 3600);
-    }
-    return count <= 15; // Zvýšeno na 15 pro jistotu
+    if (count === 1) await redis.expire(key, 3600);
+    return count <= 15;
   } catch (err) {
-    console.error('Redis Rate Limit Error (Failing open):', err);
-    return true; // Pustíme uživatele i při chybě Redisu
+    console.error('Redis Rate Limit Error:', err);
+    return true; // fail-open: platba je důležitější než rate-limit při výpadku Redisu
   }
 }
 
@@ -61,8 +65,7 @@ export async function POST(req: Request) {
   try {
     const forwarded = req.headers.get('x-forwarded-for');
     const ip = forwarded ? forwarded.split(',')[0].trim() : 'unknown';
-    
-    // Kontrola limitů
+
     const allowed = await checkRateLimit(ip);
     if (!allowed) {
       return NextResponse.json(
@@ -79,24 +82,25 @@ export async function POST(req: Request) {
     }
 
     const { contractType, tier: rawTier, notaryUpsell, payload, email } = parsed.data;
+    const tier: Tier = rawTier || (notaryUpsell ? 'professional' : 'basic');
 
-    // Logika určení tarifu
-    let tier: Tier = rawTier || (notaryUpsell ? 'professional' : 'basic');
-    const priceId = TIER_PRICE_IDS[tier];
-
+    // Price ID čteme za běhu (ne na úrovni modulu)
+    const priceId = getPriceId(tier);
     if (!priceId) {
-      console.error(`Missing Price ID for tier: ${tier}`);
-      return NextResponse.json({ error: 'Konfigurace ceny nebyla nalezena.' }, { status: 500 });
+      console.error(`Missing Stripe Price ID for tier: ${tier}`);
+      return NextResponse.json(
+        { error: 'Konfigurace ceny nebyla nalezena.' },
+        { status: 500 },
+      );
     }
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || new URL(req.url).origin;
     const draftId = randomUUID();
+    const TTL_SECONDS = tier === 'complete' ? 60 * 60 * 24 * 30 : 60 * 60 * 24 * 7;
+    const effectiveNotaryUpsell = tier !== 'basic';
 
     // Uložení draftu do Redisu
     try {
-      const TTL_SECONDS = tier === 'complete' ? 60 * 60 * 24 * 30 : 60 * 60 * 24 * 7;
-      const effectiveNotaryUpsell = tier !== 'basic';
-
       await redis.set(
         `contract:draft:${draftId}`,
         {
@@ -104,28 +108,35 @@ export async function POST(req: Request) {
           tier,
           notaryUpsell: effectiveNotaryUpsell,
           email: email || null,
-          payload: { ...payload, contractType, tier },
+          payload: {
+            ...payload,
+            contractType,
+            tier,
+            notaryUpsell: effectiveNotaryUpsell,
+          },
           paid: false,
           createdAt: new Date().toISOString(),
         },
         { ex: TTL_SECONDS },
       );
     } catch (redisError) {
-      console.error('Failed to save draft to Redis:', redisError);
-      // Pokračujeme dál – platba je důležitější než okamžitý draft v Redisu
+      console.error('Redis draft save error:', redisError);
+      // Pokračujeme — platba je primární, draft doplníme z metadat po zaplacení
     }
 
     const cancelPath = CONTRACT_CANCEL_URLS[contractType] || '/';
 
-    // Vytvoření Stripe Checkout Session pomocí Price ID
+    // Stripe Checkout Session
+    // automatic_payment_methods zajistí zobrazení všech metod povolených v Stripe Dashboardu
+    // (Google Pay, Apple Pay, bankovní převody atd.)
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       customer_email: email || undefined,
       locale: 'cs',
-      payment_method_types: ['card'], // Můžeš změnit na automatic_payment_methods: { enabled: true }
+      automatic_payment_methods: { enabled: true },
       line_items: [
         {
-          price: priceId, // Používáme tvé ID z Vercelu (price_1T...)
+          price: priceId,
           quantity: 1,
         },
       ],
@@ -135,18 +146,20 @@ export async function POST(req: Request) {
         draftId,
         contractType,
         tier,
+        notaryUpsell: String(effectiveNotaryUpsell),
       },
     });
 
     if (!session.url) {
-      throw new Error('Stripe nevrátil URL.');
+      throw new Error('Stripe nevrátil URL pro checkout.');
     }
 
     return NextResponse.json({ url: session.url });
-  } catch (error: any) {
-    console.error('Final Checkout Error:', error);
+
+  } catch (error) {
+    console.error('Checkout error:', error);
     return NextResponse.json(
-      { error: error.message || 'Chyba při vytváření platby.' },
+      { error: 'Chyba při vytváření platby.' },
       { status: 500 },
     );
   }
