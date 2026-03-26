@@ -37,7 +37,7 @@ export type ContractSection = {
 //  complete     (749 Kč)  → vše výše + instrukce, checklist, 30denní archivace
 //
 // PRAVIDLO: Obsah smlouvy (premium sekce) se řídí VÝHRADNĚ touto funkcí.
-// Nikdy nespoléhej jen na `resolveTierFeatures(d).hasPremiumClauses` — tier je primární zdroj pravdy.
+// Nikdy nespoléhej jen na `d.notaryUpsell` — tier je primární zdroj pravdy.
 // notaryUpsell je zachován pro zpětnou kompatibilitu a jako fallback.
 // ═══════════════════════════════════════════════════════════════════════
 
@@ -131,6 +131,7 @@ export function getContractMeta(contractType: ContractType) {
 //  DAROVACÍ SMLOUVA
 // ─────────────────────────────────────────────
 function buildGiftContractSections(d: StoredContractData): ContractSection[] {
+  const { hasPremiumClauses } = resolveTierFeatures(d);
   const giftSubject = () => {
     switch (d.giftType) {
       case 'money':
@@ -144,7 +145,7 @@ function buildGiftContractSections(d: StoredContractData): ContractSection[] {
     }
   };
 
-  const premiumContent: ContractSection[] = resolveTierFeatures(d).hasPremiumClauses ? [
+  const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
       title: 'IV. PROHLÁŠENÍ O BEZDLUHOVOSTI A PRÁVNÍM STAVU',
       body: [
@@ -211,7 +212,7 @@ function buildGiftContractSections(d: StoredContractData): ContractSection[] {
     },
     ...premiumContent,
     {
-      title: `${resolveTierFeatures(d).hasPremiumClauses ? 'VI' : 'IV'}. ZÁVĚREČNÁ USTANOVENÍ`,
+      title: `${hasPremiumClauses ? 'VI' : 'IV'}. ZÁVĚREČNÁ USTANOVENÍ`,
       body: [
         'Tato smlouva se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., občanský zákoník.',
         'Případné spory budou řešeny přednostně smírnou cestou, jinak věcně a místně příslušným soudem České republiky.',
@@ -227,7 +228,7 @@ function buildGiftContractSections(d: StoredContractData): ContractSection[] {
   ];
 
   sections.push({
-    title: `${resolveTierFeatures(d).hasPremiumClauses ? 'VII' : 'V'}. PODPISY`,
+    title: `${hasPremiumClauses ? 'VII' : 'V'}. PODPISY`,
     body: [],
   });
 
@@ -238,6 +239,7 @@ function buildGiftContractSections(d: StoredContractData): ContractSection[] {
 //  SMLOUVA O DÍLO
 // ─────────────────────────────────────────────
 function buildWorkContractSections(d: StoredContractData): ContractSection[] {
+  const { hasPremiumClauses } = resolveTierFeatures(d);
   const materialProvider =
     d.materialBy === 'contractor'
       ? 'Zhotovitel'
@@ -252,7 +254,7 @@ function buildWorkContractSections(d: StoredContractData): ContractSection[] {
         ? `Cena bude hrazena průběžně na základě odsouhlasených dílčích faktur ke každé etapě díla (splatnost faktury ${asText(d.invoiceDueDays, '14')} dnů od doručení). Poslední splátka je splatná po řádném předání celého díla.`
         : `Celková cena je splatná jednorázově do ${asText(d.finalPaymentDays, '14')} dnů od řádného předání díla bez vad a nedodělků, na základě faktury vystavené zhotovitelem.`;
 
-  const premiumContent: ContractSection[] = resolveTierFeatures(d).hasPremiumClauses ? [
+  const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
       title: 'VIII. VÍCEPRÁCE A ZMĚNY ROZSAHU',
       body: [
@@ -351,7 +353,7 @@ function buildWorkContractSections(d: StoredContractData): ContractSection[] {
     },
     ...premiumContent,
     {
-      title: `${resolveTierFeatures(d).hasPremiumClauses ? 'X' : 'VIII'}. ZÁVĚREČNÁ USTANOVENÍ`,
+      title: `${hasPremiumClauses ? 'X' : 'VIII'}. ZÁVĚREČNÁ USTANOVENÍ`,
       body: [
         'Tato smlouva se řídí právním řádem České republiky.',
         'Případné spory budou řešeny přednostně smírnou cestou. Nedojde-li k dohodě, bude spor řešen věcně a místně příslušným soudem.',
@@ -363,7 +365,7 @@ function buildWorkContractSections(d: StoredContractData): ContractSection[] {
   ];
 
   sections.push({
-    title: `${resolveTierFeatures(d).hasPremiumClauses ? 'XI' : 'IX'}. PODPISY`,
+    title: `${hasPremiumClauses ? 'XI' : 'IX'}. PODPISY`,
     body: [],
   });
 
@@ -374,6 +376,7 @@ function buildWorkContractSections(d: StoredContractData): ContractSection[] {
 //  KUPNÍ SMLOUVA NA VOZIDLO
 // ─────────────────────────────────────────────
 function buildCarContractSections(d: StoredContractData): ContractSection[] {
+  const { hasPremiumClauses } = resolveTierFeatures(d);
   const paymentText =
     d.paymentMethod === 'cash'
       ? `V hotovosti při podpisu smlouvy, nejpozději však při fyzickém předání vozidla.`
@@ -384,7 +387,7 @@ function buildCarContractSections(d: StoredContractData): ContractSection[] {
       ? 'Vlastnické právo přechází na kupujícího okamžikem úplné úhrady kupní ceny.'
       : 'Vlastnické právo přechází na kupujícího okamžikem fyzického předání vozidla.';
 
-  const premiumContent: ContractSection[] = resolveTierFeatures(d).hasPremiumClauses ? [
+  const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
       title: 'VI. PODROBNÝ STAV VOZIDLA A PŘEDÁVANÉ DOKLADY',
       body: [
@@ -489,7 +492,7 @@ function buildCarContractSections(d: StoredContractData): ContractSection[] {
     },
     ...premiumContent,
     {
-      title: `${resolveTierFeatures(d).hasPremiumClauses ? 'IX' : 'VI'}. ZÁVĚREČNÁ USTANOVENÍ`,
+      title: `${hasPremiumClauses ? 'IX' : 'VI'}. ZÁVĚREČNÁ USTANOVENÍ`,
       body: [
         'Tato smlouva se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., OZ.',
         'Případné spory budou řešeny přednostně smírnou cestou; jinak věcně a místně příslušným soudem.',
@@ -500,7 +503,7 @@ function buildCarContractSections(d: StoredContractData): ContractSection[] {
   ];
 
   sections.push({
-    title: `${resolveTierFeatures(d).hasPremiumClauses ? 'X' : 'VII'}. PODPISY`,
+    title: `${hasPremiumClauses ? 'X' : 'VII'}. PODPISY`,
     body: [],
   });
 
@@ -511,6 +514,7 @@ function buildCarContractSections(d: StoredContractData): ContractSection[] {
 //  NÁJEMNÍ SMLOUVA
 // ─────────────────────────────────────────────
 function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
+  const { hasPremiumClauses } = resolveTierFeatures(d);
   const propertyAddress = asText(d.propertyAddress || d.flatAddress);
   const propertyLayout = asText(d.propertyLayout || d.flatLayout, '__________');
   const utilitiesAmount = d.utilitiesAmount ?? d.utilityAmount ?? '';
@@ -530,7 +534,7 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
 
   const monthlyTotal = (Number(d.rentAmount || 0) + Number(utilitiesAmount || 0)).toString();
 
-  const premiumContent: ContractSection[] = resolveTierFeatures(d).hasPremiumClauses ? [
+  const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
       title: 'X. DORUČOVÁNÍ PÍSEMNOSTÍ',
       body: [
@@ -706,7 +710,7 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
     },
     ...premiumContent,
     {
-      title: `${resolveTierFeatures(d).hasPremiumClauses ? 'XV' : 'X'}. ZÁVĚREČNÁ USTANOVENÍ`,
+      title: `${hasPremiumClauses ? 'XV' : 'X'}. ZÁVĚREČNÁ USTANOVENÍ`,
       body: [
         'Tato smlouva se řídí právním řádem České republiky.',
         'Případné spory budou řešeny přednostně smírnou cestou; jinak věcně a místně příslušným soudem.',
@@ -718,7 +722,7 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
   ];
 
   sections.push({
-    title: `${resolveTierFeatures(d).hasPremiumClauses ? 'XVI' : 'XI'}. PODPISY`,
+    title: `${hasPremiumClauses ? 'XVI' : 'XI'}. PODPISY`,
     body: [],
   });
 
@@ -763,6 +767,7 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
 //  SMLOUVA O ZÁPŮJČCE
 // ─────────────────────────────────────────────
 function buildLoanContractSections(d: StoredContractData): ContractSection[] {
+  const { hasPremiumClauses } = resolveTierFeatures(d);
   const interestDesc =
     d.interestRate && Number(d.interestRate) > 0
       ? `Zápůjčka je úročená. Úroková sazba činí ${asText(d.interestRate)} % p.a. Úroky jsou splatné ${d.interestPayment === 'monthly' ? 'měsíčně spolu s jistinou' : 'jednorázově spolu se splacením celé jistiny'}.`
@@ -773,7 +778,7 @@ function buildLoanContractSections(d: StoredContractData): ContractSection[] {
       ? `Vydlužitel se zavazuje vrátit zápůjčku ve ${asText(d.installmentCount, '__________')} pravidelných měsíčních splátkách po ${formatAmount(d.installmentAmount)} Kč, splatných vždy ${asText(d.paymentDay, '15')}. dne každého měsíce, počínaje ${formatDate(d.firstPaymentDate, '__________')}.`
       : `Vydlužitel se zavazuje vrátit celou zápůjčku jednorázově nejpozději dne ${formatDate(d.repaymentDate, '__________')}.`;
 
-  const premiumContent: ContractSection[] = resolveTierFeatures(d).hasPremiumClauses ? [
+  const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
       title: 'VI. ZAJIŠTĚNÍ POHLEDÁVKY',
       body: [
@@ -849,7 +854,7 @@ function buildLoanContractSections(d: StoredContractData): ContractSection[] {
     },
     ...premiumContent,
     {
-      title: `${resolveTierFeatures(d).hasPremiumClauses ? 'VIII' : 'VI'}. ZÁVĚREČNÁ USTANOVENÍ`,
+      title: `${hasPremiumClauses ? 'VIII' : 'VI'}. ZÁVĚREČNÁ USTANOVENÍ`,
       body: [
         'Smlouva se řídí právním řádem České republiky.',
         'Případné spory budou řešeny věcně a místně příslušným soudem.',
@@ -860,7 +865,7 @@ function buildLoanContractSections(d: StoredContractData): ContractSection[] {
   ];
 
   sections.push({
-    title: `${resolveTierFeatures(d).hasPremiumClauses ? 'IX' : 'VII'}. PODPISY`,
+    title: `${hasPremiumClauses ? 'IX' : 'VII'}. PODPISY`,
     body: [],
   });
 
@@ -871,6 +876,7 @@ function buildLoanContractSections(d: StoredContractData): ContractSection[] {
 //  SMLOUVA O MLČENLIVOSTI (NDA)
 // ─────────────────────────────────────────────
 function buildNdaContractSections(d: StoredContractData): ContractSection[] {
+  const { hasPremiumClauses } = resolveTierFeatures(d);
   const ndaType =
     d.ndaType === 'bilateral'
       ? 'oboustranná (obě strany si vzájemně poskytují důvěrné informace)'
@@ -880,7 +886,7 @@ function buildNdaContractSections(d: StoredContractData): ContractSection[] {
     ? `Za každé jednotlivé prokázané porušení mlčenlivosti je Přijímající strana povinna zaplatit Poskytující straně smluvní pokutu ve výši ${formatAmount(d.penaltyAmount)} Kč. Zaplacení pokuty nezbavuje Přijímající stranu povinnosti nahradit škodu v plném rozsahu.`
     : 'Porušení povinnosti mlčenlivosti zakládá nárok na náhradu veškeré způsobené škody dle OZ.';
 
-  const premiumContent: ContractSection[] = resolveTierFeatures(d).hasPremiumClauses ? [
+  const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
       title: 'VII. AUDIT A KONTROLA NAKLÁDÁNÍ S INFORMACEMI',
       body: [
@@ -961,7 +967,7 @@ function buildNdaContractSections(d: StoredContractData): ContractSection[] {
     },
     ...premiumContent,
     {
-      title: `${resolveTierFeatures(d).hasPremiumClauses ? 'IX' : 'VII'}. ZÁVĚREČNÁ USTANOVENÍ`,
+      title: `${hasPremiumClauses ? 'IX' : 'VII'}. ZÁVĚREČNÁ USTANOVENÍ`,
       body: [
         'Smlouva se řídí právním řádem České republiky.',
         'Spory budou řešeny věcně a místně příslušným soudem.',
@@ -973,7 +979,7 @@ function buildNdaContractSections(d: StoredContractData): ContractSection[] {
   ];
 
   sections.push({
-    title: `${resolveTierFeatures(d).hasPremiumClauses ? 'X' : 'VIII'}. PODPISY`,
+    title: `${hasPremiumClauses ? 'X' : 'VIII'}. PODPISY`,
     body: [],
   });
 
@@ -984,6 +990,7 @@ function buildNdaContractSections(d: StoredContractData): ContractSection[] {
 //  KUPNÍ SMLOUVA (OBECNÁ)
 // ─────────────────────────────────────────────
 function buildGeneralSaleContractSections(d: StoredContractData): ContractSection[] {
+  const { hasPremiumClauses } = resolveTierFeatures(d);
   const subjectDesc =
     d.itemType === 'car'
       ? `motorové vozidlo tovární značky ${asText(d.carMake)} ${asText(d.carModel)}, VIN: ${asText(d.carVIN, '__________')}, SPZ: ${asText(d.carPlate, '__________')}, rok výroby: ${asText(d.carYear, '____')}, stav tachometru: ${asText(d.carMileage, '__________')} km`
@@ -1006,7 +1013,7 @@ function buildGeneralSaleContractSections(d: StoredContractData): ContractSectio
     ? `Prodávající poskytuje kupujícímu záruku za jakost v délce ${asText(d.warrantyMonths)} měsíců ode dne předání. V záruční době odpovídá prodávající za to, že předmět prodeje bude mít vlastnosti dle smlouvy.`
     : 'Na předmět prodeje se vztahuje zákonná odpovědnost za vady dle § 2161 a násl. OZ. Právo z vadného plnění musí být uplatněno bez zbytečného odkladu po zjištění vady.';
 
-  const premiumContent: ContractSection[] = resolveTierFeatures(d).hasPremiumClauses ? [
+  const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
       title: 'VI. ROZŠÍŘENÁ ODPOVĚDNOST ZA VADY A ZÁRUKA',
       body: [
@@ -1084,7 +1091,7 @@ function buildGeneralSaleContractSections(d: StoredContractData): ContractSectio
     },
     ...premiumContent,
     {
-      title: `${resolveTierFeatures(d).hasPremiumClauses ? 'VIII' : 'VI'}. ZÁVĚREČNÁ USTANOVENÍ`,
+      title: `${hasPremiumClauses ? 'VIII' : 'VI'}. ZÁVĚREČNÁ USTANOVENÍ`,
       body: [
         'Smlouva se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., občanský zákoník.',
         'Případné spory budou řešeny přednostně smírnou cestou; jinak věcně a místně příslušným soudem ČR.',
@@ -1094,7 +1101,7 @@ function buildGeneralSaleContractSections(d: StoredContractData): ContractSectio
     },
   ];
 
-  sections.push({ title: `${resolveTierFeatures(d).hasPremiumClauses ? 'IX' : 'VII'}. PODPISY`, body: [] });
+  sections.push({ title: `${hasPremiumClauses ? 'IX' : 'VII'}. PODPISY`, body: [] });
   return sections;
 }
 
@@ -1102,6 +1109,7 @@ function buildGeneralSaleContractSections(d: StoredContractData): ContractSectio
 //  PRACOVNÍ SMLOUVA
 // ─────────────────────────────────────────────
 function buildEmploymentContractSections(d: StoredContractData): ContractSection[] {
+  const { hasPremiumClauses } = resolveTierFeatures(d);
   const trialPeriodClause = d.trialPeriodMonths && Number(d.trialPeriodMonths) > 0
     ? `Sjednává se zkušební doba v délce ${asText(d.trialPeriodMonths)} měsíce/měsíců ode dne vzniku pracovního poměru (§ 35 ZP). V průběhu zkušební doby může pracovní poměr zrušit kterákoliv ze stran kdykoli, a to i bez udání důvodu.`
     : 'Zkušební doba se nesjednává.';
@@ -1118,7 +1126,7 @@ function buildEmploymentContractSections(d: StoredContractData): ContractSection
     ? `Sjednaná týdenní pracovní doba činí ${asText(d.workHours)} hodin. Rozvrh pracovní doby: ${asText(d.workSchedule, 'pondělí–pátek, 8:00–17:00')}.`
     : `Týdenní pracovní doba je stanovena v délce 40 hodin (§ 79 ZP). Rozvrh pracovní doby: pondělí–pátek, 8:00–17:00.`;
 
-  const premiumContent: ContractSection[] = resolveTierFeatures(d).hasPremiumClauses ? [
+  const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
       title: 'VIII. KONKURENČNÍ DOLOŽKA',
       body: [
@@ -1208,7 +1216,7 @@ function buildEmploymentContractSections(d: StoredContractData): ContractSection
     },
     ...premiumContent,
     {
-      title: `${resolveTierFeatures(d).hasPremiumClauses ? 'X' : 'VIII'}. ZÁVĚREČNÁ USTANOVENÍ`,
+      title: `${hasPremiumClauses ? 'X' : 'VIII'}. ZÁVĚREČNÁ USTANOVENÍ`,
       body: [
         'Pracovní smlouva se řídí zákonem č. 262/2006 Sb., zákoník práce, a subsidiárně zákonem č. 89/2012 Sb., občanský zákoník.',
         'Pracovní spory řeší věcně příslušný soud dle § 9 odst. 1 zákona č. 99/1963 Sb., občanský soudní řád.',
@@ -1218,7 +1226,7 @@ function buildEmploymentContractSections(d: StoredContractData): ContractSection
     },
   ];
 
-  sections.push({ title: `${resolveTierFeatures(d).hasPremiumClauses ? 'XI' : 'IX'}. PODPISY`, body: [] });
+  sections.push({ title: `${hasPremiumClauses ? 'XI' : 'IX'}. PODPISY`, body: [] });
   return sections;
 }
 
@@ -1226,13 +1234,14 @@ function buildEmploymentContractSections(d: StoredContractData): ContractSection
 //  DOHODA O PROVEDENÍ PRÁCE (DPP)
 // ─────────────────────────────────────────────
 function buildDppContractSections(d: StoredContractData): ContractSection[] {
+  const { hasPremiumClauses } = resolveTierFeatures(d);
   const remunerationDesc = d.remunerationType === 'hourly'
     ? `Sjednaná odměna za provedení práce činí ${formatAmount(d.hourlyRate)} Kč za hodinu. Celková odměna bude vypočtena na základě skutečně odpracovaných hodin.`
     : `Sjednaná odměna za provedení celého úkolu/práce činí ${formatAmount(d.totalRemuneration)} Kč. Odměna bude vyplacena po splnění sjednaného úkolu.`;
 
   const taxNote = 'Odměna z dohody o provedení práce nepodléhá odvodům pojistného na sociální a zdravotní pojištění, nepřesahuje-li v daném kalendářním měsíci u jednoho zaměstnavatele částku 10 000 Kč (§ 75 a § 6 odst. 4 ZDP). V případě překročení tohoto limitu odměna podléhá srážkám dle platných předpisů.';
 
-  const premiumContent: ContractSection[] = resolveTierFeatures(d).hasPremiumClauses ? [
+  const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
       title: 'VI. MLČENLIVOST A OCHRANA INFORMACÍ',
       body: [
@@ -1314,7 +1323,7 @@ function buildDppContractSections(d: StoredContractData): ContractSection[] {
     },
     ...premiumContent,
     {
-      title: `${resolveTierFeatures(d).hasPremiumClauses ? 'IX' : 'VI'}. ZÁVĚREČNÁ USTANOVENÍ`,
+      title: `${hasPremiumClauses ? 'IX' : 'VI'}. ZÁVĚREČNÁ USTANOVENÍ`,
       body: [
         'Dohoda se řídí zákonem č. 262/2006 Sb., zákoník práce.',
         'Dohoda je vyhotovena ve dvou stejnopisech; každá strana obdrží jedno (§ 77 odst. 1 ZP).',
@@ -1323,7 +1332,7 @@ function buildDppContractSections(d: StoredContractData): ContractSection[] {
     },
   ];
 
-  sections.push({ title: `${resolveTierFeatures(d).hasPremiumClauses ? 'X' : 'VII'}. PODPISY`, body: [] });
+  sections.push({ title: `${hasPremiumClauses ? 'X' : 'VII'}. PODPISY`, body: [] });
   return sections;
 }
 
@@ -1331,6 +1340,7 @@ function buildDppContractSections(d: StoredContractData): ContractSection[] {
 //  SMLOUVA O POSKYTOVÁNÍ SLUŽEB
 // ─────────────────────────────────────────────
 function buildServiceContractSections(d: StoredContractData): ContractSection[] {
+  const { hasPremiumClauses } = resolveTierFeatures(d);
   const priceDesc = d.pricingType === 'hourly'
     ? `Cena za poskytování služeb se sjednává ve výši ${formatAmount(d.hourlyRate)} Kč/hod. bez DPH. Faktury budou vystavovány ${asText(d.invoicePeriod, 'měsíčně')} na základě výkazu odpracovaných hodin.`
     : d.pricingType === 'monthly_flat'
@@ -1345,7 +1355,7 @@ function buildServiceContractSections(d: StoredContractData): ContractSection[] 
     ? 'Veškerá práva duševního vlastnictví vzniklá v rámci poskytování služeb přecházejí na objednatele okamžikem jejich vzniku. Poskytovatel se tímto vzdává práva dílo kdykoli odvolat. Objednatel je oprávněn dílo upravovat, šířit a používat bez omezení.'
     : 'Poskytovatel si zachovává veškerá práva duševního vlastnictví k vytvořeným výstupům; objednateli uděluje nevýhradní, nepřenosnou licenci k jejich využití pro vlastní potřebu.';
 
-  const premiumContent: ContractSection[] = resolveTierFeatures(d).hasPremiumClauses ? [
+  const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
       title: 'VIII. SLA — ÚROVEŇ POSKYTOVÁNÍ SLUŽEB',
       body: [
@@ -1437,7 +1447,7 @@ function buildServiceContractSections(d: StoredContractData): ContractSection[] 
     },
     ...premiumContent,
     {
-      title: `${resolveTierFeatures(d).hasPremiumClauses ? 'X' : 'VIII'}. ZÁVĚREČNÁ USTANOVENÍ`,
+      title: `${hasPremiumClauses ? 'X' : 'VIII'}. ZÁVĚREČNÁ USTANOVENÍ`,
       body: [
         'Smlouva se řídí právním řádem České republiky.',
         'Spory budou řešeny věcně a místně příslušným soudem.',
@@ -1447,7 +1457,7 @@ function buildServiceContractSections(d: StoredContractData): ContractSection[] 
     },
   ];
 
-  sections.push({ title: `${resolveTierFeatures(d).hasPremiumClauses ? 'XI' : 'IX'}. PODPISY`, body: [] });
+  sections.push({ title: `${hasPremiumClauses ? 'XI' : 'IX'}. PODPISY`, body: [] });
   return sections;
 }
 
@@ -1455,11 +1465,12 @@ function buildServiceContractSections(d: StoredContractData): ContractSection[] 
 //  PODNÁJEMNÍ SMLOUVA
 // ─────────────────────────────────────────────
 function buildSubleaseContractSections(d: StoredContractData): ContractSection[] {
+  const { hasPremiumClauses } = resolveTierFeatures(d);
   const consentNote = d.landlordConsent === 'yes'
     ? `Souhlas pronajímatele (vlastníka) se subpronajatou věcí byl udělen písemně dne ${asText(d.consentDate, '__________')} (§ 2274 OZ).`
     : 'Upozornění: Podnájem bez souhlasu pronajímatele je v případě bytu zakázán (§ 2274 OZ). Nájemce prohlašuje, že souhlas si zajistí nebo jej již má.';
 
-  const premiumContent: ContractSection[] = resolveTierFeatures(d).hasPremiumClauses ? [
+  const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
       title: 'IX. ZVLÁŠTNÍ SMLUVNÍ UJEDNÁNÍ A VZTAH K HLAVNÍMU NÁJMU',
       body: [
@@ -1575,7 +1586,7 @@ function buildSubleaseContractSections(d: StoredContractData): ContractSection[]
     },
     ...premiumContent,
     {
-      title: `${resolveTierFeatures(d).hasPremiumClauses ? 'XII' : 'IX'}. ZÁVĚREČNÁ USTANOVENÍ`,
+      title: `${hasPremiumClauses ? 'XII' : 'IX'}. ZÁVĚREČNÁ USTANOVENÍ`,
       body: [
         'Smlouva se řídí zákonem č. 89/2012 Sb., OZ.',
         'Smlouva je vyhotovena ve dvou stejnopisech.',
@@ -1584,7 +1595,7 @@ function buildSubleaseContractSections(d: StoredContractData): ContractSection[]
     },
   ];
 
-  sections.push({ title: `${resolveTierFeatures(d).hasPremiumClauses ? 'XIII' : 'X'}. PODPISY`, body: [] });
+  sections.push({ title: `${hasPremiumClauses ? 'XIII' : 'X'}. PODPISY`, body: [] });
   return sections;
 }
 
@@ -1592,6 +1603,7 @@ function buildSubleaseContractSections(d: StoredContractData): ContractSection[]
 //  PLNÁ MOC
 // ─────────────────────────────────────────────
 function buildPowerOfAttorneyContractSections(d: StoredContractData): ContractSection[] {
+  const { hasPremiumClauses } = resolveTierFeatures(d);
   const scopeDesc = () => {
     switch (d.poaType) {
       case 'property':
@@ -1666,12 +1678,12 @@ function buildPowerOfAttorneyContractSections(d: StoredContractData): ContractSe
         'a) uděluje tuto plnou moc svobodně, vážně a bez donucení,',
         'b) je plně způsobilý k právnímu jednání,',
         'c) si je vědom rozsahu udělených oprávnění a jejich právních důsledků.',
-        resolveTierFeatures(d).hasPremiumClauses ? 'Pravost podpisu zmocnitele je ověřena notářem/Czech Pointem dle § 74 odst. 1 zákona č. 358/1992 Sb., notářský řád. Ověřená plná moc je uznávána všemi orgány veřejné moci, finančními institucemi a třetími stranami.' : '',
+        hasPremiumClauses ? 'Pravost podpisu zmocnitele je ověřena notářem/Czech Pointem dle § 74 odst. 1 zákona č. 358/1992 Sb., notářský řád. Ověřená plná moc je uznávána všemi orgány veřejné moci, finančními institucemi a třetími stranami.' : '',
       ].filter(Boolean) as string[],
     },
   ];
 
-  const premiumContent: ContractSection[] = resolveTierFeatures(d).hasPremiumClauses ? [
+  const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
       title: 'VI. ÚŘEDNÍ OVĚŘENÍ PODPISU A PRÁVNÍ ÚČINKY VŮčI TŘETÍM STRANÁM',
       body: [
@@ -1693,7 +1705,7 @@ function buildPowerOfAttorneyContractSections(d: StoredContractData): ContractSe
   ] : [];
 
   sections.push(...premiumContent);
-  sections.push({ title: `${resolveTierFeatures(d).hasPremiumClauses ? 'VIII' : 'VI'}. PODPISY`, body: [] });
+  sections.push({ title: `${hasPremiumClauses ? 'VIII' : 'VI'}. PODPISY`, body: [] });
 
   return sections;
 }
@@ -1702,6 +1714,7 @@ function buildPowerOfAttorneyContractSections(d: StoredContractData): ContractSe
 //  UZNÁNÍ DLUHU
 // ─────────────────────────────────────────────
 function buildDebtAcknowledgmentSections(d: StoredContractData): ContractSection[] {
+  const { hasPremiumClauses } = resolveTierFeatures(d);
   const debtOrigin = d.debtOrigin === 'loan'
     ? `Dluh vznikl na základě smlouvy o zápůjčce / půjčky ze dne ${formatDate(d.debtDate, '__________')}.`
     : d.debtOrigin === 'invoice'
@@ -1718,7 +1731,7 @@ function buildDebtAcknowledgmentSections(d: StoredContractData): ContractSection
     ? `Na dlužnou jistinu se sjednává úrok z prodlení ve výši ${asText(d.interestRate)} % p.a. ode dne ${formatDate(d.debtDate, '__________')}.`
     : 'Na dlužnou jistinu se neúčtuje úrok (pokud není zákonem stanoveno jinak).';
 
-  const premiumContent: ContractSection[] = resolveTierFeatures(d).hasPremiumClauses ? [
+  const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
       title: 'V. PŘÍMÁ VYKONATELNOST (EXEKUČNÍ DOLOŽKA)',
       body: [
@@ -1776,7 +1789,7 @@ function buildDebtAcknowledgmentSections(d: StoredContractData): ContractSection
     ...premiumContent,
   ];
 
-  sections.push({ title: `${resolveTierFeatures(d).hasPremiumClauses ? 'VI' : 'V'}. PODPISY`, body: [] });
+  sections.push({ title: `${hasPremiumClauses ? 'VI' : 'V'}. PODPISY`, body: [] });
   return sections;
 }
 
@@ -1784,6 +1797,7 @@ function buildDebtAcknowledgmentSections(d: StoredContractData): ContractSection
 //  SMLOUVA O SPOLUPRÁCI
 // ─────────────────────────────────────────────
 function buildCooperationContractSections(d: StoredContractData): ContractSection[] {
+  const { hasPremiumClauses } = resolveTierFeatures(d);
   const revenueDesc = d.revenueModel === 'revenue_share'
     ? `Smluvní strany si rozdělí příjmy z předmětu spolupráce v poměru ${asText(d.revenueShareA, '50')} % pro ${asText(d.partyAName, 'Stranu A')} a ${asText(d.revenueShareB, '50')} % pro ${asText(d.partyBName, 'Stranu B')}.`
     : d.revenueModel === 'fixed_fee'
@@ -1796,7 +1810,7 @@ function buildCooperationContractSections(d: StoredContractData): ContractSectio
     ? `Práva duševního vlastnictví vzniklá spoluprací přísluší straně ${asText(d.partyAName, 'A')}.`
     : `Každá strana si zachovává výhradní vlastnictví k těm výsledkům, které vytvořila samostatně. Ke společně vytvořeným výsledkům mají strany právo společně.`;
 
-  const premiumContent: ContractSection[] = resolveTierFeatures(d).hasPremiumClauses ? [
+  const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
       title: 'VIII. OCHRANA OBCHODNÍHO TAJEMSTVÍ A ZÁKAZ KONKURENCE',
       body: [
@@ -1877,7 +1891,7 @@ function buildCooperationContractSections(d: StoredContractData): ContractSectio
     },
     ...premiumContent,
     {
-      title: `${resolveTierFeatures(d).hasPremiumClauses ? 'X' : 'VIII'}. ZÁVĚREČNÁ USTANOVENÍ`,
+      title: `${hasPremiumClauses ? 'X' : 'VIII'}. ZÁVĚREČNÁ USTANOVENÍ`,
       body: [
         'Smlouva se řídí právním řádem České republiky.',
         'Smlouva je vyhotovena ve dvou stejnopisech; každá strana obdrží jedno.',
@@ -1887,7 +1901,7 @@ function buildCooperationContractSections(d: StoredContractData): ContractSectio
     },
   ];
 
-  sections.push({ title: `${resolveTierFeatures(d).hasPremiumClauses ? 'XI' : 'IX'}. PODPISY`, body: [] });
+  sections.push({ title: `${hasPremiumClauses ? 'XI' : 'IX'}. PODPISY`, body: [] });
   return sections;
 }
 
