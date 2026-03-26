@@ -128,12 +128,22 @@ export async function GET(req: NextRequest) {
       }
     }
 
+    // Tier je primární zdroj pravdy — odvozujeme ho z více míst pro robustnost
+    const resolvedTier = (draft.tier || (draft.payload as any).tier || 'basic') as 'basic' | 'professional' | 'complete';
+
+    // notaryUpsell = true pro professional a complete (i když Redis draft neobsahuje flag)
+    // Tím je zajištěno, že zákazník dostane přesně ten obsah, za který zaplatil
+    const resolvedNotaryUpsell =
+      draft.notaryUpsell === true ||
+      Boolean((draft.payload as any).notaryUpsell) ||
+      resolvedTier === 'professional' ||
+      resolvedTier === 'complete';
+
     const fullData: StoredContractData = {
       ...draft.payload,
       contractType: draft.payload.contractType || draft.contractType,
-      notaryUpsell:
-        draft.notaryUpsell === true || draft.payload.notaryUpsell === true,
-      tier: draft.tier || (draft.payload as any).tier || 'basic',
+      notaryUpsell: resolvedNotaryUpsell,
+      tier: resolvedTier,
     };
 
     if (!fullData.contractType) {

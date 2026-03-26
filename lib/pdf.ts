@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { jsPDF } from 'jspdf';
-import { getContractMeta, buildContractSections, type StoredContractData, type ContractType, type Tier } from './contracts';
+import { getContractMeta, buildContractSections, resolveTierFeatures, type StoredContractData, type ContractType } from './contracts';
 
 async function loadFontBase64(fileName: string): Promise<string> {
   const filePath = path.join(process.cwd(), 'public', 'fonts', fileName);
@@ -492,8 +492,9 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
   }
 
   // Kompletní balíček (749 Kč) — extra přílohy: instrukce + checklist
-  const tier: Tier = (data.tier as Tier) || 'basic';
-  if (tier === 'complete') {
+  // resolveTierFeatures je jediný autoritativní zdroj pro tier logiku
+  const { hasCompletePages } = resolveTierFeatures(data);
+  if (hasCompletePages) {
     drawCompleteTierPages(doc, data.contractType, margin, contentWidth, meta.title);
   }
 
