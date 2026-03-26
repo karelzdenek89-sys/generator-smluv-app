@@ -171,11 +171,10 @@ export async function POST(req: Request) {
       },
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const session = await (stripe.checkout.sessions.create as (p: unknown) => Promise<{ url: string | null }>)({
-      ...sessionParams,
-      automatic_payment_methods: { enabled: true },
-    });
+    // Bez payment_method_types → Stripe zobrazí vše povolené v Dashboardu
+    // (Google Pay, Apple Pay, karty atd.)
+    // automatic_payment_methods patří jen do PaymentIntent API, ne Checkout Sessions
+    const session = await stripe.checkout.sessions.create(sessionParams);
 
     if (!session.url) throw new Error('Stripe nevrátil URL pro checkout.');
 
