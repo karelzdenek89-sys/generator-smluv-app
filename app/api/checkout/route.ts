@@ -81,6 +81,7 @@ export async function POST(req: Request) {
     const parsed = checkoutSchema.safeParse(body);
 
     if (!parsed.success) {
+      console.error('Checkout 400 – Zod errors:', JSON.stringify(parsed.error.issues));
       return NextResponse.json({ error: 'Neplatná data formuláře.' }, { status: 400 });
     }
 
