@@ -200,7 +200,7 @@ export default function DppPage() {
               <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90 mb-4">Shrnutí</div>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between"><span className="text-slate-400">Dohoda o provedení práce</span><span className="text-white font-bold">249 Kč</span></div>
-                {form.notaryUpsell && <div className="flex justify-between"><span className="text-slate-400">Profesionální ochrana</span><span className="text-amber-400 font-bold">+249 Kč</span></div>}
+                {form.notaryUpsell && <div className="flex justify-between"><span className="text-slate-400">Profesionální ochrana</span><span className="text-amber-400 font-bold">+200 Kč</span></div>}
                 <div className="border-t border-slate-700 pt-2 flex justify-between font-bold text-lg"><span>Celkem</span><span className="text-amber-400">{form.notaryUpsell ? '449' : '249'} Kč</span></div>
               </div>
               {(!form.employerName || !form.employeeName || !form.taskDescription) && !isProcessing && (

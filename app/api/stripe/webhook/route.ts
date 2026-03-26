@@ -99,6 +99,14 @@ async function sendDownloadEmail(
     work_contract: 'Smlouva o dílo',
     loan: 'Smlouva o zápůjčce',
     nda: 'Smlouva o mlčenlivosti (NDA)',
+    general_sale: 'Kupní smlouva',
+    employment: 'Pracovní smlouva',
+    dpp: 'Dohoda o provedení práce',
+    service: 'Smlouva o poskytování služeb',
+    sublease: 'Podnájemní smlouva',
+    power_of_attorney: 'Plná moc',
+    debt_acknowledgment: 'Uznání dluhu',
+    cooperation: 'Smlouva o spolupráci',
   };
 
   const contractName = contractNames[contractType] || 'Právní dokument';

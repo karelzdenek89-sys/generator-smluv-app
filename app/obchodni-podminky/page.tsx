@@ -45,6 +45,7 @@ export default function TermsPage() {
             </h2>
             <div className="bg-[#0c1426]/60 border border-white/5 rounded-2xl p-5 text-sm">
               <p><strong className="text-white">Obchodní jméno:</strong> SmlouvaHned</p>
+              <p><strong className="text-white">IČO:</strong> 23660295</p>
               <p><strong className="text-white">Webová adresa:</strong> smlouvahned.cz</p>
               <p><strong className="text-white">Kontaktní e-mail:</strong> <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">info@smlouvahned.cz</a></p>
             </div>
@@ -61,7 +62,7 @@ export default function TermsPage() {
               Předmětem služby je umožnění Zákazníkovi sestavit si vlastní právní dokument na základě jím vložených údajů do inteligentního online formuláře. Výstupem je soubor ve formátu PDF připravený k tisku a použití.
             </p>
             <p>
-              Aktuálně dostupné typy dokumentů: Nájemní smlouva, Kupní smlouva na vozidlo, Darovací smlouva, Smlouva o dílo, Smlouva o zápůjčce, Smlouva o mlčenlivosti (NDA).
+              Aktuálně dostupné typy dokumentů: Nájemní smlouva, Podnájemní smlouva, Kupní smlouva, Kupní smlouva na vozidlo, Darovací smlouva, Smlouva o dílo, Smlouva o zápůjčce, Smlouva o mlčenlivosti (NDA), Pracovní smlouva, Dohoda o provedení práce (DPP), Smlouva o poskytování služeb, Smlouva o spolupráci, Plná moc, Uznání dluhu.
             </p>
           </section>
 
@@ -83,8 +84,7 @@ export default function TermsPage() {
             </h2>
             <div className="bg-[#0c1426]/60 border border-white/5 rounded-2xl p-5 space-y-2 text-sm mb-3">
               <div className="flex justify-between"><span className="text-slate-400">Základní dokument</span><span className="font-bold text-white">249 Kč vč. DPH</span></div>
-              <div className="flex justify-between"><span className="text-slate-400">Profesionální ochrana</span><span className="font-bold text-white">449 Kč vč. DPH</span></div>
-              <div className="flex justify-between"><span className="text-slate-400">Kompletní balíček</span><span className="font-bold text-white">749 Kč vč. DPH</span></div>
+              <div className="flex justify-between"><span className="text-slate-400">Profesionální ochrana (rozšířené klauzule)</span><span className="font-bold text-white">449 Kč vč. DPH</span></div>
             </div>
             <p className="mb-3">
               Platba probíhá prostřednictvím zabezpečené platební brány <strong className="text-white">Stripe</strong> (kartou). Ihned po potvrzení platby je Zákazníkovi zpřístupněn odkaz ke stažení dokumentu na stránce a zasílán na e-mail (pokud byl zadán).

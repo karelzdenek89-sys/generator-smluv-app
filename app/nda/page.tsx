@@ -306,7 +306,7 @@ export default function NdaBuilderPage() {
                 {formData.notaryUpsell && (
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-400">Profesionální ochrana</span>
-                    <span className="font-bold text-amber-400">+249 Kč</span>
+                    <span className="font-bold text-amber-400">+200 Kč</span>
                   </div>
                 )}
                 <div className="border-t border-white/8 pt-2 flex justify-between font-black text-lg">

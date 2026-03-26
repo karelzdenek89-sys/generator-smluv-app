@@ -71,9 +71,11 @@ async function checkRateLimit(ip: string): Promise<boolean> {
       await redis.expire(key, 3600);
     }
     return count <= 10;
-  } catch {
-    // Pokud Redis selže, povolíme request
-    return true;
+  } catch (err) {
+    // Pokud Redis selže, odmítneme request jako bezpečnostní opatření
+    // (fail-closed: lepší false positive než bypass rate limitu)
+    console.error('Rate limit Redis error:', err);
+    return false;
   }
 }
 

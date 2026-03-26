@@ -209,24 +209,6 @@ const pricingTiers = [
     highlighted: true,
     badge: 'Nejčastěji voleno',
   },
-  {
-    name: 'Kompletní balíček',
-    price: '749 Kč',
-    description: 'Kompletní řešení bez zbytku',
-    features: [
-      'Vše z Profesionální ochrany',
-      'Průvodní instrukce k podpisu a archivaci',
-      'Předávací protokol (dle typu smlouvy)',
-      'Checklist: co zkontrolovat před podpisem',
-      'Archivace dokumentu po dobu 30 dnů',
-      'Prioritní e-mailová podpora',
-    ],
-    note: 'Vhodné pro vyšší hodnoty transakcí, podnikatelské vztahy nebo situace, kde chcete mít vše ošetřené.',
-    cta: 'Vytvořit kompletní balíček',
-    href: '#vyber-smlouvy',
-    highlighted: false,
-    badge: null,
-  },
 ];
 
 const faqItems = [
@@ -240,11 +222,11 @@ const faqItems = [
   },
   {
     question: 'Jak celý proces funguje?',
-    answer: 'Vyberete typ smlouvy, vyplníte formulář krok za krokem, zvolíte úroveň ochrany a po zaplacení obdržíte hotové PDF ke stažení. U Kompletního balíčku také průvodní instrukce a checklist.',
+    answer: 'Vyberete typ smlouvy, vyplníte formulář krok za krokem, zvolíte úroveň ochrany (základní nebo profesionální) a po zaplacení obdržíte hotové PDF ke stažení.',
   },
   {
     question: 'Co obdržím po zaplacení?',
-    answer: 'Ihned po dokončení platby obdržíte odkaz ke stažení vygenerovaného PDF. Odkaz je platný 7 dní. U Kompletního balíčku také průvodní instrukce k podpisu, checklist a (dle typu smlouvy) předávací protokol.',
+    answer: 'Ihned po dokončení platby obdržíte odkaz ke stažení vygenerovaného PDF. Odkaz je platný 7 dní. Profesionální ochrana navíc zahrnuje rozšířené ochranné klauzule a smluvní pokuty.',
   },
   {
     question: 'Proč nezvolit bezplatný vzor z internetu?',
@@ -522,7 +504,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Ceník — 3 úrovně */}
+        {/* Ceník — 2 úrovně */}
         <section id="cenik" className="mt-16 md:mt-20">
           <div className="mb-10 text-center">
             <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Ceník</div>
@@ -532,7 +514,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-2 max-w-3xl mx-auto">
             {pricingTiers.map((tier) => (
               <div
                 key={tier.name}

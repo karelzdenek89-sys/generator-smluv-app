@@ -970,6 +970,12 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   </div>
                 </label>
 
+                <div className="space-y-1.5 mb-4 text-sm">
+                  <div className="flex justify-between text-slate-400"><span>Základní dokument</span><span>249 Kč</span></div>
+                  {formData.notaryUpsell && <div className="flex justify-between text-slate-400"><span>Premium ochrana</span><span>+200 Kč</span></div>}
+                  <div className="border-t border-slate-700 pt-2 flex justify-between font-bold text-base"><span>Celkem</span><span className="text-amber-400">{formData.notaryUpsell ? '449' : '249'} Kč</span></div>
+                </div>
+
                 <button
                   onClick={handlePayment}
                   disabled={isProcessing || riskAnalysis.checkoutBlocked}
@@ -987,10 +993,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     Checkout je zablokován, protože hotovostní platba nad 270 000 Kč není přípustná.
                   </p>
                 ) : (
-                  <p className="mt-3 text-xs leading-relaxed text-slate-400">
-                    Po zaplacení se dokument vygeneruje bezpečně na serveru. Citlivé údaje se neukládají do
-                    localStorage v prohlížeči.
-                  </p>
+                  <p className="mt-3 text-center text-xs text-slate-500">Platba kartou přes Stripe · PDF ihned · platnost 7 dní</p>
                 )}
               </div>
             </div>

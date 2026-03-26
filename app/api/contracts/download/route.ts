@@ -8,6 +8,24 @@ export const runtime = 'nodejs';
 
 const TTL_AFTER_DOWNLOAD = 60 * 60 * 24 * 7; // 7 dní po stažení
 
+// Rate limit: max 20 stažení per session_id za dobu životnosti dokumentu
+// Chrání před scrapingem při úniku session_id; legitimní zákazník stáhne 1–3×
+async function checkDownloadRateLimit(sessionId: string): Promise<boolean> {
+  try {
+    const key = `ratelimit:download:${sessionId}`;
+    const count = await redis.incr(key);
+    if (count === 1) {
+      await redis.expire(key, TTL_AFTER_DOWNLOAD);
+    }
+    return count <= 20;
+  } catch (err) {
+    console.error('Download rate limit Redis error:', err);
+    // fail-open pro download: zákazník by jinak nemohl stáhnout dokument
+    // při výpadku Redis — riziko přijatelné (session_id je UUID, těžko uhodnutelné)
+    return true;
+  }
+}
+
 type DraftRecord = {
   contractType: StoredContractData['contractType'];
   notaryUpsell?: boolean;
@@ -26,6 +44,15 @@ export async function GET(req: NextRequest) {
 
     if (!sessionId) {
       return NextResponse.json({ error: 'Missing session_id.' }, { status: 400 });
+    }
+
+    // Rate limit per session_id
+    const downloadAllowed = await checkDownloadRateLimit(sessionId);
+    if (!downloadAllowed) {
+      return NextResponse.json(
+        { error: 'Příliš mnoho stažení tohoto dokumentu. Kontaktujte info@smlouvahned.cz' },
+        { status: 429 },
+      );
     }
 
     // Ověření platby přes Stripe (spolehlivější než jen Redis flag)

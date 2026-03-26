@@ -186,7 +186,7 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
       y += 18;
 
       // Two signature lines
-      const lineWidth = 65;
+      const lineWidth = 70;
       const leftX = margin;
       const rightX = pageWidth - margin - lineWidth;
 
@@ -194,17 +194,22 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
       doc.setLineWidth(0.4);
       doc.line(leftX, y, leftX + lineWidth, y);
       doc.line(rightX, y, rightX + lineWidth, y);
-      y += 5;
+      y += 6;
 
+      doc.setFont('Roboto', 'bold');
       doc.setFontSize(9);
-      doc.setTextColor(80);
-      doc.text(labelLeft, leftX, y);
-      doc.text(labelRight, rightX, y);
+      doc.setTextColor(60);
+      doc.text(labelLeft, leftX + lineWidth / 2, y, { align: 'center' });
+      doc.text(labelRight, rightX + lineWidth / 2, y, { align: 'center' });
+      doc.setFont('Roboto', 'normal');
       doc.setTextColor(0);
 
       y += 14;
       continue;
     }
+
+    // Extra spacing before section heading for visual separation
+    y += 2;
 
     // Protocol sections use slightly different styling
     if (inProtocol) {
@@ -243,7 +248,7 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
       y += splitLines.length * 5.5 + 3;
     }
 
-    y += 5;
+    y += 7;
   }
 
   drawFooter(doc);
