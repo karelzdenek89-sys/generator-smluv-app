@@ -121,7 +121,13 @@ export default function PodnajemuPage() {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contractType: 'podnajem', tier: form.tier, formData: form }),
+        body: JSON.stringify({
+          contractType: 'sublease',
+          tier: form.tier,
+          notaryUpsell: form.tier !== 'basic',
+          payload: { ...form, contractType: 'sublease' },
+          email: form.landlordEmail || form.tenantEmail || undefined,
+        }),
       });
       const data = await res.json();
       if (data.url) window.location.href = data.url;
