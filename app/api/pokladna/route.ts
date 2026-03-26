@@ -1,5 +1,6 @@
 /**
  * /api/pokladna – alias pro /api/checkout
- * Re-exportuje identický handler, aby frontendové volání na /api/pokladna fungovalo stejně.
+ * runtime musí být definován přímo (Next.js 16 zakazuje jeho re-export)
  */
-export { POST, runtime } from '../checkout/route';
+export const runtime = 'nodejs';
+export { POST } from '../checkout/route';
