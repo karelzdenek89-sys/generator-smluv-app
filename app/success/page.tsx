@@ -115,11 +115,38 @@ function SuccessContent() {
           </ul>
         </div>
 
+        {/* Cross-sell sekce */}
+        <div className="bg-[#0c1426] border border-slate-800 rounded-3xl p-6 mb-6">
+          <div className="text-xs font-black uppercase tracking-widest text-amber-400 mb-1">Možná potřebujete také</div>
+          <p className="text-xs text-slate-500 mb-5">Nejčastěji kombinované dokumenty k vaší smlouvě</p>
+          <div className="grid grid-cols-1 gap-3">
+            {[
+              { title: 'Předávací protokol', desc: 'Součást nájemní smlouvy — zdokumentuje stav bytu při předání.', href: '/najem', badge: 'Bydlení' },
+              { title: 'Smlouva o mlčenlivosti (NDA)', desc: 'Pro každý obchodní vztah, kde sdílíte citlivé informace.', href: '/nda', badge: 'Podnikání' },
+              { title: 'Uznání dluhu', desc: 'Obnoví promlčecí lhůtu na 10 let. Nejsilnější nástroj věřitele.', href: '/uznani-dluhu', badge: 'Finance' },
+              { title: 'Smlouva o dílo', desc: 'Pro řemeslníky, freelancery i stavební práce — termíny a sankce.', href: '/smlouva-o-dilo', badge: 'Práce' },
+              { title: 'Plná moc', desc: 'Zastoupení na úřadě, v bance nebo při podpisu smlouvy.', href: '/plna-moc', badge: 'Obecné' },
+            ].map(item => (
+              <a key={item.href} href={item.href}
+                className="flex items-center justify-between gap-3 rounded-2xl border border-white/8 bg-white/3 px-4 py-3 hover:bg-white/6 hover:border-white/15 transition group">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-sm font-bold text-white">{item.title}</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 bg-white/5 px-2 py-0.5 rounded-full">{item.badge}</span>
+                  </div>
+                  <p className="text-xs text-slate-500 leading-snug">{item.desc}</p>
+                </div>
+                <span className="text-slate-600 group-hover:text-amber-400 transition flex-shrink-0">→</span>
+              </a>
+            ))}
+          </div>
+        </div>
+
         {/* Links */}
         <div className="flex flex-col sm:flex-row gap-3">
           <a href="/"
             className="flex-1 py-3 bg-white/5 border border-white/10 text-white font-bold text-sm text-center rounded-2xl hover:bg-white/10 transition uppercase tracking-wider">
-            Sestavit další smlouvu
+            Všechny smlouvy
           </a>
           <a href="/zakaznicka-zona"
             className="flex-1 py-3 bg-white/5 border border-white/10 text-slate-400 font-bold text-sm text-center rounded-2xl hover:bg-white/10 transition uppercase tracking-wider">

@@ -295,13 +295,13 @@ export default function Home() {
           </div>
 
           <h1 className="mx-auto max-w-4xl text-5xl font-black tracking-tight text-white md:text-6xl xl:text-7xl leading-tight">
-            Právní jistota pro vaše<br />
-            <span className="text-amber-500 italic">každodenní smlouvy.</span>
+            Smlouvy pro běžné<br />
+            <span className="text-amber-500 italic">životní situace.</span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-slate-400 md:text-lg">
-            Vytvořte profesionálně zpracovanou smlouvu online — přesně podle vašich podmínek,
-            v souladu s platným českým právem. Bez zbytečné byrokracie, bez nutnosti návštěvy advokáta.
+            Bez složitého hledání vzorů. Vhodné pro standardní situace — nájem, práce, podnikání, půjčky.
+            Krok za krokem, přehledně a v souladu s platným českým právem.
           </p>
 
           {/* Trust badges */}
@@ -321,7 +321,7 @@ export default function Home() {
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link href="#vyber-smlouvy"
               className="inline-flex items-center justify-center rounded-2xl bg-amber-500 px-8 py-4 text-base font-black uppercase tracking-tight text-black shadow-[0_0_40px_rgba(245,158,11,0.28)] transition hover:bg-amber-400">
-              Vybrat typ smlouvy
+              Vybrat smlouvu →
             </Link>
             <Link href="#jak-to-funguje" className="text-sm text-slate-400 hover:text-white transition">
               Jak to funguje? ↓
@@ -334,25 +334,30 @@ export default function Home() {
           <div className="rounded-[2rem] border border-white/8 bg-white/5 px-6 py-8 backdrop-blur-sm md:px-10 md:py-10">
             <div className="mb-8 text-center">
               <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Jak to funguje</div>
-              <h2 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">Tři kroky ke kompletnímu dokumentu</h2>
+              <h2 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">Čtyři kroky ke kompletnímu dokumentu</h2>
             </div>
 
-            <div className="grid gap-8 md:grid-cols-3">
+            <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-4">
               {[
                 {
                   step: '01',
-                  title: 'Vyplňte formulář',
-                  desc: 'Zadejte údaje o smluvních stranách a podmínky dohody. Přehledný formulář vás provede každou důležitou částí dokumentu.',
+                  title: 'Vyplníte údaje',
+                  desc: 'Zadáte údaje o smluvních stranách a podmínky dohody. Přehledný formulář vás provede každou důležitou částí.',
                 },
                 {
                   step: '02',
-                  title: 'Zvolte úroveň ochrany',
-                  desc: 'Základní dokument postačí pro jednoduché situace. Profesionální ochrana přidává klauzule, které vaši smluvní pozici výrazně posílí.',
+                  title: 'Zkontrolujete návrh',
+                  desc: 'Před platbou vidíte souhrn všech vyplněných podmínek. Vše si ověříte, než cokoliv zaplatíte.',
                 },
                 {
                   step: '03',
-                  title: 'Stáhněte a podepište',
-                  desc: 'Po zaplacení obdržíte kompletní PDF připravené k tisku a podpisu. U Kompletního balíčku i s průvodními instrukcemi a checklistem.',
+                  title: 'Vyberete variantu',
+                  desc: 'Základní dokument nebo rozšířená ochrana s klauzulemi pro větší jistotu. Volíte sami dle situace.',
+                },
+                {
+                  step: '04',
+                  title: 'Stáhnete dokument',
+                  desc: 'Po zaplacení obdržíte kompletní PDF připravené k tisku a podpisu. Ihned — bez čekání.',
                 },
               ].map(s => (
                 <div key={s.step} className="text-center md:text-left">
@@ -369,48 +374,150 @@ export default function Home() {
         <section id="vyber-smlouvy">
           <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
-              <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Výběr dokumentu</div>
-              <h2 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">Dokumenty pro životní i podnikatelské situace</h2>
+              <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Řešení právních situací</div>
+              <h2 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">Vyberte situaci, kterou potřebujete řešit</h2>
             </div>
             <p className="max-w-xl text-sm leading-relaxed text-slate-400 md:text-right">
-              Každý dokument je připraven v souladu s aktuálně platným českým právem a reflektuje standardní smluvní praxi.
+              Každý dokument je připraven v souladu s aktuálně platným českým právem. Vhodné pro standardní situace.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {contracts.map((contract) => (
-              <Link key={contract.href} href={contract.href}
-                className="group relative flex min-h-[320px] flex-col overflow-hidden rounded-3xl border border-slate-800 bg-[#0c1426] p-7 transition duration-300 hover:-translate-y-1 hover:border-white/15 hover:shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
-                <div className={`absolute inset-0 bg-gradient-to-br ${accentMap[contract.accentKey]} opacity-0 transition-opacity duration-300 group-hover:opacity-100`} />
+          {/* Kategorie */}
+          {[
+            {
+              id: 'bydleni',
+              label: '🏠 Bydlení',
+              items: contracts.filter(c => ['Bydlení'].includes(c.category)),
+            },
+            {
+              id: 'prace',
+              label: '💼 Práce a HR',
+              items: contracts.filter(c => ['HR'].includes(c.category)),
+            },
+            {
+              id: 'podnikani',
+              label: '🏢 Podnikání',
+              items: contracts.filter(c => ['Podnikání', 'Byznys'].includes(c.category)),
+            },
+            {
+              id: 'finance',
+              label: '💰 Finance a převody',
+              items: contracts.filter(c => ['Finance', 'Převod majetku', 'Obchod', 'Auto', 'Obecné'].includes(c.category)),
+            },
+          ].map(group => group.items.length > 0 && (
+            <div key={group.id} className="mb-10">
+              <div className="mb-4 text-sm font-black uppercase tracking-[0.18em] text-slate-400">{group.label}</div>
+              <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+                {group.items.map((contract) => (
+                  <Link key={contract.href} href={contract.href}
+                    className="group relative flex min-h-[300px] flex-col overflow-hidden rounded-3xl border border-slate-800 bg-[#0c1426] p-7 transition duration-300 hover:-translate-y-1 hover:border-white/15 hover:shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
+                    <div className={`absolute inset-0 bg-gradient-to-br ${accentMap[contract.accentKey]} opacity-0 transition-opacity duration-300 group-hover:opacity-100`} />
 
-                <div className="relative z-10 flex h-full flex-col">
-                  <div className="mb-5 flex items-start justify-between gap-3">
-                    <div className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-300">
-                      {contract.category}
-                    </div>
-                  </div>
+                    <div className="relative z-10 flex h-full flex-col">
+                      <h3 className="mb-1 text-xl font-black italic tracking-tight text-white">{contract.title}</h3>
+                      <div className="mb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-amber-400">{contract.highlight}</div>
+                      <div className="mb-3 text-[10px] font-medium text-slate-600">{contract.paragraph}</div>
+                      <p className="mb-5 flex-grow text-sm leading-relaxed text-slate-400">{contract.description}</p>
 
-                  <h3 className="mb-1 text-2xl font-black italic tracking-tight text-white">{contract.title}</h3>
-                  <div className="mb-1 text-[10px] font-bold uppercase tracking-[0.16em] text-amber-400">{contract.highlight}</div>
-                  <div className="mb-4 text-[10px] font-medium text-slate-600">{contract.paragraph}</div>
-                  <p className="mb-6 flex-grow text-sm leading-relaxed text-slate-400">{contract.description}</p>
-
-                  <div className="mt-auto border-t border-white/8 pt-5">
-                    <div className="mb-3 flex items-center justify-between">
-                      <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Cena od</div>
-                      <div className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-sm font-black text-emerald-300">
-                        {contract.price}
+                      <div className="mt-auto border-t border-white/8 pt-4">
+                        <div className="mb-2 flex items-center justify-between">
+                          <div className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Cena od</div>
+                          <div className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-sm font-black text-emerald-300">
+                            {contract.price}
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-bold uppercase tracking-[0.14em] text-amber-400 transition group-hover:text-amber-300">
+                            Řešit tuto situaci
+                          </span>
+                          <span className="text-lg text-slate-500 transition group-hover:translate-x-1 group-hover:text-white">→</span>
+                        </div>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-bold uppercase tracking-[0.14em] text-amber-400 transition group-hover:text-amber-300">
-                        Sestavit dokument
-                      </span>
-                      <span className="text-lg text-slate-500 transition group-hover:translate-x-1 group-hover:text-white">→</span>
-                    </div>
-                  </div>
-                </div>
-              </Link>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ))}
+        </section>
+
+        {/* Pro koho je služba */}
+        <section className="mt-16 md:mt-20">
+          <div className="mb-8 text-center">
+            <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Pro koho</div>
+            <h2 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">Komu služba pomůže</h2>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {[
+              {
+                icon: '🏠',
+                title: 'Pronajímatelé',
+                desc: 'Nájemní a podnájemní smlouvy s předávacím protokolem. Jasná pravidla pro nájemníky — kauci, zvířata, Airbnb.',
+              },
+              {
+                icon: '🏢',
+                title: 'Podnikatelé a OSVČ',
+                desc: 'Smlouvy o dílo, o spolupráci, o poskytování služeb, NDA. Ochrana IP práv, smluvní pokuty, exit klauzule.',
+              },
+              {
+                icon: '👔',
+                title: 'Zaměstnavatelé',
+                desc: 'Pracovní smlouvy a dohody (DPP, DPČ) se všemi zákonnými náležitostmi dle zákoníku práce 2026.',
+              },
+              {
+                icon: '👤',
+                title: 'Fyzické osoby',
+                desc: 'Darovací smlouvy, kupní smlouvy, uznání dluhu, plné moci. Bezpečné transakce mezi přáteli i cizími.',
+              },
+            ].map(c => (
+              <div key={c.title} className="rounded-3xl border border-white/8 bg-[#0c1426] p-6">
+                <div className="mb-3 text-3xl">{c.icon}</div>
+                <h3 className="mb-2 text-lg font-black text-white">{c.title}</h3>
+                <p className="text-sm leading-relaxed text-slate-400">{c.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-4 rounded-2xl border border-amber-500/15 bg-amber-500/5 px-6 py-4 text-sm text-slate-400">
+            <span className="font-bold text-amber-400">Upozornění:</span> Služba je vhodná pro <strong className="text-slate-300">standardní situace</strong>, kde se strany dohodly na podmínkách a potřebují je správně zachytit písemně. Nevhodné pro složité právní spory, rozvody, dědictví nebo případy s nestandardními podmínkami — v těchto situacích doporučujeme advokáta.
+          </div>
+        </section>
+
+        {/* Proč ne náhodné vzory */}
+        <section className="mt-16 md:mt-20">
+          <div className="mb-8 text-center">
+            <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Proč ne vzory zdarma</div>
+            <h2 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">Čím se liší od vzorů z internetu?</h2>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            {[
+              {
+                icon: '⚠️',
+                problem: 'Zastaralé',
+                desc: 'Volně dostupné vzory zpravidla neodpovídají aktuální legislativě. Občanský zákoník i zákoník práce se pravidelně mění.',
+                solution: 'Dokumenty na tomto webu jsou aktualizovány pro legislativu 2026.',
+              },
+              {
+                icon: '🕳️',
+                problem: 'Neúplné',
+                desc: 'Obecné vzory neobsahují klauzule pro vaši konkrétní situaci — chybí sankce, odpovědnost, doručovací ustanovení.',
+                solution: 'Formulář sestavuje dokument dynamicky podle vašich podmínek.',
+              },
+              {
+                icon: '⚡',
+                problem: 'Rizikové',
+                desc: 'Chybějící nebo nesprávné klauzule vás neochrání, pokud dojde ke sporu. Levná smlouva může být velmi drahá.',
+                solution: 'Každý dokument obsahuje ustanovení, která vaši smluvní pozici aktivně chrání.',
+              },
+            ].map(c => (
+              <div key={c.problem} className="rounded-3xl border border-slate-800 bg-[#0c1426] p-7">
+                <div className="mb-2 text-2xl">{c.icon}</div>
+                <div className="mb-1 text-xs font-black uppercase tracking-[0.18em] text-red-400">{c.problem}</div>
+                <p className="mb-4 text-sm leading-relaxed text-slate-500">{c.desc}</p>
+                <div className="border-t border-white/8 pt-4 text-sm font-semibold text-emerald-400">✓ {c.solution}</div>
+              </div>
             ))}
           </div>
         </section>
@@ -477,43 +584,31 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Proč SmlouvaHned — sekce důvěry */}
+        {/* Trust sekce */}
         <section className="mt-16 md:mt-20">
-          <div className="mb-8 text-center">
-            <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Proč SmlouvaHned</div>
-            <h2 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">Proč zvolit připravenou smlouvu<br className="hidden md:block" /> místo bezplatného vzoru?</h2>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-3">
-            {[
-              {
-                label: 'Právní kvalita',
-                title: 'Sestaveno dle aktuálního českého práva',
-                desc: 'Volně dostupné vzory jsou zpravidla obecné a neaktuální. Dokumenty na tomto webu jsou sestavovány dynamicky na základě vašich podmínek a obsahují přesné citace OZ a dalších platných předpisů.',
-              },
-              {
-                label: 'Ochrana dat',
-                title: 'Vaše data jsou v bezpečí',
-                desc: 'Citlivé osobní údaje jsou šifrované a uchovávány dočasně po dobu max. 7 dní, poté automaticky smazány. Platební údaje zpracovává výhradně Stripe — na naše servery se nikdy nedostanou.',
-              },
-              {
-                label: 'Dostupnost',
-                title: 'Profesionální výstup za zlomek ceny',
-                desc: 'Získejte profesionálně zpracovaný dokument bez nutnosti osobní návštěvy advokátní kanceláře. Výsledek je k dispozici okamžitě po vyplnění formuláře a zaplacení.',
-              },
-            ].map(c => (
-              <div key={c.title} className="rounded-3xl border border-white/8 bg-[#0c1426] p-7">
-                <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">{c.label}</div>
-                <h3 className="mt-3 text-lg font-black text-white leading-snug">{c.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-slate-400">{c.desc}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Legal disclaimer jako součást sekce důvěry */}
-          <div className="mt-6 rounded-2xl border border-white/8 bg-white/3 px-6 py-4 text-xs leading-relaxed text-slate-500">
-            <span className="font-bold text-slate-400">Upozornění:</span> Dokumenty generované na tomto webu představují standardní smluvní vzory a nejsou náhradou za individuální právní poradenství.
-            V případě nestandardních nebo složitějších situací doporučujeme konzultaci s advokátem.
+          <div className="rounded-[2rem] border border-white/8 bg-white/3 px-6 py-8 md:px-10 md:py-10">
+            <div className="mb-8 text-center">
+              <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Proč to funguje</div>
+              <h2 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">Přehledný postup. Srozumitelný výsledek.</h2>
+            </div>
+            <div className="grid gap-6 md:grid-cols-4">
+              {[
+                { icon: '📋', label: 'Pro běžné situace', desc: 'Nájem, práce, podnikání, půjčky — jasné situace se jasným řešením.' },
+                { icon: '🔤', label: 'Bez právní hantýrky', desc: 'Formulář mluví česky. Ptáme se na věci, ne na paragrafy.' },
+                { icon: '⚡', label: 'Rychlé vyřízení', desc: 'Vyplnění zabere méně než 5 minut. PDF máte ihned.' },
+                { icon: '🔒', label: 'Bezpečná platba', desc: 'Platba přes Stripe. Vaše platební data se k nám nikdy nedostanou.' },
+              ].map(c => (
+                <div key={c.label} className="text-center">
+                  <div className="mb-2 text-3xl">{c.icon}</div>
+                  <div className="mb-1 text-sm font-black text-white">{c.label}</div>
+                  <p className="text-xs leading-relaxed text-slate-400">{c.desc}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-8 rounded-2xl border border-white/8 bg-white/3 px-6 py-4 text-xs leading-relaxed text-slate-500 text-center">
+              <span className="font-bold text-slate-400">Upozornění:</span> Dokumenty jsou standardní smluvní vzory pro typické situace a nejsou náhradou za individuální právní poradenství.
+              Pro složitější nebo nestandardní případy doporučujeme konzultaci s advokátem.
+            </div>
           </div>
         </section>
 

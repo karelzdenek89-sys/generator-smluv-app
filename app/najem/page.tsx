@@ -919,12 +919,19 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                 </div>
 
                 <label
-                  className={`block rounded-2xl border-2 p-4 cursor-pointer transition ${
+                  className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${
                     formData.notaryUpsell
                       ? 'border-amber-500 bg-amber-500/10'
-                      : 'border-slate-700/80 bg-[#111c31]'
+                      : 'border-amber-500/40 bg-amber-500/5'
                   }`}
                 >
+                  {!formData.notaryUpsell && (
+                    <div className="absolute -top-2.5 left-4">
+                      <span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">
+                        Doporučeno
+                      </span>
+                    </div>
+                  )}
                   <div className="flex items-start gap-3">
                     <input
                       type="checkbox"
@@ -935,11 +942,15 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                     />
                     <div>
                       <div className="text-sm font-black uppercase tracking-wide text-amber-400">
-                        Profesionální ochrana +200 Kč
+                        Profesionální ochrana <span className="text-white">+200 Kč</span>
                       </div>
-                      <div className="mt-1 text-xs leading-relaxed text-slate-400">
-                        Přidá závazek k notářskému zápisu se svolením k vykonatelnosti. Silný upsell pro
-                        pronajímatele, kteří chtějí maximum ochrany.
+                      <div className="mt-1 text-xs leading-relaxed text-slate-300">
+                        Přidá rozšířené klauzule — smluvní pokuty, detailní odpovědnostní ustanovení a podmínky pro řešení sporů. Pronajímatelé si tuto variantu volí ve většině případů.
+                      </div>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {['Smluvní pokuty', 'Sankce za prodlení', 'Odpovědnostní doložky'].map(t => (
+                          <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
+                        ))}
                       </div>
                     </div>
                   </div>
@@ -1064,22 +1075,50 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
               </div>
 
               <div className={cardClass}>
+                {/* Price summary */}
+                <div className="mb-4 rounded-2xl border border-white/8 bg-white/3 p-4">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm text-slate-400">Základní nájemní smlouva</span>
+                    <span className="text-sm font-bold text-white">249 Kč</span>
+                  </div>
+                  {formData.notaryUpsell && (
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm text-slate-400">Profesionální ochrana</span>
+                      <span className="text-sm font-bold text-amber-400">+200 Kč</span>
+                    </div>
+                  )}
+                  <div className="border-t border-white/8 mt-2 pt-2 flex items-center justify-between">
+                    <span className="text-sm font-black text-white">Celkem</span>
+                    <span className="text-xl font-black text-white">{formData.notaryUpsell ? '449 Kč' : '249 Kč'}</span>
+                  </div>
+                </div>
+
                 <button
                   onClick={handlePayment}
                   disabled={isProcessing}
-                  className="w-full py-4 bg-amber-500 hover:bg-amber-400 text-slate-900 font-black text-lg rounded-2xl shadow-lg transition-all active:scale-[0.99] disabled:opacity-60"
+                  className="w-full py-4 bg-amber-500 hover:bg-amber-400 text-slate-900 font-black text-lg rounded-2xl shadow-[0_0_30px_rgba(245,158,11,0.2)] transition-all active:scale-[0.99] disabled:opacity-60"
                 >
                   {isProcessing
-                    ? 'PŘESMĚROVÁNÍ NA PLATBU...'
+                    ? '⏳ Přesměrování na platbu...'
                     : formData.notaryUpsell
-                      ? 'ZAPLATIT A VYGENEROVAT – 449 Kč'
-                      : 'ZAPLATIT A VYGENEROVAT – 249 Kč'}
+                      ? `Zaplatit a stáhnout PDF — 449 Kč`
+                      : `Zaplatit a stáhnout PDF — 249 Kč`}
                 </button>
 
-                <p className="mt-3 text-xs leading-relaxed text-slate-400">
-                  Po zaplacení se dokument vygeneruje bezpečně na serveru. Citlivé údaje se neukládají do
-                  localStorage v prohlížeči.
-                </p>
+                <div className="mt-3 flex flex-col gap-1.5">
+                  <div className="flex items-center gap-2 text-xs text-slate-500">
+                    <span className="text-emerald-500">✓</span>
+                    <span>Platba přes Stripe — vaše karta se k nám nikdy nedostane</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-slate-500">
+                    <span className="text-emerald-500">✓</span>
+                    <span>PDF vygenerováno ihned po potvrzení platby</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-slate-500">
+                    <span className="text-emerald-500">✓</span>
+                    <span>Odkaz ke stažení platný 7 dní</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

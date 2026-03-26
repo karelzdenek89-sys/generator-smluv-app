@@ -95,6 +95,50 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.85,
     },
+    // Blog
+    {
+      url: `${BASE_URL}/blog`,
+      lastModified: now,
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    },
+    {
+      url: `${BASE_URL}/blog/najemni-smlouva-vzor-2026`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.92,
+    },
+    // SEO landing pages
+    {
+      url: `${BASE_URL}/najemni-smlouva`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.95,
+    },
+    {
+      url: `${BASE_URL}/smlouva-o-dilo-online`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.95,
+    },
+    {
+      url: `${BASE_URL}/pracovni-smlouva`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.95,
+    },
+    {
+      url: `${BASE_URL}/kupni-smlouva`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.95,
+    },
+    {
+      url: `${BASE_URL}/dohoda-o-provedeni-prace`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.95,
+    },
     {
       url: `${BASE_URL}/kontakt`,
       lastModified: now,
