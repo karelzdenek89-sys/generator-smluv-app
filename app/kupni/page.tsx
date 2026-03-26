@@ -300,6 +300,21 @@ export default function KupniPage() {
                   {!form.price && <div>• Kupní cena (sekce 04)</div>}
                 </div>
               )}
+              <label className="flex items-start gap-3 mt-4 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={gdprConsent}
+                  onChange={(e) => setGdprConsent(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 accent-amber-500 flex-shrink-0"
+                />
+                <span className="text-xs text-slate-400">
+                  Souhlasím se{' '}
+                  <a href="/gdpr" className="text-amber-400 underline" target="_blank" rel="noopener noreferrer">
+                    zpracováním osobních údajů
+                  </a>{' '}
+                  za účelem vyhotovení smlouvy.
+                </span>
+              </label>
               <button
                 onClick={handlePayment}
                 disabled={isProcessing || !gdprConsent || !form.sellerName || !form.buyerName || !form.price}

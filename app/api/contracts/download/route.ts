@@ -151,9 +151,6 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     console.error('Download PDF error:', error);
 
-    const message =
-      error instanceof Error ? error.message : 'Unknown error';
-
     return NextResponse.json(
       { error: 'Nepodařilo se vygenerovat PDF.' },
       { status: 500 }
