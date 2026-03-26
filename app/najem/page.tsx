@@ -123,6 +123,7 @@ export default function LeaseBuilderPage() {
   });
 
   const [isProcessing, setIsProcessing] = useState(false);
+  const [gdprConsent, setGdprConsent] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -385,6 +386,25 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
   }, [formData]);
 
   const handlePayment = async () => {
+    // Validace povinných polí
+    const missingFields: string[] = [];
+    if (!formData.landlordName.trim()) missingFields.push('jméno pronajímatele');
+    if (!formData.tenantName.trim()) missingFields.push('jméno nájemce');
+    if (!formData.flatAddress.trim()) missingFields.push('adresu bytu');
+    if (!formData.rentAmount.trim()) missingFields.push('výši nájemného');
+    if (!formData.startDate) missingFields.push('datum začátku nájmu');
+    if (formData.duration === 'fixed' && !formData.endDate) missingFields.push('datum konce nájmu (doba určitá)');
+
+    if (missingFields.length > 0) {
+      alert(`Vyplňte prosím: ${missingFields.join(', ')}.`);
+      return;
+    }
+
+    if (!gdprConsent) {
+      alert('Potvrďte prosím souhlas se zpracováním osobních údajů a obchodními podmínkami.');
+      return;
+    }
+
     try {
       setIsProcessing(true);
 
@@ -413,7 +433,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
       window.location.href = result.url;
     } catch (error) {
       console.error('Checkout error:', error);
-      alert('Chyba platební brány. Zkuste to prosím znovu.');
+      alert('Chyba platební brány. Zkuste to prosím znovu nebo kontaktujte info@smlouvahned.cz');
       setIsProcessing(false);
     }
   };
@@ -907,22 +927,28 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                 />
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div className="rounded-2xl border border-slate-700/80 bg-[#111c31] p-4">
-                  <div className="text-xs uppercase tracking-widest text-slate-500 mb-2">
-                    Maximální počet osob
-                  </div>
-                  <input
-                    value={formData.maxOccupants}
-                    onChange={handleChange}
-                    type="number"
-                    name="maxOccupants"
-                    className="bg-transparent w-full text-2xl font-black text-white outline-none"
-                  />
+              <div className="rounded-2xl border border-slate-700/80 bg-[#111c31] p-4 w-fit">
+                <div className="text-xs uppercase tracking-widest text-slate-500 mb-2">
+                  Maximální počet osob
                 </div>
-              {/* === VÝBĚR BALÍČKU === */}
-              <div className="space-y-3 mt-6">
-                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Vyberte balíček</div>
+                <input
+                  value={formData.maxOccupants}
+                  onChange={handleChange}
+                  type="number"
+                  name="maxOccupants"
+                  className="bg-transparent w-24 text-2xl font-black text-white outline-none"
+                />
+              </div>
+            </section>
+
+            {/* === VÝBĚR BALÍČKU === */}
+            <section className={cardClass}>
+              <SectionTitle
+                index="07"
+                title="Vyberte úroveň ochrany"
+                subtitle="Čím vyšší balíček, tím silnější smlouva a více doprovodných materiálů."
+              />
+              <div className="space-y-3">
                 {([
                   { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva dle občanského zákoníku v PDF.' },
                   { value: 'professional', label: 'Profesionální ochrana', price: '449 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
@@ -936,10 +962,10 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                         : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'
                     }`}
                   >
-                    {opt.recommended && formData.tier !== 'professional' && (
+                    {('recommended' in opt) &&  formData.tier !== 'professional' && (
                       <div className="absolute -top-2.5 left-4">
                         <span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">
-                          Doporučeno
+                          Nejčastěji voleno
                         </span>
                       </div>
                     )}
@@ -955,7 +981,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
                           <span className="text-sm font-black uppercase tracking-wide text-amber-400">{opt.label}</span>
-                          <span className="text-sm font-black text-white">{opt.price}</span>
+                          <span className="text-lg font-black text-white">{opt.price}</span>
                         </div>
                         <div className="mt-1 text-xs leading-relaxed text-slate-400">{opt.desc}</div>
                         {opt.value === 'professional' && (
@@ -976,7 +1002,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                     </div>
                   </label>
                 ))}
-              </div>
               </div>
             </section>
           </div>
@@ -1111,9 +1136,47 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   )}
                   <div className="border-t border-white/8 mt-2 pt-2 flex items-center justify-between">
                     <span className="text-sm font-black text-white">Celkem</span>
-                    <span className="text-xl font-black text-white">{formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '449 Kč' : '249 Kč'}</span>
+                    <span className="text-xl font-black text-amber-400">{formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '449 Kč' : '249 Kč'}</span>
                   </div>
                 </div>
+
+                {/* GDPR souhlas */}
+                <label className="flex items-start gap-3 mb-4 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={gdprConsent}
+                    onChange={(e) => setGdprConsent(e.target.checked)}
+                    className="mt-0.5 h-4 w-4 accent-amber-500 flex-shrink-0"
+                  />
+                  <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
+                    Souhlasím se{' '}
+                    <a href="/gdpr" target="_blank" className="text-amber-400 underline hover:text-amber-300">zpracováním osobních údajů</a>
+                    {' '}a s{' '}
+                    <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">obchodními podmínkami</a>.
+                    Beru na vědomí, že digitální obsah je doručen ihned a nelze od smlouvy odstoupit.
+                  </span>
+                </label>
+
+                {/* Platební tlačítko */}
+                <button
+                  onClick={handlePayment}
+                  disabled={isProcessing || !gdprConsent}
+                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+                >
+                  {isProcessing ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <span className="w-5 h-5 border-2 border-black/40 border-t-black rounded-full animate-spin" />
+                      Přesměrování na platbu…
+                    </span>
+                  ) : (
+                    `Zaplatit ${formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '449 Kč' : '249 Kč'} a stáhnout PDF →`
+                  )}
+                </button>
+
+                <p className="mt-3 text-center text-[11px] text-slate-500">
+                  🔒 Zabezpečená platba přes Stripe · PDF ke stažení ihned po zaplacení
+                </p>
+              </div>
             </div>
           </div>
         </div>

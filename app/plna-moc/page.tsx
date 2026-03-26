@@ -37,6 +37,7 @@ export default function PlnaMocPage() {
     tier: 'basic' as const,
   });
   const [isProcessing, setIsProcessing] = useState(false);
+  const [gdprConsent, setGdprConsent] = useState(false);
 
   const set = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -57,6 +58,8 @@ export default function PlnaMocPage() {
   }, [form]);
 
   const handlePayment = async () => {
+    if (!form.principalName || !form.agentName) { alert('Vyplňte prosím jména zmocnitele a zmocněnce.'); return; }
+    if (!gdprConsent) { alert('Pro pokračování je nutný souhlas se zpracováním osobních údajů.'); return; }
     try {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {
@@ -157,68 +160,59 @@ export default function PlnaMocPage() {
             <section className={cardClass}>
               <SectionTitle index="05" title="Platnost a podmínky" />
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
-                <Field label="Platná do (datum, nebo ponechat prázdné = do odvolání)"><input className={inputClass} name="validUntil" value={form.validUntil} onChange={set} type="date" /></Field>
+                <Field label="Platná do (prázdné = do odvolání)"><input className={inputClass} name="validUntil" value={form.validUntil} onChange={set} type="date" /></Field>
               </div>
               <div className="grid sm:grid-cols-2 gap-3">
-                
-              {/* === VÝBĚR BALÍČKU === */}
-              <div className="space-y-3 mt-6">
-                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Vyberte balíček</div>
+                <label className={`cursor-pointer rounded-xl border p-3 text-sm transition ${form.singleUse ? 'border-amber-500/60 bg-amber-500/8 text-white' : 'border-slate-700/60 text-slate-400 hover:border-slate-500'}`}>
+                  <div className="flex items-center gap-2">
+                    <input type="checkbox" name="singleUse" checked={form.singleUse} onChange={set} className="h-4 w-4 accent-amber-500" />
+                    <div>
+                      <div className="font-semibold text-white">Jednorázová plná moc</div>
+                      <div className="text-xs text-slate-400 mt-0.5">Platí jen pro jedno konkrétní jednání</div>
+                    </div>
+                  </div>
+                </label>
+                <label className={`cursor-pointer rounded-xl border p-3 text-sm transition ${form.allowSubstitution ? 'border-amber-500/60 bg-amber-500/8 text-white' : 'border-slate-700/60 text-slate-400 hover:border-slate-500'}`}>
+                  <div className="flex items-center gap-2">
+                    <input type="checkbox" name="allowSubstitution" checked={form.allowSubstitution} onChange={set} className="h-4 w-4 accent-amber-500" />
+                    <div>
+                      <div className="font-semibold text-white">Substituce povolena</div>
+                      <div className="text-xs text-slate-400 mt-0.5">Zmocněnec smí pověřit třetí osobu</div>
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </section>
+
+            <section className={cardClass}>
+              <SectionTitle index="06" title="Výběr balíčku" subtitle="Zvolte úroveň ochrany pro vaši plnou moc." />
+              <div className="space-y-3">
                 {([
-                  { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva dle občanského zákoníku v PDF.' },
-                  { value: 'professional', label: 'Profesionální ochrana', price: '449 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
-                  { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Profesionální ochrany + průvodní instrukce, checklist a 30denní archivace.' },
+                  { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální plná moc dle § 441 OZ v PDF.' },
+                  { value: 'professional', label: 'Profesionální ochrana', price: '449 Kč', desc: 'Rozšířené klauzule, odpovědnostní doložky, ověřená verze.', recommended: true },
+                  { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Profesionální ochrany + instrukce k podpisu, checklist a 30denní archivace.' },
                 ] as const).map((opt) => (
-                  <label
-                    key={opt.value}
-                    className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${
-                      form.tier === opt.value
-                        ? 'border-amber-500 bg-amber-500/10'
-                        : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'
-                    }`}
-                  >
-                    {opt.recommended && form.tier !== 'professional' && (
-                      <div className="absolute -top-2.5 left-4">
-                        <span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">
-                          Doporučeno
-                        </span>
-                      </div>
+                  <label key={opt.value} className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${form.tier === opt.value ? 'border-amber-500 bg-amber-500/10' : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'}`}>
+                    {('recommended' in opt) &&  form.tier !== 'professional' && (
+                      <div className="absolute -top-2.5 left-4"><span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">Doporučeno</span></div>
                     )}
                     <div className="flex items-start gap-3">
-                      <input
-                        type="radio"
-                        name="tier"
-                        value={opt.value}
-                        checked={form.tier === opt.value}
+                      <input type="radio" name="tier" value={opt.value} checked={form.tier === opt.value}
                         onChange={(e) => setForm((prev) => ({ ...prev, tier: e.target.value as 'basic' | 'professional' | 'complete', notaryUpsell: e.target.value !== 'basic' }))}
-                        className="mt-1 h-5 w-5 accent-amber-500"
-                      />
+                        className="mt-1 h-5 w-5 accent-amber-500" />
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
                           <span className="text-sm font-black uppercase tracking-wide text-amber-400">{opt.label}</span>
                           <span className="text-sm font-black text-white">{opt.price}</span>
                         </div>
                         <div className="mt-1 text-xs leading-relaxed text-slate-400">{opt.desc}</div>
-                        {opt.value === 'professional' && (
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            {['Smluvní pokuty', 'Sankce za prodlení', 'Odpovědnostní doložky'].map(t => (
-                              <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
-                            ))}
-                          </div>
-                        )}
-                        {opt.value === 'complete' && (
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            {['Instrukce k podpisu', 'Checklist', '30denní archivace'].map(t => (
-                              <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
-                            ))}
-                          </div>
-                        )}
                       </div>
                     </div>
                   </label>
                 ))}
               </div>
             </section>
+
           </div>
 
           <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-24">
@@ -245,11 +239,27 @@ export default function PlnaMocPage() {
                   {!form.agentName && <div>• Jméno zmocněnce</div>}
                 </div>
               )}
-              <button onClick={handlePayment} disabled={isProcessing || !form.principalName || !form.agentName}
-                className="mt-4 w-full rounded-2xl bg-amber-500 px-6 py-4 font-bold text-slate-900 text-lg hover:bg-amber-400 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed">
-                {isProcessing ? 'Přesměrování…' : 'Zaplatit a stáhnout PDF →'}
+              <label className="flex items-start gap-3 mt-4 mb-4 cursor-pointer">
+                <input type="checkbox" checked={gdprConsent} onChange={(e) => setGdprConsent(e.target.checked)} className="mt-1 h-4 w-4 accent-amber-500 flex-shrink-0" />
+                <span className="text-xs text-slate-400 leading-relaxed">
+                  Souhlasím se{' '}
+                  <a href="/gdpr" className="text-amber-400 underline hover:text-amber-300" target="_blank" rel="noopener noreferrer">zpracováním osobních údajů</a>
+                  {' '}a{' '}
+                  <a href="/obchodni-podminky" className="text-amber-400 underline hover:text-amber-300" target="_blank" rel="noopener noreferrer">obchodními podmínkami</a>.
+                </span>
+              </label>
+              <button onClick={handlePayment} disabled={isProcessing || !form.principalName || !form.agentName || !gdprConsent}
+                className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none">
+                {isProcessing ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <span className="w-5 h-5 border-2 border-black/40 border-t-black rounded-full animate-spin" />
+                    Přesměrování…
+                  </span>
+                ) : (
+                  `Zaplatit ${form.tier === 'complete' ? '749 Kč' : form.tier === 'professional' ? '449 Kč' : '249 Kč'} a stáhnout PDF →`
+                )}
               </button>
-              <p className="mt-3 text-center text-xs text-slate-500">Platba kartou přes Stripe · PDF ihned</p>
+              <p className="mt-3 text-center text-[11px] text-slate-500">🔒 Zabezpečená platba přes Stripe · PDF ihned</p>
             </div>
           </div>
         </div>

@@ -135,6 +135,7 @@ export default function CarSaleBuilderPage() {
   });
 
   const [isProcessing, setIsProcessing] = useState(false);
+  const [gdprConsent, setGdprConsent] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -299,6 +300,24 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
   async function handlePayment() {
     if (riskAnalysis.checkoutBlocked) {
       alert('Hotovostní platba nad 270 000 Kč není možná. Změň způsob úhrady na bankovní převod.');
+      return;
+    }
+
+    // Validace povinných polí
+    const missingFields: string[] = [];
+    if (!formData.sellerName.trim()) missingFields.push('jméno prodávajícího');
+    if (!formData.buyerName.trim()) missingFields.push('jméno kupujícího');
+    if (!formData.carMake.trim()) missingFields.push('značku vozidla');
+    if (!formData.carVIN.trim()) missingFields.push('VIN kód');
+    if (!formData.priceAmount.trim()) missingFields.push('kupní cenu');
+
+    if (missingFields.length > 0) {
+      alert(`Vyplňte prosím: ${missingFields.join(', ')}.`);
+      return;
+    }
+
+    if (!gdprConsent) {
+      alert('Potvrďte prosím souhlas se zpracováním osobních údajů a obchodními podmínkami.');
       return;
     }
 
@@ -962,7 +981,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                         : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'
                     }`}
                   >
-                    {opt.recommended && formData.tier !== 'professional' && (
+                    {('recommended' in opt) &&  formData.tier !== 'professional' && (
                       <div className="absolute -top-2.5 left-4">
                         <span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">
                           Doporučeno
@@ -1004,11 +1023,66 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 ))}
               </div>
 
-                <div className="space-y-1.5 mb-4 text-sm">
-                      <div className="flex justify-between text-slate-400"><span>Základní dokument</span><span>249 Kč</span></div>
-                      {formData.tier !== 'basic' && <div className="flex justify-between text-slate-400"><span>{formData.tier === 'complete' ? 'Kompletní balíček' : 'Profesionální ochrana'}</span><span>{formData.tier === 'complete' ? '+500 Kč' : '+200 Kč'}</span></div>}
-                      <div className="border-t border-slate-700 pt-2 flex justify-between font-bold text-base"><span>Celkem</span><span className="text-amber-400">{formData.tier === 'complete' ? '749' : formData.tier === 'professional' ? '449' : '249'} Kč</span></div>
+              </div>
+
+              <div className={cardClass}>
+                {/* Price summary */}
+                <div className="mb-4 rounded-2xl border border-white/8 bg-white/3 p-4">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm text-slate-400">Základní dokument</span>
+                    <span className="text-sm font-bold text-white">249 Kč</span>
+                  </div>
+                  {formData.tier !== 'basic' && (
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm text-slate-400">{formData.tier === 'complete' ? 'Kompletní balíček' : 'Profesionální ochrana'}</span>
+                      <span className="text-sm font-bold text-amber-400">{formData.tier === 'complete' ? '+500 Kč' : '+200 Kč'}</span>
                     </div>
+                  )}
+                  <div className="border-t border-white/8 mt-2 pt-2 flex items-center justify-between">
+                    <span className="text-sm font-black text-white">Celkem</span>
+                    <span className="text-xl font-black text-amber-400">{formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '449 Kč' : '249 Kč'}</span>
+                  </div>
+                </div>
+
+                {/* GDPR souhlas */}
+                <label className="flex items-start gap-3 mb-4 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={gdprConsent}
+                    onChange={(e) => setGdprConsent(e.target.checked)}
+                    className="mt-0.5 h-4 w-4 accent-amber-500 flex-shrink-0"
+                  />
+                  <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
+                    Souhlasím se{' '}
+                    <a href="/gdpr" target="_blank" className="text-amber-400 underline hover:text-amber-300">zpracováním osobních údajů</a>
+                    {' '}a s{' '}
+                    <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">obchodními podmínkami</a>.
+                    Beru na vědomí, že digitální obsah je doručen ihned a nelze od smlouvy odstoupit.
+                  </span>
+                </label>
+
+                {/* Platební tlačítko */}
+                <button
+                  onClick={handlePayment}
+                  disabled={isProcessing || !gdprConsent}
+                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+                >
+                  {isProcessing ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <span className="w-5 h-5 border-2 border-black/40 border-t-black rounded-full animate-spin" />
+                      Přesměrování na platbu…
+                    </span>
+                  ) : (
+                    `Zaplatit ${formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '449 Kč' : '249 Kč'} a stáhnout PDF →`
+                  )}
+                </button>
+
+                <p className="mt-3 text-center text-[11px] text-slate-500">
+                  🔒 Zabezpečená platba přes Stripe · PDF ke stažení ihned po zaplacení
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </main>

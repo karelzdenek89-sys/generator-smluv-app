@@ -59,6 +59,7 @@ export default function GiftContractPage() {
   });
 
   const [isProcessing, setIsProcessing] = useState(false);
+  const [gdprConsent, setGdprConsent] = useState(false);
 
   const updateField = (field: keyof FormDataType, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -155,6 +156,25 @@ Dárce: ____________________          Obdarovaný: ____________________
   };
 
   const handlePayment = async () => {
+    // Validace povinných polí
+    const missingFields: string[] = [];
+    if (!formData.donorName.trim()) missingFields.push('jméno dárce');
+    if (!formData.doneeName.trim()) missingFields.push('jméno obdarovaného');
+    if (formData.giftType === 'money' && !formData.amount.trim()) missingFields.push('darovanou částku');
+    if (formData.giftType === 'car' && !formData.carVIN.trim()) missingFields.push('VIN vozidla');
+    if (formData.giftType === 'property' && !formData.propertyAddress.trim()) missingFields.push('adresu nemovitosti');
+    if (formData.giftType === 'thing' && !formData.thingDescription.trim()) missingFields.push('popis darované věci');
+
+    if (missingFields.length > 0) {
+      alert(`Vyplňte prosím: ${missingFields.join(', ')}.`);
+      return;
+    }
+
+    if (!gdprConsent) {
+      alert('Potvrďte prosím souhlas se zpracováním osobních údajů a obchodními podmínkami.');
+      return;
+    }
+
     try {
       setIsProcessing(true);
 
@@ -189,22 +209,23 @@ Dárce: ____________________          Obdarovaný: ____________________
   };
 
   return (
-    <main className="min-h-screen bg-[#05080f] text-slate-200 py-16 px-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
-          <div className="inline-block px-4 py-1.5 bg-amber-500/10 border border-amber-500/30 rounded-full text-amber-400 text-xs font-bold tracking-widest mb-4">
-            NOVINKA 2026
+    <main className="min-h-screen bg-[#05080f] text-slate-200 pb-24">
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#08101e]/90 backdrop-blur">
+        <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500 text-slate-900 font-black text-sm">SH</div>
+            <div>
+              <div className="font-bold tracking-tight text-white">SmlouvaHned Builder</div>
+              <div className="text-[11px] text-slate-500">Prémiový generátor darovací smlouvy</div>
+            </div>
           </div>
-          <h1 className="text-5xl md:text-6xl font-black tracking-tighter text-white">
-            Darovací smlouva
-          </h1>
-          <p className="mt-3 text-lg text-slate-400 max-w-2xl mx-auto">
-            Bezpečně převeďte majetek. S automatickou kontrolou rizik a živým náhledem.
-          </p>
+          <button onClick={() => (window.location.href = '/')} className="text-sm text-slate-400 hover:text-white transition">Zavřít</button>
         </div>
+      </header>
 
-        <div className="grid lg:grid-cols-12 gap-10">
-          <div className="lg:col-span-7 space-y-8">
+      <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8">
+        <div className="grid lg:grid-cols-12 gap-8 items-start">
+          <div className="lg:col-span-7 space-y-6">
             <section className="bg-[#0c1426] border border-slate-800 rounded-3xl p-8">
               <h3 className="uppercase text-xs tracking-widest font-bold text-amber-400 mb-6">
                 1. Co darujete?
@@ -417,22 +438,159 @@ Dárce: ____________________          Obdarovaný: ____________________
                 />
               )}
 
-              <label className="flex items-center gap-3 cursor-pointer pt-4 border-t border-slate-800">
-                <input
-                  type="checkbox"
-                  checked={formData.notaryUpsell}
-                  onChange={(e) => updateField('notaryUpsell', e.target.checked)}
-                  className="w-5 h-5 accent-amber-500"
-                />
-                <span>Chci notářsky ověřené podpisy (+200 Kč)</span>
-              </label>
             </section>
 
-            <div className="space-y-1.5 mb-4 text-sm">
-                      <div className="flex justify-between text-slate-400"><span>Základní dokument</span><span>249 Kč</span></div>
-                      {formData.tier !== 'basic' && <div className="flex justify-between text-slate-400"><span>{formData.tier === 'complete' ? 'Kompletní balíček' : 'Profesionální ochrana'}</span><span>{formData.tier === 'complete' ? '+500 Kč' : '+200 Kč'}</span></div>}
-                      <div className="border-t border-slate-700 pt-2 flex justify-between font-bold text-base"><span>Celkem</span><span className="text-amber-400">{formData.tier === 'complete' ? '749' : formData.tier === 'professional' ? '449' : '249'} Kč</span></div>
+            {/* Výběr balíčku */}
+            <section className="bg-[#0c1426] border border-slate-800 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
+              <div className="mb-5">
+                <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90">Výběr úrovně ochrany</div>
+                <p className="mt-2 text-sm text-slate-400">Čím vyšší balíček, tím silnější smlouva a více příloh.</p>
+              </div>
+              <div className="space-y-3">
+                {([
+                  { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Kompletní darovací smlouva dle OZ v PDF.' },
+                  { value: 'professional', label: 'Profesionální ochrana', price: '449 Kč', desc: 'Rozšířené klauzule, odpovědnostní ustanovení a sankce.', recommended: true },
+                  { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Profesionální ochrany + instrukce k podpisu, checklist a 30denní archivace.' },
+                ] as const).map((opt) => (
+                  <label
+                    key={opt.value}
+                    className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${
+                      formData.tier === opt.value
+                        ? 'border-amber-500 bg-amber-500/10'
+                        : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'
+                    }`}
+                  >
+                    {('recommended' in opt) &&  formData.tier !== 'professional' && (
+                      <div className="absolute -top-2.5 left-4">
+                        <span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">Nejčastěji voleno</span>
+                      </div>
+                    )}
+                    <div className="flex items-start gap-3">
+                      <input
+                        type="radio"
+                        name="tier"
+                        value={opt.value}
+                        checked={formData.tier === opt.value}
+                        onChange={(e) => updateField('tier', e.target.value)}
+                        className="mt-1 h-5 w-5 accent-amber-500"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-black uppercase tracking-wide text-amber-400">{opt.label}</span>
+                          <span className="text-lg font-black text-white">{opt.price}</span>
+                        </div>
+                        <div className="mt-1 text-xs leading-relaxed text-slate-400">{opt.desc}</div>
+                      </div>
                     </div>
+                  </label>
+                ))}
+              </div>
+            </section>
+          </div>
+
+          {/* === PRAVÝ SIDEBAR === */}
+          <div className="lg:col-span-5 relative">
+            <div className="sticky top-24 space-y-6">
+
+              {/* Risk score */}
+              <div className="bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
+                <div className="flex justify-between items-start gap-4 mb-4">
+                  <div>
+                    <h3 className="font-black text-white text-sm uppercase tracking-[0.18em]">Kontrola rizik</h3>
+                    <p className="text-sm text-slate-400 mt-1">{riskAnalysis.score >= 85 ? 'Silná smlouva' : riskAnalysis.score >= 65 ? 'Průměrná ochrana' : 'Doplňte údaje'}</p>
+                  </div>
+                  <div className={`text-3xl font-black ${riskAnalysis.score >= 85 ? 'text-emerald-400' : riskAnalysis.score >= 65 ? 'text-amber-400' : 'text-rose-400'}`}>
+                    {riskAnalysis.score}/100
+                  </div>
+                </div>
+                <div className="h-2 rounded-full bg-slate-800 overflow-hidden mb-4">
+                  <div
+                    className={`h-full rounded-full transition-all ${riskAnalysis.score >= 85 ? 'bg-emerald-400' : riskAnalysis.score >= 65 ? 'bg-amber-400' : 'bg-rose-400'}`}
+                    style={{ width: `${riskAnalysis.score}%` }}
+                  />
+                </div>
+                {riskAnalysis.warnings.length > 0 ? (
+                  <div className="space-y-2">
+                    {riskAnalysis.warnings.map((w, i) => (
+                      <div key={i} className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-3 text-xs leading-relaxed text-amber-100">{w}</div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-sm text-emerald-200">Smlouva je nastavena správně.</div>
+                )}
+              </div>
+
+              {/* Živý náhled */}
+              <div className="bg-white rounded-3xl p-6 shadow-[0_20px_60px_rgba(0,0,0,0.28)] border border-slate-300 relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-1.5 bg-amber-500" />
+                <div className="mb-3">
+                  <div className="text-[10px] font-black uppercase tracking-[0.24em] text-slate-400">Živý náhled smlouvy</div>
+                  <div className="mt-1 text-xs text-slate-500">Každá změna se okamžitě propisuje sem.</div>
+                </div>
+                <div className="font-serif text-[11px] text-slate-800 leading-relaxed h-[300px] overflow-hidden relative">
+                  <pre className="whitespace-pre-wrap font-serif">{previewText}</pre>
+                  <div className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-white to-transparent" />
+                </div>
+              </div>
+
+              {/* Platba */}
+              <div className="bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
+                <div className="mb-4 rounded-2xl border border-white/8 bg-white/3 p-4">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm text-slate-400">Základní dokument</span>
+                    <span className="text-sm font-bold text-white">249 Kč</span>
+                  </div>
+                  {formData.tier !== 'basic' && (
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm text-slate-400">{formData.tier === 'complete' ? 'Kompletní balíček' : 'Profesionální ochrana'}</span>
+                      <span className="text-sm font-bold text-amber-400">{formData.tier === 'complete' ? '+500 Kč' : '+200 Kč'}</span>
+                    </div>
+                  )}
+                  <div className="border-t border-white/8 mt-2 pt-2 flex items-center justify-between">
+                    <span className="text-sm font-black text-white">Celkem</span>
+                    <span className="text-xl font-black text-amber-400">{formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '449 Kč' : '249 Kč'}</span>
+                  </div>
+                </div>
+
+                <label className="flex items-start gap-3 mb-4 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={gdprConsent}
+                    onChange={(e) => setGdprConsent(e.target.checked)}
+                    className="mt-0.5 h-4 w-4 accent-amber-500 flex-shrink-0"
+                  />
+                  <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
+                    Souhlasím se{' '}
+                    <a href="/gdpr" target="_blank" className="text-amber-400 underline hover:text-amber-300">zpracováním osobních údajů</a>
+                    {' '}a s{' '}
+                    <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">obchodními podmínkami</a>.
+                    Beru na vědomí, že digitální obsah je doručen ihned a nelze od smlouvy odstoupit.
+                  </span>
+                </label>
+
+                <button
+                  onClick={handlePayment}
+                  disabled={isProcessing || !gdprConsent}
+                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+                >
+                  {isProcessing ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <span className="w-5 h-5 border-2 border-black/40 border-t-black rounded-full animate-spin" />
+                      Přesměrování na platbu…
+                    </span>
+                  ) : (
+                    `Zaplatit ${formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '449 Kč' : '249 Kč'} a stáhnout PDF →`
+                  )}
+                </button>
+
+                <p className="mt-3 text-center text-[11px] text-slate-500">
+                  🔒 Zabezpečená platba přes Stripe · PDF ke stažení ihned
+                </p>
+              </div>
+
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   );

@@ -155,10 +155,7 @@ export async function GET(req: NextRequest) {
       error instanceof Error ? error.message : 'Unknown error';
 
     return NextResponse.json(
-      {
-        error: 'Nepodařilo se vygenerovat PDF.',
-        details: message,
-      },
+      { error: 'Nepodařilo se vygenerovat PDF.' },
       { status: 500 }
     );
   }

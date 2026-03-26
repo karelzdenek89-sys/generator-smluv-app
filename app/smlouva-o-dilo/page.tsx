@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
 
 type PaymentType = 'after_completion' | 'with_deposit' | 'milestones';
 
@@ -71,6 +70,7 @@ export default function WorkContractPage() {
   const [formData, setFormData] = useState<WorkContractData>(defaultData);
   const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [gdprConsent, setGdprConsent] = useState(false);
 
   const updateField = (field: keyof WorkContractData, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -179,6 +179,9 @@ ${formData.handoverProtocol ? '• Předání díla proběhne protokolem o před
   }, [formData]);
 
   const handleSubmit = async () => {
+    if (!formData.clientName || !formData.contractorName) { alert('Vyplňte prosím jména objednatel a zhotovitele.'); return; }
+    if (!formData.priceAmount) { alert('Vyplňte prosím cenu díla.'); return; }
+    if (!gdprConsent) { alert('Pro pokračování je nutný souhlas se zpracováním osobních údajů.'); return; }
     try {
       setIsProcessing(true);
 
@@ -471,11 +474,111 @@ ${formData.handoverProtocol ? '• Předání díla proběhne protokolem o před
               </div>
             </section>
 
-            <div className="space-y-1.5 mb-4 text-sm">
-                      <div className="flex justify-between text-slate-400"><span>Základní dokument</span><span>249 Kč</span></div>
-                      {formData.tier !== 'basic' && <div className="flex justify-between text-slate-400"><span>{formData.tier === 'complete' ? 'Kompletní balíček' : 'Profesionální ochrana'}</span><span>{formData.tier === 'complete' ? '+500 Kč' : '+200 Kč'}</span></div>}
-                      <div className="border-t border-slate-700 pt-2 flex justify-between font-bold text-base"><span>Celkem</span><span className="text-amber-400">{formData.tier === 'complete' ? '749' : formData.tier === 'professional' ? '449' : '249'} Kč</span></div>
+            {/* Tier selection */}
+            <section className="bg-[#0c1426] border border-slate-800 rounded-3xl p-8">
+              <h3 className="text-amber-400 uppercase text-xs tracking-widest font-bold mb-6">6. Výběr balíčku</h3>
+              <div className="space-y-3">
+                {([
+                  { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva o dílo dle § 2586 OZ v PDF.' },
+                  { value: 'professional', label: 'Profesionální ochrana', price: '449 Kč', desc: 'Rozšířené smluvní pokuty, záruční doložky, odpovědnost za vady.', recommended: true },
+                  { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Profesionální ochrany + instrukce k podpisu, checklist a 30denní archivace.' },
+                ] as const).map((opt) => (
+                  <label key={opt.value} className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${formData.tier === opt.value ? 'border-amber-500 bg-amber-500/10' : 'border-slate-700/60 bg-[#05080f]/60 hover:border-slate-600'}`}>
+                    {('recommended' in opt) &&  formData.tier !== 'professional' && (
+                      <div className="absolute -top-2.5 left-4"><span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">Doporučeno</span></div>
+                    )}
+                    <div className="flex items-start gap-3">
+                      <input type="radio" name="tier" value={opt.value} checked={formData.tier === opt.value}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, tier: e.target.value as 'basic' | 'professional' | 'complete', notaryUpsell: e.target.value !== 'basic' }))}
+                        className="mt-1 h-5 w-5 accent-amber-500" />
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-black uppercase tracking-wide text-amber-400">{opt.label}</span>
+                          <span className="text-sm font-black text-white">{opt.price}</span>
+                        </div>
+                        <div className="mt-1 text-xs leading-relaxed text-slate-400">{opt.desc}</div>
+                      </div>
                     </div>
+                  </label>
+                ))}
+              </div>
+            </section>
+
+          </div>
+
+          {/* Right sidebar */}
+          <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-24">
+
+            {/* Risk analysis */}
+            <div className="bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
+              <div className="text-[10px] font-black uppercase tracking-widest text-amber-400 mb-4">Analýza smlouvy</div>
+              <div className="flex items-center gap-4 mb-4">
+                <div className="text-5xl font-black" style={{ color: riskAnalysis.score >= 85 ? '#34d399' : riskAnalysis.score >= 65 ? '#f59e0b' : '#f87171' }}>
+                  {riskAnalysis.score}
+                </div>
+                <div>
+                  <div className="font-bold text-white">{riskAnalysis.score >= 85 ? 'Silná ochrana' : riskAnalysis.score >= 65 ? 'Průměrná ochrana' : 'Slabší ochrana'}</div>
+                  <div className="text-xs text-slate-500">ze 100 bodů</div>
+                </div>
+              </div>
+              {riskAnalysis.warnings.length === 0
+                ? <p className="text-sm text-emerald-400">✓ Smlouva o dílo je v pořádku.</p>
+                : <ul className="space-y-2">{riskAnalysis.warnings.map((w, i) => (
+                    <li key={i} className="text-xs rounded-lg px-3 py-2 bg-amber-500/10 text-amber-300">▲ {w}</li>
+                  ))}</ul>
+              }
+            </div>
+
+            {/* Payment card */}
+            <div className="bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
+              <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Shrnutí objednávky</div>
+              <div className="space-y-2 text-sm mb-5">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Smlouva o dílo</span>
+                  <span className="font-bold text-white">249 Kč</span>
+                </div>
+                {formData.tier !== 'basic' && (
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">{formData.tier === 'complete' ? 'Kompletní balíček' : 'Profesionální ochrana'}</span>
+                    <span className="font-bold text-amber-400">{formData.tier === 'complete' ? '+500 Kč' : '+200 Kč'}</span>
+                  </div>
+                )}
+                <div className="border-t border-white/8 pt-2 flex justify-between font-black text-lg">
+                  <span>Celkem</span>
+                  <span className="text-white">{formData.tier === 'complete' ? '749' : formData.tier === 'professional' ? '449' : '249'} Kč</span>
+                </div>
+              </div>
+
+              {/* GDPR */}
+              <label className="flex items-start gap-3 mb-5 cursor-pointer">
+                <input type="checkbox" checked={gdprConsent} onChange={(e) => setGdprConsent(e.target.checked)} className="mt-1 h-4 w-4 accent-amber-500 flex-shrink-0" />
+                <span className="text-xs text-slate-400 leading-relaxed">
+                  Souhlasím se{' '}
+                  <a href="/gdpr" className="text-amber-400 underline hover:text-amber-300" target="_blank" rel="noopener noreferrer">zpracováním osobních údajů</a>
+                  {' '}a{' '}
+                  <a href="/obchodni-podminky" className="text-amber-400 underline hover:text-amber-300" target="_blank" rel="noopener noreferrer">obchodními podmínkami</a>.
+                </span>
+              </label>
+
+              <button
+                onClick={handleSubmit}
+                disabled={isProcessing || !gdprConsent}
+                className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+              >
+                {isProcessing ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <span className="w-5 h-5 border-2 border-black/40 border-t-black rounded-full animate-spin" />
+                    Přesměrování…
+                  </span>
+                ) : (
+                  `Zaplatit ${formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '449 Kč' : '249 Kč'} a stáhnout PDF →`
+                )}
+              </button>
+              <p className="text-center text-xs text-slate-600 mt-3">🔒 Platba přes Stripe · PDF ke stažení ihned</p>
+            </div>
+
+          </div>
+        </div>
       </div>
     </main>
   );

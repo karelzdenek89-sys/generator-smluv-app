@@ -72,6 +72,7 @@ export async function POST(req: Request) {
               session.id,
               session.metadata?.contractType || 'dokument',
               process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz',
+              tier,
             ).catch((err) => console.error('E-mail error:', err));
           }
         }
@@ -94,6 +95,7 @@ async function sendDownloadEmail(
   sessionId: string,
   contractType: string,
   baseUrl: string,
+  tier: string = 'basic',
 ): Promise<void> {
   const contractNames: Record<string, string> = {
     lease: 'Nájemní smlouva',
@@ -147,7 +149,7 @@ async function sendDownloadEmail(
               STÁHNOUT PDF DOKUMENT
             </a>
             <p style="color:#64748b;font-size:12px;text-align:center;margin:0;">
-              Odkaz ke stažení je platný 7 dní od zaplacení.<br>
+              Odkaz ke stažení je platný ${tier === 'complete' ? '30 dní' : '7 dní'} od zaplacení.<br>
               V případě dotazů nás kontaktujte na <a href="mailto:info@smlouvahned.cz" style="color:#f59e0b;">info@smlouvahned.cz</a>
             </p>
           </div>

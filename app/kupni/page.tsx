@@ -46,6 +46,7 @@ export default function KupniPage() {
     tier: 'basic' as const,
   });
   const [isProcessing, setIsProcessing] = useState(false);
+  const [gdprConsent, setGdprConsent] = useState(false);
 
   const set = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -66,7 +67,8 @@ export default function KupniPage() {
 
   const handlePayment = async () => {
     try {
-      setIsProcessing(true);
+      if (!gdprConsent) { alert('Pro pokračování je nutný souhlas se zpracováním osobních údajů.'); return; }
+    setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -216,7 +218,7 @@ export default function KupniPage() {
                         : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'
                     }`}
                   >
-                    {opt.recommended && form.tier !== 'professional' && (
+                    {('recommended' in opt) &&  form.tier !== 'professional' && (
                       <div className="absolute -top-2.5 left-4">
                         <span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">
                           Doporučeno
@@ -300,7 +302,7 @@ export default function KupniPage() {
               )}
               <button
                 onClick={handlePayment}
-                disabled={isProcessing || !form.sellerName || !form.buyerName || !form.price}
+                disabled={isProcessing || !gdprConsent || !form.sellerName || !form.buyerName || !form.price}
                 className="mt-4 w-full rounded-2xl bg-amber-500 px-6 py-4 font-bold text-slate-900 text-lg hover:bg-amber-400 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {isProcessing ? 'Přesměrování…' : 'Zaplatit a stáhnout PDF →'}

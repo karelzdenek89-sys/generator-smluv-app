@@ -82,8 +82,8 @@ function SuccessContent() {
 
           <div className="mt-5 grid grid-cols-2 gap-3 text-center">
             <div className="bg-white/3 rounded-xl p-3">
-              <div className="text-xs font-bold text-emerald-400 mb-0.5">✓ Platný 7 dní</div>
-              <div className="text-xs text-slate-500">od zaplacení</div>
+              <div className="text-xs font-bold text-emerald-400 mb-0.5">✓ Platný 7–30 dní</div>
+              <div className="text-xs text-slate-500">dle zvoleného balíčku</div>
             </div>
             <div className="bg-white/3 rounded-xl p-3">
               <div className="text-xs font-bold text-emerald-400 mb-0.5">✓ Opakované stažení</div>

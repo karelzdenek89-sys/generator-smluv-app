@@ -100,7 +100,7 @@ export default function TermsPage() {
               05. Dostupnost dokumentu ke stažení
             </h2>
             <p>
-              Odkaz ke stažení PDF dokumentu je aktivní po dobu <strong className="text-white">7 dní</strong> od okamžiku zaplacení. Po uplynutí této doby může být dokument nedostupný z důvodu automatického mazání dočasného úložiště. Zákazníkovi doporučujeme dokument ihned po stažení uložit na bezpečném místě. V případě problémů nás kontaktujte na <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">info@smlouvahned.cz</a>.
+              Odkaz ke stažení PDF dokumentu je aktivní po dobu <strong className="text-white">7 dní</strong> (Základní a Profesionální balíček) nebo <strong className="text-white">30 dní</strong> (Kompletní balíček) od okamžiku zaplacení. Po uplynutí této doby může být dokument nedostupný z důvodu automatického mazání dočasného úložiště. Zákazníkovi doporučujeme dokument ihned po stažení uložit na bezpečném místě. V případě problémů nás kontaktujte na <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">info@smlouvahned.cz</a>.
             </p>
           </section>
 

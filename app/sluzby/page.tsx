@@ -48,6 +48,7 @@ export default function SluzbyPage() {
     tier: 'basic' as const,
   });
   const [isProcessing, setIsProcessing] = useState(false);
+  const [gdprConsent, setGdprConsent] = useState(false);
 
   const set = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -66,7 +67,8 @@ export default function SluzbyPage() {
 
   const handlePayment = async () => {
     try {
-      setIsProcessing(true);
+      if (!gdprConsent) { alert('Pro pokračování je nutný souhlas se zpracováním osobních údajů.'); return; }
+    setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contractType: 'service', tier: form.tier, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'service' }, email: form.clientEmail || form.providerEmail }),
@@ -205,7 +207,7 @@ export default function SluzbyPage() {
                         : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'
                     }`}
                   >
-                    {opt.recommended && form.tier !== 'professional' && (
+                    {('recommended' in opt) &&  form.tier !== 'professional' && (
                       <div className="absolute -top-2.5 left-4">
                         <span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">
                           Doporučeno
@@ -282,7 +284,16 @@ export default function SluzbyPage() {
                   {!form.serviceDescription && <div>• Popis služeb</div>}
                 </div>
               )}
-              <button onClick={handlePayment} disabled={isProcessing || !form.providerName || !form.clientName || !form.serviceDescription}
+              <label className="flex items-start gap-3 mb-4 cursor-pointer">
+                <input type="checkbox" checked={gdprConsent} onChange={(e) => setGdprConsent(e.target.checked)} className="mt-1 h-4 w-4 accent-amber-500 flex-shrink-0" />
+                <span className="text-xs text-slate-400 leading-relaxed">
+                  Souhlasím se{' '}
+                  <a href="/gdpr" className="text-amber-400 underline hover:text-amber-300" target="_blank" rel="noopener noreferrer">zpracováním osobních údajů</a>
+                  {' '}a{' '}
+                  <a href="/obchodni-podminky" className="text-amber-400 underline hover:text-amber-300" target="_blank" rel="noopener noreferrer">obchodními podmínkami</a>.
+                </span>
+              </label>
+              <button onClick={handlePayment} disabled={isProcessing || !gdprConsent || !form.providerName || !form.clientName || !form.serviceDescription}
                 className="mt-4 w-full rounded-2xl bg-amber-500 px-6 py-4 font-bold text-slate-900 text-lg hover:bg-amber-400 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed">
                 {isProcessing ? 'Přesměrování…' : 'Zaplatit a stáhnout PDF →'}
               </button>
