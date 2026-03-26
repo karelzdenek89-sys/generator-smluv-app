@@ -2,8 +2,8 @@ import { randomUUID } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { redis } from '@/lib/redis';
-import { ContractType } from '@/lib/contracts';
 import { stripe } from '@/lib/stripe';
+import { ContractType } from '@/lib/contracts';
 
 export const runtime = 'nodejs';
 
@@ -17,23 +17,6 @@ const checkoutSchema = z.object({
   payload: z.record(z.string(), z.unknown()),
   email: z.string().email().optional(),
 });
-
-const CONTRACT_TITLES: Record<ContractType, string> = {
-  gift: 'Darovací smlouva (2026)',
-  work_contract: 'Smlouva o dílo (2026)',
-  car_sale: 'Kupní smlouva na vozidlo (2026)',
-  lease: 'Nájemní smlouva (2026)',
-  loan: 'Smlouva o zápůjčce (2026)',
-  nda: 'Smlouva o mlčenlivosti – NDA (2026)',
-  general_sale: 'Kupní smlouva (2026)',
-  employment: 'Pracovní smlouva (2026)',
-  dpp: 'Dohoda o provedení práce – DPP (2026)',
-  service: 'Smlouva o poskytování služeb (2026)',
-  sublease: 'Podnájemní smlouva (2026)',
-  power_of_attorney: 'Plná moc (2026)',
-  debt_acknowledgment: 'Uznání dluhu (2026)',
-  cooperation: 'Smlouva o spolupráci (2026)',
-};
 
 const CONTRACT_CANCEL_URLS: Record<ContractType, string> = {
   gift: '/darovaci',
@@ -52,33 +35,14 @@ const CONTRACT_CANCEL_URLS: Record<ContractType, string> = {
   cooperation: '/spoluprace',
 };
 
-const TIER_PRICES: Record<Tier, number> = {
-  basic: 249,
-  professional: 449,
-  complete: 749,
+/** Mapování tierů na Environment Variables z Vercelu */
+const TIER_PRICE_IDS: Record<Tier, string | undefined> = {
+  basic: process.env.STRIPE_PRICE_ID_BASIC,
+  professional: process.env.STRIPE_PRICE_ID_PRO,
+  complete: process.env.STRIPE_PRICE_ID_PREMIUM,
 };
 
-const TIER_DESCRIPTIONS: Record<Tier, string> = {
-  basic: 'Základní dokument — profesionální smlouva dle OZ, PDF ke stažení',
-  professional: 'Profesionální ochrana — rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení',
-  complete: 'Kompletní balíček — vše z Profesionální ochrany + průvodní instrukce, checklist a 30denní archivace',
-};
-
-/** Resolve tier from explicit `tier` field or legacy `notaryUpsell` boolean */
-function resolveTier(tier: Tier | undefined, notaryUpsell: boolean): Tier {
-  if (tier) return tier;
-  return notaryUpsell ? 'professional' : 'basic';
-}
-
-function getPrice(contractType: ContractType, tier: Tier) {
-  return {
-    amountCzk: TIER_PRICES[tier],
-    title: CONTRACT_TITLES[contractType],
-    description: TIER_DESCRIPTIONS[tier],
-  };
-}
-
-// Jednoduchý rate limit: max 10 checkoutů z jedné IP za hodinu
+// Fail-safe rate limit: Pokud Redis selže, logujeme chybu, ale pustíme uživatele dál
 async function checkRateLimit(ip: string): Promise<boolean> {
   try {
     const key = `ratelimit:checkout:${ip}`;
@@ -86,20 +50,19 @@ async function checkRateLimit(ip: string): Promise<boolean> {
     if (count === 1) {
       await redis.expire(key, 3600);
     }
-    return count <= 10;
+    return count <= 15; // Zvýšeno na 15 pro jistotu
   } catch (err) {
-    // Pokud Redis selže, odmítneme request jako bezpečnostní opatření
-    // (fail-closed: lepší false positive než bypass rate limitu)
-    console.error('Rate limit Redis error:', err);
-    return false;
+    console.error('Redis Rate Limit Error (Failing open):', err);
+    return true; // Pustíme uživatele i při chybě Redisu
   }
 }
 
 export async function POST(req: Request) {
   try {
-    // Rate limiting
     const forwarded = req.headers.get('x-forwarded-for');
     const ip = forwarded ? forwarded.split(',')[0].trim() : 'unknown';
+    
+    // Kontrola limitů
     const allowed = await checkRateLimit(ip);
     if (!allowed) {
       return NextResponse.json(
@@ -112,67 +75,58 @@ export async function POST(req: Request) {
     const parsed = checkoutSchema.safeParse(body);
 
     if (!parsed.success) {
-      return NextResponse.json(
-        { error: 'Neplatná data formuláře.' },
-        { status: 400 },
-      );
+      return NextResponse.json({ error: 'Neplatná data formuláře.' }, { status: 400 });
     }
 
     const { contractType, tier: rawTier, notaryUpsell, payload, email } = parsed.data;
 
-    const tier = resolveTier(rawTier, notaryUpsell);
+    // Logika určení tarifu
+    let tier: Tier = rawTier || (notaryUpsell ? 'professional' : 'basic');
+    const priceId = TIER_PRICE_IDS[tier];
 
-    const baseUrl =
-      process.env.NEXT_PUBLIC_BASE_URL ||
-      new URL(req.url).origin;
+    if (!priceId) {
+      console.error(`Missing Price ID for tier: ${tier}`);
+      return NextResponse.json({ error: 'Konfigurace ceny nebyla nalezena.' }, { status: 500 });
+    }
 
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || new URL(req.url).origin;
     const draftId = randomUUID();
 
-    // TTL: 30 dní pro Kompletní balíček, 7 dní pro ostatní
-    const TTL_SECONDS = tier === 'complete'
-      ? 60 * 60 * 24 * 30
-      : 60 * 60 * 24 * 7;
+    // Uložení draftu do Redisu
+    try {
+      const TTL_SECONDS = tier === 'complete' ? 60 * 60 * 24 * 30 : 60 * 60 * 24 * 7;
+      const effectiveNotaryUpsell = tier !== 'basic';
 
-    // notaryUpsell pro backward compat s contracts.ts — professional i complete dostávají premium obsah
-    const effectiveNotaryUpsell = tier !== 'basic';
-
-    await redis.set(
-      `contract:draft:${draftId}`,
-      {
-        contractType,
-        tier,
-        notaryUpsell: effectiveNotaryUpsell,
-        email: email || null,
-        payload: {
-          ...payload,
+      await redis.set(
+        `contract:draft:${draftId}`,
+        {
           contractType,
-          notaryUpsell: effectiveNotaryUpsell,
           tier,
+          notaryUpsell: effectiveNotaryUpsell,
+          email: email || null,
+          payload: { ...payload, contractType, tier },
+          paid: false,
+          createdAt: new Date().toISOString(),
         },
-        paid: false,
-        createdAt: new Date().toISOString(),
-      },
-      { ex: TTL_SECONDS },
-    );
+        { ex: TTL_SECONDS },
+      );
+    } catch (redisError) {
+      console.error('Failed to save draft to Redis:', redisError);
+      // Pokračujeme dál – platba je důležitější než okamžitý draft v Redisu
+    }
 
-    const pricing = getPrice(contractType, tier);
-    const cancelPath = CONTRACT_CANCEL_URLS[contractType];
+    const cancelPath = CONTRACT_CANCEL_URLS[contractType] || '/';
 
+    // Vytvoření Stripe Checkout Session pomocí Price ID
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
       customer_email: email || undefined,
       locale: 'cs',
+      payment_method_types: ['card'], // Můžeš změnit na automatic_payment_methods: { enabled: true }
       line_items: [
         {
+          price: priceId, // Používáme tvé ID z Vercelu (price_1T...)
           quantity: 1,
-          price_data: {
-            currency: 'czk',
-            unit_amount: pricing.amountCzk * 100,
-            product_data: {
-              name: pricing.title,
-              description: pricing.description,
-            },
-          },
         },
       ],
       success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
@@ -181,22 +135,18 @@ export async function POST(req: Request) {
         draftId,
         contractType,
         tier,
-        notaryUpsell: String(effectiveNotaryUpsell),
       },
     });
 
     if (!session.url) {
-      return NextResponse.json(
-        { error: 'Stripe nevrátil URL pro checkout.' },
-        { status: 500 },
-      );
+      throw new Error('Stripe nevrátil URL.');
     }
 
     return NextResponse.json({ url: session.url });
-  } catch (error) {
-    console.error('Checkout error:', error);
+  } catch (error: any) {
+    console.error('Final Checkout Error:', error);
     return NextResponse.json(
-      { error: 'Chyba při vytváření platby.' },
+      { error: error.message || 'Chyba při vytváření platby.' },
       { status: 500 },
     );
   }

@@ -458,7 +458,7 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
     doc.setTextColor(30, 30, 30);
 
     for (const line of section.body) {
-      const safeLine = line?.trim() ? line : ' ';
+      const safeLine = (line != null && String(line).trim()) ? String(line) : ' ';
       const splitLines = doc.splitTextToSize(safeLine, contentWidth);
 
       if (y + splitLines.length * 5.5 > 275) {
