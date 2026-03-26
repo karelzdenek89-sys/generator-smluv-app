@@ -466,8 +466,12 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
     doc.setFontSize(10);
     doc.setTextColor(30, 30, 30);
 
-    for (const line of section.body) {
-      const safeLine = (line != null && String(line).trim()) ? String(line) : ' ';
+    // Ochrana před přetečením: omezení délky section.body na 80 řádků
+    const bodyLines = section.body.slice(0, 80);
+    for (const line of bodyLines) {
+      const rawLine = line != null ? String(line) : '';
+      // Zkrátit extrémně dlouhé řádky (>800 znaků) aby splitTextToSize nevrátil stovky sublines
+      const safeLine = rawLine.length > 800 ? rawLine.substring(0, 800) + '…' : (rawLine.trim() || ' ');
       const splitLines = doc.splitTextToSize(safeLine, contentWidth);
 
       if (y + splitLines.length * 5.5 > 275) {

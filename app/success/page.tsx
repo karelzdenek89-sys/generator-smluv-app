@@ -1,13 +1,17 @@
 'use client';
 
-import { Suspense, useEffect, useMemo } from 'react';
+import { Suspense, useEffect, useMemo, useState, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 const pageShell = 'min-h-screen bg-[#05080f] text-slate-200 py-16 px-6';
 
+type DownloadState = 'checking' | 'ready' | 'error';
+
 function SuccessContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
+  const [dlState, setDlState] = useState<DownloadState>('checking');
+  const attemptRef = useRef(0);
 
   const downloadUrl = useMemo(() => {
     if (!sessionId) return null;
@@ -27,6 +31,52 @@ function SuccessContent() {
     } catch {
       // localStorage nemusí být dostupný
     }
+  }, [sessionId]);
+
+  // Polling: ověřujeme stav platby přes Stripe před zobrazením tlačítka
+  useEffect(() => {
+    if (!sessionId) {
+      setDlState('ready');
+      return;
+    }
+
+    const maxAttempts = 12; // 12 × 1500 ms = 18 s max
+    let cancelled = false;
+
+    async function checkStatus() {
+      if (cancelled) return;
+
+      try {
+        const res = await fetch(
+          `/api/contracts/status?session_id=${encodeURIComponent(sessionId!)}`,
+          { cache: 'no-store' },
+        );
+        const data = (await res.json()) as { status: string };
+
+        if (cancelled) return;
+
+        if (data.status === 'paid') {
+          setDlState('ready');
+        } else if (attemptRef.current < maxAttempts) {
+          attemptRef.current += 1;
+          setTimeout(checkStatus, 1500);
+        } else {
+          setDlState('error');
+        }
+      } catch {
+        if (cancelled) return;
+        if (attemptRef.current < maxAttempts) {
+          attemptRef.current += 1;
+          setTimeout(checkStatus, 1500);
+        } else {
+          setDlState('error');
+        }
+      }
+    }
+
+    checkStatus();
+
+    return () => { cancelled = true; };
   }, [sessionId]);
 
   if (!sessionId) {
@@ -75,10 +125,39 @@ function SuccessContent() {
             </div>
           </div>
 
-          <a href={downloadUrl ?? '#'}
-            className="block w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-xl rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] text-center uppercase tracking-tight">
-            Stáhnout PDF
-          </a>
+          {/* Stav tlačítka závisí na dlState */}
+          {dlState === 'checking' && (
+            <div className="flex flex-col items-center justify-center py-5 gap-3">
+              <div className="w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
+              <p className="text-sm text-slate-400">Ověřujeme platbu&hellip;</p>
+            </div>
+          )}
+
+          {dlState === 'ready' && (
+            <a href={downloadUrl ?? '#'}
+              className="block w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-xl rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] text-center uppercase tracking-tight">
+              Stáhnout PDF
+            </a>
+          )}
+
+          {dlState === 'error' && (
+            <div className="rounded-2xl bg-red-500/10 border border-red-500/20 p-5 text-center">
+              <p className="text-sm text-red-300 font-bold mb-1">Platba se ještě zpracovává</p>
+              <p className="text-xs text-slate-400 mb-3">Odkaz ke stažení obdržíte e-mailem, nebo zkuste stránku obnovit za chvíli.</p>
+              <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                <button
+                  onClick={() => { attemptRef.current = 0; setDlState('checking'); }}
+                  className="px-5 py-2 rounded-xl bg-amber-500 text-black font-bold text-sm hover:bg-amber-400 transition"
+                >
+                  Zkusit znovu
+                </button>
+                <a href="mailto:info@smlouvahned.cz"
+                  className="px-5 py-2 rounded-xl bg-white/5 border border-white/10 text-slate-300 font-bold text-sm hover:bg-white/10 transition">
+                  Kontaktovat podporu
+                </a>
+              </div>
+            </div>
+          )}
 
           <div className="mt-5 grid grid-cols-2 gap-3 text-center">
             <div className="bg-white/3 rounded-xl p-3">
