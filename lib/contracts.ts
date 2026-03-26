@@ -1889,5 +1889,11 @@ export function buildContractSections(data: StoredContractData): ContractSection
       return buildDebtAcknowledgmentSections(data);
     case 'cooperation':
       return buildCooperationContractSections(data);
+    default: {
+      // Exhaustive check — TypeScript zajistí, že při přidání nového ContractType
+      // dostaneme chybu kompilace, pokud zapomeneme doplnit case.
+      const _exhaustive: never = data.contractType;
+      throw new Error(`Neznámý typ smlouvy: ${_exhaustive}`);
+    }
   }
 }
