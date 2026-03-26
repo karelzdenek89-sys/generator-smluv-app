@@ -5,7 +5,8 @@ import { stripe } from '@/lib/stripe';
 
 export const runtime = 'nodejs';
 
-const TTL_SECONDS = 60 * 60 * 24 * 7; // 7 dní po zaplacení
+const TTL_BASIC = 60 * 60 * 24 * 7;     // 7 dní
+const TTL_COMPLETE = 60 * 60 * 24 * 30;  // 30 dní pro Kompletní balíček
 
 export async function POST(req: Request) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -45,6 +46,8 @@ export async function POST(req: Request) {
         const existing = await redis.get<Record<string, unknown>>(key);
 
         if (existing) {
+          const tier = session.metadata?.tier || (existing as any).tier || 'basic';
+          const ttl = tier === 'complete' ? TTL_COMPLETE : TTL_BASIC;
           await redis.set(
             key,
             {
@@ -55,7 +58,7 @@ export async function POST(req: Request) {
               paymentStatus: session.payment_status,
               customerEmail: session.customer_email || (existing.email as string) || null,
             },
-            { ex: TTL_SECONDS },
+            { ex: ttl },
           );
 
           // Volitelné: odeslat e-mail zákazníkovi přes Resend

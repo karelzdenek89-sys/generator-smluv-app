@@ -28,6 +28,7 @@ type FormDataType = {
   withReservation: boolean;
   reservationDescription: string;
   notaryUpsell: boolean;
+  tier: 'basic' | 'professional' | 'complete';
 };
 
 export default function GiftContractPage() {
@@ -54,6 +55,7 @@ export default function GiftContractPage() {
     withReservation: false,
     reservationDescription: '',
     notaryUpsell: false,
+    tier: 'basic' as const,
   });
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -166,7 +168,8 @@ Dárce: ____________________          Obdarovaný: ____________________
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contractType: 'gift',
-          notaryUpsell: Boolean(formData.notaryUpsell),
+          tier: formData.tier,
+          notaryUpsell: formData.tier !== 'basic',
           payload,
         }),
       });
@@ -426,75 +429,10 @@ Dárce: ____________________          Obdarovaný: ____________________
             </section>
 
             <div className="space-y-1.5 mb-4 text-sm">
-              <div className="flex justify-between text-slate-400"><span>Základní dokument</span><span>249 Kč</span></div>
-              {formData.notaryUpsell && <div className="flex justify-between text-slate-400"><span>Notářsky ověřené podpisy</span><span>+200 Kč</span></div>}
-              <div className="border-t border-slate-700 pt-2 flex justify-between font-bold text-base"><span>Celkem</span><span className="text-amber-400">{formData.notaryUpsell ? '449' : '249'} Kč</span></div>
-            </div>
-
-            <motion.button
-              whileHover={{ scale: isProcessing ? 1 : 1.02 }}
-              whileTap={{ scale: isProcessing ? 1 : 0.98 }}
-              onClick={handlePayment}
-              disabled={isProcessing}
-              className="w-full py-7 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-black font-black text-2xl rounded-3xl shadow-xl transition-all disabled:opacity-60"
-            >
-              {isProcessing
-                ? 'PŘESMĚROVÁNÍ NA PLATBU...'
-                : formData.notaryUpsell
-                  ? 'ZAPLATIT A VYGENEROVAT – 449 Kč'
-                  : 'ZAPLATIT A VYGENEROVAT – 249 Kč'}
-            </motion.button>
-            <p className="mt-3 text-center text-xs text-slate-500">Platba kartou přes Stripe · PDF ihned · platnost 7 dní</p>
-          </div>
-
-          <div className="lg:col-span-5 space-y-8">
-            <div className="bg-[#0c1426] border border-slate-800 rounded-3xl p-8 sticky top-8">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="font-bold text-lg">Risk Score</h3>
-                <div className={`px-6 py-2 rounded-2xl text-white font-bold text-2xl ${scoreColor}`}>
-                  {riskAnalysis.score}/100
-                </div>
-              </div>
-
-              {riskAnalysis.warnings.length > 0 ? (
-                <div className="space-y-3 text-sm">
-                  {riskAnalysis.warnings.map((w, i) => (
-                    <div
-                      key={i}
-                      className="bg-rose-950/50 border border-rose-900/50 p-4 rounded-2xl text-rose-400"
-                    >
-                      ⚠️ {w}
+                      <div className="flex justify-between text-slate-400"><span>Základní dokument</span><span>249 Kč</span></div>
+                      {formData.tier !== 'basic' && <div className="flex justify-between text-slate-400"><span>{formData.tier === 'complete' ? 'Kompletní balíček' : 'Profesionální ochrana'}</span><span>{formData.tier === 'complete' ? '+500 Kč' : '+200 Kč'}</span></div>}
+                      <div className="border-t border-slate-700 pt-2 flex justify-between font-bold text-base"><span>Celkem</span><span className="text-amber-400">{formData.tier === 'complete' ? '749' : formData.tier === 'professional' ? '449' : '249'} Kč</span></div>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-emerald-400">Všechny klíčové údaje jsou vyplněny správně.</p>
-              )}
-
-              <button
-                onClick={scrollToPreview}
-                className="mt-6 w-full py-3 border border-slate-600 hover:border-amber-500 transition rounded-2xl text-sm font-medium lg:hidden"
-              >
-                Zobrazit náhled smlouvy ↓
-              </button>
-            </div>
-
-            <div id="preview-section" className="bg-[#0c1426] border border-slate-800 rounded-3xl p-8">
-              <h3 className="uppercase text-xs tracking-widest font-bold mb-6 text-amber-400">
-                Náhled darovací smlouvy
-              </h3>
-              <div className="bg-white text-black p-8 rounded-2xl text-[15px] leading-relaxed font-serif min-h-[460px] whitespace-pre-wrap border border-slate-200 shadow-inner">
-                {previewText}
-              </div>
-              <p className="text-xs text-slate-500 mt-4 text-center">
-                Toto je pouze orientační náhled • Plná verze bude vygenerována po platbě
-              </p>
-              <p className="text-xs text-slate-500 mt-2 text-center">
-                Citlivé údaje se neukládají do localStorage v prohlížeči.
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
     </main>
   );

@@ -11,6 +11,7 @@ type FormData = {
   paymentAccount: string; paymentDays: string;
   contractDate: string;
   notaryUpsell: boolean;
+  tier: 'basic' | 'professional' | 'complete';
 };
 
 const inputClass = 'w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition';
@@ -43,6 +44,7 @@ export default function DppPage() {
     remunerationType: 'fixed', totalRemuneration: '', hourlyRate: '',
     paymentAccount: '', paymentDays: '15',
     contractDate: '', notaryUpsell: false,
+    tier: 'basic' as const,
   });
   const [isProcessing, setIsProcessing] = useState(false);
 
@@ -66,7 +68,7 @@ export default function DppPage() {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contractType: 'dpp', notaryUpsell: form.notaryUpsell, payload: { ...form, contractType: 'dpp' }, email: form.employerEmail }),
+        body: JSON.stringify({ contractType: 'dpp', tier: form.tier, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'dpp' }, email: form.employerEmail }),
       });
       const data = await res.json();
       if (!res.ok || !data?.url) throw new Error();
@@ -167,14 +169,64 @@ export default function DppPage() {
             </section>
 
             <section className={cardClass}>
-              <label className={`flex items-start gap-4 cursor-pointer rounded-2xl border p-5 transition ${form.notaryUpsell ? 'border-amber-500/70 bg-amber-500/10' : 'border-slate-700/60 bg-[#111c31]'}`}>
-                <input type="checkbox" name="notaryUpsell" checked={form.notaryUpsell} onChange={set} className="mt-1 h-5 w-5 accent-amber-500" />
-                <div className="flex-1">
-                  <div className="font-bold text-white">Profesionální ochrana +200 Kč</div>
-                  <div className="mt-1 text-sm text-slate-400">Mlčenlivost, ochrana duševního vlastnictví, převod autorských práv. Ideální pro kreativní práce, IT a vývoj.</div>
-                </div>
-                <div className="text-amber-400 font-bold text-lg">449 Kč</div>
-              </label>
+              
+              {/* === VÝBĚR BALÍČKU === */}
+              <div className="space-y-3 mt-6">
+                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Vyberte balíček</div>
+                {([
+                  { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva dle občanského zákoníku v PDF.' },
+                  { value: 'professional', label: 'Profesionální ochrana', price: '449 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
+                  { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Profesionální ochrany + průvodní instrukce, checklist a 30denní archivace.' },
+                ] as const).map((opt) => (
+                  <label
+                    key={opt.value}
+                    className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${
+                      form.tier === opt.value
+                        ? 'border-amber-500 bg-amber-500/10'
+                        : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'
+                    }`}
+                  >
+                    {opt.recommended && form.tier !== 'professional' && (
+                      <div className="absolute -top-2.5 left-4">
+                        <span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">
+                          Doporučeno
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex items-start gap-3">
+                      <input
+                        type="radio"
+                        name="tier"
+                        value={opt.value}
+                        checked={form.tier === opt.value}
+                        onChange={(e) => setForm((prev) => ({ ...prev, tier: e.target.value as 'basic' | 'professional' | 'complete', notaryUpsell: e.target.value !== 'basic' }))}
+                        className="mt-1 h-5 w-5 accent-amber-500"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-black uppercase tracking-wide text-amber-400">{opt.label}</span>
+                          <span className="text-sm font-black text-white">{opt.price}</span>
+                        </div>
+                        <div className="mt-1 text-xs leading-relaxed text-slate-400">{opt.desc}</div>
+                        {opt.value === 'professional' && (
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {['Smluvní pokuty', 'Sankce za prodlení', 'Odpovědnostní doložky'].map(t => (
+                              <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
+                            ))}
+                          </div>
+                        )}
+                        {opt.value === 'complete' && (
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {['Instrukce k podpisu', 'Checklist', '30denní archivace'].map(t => (
+                              <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </label>
+                ))}
+              </div>
             </section>
           </div>
 
@@ -200,8 +252,8 @@ export default function DppPage() {
               <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90 mb-4">Shrnutí</div>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between"><span className="text-slate-400">Dohoda o provedení práce</span><span className="text-white font-bold">249 Kč</span></div>
-                {form.notaryUpsell && <div className="flex justify-between"><span className="text-slate-400">Profesionální ochrana</span><span className="text-amber-400 font-bold">+200 Kč</span></div>}
-                <div className="border-t border-slate-700 pt-2 flex justify-between font-bold text-lg"><span>Celkem</span><span className="text-amber-400">{form.notaryUpsell ? '449' : '249'} Kč</span></div>
+                {form.tier !== 'basic' && <div className="flex justify-between"><span className="text-slate-400">{form.tier === 'complete' ? 'Kompletní balíček' : 'Profesionální ochrana'}</span><span className="text-amber-400 font-bold">{form.tier === 'complete' ? '+500 Kč' : '+200 Kč'}</span></div>}
+                <div className="border-t border-slate-700 pt-2 flex justify-between font-bold text-lg"><span>Celkem</span><span className="text-amber-400">{form.tier === 'complete' ? '749' : form.tier === 'professional' ? '449' : '249'} Kč</span></div>
               </div>
               {(!form.employerName || !form.employeeName || !form.taskDescription) && !isProcessing && (
                 <div className="mt-4 rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-3 text-xs text-rose-300 space-y-1">

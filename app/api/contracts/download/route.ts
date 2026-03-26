@@ -6,7 +6,12 @@ import { renderContractPdf } from '@/lib/pdf';
 
 export const runtime = 'nodejs';
 
-const TTL_AFTER_DOWNLOAD = 60 * 60 * 24 * 7; // 7 dní po stažení
+const TTL_BASIC = 60 * 60 * 24 * 7;     // 7 dní
+const TTL_COMPLETE = 60 * 60 * 24 * 30;  // 30 dní pro Kompletní balíček
+
+function getTtlForTier(tier?: string): number {
+  return tier === 'complete' ? TTL_COMPLETE : TTL_BASIC;
+}
 
 // Rate limit: max 20 stažení per session_id za dobu životnosti dokumentu
 // Chrání před scrapingem při úniku session_id; legitimní zákazník stáhne 1–3×
@@ -15,7 +20,7 @@ async function checkDownloadRateLimit(sessionId: string): Promise<boolean> {
     const key = `ratelimit:download:${sessionId}`;
     const count = await redis.incr(key);
     if (count === 1) {
-      await redis.expire(key, TTL_AFTER_DOWNLOAD);
+      await redis.expire(key, TTL_COMPLETE); // use longest TTL for rate limit key
     }
     return count <= 20;
   } catch (err) {
@@ -28,6 +33,7 @@ async function checkDownloadRateLimit(sessionId: string): Promise<boolean> {
 
 type DraftRecord = {
   contractType: StoredContractData['contractType'];
+  tier?: 'basic' | 'professional' | 'complete';
   notaryUpsell?: boolean;
   payload: StoredContractData;
   paid: boolean;
@@ -84,10 +90,11 @@ export async function GET(req: NextRequest) {
     if (!isPaid) {
       // Failsafe: zkusit aktualizovat Redis pokud Stripe říká paid
       if (session.payment_status === 'paid' && !draft.paid) {
+        const failsafeTtl = getTtlForTier(draft.tier);
         await redis.set(
           `contract:draft:${draftId}`,
           { ...draft, paid: true, paidAt: new Date().toISOString(), paymentStatus: 'paid' },
-          { ex: TTL_AFTER_DOWNLOAD },
+          { ex: failsafeTtl },
         );
         // Pokračuj s generováním
       } else {
@@ -107,6 +114,7 @@ export async function GET(req: NextRequest) {
       contractType: draft.payload.contractType || draft.contractType,
       notaryUpsell:
         draft.notaryUpsell === true || draft.payload.notaryUpsell === true,
+      tier: draft.tier || (draft.payload as any).tier || 'basic',
     };
 
     if (!fullData.contractType) {
@@ -119,7 +127,8 @@ export async function GET(req: NextRequest) {
     const pdf = await renderContractPdf(fullData);
     const meta = getContractMeta(fullData.contractType);
 
-    // Počítač stažení + obnovit TTL na 7 dní
+    // Počítač stažení + obnovit TTL (7 dní basic/professional, 30 dní complete)
+    const ttl = getTtlForTier(draft.tier);
     await redis.set(
       `contract:draft:${draftId}`,
       {
@@ -128,7 +137,7 @@ export async function GET(req: NextRequest) {
         downloadCount: (draft.downloadCount || 0) + 1,
         lastDownloadAt: new Date().toISOString(),
       },
-      { ex: TTL_AFTER_DOWNLOAD },
+      { ex: ttl },
     );
 
     return new NextResponse(new Uint8Array(pdf), {

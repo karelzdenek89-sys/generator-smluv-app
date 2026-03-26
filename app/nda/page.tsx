@@ -24,6 +24,7 @@ type NdaFormData = {
   nonCompeteScope: string;
   specialInfoCategories: string;
   notaryUpsell: boolean;
+  tier: 'basic' | 'professional' | 'complete';
 };
 
 const inputClass =
@@ -82,6 +83,7 @@ export default function NdaBuilderPage() {
     nonCompeteScope: '',
     specialInfoCategories: '',
     notaryUpsell: false,
+    tier: 'basic' as const,
   });
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -107,7 +109,8 @@ export default function NdaBuilderPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contractType: 'nda',
-          notaryUpsell: formData.notaryUpsell,
+          tier: formData.tier,
+          notaryUpsell: formData.tier !== 'basic',
           email: formData.disclosingEmail || formData.receivingEmail || undefined,
           payload: formData,
         }),
@@ -171,119 +174,64 @@ export default function NdaBuilderPage() {
             <section className={cardClass}>
               <SectionTitle index="02" title="Poskytující strana" subtitle="Strana, která sdílí důvěrné informace." />
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
-                <div><label className={labelClass}>Jméno / název firmy</label><input value={formData.disclosingName} onChange={e => set('disclosingName', e.target.value)} placeholder="ABC s.r.o." className={inputClass} /></div>
-                <div><label className={labelClass}>IČO / RČ</label><input value={formData.disclosingId} onChange={e => set('disclosingId', e.target.value)} placeholder="12345678" className={inputClass} /></div>
-              </div>
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div><label className={labelClass}>Adresa / sídlo</label><input value={formData.disclosingAddress} onChange={e => set('disclosingAddress', e.target.value)} placeholder="Ulice 1, Praha 1" className={inputClass} /></div>
-                <div><label className={labelClass}>E-mail</label><input type="email" value={formData.disclosingEmail} onChange={e => set('disclosingEmail', e.target.value)} placeholder="info@firma.cz" className={inputClass} /></div>
-              </div>
-            </section>
-
-            <section className={cardClass}>
-              <SectionTitle index="03" title="Přijímající strana" subtitle="Strana, která přijímá a musí chránit informace." />
-              <div className="grid sm:grid-cols-2 gap-4 mb-4">
-                <div><label className={labelClass}>Jméno / název firmy</label><input value={formData.receivingName} onChange={e => set('receivingName', e.target.value)} placeholder="XYZ a.s." className={inputClass} /></div>
-                <div><label className={labelClass}>IČO / RČ</label><input value={formData.receivingId} onChange={e => set('receivingId', e.target.value)} placeholder="87654321" className={inputClass} /></div>
-              </div>
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div><label className={labelClass}>Adresa / sídlo</label><input value={formData.receivingAddress} onChange={e => set('receivingAddress', e.target.value)} placeholder="Ulice 2, Brno" className={inputClass} /></div>
-                <div><label className={labelClass}>E-mail</label><input type="email" value={formData.receivingEmail} onChange={e => set('receivingEmail', e.target.value)} placeholder="info@xyzas.cz" className={inputClass} /></div>
-              </div>
-            </section>
-
-            <section className={cardClass}>
-              <SectionTitle index="04" title="Předmět ochrany a účel" />
-              <div className="mb-4">
-                <label className={labelClass}>Popis chráněných informací</label>
-                <textarea value={formData.confidentialInfoDesc} onChange={e => set('confidentialInfoDesc', e.target.value)}
-                  placeholder="Obchodní plány, zdrojové kódy, databáze zákazníků, finanční výsledky, know-how..." className={textareaClass} />
-              </div>
-              <div>
-                <label className={labelClass}>Účel zpřístupnění informací</label>
-                <input value={formData.purposeOfDisclosure} onChange={e => set('purposeOfDisclosure', e.target.value)}
-                  placeholder="Posouzení potenciální obchodní spolupráce / zaměstnanecký vztah / investice" className={inputClass} />
-              </div>
-            </section>
-
-            <section className={cardClass}>
-              <SectionTitle index="05" title="Doba platnosti a sankce" />
-              <div className="grid sm:grid-cols-2 gap-4 mb-4">
-                <div><label className={labelClass}>Platnost NDA</label>
-                  <select value={formData.ndaDuration} onChange={e => set('ndaDuration', e.target.value)} className={inputClass}>
-                    <option value="1 roku">1 rok</option>
-                    <option value="2 let">2 roky</option>
-                    <option value="3 let">3 roky</option>
-                    <option value="5 let">5 let</option>
-                    <option value="dobu neurčitou">Neurčitá</option>
-                  </select>
-                </div>
-                <div><label className={labelClass}>Mlčenlivost po skončení</label>
-                  <select value={formData.confidentialityAfterTermination} onChange={e => set('confidentialityAfterTermination', e.target.value)} className={inputClass}>
-                    <option value="1 roku">1 rok</option>
-                    <option value="2 let">2 roky</option>
-                    <option value="5 let">5 let</option>
-                    <option value="10 let">10 let</option>
-                    <option value="neomezenou dobu">Neomezeně</option>
-                  </select>
-                </div>
-              </div>
-              <div>
-                <label className={labelClass}>Smluvní pokuta za porušení (Kč)</label>
-                <input type="number" value={formData.penaltyAmount} onChange={e => set('penaltyAmount', e.target.value)} placeholder="100 000" className={inputClass} />
-                <p className="text-xs text-slate-500 mt-1">Pokuta musí být přiměřená. Pro větší rizika doporučujeme 500 000+ Kč.</p>
-              </div>
-            </section>
-
-            <section className={cardClass}>
-              <SectionTitle index="06" title="Doplňková ujednání" subtitle="Volitelná rozšíření smlouvy." />
-              <div className="space-y-3 mb-4">
-                <Toggle checked={formData.nonSolicitation} onChange={v => set('nonSolicitation', v)} label="Zákaz přetahování zaměstnanců / klientů" />
-                {formData.nonSolicitation && (
-                  <div className="ml-7"><label className={labelClass}>Po dobu</label>
-                    <select value={formData.nonSolicitationPeriod} onChange={e => set('nonSolicitationPeriod', e.target.value)} className={inputClass}>
-                      <option value="6 měsíců">6 měsíců</option>
-                      <option value="12 měsíců">12 měsíců</option>
-                      <option value="24 měsíců">24 měsíců</option>
-                    </select>
-                  </div>
-                )}
-                <Toggle checked={formData.nonCompete} onChange={v => set('nonCompete', v)} label="Zákaz konkurenční činnosti (non-compete)" />
-                {formData.nonCompete && (
-                  <div className="ml-7 grid sm:grid-cols-2 gap-3">
-                    <div><label className={labelClass}>Po dobu</label>
-                      <select value={formData.nonCompetePeriod} onChange={e => set('nonCompetePeriod', e.target.value)} className={inputClass}>
-                        <option value="12 měsíců">12 měsíců</option>
-                        <option value="24 měsíců">24 měsíců</option>
-                        <option value="36 měsíců">36 měsíců</option>
-                      </select>
-                    </div>
-                    <div><label className={labelClass}>Oblast zákazu</label><input value={formData.nonCompeteScope} onChange={e => set('nonCompeteScope', e.target.value)} placeholder="Vývoj software, e-commerce..." className={inputClass} /></div>
-                  </div>
-                )}
-              </div>
-            </section>
-
-          </div>
-
-          {/* Sidebar */}
-          <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-8">
-            <div className={cardClass}>
-              <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Vyplněnost formuláře</div>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="flex-grow bg-slate-800 rounded-full h-2 overflow-hidden">
-                  <div className="h-full bg-amber-500 rounded-full transition-all" style={{ width: `${completion}%` }} />
-                </div>
-                <span className="text-sm font-black text-white">{completion}%</span>
-              </div>
-              <p className="text-xs text-slate-500">Čím více vyplníte, tím silnější smlouva.</p>
-            </div>
-
-            <div className={`${cardClass} ${formData.notaryUpsell ? 'border-amber-500/40 bg-amber-500/5' : ''}`}>
-              <div className="flex items-start gap-3 mb-4">
-                <input type="checkbox" id="premium" checked={formData.notaryUpsell} onChange={e => set('notaryUpsell', e.target.checked)} className="mt-1 accent-amber-500 w-4 h-4" />
                 <div>
-                  <label htmlFor="premium" className="font-bold text-white cursor-pointer text-sm">Profesionální ochrana +200 Kč</label>
+              {/* === VÝBĚR BALÍČKU === */}
+              <div className="space-y-3 mt-6">
+                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Vyberte balíček</div>
+                {([
+                  { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva dle občanského zákoníku v PDF.' },
+                  { value: 'professional', label: 'Profesionální ochrana', price: '449 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
+                  { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Profesionální ochrany + průvodní instrukce, checklist a 30denní archivace.' },
+                ] as const).map((opt) => (
+                  <label
+                    key={opt.value}
+                    className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${
+                      formData.tier === opt.value
+                        ? 'border-amber-500 bg-amber-500/10'
+                        : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'
+                    }`}
+                  >
+                    {opt.recommended && formData.tier !== 'professional' && (
+                      <div className="absolute -top-2.5 left-4">
+                        <span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">
+                          Doporučeno
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex items-start gap-3">
+                      <input
+                        type="radio"
+                        name="tier"
+                        value={opt.value}
+                        checked={formData.tier === opt.value}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, tier: e.target.value as 'basic' | 'professional' | 'complete', notaryUpsell: e.target.value !== 'basic' }))}
+                        className="mt-1 h-5 w-5 accent-amber-500"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-black uppercase tracking-wide text-amber-400">{opt.label}</span>
+                          <span className="text-sm font-black text-white">{opt.price}</span>
+                        </div>
+                        <div className="mt-1 text-xs leading-relaxed text-slate-400">{opt.desc}</div>
+                        {opt.value === 'professional' && (
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {['Smluvní pokuty', 'Sankce za prodlení', 'Odpovědnostní doložky'].map(t => (
+                              <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
+                            ))}
+                          </div>
+                        )}
+                        {opt.value === 'complete' && (
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {['Instrukce k podpisu', 'Checklist', '30denní archivace'].map(t => (
+                              <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </label>
+                ))}
+              </div>
                   <p className="text-xs text-slate-500 mt-0.5">Pro citlivé a hodnotné informace</p>
                 </div>
               </div>
@@ -311,7 +259,7 @@ export default function NdaBuilderPage() {
                 )}
                 <div className="border-t border-white/8 pt-2 flex justify-between font-black text-lg">
                   <span>Celkem</span>
-                  <span className="text-white">{formData.notaryUpsell ? '449' : '249'} Kč</span>
+                  <span className="text-white">{formData.tier === 'complete' ? '749' : formData.tier === 'professional' ? '449' : '249'} Kč</span>
                 </div>
               </div>
               <button onClick={handleSubmit} disabled={isProcessing}

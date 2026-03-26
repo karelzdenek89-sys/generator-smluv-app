@@ -14,9 +14,12 @@ export type ContractType =
   | 'debt_acknowledgment'
   | 'cooperation';
 
+export type Tier = 'basic' | 'professional' | 'complete';
+
 export type StoredContractData = {
   contractType: ContractType;
   notaryUpsell?: boolean;
+  tier?: Tier;
   [key: string]: unknown;
 };
 

@@ -7,8 +7,12 @@ import { stripe } from '@/lib/stripe';
 
 export const runtime = 'nodejs';
 
+const TIER_VALUES = ['basic', 'professional', 'complete'] as const;
+type Tier = (typeof TIER_VALUES)[number];
+
 const checkoutSchema = z.object({
   contractType: z.enum(['lease', 'car_sale', 'gift', 'work_contract', 'loan', 'nda', 'general_sale', 'employment', 'dpp', 'service', 'sublease', 'power_of_attorney', 'debt_acknowledgment', 'cooperation']),
+  tier: z.enum(TIER_VALUES).optional(),
   notaryUpsell: z.boolean().optional().default(false),
   payload: z.record(z.string(), z.unknown()),
   email: z.string().email().optional(),
@@ -48,17 +52,29 @@ const CONTRACT_CANCEL_URLS: Record<ContractType, string> = {
   cooperation: '/spoluprace',
 };
 
-function getPrice(contractType: ContractType, notaryUpsell: boolean) {
-  // Tříúrovňový ceník:
-  // Základní dokument:        249 Kč
-  // Profesionální ochrana:    449 Kč (přidaná hodnota: +200 Kč za rozšířené klauzule)
-  const basePrice = 249;
-  const premiumUpgrade = 200; // stejná hodnota pro všechny typy smluv
+const TIER_PRICES: Record<Tier, number> = {
+  basic: 249,
+  professional: 449,
+  complete: 749,
+};
 
-  void contractType; // contractType reserved for future tier-3 differentiation
+const TIER_DESCRIPTIONS: Record<Tier, string> = {
+  basic: 'Základní dokument — profesionální smlouva dle OZ, PDF ke stažení',
+  professional: 'Profesionální ochrana — rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení',
+  complete: 'Kompletní balíček — vše z Profesionální ochrany + průvodní instrukce, checklist a 30denní archivace',
+};
+
+/** Resolve tier from explicit `tier` field or legacy `notaryUpsell` boolean */
+function resolveTier(tier: Tier | undefined, notaryUpsell: boolean): Tier {
+  if (tier) return tier;
+  return notaryUpsell ? 'professional' : 'basic';
+}
+
+function getPrice(contractType: ContractType, tier: Tier) {
   return {
-    amountCzk: basePrice + (notaryUpsell ? premiumUpgrade : 0),
+    amountCzk: TIER_PRICES[tier],
     title: CONTRACT_TITLES[contractType],
+    description: TIER_DESCRIPTIONS[tier],
   };
 }
 
@@ -102,7 +118,9 @@ export async function POST(req: Request) {
       );
     }
 
-    const { contractType, notaryUpsell, payload, email } = parsed.data;
+    const { contractType, tier: rawTier, notaryUpsell, payload, email } = parsed.data;
+
+    const tier = resolveTier(rawTier, notaryUpsell);
 
     const baseUrl =
       process.env.NEXT_PUBLIC_BASE_URL ||
@@ -110,19 +128,26 @@ export async function POST(req: Request) {
 
     const draftId = randomUUID();
 
-    // TTL: 7 dní (604800 sekund) — zákazník může stáhnout do týdne
-    const TTL_SECONDS = 60 * 60 * 24 * 7;
+    // TTL: 30 dní pro Kompletní balíček, 7 dní pro ostatní
+    const TTL_SECONDS = tier === 'complete'
+      ? 60 * 60 * 24 * 30
+      : 60 * 60 * 24 * 7;
+
+    // notaryUpsell pro backward compat s contracts.ts — professional i complete dostávají premium obsah
+    const effectiveNotaryUpsell = tier !== 'basic';
 
     await redis.set(
       `contract:draft:${draftId}`,
       {
         contractType,
-        notaryUpsell,
+        tier,
+        notaryUpsell: effectiveNotaryUpsell,
         email: email || null,
         payload: {
           ...payload,
           contractType,
-          notaryUpsell,
+          notaryUpsell: effectiveNotaryUpsell,
+          tier,
         },
         paid: false,
         createdAt: new Date().toISOString(),
@@ -130,7 +155,7 @@ export async function POST(req: Request) {
       { ex: TTL_SECONDS },
     );
 
-    const pricing = getPrice(contractType, notaryUpsell);
+    const pricing = getPrice(contractType, tier);
     const cancelPath = CONTRACT_CANCEL_URLS[contractType];
 
     const session = await stripe.checkout.sessions.create({
@@ -146,9 +171,7 @@ export async function POST(req: Request) {
             unit_amount: pricing.amountCzk * 100,
             product_data: {
               name: pricing.title,
-              description: notaryUpsell
-                ? 'Profesionální ochrana — rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení'
-                : 'Základní dokument — profesionální smlouva dle OZ, PDF ke stažení',
+              description: pricing.description,
             },
           },
         },
@@ -158,7 +181,8 @@ export async function POST(req: Request) {
       metadata: {
         draftId,
         contractType,
-        notaryUpsell: String(notaryUpsell),
+        tier,
+        notaryUpsell: String(effectiveNotaryUpsell),
       },
     });
 

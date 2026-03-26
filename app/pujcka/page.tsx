@@ -39,6 +39,7 @@ type LoanFormData = {
   pledgeDescription: string;
 
   notaryUpsell: boolean;
+  tier: 'basic' | 'professional' | 'complete';
 };
 
 const inputClass =
@@ -90,6 +91,7 @@ export default function LoanBuilderPage() {
     guarantorAddress: '',
     pledgeDescription: '',
     notaryUpsell: false,
+    tier: 'basic' as const,
   });
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -122,7 +124,8 @@ export default function LoanBuilderPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contractType: 'loan',
-          notaryUpsell: formData.notaryUpsell,
+          tier: formData.tier,
+          notaryUpsell: formData.tier !== 'basic',
           email: formData.borrowerEmail || formData.lenderEmail || undefined,
           payload: formData,
         }),
@@ -171,140 +174,64 @@ export default function LoanBuilderPage() {
             <section className={cardClass}>
               <SectionTitle index="01" title="Věřitel (půjčující)" subtitle="Osoba, která peníze poskytuje." />
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
-                <div><label className={labelClass}>Celé jméno / název firmy</label><input value={formData.lenderName} onChange={e => set('lenderName', e.target.value)} placeholder="Jan Novák" className={inputClass} /></div>
-                <div><label className={labelClass}>Rodné číslo / IČO / datum nar.</label><input value={formData.lenderId} onChange={e => set('lenderId', e.target.value)} placeholder="760512/1234" className={inputClass} /></div>
-              </div>
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div><label className={labelClass}>Adresa trvalého bydliště / sídla</label><input value={formData.lenderAddress} onChange={e => set('lenderAddress', e.target.value)} placeholder="Ulice 1, 110 00 Praha 1" className={inputClass} /></div>
-                <div><label className={labelClass}>E-mail (pro zaslání dokumentu)</label><input type="email" value={formData.lenderEmail} onChange={e => set('lenderEmail', e.target.value)} placeholder="jan@email.cz" className={inputClass} /></div>
-              </div>
-            </section>
-
-            <section className={cardClass}>
-              <SectionTitle index="02" title="Dlužník (vydlužitel)" subtitle="Osoba, která peníze přijímá." />
-              <div className="grid sm:grid-cols-2 gap-4 mb-4">
-                <div><label className={labelClass}>Celé jméno / název firmy</label><input value={formData.borrowerName} onChange={e => set('borrowerName', e.target.value)} placeholder="Marie Dvořáková" className={inputClass} /></div>
-                <div><label className={labelClass}>Rodné číslo / IČO / datum nar.</label><input value={formData.borrowerId} onChange={e => set('borrowerId', e.target.value)} placeholder="856010/5678" className={inputClass} /></div>
-              </div>
-              <div className="grid sm:grid-cols-2 gap-4 mb-4">
-                <div><label className={labelClass}>Adresa trvalého bydliště / sídla</label><input value={formData.borrowerAddress} onChange={e => set('borrowerAddress', e.target.value)} placeholder="Ulice 2, 602 00 Brno" className={inputClass} /></div>
-                <div><label className={labelClass}>E-mail dlužníka</label><input type="email" value={formData.borrowerEmail} onChange={e => set('borrowerEmail', e.target.value)} placeholder="marie@email.cz" className={inputClass} /></div>
-              </div>
-              <div><label className={labelClass}>Bankovní účet dlužníka (pro zaslání peněz)</label><input value={formData.borrowerBankAccount} onChange={e => set('borrowerBankAccount', e.target.value)} placeholder="123456789/0800" className={inputClass} /></div>
-            </section>
-
-            <section className={cardClass}>
-              <SectionTitle index="03" title="Výše a podmínky zápůjčky" />
-              <div className="grid sm:grid-cols-2 gap-4 mb-4">
-                <div><label className={labelClass}>Výše zápůjčky (Kč)</label><input type="number" value={formData.loanAmount} onChange={e => set('loanAmount', e.target.value)} placeholder="50 000" className={inputClass} /></div>
-                <div><label className={labelClass}>Výše slovy (volitelné)</label><input value={formData.loanAmountWords} onChange={e => set('loanAmountWords', e.target.value)} placeholder="padesát tisíc korun českých" className={inputClass} /></div>
-              </div>
-              <div className="mb-4">
-                <label className={labelClass}>Způsob předání peněz</label>
-                <select value={formData.transferMethod} onChange={e => set('transferMethod', e.target.value as 'transfer' | 'cash')} className={inputClass}>
-                  <option value="transfer">Bankovním převodem</option>
-                  <option value="cash">V hotovosti při podpisu</option>
-                </select>
-              </div>
-              <div className="mb-4">
-                <label className={labelClass}>Účel zápůjčky (volitelné)</label>
-                <input value={formData.loanPurpose} onChange={e => set('loanPurpose', e.target.value)} placeholder="Např. rekonstrukce bytu, koupě vozidla" className={inputClass} />
-              </div>
-              <div className="mb-4">
-                <label className={labelClass}>Úroková sazba (% p.a.) — 0 = bezúročná</label>
-                <input type="number" step="0.1" value={formData.interestRate} onChange={e => set('interestRate', e.target.value)} placeholder="0" className={inputClass} />
-                {Number(formData.interestRate) > 0 && (
-                  <p className="text-xs text-amber-400 mt-1">⚠ Úrok musí být přiměřený. Sazba výrazně převyšující tržní úroveň může být soudem snížena.</p>
-                )}
-              </div>
-            </section>
-
-            <section className={cardClass}>
-              <SectionTitle index="04" title="Splácení" />
-              <div className="mb-4">
-                <label className={labelClass}>Způsob splácení</label>
-                <select value={formData.repaymentType} onChange={e => set('repaymentType', e.target.value as RepaymentType)} className={inputClass}>
-                  <option value="lump_sum">Jednorázově k datu splatnosti</option>
-                  <option value="installments">Pravidelné měsíční splátky</option>
-                </select>
-              </div>
-              {formData.repaymentType === 'lump_sum' ? (
-                <div><label className={labelClass}>Datum splatnosti</label><input type="date" value={formData.repaymentDate} onChange={e => set('repaymentDate', e.target.value)} className={inputClass} /></div>
-              ) : (
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div><label className={labelClass}>Počet splátek</label><input type="number" value={formData.installmentCount} onChange={e => set('installmentCount', e.target.value)} className={inputClass} /></div>
-                  <div><label className={labelClass}>Výše splátky (Kč)</label><input type="number" value={formData.installmentAmount} onChange={e => set('installmentAmount', e.target.value)} className={inputClass} /></div>
-                  <div><label className={labelClass}>Den splatnosti v měsíci</label><input type="number" min="1" max="28" value={formData.paymentDay} onChange={e => set('paymentDay', e.target.value)} className={inputClass} /></div>
-                  <div><label className={labelClass}>Datum první splátky</label><input type="date" value={formData.firstPaymentDate} onChange={e => set('firstPaymentDate', e.target.value)} className={inputClass} /></div>
-                </div>
-              )}
-              <div className="grid sm:grid-cols-2 gap-4 mt-4">
-                <div><label className={labelClass}>Bankovní účet věřitele</label><input value={formData.bankAccount} onChange={e => set('bankAccount', e.target.value)} placeholder="123456/0800" className={inputClass} /></div>
-                <div><label className={labelClass}>Variabilní symbol</label><input value={formData.variableSymbol} onChange={e => set('variableSymbol', e.target.value)} placeholder="Volitelné" className={inputClass} /></div>
-              </div>
-            </section>
-
-            <section className={cardClass}>
-              <SectionTitle index="05" title="Zajištění pohledávky" subtitle="Jak se věřitel chrání v případě nesplacení." />
-              <select value={formData.securityType} onChange={e => set('securityType', e.target.value as LoanFormData['securityType'])} className={`${inputClass} mb-4`}>
-                <option value="none">Bez zajištění</option>
-                <option value="guarantee">Ručení třetí osobou</option>
-                <option value="pledge">Zástavní právo k věci</option>
-                <option value="bill">Vlastní směnka</option>
-              </select>
-              {formData.securityType === 'guarantee' && (
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div><label className={labelClass}>Jméno ručitele</label><input value={formData.guarantorName} onChange={e => set('guarantorName', e.target.value)} className={inputClass} /></div>
-                  <div><label className={labelClass}>RČ / datum nar. ručitele</label><input value={formData.guarantorId} onChange={e => set('guarantorId', e.target.value)} className={inputClass} /></div>
-                  <div className="sm:col-span-2"><label className={labelClass}>Adresa ručitele</label><input value={formData.guarantorAddress} onChange={e => set('guarantorAddress', e.target.value)} className={inputClass} /></div>
-                </div>
-              )}
-              {formData.securityType === 'pledge' && (
-                <div><label className={labelClass}>Popis zástavy</label><textarea value={formData.pledgeDescription} onChange={e => set('pledgeDescription', e.target.value)} placeholder="Motorové vozidlo VW Golf, VIN: ..., SPZ: ..." className={textareaClass} /></div>
-              )}
-            </section>
-
-          </div>
-
-          {/* Sidebar */}
-          <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-8">
-            {/* Risk */}
-            <div className={cardClass}>
-              <div className="text-[10px] font-black uppercase tracking-widest text-amber-400 mb-3">Analýza rizik</div>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="relative w-16 h-16 flex-shrink-0">
-                  <svg viewBox="0 0 36 36" className="w-full h-full -rotate-90">
-                    <circle cx="18" cy="18" r="14" fill="none" stroke="#1e2940" strokeWidth="4" />
-                    <circle cx="18" cy="18" r="14" fill="none"
-                      stroke={riskScore.score >= 80 ? '#22c55e' : riskScore.score >= 50 ? '#f59e0b' : '#ef4444'}
-                      strokeWidth="4" strokeDasharray={`${riskScore.score * 0.879} 87.9`} strokeLinecap="round" />
-                  </svg>
-                  <div className="absolute inset-0 flex items-center justify-center text-sm font-black text-white">{riskScore.score}</div>
-                </div>
                 <div>
-                  <div className={`text-sm font-bold ${riskScore.score >= 80 ? 'text-emerald-400' : riskScore.score >= 50 ? 'text-amber-400' : 'text-red-400'}`}>
-                    {riskScore.score >= 80 ? 'Smlouva je silná' : riskScore.score >= 50 ? 'Průměrná ochrana' : 'Nízká ochrana'}
-                  </div>
-                  <div className="text-xs text-slate-500">Skóre vymahatelnosti</div>
-                </div>
+              {/* === VÝBĚR BALÍČKU === */}
+              <div className="space-y-3 mt-6">
+                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Vyberte balíček</div>
+                {([
+                  { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva dle občanského zákoníku v PDF.' },
+                  { value: 'professional', label: 'Profesionální ochrana', price: '449 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
+                  { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Profesionální ochrany + průvodní instrukce, checklist a 30denní archivace.' },
+                ] as const).map((opt) => (
+                  <label
+                    key={opt.value}
+                    className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${
+                      formData.tier === opt.value
+                        ? 'border-amber-500 bg-amber-500/10'
+                        : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'
+                    }`}
+                  >
+                    {opt.recommended && formData.tier !== 'professional' && (
+                      <div className="absolute -top-2.5 left-4">
+                        <span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">
+                          Doporučeno
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex items-start gap-3">
+                      <input
+                        type="radio"
+                        name="tier"
+                        value={opt.value}
+                        checked={formData.tier === opt.value}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, tier: e.target.value as 'basic' | 'professional' | 'complete', notaryUpsell: e.target.value !== 'basic' }))}
+                        className="mt-1 h-5 w-5 accent-amber-500"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-black uppercase tracking-wide text-amber-400">{opt.label}</span>
+                          <span className="text-sm font-black text-white">{opt.price}</span>
+                        </div>
+                        <div className="mt-1 text-xs leading-relaxed text-slate-400">{opt.desc}</div>
+                        {opt.value === 'professional' && (
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {['Smluvní pokuty', 'Sankce za prodlení', 'Odpovědnostní doložky'].map(t => (
+                              <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
+                            ))}
+                          </div>
+                        )}
+                        {opt.value === 'complete' && (
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {['Instrukce k podpisu', 'Checklist', '30denní archivace'].map(t => (
+                              <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </label>
+                ))}
               </div>
-              {riskScore.warnings.length > 0 && (
-                <ul className="space-y-1.5">
-                  {riskScore.warnings.map((w, i) => (
-                    <li key={i} className="text-xs text-amber-300 flex items-start gap-2">
-                      <span className="mt-0.5">⚠</span><span>{w}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-
-            {/* Profesionální ochrana */}
-            <div className={`${cardClass} ${formData.notaryUpsell ? 'border-amber-500/40 bg-amber-500/5' : ''}`}>
-              <div className="flex items-start gap-3 mb-4">
-                <input type="checkbox" id="premium" checked={formData.notaryUpsell} onChange={e => set('notaryUpsell', e.target.checked)} className="mt-1 accent-amber-500 w-4 h-4" />
-                <div>
-                  <label htmlFor="premium" className="font-bold text-white cursor-pointer text-sm">Profesionální ochrana +200 Kč</label>
                   <p className="text-xs text-slate-500 mt-0.5">Rozšířené doložky pro lepší ochranu</p>
                 </div>
               </div>
@@ -333,7 +260,7 @@ export default function LoanBuilderPage() {
                 )}
                 <div className="border-t border-white/8 pt-2 flex justify-between font-black text-lg">
                   <span>Celkem</span>
-                  <span className="text-white">{formData.notaryUpsell ? '449' : '249'} Kč</span>
+                  <span className="text-white">{formData.tier === 'complete' ? '749' : formData.tier === 'professional' ? '449' : '249'} Kč</span>
                 </div>
               </div>
               <button onClick={handleSubmit} disabled={isProcessing}

@@ -53,6 +53,7 @@ type LeaseFormData = {
   businessUseAllowed: boolean;
 
   notaryUpsell: boolean;
+  tier: 'basic' | 'professional' | 'complete';
 };
 
 type RiskLevel = 'low' | 'medium' | 'high';
@@ -118,6 +119,7 @@ export default function LeaseBuilderPage() {
     businessUseAllowed: false,
 
     notaryUpsell: false,
+    tier: 'basic' as const,
   });
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -396,7 +398,8 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contractType: 'lease',
-          notaryUpsell: Boolean(formData.notaryUpsell),
+          tier: formData.tier,
+          notaryUpsell: formData.tier !== 'basic',
           payload,
         }),
       });
@@ -917,44 +920,63 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                     className="bg-transparent w-full text-2xl font-black text-white outline-none"
                   />
                 </div>
-
-                <label
-                  className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${
-                    formData.notaryUpsell
-                      ? 'border-amber-500 bg-amber-500/10'
-                      : 'border-amber-500/40 bg-amber-500/5'
-                  }`}
-                >
-                  {!formData.notaryUpsell && (
-                    <div className="absolute -top-2.5 left-4">
-                      <span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">
-                        Doporučeno
-                      </span>
+              {/* === VÝBĚR BALÍČKU === */}
+              <div className="space-y-3 mt-6">
+                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Vyberte balíček</div>
+                {([
+                  { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva dle občanského zákoníku v PDF.' },
+                  { value: 'professional', label: 'Profesionální ochrana', price: '449 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
+                  { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Profesionální ochrany + průvodní instrukce, checklist a 30denní archivace.' },
+                ] as const).map((opt) => (
+                  <label
+                    key={opt.value}
+                    className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${
+                      formData.tier === opt.value
+                        ? 'border-amber-500 bg-amber-500/10'
+                        : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'
+                    }`}
+                  >
+                    {opt.recommended && formData.tier !== 'professional' && (
+                      <div className="absolute -top-2.5 left-4">
+                        <span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">
+                          Doporučeno
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex items-start gap-3">
+                      <input
+                        type="radio"
+                        name="tier"
+                        value={opt.value}
+                        checked={formData.tier === opt.value}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, tier: e.target.value as 'basic' | 'professional' | 'complete', notaryUpsell: e.target.value !== 'basic' }))}
+                        className="mt-1 h-5 w-5 accent-amber-500"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-black uppercase tracking-wide text-amber-400">{opt.label}</span>
+                          <span className="text-sm font-black text-white">{opt.price}</span>
+                        </div>
+                        <div className="mt-1 text-xs leading-relaxed text-slate-400">{opt.desc}</div>
+                        {opt.value === 'professional' && (
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {['Smluvní pokuty', 'Sankce za prodlení', 'Odpovědnostní doložky'].map(t => (
+                              <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
+                            ))}
+                          </div>
+                        )}
+                        {opt.value === 'complete' && (
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {['Instrukce k podpisu', 'Checklist', '30denní archivace'].map(t => (
+                              <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  )}
-                  <div className="flex items-start gap-3">
-                    <input
-                      type="checkbox"
-                      name="notaryUpsell"
-                      checked={formData.notaryUpsell}
-                      onChange={handleChange}
-                      className="mt-1 h-5 w-5 accent-amber-500"
-                    />
-                    <div>
-                      <div className="text-sm font-black uppercase tracking-wide text-amber-400">
-                        Profesionální ochrana <span className="text-white">+200 Kč</span>
-                      </div>
-                      <div className="mt-1 text-xs leading-relaxed text-slate-300">
-                        Přidá rozšířené klauzule — smluvní pokuty, detailní odpovědnostní ustanovení a podmínky pro řešení sporů. Pronajímatelé si tuto variantu volí ve většině případů.
-                      </div>
-                      <div className="mt-2 flex flex-wrap gap-2">
-                        {['Smluvní pokuty', 'Sankce za prodlení', 'Odpovědnostní doložky'].map(t => (
-                          <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </label>
+                  </label>
+                ))}
+              </div>
               </div>
             </section>
           </div>
@@ -1078,48 +1100,20 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                 {/* Price summary */}
                 <div className="mb-4 rounded-2xl border border-white/8 bg-white/3 p-4">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm text-slate-400">Základní nájemní smlouva</span>
+                    <span className="text-sm text-slate-400">Základní dokument</span>
                     <span className="text-sm font-bold text-white">249 Kč</span>
                   </div>
-                  {formData.notaryUpsell && (
+                  {formData.tier !== 'basic' && (
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm text-slate-400">Profesionální ochrana</span>
-                      <span className="text-sm font-bold text-amber-400">+200 Kč</span>
+                      <span className="text-sm text-slate-400">{formData.tier === 'complete' ? 'Kompletní balíček' : 'Profesionální ochrana'}</span>
+                      <span className="text-sm font-bold text-amber-400">{formData.tier === 'complete' ? '+500 Kč' : '+200 Kč'}</span>
                     </div>
                   )}
                   <div className="border-t border-white/8 mt-2 pt-2 flex items-center justify-between">
                     <span className="text-sm font-black text-white">Celkem</span>
-                    <span className="text-xl font-black text-white">{formData.notaryUpsell ? '449 Kč' : '249 Kč'}</span>
+                    <span className="text-xl font-black text-white">{formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '449 Kč' : '249 Kč'}</span>
                   </div>
                 </div>
-
-                <button
-                  onClick={handlePayment}
-                  disabled={isProcessing}
-                  className="w-full py-4 bg-amber-500 hover:bg-amber-400 text-slate-900 font-black text-lg rounded-2xl shadow-[0_0_30px_rgba(245,158,11,0.2)] transition-all active:scale-[0.99] disabled:opacity-60"
-                >
-                  {isProcessing
-                    ? '⏳ Přesměrování na platbu...'
-                    : formData.notaryUpsell
-                      ? `Zaplatit a stáhnout PDF — 449 Kč`
-                      : `Zaplatit a stáhnout PDF — 249 Kč`}
-                </button>
-
-                <div className="mt-3 flex flex-col gap-1.5">
-                  <div className="flex items-center gap-2 text-xs text-slate-500">
-                    <span className="text-emerald-500">✓</span>
-                    <span>Platba přes Stripe — vaše karta se k nám nikdy nedostane</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-slate-500">
-                    <span className="text-emerald-500">✓</span>
-                    <span>PDF vygenerováno ihned po potvrzení platby</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-slate-500">
-                    <span className="text-emerald-500">✓</span>
-                    <span>Odkaz ke stažení platný 7 dní</span>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>

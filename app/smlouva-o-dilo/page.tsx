@@ -37,6 +37,7 @@ type WorkContractData = {
   handoverProtocol: boolean;
   withdrawalRight: boolean;
   notaryUpsell: boolean;
+  tier: 'basic' | 'professional' | 'complete';
 };
 
 const defaultData: WorkContractData = {
@@ -63,6 +64,7 @@ const defaultData: WorkContractData = {
   handoverProtocol: true,
   withdrawalRight: false,
   notaryUpsell: false,
+    tier: 'basic' as const,
 };
 
 export default function WorkContractPage() {
@@ -190,7 +192,8 @@ ${formData.handoverProtocol ? '• Předání díla proběhne protokolem o před
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contractType: 'work_contract',
-          notaryUpsell: Boolean(formData.notaryUpsell),
+          tier: formData.tier,
+          notaryUpsell: formData.tier !== 'basic',
           payload,
         }),
       });
@@ -469,83 +472,10 @@ ${formData.handoverProtocol ? '• Předání díla proběhne protokolem o před
             </section>
 
             <div className="space-y-1.5 mb-4 text-sm">
-              <div className="flex justify-between text-slate-400"><span>Základní dokument</span><span>249 Kč</span></div>
-              {formData.notaryUpsell && <div className="flex justify-between text-slate-400"><span>Notářsky ověřené podpisy</span><span>+200 Kč</span></div>}
-              <div className="border-t border-slate-700 pt-2 flex justify-between font-bold text-base"><span>Celkem</span><span className="text-amber-400">{formData.notaryUpsell ? '449' : '249'} Kč</span></div>
-            </div>
-
-            <motion.button
-              whileHover={{ scale: isProcessing ? 1 : 1.02 }}
-              whileTap={{ scale: isProcessing ? 1 : 0.98 }}
-              onClick={handleSubmit}
-              disabled={isProcessing}
-              className="w-full py-7 bg-gradient-to-r from-amber-500 to-yellow-500 text-black font-black text-2xl rounded-3xl shadow-xl hover:shadow-2xl transition-all disabled:opacity-60"
-            >
-              {isProcessing
-                ? 'PŘESMĚROVÁNÍ NA PLATBU...'
-                : formData.notaryUpsell
-                  ? 'ZAPLATIT A VYGENEROVAT – 449 Kč'
-                  : 'ZAPLATIT A VYGENEROVAT – 249 Kč'}
-            </motion.button>
-            <p className="mt-3 text-center text-xs text-slate-500">Platba kartou přes Stripe · PDF ihned · platnost 7 dní</p>
-          </div>
-
-          <div className="lg:col-span-5 space-y-8">
-            <div className="bg-[#0c1426] border border-slate-800 rounded-3xl p-8 sticky top-8 z-10">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="font-bold text-lg uppercase tracking-tight">Risk Score</h3>
-                <div
-                  className={`px-6 py-2 rounded-2xl text-white font-black text-3xl shadow-lg transition-colors duration-500 ${scoreColor}`}
-                >
-                  {riskAnalysis.score}/100
-                </div>
-              </div>
-
-              {riskAnalysis.warnings.length > 0 ? (
-                <div className="space-y-3">
-                  {riskAnalysis.warnings.map((w, i) => (
-                    <div
-                      key={i}
-                      className="text-sm bg-rose-950/30 border border-rose-900/50 p-4 rounded-2xl text-rose-400 font-medium"
-                    >
-                      ⚠️ {w}
+                      <div className="flex justify-between text-slate-400"><span>Základní dokument</span><span>249 Kč</span></div>
+                      {formData.tier !== 'basic' && <div className="flex justify-between text-slate-400"><span>{formData.tier === 'complete' ? 'Kompletní balíček' : 'Profesionální ochrana'}</span><span>{formData.tier === 'complete' ? '+500 Kč' : '+200 Kč'}</span></div>}
+                      <div className="border-t border-slate-700 pt-2 flex justify-between font-bold text-base"><span>Celkem</span><span className="text-amber-400">{formData.tier === 'complete' ? '749' : formData.tier === 'professional' ? '449' : '249'} Kč</span></div>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-emerald-400 bg-emerald-950/30 border border-emerald-900/50 p-6 rounded-2xl font-medium">
-                  ✅ Výborně! Smlouva je velmi dobře nastavena a minimalizuje vaše právní rizika.
-                </div>
-              )}
-            </div>
-
-            <div className="lg:hidden">
-              <button
-                onClick={() => setShowMobilePreview(!showMobilePreview)}
-                className="w-full py-4 bg-slate-800 text-white border border-slate-700 hover:bg-slate-700 rounded-2xl font-bold uppercase tracking-widest text-xs transition-colors"
-              >
-                {showMobilePreview ? 'Skrýt náhled' : 'Zobrazit živý náhled smlouvy'}
-              </button>
-            </div>
-
-            <div
-              className={`${showMobilePreview ? 'block' : 'hidden'} lg:block bg-[#0c1426] border border-slate-800 rounded-3xl p-8`}
-            >
-              <h3 className="uppercase text-xs tracking-widest font-bold mb-6 text-amber-400">
-                Živý náhled smlouvy
-              </h3>
-              <div className="bg-[#e2e8f0] text-slate-900 p-8 rounded-2xl text-[12px] leading-relaxed font-serif h-[600px] overflow-auto shadow-inner selection:bg-amber-500/30 whitespace-pre-wrap">
-                {previewText}
-              </div>
-              <p className="text-xs text-slate-500 mt-4 text-center font-medium">
-                Zjednodušený náhled. Plná verze bude vygenerována do PDF.
-              </p>
-              <p className="text-xs text-slate-500 mt-2 text-center font-medium">
-                Citlivé údaje se neukládají do localStorage v prohlížeči.
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
     </main>
   );
