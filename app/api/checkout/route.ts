@@ -19,7 +19,10 @@ const checkoutSchema = z.object({
   tier: z.enum(TIER_VALUES).optional(),
   notaryUpsell: z.boolean().optional().default(false),
   payload: z.record(z.string(), z.unknown()),
-  email: z.string().email().optional(),
+  email: z.preprocess(
+    (val) => (val === '' || val == null ? undefined : val),
+    z.string().email().optional()
+  ),
 });
 
 const CONTRACT_CANCEL_URLS: Record<ContractType, string> = {
