@@ -200,13 +200,13 @@ export default function Home() {
           </div>
 
           <h1 className="mx-auto max-w-4xl text-5xl font-black tracking-tight text-white md:text-6xl xl:text-7xl leading-[1.08]">
-            Smlouva sestavená<br />
-            <span className="text-amber-500 italic">podle vašich podmínek.</span>
+            Právní dokument sestavený<br />
+            <span className="text-amber-500 italic">přesně pro vaši situaci.</span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-slate-400 md:text-lg">
-            Vyplňte formulář, zvolte rozsah smluvní dokumentace a stáhněte kompletní PDF.
-            Každý dokument je generován dynamicky na základě vašich údajů — v souladu s českou legislativou 2026.
+            Vyplníte přehledný formulář krok za krokem. Dokument se sestaví podle vašich údajů
+            a výsledkem je kompletní PDF připravené k podpisu — v souladu s platným českým právem.
           </p>
 
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -222,10 +222,10 @@ export default function Home() {
           {/* Trust Row */}
           <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
             {[
-              { icon: '✓', label: 'Aktualizováno pro legislativu 2026' },
+              { icon: '✓', label: 'Dokument sestavený podle vašich údajů' },
               { icon: '✓', label: 'PDF ihned ke stažení' },
-              { icon: '✓', label: 'Dokument podle zadaných údajů' },
-              { icon: '✓', label: 'Pro standardní smluvní situace' },
+              { icon: '✓', label: 'Připraveno k podpisu' },
+              { icon: '✓', label: 'Česká legislativa 2026' },
             ].map(item => (
               <div key={item.label} className="flex items-center gap-1.5 text-sm text-slate-400">
                 <span className="text-amber-400 font-black text-xs">{item.icon}</span>
@@ -235,35 +235,36 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Proč službě důvěřovat */}
+        {/* Tři pilíře produktové převahy */}
         <section className="mb-16 md:mb-20">
           <div className="mb-8 text-center">
-            <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Proč to funguje</div>
-            <h2 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">Proč službě důvěřovat</h2>
+            <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Jak to vzniká</div>
+            <h2 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">Nejde o vzor. Jde o váš dokument.</h2>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-400">
-              Nejde o stažení prázdného vzoru. Každý dokument vzniká dynamicky na základě toho, co do formuláře zadáte.
+              Volně dostupné vzory jsou obecné a statické. Zde zadáte své podmínky
+              a výsledkem je dokument sestavený pro vaši konkrétní situaci.
             </p>
           </div>
 
           <div className="grid gap-5 md:grid-cols-3">
             {[
               {
-                icon: '⚙️',
-                title: 'Dokument sestavený z vašich údajů',
-                body: 'Platforma nezobrazuje statický vzor — každá smlouva je vygenerována na základě vyplněného formuláře. Strany, podmínky, výše plnění i specifická ujednání se promítají přímo do textu dokumentu.',
-                tag: 'Dynamické generování',
+                icon: '📝',
+                title: 'Dokument podle zadaných údajů',
+                body: 'Nezobrazujeme předvyplněný vzor s prázdnými poli. Každý dokument se sestaví na základě toho, co do formuláře zadáte — strany, podmínky, výše plnění, termíny. Výsledek odpovídá vaší konkrétní dohodě.',
+                tag: 'Sestavení podle vašich dat',
               },
               {
-                icon: '📋',
-                title: 'Formulář vás provede klíčovými částmi',
-                body: 'Otázky jsou sestaveny tak, aby pokryly části dohody, které jsou právně relevantní. U některých typů smluv systém upozorní na hodnoty, které by mohly být nevymahatelné nebo v rozporu s právními limity.',
+                icon: '📄',
+                title: 'Profesionální výstup v PDF',
+                body: 'Výstupem je přehledně strukturovaný dokument ve formátu PDF — s titulní stranou, číslovanými ustanoveními a jasnou hierarchií textu. Připravený k přímému vytištění a podpisu, bez nutnosti dalších úprav.',
+                tag: 'Připraveno k podpisu',
+              },
+              {
+                icon: '🧭',
+                title: 'Přehledný postup krok za krokem',
+                body: 'Formulář vás provede každou důležitou částí dohody. Nemusíte znát právní terminologii — otázky jsou formulovány srozumitelně a pokrývají to, co je pro daný typ smlouvy právně relevantní.',
                 tag: 'Strukturované zadávání',
-              },
-              {
-                icon: '🗂️',
-                title: 'Dokument zůstane dostupný v systému',
-                body: 'Po zaplacení je dokument uložen a přístupný přes zákaznickou zónu — 7, 14 nebo 30 dní dle zvoleného balíčku. Stáhnout ho lze opakovaně z jakéhokoli zařízení.',
-                tag: 'Zákaznická zóna',
               },
             ].map(card => (
               <div key={card.title} className="rounded-3xl border border-white/8 bg-[#0c1426] p-7 flex flex-col">
@@ -284,7 +285,7 @@ export default function Home() {
         <section id="jak-to-funguje" className="mb-16 md:mb-20">
           <div className="rounded-[2rem] border border-white/8 bg-white/5 px-6 py-8 backdrop-blur-sm md:px-10 md:py-10">
             <div className="mb-8 text-center">
-              <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Jak to funguje</div>
+              <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Postup</div>
               <h2 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">Čtyři kroky ke kompletnímu dokumentu</h2>
             </div>
 
@@ -293,22 +294,22 @@ export default function Home() {
                 {
                   step: '01',
                   title: 'Vyplníte údaje',
-                  desc: 'Zadáte údaje o smluvních stranách a podmínky dohody. Přehledný formulář vás provede každou důležitou částí.',
+                  desc: 'Zadáte údaje o smluvních stranách a podmínky dohody. Formulář vás provede každou důležitou částí — srozumitelně, bez právního žargonu.',
                 },
                 {
                   step: '02',
-                  title: 'Zkontrolujete návrh',
-                  desc: 'Před platbou vidíte souhrn všech vyplněných podmínek. Vše si ověříte, než cokoliv zaplatíte.',
+                  title: 'Zkontrolujete souhrn',
+                  desc: 'Před platbou vidíte přehled všech zadaných podmínek. Ověříte si, co dokument bude obsahovat, ještě než cokoliv zaplatíte.',
                 },
                 {
                   step: '03',
-                  title: 'Vyberete variantu',
-                  desc: 'Základní dokument nebo rozšířená ochrana s klauzulemi pro větší jistotu. Volíte sami dle situace.',
+                  title: 'Zvolíte úroveň zpracování',
+                  desc: 'Základní dokument se zákonnou strukturou, nebo rozšířená verze se smluvními pokutami a odpovědnostními klauzulemi. Volíte podle situace.',
                 },
                 {
                   step: '04',
-                  title: 'Stáhnete dokument',
-                  desc: 'Po zaplacení obdržíte kompletní PDF připravené k tisku a podpisu. Ihned — bez čekání.',
+                  title: 'Stáhnete hotový dokument',
+                  desc: 'Po zaplacení obdržíte kompletní PDF sestavené podle vašich údajů, připravené k tisku a podpisu. Ihned, bez čekání.',
                 },
               ].map(s => (
                 <div key={s.step} className="text-center md:text-left">
@@ -381,8 +382,8 @@ export default function Home() {
         {/* Proč ne náhodné vzory */}
         <section className="mt-16 md:mt-20">
           <div className="mb-8 text-center">
-            <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Srovnání</div>
-            <h2 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">Čím se liší od vzorů z internetu?</h2>
+            <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Proč ne vzor zdarma</div>
+            <h2 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">Čím se liší od stažení vzoru?</h2>
           </div>
 
           <div className="grid gap-6 md:grid-cols-3">
@@ -391,19 +392,19 @@ export default function Home() {
                 icon: '⚠️',
                 problem: 'Zastaralé',
                 desc: 'Volně dostupné vzory zpravidla neodpovídají aktuální legislativě. Občanský zákoník i zákoník práce se pravidelně mění.',
-                solution: 'Dokumenty jsou aktualizovány pro českou legislativu 2026.',
+                solution: 'Šablony jsou udržovány v souladu s aktuální českou legislativou, včetně změn OZ a zákoníku práce.',
               },
               {
                 icon: '🕳️',
                 problem: 'Obecné',
                 desc: 'Stažený vzor neobsahuje vaše konkrétní údaje ani podmínky. Klauzule pro sankce, odpovědnost nebo doručování si musíte doplnit sami.',
-                solution: 'Formulář sestavuje dokument dynamicky na základě zadaných údajů.',
+                solution: 'Formulář sestaví dokument na základě vašich údajů — výsledek obsahuje vaše jména, podmínky a hodnoty, ne prázdná místa.',
               },
               {
                 icon: '⚡',
                 problem: 'Nepřizpůsobené',
                 desc: 'Chybějící nebo nesprávně formulované klauzule snižují vymahatelnost smlouvy. Přepsaný vzor může mít nechtěné právní důsledky.',
-                solution: 'Výstupem je dokument sestavený pro vaši konkrétní situaci, ne pro neurčitého uživatele.',
+                solution: 'Výstupem je strukturovaný dokument s klauzulemi odpovídajícími vašemu případu, připravený k podpisu.',
               },
             ].map(c => (
               <div key={c.problem} className="rounded-3xl border border-slate-800 bg-[#0c1426] p-7">
@@ -543,7 +544,7 @@ export default function Home() {
             <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Ceník</div>
             <h2 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">Vyberte úroveň zpracování</h2>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-400">
-              Každý dokument je odborně zpracován. Liší se hloubkou právní ochrany, doprovodným materiálem a dostupnými službami.
+              Liší se rozsahem smluvních ujednání, doprovodným materiálem a délkou archivace. Zákonný základ mají všechny varianty společný.
             </p>
           </div>
 
@@ -642,9 +643,9 @@ export default function Home() {
           <div className="rounded-[2rem] border border-white/8 bg-white/3 px-6 py-8 md:px-10 md:py-10">
             <div className="grid gap-6 md:grid-cols-4">
               {[
-                { icon: '📋', label: 'Pro standardní situace', desc: 'Nájem, práce, podnikání, půjčky, převody majetku — přehledná řešení pro typické smluvní vztahy.' },
-                { icon: '🔤', label: 'Formulář místo paragrafů', desc: 'Zadáváte údaje, podmínky a hodnoty. Právní strukturu dokumentu zajistí platforma.' },
-                { icon: '⚡', label: 'PDF ihned po zaplacení', desc: 'Vyplnění zabere přibližně 5 minut. Dokument ke stažení obdržíte obratem.' },
+                { icon: '📋', label: 'Čtrnáct typů dokumentů', desc: 'Nájem, práce, podnikání, půjčky, převody majetku — dokumenty pro typické smluvní situace v jednom místě.' },
+                { icon: '🔤', label: 'Zadáváte data, ne paragrafy', desc: 'Vyplníte údaje, podmínky a hodnoty. Právní strukturu a formulaci zajistí systém.' },
+                { icon: '⚡', label: 'Dokument ihned po zaplacení', desc: 'Vyplnění formuláře zabere přibližně 5 minut. Hotový PDF ke stažení obdržíte obratem.' },
                 { icon: '🔒', label: 'Bezpečná platba', desc: 'Platba probíhá přes Stripe. Čísla karet ani bankovní údaje se k nám nedostanou.' },
               ].map(c => (
                 <div key={c.label} className="text-center">
@@ -683,12 +684,12 @@ export default function Home() {
         {/* Final CTA */}
         <section className="mt-16 md:mt-20">
           <div className="rounded-[2rem] border border-amber-500/20 bg-gradient-to-br from-amber-500/10 to-yellow-500/5 px-6 py-10 text-center md:px-10">
-            <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Připraveni začít?</div>
+            <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Začít</div>
             <h2 className="mt-3 text-3xl font-black tracking-tight text-white md:text-4xl">
-              Vytvořte svůj dokument dnes
+              Váš dokument je na pár kliknutí
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-slate-300 md:text-base">
-              Vyplnění formuláře zabere většinou méně než pět minut. Výsledkem je kompletní smlouva připravená k podpisu.
+              Formulář vyplníte za přibližně 5 minut. Výsledkem je přehledný právní dokument sestavený podle vašich podmínek, připravený k podpisu.
             </p>
             <Link href="#vyber-smlouvy"
               className="mt-8 inline-flex items-center justify-center rounded-2xl bg-amber-500 px-8 py-4 text-base font-black uppercase tracking-tight text-black transition hover:bg-amber-400">
