@@ -1,14 +1,20 @@
 import type { Metadata } from 'next';
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
+
 export const metadata: Metadata = {
-  title: 'Smlouva o zápůjčce online — vzor 2026',
-  description: 'Smlouva o půjčce / zápůjčce peněz dle § 2390 OZ. Úroky, splátkový plán a zajištění pohledávky. PDF za 249 Kč.',
+  title: 'Smlouva o zápůjčce (půjčka) online 2026 | SmlouvaHned',
+  description: 'Sestavte smlouvu o zápůjčce peněz online. Splátky, úroky, zajištění — vše zachyceno v PDF. Od 249 Kč.',
+  keywords: ['smlouva o zápůjčce', 'půjčka smlouva vzor 2026', 'smlouva o půjčce peněz', 'zápůjčka smlouva online'],
+  alternates: { canonical: `${BASE_URL}/pujcka` },
   openGraph: {
-    title: 'Smlouva o zápůjčce (půjčka) — vzor 2026 | SmlouvaHned',
-    description: 'Bezpečná smlouva o půjčce s úroky, splátkovým kalendářem a zajištěním. § 2390 OZ. Od 249 Kč.',
+    title: 'Smlouva o zápůjčce (půjčka) online 2026 | SmlouvaHned',
+    description: 'Sestavte smlouvu o zápůjčce peněz online. Splátky, úroky, zajištění — vše zachyceno v PDF. Od 249 Kč.',
+    url: `${BASE_URL}/pujcka`,
+    type: 'website',
   },
 };
 
-export default function PujckaLayout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }

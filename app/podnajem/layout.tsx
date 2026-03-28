@@ -1,13 +1,16 @@
 import type { Metadata } from 'next';
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
+
 export const metadata: Metadata = {
-  title: 'Podnájemní smlouva online — § 2274 OZ | SmlouvaHned',
-  description: 'Vygenerujte podnájemní smlouvu bezpečně a v souladu se zákonem. Souhlas pronajímatele, kauce, pravidla podnájmu. Od 249 Kč, PDF ihned.',
+  title: 'Podnájemní smlouva online 2026 | SmlouvaHned',
+  description: 'Podnájemní smlouva se souhlasem pronajímatele. Kauce, pravidla, předávací protokol. PDF ihned. Od 249 Kč.',
+  keywords: ['podnájemní smlouva online', 'podnájemní smlouva vzor 2026', 'podnájem byt smlouva', 'podnájemní smlouva formulář'],
+  alternates: { canonical: `${BASE_URL}/podnajem` },
   openGraph: {
-    title: 'Podnájemní smlouva online — od 249 Kč | SmlouvaHned',
-    description: 'Legální podnájem bytu dle § 2274 OZ. Formulář, PDF, ihned.',
-    url: 'https://smlouvahned.cz/podnajem',
-    siteName: 'SmlouvaHned',
+    title: 'Podnájemní smlouva online 2026 | SmlouvaHned',
+    description: 'Podnájemní smlouva se souhlasem pronajímatele. Kauce, pravidla, předávací protokol. PDF ihned. Od 249 Kč.',
+    url: `${BASE_URL}/podnajem`,
     type: 'website',
   },
 };

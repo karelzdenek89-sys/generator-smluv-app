@@ -1,13 +1,16 @@
 import type { Metadata } from 'next';
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
+
 export const metadata: Metadata = {
-  title: 'Plná moc online — § 441 OZ | SmlouvaHned',
-  description: 'Vygenerujte plnou moc pro nemovitost, soud, banku nebo firmu. Obecná, ověřená nebo jednorázová plná moc. Dle § 441 OZ, 2026. Od 249 Kč.',
+  title: 'Plná moc online 2026 | SmlouvaHned',
+  description: 'Plná moc obecná, jednorázová nebo ověřená pro zastoupení před úřadem, bankou nebo v obchodní věci. Od 249 Kč.',
+  keywords: ['plná moc online', 'plná moc vzor 2026', 'plná moc formulář', 'plná moc ke stažení'],
+  alternates: { canonical: `${BASE_URL}/plna-moc` },
   openGraph: {
-    title: 'Plná moc online — od 249 Kč | SmlouvaHned',
-    description: 'Plná moc pro zastupování před úřady, soudy, bankou nebo katastrem. PDF ihned.',
-    url: 'https://smlouvahned.cz/plna-moc',
-    siteName: 'SmlouvaHned',
+    title: 'Plná moc online 2026 | SmlouvaHned',
+    description: 'Plná moc obecná, jednorázová nebo ověřená pro zastoupení před úřadem, bankou nebo v obchodní věci. Od 249 Kč.',
+    url: `${BASE_URL}/plna-moc`,
     type: 'website',
   },
 };

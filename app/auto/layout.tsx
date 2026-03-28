@@ -1,14 +1,20 @@
 import type { Metadata } from 'next';
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
+
 export const metadata: Metadata = {
-  title: 'Kupní smlouva na auto online — vzor 2026',
-  description: 'Profesionální kupní smlouva na ojeté vozidlo dle § 2079 a násl. OZ. Ochrana prodávajícího i kupujícího. PDF okamžitě za 249 Kč.',
+  title: 'Kupní smlouva na auto online 2026 | SmlouvaHned',
+  description: 'Sestavte kupní smlouvu na ojeté vozidlo online. Stav auta, vady, kilometry — vše správně zachyceno v PDF. Od 249 Kč.',
+  keywords: ['kupní smlouva auto', 'kupní smlouva vozidlo 2026', 'smlouva prodej auta', 'kupní smlouva ojetý vůz'],
+  alternates: { canonical: `${BASE_URL}/auto` },
   openGraph: {
-    title: 'Kupní smlouva na auto — vzor 2026 | SmlouvaHned',
-    description: 'Kupní smlouva na vozidlo s prohlášením o stavu, VIN, km a přechodem vlastnictví. Od 249 Kč.',
+    title: 'Kupní smlouva na auto online 2026 | SmlouvaHned',
+    description: 'Sestavte kupní smlouvu na ojeté vozidlo online. Stav auta, vady, kilometry — vše správně zachyceno v PDF. Od 249 Kč.',
+    url: `${BASE_URL}/auto`,
+    type: 'website',
   },
 };
 
-export default function AutoLayout({ children }: { children: React.ReactNode }) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }

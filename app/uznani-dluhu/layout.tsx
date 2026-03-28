@@ -1,13 +1,16 @@
 import type { Metadata } from 'next';
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
+
 export const metadata: Metadata = {
-  title: 'Uznání dluhu online — § 2053 OZ | SmlouvaHned',
-  description: 'Vygenerujte uznání dluhu s obnovenením promlčecí lhůty (10 let). Splátky, exekuční doložka, silná ochrana věřitele. Od 249 Kč, PDF ihned.',
+  title: 'Uznání dluhu online 2026 | SmlouvaHned',
+  description: 'Uznání dluhu s promlčecí lhůtou 10 let. Splátky, smluvní pokuta, exekuční doložka. PDF ihned. Od 249 Kč.',
+  keywords: ['uznání dluhu vzor 2026', 'uznání dluhu online', 'uznání dluhu formulář', 'uznání závazku smlouva'],
+  alternates: { canonical: `${BASE_URL}/uznani-dluhu` },
   openGraph: {
-    title: 'Uznání dluhu online — od 249 Kč | SmlouvaHned',
-    description: 'Uznání dluhu dle § 2053 OZ. Obnoví promlčecí lhůtu, silný vymáhací nástroj.',
-    url: 'https://smlouvahned.cz/uznani-dluhu',
-    siteName: 'SmlouvaHned',
+    title: 'Uznání dluhu online 2026 | SmlouvaHned',
+    description: 'Uznání dluhu s promlčecí lhůtou 10 let. Splátky, smluvní pokuta, exekuční doložka. PDF ihned. Od 249 Kč.',
+    url: `${BASE_URL}/uznani-dluhu`,
     type: 'website',
   },
 };

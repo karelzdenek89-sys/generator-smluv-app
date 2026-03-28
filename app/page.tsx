@@ -102,9 +102,72 @@ const faqItems = [
   },
 ];
 
+// ── Structured Data ───────────────────────────────────────────────────────────
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqItems.map(item => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer,
+    },
+  })),
+};
+
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'SmlouvaHned',
+  url: 'https://smlouvahned.cz',
+  logo: 'https://smlouvahned.cz/favicon.ico',
+  contactPoint: {
+    '@type': 'ContactPoint',
+    email: 'info@smlouvahned.cz',
+    contactType: 'customer service',
+    availableLanguage: 'Czech',
+  },
+};
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  serviceType: 'Generátor právních smluv',
+  name: 'SmlouvaHned — Automatizovaný generátor smluv',
+  description: 'Online platforma pro tvorbu standardních právních dokumentů — nájemní smlouva, kupní smlouva, NDA a další. Aktualizováno pro českou legislativu 2026.',
+  url: 'https://smlouvahned.cz',
+  provider: {
+    '@type': 'Organization',
+    name: 'SmlouvaHned',
+  },
+  areaServed: {
+    '@type': 'Country',
+    name: 'Czech Republic',
+  },
+  offers: [
+    { '@type': 'Offer', name: 'Základní dokument', price: '249', priceCurrency: 'CZK' },
+    { '@type': 'Offer', name: 'Profesionální ochrana', price: '399', priceCurrency: 'CZK' },
+    { '@type': 'Offer', name: 'Kompletní balíček', price: '749', priceCurrency: 'CZK' },
+  ],
+};
+
 export default function Home() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#05080f] text-slate-200">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.10),transparent_28%),radial-gradient(circle_at_80%_20%,rgba(59,130,246,0.08),transparent_22%),linear-gradient(to_bottom,#05080f,#08101e,#05080f)]" />
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:48px_48px] opacity-20" />
 

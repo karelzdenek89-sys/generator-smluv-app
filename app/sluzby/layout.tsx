@@ -1,13 +1,16 @@
 import type { Metadata } from 'next';
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
+
 export const metadata: Metadata = {
-  title: 'Smlouva o poskytování služeb online — § 1746 OZ | SmlouvaHned',
-  description: 'Vygenerujte smlouvu o poskytování služeb pro freelancery, agentury i firmy. IT, marketing, konzultace. Paušál, hodinová sazba nebo pevná cena. Od 249 Kč.',
+  title: 'Smlouva o poskytování služeb online 2026 | SmlouvaHned',
+  description: 'Smlouva o poskytování služeb pro freelancery a agentury. SLA, IP práva, mlčenlivost. PDF ihned. Od 249 Kč.',
+  keywords: ['smlouva o poskytování služeb', 'smlouva o službách vzor 2026', 'freelancer smlouva', 'smlouva o službách online'],
+  alternates: { canonical: `${BASE_URL}/sluzby` },
   openGraph: {
-    title: 'Smlouva o poskytování služeb — od 249 Kč | SmlouvaHned',
-    description: 'Freelanceři a agentury — chraňte se profesionální smlouvou. SLA, IP, mlčenlivost.',
-    url: 'https://smlouvahned.cz/sluzby',
-    siteName: 'SmlouvaHned',
+    title: 'Smlouva o poskytování služeb online 2026 | SmlouvaHned',
+    description: 'Smlouva o poskytování služeb pro freelancery a agentury. SLA, IP práva, mlčenlivost. PDF ihned. Od 249 Kč.',
+    url: `${BASE_URL}/sluzby`,
     type: 'website',
   },
 };

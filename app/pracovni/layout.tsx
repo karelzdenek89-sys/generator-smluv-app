@@ -1,13 +1,16 @@
 import type { Metadata } from 'next';
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
+
 export const metadata: Metadata = {
-  title: 'Pracovní smlouva online — § 34 zákoníku práce | SmlouvaHned',
-  description: 'Vygenerujte pracovní smlouvu se všemi zákonnými náležitostmi. Druh práce, místo výkonu, mzda, zkušební doba. Dle zákoníku práce 2026. Od 249 Kč.',
+  title: 'Pracovní smlouva online 2026 | SmlouvaHned',
+  description: 'Pracovní smlouva dle zákoníku práce. Mzda, pracovní doba, zkušební doba — všechny zákonné náležitosti. Od 249 Kč.',
+  keywords: ['pracovní smlouva online', 'pracovní smlouva vzor 2026', 'pracovní smlouva formulář', 'pracovní smlouva ke stažení'],
+  alternates: { canonical: `${BASE_URL}/pracovni` },
   openGraph: {
-    title: 'Pracovní smlouva online — od 249 Kč | SmlouvaHned',
-    description: 'Právně správná pracovní smlouva dle § 34 ZP. Vyplňte formulář, stáhněte PDF.',
-    url: 'https://smlouvahned.cz/pracovni',
-    siteName: 'SmlouvaHned',
+    title: 'Pracovní smlouva online 2026 | SmlouvaHned',
+    description: 'Pracovní smlouva dle zákoníku práce. Mzda, pracovní doba, zkušební doba — všechny zákonné náležitosti. Od 249 Kč.',
+    url: `${BASE_URL}/pracovni`,
     type: 'website',
   },
 };

@@ -1,13 +1,16 @@
 import type { Metadata } from 'next';
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
+
 export const metadata: Metadata = {
-  title: 'Smlouva o spolupráci online — § 1746 OZ | SmlouvaHned',
-  description: 'Vygenerujte smlouvu o spolupráci mezi firmami nebo OSVČ. Podíl na výnosech, IP práva, mlčenlivost, zákaz konkurence. Od 249 Kč, PDF ihned.',
+  title: 'Smlouva o spolupráci online 2026 | SmlouvaHned',
+  description: 'Smlouva o spolupráci OSVČ nebo firem. Podíl na výnosech, IP práva, mlčenlivost, exit klauzule. Od 249 Kč.',
+  keywords: ['smlouva o spolupráci vzor 2026', 'smlouva o spolupráci OSVČ', 'smlouva o spolupráci online', 'smlouva o obchodní spolupráci'],
+  alternates: { canonical: `${BASE_URL}/spoluprace` },
   openGraph: {
-    title: 'Smlouva o spolupráci — od 249 Kč | SmlouvaHned',
-    description: 'Bezpečná spolupráce s jasnými pravidly. IP, výnosy, mlčenlivost a exit klauzule.',
-    url: 'https://smlouvahned.cz/spoluprace',
-    siteName: 'SmlouvaHned',
+    title: 'Smlouva o spolupráci online 2026 | SmlouvaHned',
+    description: 'Smlouva o spolupráci OSVČ nebo firem. Podíl na výnosech, IP práva, mlčenlivost, exit klauzule. Od 249 Kč.',
+    url: `${BASE_URL}/spoluprace`,
     type: 'website',
   },
 };
