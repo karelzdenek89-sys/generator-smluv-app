@@ -416,6 +416,127 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Ukázkové PDF — Transparency Bomb */}
+        <section className="mt-16 md:mt-20">
+          <div className="mb-8 text-center">
+            <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Ukázka výstupu</div>
+            <h2 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">Jak vypadá váš dokument</h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-400">
+              Žádné prázdné kolonky k ručnímu vypisování. Každý dokument je vysázen podle vašich dat — připravený k přímému podpisu.
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-8 md:flex-row md:items-start md:gap-12">
+            {/* PDF mock */}
+            <div className="relative mx-auto w-full max-w-sm flex-shrink-0 md:mx-0">
+              {/* Outer paper shadow */}
+              <div className="relative overflow-hidden rounded-2xl shadow-[0_8px_60px_rgba(0,0,0,0.6)] ring-1 ring-white/10">
+                {/* PDF Header bar */}
+                <div className="bg-[#0a0f1e] px-6 pt-6 pb-4">
+                  <div className="mb-3 flex items-center justify-between">
+                    <div>
+                      <div className="text-[8px] font-black uppercase tracking-[0.25em] text-amber-400">SmlouvaHned.cz</div>
+                      <div className="mt-0.5 text-xs font-black text-white">NÁJEMNÍ SMLOUVA</div>
+                    </div>
+                    <div className="rounded border border-amber-500/40 px-2 py-0.5 text-[7px] font-black uppercase tracking-[0.2em] text-amber-400">
+                      ROZŠÍŘENÁ
+                    </div>
+                  </div>
+                  {/* Gold line */}
+                  <div className="h-[2px] w-full bg-gradient-to-r from-amber-500 to-amber-300" />
+                </div>
+
+                {/* PDF Body */}
+                <div className="bg-[#f8f7f2] px-6 py-5">
+                  {/* Parties */}
+                  <div className="mb-4">
+                    <div className="mb-1.5 text-[8px] font-black uppercase tracking-[0.2em] text-slate-500">Smluvní strany</div>
+                    <div className="space-y-1.5 text-[8px] leading-relaxed text-slate-700">
+                      <div><span className="font-bold">Pronajímatel:</span> Jan Novák, nar. 15. 3. 1980, bytem Hlavní 12, Praha 1</div>
+                      <div><span className="font-bold">Nájemce:</span> Petra Svobodová, nar. 2. 7. 1992, bytem Nová 5, Brno</div>
+                    </div>
+                  </div>
+
+                  {/* Key terms */}
+                  <div className="mb-4 rounded-lg border border-slate-200 bg-white p-3">
+                    <div className="mb-2 text-[8px] font-black uppercase tracking-[0.18em] text-slate-500">Klíčové podmínky</div>
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[7.5px] text-slate-600">
+                      <div><span className="font-semibold">Předmět:</span> Byt 2+1, 58 m²</div>
+                      <div><span className="font-semibold">Nájemné:</span> 18 500 Kč/měs.</div>
+                      <div><span className="font-semibold">Kauce:</span> 37 000 Kč</div>
+                      <div><span className="font-semibold">Výpovědní lhůta:</span> 3 měsíce</div>
+                    </div>
+                  </div>
+
+                  {/* Sections preview */}
+                  <div className="mb-3 space-y-1.5">
+                    {['§ 1 — Předmět nájmu a popis nemovitosti', '§ 2 — Nájemné a způsob platby', '§ 3 — Kauce a podmínky vrácení', '§ 4 — Smluvní pokuta za prodlení s platbou', '§ 5 — Práva a povinnosti stran'].map((s, i) => (
+                      <div key={i} className="flex items-center gap-2 text-[7.5px] text-slate-600">
+                        <div className="h-px w-3 flex-shrink-0 bg-amber-400" />
+                        {s}
+                      </div>
+                    ))}
+                    <div className="flex items-center gap-2 text-[7px] text-slate-400 italic">
+                      <div className="h-px w-3 flex-shrink-0 bg-slate-300" />
+                      + 8 dalších ustanovení…
+                    </div>
+                  </div>
+                </div>
+
+                {/* Blur overlay - bottom */}
+                <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-[#05080f] via-[#05080f]/80 to-transparent" />
+
+                {/* CTA over blur */}
+                <div className="absolute bottom-4 left-0 right-0 flex justify-center">
+                  <a href="#vyber-smlouvy"
+                    className="rounded-xl bg-amber-500 px-5 py-2 text-[11px] font-black uppercase tracking-tight text-black shadow-lg transition hover:bg-amber-400">
+                    Vytvořit vlastní dokument →
+                  </a>
+                </div>
+              </div>
+
+              {/* Page indicator */}
+              <div className="mt-3 text-center text-[10px] text-slate-500">Strana 1 / 4 · PDF, 4 strany, font Roboto</div>
+            </div>
+
+            {/* Feature bullets */}
+            <div className="flex flex-col justify-center gap-5">
+              {[
+                {
+                  icon: '🎨',
+                  title: 'Vysázeno algoritmem, ne šablonou',
+                  desc: 'Každý odstavec je generován dynamicky na základě vašich dat. Výsledkem je dokument přesně pro váš případ — ne neurčitý vzor s prázdnými místy.',
+                },
+                {
+                  icon: '📐',
+                  title: 'Profesionální typografie',
+                  desc: 'Font Roboto, zlatá linka, strukturovaná hierarchie nadpisů. Dokument vypadá profesionálně při předání i při případném soudním řízení.',
+                },
+                {
+                  icon: '🔖',
+                  title: 'Badge dle úrovně ochrany',
+                  desc: 'Každé PDF nese označení zakoupené úrovně (Základní / Rozšířená / Kompletní). Víte přesně, co jste zaplatili a co dokument obsahuje.',
+                },
+                {
+                  icon: '✅',
+                  title: 'Připraveno k přímému podpisu',
+                  desc: 'Všechna zákonná ustanovení, smluvní strany, podmínky a klauzule na správném místě. Stačí vytisknout a podepsat — nebo podepsat elektronicky.',
+                },
+              ].map(f => (
+                <div key={f.title} className="flex gap-4">
+                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl border border-white/8 bg-white/5 text-xl">
+                    {f.icon}
+                  </div>
+                  <div>
+                    <div className="text-sm font-black text-white">{f.title}</div>
+                    <p className="mt-0.5 text-xs leading-relaxed text-slate-400">{f.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Ceník — 3 úrovně */}
         <section id="cenik" className="mt-16 md:mt-20">
           <div className="mb-10 text-center">
@@ -475,6 +596,44 @@ export default function Home() {
                 </Link>
               </div>
             ))}
+          </div>
+        </section>
+
+        {/* Garance technické správnosti + Payment trust */}
+        <section className="mt-10 md:mt-12">
+          <div className="rounded-[2rem] border border-emerald-500/20 bg-gradient-to-br from-emerald-500/8 to-[#0c1426] px-6 py-8 md:px-10">
+            <div className="flex flex-col gap-6 md:flex-row md:items-start md:gap-10">
+              {/* Guarantee */}
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-emerald-500/15 text-xl">🛡️</div>
+                  <div className="text-base font-black text-white">Garance technické správnosti</div>
+                </div>
+                <p className="text-sm leading-relaxed text-slate-300">
+                  Pokud váš dokument nebude obsahovat všechna povinná pole nebo narazíte na technickou chybu při generování,{' '}
+                  <span className="font-bold text-white">vrátíme vám 100 % částky zpět</span> a smlouvu vám opravíme zdarma.
+                </p>
+                <p className="mt-2 text-xs leading-relaxed text-slate-500">
+                  Garance se vztahuje na technické chyby systému. Nepokrývá případy, kdy zákazník zadal nesprávné údaje.
+                </p>
+              </div>
+
+              {/* Divider */}
+              <div className="hidden w-px self-stretch bg-white/8 md:block" />
+
+              {/* Methodology */}
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-blue-500/15 text-xl">📜</div>
+                  <div className="text-base font-black text-white">Metodika a aktualizace 2026</div>
+                </div>
+                <p className="text-sm leading-relaxed text-slate-300">
+                  Šablony jsou postaveny na modulární logice, která reflektuje aktuální znění{' '}
+                  <span className="font-bold text-white">Občanského zákoníku č. 89/2012 Sb.</span> ve znění k 1. 1. 2026.
+                  Každé ustanovení odpovídá konkrétnímu paragrafu — žádná obecná formulace bez právního základu.
+                </p>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -606,7 +765,47 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="mt-8 border-t border-white/8 pt-6 text-xs leading-relaxed text-slate-500">
+          {/* Payment trust bar */}
+          <div className="mt-8 border-t border-white/8 pt-6">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">Zabezpečená platba</span>
+                <div className="flex items-center gap-2 ml-1">
+                  {/* Stripe badge */}
+                  <div className="flex items-center gap-1.5 rounded-md border border-white/10 bg-white/5 px-2.5 py-1">
+                    <svg className="h-3.5 w-auto" viewBox="0 0 60 25" fill="none" aria-label="Stripe">
+                      <path d="M5.5 9.8c0-1.5 1.2-2.1 3.2-2.1 2.8 0 6.4.9 9.2 2.4V4.4C15.3 3 12.1 2.4 8.7 2.4 3.5 2.4 0 5.1 0 10c0 7.7 10.6 6.5 10.6 9.8 0 1.8-1.6 2.4-3.7 2.4-3.2 0-7.3-1.3-10.6-3.1v5.8c3.6 1.6 7.3 2.2 10.6 2.2 5.4 0 9.2-2.7 9.2-7.6C16.1 11.8 5.5 13.2 5.5 9.8z" fill="#635BFF" transform="translate(1,0)"/>
+                      <text x="20" y="17" fontSize="13" fontWeight="800" fill="#635BFF" fontFamily="Arial">stripe</text>
+                    </svg>
+                  </div>
+                  {/* Visa */}
+                  <div className="flex items-center justify-center rounded-md border border-white/10 bg-white/5 px-2.5 py-1">
+                    <svg className="h-3.5 w-auto" viewBox="0 0 60 20" aria-label="Visa">
+                      <text x="0" y="16" fontSize="18" fontWeight="900" fill="#1A1F71" fontFamily="Arial" letterSpacing="-1">VISA</text>
+                    </svg>
+                  </div>
+                  {/* Mastercard */}
+                  <div className="flex items-center justify-center rounded-md border border-white/10 bg-white/5 px-2 py-1">
+                    <svg className="h-5 w-auto" viewBox="0 0 38 24" aria-label="Mastercard">
+                      <circle cx="15" cy="12" r="10" fill="#EB001B"/>
+                      <circle cx="23" cy="12" r="10" fill="#F79E1B"/>
+                      <path d="M19 4.8a10 10 0 0 1 0 14.4A10 10 0 0 1 19 4.8z" fill="#FF5F00"/>
+                    </svg>
+                  </div>
+                  {/* SSL badge */}
+                  <div className="flex items-center gap-1 rounded-md border border-white/10 bg-white/5 px-2.5 py-1">
+                    <svg className="h-3 w-3 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <span className="text-[9px] font-black uppercase tracking-[0.15em] text-emerald-400">SSL</span>
+                  </div>
+                </div>
+              </div>
+              <div className="text-[10px] text-slate-600">Platební údaje zpracovává výhradně Stripe. My je nikdy nevidíme.</div>
+            </div>
+          </div>
+
+          <div className="mt-5 border-t border-white/8 pt-5 text-xs leading-relaxed text-slate-500">
             <p>
               Dokumenty na tomto webu slouží pro typické situace a nepředstavují individuální právní službu ani právní zastoupení.
               U složitějších případů doporučujeme konzultaci s advokátem.
