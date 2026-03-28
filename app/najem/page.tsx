@@ -1,6 +1,9 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import ContractPreview from '@/app/components/ContractPreview';
+import { buildContractSections } from '@/lib/contracts';
+import type { StoredContractData } from '@/lib/contracts';
 
 type LeaseFormData = {
   landlordName: string;
@@ -54,6 +57,7 @@ type LeaseFormData = {
 
   notaryUpsell: boolean;
   tier: 'basic' | 'professional' | 'complete';
+  disputeResolution: 'court' | 'mediation' | 'arbitration';
 };
 
 type RiskLevel = 'low' | 'medium' | 'high';
@@ -120,6 +124,7 @@ export default function LeaseBuilderPage() {
 
     notaryUpsell: false,
     tier: 'basic' as const,
+    disputeResolution: 'court' as const,
   });
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -269,6 +274,15 @@ export default function LeaseBuilderPage() {
       });
     }
 
+    const rentNum = Number(formData.rentAmount) || 0;
+    const depositNum = Number(formData.depositAmount) || 0;
+    if (rentNum > 0 && depositNum > rentNum * 6) {
+      warnings.push({
+        text: 'Kauce přesahuje zákonné maximum 6 měsíčních nájmů (§ 2254 OZ). Přebytek je nevymahatelný.',
+        level: 'high',
+      });
+    }
+
     score = Math.max(0, Math.min(100, score));
 
     return {
@@ -383,6 +397,15 @@ ${formData.equipmentList || '................'}
 4. Zjištěné vady / poškození / poznámky
 ${formData.knownDefects || 'Bez zjevných vad.'}
     `.trim();
+  }, [formData]);
+
+  const previewSections = useMemo(() => {
+    try {
+      if (!formData.landlordName && !formData.tenantName) return [];
+      return buildContractSections({ ...formData, contractType: 'lease' } as StoredContractData);
+    } catch {
+      return [];
+    }
   }, [formData]);
 
   const handlePayment = async () => {
@@ -767,14 +790,19 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   placeholder="Služby (Kč)"
                   className={inputClass}
                 />
-                <input
-                  value={formData.depositAmount}
-                  onChange={handleChange}
-                  type="number"
-                  name="depositAmount"
-                  placeholder="Kauce (Kč)"
-                  className={inputClass}
-                />
+                <div>
+                  <input
+                    value={formData.depositAmount}
+                    onChange={handleChange}
+                    type="number"
+                    name="depositAmount"
+                    placeholder="Kauce (Kč)"
+                    className={inputClass}
+                  />
+                  {Number(formData.rentAmount) > 0 && Number(formData.depositAmount) > Number(formData.rentAmount) * 6 && (
+                    <p className="mt-1.5 text-xs text-rose-400 font-medium">⚠ Přesahuje zákonné maximum 6× nájem (§ 2254 OZ).</p>
+                  )}
+                </div>
               </div>
 
               <div className="grid sm:grid-cols-3 gap-4 mb-4">
@@ -941,6 +969,18 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
               </div>
             </section>
 
+            {/* Řešení sporů */}
+            <section className={cardClass}>
+              <div className="mb-2">
+                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
+                <select className="w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none focus:border-amber-500/60 transition" name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
+                  <option value="court">Obecný soud (výchozí)</option>
+                  <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
+                  <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
+                </select>
+              </div>
+            </section>
+
             {/* === VÝBĚR BALÍČKU === */}
             <section className={cardClass}>
               <SectionTitle
@@ -1008,6 +1048,10 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
 
           <div className="lg:col-span-5 relative">
             <div className="sticky top-24 space-y-6">
+              {/* Watermarked document preview */}
+              {previewSections.length > 0 && (
+                <ContractPreview sections={previewSections} title="Nájemní smlouva" />
+              )}
               <div className={`${cardClass} overflow-hidden`}>
                 <div className="flex items-start justify-between gap-4">
                   <div>

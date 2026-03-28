@@ -1,6 +1,9 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import ContractPreview from '@/app/components/ContractPreview';
+import { buildContractSections } from '@/lib/contracts';
+import type { StoredContractData } from '@/lib/contracts';
 
 type FormData = {
   employerName: string; employerIco: string; employerAddress: string; employerEmail: string;
@@ -67,7 +70,17 @@ export default function PracovniPage() {
     if (!form.startDate) { score -= 15; warnings.push({ text: 'Den nástupu je povinná náležitost § 34 ZP.', level: 'high' }); }
     if (!form.salary && !form.hourlyRate) { score -= 10; warnings.push({ text: 'Nevyplněna mzda — zaměstnanec ji musí znát.', level: 'medium' }); }
     if (form.employmentType === 'fixed' && !form.endDate) { score -= 10; warnings.push({ text: 'U doby určité chybí datum konce.', level: 'high' }); }
+    if (Number(form.trialPeriodMonths) > 3) { warnings.push({ text: 'Zákonné maximum zkušební doby je 3 měsíce (§ 35 ZP). U vedoucích zaměstnanců max. 6 měsíců.', level: 'high' }); }
     return { score: Math.max(0, score), warnings, label: score >= 85 ? 'Silná ochrana' : score >= 65 ? 'Průměrná ochrana' : 'Slabší ochrana' };
+  }, [form]);
+
+  const previewSections = useMemo(() => {
+    try {
+      if (!form.employerName) return [];
+      return buildContractSections({ ...form, contractType: 'employment' } as StoredContractData);
+    } catch {
+      return [];
+    }
   }, [form]);
 
   const handlePayment = async () => {
@@ -157,7 +170,12 @@ export default function PracovniPage() {
                 </Field>
                 <Field label="Datum nástupu *"><input className={inputClass} name="startDate" value={form.startDate} onChange={set} type="date" /></Field>
                 {form.employmentType === 'fixed' && <Field label="Datum konce *"><input className={inputClass} name="endDate" value={form.endDate} onChange={set} type="date" /></Field>}
-                <Field label="Zkušební doba (měsíce, 0 = bez)"><input className={inputClass} name="trialPeriodMonths" value={form.trialPeriodMonths} onChange={set} type="number" min="0" max="6" /></Field>
+                <Field label="Zkušební doba (měsíce, 0 = bez)">
+                  <input className={inputClass} name="trialPeriodMonths" value={form.trialPeriodMonths} onChange={set} type="number" min="0" max="6" />
+                  {Number(form.trialPeriodMonths) > 3 && (
+                    <p className="mt-1.5 text-xs text-rose-400 font-medium">⚠ Zákonné maximum je 3 měsíce (§ 35 ZP); u vedoucích max. 6 měsíců.</p>
+                  )}
+                </Field>
                 <Field label="Výpovědní doba (měsíce)"><input className={inputClass} name="noticePeriod" value={form.noticePeriod} onChange={set} type="number" min="1" max="6" /></Field>
               </div>
             </section>
@@ -269,6 +287,10 @@ export default function PracovniPage() {
 
           {/* Sidebar */}
           <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-24">
+            {/* Watermarked document preview */}
+            {previewSections.length > 0 && (
+              <ContractPreview sections={previewSections} title="Pracovní smlouva" />
+            )}
             <div className={cardClass}>
               <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90 mb-4">Analýza smlouvy</div>
               <div className="flex items-center gap-4 mb-4">

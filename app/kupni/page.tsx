@@ -1,6 +1,9 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import ContractPreview from '@/app/components/ContractPreview';
+import { buildContractSections } from '@/lib/contracts';
+import type { StoredContractData } from '@/lib/contracts';
 
 type FormData = {
   sellerName: string; sellerId: string; sellerAddress: string; sellerEmail: string; sellerPhone: string; sellerBankAccount: string;
@@ -12,6 +15,7 @@ type FormData = {
   contractDate: string;
   notaryUpsell: boolean;
   tier: 'basic' | 'professional' | 'complete';
+  disputeResolution: 'court' | 'mediation' | 'arbitration';
 };
 
 const inputClass = 'w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition';
@@ -44,6 +48,7 @@ export default function KupniPage() {
     itemCondition: '', knownDefects: '', handoverDate: '', handoverPlace: '', warrantyMonths: '',
     contractDate: '', notaryUpsell: false,
     tier: 'basic' as const,
+    disputeResolution: 'court' as const,
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [gdprConsent, setGdprConsent] = useState(false);
@@ -63,6 +68,15 @@ export default function KupniPage() {
     if (form.itemType === 'car' && !form.carVIN) { score -= 15; warnings.push({ text: 'U vozidla chybí VIN — nelze ověřit historii.', level: 'high' }); }
     if (!form.knownDefects) { score -= 8; warnings.push({ text: 'Nevyplněny vady — doporučujeme uvést "bez vad" nebo konkrétní vady.', level: 'low' }); }
     return { score: Math.max(0, score), warnings, label: score >= 85 ? 'Silná ochrana' : score >= 65 ? 'Průměrná ochrana' : 'Slabší ochrana' };
+  }, [form]);
+
+  const previewSections = useMemo(() => {
+    try {
+      if (!form.sellerName && !form.buyerName) return [];
+      return buildContractSections({ ...form, contractType: 'general_sale' } as StoredContractData);
+    } catch {
+      return [];
+    }
   }, [form]);
 
   const handlePayment = async () => {
@@ -201,7 +215,15 @@ export default function KupniPage() {
 
             {/* Profesionální ochrana */}
             <section className={cardClass}>
-              
+              {/* Řešení sporů */}
+              <div className="mb-6">
+                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
+                <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set}>
+                  <option value="court">Obecný soud (výchozí)</option>
+                  <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
+                  <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
+                </select>
+              </div>
               {/* === VÝBĚR BALÍČKU === */}
               <div className="space-y-3 mt-6">
                 <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Vyberte balíček</div>
@@ -264,6 +286,10 @@ export default function KupniPage() {
 
           {/* Sidebar */}
           <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-24">
+            {/* Watermarked document preview */}
+            {previewSections.length > 0 && (
+              <ContractPreview sections={previewSections} title="Kupní smlouva" />
+            )}
             {/* Risk */}
             <div className={cardClass}>
               <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90 mb-4">Analýza smlouvy</div>

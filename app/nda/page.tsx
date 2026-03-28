@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import ContractPreview from '@/app/components/ContractPreview';
+import { buildContractSections } from '@/lib/contracts';
+import type { StoredContractData } from '@/lib/contracts';
 
 type NdaFormData = {
   ndaType: 'unilateral' | 'bilateral';
@@ -25,6 +28,7 @@ type NdaFormData = {
   specialInfoCategories: string;
   notaryUpsell: boolean;
   tier: 'basic' | 'professional' | 'complete';
+  disputeResolution: 'court' | 'mediation' | 'arbitration';
 };
 
 const inputClass =
@@ -84,6 +88,7 @@ export default function NdaBuilderPage() {
     specialInfoCategories: '',
     notaryUpsell: false,
     tier: 'basic' as const,
+    disputeResolution: 'court' as const,
   });
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -121,6 +126,15 @@ export default function NdaBuilderPage() {
       warnings,
       label: score >= 85 ? 'Silná ochrana' : score >= 65 ? 'Průměrná ochrana' : 'Slabší ochrana',
     };
+  }, [formData]);
+
+  const previewSections = useMemo(() => {
+    try {
+      if (!formData.disclosingName) return [];
+      return buildContractSections({ ...formData, contractType: 'nda' } as StoredContractData);
+    } catch {
+      return [];
+    }
   }, [formData]);
 
   const scoreColor = riskAnalysis.score >= 85 ? 'text-emerald-400' : riskAnalysis.score >= 65 ? 'text-amber-400' : 'text-rose-400';
@@ -330,6 +344,18 @@ export default function NdaBuilderPage() {
               </div>
             </section>
 
+            {/* Řešení sporů */}
+            <section className={cardClass}>
+              <div className="mb-4">
+                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
+                <select className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
+                  <option value="court">Obecný soud (výchozí)</option>
+                  <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
+                  <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
+                </select>
+              </div>
+            </section>
+
             {/* 07 Výběr balíčku */}
             <section className={cardClass}>
               <SectionTitle index="07" title="Výběr balíčku" subtitle="Zvolte úroveň ochrany odpovídající hodnotě sdílených informací." />
@@ -378,6 +404,10 @@ export default function NdaBuilderPage() {
 
           {/* Right sidebar */}
           <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-24">
+            {/* Watermarked document preview */}
+            {previewSections.length > 0 && (
+              <ContractPreview sections={previewSections} title="Smlouva o mlčenlivosti (NDA)" />
+            )}
 
             {/* Risk analysis */}
             <div className={cardClass}>

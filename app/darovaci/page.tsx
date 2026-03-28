@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import ContractPreview from '@/app/components/ContractPreview';
+import { buildContractSections } from '@/lib/contracts';
+import type { StoredContractData } from '@/lib/contracts';
 import { motion } from 'framer-motion';
 
 type GiftType = 'money' | 'car' | 'property' | 'thing';
@@ -29,6 +32,7 @@ type FormDataType = {
   reservationDescription: string;
   notaryUpsell: boolean;
   tier: 'basic' | 'professional' | 'complete';
+  disputeResolution: 'court' | 'mediation' | 'arbitration';
 };
 
 export default function GiftContractPage() {
@@ -56,6 +60,7 @@ export default function GiftContractPage() {
     reservationDescription: '',
     notaryUpsell: false,
     tier: 'basic' as const,
+    disputeResolution: 'court' as const,
   });
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -154,6 +159,15 @@ Dárce: ____________________          Obdarovaný: ____________________
       block: 'start',
     });
   };
+
+  const previewSections = useMemo(() => {
+    try {
+      if (!formData.donorName) return [];
+      return buildContractSections({ ...formData, contractType: 'gift' } as StoredContractData);
+    } catch {
+      return [];
+    }
+  }, [formData]);
 
   const handlePayment = async () => {
     // Validace povinných polí
@@ -440,6 +454,16 @@ Dárce: ____________________          Obdarovaný: ____________________
 
             </section>
 
+            {/* Řešení sporů */}
+            <section className="bg-[#0c1426] border border-slate-800 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
+              <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
+              <select className="w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none focus:border-amber-500/60 transition" name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
+                <option value="court">Obecný soud (výchozí)</option>
+                <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
+                <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
+              </select>
+            </section>
+
             {/* Výběr balíčku */}
             <section className="bg-[#0c1426] border border-slate-800 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
               <div className="mb-5">
@@ -491,6 +515,10 @@ Dárce: ____________________          Obdarovaný: ____________________
           {/* === PRAVÝ SIDEBAR === */}
           <div className="lg:col-span-5 relative">
             <div className="sticky top-24 space-y-6">
+              {/* Watermarked document preview */}
+              {previewSections.length > 0 && (
+                <ContractPreview sections={previewSections} title="Darovací smlouva" />
+              )}
 
               {/* Risk score */}
               <div className="bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]">

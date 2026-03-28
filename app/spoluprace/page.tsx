@@ -1,6 +1,9 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import ContractPreview from '@/app/components/ContractPreview';
+import { buildContractSections } from '@/lib/contracts';
+import type { StoredContractData } from '@/lib/contracts';
 
 type FormData = {
   partyAName: string; partyAId: string; partyAAddress: string; partyAEmail: string;
@@ -15,6 +18,7 @@ type FormData = {
   nonCompete: boolean; ndaPenalty: string;
   contractDate: string; notaryUpsell: boolean;
   tier: 'basic' | 'professional' | 'complete';
+  disputeResolution: 'court' | 'mediation' | 'arbitration';
 };
 
 const inputClass = 'w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition';
@@ -41,6 +45,7 @@ export default function SpolupraceePage() {
     nonCompete: false, ndaPenalty: '100000',
     contractDate: '', notaryUpsell: false,
     tier: 'basic' as const,
+    disputeResolution: 'court' as const,
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [gdprConsent, setGdprConsent] = useState(false);
@@ -58,6 +63,15 @@ export default function SpolupraceePage() {
     if (form.revenueModel === 'revenue_share' && Number(form.revenueShareA) + Number(form.revenueShareB) !== 100) { score -= 10; warnings.push({ text: 'Součet podílů na výnosech není 100 %.', level: 'high' }); }
     if (!form.notaryUpsell) { score -= 8; warnings.push({ text: 'Bez mlčenlivosti a zákazu konkurence hrozí zneužití informací.', level: 'medium' }); }
     return { score: Math.max(0, score), warnings, label: score >= 85 ? 'Silná smlouva' : score >= 65 ? 'Průměrná ochrana' : 'Doplňte údaje' };
+  }, [form]);
+
+  const previewSections = useMemo(() => {
+    try {
+      if (!form.partyAName) return [];
+      return buildContractSections({ ...form, contractType: 'cooperation' } as StoredContractData);
+    } catch {
+      return [];
+    }
   }, [form]);
 
   const handlePayment = async () => {
@@ -182,6 +196,15 @@ export default function SpolupraceePage() {
 
             <section className={cardClass}>
               
+              {/* Řešení sporů */}
+              <div className="mb-6">
+                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
+                <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set}>
+                  <option value="court">Obecný soud (výchozí)</option>
+                  <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
+                  <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
+                </select>
+              </div>
               {/* === VÝBĚR BALÍČKU === */}
               <div className="space-y-3 mt-6">
                 <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Vyberte balíček</div>
@@ -243,6 +266,10 @@ export default function SpolupraceePage() {
           </div>
 
           <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-24">
+            {/* Watermarked document preview */}
+            {previewSections.length > 0 && (
+              <ContractPreview sections={previewSections} title="Smlouva o spolupráci" />
+            )}
             <div className={cardClass}>
               <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90 mb-4">Analýza smlouvy</div>
               <div className="flex items-center gap-4 mb-4">

@@ -63,7 +63,7 @@ export function resolveTierFeatures(d: StoredContractData): TierFeatures {
 const emptyLine = '____________________';
 
 const formatAmount = (amount?: unknown) => {
-  if (amount === null || amount === undefined || amount === '') return '(neuvedeno)';
+  if (amount === null || amount === undefined || amount === '') return '__________';
   const num = Number(amount);
   if (Number.isNaN(num)) return String(amount);
   return num.toLocaleString('cs-CZ');
@@ -199,7 +199,7 @@ function buildGiftContractSections(d: StoredContractData): ContractSection[] {
     {
       title: 'I. SMLUVNÍ STRANY',
       body: [
-        `Dárce: ${asText(d.donorName)}, nar./IČO: ${asText(d.donorId, '—')}, bytem/sídlo: ${asText(d.donorAddress)}`,
+        `Dárce: ${asText(d.donorName)}, nar./IČO: ${asText(d.donorId, '__________')}, bytem/sídlo: ${asText(d.donorAddress)}`,
         d.donorEmail ? `E-mail dárce: ${asText(d.donorEmail)}` : '',
         `Obdarovaný: ${asText(d.doneeName)}, nar./IČO: ${asText(d.doneeId, '—')}, bytem/sídlo: ${asText(d.doneeAddress)}`,
         d.doneeEmail ? `E-mail obdarovaného: ${asText(d.doneeEmail)}` : '',
@@ -273,17 +273,9 @@ function buildWorkContractSections(d: StoredContractData): ContractSection[] {
         ? `Cena bude hrazena průběžně na základě odsouhlasených dílčích faktur ke každé etapě díla (splatnost faktury ${asText(d.invoiceDueDays, '14')} dnů od doručení). Poslední splátka je splatná po řádném předání celého díla.`
         : `Celková cena je splatná jednorázově do ${asText(d.finalPaymentDays, '14')} dnů od řádného předání díla bez vad a nedodělků, na základě faktury vystavené zhotovitelem.`;
 
-  const ipClause = d.ipAssignment === 'full'
-    ? 'Veškerá práva duševního vlastnictví k vytvořenému dílu (včetně konceptů, návrhů, zdrojových kódů, dokumentace a všech ostatních výstupů) přecházejí na objednatele okamžikem vytvoření a úplného zaplacení ceny. Zhotovitel se vzdává všech autorských a průmyslových práv k dílu.'
-    : 'Zhotovitel si zachovává práva duševního vlastnictví k vytvorenému dílu a uděluje objednateli nevýhradní, časově neomezenou a teritoriálně neomezenou licenci k jeho užívání pro vlastní potřebu (§ 2358 OZ).';
-
   const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
-      title: 'VIII. PRÁVA DUŠEVNÍHO VLASTNICTVÍ',
-      body: [ipClause],
-    },
-    {
-      title: 'IX. VÍCEPRÁCE A ZMĚNY ROZSAHU',
+      title: 'VIII. VÍCEPRÁCE A ZMĚNY ROZSAHU',
       body: [
         `Vícepráce (tj. práce nad rámec sjednaného rozsahu díla) může zhotovitel provést pouze na základě písemného odsouhlasení objednatelem, a to formou číslovaného Změnového listu podepsaného oběma stranami (§ 2597 OZ).`,
         'Ústní dohody o rozšíření rozsahu díla jsou neúčinné.',
@@ -292,7 +284,7 @@ function buildWorkContractSections(d: StoredContractData): ContractSection[] {
       ],
     },
     {
-      title: 'X. POJIŠTĚNÍ A ODPOVĚDNOST ZA ŠKODU',
+      title: 'IX. POJIŠTĚNÍ A ODPOVĚDNOST ZA ŠKODU',
       body: [
         d.insuranceRequired
           ? `Zhotovitel je povinen po celou dobu provádění díla udržovat pojištění odpovědnosti za škodu způsobenou třetím osobám při výkonu podnikatelské činnosti, a to s pojistným limitem minimálně ${asText(d.insuranceLimit, '1 000 000')} Kč. Na výzvu objednatele předloží platné pojistné osvědčení.`
@@ -380,7 +372,7 @@ function buildWorkContractSections(d: StoredContractData): ContractSection[] {
     },
     ...premiumContent,
     {
-      title: `${hasPremiumClauses ? 'XI' : 'VIII'}. ZÁVĚREČNÁ USTANOVENÍ`,
+      title: `${hasPremiumClauses ? 'X' : 'VIII'}. ZÁVĚREČNÁ USTANOVENÍ`,
       body: [
         'Tato smlouva se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů.',
         disputeClause(d),
@@ -394,7 +386,7 @@ function buildWorkContractSections(d: StoredContractData): ContractSection[] {
   ];
 
   sections.push({
-    title: `${hasPremiumClauses ? 'XII' : 'IX'}. PODPISY`,
+    title: `${hasPremiumClauses ? 'XI' : 'IX'}. PODPISY`,
     body: [],
   });
 
@@ -689,7 +681,7 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
     {
       title: 'V. JISTOTA (KAUCE)',
       body: [
-        `Nájemce je povinen před převzetím bytu (nejpozději při podpisu smlouvy) složit pronajímateli peněžitou jistotu ve výši ${formatAmount(d.depositAmount)} Kč${(d.depositAmount && d.rentAmount && Number(d.rentAmount) > 0) ? ` (tj. ${Math.round(Number(d.depositAmount) / Number(d.rentAmount))}× měsíční nájemné)` : ''}.`,
+        `Nájemce je povinen před převzetím bytu (nejpozději při podpisu smlouvy) složit pronajímateli peněžitou jistotu ve výši ${formatAmount(d.depositAmount)} Kč (tj. ${(d.depositAmount && d.rentAmount && Number(d.rentAmount) > 0) ? Math.round(Number(d.depositAmount) / Number(d.rentAmount)) : '__'} násobek měsíčního nájemného).`,
         'Jistota slouží k zajištění pohledávek pronajímatele vzniklých z nájmu (dlužné nájemné a zálohy, náhrada škody, náklady nezbytné opravy či uvedení bytu do původního stavu, smluvní pokuty).',
         'Pronajímatel je povinen vrátit nevyčerpanou část jistoty nejpozději do 1 měsíce od ukončení nájmu a předání bytu, po odečtení prokázaných pohledávek.',
         'Jistota je uložena na samostatném bankovním účtu pronajímatele a nepřináší nájemci úroky.',
@@ -782,7 +774,7 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
       `   Vodoměr studená voda (č. ________): ${asText(d.waterMeter, '____________________')} m³`,
       '   Vodoměr teplá voda (č. ________): ____________________ m³',
       '',
-      `2. PŘEDANÉ KLÍČE: celkem ${asText(d.keysCount, '?')} ks (bytové: ___ ks, domovní: ___ ks, schránka: ___ ks, sklep: ___ ks)`,
+      `2. PŘEDANÉ KLÍČE: celkem ${asText(d.keysCount, '____')} ks (bytové: ___ ks, domovní: ___ ks, schránka: ___ ks, sklep: ___ ks)`,
       '',
       '3. PŘEDÁVANÉ VYBAVENÍ A INVENTÁŘ:',
       `   ${asText(d.equipmentList, 'Bez vybavení / dle přiloženého soupisu')}`,
@@ -834,13 +826,12 @@ function buildLoanContractSections(d: StoredContractData): ContractSection[] {
       ],
     },
     {
-      title: 'VII. PŘEDČASNÉ SPLACENÍ, ZRYCHLENÍ SPLATNOSTI A POSTOUPENÍ',
+      title: 'VII. PŘEDČASNÉ SPLACENÍ A POSTOUPENÍ',
       body: [
         'Vydlužitel je oprávněn zápůjčku nebo její část splatit předčasně bez sankcí, pokud je zápůjčka bezúročná.',
         d.interestRate && Number(d.interestRate) > 0
           ? `Při předčasném splacení úročené zápůjčky je vydlužitel povinen zaplatit věřiteli poplatek ve výši ${asText(d.prepaymentFee, '1')} % z předčasně splacené jistiny.`
           : '',
-        'Věřitel je oprávněn prohlásit celou zbývající jistinu zápůjčky okamžitě splatnou, nezaplatí-li vydlužitel 2 po sobě jdoucí splátky nebo poruší-li jinou podstatnou povinnost ze smlouvy (§ 2399 OZ).',
         'Věřitel je oprávněn postoupit svou pohledávku třetí osobě; vydlužitel s tím souhlasí.',
       ].filter(Boolean) as string[],
     },
@@ -868,7 +859,7 @@ function buildLoanContractSections(d: StoredContractData): ContractSection[] {
       body: [
         `Věřitel přenechává vydlužiteli do vlastnictví peněžní částku ve výši ${formatAmount(d.loanAmount)} Kč${d.loanAmountWords ? ` (slovy: ${d.loanAmountWords})` : ''}.`,
         d.transferMethod === 'transfer'
-          ? `Peněžní prostředky budou poukázány bankovním převodem na účet vydlužitele č. ${asText(d.borrowerBankAccount, 'neuvedeno')}, a to do ${asText(d.disbursementDays, '5')} pracovních dnů od podpisu smlouvy.`
+          ? `Peněžní prostředky budou poukázány bankovním převodem na účet vydlužitele č. ${asText(d.borrowerBankAccount, '__________')}, a to do ${asText(d.disbursementDays, '5')} pracovních dnů od podpisu smlouvy.`
           : 'Peněžní prostředky budou předány vydlužiteli v hotovosti při podpisu smlouvy, o čemž bude sepsána stvrzenka.',
         `Účel použití zápůjčky: ${asText(d.loanPurpose, 'není omezen — vydlužitel může použít prostředky libovolně')}.`,
       ],
@@ -891,6 +882,7 @@ function buildLoanContractSections(d: StoredContractData): ContractSection[] {
           ? 'Každá splátka se použije nejprve na úhradu splatných úroků a teprve zbývající část na snížení jistiny (§ 1932 OZ).'
           : '',
         `Smluvní pokuta za prodlení se splátkou: ${asText(d.latePenaltyRate, '0,05')} % z dlužné částky za každý den prodlení, min. ${asText(d.minLatePenalty, '100')} Kč.`,
+        'Věřitel je oprávněn prohlásit celou zbývající jistinu zápůjčky okamžitě splatnou, nezaplatí-li vydlužitel 2 po sobě jdoucí splátky nebo poruší-li jinou podstatnou povinnost ze smlouvy (§ 2399 OZ).',
       ].filter(Boolean) as string[],
     },
     {
@@ -940,18 +932,7 @@ function buildNdaContractSections(d: StoredContractData): ContractSection[] {
 
   const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
-      title: 'VII. ZVLÁŠTNÍ UJEDNÁNÍ — NON-COMPETE A NON-SOLICITATION',
-      body: [
-        d.nonSolicitation
-          ? `Po dobu platnosti smlouvy a ${asText(d.nonSolicitationPeriod, '12 měsíců')} po jejím skončení se Přijímající strana zavazuje nepřetahovat zaměstnance, klíčové obchodní partnery ani zákazníky Poskytující strany.`
-          : '',
-        d.nonCompete
-          ? `Po dobu platnosti smlouvy a ${asText(d.nonCompetePeriod, '12 měsíců')} po jejím skončení se Přijímající strana zavazuje nevyvíjet přímou konkurenční činnost vůči Poskytující straně v oblasti: ${asText(d.nonCompeteScope, 'neuvedeno')}, na území: ${asText(d.nonCompeteTerritory, 'České republiky')}. Zákaz konkurence je věcně, časově i územně vymezen tak, aby byl soudně vymahatelný.`
-          : '',
-      ].filter(Boolean) as string[],
-    },
-    {
-      title: 'VIII. AUDIT A KONTROLA NAKLÁDÁNÍ S INFORMACEMI',
+      title: 'VII. AUDIT A KONTROLA NAKLÁDÁNÍ S INFORMACEMI',
       body: [
         'Poskytující strana má právo kdykoli v průběhu platnosti smlouvy provést audit způsobu uložení a zpracování důvěrných informací u Přijímající strany, a to po předchozím písemném oznámení s předstihem minimálně 5 pracovních dnů.',
         'Přijímající strana je povinna vést evidenci osob, které mají přístup k důvěrným informacím, a tuto evidenci na žádost předložit.',
@@ -959,10 +940,10 @@ function buildNdaContractSections(d: StoredContractData): ContractSection[] {
       ],
     },
     {
-      title: 'IX. ZVLÁŠTNÍ KATEGORIE CHRÁNĚNÝCH INFORMACÍ',
+      title: 'VIII. ZVLÁŠTNÍ KATEGORIE CHRÁNĚNÝCH INFORMACÍ',
       body: [
         `Mezi zvláště chráněné informace patří zejména: ${asText(d.specialInfoCategories, 'obchodní tajemství, know-how, zdrojové kódy, databáze zákazníků, obchodní plány, finanční výsledky, technické výkresy a specifikace')}`,
-        'Přijímající strana je povinna tuto kategorii informací chránit s nejvyšší péčí, minimálně se stejnou úrovní zabezpečením, jakou používá pro ochranu vlastních nejcitlivějších informací.',
+        'Přijímající strana je povinna tuto kategorii informací chránit s nejvyšší péčí, minimálně se stejnou úrovní zabezpečení, jakou používá pro ochranu vlastních nejcitlivějších informací.',
       ],
     },
   ] : [];
@@ -1019,13 +1000,19 @@ function buildNdaContractSections(d: StoredContractData): ContractSection[] {
     {
       title: 'VI. ZVLÁŠTNÍ UJEDNÁNÍ',
       body: [
+        d.nonSolicitation
+          ? `Po dobu platnosti smlouvy a ${asText(d.nonSolicitationPeriod, '12 měsíců')} po jejím skončení se Přijímající strana zavazuje nepřetahovat zaměstnance, klíčové obchodní partnery ani zákazníky Poskytující strany.`
+          : '',
+        d.nonCompete
+          ? `Po dobu platnosti smlouvy a ${asText(d.nonCompetePeriod, '12 měsíců')} po jejím skončení se Přijímající strana zavazuje nevyvíjet přímou konkurenční činnost vůči Poskytující straně v oblasti: ${asText(d.nonCompeteScope, 'neuvedeno')}, na území: ${asText(d.nonCompeteTerritory, 'České republiky')}. Zákaz konkurence je věcně, časově i územně vymezen tak, aby byl soudně vymahatelný.`
+          : '',
         'Po skončení platnosti smlouvy nebo na písemnou výzvu Poskytující strany je Přijímající strana povinna neprodleně vrátit nebo nevratně zničit veškeré nosiče obsahující důvěrné informace (dokumenty, USB, e-mailové přílohy) a písemně potvrdit provedení.',
         'Smlouva neomezuje Poskytující stranu v uzavírání podobných smluv s dalšími subjekty.',
-      ],
+      ].filter(Boolean) as string[],
     },
     ...premiumContent,
     {
-      title: `${hasPremiumClauses ? 'X' : 'VII'}. ZÁVĚREČNÁ USTANOVENÍ`,
+      title: `${hasPremiumClauses ? 'IX' : 'VII'}. ZÁVĚREČNÁ USTANOVENÍ`,
       body: [
         'Smlouva se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů.',
         disputeClause(d),
@@ -1039,7 +1026,7 @@ function buildNdaContractSections(d: StoredContractData): ContractSection[] {
   ];
 
   sections.push({
-    title: `${hasPremiumClauses ? 'XI' : 'VIII'}. PODPISY`,
+    title: `${hasPremiumClauses ? 'X' : 'VIII'}. PODPISY`,
     body: [],
   });
 
@@ -1055,7 +1042,7 @@ function buildGeneralSaleContractSections(d: StoredContractData): ContractSectio
     d.itemType === 'car'
       ? `motorové vozidlo tovární značky ${asText(d.carMake)} ${asText(d.carModel)}, VIN: ${asText(d.carVIN, 'neuvedeno')}, SPZ: ${asText(d.carPlate, 'neuvedeno')}, rok výroby: ${asText(d.carYear, 'neuvedeno')}, stav tachometru: ${asText(d.carMileage, 'neuvedeno')} km`
       : d.itemType === 'electronics'
-      ? `elektronické zařízení: ${asText(d.itemDescription)}, výrobní číslo / sériové číslo: ${asText(d.serialNumber, 'neuvedeno')}`
+      ? `elektronické zařízení: ${asText(d.itemDescription)}, výrobní číslo / sériové číslo: ${asText(d.serialNumber, '__________')}`
       : `${asText(d.itemDescription, 'movitá věc specifikovaná dle dohody smluvních stran')}`;
 
   const defectsClause = d.knownDefects
@@ -1064,7 +1051,7 @@ function buildGeneralSaleContractSections(d: StoredContractData): ContractSectio
 
   const paymentDesc =
     d.paymentMethod === 'transfer'
-      ? `Kupní cena bude uhrazena bankovním převodem na účet prodávajícího č. ${asText(d.sellerBankAccount, 'neuvedeno')}, VS: ${asText(d.variableSymbol, '—')}, a to do ${asText(d.paymentDays, '5')} pracovních dnů od podpisu smlouvy.`
+      ? `Kupní cena bude uhrazena bankovním převodem na účet prodávajícího č. ${asText(d.sellerBankAccount, '__________')}, VS: ${asText(d.variableSymbol, '__________')}, a to do ${asText(d.paymentDays, '5')} pracovních dnů od podpisu smlouvy.`
       : d.paymentMethod === 'escrow'
       ? `Kupní cena bude uhrazena prostřednictvím advokátní/notářské úschovy. Podmínky úschovy jsou sjednány samostatně.`
       : `Kupní cena bude uhrazena v hotovosti při podpisu smlouvy / předání předmětu prodeje.`;
@@ -1108,10 +1095,10 @@ function buildGeneralSaleContractSections(d: StoredContractData): ContractSectio
     {
       title: 'I. SMLUVNÍ STRANY',
       body: [
-        `Prodávající: ${asText(d.sellerName)}, nar./IČO: ${asText(d.sellerId, '—')}, bytem/sídlo: ${asText(d.sellerAddress)}`,
+        `Prodávající: ${asText(d.sellerName)}, nar./IČO: ${asText(d.sellerId, '__________')}, bytem/sídlo: ${asText(d.sellerAddress)}`,
         d.sellerEmail ? `E-mail prodávajícího: ${asText(d.sellerEmail)}` : '',
         d.sellerPhone ? `Telefon prodávajícího: ${asText(d.sellerPhone)}` : '',
-        `Kupující: ${asText(d.buyerName)}, nar./IČO: ${asText(d.buyerId, '—')}, bytem/sídlo: ${asText(d.buyerAddress)}`,
+        `Kupující: ${asText(d.buyerName)}, nar./IČO: ${asText(d.buyerId, '__________')}, bytem/sídlo: ${asText(d.buyerAddress)}`,
         d.buyerEmail ? `E-mail kupujícího: ${asText(d.buyerEmail)}` : '',
         d.buyerPhone ? `Telefon kupujícího: ${asText(d.buyerPhone)}` : '',
       ].filter(Boolean) as string[],
@@ -1127,7 +1114,7 @@ function buildGeneralSaleContractSections(d: StoredContractData): ContractSectio
     {
       title: 'III. KUPNÍ CENA A ZPŮSOB ÚHRADY',
       body: [
-        `Kupní cena je sjednána dohodou smluvních stran ve výši ${formatAmount(d.price)} ${asText(d.currency, 'Kč')} (slovy: ${asText(d.priceWords, '')}).`,
+        `Kupní cena je sjednána dohodou smluvních stran ve výši ${formatAmount(d.price)} ${asText(d.currency, 'Kč')} (slovy: ${asText(d.priceWords, '__________')}).`,
         paymentDesc,
         'Vlastnické právo k předmětu prodeje přechází na kupujícího okamžikem úplného zaplacení kupní ceny, není-li dohodnuto jinak.',
       ],
@@ -1136,7 +1123,7 @@ function buildGeneralSaleContractSections(d: StoredContractData): ContractSectio
       title: 'IV. PŘEDÁNÍ PŘEDMĚTU PRODEJE',
       body: [
         d.handoverDate
-          ? `Prodávající se zavazuje předat předmět prodeje kupujícímu dne ${formatDate(d.handoverDate)} na adrese: ${asText(d.handoverPlace, 'neuvedeno')}.`
+          ? `Prodávající se zavazuje předat předmět prodeje kupujícímu dne ${formatDate(d.handoverDate)} na adrese: ${asText(d.handoverPlace, '__________')}.`
           : `Předání předmětu prodeje proběhne dohodnutým způsobem po úhradě kupní ceny.`,
         'O předání bude sepsán předávací protokol podepsaný oběma smluvními stranami.',
         d.itemType === 'car'
@@ -1180,7 +1167,7 @@ function buildEmploymentContractSections(d: StoredContractData): ContractSection
     : 'Zkušební doba se nesjednává.';
 
   const durationClause = d.employmentType === 'fixed'
-    ? `na dobu určitou do ${formatDate(d.endDate, 'neuvedeno')} (§ 39 ZP)`
+    ? `na dobu určitou do ${formatDate(d.endDate, '__________')} (§ 39 ZP)`
     : 'na dobu neurčitou';
 
   const salaryDesc = d.salaryType === 'monthly'
@@ -1221,18 +1208,18 @@ function buildEmploymentContractSections(d: StoredContractData): ContractSection
     {
       title: 'I. SMLUVNÍ STRANY',
       body: [
-        `Zaměstnavatel: ${asText(d.employerName)}, IČO: ${asText(d.employerIco, '—')}, sídlo: ${asText(d.employerAddress)}`,
+        `Zaměstnavatel: ${asText(d.employerName)}, IČO: ${asText(d.employerIco, '__________')}, sídlo: ${asText(d.employerAddress)}`,
         d.employerEmail ? `E-mail zaměstnavatele: ${asText(d.employerEmail)}` : '',
-        `Zaměstnanec: ${asText(d.employeeName)}, nar.: ${asText(d.employeeBirth, '—')}, bytem: ${asText(d.employeeAddress)}`,
+        `Zaměstnanec: ${asText(d.employeeName)}, nar.: ${asText(d.employeeBirth, '__________')}, bytem: ${asText(d.employeeAddress)}`,
         d.employeeEmail ? `E-mail zaměstnance: ${asText(d.employeeEmail)}` : '',
       ].filter(Boolean) as string[],
     },
     {
       title: 'II. DRUH A MÍSTO VÝKONU PRÁCE',
       body: [
-        `Druh práce (pracovní pozice): ${asText(d.jobTitle, 'neuvedeno')}`,
+        `Druh práce (pracovní pozice): ${asText(d.jobTitle, '__________')}`,
         `Popis pracovní náplně: ${asText(d.jobDescription, 'dle aktuálního popisu pracovního místa')}`,
-        `Místo výkonu práce: ${asText(d.workPlace, 'neuvedeno')}`,
+        `Místo výkonu práce: ${asText(d.workPlace, '__________')}`,
         d.remoteWork ? `Možnost práce na dálku (home office): ${asText(d.remoteWork)}` : '',
       ].filter(Boolean) as string[],
     },
@@ -1351,25 +1338,25 @@ function buildDppContractSections(d: StoredContractData): ContractSection[] {
     {
       title: 'I. SMLUVNÍ STRANY',
       body: [
-        `Zaměstnavatel: ${asText(d.employerName)}, IČO: ${asText(d.employerIco, '—')}, sídlo: ${asText(d.employerAddress)}`,
+        `Zaměstnavatel: ${asText(d.employerName)}, IČO: ${asText(d.employerIco, '__________')}, sídlo: ${asText(d.employerAddress)}`,
         d.employerEmail ? `E-mail zaměstnavatele: ${asText(d.employerEmail)}` : '',
-        `Zaměstnanec: ${asText(d.employeeName)}, nar.: ${asText(d.employeeBirth, '—')}, bytem: ${asText(d.employeeAddress)}`,
+        `Zaměstnanec: ${asText(d.employeeName)}, nar.: ${asText(d.employeeBirth, '__________')}, bytem: ${asText(d.employeeAddress)}`,
         d.employeeEmail ? `E-mail zaměstnance: ${asText(d.employeeEmail)}` : '',
       ].filter(Boolean) as string[],
     },
     {
       title: 'II. PŘEDMĚT DOHODY — POPIS PRACOVNÍHO ÚKOLU',
       body: [
-        `Zaměstnanec se zavazuje pro zaměstnavatele provést tento pracovní úkol (druh práce): ${asText(d.taskDescription, 'neuvedeno')}`,
+        `Zaměstnanec se zavazuje pro zaměstnavatele provést tento pracovní úkol (druh práce): ${asText(d.taskDescription, '__________')}`,
         d.taskDetails ? `Podrobný popis: ${asText(d.taskDetails)}` : '',
-        `Místo výkonu práce: ${asText(d.workPlace, 'neuvedeno')}`,
-        `Předpokládaný rozsah práce: ${asText(d.estimatedHours, 'neuvedeno')} hodin (max. 300 hod./rok u jednoho zaměstnavatele).`,
+        `Místo výkonu práce: ${asText(d.workPlace, '__________')}`,
+        `Předpokládaný rozsah práce: ${asText(d.estimatedHours, '__________')} hodin (max. 300 hod./rok u jednoho zaměstnavatele).`,
       ].filter(Boolean) as string[],
     },
     {
       title: 'III. DOBA TRVÁNÍ A TERMÍN SPLNĚNÍ',
       body: [
-        `Dohoda se uzavírá na dobu: ${d.durationType === 'fixed' ? `určitou od ${formatDate(d.startDate, 'neuvedeno')} do ${formatDate(d.endDate, 'neuvedeno')}` : 'neurčitou (lze ukončit dohodou nebo výpovědí s 15denní výpovědní dobou)'}`,
+        `Dohoda se uzavírá na dobu: ${d.durationType === 'fixed' ? `určitou od ${formatDate(d.startDate, '__________')} do ${formatDate(d.endDate, '__________')}` : 'neurčitou (lze ukončit dohodou nebo výpovědí s 15denní výpovědní dobou)'}`,
         d.deadline ? `Pracovní úkol musí být splněn nejpozději do: ${asText(d.deadline)}` : '',
       ].filter(Boolean) as string[],
     },
@@ -1428,19 +1415,15 @@ function buildServiceContractSections(d: StoredContractData): ContractSection[] 
     ? 'Poskytovatel je plátcem DPH. K ceně bude připočtena DPH v zákonem stanovené výši.'
     : 'Poskytovatel není plátcem DPH. Cena je konečná.';
 
-  const basicIpClause = d.ipOwnership === 'client'
+  const ipClause = d.ipOwnership === 'client'
     ? 'Veškerá práva duševního vlastnictví vzniklá v rámci poskytování služeb (foreground IP) přecházejí na objednatele okamžikem jejich vzniku a úplného zaplacení ceny. Poskytovatel se tímto vzdává práva dílo kdykoli odvolat. Objednatel je oprávněn dílo upravovat, šířit a používat bez omezení.'
+    : d.ipOwnership === 'split'
+    ? 'Předexistující práva duševního vlastnictví každé strany (background IP — nástroje, frameworky, know-how vytvořené před uzavřením smlouvy) zůstávají výhradním vlastnictvím dané strany. Práva k výstupům vzniklým přímo v rámci plnění této smlouvy (foreground IP) přecházejí na objednatele po úplném zaplacení ceny. Poskytovatel si zachovává právo foreground IP anonymizovaně uvést ve vlastním portfoliu.'
     : 'Poskytovatel si zachovává veškerá práva duševního vlastnictví k vytvořeným výstupům; objednateli uděluje nevýhradní, časově neomezenou a teritoriálně neomezenou licenci k jejich využití pro vlastní potřebu (§ 2358 OZ).';
 
   const premiumContent: ContractSection[] = hasPremiumClauses ? [
-    ...(d.ipOwnership === 'split' ? [{
-      title: 'VIII. PRÁVA DUŠEVNÍHO VLASTNICTVÍ — SPLIT MODEL',
-      body: [
-        'Předexistující práva duševního vlastnictví každé strany (background IP — nástroje, frameworky, know-how vytvořené před uzavřením smlouvy) zůstávají výhradním vlastnictvím dané strany. Práva k výstupům vzniklým přímo v rámci plnění této smlouvy (foreground IP) přecházejí na objednatele po úplném zaplacení ceny. Poskytovatel si zachovává právo foreground IP anonymizovaně uvést ve vlastním portfoliu.',
-      ],
-    }] : []),
     {
-      title: `${d.ipOwnership === 'split' ? 'IX' : 'VIII'}. SLA — ÚROVEŇ POSKYTOVÁNÍ SLUŽEB`,
+      title: 'VIII. SLA — ÚROVEŇ POSKYTOVÁNÍ SLUŽEB',
       body: [
         `Poskytovatel se zavazuje dosahovat těchto klíčových ukazatelů výkonnosti: dostupnost ${asText(d.uptime, '99')} % v pracovních dnech; doba reakce na hlášenou chybu/incident maximálně ${asText(d.responseTime, '24')} hodin.`,
         `Za každou hodinu prodlení nad sjednaný limit náleží objednateli sleva z ceny ve výši ${asText(d.slaDiscount, '0,5')} % z měsíčního paušálu, celkem však nejvýše ${asText(d.maxDiscount, '20')} %.`,
@@ -1448,7 +1431,7 @@ function buildServiceContractSections(d: StoredContractData): ContractSection[] 
       ],
     },
     {
-      title: `${d.ipOwnership === 'split' ? 'X' : 'IX'}. MLČENLIVOST A OCHRANA OBCHODNÍHO TAJEMSTVÍ`,
+      title: 'IX. MLČENLIVOST A OCHRANA OBCHODNÍHO TAJEMSTVÍ',
       body: [
         'Poskytovatel se zavazuje zachovávat mlčenlivost o veškerých informacích objednatele, se kterými se v rámci plnění smlouvy seznámí, a to po dobu platnosti smlouvy i po dobu 3 let po jejím skončení.',
         'Za porušení povinnosti mlčenlivosti je poskytovatel povinen zaplatit smluvní pokutu ve výši 50 000 Kč za každý případ porušení, a to bez ohledu na vznik skutečné škody.',
@@ -1467,20 +1450,20 @@ function buildServiceContractSections(d: StoredContractData): ContractSection[] 
     {
       title: 'I. SMLUVNÍ STRANY',
       body: [
-        `Poskytovatel: ${asText(d.providerName)}, IČO: ${asText(d.providerIco, '—')}, sídlo: ${asText(d.providerAddress)}`,
+        `Poskytovatel: ${asText(d.providerName)}, IČO: ${asText(d.providerIco, '__________')}, sídlo: ${asText(d.providerAddress)}`,
         d.providerEmail ? `E-mail poskytovatele: ${asText(d.providerEmail)}` : '',
         d.providerPhone ? `Telefon poskytovatele: ${asText(d.providerPhone)}` : '',
-        `Objednatel: ${asText(d.clientName)}, IČO/nar.: ${asText(d.clientId, '—')}, sídlo/bytem: ${asText(d.clientAddress)}`,
+        `Objednatel: ${asText(d.clientName)}, IČO/nar.: ${asText(d.clientId, '__________')}, sídlo/bytem: ${asText(d.clientAddress)}`,
         d.clientEmail ? `E-mail objednatele: ${asText(d.clientEmail)}` : '',
       ].filter(Boolean) as string[],
     },
     {
       title: 'II. PŘEDMĚT SMLOUVY — ROZSAH SLUŽEB',
       body: [
-        `Poskytovatel se zavazuje poskytovat objednateli tyto služby: ${asText(d.serviceDescription, 'neuvedeno')}`,
+        `Poskytovatel se zavazuje poskytovat objednateli tyto služby: ${asText(d.serviceDescription, '__________')}`,
         d.serviceDetails ? `Podrobná specifikace: ${asText(d.serviceDetails)}` : '',
         d.deliverables ? `Výstupy/dodávky: ${asText(d.deliverables)}` : '',
-        `Zahájení poskytování služeb: ${formatDate(d.startDate, 'neuvedeno')}`,
+        `Zahájení poskytování služeb: ${formatDate(d.startDate, '__________')}`,
       ].filter(Boolean) as string[],
     },
     {
@@ -1529,11 +1512,11 @@ function buildServiceContractSections(d: StoredContractData): ContractSection[] 
     },
     {
       title: 'VII. PRÁVA DUŠEVNÍHO VLASTNICTVÍ',
-      body: [basicIpClause],
+      body: [ipClause],
     },
     ...premiumContent,
     {
-      title: `${hasPremiumClauses ? (d.ipOwnership === 'split' ? 'XI' : 'X') : 'VIII'}. ZÁVĚREČNÁ USTANOVENÍ`,
+      title: `${hasPremiumClauses ? 'X' : 'VIII'}. ZÁVĚREČNÁ USTANOVENÍ`,
       body: [
         'Smlouva se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů.',
         disputeClause(d),
@@ -1546,7 +1529,7 @@ function buildServiceContractSections(d: StoredContractData): ContractSection[] 
     },
   ];
 
-  sections.push({ title: `${hasPremiumClauses ? (d.ipOwnership === 'split' ? 'XII' : 'XI') : 'IX'}. PODPISY`, body: [] });
+  sections.push({ title: `${hasPremiumClauses ? 'XI' : 'IX'}. PODPISY`, body: [] });
   return sections;
 }
 
@@ -1738,7 +1721,7 @@ function buildPowerOfAttorneyContractSections(d: StoredContractData): ContractSe
       title: 'I. ZMOCNITEL',
       body: [
         `Jméno a příjmení / název: ${asText(d.principalName)}`,
-        `Datum narození / IČO: ${asText(d.principalId, '—')}`,
+        `Datum narození / IČO: ${asText(d.principalId, '__________')}`,
         `Trvalé bydliště / sídlo: ${asText(d.principalAddress)}`,
         d.principalEmail ? `E-mail: ${asText(d.principalEmail)}` : '',
       ].filter(Boolean) as string[],
@@ -1747,7 +1730,7 @@ function buildPowerOfAttorneyContractSections(d: StoredContractData): ContractSe
       title: 'II. ZMOCNĚNEC',
       body: [
         `Jméno a příjmení / název: ${asText(d.agentName)}`,
-        `Datum narození / IČO: ${asText(d.agentId, '—')}`,
+        `Datum narození / IČO: ${asText(d.agentId, '__________')}`,
         `Trvalé bydliště / sídlo: ${asText(d.agentAddress)}`,
         d.agentEmail ? `E-mail: ${asText(d.agentEmail)}` : '',
       ].filter(Boolean) as string[],
@@ -1806,9 +1789,7 @@ function buildPowerOfAttorneyContractSections(d: StoredContractData): ContractSe
     title: `${hasPremiumClauses ? 'VIII' : 'VI'}. ZÁVĚREČNÁ USTANOVENÍ`,
     body: [
       'Tato listina se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů.',
-      'Plná moc nabývá účinnosti podpisem zmocnitele a zaniká splněním zmocnění, uplynutím doby, odvoláním zmocnitelem nebo smrtí některé ze stran (§ 448 OZ).',
-      'Zmocnitel může tuto plnou moc kdykoli písemně odvolat doručením odvolání zmocněnci. Odvolání je účinné okamžikem, kdy se o něm zmocněnec dozví.',
-      'Omezení nebo rozšíření rozsahu zmocnění je platné pouze písemnou formou.',
+      'Plná moc nabývá účinnosti podpisem zmocnitele a zaniká splněním zmocnění, uplynutím doby, odvoláním zmocnitelem nebo smrtí některé ze stran.',
       'Neplatnost jednotlivého ustanovení nemá vliv na platnost ostatních ustanovení.',
       'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. Osobní údaje jsou zpracovávány výhradně za účelem udělení a plnění zmocnění.',
     ],
@@ -1826,17 +1807,17 @@ function buildDebtAcknowledgmentSections(d: StoredContractData): ContractSection
   const debtOrigin = d.debtOrigin === 'loan'
     ? `Dluh vznikl na základě smlouvy o zápůjčce / půjčky ze dne ${formatDate(d.debtDate, 'neuvedeno')}.`
     : d.debtOrigin === 'invoice'
-    ? `Dluh vznikl nezaplacením faktury č. ${asText(d.invoiceNumber, 'neuvedeno')} ze dne ${formatDate(d.debtDate, 'neuvedeno')}.`
+    ? `Dluh vznikl nezaplacením faktury č. ${asText(d.invoiceNumber, '__________')} ze dne ${formatDate(d.debtDate, '__________')}.`
     : d.debtOrigin === 'damage'
-    ? `Dluh vznikl jako náhrada škody způsobené dne ${formatDate(d.debtDate, 'neuvedeno')}.`
-    : `Dluh vznikl z titulu: ${asText(d.debtOriginCustom, 'neuvedeno')} (dne ${formatDate(d.debtDate, 'neuvedeno')}).`;
+    ? `Dluh vznikl jako náhrada škody způsobené dne ${formatDate(d.debtDate, '__________')}.`
+    : `Dluh vznikl z titulu: ${asText(d.debtOriginCustom, '__________')} (dne ${formatDate(d.debtDate, '__________')}).`;
 
   const repaymentDesc = d.repaymentType === 'installments'
-    ? `Dlužník se zavazuje splácet dluh v ${asText(d.installmentCount, 'neuvedeno')} pravidelných měsíčních ${Number(d.installmentCount) === 1 ? 'splátce' : 'splátkách'} po ${formatAmount(d.installmentAmount)} Kč, ${Number(d.installmentCount) === 1 ? 'splatné' : 'splatných vždy'} k ${asText(d.paymentDay, '15')}. dni ${Number(d.installmentCount) === 1 ? 'příslušného' : 'každého'} měsíce, počínaje ${formatDate(d.firstPaymentDate, 'neuvedeno')}.`
-    : `Dlužník se zavazuje uhradit celou dlužnou částku nejpozději dne ${formatDate(d.repaymentDate, 'neuvedeno')} jednorázově.`;
+    ? `Dlužník se zavazuje splácet dluh v ${asText(d.installmentCount, '__________')} pravidelných měsíčních ${Number(d.installmentCount) === 1 ? 'splátce' : 'splátkách'} po ${formatAmount(d.installmentAmount)} Kč, ${Number(d.installmentCount) === 1 ? 'splatné' : 'splatných vždy'} k ${asText(d.paymentDay, '15')}. dni ${Number(d.installmentCount) === 1 ? 'příslušného' : 'každého'} měsíce, počínaje ${formatDate(d.firstPaymentDate, '__________')}.`
+    : `Dlužník se zavazuje uhradit celou dlužnou částku nejpozději dne ${formatDate(d.repaymentDate, '__________')} jednorázově.`;
 
   const interestClause = d.interestRate && Number(d.interestRate) > 0
-    ? `Na dlužnou jistinu se sjednává úrok z prodlení ve výši ${asText(d.interestRate)} % p.a. ode dne ${formatDate(d.debtDate, 'neuvedeno')}.`
+    ? `Na dlužnou jistinu se sjednává úrok z prodlení ve výši ${asText(d.interestRate)} % p.a. ode dne ${formatDate(d.debtDate, '__________')}.`
     : 'Na dlužnou jistinu se neúčtuje úrok (pokud není zákonem stanoveno jinak).';
 
   const premiumContent: ContractSection[] = hasPremiumClauses ? [
@@ -1881,7 +1862,7 @@ function buildDebtAcknowledgmentSections(d: StoredContractData): ContractSection
       title: 'III. ZPŮSOB A TERMÍN SPLACENÍ',
       body: [
         repaymentDesc,
-        d.bankAccount ? `Platby budou zasílány na bankovní účet věřitele č. ${asText(d.bankAccount)}, VS: ${asText(d.variableSymbol, '—')}.` : '',
+        d.bankAccount ? `Platby budou zasílány na bankovní účet věřitele č. ${asText(d.bankAccount)}, VS: ${asText(d.variableSymbol, '__________')}.` : '',
         `Při prodlení s úhradou sjednané splátky nebo celkové dlužné částky je dlužník povinen zaplatit věřiteli smluvní pokutu ve výši ${asText(d.latePenalty, '0,05')} % z dlužné částky za každý den prodlení.`,
         'Věřitel je oprávněn prohlásit celý zbývající dluh za okamžitě splatný, prodlí-li dlužník s úhradou déle než 30 dnů.',
       ].filter(Boolean) as string[],
@@ -1897,7 +1878,6 @@ function buildDebtAcknowledgmentSections(d: StoredContractData): ContractSection
         'Neplatnost jednotlivého ustanovení nemá vliv na platnost ostatních ustanovení listiny.',
         'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. Osobní údaje jsou zpracovávány výhradně za účelem uzavření a plnění tohoto smluvního vztahu.',
         'Platební neschopnost ani finanční obtíže dlužníka nepředstavují okolnost vyšší moci a nezbavují dlužníka povinnosti uhradit uznaný dluh.',
-        'Změny a doplnění této listiny jsou platné pouze ve formě písemného, číslovaného a oběma stranami podepsaného dodatku.',
       ],
     },
   ];

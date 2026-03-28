@@ -6,11 +6,14 @@ import { renderContractPdf } from '@/lib/pdf';
 
 export const runtime = 'nodejs';
 
-const TTL_BASIC = 60 * 60 * 24 * 7;     // 7 dní
-const TTL_COMPLETE = 60 * 60 * 24 * 30;  // 30 dní pro Kompletní balíček
+const TTL_BASIC         = 60 * 60 * 24 * 7;   // 7 dní
+const TTL_PROFESSIONAL  = 60 * 60 * 24 * 14;  // 14 dní pro Profesionální balíček
+const TTL_COMPLETE      = 60 * 60 * 24 * 30;  // 30 dní pro Kompletní balíček
 
 function getTtlForTier(tier?: string): number {
-  return tier === 'complete' ? TTL_COMPLETE : TTL_BASIC;
+  if (tier === 'complete') return TTL_COMPLETE;
+  if (tier === 'professional') return TTL_PROFESSIONAL;
+  return TTL_BASIC;
 }
 
 // Rate limit: max 20 stažení per session_id za dobu životnosti dokumentu

@@ -1,6 +1,9 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import ContractPreview from '@/app/components/ContractPreview';
+import { buildContractSections } from '@/lib/contracts';
+import type { StoredContractData } from '@/lib/contracts';
 
 type PaymentMethod = 'cash' | 'transfer';
 type RiskLevel = 'low' | 'medium' | 'high';
@@ -62,6 +65,7 @@ type CarSaleFormData = {
 
   notaryUpsell: boolean;
   tier: 'basic' | 'professional' | 'complete';
+  disputeResolution: 'court' | 'mediation' | 'arbitration';
 };
 
 const inputClass =
@@ -132,6 +136,7 @@ export default function CarSaleBuilderPage() {
 
     notaryUpsell: false,
     tier: 'basic' as const,
+    disputeResolution: 'court' as const,
   });
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -295,6 +300,15 @@ ${formData.equipmentIncluded || '................'}
 
 4. Známé vady a poškození
 ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
+  }, [formData]);
+
+  const previewSections = useMemo(() => {
+    try {
+      if (!formData.sellerName) return [];
+      return buildContractSections({ ...formData, contractType: 'car_sale' } as StoredContractData);
+    } catch {
+      return [];
+    }
   }, [formData]);
 
   async function handlePayment() {
@@ -851,6 +865,10 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
 
           <div className="lg:col-span-5 relative">
             <div className="sticky top-24 space-y-6">
+              {/* Watermarked document preview */}
+              {previewSections.length > 0 && (
+                <ContractPreview sections={previewSections} title="Kupní smlouva na vozidlo" />
+              )}
               <div className={cardClass}>
                 <div className="flex items-start justify-between gap-4">
                   <div>
@@ -965,6 +983,15 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
               </div>
 
               <div className={cardClass}>
+              {/* Řešení sporů */}
+              <div className="mb-6">
+                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
+                <select className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
+                  <option value="court">Obecný soud (výchozí)</option>
+                  <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
+                  <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
+                </select>
+              </div>
               {/* === VÝBĚR BALÍČKU === */}
               <div className="space-y-3 mb-4">
                 <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Vyberte balíček</div>

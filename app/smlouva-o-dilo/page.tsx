@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import ContractPreview from '@/app/components/ContractPreview';
+import { buildContractSections } from '@/lib/contracts';
+import type { StoredContractData } from '@/lib/contracts';
 
 type PaymentType = 'after_completion' | 'with_deposit' | 'milestones';
 
@@ -37,6 +40,7 @@ type WorkContractData = {
   withdrawalRight: boolean;
   notaryUpsell: boolean;
   tier: 'basic' | 'professional' | 'complete';
+  disputeResolution: 'court' | 'mediation' | 'arbitration';
 };
 
 const defaultData: WorkContractData = {
@@ -63,7 +67,8 @@ const defaultData: WorkContractData = {
   handoverProtocol: true,
   withdrawalRight: false,
   notaryUpsell: false,
-    tier: 'basic' as const,
+  tier: 'basic' as const,
+  disputeResolution: 'court' as const,
 };
 
 export default function WorkContractPage() {
@@ -176,6 +181,15 @@ Smluvní pokuta za vady: ${formData.defectPenaltyPercent || '10'} % z ceny díla
 
 VI. ZÁVĚREČNÁ USTANOVENÍ
 ${formData.handoverProtocol ? '• Předání díla proběhne protokolem o předání a převzetí.\n' : ''}${formData.insuranceRequired ? '• Zhotovitel je povinen mít uzavřeno pojištění odpovědnosti za škodu.\n' : ''}Smlouva je uzavřena dobrovolně v souladu s § 2586 a násl. občanského zákoníku.`.trim();
+  }, [formData]);
+
+  const previewSections = useMemo(() => {
+    try {
+      if (!formData.clientName) return [];
+      return buildContractSections({ ...formData, contractType: 'work_contract' } as StoredContractData);
+    } catch {
+      return [];
+    }
   }, [formData]);
 
   const handleSubmit = async () => {
@@ -474,6 +488,16 @@ ${formData.handoverProtocol ? '• Předání díla proběhne protokolem o před
               </div>
             </section>
 
+            {/* Řešení sporů */}
+            <section className="bg-[#0c1426] border border-slate-800 rounded-3xl p-6">
+              <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
+              <select className="w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none focus:border-amber-500/60 transition" name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
+                <option value="court">Obecný soud (výchozí)</option>
+                <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
+                <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
+              </select>
+            </section>
+
             {/* Tier selection */}
             <section className="bg-[#0c1426] border border-slate-800 rounded-3xl p-8">
               <h3 className="text-amber-400 uppercase text-xs tracking-widest font-bold mb-6">6. Výběr balíčku</h3>
@@ -508,6 +532,10 @@ ${formData.handoverProtocol ? '• Předání díla proběhne protokolem o před
 
           {/* Right sidebar */}
           <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-24">
+            {/* Watermarked document preview */}
+            {previewSections.length > 0 && (
+              <ContractPreview sections={previewSections} title="Smlouva o dílo" />
+            )}
 
             {/* Risk analysis */}
             <div className="bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]">

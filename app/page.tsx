@@ -185,6 +185,7 @@ const pricingTiers = [
       'Vyplnění přesně dle vašich podmínek',
       'PDF ke stažení ihned po platbě',
       'Dokument v souladu s legislativou 2026',
+      'Odkaz ke stažení platný 7 dní',
     ],
     note: 'Vhodné pro přímočaré situace, kde se strany dobře znají.',
     cta: 'Vytvořit základní dokument',
@@ -202,6 +203,7 @@ const pricingTiers = [
       'Smluvní pokuty a sankční mechanismy',
       'Odpovědnostní a doručovací ustanovení',
       'Podrobná prohlášení smluvních stran',
+      'Odkaz ke stažení platný 14 dní',
     ],
     note: 'Vhodné pro nájmy, prodeje vozidel, dílo, zápůjčky a podnikatelské vztahy.',
     cta: 'Pokračovat s Profesionální ochranou',
@@ -219,7 +221,7 @@ const pricingTiers = [
       'Předávací protokol (dle typu smlouvy)',
       'Checklist: co zkontrolovat před podpisem',
       'Archivace dokumentu po dobu 30 dnů',
-      'Prioritní e-mailová podpora',
+      'Prioritní e-mailová podpora (odpovídáme do 24 hodin)',
     ],
     note: 'Vhodné pro vyšší hodnoty transakcí, podnikatelské vztahy nebo situace, kde chcete mít vše ošetřené.',
     cta: 'Vytvořit kompletní balíček',
@@ -244,7 +246,7 @@ const faqItems = [
   },
   {
     question: 'Co obdržím po zaplacení?',
-    answer: 'Ihned po dokončení platby obdržíte odkaz ke stažení vygenerovaného PDF. Odkaz je platný 7 dní. U Kompletního balíčku také průvodní instrukce k podpisu, checklist a (dle typu smlouvy) předávací protokol.',
+    answer: 'Ihned po dokončení platby obdržíte odkaz ke stažení vygenerovaného PDF. Platnost odkazu: Základní 7 dní, Profesionální 14 dní, Kompletní 30 dní. U Kompletního balíčku také průvodní instrukce k podpisu, checklist a (dle typu smlouvy) předávací protokol.',
   },
   {
     question: 'Proč nezvolit bezplatný vzor z internetu?',

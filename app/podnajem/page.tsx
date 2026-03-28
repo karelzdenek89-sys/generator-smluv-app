@@ -1,6 +1,9 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import ContractPreview from '@/app/components/ContractPreview';
+import { buildContractSections } from '@/lib/contracts';
+import type { StoredContractData } from '@/lib/contracts';
 
 type FormData = {
   landlordName: string; landlordId: string; landlordAddress: string; landlordEmail: string;
@@ -13,6 +16,7 @@ type FormData = {
   handoverDate: string; keysCount: string; equipmentList: string; knownDefects: string;
   contractDate: string; notaryUpsell: boolean;
   tier: 'basic' | 'professional' | 'complete';
+  disputeResolution: 'court' | 'mediation' | 'arbitration';
 };
 
 const inputClass = 'w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition';
@@ -51,6 +55,7 @@ export default function PodnajemuPage() {
     handoverDate: '', keysCount: '2', equipmentList: '', knownDefects: '',
     contractDate: '', notaryUpsell: false,
     tier: 'basic',
+    disputeResolution: 'court' as const,
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [gdprConsent, setGdprConsent] = useState(false);
@@ -99,6 +104,15 @@ export default function PodnajemuPage() {
       warnings,
       label: score >= 85 ? 'Silná ochrana' : score >= 65 ? 'Průměrná ochrana' : 'Slabší ochrana',
     };
+  }, [form]);
+
+  const previewSections = useMemo(() => {
+    try {
+      if (!form.landlordName) return [];
+      return buildContractSections({ ...form, contractType: 'sublease' } as StoredContractData);
+    } catch {
+      return [];
+    }
   }, [form]);
 
   const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-rose-400';
@@ -339,6 +353,10 @@ export default function PodnajemuPage() {
 
           {/* Right sidebar */}
           <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-24">
+            {/* Watermarked document preview */}
+            {previewSections.length > 0 && (
+              <ContractPreview sections={previewSections} title="Podnájemní smlouva" />
+            )}
 
             {/* Risk analysis */}
             <div className={cardClass}>

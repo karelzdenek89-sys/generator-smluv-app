@@ -5,8 +5,9 @@ import { stripe } from '@/lib/stripe';
 
 export const runtime = 'nodejs';
 
-const TTL_BASIC = 60 * 60 * 24 * 7;     // 7 dní
-const TTL_COMPLETE = 60 * 60 * 24 * 30;  // 30 dní pro Kompletní balíček
+const TTL_BASIC         = 60 * 60 * 24 * 7;   // 7 dní
+const TTL_PROFESSIONAL  = 60 * 60 * 24 * 14;  // 14 dní pro Profesionální balíček
+const TTL_COMPLETE      = 60 * 60 * 24 * 30;  // 30 dní pro Kompletní balíček
 
 export async function POST(req: Request) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -62,7 +63,7 @@ export async function POST(req: Request) {
 
         if (existing) {
           const tier = session.metadata?.tier || (existing as any).tier || 'basic';
-          const ttl = tier === 'complete' ? TTL_COMPLETE : TTL_BASIC;
+          const ttl = tier === 'complete' ? TTL_COMPLETE : tier === 'professional' ? TTL_PROFESSIONAL : TTL_BASIC;
           await redis.set(
             key,
             {
@@ -76,10 +77,34 @@ export async function POST(req: Request) {
             { ex: ttl },
           );
 
-          // Volitelné: odeslat e-mail zákazníkovi přes Resend
-          // Pokud je nastaveno RESEND_API_KEY, odešleme e-mail
+          // Reverzní index: session_id → draftId (pro zákaznickou zónu)
+          try {
+            await redis.set(`session:draft:${session.id}`, draftId, { ex: TTL_COMPLETE });
+          } catch (revErr) {
+            console.warn('[webhook] Reverse index error (non-critical):', revErr);
+          }
+
+          // Indexovat session_id pod e-mailem zákazníka pro zákaznickou zónu (cross-device)
+          const customerEmailForIndex = session.customer_email || (existing.email as string);
+          if (customerEmailForIndex) {
+            try {
+              const emailKey = `orders:email:${customerEmailForIndex.toLowerCase().trim()}`;
+              await redis.sadd(emailKey, session.id);
+              await redis.expire(emailKey, TTL_COMPLETE); // index drží 30 dní
+            } catch (indexErr) {
+              console.warn('[webhook] Email index error (non-critical):', indexErr);
+            }
+          }
+
+          // Povinné: odeslat e-mail zákazníkovi přes Resend
           const resendKey = process.env.RESEND_API_KEY;
+          if (!resendKey) {
+            console.error('[webhook] KRITICKÁ CHYBA: RESEND_API_KEY není nastaveno — potvrzovací e-mail NEBYL odeslán zákazníkovi!');
+          }
           const customerEmail = session.customer_email || (existing.email as string);
+          if (!customerEmail) {
+            console.error(`[webhook] KRITICKÁ CHYBA: zákazník nemá e-mail (session ${session.id}) — potvrzovací e-mail NEBYL odeslán!`);
+          }
           if (resendKey && customerEmail) {
             await sendDownloadEmail(
               resendKey,
@@ -88,7 +113,7 @@ export async function POST(req: Request) {
               session.metadata?.contractType || 'dokument',
               process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz',
               tier,
-            ).catch((err) => console.error('E-mail error:', err));
+            ).catch((err) => console.error('[webhook] E-mail error:', err));
           }
         }
       }
@@ -130,7 +155,7 @@ async function sendDownloadEmail(
   };
 
   const contractName = contractNames[contractType] || 'Právní dokument';
-  const downloadUrl = `${baseUrl}/success?session_id=${sessionId}`;
+  const downloadUrl = `${baseUrl}/api/contracts/download?session_id=${sessionId}`;
 
   await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -164,7 +189,7 @@ async function sendDownloadEmail(
               STÁHNOUT PDF DOKUMENT
             </a>
             <p style="color:#64748b;font-size:12px;text-align:center;margin:0;">
-              Odkaz ke stažení je platný ${tier === 'complete' ? '30 dní' : '7 dní'} od zaplacení.<br>
+              Odkaz ke stažení je platný ${tier === 'complete' ? '30 dní' : tier === 'professional' ? '14 dní' : '7 dní'} od zaplacení.<br>
               V případě dotazů nás kontaktujte na <a href="mailto:info@smlouvahned.cz" style="color:#f59e0b;">info@smlouvahned.cz</a>
             </p>
           </div>

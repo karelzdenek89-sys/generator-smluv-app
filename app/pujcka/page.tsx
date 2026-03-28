@@ -1,6 +1,9 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import ContractPreview from '@/app/components/ContractPreview';
+import { buildContractSections } from '@/lib/contracts';
+import type { StoredContractData } from '@/lib/contracts';
 
 type RepaymentType = 'lump_sum' | 'installments';
 
@@ -40,6 +43,7 @@ type LoanFormData = {
 
   notaryUpsell: boolean;
   tier: 'basic' | 'professional' | 'complete';
+  disputeResolution: 'court' | 'mediation' | 'arbitration';
 };
 
 const inputClass =
@@ -92,6 +96,7 @@ export default function LoanBuilderPage() {
     pledgeDescription: '',
     notaryUpsell: false,
     tier: 'basic' as const,
+    disputeResolution: 'court' as const,
   });
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -127,11 +132,23 @@ export default function LoanBuilderPage() {
       score -= 5;
       warnings.push({ text: 'Chybí číslo účtu pro splácení.', level: 'low' });
     }
+    if (Number(formData.interestRate) > 15) {
+      warnings.push({ text: 'Úrok přesahuje 15 % p.a. — hrozí neplatnost pro lichvu (§ 1796 OZ, NS 32 Cdo 2234/2021). Doporučujeme max. 15 % p.a.', level: 'high' });
+    }
     return {
       score: Math.max(0, score),
       warnings,
       label: score >= 80 ? 'Silná ochrana' : score >= 50 ? 'Průměrná ochrana' : 'Slabší ochrana',
     };
+  }, [formData]);
+
+  const previewSections = useMemo(() => {
+    try {
+      if (!formData.lenderName) return [];
+      return buildContractSections({ ...formData, contractType: 'loan' } as StoredContractData);
+    } catch {
+      return [];
+    }
   }, [formData]);
 
   const scoreColor = riskScore.score >= 80 ? 'text-emerald-400' : riskScore.score >= 50 ? 'text-amber-400' : 'text-rose-400';
@@ -275,7 +292,10 @@ export default function LoanBuilderPage() {
                 <div>
                   <label className={labelClass}>Úroková sazba (% p.a.)</label>
                   <input type="number" step="0.1" value={formData.interestRate} onChange={e => set('interestRate', e.target.value)} placeholder="0" className={inputClass} />
-                  <p className="text-xs text-slate-500 mt-1">Bezúročná zápůjčka = 0 %</p>
+                  {Number(formData.interestRate) > 15
+                    ? <p className="text-xs text-rose-400 font-medium mt-1">⚠ Nad 15 % p.a. hrozí neplatnost pro lichvu (§ 1796 OZ). Doporučujeme max. 15 %.</p>
+                    : <p className="text-xs text-slate-500 mt-1">Bezúročná zápůjčka = 0 %</p>
+                  }
                 </div>
                 <div className="sm:col-span-2">
                   <label className={labelClass}>Účel zápůjčky (dobrovolné)</label>
@@ -376,6 +396,18 @@ export default function LoanBuilderPage() {
               )}
             </section>
 
+            {/* Řešení sporů */}
+            <section className={cardClass}>
+              <div className="mb-4">
+                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
+                <select className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
+                  <option value="court">Obecný soud (výchozí)</option>
+                  <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
+                  <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
+                </select>
+              </div>
+            </section>
+
             {/* 06 Výběr balíčku */}
             <section className={cardClass}>
               <SectionTitle index="06" title="Výběr balíčku" subtitle="Zvolte úroveň ochrany dle výše zápůjčky." />
@@ -424,6 +456,10 @@ export default function LoanBuilderPage() {
 
           {/* Right sidebar */}
           <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-24">
+            {/* Watermarked document preview */}
+            {previewSections.length > 0 && (
+              <ContractPreview sections={previewSections} title="Smlouva o zápůjčce" />
+            )}
 
             {/* Risk analysis */}
             <div className={cardClass}>

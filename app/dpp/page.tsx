@@ -1,6 +1,9 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import ContractPreview from '@/app/components/ContractPreview';
+import { buildContractSections } from '@/lib/contracts';
+import type { StoredContractData } from '@/lib/contracts';
 
 type FormData = {
   employerName: string; employerIco: string; employerAddress: string; employerEmail: string;
@@ -62,6 +65,15 @@ export default function DppPage() {
     if (Number(form.estimatedHours) > 300) { score -= 30; warnings.push({ text: 'Počet hodin překračuje zákonný limit 300 hod./rok (§ 75 ZP)!', level: 'high' }); }
     if (!form.totalRemuneration && !form.hourlyRate) { score -= 15; warnings.push({ text: 'Neuvedena odměna.', level: 'medium' }); }
     return { score: Math.max(0, score), warnings, label: score >= 85 ? 'Bez rizik' : score >= 65 ? 'Drobná rizika' : 'Pozor — rizika' };
+  }, [form]);
+
+  const previewSections = useMemo(() => {
+    try {
+      if (!form.employerName) return [];
+      return buildContractSections({ ...form, contractType: 'dpp' } as StoredContractData);
+    } catch {
+      return [];
+    }
   }, [form]);
 
   const handlePayment = async () => {
@@ -234,6 +246,10 @@ export default function DppPage() {
 
           {/* Sidebar */}
           <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-24">
+            {/* Watermarked document preview */}
+            {previewSections.length > 0 && (
+              <ContractPreview sections={previewSections} title="Dohoda o provedení práce" />
+            )}
             <div className={cardClass}>
               <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90 mb-4">Kontrola DPP</div>
               <div className="flex items-center gap-4 mb-4">

@@ -1,6 +1,9 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import ContractPreview from '@/app/components/ContractPreview';
+import { buildContractSections } from '@/lib/contracts';
+import type { StoredContractData } from '@/lib/contracts';
 
 type FormData = {
   principalName: string; principalId: string; principalAddress: string; principalEmail: string;
@@ -55,6 +58,15 @@ export default function PlnaMocPage() {
       score -= 10; warnings.push({ text: 'Pro nemovitosti a firmy doporučujeme úředně ověřený podpis (ověřená plná moc).', level: 'medium' });
     }
     return { score: Math.max(0, score), warnings, label: score >= 85 ? 'Kompletní plná moc' : score >= 65 ? 'Doplňte' : 'Neúplná' };
+  }, [form]);
+
+  const previewSections = useMemo(() => {
+    try {
+      if (!form.principalName) return [];
+      return buildContractSections({ ...form, contractType: 'power_of_attorney' } as StoredContractData);
+    } catch {
+      return [];
+    }
   }, [form]);
 
   const handlePayment = async () => {
@@ -216,6 +228,10 @@ export default function PlnaMocPage() {
           </div>
 
           <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-24">
+            {/* Watermarked document preview */}
+            {previewSections.length > 0 && (
+              <ContractPreview sections={previewSections} title="Plná moc" />
+            )}
             <div className={cardClass}>
               <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90 mb-4">Analýza plné moci</div>
               <div className="flex items-center gap-4 mb-4">

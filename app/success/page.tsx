@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useEffect, useMemo, useState, useRef } from 'react';
+import { Suspense, useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 const pageShell = 'min-h-screen bg-[#05080f] text-slate-200 py-16 px-6';
@@ -12,6 +12,7 @@ function SuccessContent() {
   const sessionId = searchParams.get('session_id');
   const [dlState, setDlState] = useState<DownloadState>('checking');
   const attemptRef = useRef(0);
+  const [progress, setProgress] = useState(0); // 0–100 for progress bar
 
   const downloadUrl = useMemo(() => {
     if (!sessionId) return null;
@@ -46,6 +47,9 @@ function SuccessContent() {
     async function checkStatus() {
       if (cancelled) return;
 
+      // Update progress bar: each attempt advances it toward 90%, final jump to 100% on success
+      setProgress(Math.min(90, Math.round((attemptRef.current / maxAttempts) * 90)));
+
       try {
         const res = await fetch(
           `/api/contracts/status?session_id=${encodeURIComponent(sessionId!)}`,
@@ -56,6 +60,7 @@ function SuccessContent() {
         if (cancelled) return;
 
         if (data.status === 'paid') {
+          setProgress(100);
           setDlState('ready');
         } else if (attemptRef.current < maxAttempts) {
           attemptRef.current += 1;
@@ -104,15 +109,36 @@ function SuccessContent() {
       <div className="relative z-10 max-w-xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">
-          <div className="w-20 h-20 bg-emerald-500/10 border-2 border-emerald-500/30 rounded-full flex items-center justify-center text-4xl mx-auto mb-6">
-            ✓
+          <div className={`w-20 h-20 rounded-full flex items-center justify-center text-4xl mx-auto mb-6 transition-all duration-500 ${
+            dlState === 'ready'
+              ? 'bg-emerald-500/10 border-2 border-emerald-500/30'
+              : dlState === 'error'
+              ? 'bg-red-500/10 border-2 border-red-500/30'
+              : 'bg-amber-500/10 border-2 border-amber-500/20'
+          }`}>
+            {dlState === 'checking' ? (
+              <div className="w-9 h-9 border-[3px] border-amber-400 border-t-transparent rounded-full animate-spin" />
+            ) : dlState === 'ready' ? '✓' : '⚠'}
           </div>
           <h1 className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter text-white mb-3">
-            Platba přijata
+            {dlState === 'checking' ? 'Zpracováváme…' : 'Platba přijata'}
           </h1>
-          <p className="text-slate-400 text-sm">
-            Váš dokument je připraven. Stáhněte si jej níže.
-          </p>
+          {dlState === 'checking' && (
+            <div className="mb-4 px-4">
+              <div className="text-sm text-slate-400 mb-2">Ověřujeme platbu, obvykle to trvá 5–10 sekund&hellip;</div>
+              <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-amber-500 to-yellow-400 rounded-full transition-all duration-700 ease-out"
+                  style={{ width: `${Math.max(5, progress)}%` }}
+                />
+              </div>
+            </div>
+          )}
+          {dlState === 'ready' && (
+            <p className="text-slate-400 text-sm">
+              Dokument je připraven ke stažení.
+            </p>
+          )}
         </div>
 
         {/* Download card */}
@@ -128,8 +154,7 @@ function SuccessContent() {
           {/* Stav tlačítka závisí na dlState */}
           {dlState === 'checking' && (
             <div className="flex flex-col items-center justify-center py-5 gap-3">
-              <div className="w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
-              <p className="text-sm text-slate-400">Ověřujeme platbu&hellip;</p>
+              <p className="text-sm text-slate-500 italic">Příprava dokumentu probíhá&hellip;</p>
             </div>
           )}
 
