@@ -288,7 +288,7 @@ export default function NajemniSmlouvaPage() {
               </div>
               <div className="mb-1 text-[11px] font-black uppercase tracking-widest text-amber-500">Profesionální ochrana</div>
               <div className="mb-1 text-4xl font-black text-white">399 Kč</div>
-              <p className="mb-5 text-sm text-slate-400">Rozšířená ochrana pro jistý výsledek</p>
+              <p className="mb-5 text-sm text-slate-400">Profesionální ochrana pro jistý výsledek</p>
               <ul className="mb-6 space-y-2">
                 {[
                   'Vše ze základní smlouvy',

@@ -34,7 +34,7 @@ const pricingTiers = [
     badge: null,
   },
   {
-    name: 'Rozšířená ochrana',
+    name: 'Profesionální ochrana',
     price: '399 Kč',
     description: 'Smluvní pokuty, odpovědnost a sankční mechanismy',
     features: [
@@ -94,7 +94,7 @@ const faqItems = [
   },
   {
     question: 'Jsou bezpečně uložena moje data?',
-    answer: 'Údaje jsou uloženy pouze dočasně v šifrovaném úložišti po dobu 7–30 dní dle zakoupeného balíčku (Základní 7 dní, Rozšířená ochrana 14 dní, Kompletní balíček 30 dní) a poté automaticky smazány. Platební údaje zpracovává výhradně Stripe — na naše servery se nikdy nedostanou.',
+    answer: 'Údaje jsou uloženy pouze dočasně v šifrovaném úložišti po dobu 7–30 dní dle zakoupeného balíčku (Základní 7 dní, Profesionální ochrana 14 dní, Kompletní balíček 30 dní) a poté automaticky smazány. Platební údaje zpracovává výhradně Stripe — na naše servery se nikdy nedostanou.',
   },
   {
     question: 'Je to náhrada individuální právní služby?',

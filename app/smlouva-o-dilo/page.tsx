@@ -135,54 +135,6 @@ export default function WorkContractPage() {
         ? 'bg-amber-500'
         : 'bg-rose-500';
 
-  const previewText = useMemo(() => {
-    const paymentDesc =
-      formData.paymentType === 'with_deposit'
-        ? `Záloha ${formData.depositAmount ? Number(formData.depositAmount).toLocaleString('cs-CZ') : '__________'} ${formData.currency} před zahájením, doplatek po předání.`
-        : formData.paymentType === 'milestones'
-          ? 'Cena bude hrazena průběžně dle dílčích fakturací.'
-          : 'Celková cena je splatná po řádném předání díla bez vad.';
-
-    return `SMLOUVA O DÍLO
-
-I. SMLUVNÍ STRANY
-Objednatel: ${formData.clientName || '____________________'}
-IČO: ${formData.clientRegNo || '__________'}
-Adresa: ${formData.clientAddress || '____________________'}
-
-Zhotovitel: ${formData.contractorName || '____________________'}
-IČO: ${formData.contractorRegNo || '__________'}
-Adresa: ${formData.contractorAddress || '____________________'}
-
-II. PŘEDMĚT DÍLA
-Zhotovitel se zavazuje provést pro objednatele dílo: ${formData.workTitle || '____________________'}
-Popis prací: ${formData.workDescription || '____________________'}
-Místo plnění: ${formData.workLocation || '____________________'}
-Materiál dodává: ${
-      formData.materialBy === 'contractor'
-        ? 'Zhotovitel'
-        : formData.materialBy === 'client'
-          ? 'Objednatel'
-          : 'Obě strany'
-    }
-
-III. CENA A PLATEBNÍ PODMÍNKY
-Celková cena díla: ${formData.priceAmount ? Number(formData.priceAmount).toLocaleString('cs-CZ') : '__________'} ${formData.currency}
-${paymentDesc}
-
-IV. TERMÍNY PLNĚNÍ
-Zahájení: ${formData.startDate || '__________'}
-Dokončení a předání: ${formData.endDate || '__________'}
-
-V. ZÁRUKA A SANKCE
-Záruka za jakost: ${formData.warrantyMonths || '24'} měsíců
-Smluvní pokuta za prodlení: ${formData.delayPenaltyPerDay || '0,05'} % z ceny díla za každý den prodlení.
-Smluvní pokuta za vady: ${formData.defectPenaltyPercent || '10'} % z ceny díla.
-
-VI. ZÁVĚREČNÁ USTANOVENÍ
-${formData.handoverProtocol ? '• Předání díla proběhne protokolem o předání a převzetí.\n' : ''}${formData.insuranceRequired ? '• Zhotovitel je povinen mít uzavřeno pojištění odpovědnosti za škodu.\n' : ''}Smlouva je uzavřena dobrovolně v souladu s § 2586 a násl. občanského zákoníku.`.trim();
-  }, [formData]);
-
   const previewSections = useMemo(() => {
     try {
       if (!formData.clientName) return [];

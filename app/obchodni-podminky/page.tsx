@@ -43,9 +43,11 @@ export default function TermsPage() {
             <h2 className="text-amber-500 font-black uppercase text-xs tracking-widest mb-4">
               01. Provozovatel a identifikační údaje
             </h2>
-            <div className="bg-[#0c1426]/60 border border-white/5 rounded-2xl p-5 text-sm">
+            <div className="bg-[#0c1426]/60 border border-white/5 rounded-2xl p-5 text-sm space-y-1">
               <p><strong className="text-white">Obchodní jméno:</strong> SmlouvaHned</p>
               <p><strong className="text-white">IČO:</strong> 23660295</p>
+              {/* PŘED SPUŠTĚNÍM: doplňte adresu sídla/místa podnikání dle živnostenského rejstříku */}
+              <p><strong className="text-white">Sídlo / místo podnikání:</strong> <span className="text-amber-400">[DOPLNIT PŘED SPUŠTĚNÍM]</span></p>
               <p><strong className="text-white">Webová adresa:</strong> smlouvahned.cz</p>
               <p><strong className="text-white">Kontaktní e-mail:</strong> <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">info@smlouvahned.cz</a></p>
             </div>

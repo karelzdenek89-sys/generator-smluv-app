@@ -37,6 +37,8 @@ export default function GdprPage() {
             <div className="bg-white/3 border border-white/8 rounded-xl p-4 text-slate-300 space-y-1 text-sm">
               <p><strong className="text-white">SmlouvaHned</strong></p>
               <p>IČO: 23660295</p>
+              {/* PŘED SPUŠTĚNÍM: doplňte adresu sídla/místa podnikání */}
+              <p>Sídlo: <span className="text-amber-400">[DOPLNIT PŘED SPUŠTĚNÍM]</span></p>
               <p>Kontaktní e-mail: <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">info@smlouvahned.cz</a></p>
               <p>Web: smlouvahned.cz</p>
             </div>
