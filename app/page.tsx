@@ -219,8 +219,18 @@ export default function Home() {
             </Link>
           </div>
 
+          {/* Lawyer price anchor */}
+          <div className="mt-5 inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-2xl border border-white/8 bg-white/3 px-5 py-3 text-sm text-slate-400">
+            <span>Sepsání u advokáta:</span>
+            <span className="font-bold text-slate-300 line-through decoration-slate-600">2 500–6 000 Kč</span>
+            <span className="text-slate-600">·</span>
+            <span>Zde od</span>
+            <span className="font-black text-amber-400">249 Kč</span>
+            <span>— dokument ihned ke stažení</span>
+          </div>
+
           {/* Trust Row */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
             {[
               { icon: '✓', label: 'Dokument sestavený podle vašich údajů' },
               { icon: '✓', label: 'PDF ihned ke stažení' },
@@ -546,12 +556,6 @@ export default function Home() {
             <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-400">
               Liší se rozsahem smluvních ujednání, doprovodným materiálem a délkou archivace. Zákonný základ mají všechny varianty společný.
             </p>
-            <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-800/60 px-4 py-2 text-xs text-slate-400">
-              <span className="text-slate-500">Srovnání:</span>
-              <span>Individuální sepsání u advokáta — běžně <span className="font-bold text-white">2 500–6 000 Kč</span> a čekání</span>
-              <span className="text-slate-600">·</span>
-              <span>Zde od <span className="font-bold text-amber-400">249 Kč</span>, dokument ihned</span>
-            </div>
           </div>
 
           <div className="grid gap-6 md:grid-cols-3">
