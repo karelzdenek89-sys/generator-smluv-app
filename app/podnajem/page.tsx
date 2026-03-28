@@ -311,8 +311,8 @@ export default function PodnajemuPage() {
               <div className="space-y-3">
                 {([
                   { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální podnájemní smlouva dle OZ v PDF.' },
-                  { value: 'professional', label: 'Profesionální ochrana', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty, sankce za prodlení.', recommended: true },
-                  { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Profesionální ochrany + instrukce k podpisu, checklist a 30denní archivace.' },
+                  { value: 'professional', label: 'Rozšířená právní ochrana', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty, sankce za prodlení.', recommended: true },
+                  { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířené právní ochrany + instrukce k podpisu, checklist a 30denní archivace.' },
                 ] as const).map((opt) => (
                   <label key={opt.value} className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${form.tier === opt.value ? 'border-amber-500 bg-amber-500/10' : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'}`}>
                     {('recommended' in opt) &&  form.tier !== 'professional' && (
@@ -388,7 +388,7 @@ export default function PodnajemuPage() {
                 </div>
                 {form.tier !== 'basic' && (
                   <div className="flex justify-between">
-                    <span className="text-slate-400">{form.tier === 'complete' ? 'Kompletní balíček' : 'Profesionální ochrana'}</span>
+                    <span className="text-slate-400">{form.tier === 'complete' ? 'Kompletní balíček' : 'Rozšířená právní ochrana'}</span>
                     <span className="text-amber-400 font-bold">{form.tier === 'complete' ? '+500 Kč' : '+200 Kč'}</span>
                   </div>
                 )}

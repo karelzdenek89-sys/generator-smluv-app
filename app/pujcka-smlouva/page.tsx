@@ -73,7 +73,7 @@ export default function PujckaSmlouvaPage() {
           <div className="flex flex-wrap gap-3 mb-8">
             <Link href="/pujcka"
               className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-6 py-3 text-sm font-black uppercase tracking-tight text-black shadow-[0_0_30px_rgba(245,158,11,0.25)] transition hover:bg-amber-400">
-              Vytvořit smlouvu o zápůjčce →
+              Vytvořit smlouvu →
             </Link>
           </div>
           <div className="text-sm text-slate-500">Od 249 Kč · PDF ihned · Dle § 2390 OZ</div>
@@ -145,7 +145,7 @@ export default function PujckaSmlouvaPage() {
           <div className="flex flex-wrap gap-3 justify-center">
             <Link href="/pujcka"
               className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-6 py-3 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400">
-              Vytvořit smlouvu o zápůjčce →
+              Vytvořit smlouvu →
             </Link>
           </div>
           <div className="mt-3 text-xs text-slate-600">Od 249 Kč · § 2390 OZ · PDF ihned</div>

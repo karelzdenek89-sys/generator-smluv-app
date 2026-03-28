@@ -37,10 +37,10 @@ interface ContractItem {
 }
 
 const contracts: ContractItem[] = [
-  // ── Top 8 ────────────────────────────────────────────────────────────────
+  // ── Top 6 ────────────────────────────────────────────────────────────────
   {
     title:       'NÁJEMNÍ SMLOUVA',
-    description: 'Pronajímáte nebo si pronajímáte byt či dům. Kauce, pravidla pro zvířata a Airbnb, předávací protokol a podmínky ukončení.',
+    description: 'Pro pronájem bytu, domu nebo jiné nemovitosti. Kauce, pravidla pro zvířata a Airbnb, předávací protokol a podmínky ukončení.',
     href:        '/najem',
     price:       '249 Kč',
     accentKey:   'lease',
@@ -50,7 +50,7 @@ const contracts: ContractItem[] = [
   },
   {
     title:       'KUPNÍ SMLOUVA NA VOZIDLO',
-    description: 'Kupujete nebo prodáváte ojeté vozidlo. Stav auta, najeté kilometry, odpovědnost za vady a podmínky bezpečného předání.',
+    description: 'Pro bezpečnější převod vozidla mezi prodávajícím a kupujícím. Stav auta, najeté kilometry, odpovědnost za vady a podmínky předání.',
     href:        '/auto',
     price:       '249 Kč',
     accentKey:   'car',
@@ -60,7 +60,7 @@ const contracts: ContractItem[] = [
   },
   {
     title:       'DAROVACÍ SMLOUVA',
-    description: 'Převádíte peníze, auto nebo nemovitost jako dar. Právně čistý doklad vhodný pro rodinu i osoby mimo příbuzenstvo.',
+    description: 'Pro převod peněz, auta nebo nemovitosti jako dar. Právně čistý doklad vhodný pro rodinu i osoby mimo příbuzenstvo.',
     href:        '/darovaci',
     price:       '249 Kč',
     accentKey:   'gift',
@@ -70,7 +70,7 @@ const contracts: ContractItem[] = [
   },
   {
     title:       'SMLOUVA O DÍLO',
-    description: 'Řemeslník nebo objednatel uzavírá dohodu o zhotovení. Cena, termín, předání, sankce za prodlení a odpovědnost za vady.',
+    description: 'Pro dohodu o zhotovení mezi řemeslníkem a objednatelem. Cena, termín, předání, sankce za prodlení a odpovědnost za vady.',
     href:        '/smlouva-o-dilo',
     price:       '249 Kč',
     accentKey:   'work',
@@ -79,18 +79,8 @@ const contracts: ContractItem[] = [
     top: true,
   },
   {
-    title:       'PODNÁJEMNÍ SMLOUVA',
-    description: 'Podnajímáte část nebo celý byt. Právní základ se souhlasem pronajímatele, kauce a pravidla pro obě strany.',
-    href:        '/podnajem',
-    price:       '249 Kč',
-    accentKey:   'sublease',
-    highlight:   'Souhlas pronajímatele + kauce',
-    paragraph:   '§ 2274 a násl. OZ',
-    top: true,
-  },
-  {
     title:       'SMLOUVA O POSKYTOVÁNÍ SLUŽEB',
-    description: 'Freelancer nebo agentura poskytuje opakované nebo projektové služby. Paušál, hodinová sazba, SLA a ochrana autorských práv.',
+    description: 'Pro freelancera nebo agenturu poskytující opakované či projektové služby. Paušál, hodinová sazba, SLA a ochrana autorských práv.',
     href:        '/sluzby',
     price:       '249 Kč',
     accentKey:   'service',
@@ -100,7 +90,7 @@ const contracts: ContractItem[] = [
   },
   {
     title:       'SMLOUVA O MLČENLIVOSTI',
-    description: 'Sdílíte citlivé informace nebo obchodní know-how. Jednostranná nebo oboustranná mlčenlivost s konkrétním vymezením rozsahu.',
+    description: 'Pro sdílení citlivých informací nebo obchodního know-how. Jednostranná nebo oboustranná mlčenlivost s konkrétním vymezením rozsahu.',
     href:        '/nda',
     price:       '249 Kč',
     accentKey:   'nda',
@@ -108,20 +98,30 @@ const contracts: ContractItem[] = [
     paragraph:   '§ 504 OZ + GDPR',
     top: true,
   },
+  // ── Dalších 8 ────────────────────────────────────────────────────────────
+  {
+    title:       'PODNÁJEMNÍ SMLOUVA',
+    description: 'Pro podnájem části nebo celého bytu. Právní základ se souhlasem pronajímatele, kauce a pravidla pro obě strany.',
+    href:        '/podnajem',
+    price:       '249 Kč',
+    accentKey:   'sublease',
+    highlight:   'Souhlas pronajímatele + kauce',
+    paragraph:   '§ 2274 a násl. OZ',
+    top: false,
+  },
   {
     title:       'PLNÁ MOC',
-    description: 'Pověřujete jinou osobu k zastoupení před úřadem, bankou nebo v obchodní věci. Obecná, jednorázová nebo ověřená verze.',
+    description: 'Pro pověření jiné osoby k zastoupení před úřadem, bankou nebo v obchodní věci. Obecná, jednorázová nebo ověřená verze.',
     href:        '/plna-moc',
     price:       '249 Kč',
     accentKey:   'poa',
     highlight:   'Ověřená verze pro úřady',
     paragraph:   '§ 441 OZ',
-    top: true,
+    top: false,
   },
-  // ── Dalších 6 ────────────────────────────────────────────────────────────
   {
     title:       'SMLOUVA O ZÁPŮJČCE',
-    description: 'Půjčujete nebo přijímáte peníze. Volitelné úročení, splátkový kalendář a možnost zajištění pohledávky.',
+    description: 'Pro půjčku nebo přijetí peněz. Volitelné úročení, splátkový kalendář a možnost zajištění pohledávky.',
     href:        '/pujcka',
     price:       '249 Kč',
     accentKey:   'loan',
@@ -131,7 +131,7 @@ const contracts: ContractItem[] = [
   },
   {
     title:       'KUPNÍ SMLOUVA',
-    description: 'Prodáváte nebo kupujete movitou věc — elektroniku, nábytek, kolo. Záruka, odpovědnost za vady a podmínky předání.',
+    description: 'Pro prodej nebo koupi movité věci — elektroniky, nábytku, kola. Záruka, odpovědnost za vady a podmínky předání.',
     href:        '/kupni',
     price:       '249 Kč',
     accentKey:   'sale',
@@ -141,7 +141,7 @@ const contracts: ContractItem[] = [
   },
   {
     title:       'PRACOVNÍ SMLOUVA',
-    description: 'Zaměstnavatel uzavírá pracovní poměr. Mzda, pracovní doba, zkušební i výpovědní lhůta — všechny zákonné náležitosti.',
+    description: 'Pro vznik pracovního poměru. Mzda, pracovní doba, zkušební i výpovědní lhůta — všechny zákonné náležitosti.',
     href:        '/pracovni',
     price:       '249 Kč',
     accentKey:   'employment',
@@ -151,7 +151,7 @@ const contracts: ContractItem[] = [
   },
   {
     title:       'DOHODA O PROVEDENÍ PRÁCE',
-    description: 'Brigády a jednorázové úkoly do 300 hod./rok. Mimo pravidelný pracovní poměr, s IP doložkou pro kreativní práce.',
+    description: 'Pro brigády a jednorázové úkoly do 300 hod./rok. Mimo pravidelný pracovní poměr, s IP doložkou pro kreativní práce.',
     href:        '/dpp',
     price:       '249 Kč',
     accentKey:   'dpp',
@@ -161,7 +161,7 @@ const contracts: ContractItem[] = [
   },
   {
     title:       'UZNÁNÍ DLUHU',
-    description: 'Dlužník písemně uznává závazek. Obnovuje promlčecí lhůtu na 10 let a posiluje pozici věřitele při vymáhání.',
+    description: 'Pro písemné uznání závazku dlužníkem. Obnovuje promlčecí lhůtu na 10 let a posiluje pozici věřitele při vymáhání.',
     href:        '/uznani-dluhu',
     price:       '249 Kč',
     accentKey:   'debt',
@@ -171,7 +171,7 @@ const contracts: ContractItem[] = [
   },
   {
     title:       'SMLOUVA O SPOLUPRÁCI',
-    description: 'Spolupráce OSVČ nebo firem s jasnými pravidly. Podíl na výnosech, IP práva, mlčenlivost a exit klauzule.',
+    description: 'Pro spolupráci OSVČ nebo firem s jasnými pravidly. Podíl na výnosech, IP práva, mlčenlivost a exit klauzule.',
     href:        '/spoluprace',
     price:       '249 Kč',
     accentKey:   'coop',
@@ -236,11 +236,11 @@ export default function ContractCatalog() {
             onClick={() => setShowAll(true)}
             className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-7 py-3 text-sm font-bold text-slate-300 transition hover:border-white/20 hover:bg-white/10 hover:text-white"
           >
-            Zobrazit všech 14 typů dokumentů
+            Zobrazit všechny dokumenty
             <span className="text-slate-500">↓</span>
           </button>
           <p className="mt-3 text-xs text-slate-600">
-            Dalších {rest.length} typů: Zápůjčka, Kupní smlouva, Pracovní smlouva, DPP, Uznání dluhu, Spolupráce
+            Dalších {rest.length} typů: Podnájem, Plná moc, Zápůjčka, Kupní smlouva, Pracovní smlouva, DPP, Uznání dluhu, Spolupráce
           </p>
         </div>
       ) : (

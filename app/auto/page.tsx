@@ -997,8 +997,8 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Vyberte balíček</div>
                 {([
                   { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva dle občanského zákoníku v PDF.' },
-                  { value: 'professional', label: 'Profesionální ochrana', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
-                  { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Profesionální ochrany + průvodní instrukce, checklist a 30denní archivace.' },
+                  { value: 'professional', label: 'Rozšířená právní ochrana', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
+                  { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířené právní ochrany + průvodní instrukce, checklist a 30denní archivace.' },
                 ] as const).map((opt) => (
                   <label
                     key={opt.value}
@@ -1061,7 +1061,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   </div>
                   {formData.tier !== 'basic' && (
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm text-slate-400">{formData.tier === 'complete' ? 'Kompletní balíček' : 'Profesionální ochrana'}</span>
+                      <span className="text-sm text-slate-400">{formData.tier === 'complete' ? 'Kompletní balíček' : 'Rozšířená právní ochrana'}</span>
                       <span className="text-sm font-bold text-amber-400">{formData.tier === 'complete' ? '+500 Kč' : '+200 Kč'}</span>
                     </div>
                   )}

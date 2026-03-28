@@ -34,7 +34,7 @@ const pricingTiers = [
     badge: null,
   },
   {
-    name: 'Profesionální ochrana',
+    name: 'Rozšířená právní ochrana',
     price: '399 Kč',
     description: 'Smluvní pokuty, odpovědnost a sankční mechanismy',
     features: [
@@ -56,7 +56,7 @@ const pricingTiers = [
     price: '749 Kč',
     description: 'Úplná dokumentace s podporou a 30denní archivací',
     features: [
-      'Vše z Rozšířené ochrany',
+      'Vše z Rozšířené právní ochrany',
       'Průvodní instrukce k podpisu a archivaci',
       'Předávací protokol (dle typu smlouvy)',
       'Checklist: co ověřit před podpisem',
@@ -77,8 +77,8 @@ const faqItems = [
     answer: 'Ano. Každá smlouva je sestavena v souladu s platným českým právem — zejména zákonem č. 89/2012 Sb. (občanský zákoník) a dalšími relevantními předpisy. Právní platnost písemné smlouvy nevyžaduje účast notáře ani advokáta, pokud zákon nestanoví jinak.',
   },
   {
-    question: 'Čím se liší Základní dokument od Profesionální ochrany?',
-    answer: 'Základní dokument obsahuje všechna zákonem povinná ustanovení. Profesionální ochrana přidává klauzule, které vaši smluvní pozici aktivně posilují — zejména smluvní pokuty za porušení povinností, podrobnější odpovědnostní ustanovení a sankční mechanismy. Váš protějšek ví, že smlouva má reálné právní důsledky.',
+    question: 'Čím se liší Základní dokument od Rozšířené právní ochrany?',
+    answer: 'Základní dokument obsahuje všechna zákonem povinná ustanovení. Rozšířená právní ochrana přidává klauzule, které vaši smluvní pozici lépe vymezují — zejména smluvní pokuty za porušení povinností, podrobnější odpovědnostní ustanovení a sankční mechanismy pro případ nesplnění závazku.',
   },
   {
     question: 'Jak celý proces funguje?',
@@ -86,15 +86,15 @@ const faqItems = [
   },
   {
     question: 'Co obdržím po zaplacení?',
-    answer: 'Ihned po dokončení platby obdržíte odkaz ke stažení vygenerovaného PDF. Platnost odkazu: Základní 7 dní, Profesionální 14 dní, Kompletní 30 dní. U Kompletního balíčku také průvodní instrukce k podpisu, checklist a (dle typu smlouvy) předávací protokol.',
+    answer: 'Ihned po dokončení platby obdržíte odkaz ke stažení vygenerovaného PDF. Platnost odkazu: Základní 7 dní, Rozšířená 14 dní, Kompletní 30 dní. U Kompletního balíčku také průvodní instrukce k podpisu, checklist a (dle typu smlouvy) předávací protokol.',
   },
   {
     question: 'Proč nezvolit bezplatný vzor z internetu?',
-    answer: 'Volně dostupné vzory jsou zpravidla obecné a nezohledňují vaše konkrétní podmínky. V řadě případů postrádají klauzule, které jsou pro vaši ochranu klíčové. Dokumenty na tomto webu jsou sestavovány dynamicky na základě vámi zadaných údajů a obsahují ustanovení, která vaši smluvní pozici aktivně chrání.',
+    answer: 'Volně dostupné vzory jsou zpravidla obecné a nezohledňují vaše konkrétní podmínky. V řadě případů postrádají klauzule, které jsou pro vaši ochranu klíčové. Dokumenty na tomto webu jsou sestavovány dynamicky na základě vámi zadaných podmínek — výsledkem je dokument odpovídající vaší konkrétní situaci, nikoli neurčitý vzor.',
   },
   {
     question: 'Jsou bezpečně uložena moje data?',
-    answer: 'Údaje jsou uloženy pouze dočasně v šifrovaném úložišti po dobu 7–30 dní dle zakoupeného balíčku (Základní 7 dní, Profesionální ochrana 14 dní, Kompletní balíček 30 dní) a poté automaticky smazány. Platební údaje zpracovává výhradně Stripe — na naše servery se nikdy nedostanou.',
+    answer: 'Údaje jsou uloženy pouze dočasně v šifrovaném úložišti po dobu 7–30 dní dle zakoupeného balíčku (Základní 7 dní, Rozšířená právní ochrana 14 dní, Kompletní balíček 30 dní) a poté automaticky smazány. Platební údaje zpracovává výhradně Stripe — na naše servery se nikdy nedostanou.',
   },
   {
     question: 'Je to náhrada individuální právní služby?',
@@ -148,7 +148,7 @@ const serviceSchema = {
   },
   offers: [
     { '@type': 'Offer', name: 'Základní dokument', price: '249', priceCurrency: 'CZK' },
-    { '@type': 'Offer', name: 'Profesionální ochrana', price: '399', priceCurrency: 'CZK' },
+    { '@type': 'Offer', name: 'Rozšířená právní ochrana', price: '399', priceCurrency: 'CZK' },
     { '@type': 'Offer', name: 'Kompletní balíček', price: '749', priceCurrency: 'CZK' },
   ],
 };
@@ -325,8 +325,8 @@ export default function Home() {
         <section id="vyber-smlouvy">
           <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
-              <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">14 typů dokumentů</div>
-              <h2 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">Vyberte typ smlouvy</h2>
+              <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Nejčastější situace</div>
+              <h2 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">Vyberte typ dokumentu</h2>
             </div>
             <p className="max-w-sm text-sm leading-relaxed text-slate-400 md:text-right">
               Každý dokument je sestaven dynamicky na základě vašich údajů a aktualizován pro českou legislativu 2026.

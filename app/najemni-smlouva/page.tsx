@@ -45,8 +45,8 @@ const faq = [
     a: 'Předávací protokol je příloha smlouvy, která zachycuje stav bytu, odečty měřidel a soupis vybavení ke dni předání. Chrání vás při vracení kauce — bez protokolu je těžké prokázat, v jakém stavu byl byt předán.',
   },
   {
-    q: 'Jaký je rozdíl mezi základní smlouvou a profesionální ochranou?',
-    a: 'Základní dokument obsahuje všechna povinná zákonná ustanovení. Profesionální ochrana (+200 Kč) přidává smluvní pokuty za porušení povinností, detailní odpovědnostní klauzule a sankce za prodlení — váš protějšek ví, že smlouva má reálné důsledky.',
+    q: 'Jaký je rozdíl mezi základní smlouvou a rozšířenou právní ochranou?',
+    a: 'Základní dokument obsahuje všechna povinná zákonná ustanovení. Rozšířená právní ochrana (+200 Kč) přidává smluvní pokuty za porušení povinností, detailní odpovědnostní klauzule a sankce za prodlení — váš protějšek ví, že smlouva má reálné důsledky.',
   },
   {
     q: 'Je moje platba a osobní údaje v bezpečí?',
@@ -62,7 +62,7 @@ const contents = [
   { icon: '📅', label: 'Doba nájmu', desc: 'Na dobu určitou nebo neurčitou, výpovědní podmínky dle OZ.' },
   { icon: '📋', label: 'Práva a povinnosti', desc: 'Pravidla pro zvířata, kouření, Airbnb, podnájem, opravy, kontroly.' },
   { icon: '📄', label: 'Předávací protokol', desc: 'Stav bytu, odečty měřidel, soupis vybavení — automatická příloha.' },
-  { icon: '⚖️', label: 'Sankce a ochranné klauzule', desc: 'Smluvní pokuty za prodlení, porušení podmínek a ochranu pro obě strany (ve variantě Profesionální ochrana).' },
+  { icon: '⚖️', label: 'Sankce a ochranné klauzule', desc: 'Smluvní pokuty za prodlení, porušení podmínek a ochranu pro obě strany (ve variantě Rozšířená právní ochrana).' },
 ];
 
 const steps = [
@@ -277,7 +277,7 @@ export default function NajemniSmlouvaPage() {
                 ))}
               </ul>
               <Link href="/najem" className="block rounded-2xl border border-white/15 bg-white/5 py-3 text-center text-sm font-black uppercase tracking-tight text-white transition hover:bg-white/10">
-                Vytvořit základní smlouvu
+                Vytvořit smlouvu
               </Link>
             </div>
 
@@ -286,9 +286,9 @@ export default function NajemniSmlouvaPage() {
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-amber-500 px-4 py-1 text-[10px] font-black uppercase tracking-widest text-black shadow-lg">
                 Nejčastěji voleno
               </div>
-              <div className="mb-1 text-[11px] font-black uppercase tracking-widest text-amber-500">Profesionální ochrana</div>
+              <div className="mb-1 text-[11px] font-black uppercase tracking-widest text-amber-500">Rozšířená právní ochrana</div>
               <div className="mb-1 text-4xl font-black text-white">399 Kč</div>
-              <p className="mb-5 text-sm text-slate-400">Profesionální ochrana pro jistý výsledek</p>
+              <p className="mb-5 text-sm text-slate-400">Smluvní pokuty, odpovědnost a sankce za prodlení</p>
               <ul className="mb-6 space-y-2">
                 {[
                   'Vše ze základní smlouvy',

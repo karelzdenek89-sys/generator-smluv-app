@@ -186,13 +186,13 @@ export default function WorkContractPage() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <div className="inline-block px-4 py-1.5 bg-amber-500/10 border border-amber-500/30 rounded-full text-amber-400 text-xs font-bold tracking-widest mb-4">
-            GARANTOVÁNO PRO ROK 2026
+            AKTUALIZOVÁNO PRO ROK 2026
           </div>
           <h1 className="text-5xl md:text-6xl font-black tracking-tighter text-white">
             Smlouva o <span className="text-amber-500">dílo</span>
           </h1>
           <p className="mt-4 text-lg text-slate-400 max-w-2xl mx-auto">
-            Nejkomplexnější ochrana pro řemeslníky, stavebníky i objednatele. Minimalizace sporů a maximalizace právní jistoty.
+            Právně zpracovaný dokument pro zhotovitele i objednatele. Jasné podmínky, termíny, odpovědnost za vady a sankce za prodlení.
           </p>
         </div>
 
@@ -456,8 +456,8 @@ export default function WorkContractPage() {
               <div className="space-y-3">
                 {([
                   { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva o dílo dle § 2586 OZ v PDF.' },
-                  { value: 'professional', label: 'Profesionální ochrana', price: '399 Kč', desc: 'Rozšířené smluvní pokuty, záruční doložky, odpovědnost za vady.', recommended: true },
-                  { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Profesionální ochrany + instrukce k podpisu, checklist a 30denní archivace.' },
+                  { value: 'professional', label: 'Rozšířená právní ochrana', price: '399 Kč', desc: 'Rozšířené smluvní pokuty, záruční doložky, odpovědnost za vady.', recommended: true },
+                  { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířené právní ochrany + instrukce k podpisu, checklist a 30denní archivace.' },
                 ] as const).map((opt) => (
                   <label key={opt.value} className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${formData.tier === opt.value ? 'border-amber-500 bg-amber-500/10' : 'border-slate-700/60 bg-[#05080f]/60 hover:border-slate-600'}`}>
                     {('recommended' in opt) &&  formData.tier !== 'professional' && (
@@ -519,7 +519,7 @@ export default function WorkContractPage() {
                 </div>
                 {formData.tier !== 'basic' && (
                   <div className="flex justify-between">
-                    <span className="text-slate-400">{formData.tier === 'complete' ? 'Kompletní balíček' : 'Profesionální ochrana'}</span>
+                    <span className="text-slate-400">{formData.tier === 'complete' ? 'Kompletní balíček' : 'Rozšířená právní ochrana'}</span>
                     <span className="font-bold text-amber-400">{formData.tier === 'complete' ? '+500 Kč' : '+200 Kč'}</span>
                   </div>
                 )}
