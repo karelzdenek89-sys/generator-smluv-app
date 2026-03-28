@@ -55,14 +55,14 @@ export default function GdprPage() {
                 <p className="text-slate-400 text-xs mb-2">Jména, adresy, data narození, čísla OP a IČO smluvních stran, které do formuláře zadáte vy sami.</p>
                 <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Účel:</span> Vygenerování právního dokumentu dle vašich zadaných dat.</div>
                 <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Právní základ:</span> Plnění smlouvy (čl. 6 odst. 1 písm. b) GDPR).</div>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> Maximálně 7 dní od zaplacení, poté jsou automaticky smazána z dočasného úložiště.</div>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> 7–30 dní od zaplacení podle zakoupeného balíčku (Základní 7 dní, Profesionální 14 dní, Kompletní 30 dní), poté jsou automaticky smazána z dočasného úložiště.</div>
               </div>
               <div className="border border-white/8 rounded-2xl p-5">
                 <div className="font-bold text-white mb-2">E-mailová adresa</div>
                 <p className="text-slate-400 text-xs mb-2">Pokud ji dobrovolně zadáte při objednávce.</p>
                 <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Účel:</span> Zaslání odkazu ke stažení hotového dokumentu.</div>
                 <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Právní základ:</span> Plnění smlouvy + oprávněný zájem (čl. 6 odst. 1 písm. b) a f) GDPR).</div>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> 7 dní od objednávky.</div>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> 7–30 dní od objednávky podle zakoupeného balíčku, poté automaticky smazáno.</div>
               </div>
               <div className="border border-white/8 rounded-2xl p-5">
                 <div className="font-bold text-white mb-2">Platební údaje</div>
@@ -81,7 +81,7 @@ export default function GdprPage() {
             </p>
             <ul className="space-y-2 text-slate-400">
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Stripe, Inc.</strong> — zpracování plateb. Zpracovatel dle čl. 28 GDPR, certifikace PCI DSS Level 1.</span></li>
-              <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Upstash (Redis)</strong> — dočasné uložení dat formuláře po dobu generování a stažení dokumentu (max. 7 dní).</span></li>
+              <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Upstash (Redis)</strong> — dočasné uložení dat formuláře po dobu generování a stažení dokumentu (7–30 dní dle balíčku).</span></li>
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Resend</strong> — zasílání transakčních e-mailů (odkaz ke stažení). Pouze pokud zadáte e-mail.</span></li>
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Vercel</strong> — hosting platformy. Údaje jsou zpracovávány v rámci EHP nebo za odpovídajících záruk.</span></li>
             </ul>
@@ -138,7 +138,7 @@ export default function GdprPage() {
               7. Zabezpečení údajů
             </h2>
             <p>
-              Veškerá komunikace je šifrována protokolem TLS (HTTPS). Data formulářů jsou ukládána v šifrovaném dočasném úložišti s automatickým výmazem po 7 dnech. Přístup k datům je omezen na technicky nezbytné osoby. Platební údaje nikdy neprocházejí našimi servery.
+              Veškerá komunikace je šifrována protokolem TLS (HTTPS). Data formulářů jsou ukládána v šifrovaném dočasném úložišti s automatickým výmazem po 7–30 dnech (dle zakoupeného balíčku). Přístup k datům je omezen na technicky nezbytné osoby. Platební údaje nikdy neprocházejí našimi servery.
             </p>
           </section>
 

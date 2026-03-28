@@ -118,41 +118,6 @@ export default function GiftContractPage() {
         ? 'bg-amber-500'
         : 'bg-rose-500';
 
-  const formattedAmount = formData.amount
-    ? Number(formData.amount).toLocaleString('cs-CZ')
-    : '';
-
-  const previewText = useMemo(() => {
-    const typeText = {
-      money: `peněžní částku ve výši ${formattedAmount || '__________'} ${formData.currency}`,
-      car: `motorové vozidlo ${formData.carMake || ''} ${formData.carModel || ''}, VIN: ${formData.carVIN || '__________'}, SPZ: ${formData.carPlate || '__________'}, rok výroby ${formData.carYear || '____'}`,
-      property: `nemovitost na adrese ${formData.propertyAddress || '__________'}, list vlastnictví č. ${formData.propertyLV || '__________'}, katastrální území ${formData.propertyCadastre || '__________'}`,
-      thing: `movitou věc: ${formData.thingDescription || '__________'}`,
-    };
-
-    return `
-DAROVACÍ SMLOUVA
-
-Dárce: ${formData.donorName || '____________________'}, nar. ${formData.donorId || '__________'}, bytem ${formData.donorAddress || '____________________'}
-Obdarovaný: ${formData.doneeName || '____________________'}, nar. ${formData.doneeId || '__________'}, bytem ${formData.doneeAddress || '____________________'}
-
-Dárce tímto daruje obdarovanému ${typeText[formData.giftType]}.
-
-Obdarovaný dar přijímá.
-
-${
-  formData.withReservation
-    ? `Tento dar je poskytován s výminkem: ${formData.reservationDescription || '__________'}\n`
-    : ''
-}
-
-Tato smlouva byla uzavřena dne ${formData.giftDate || '__________'}.
-
-V __________________ dne __________________
-Dárce: ____________________          Obdarovaný: ____________________
-    `.trim();
-  }, [formData, formattedAmount]);
-
   const scrollToPreview = () => {
     document.getElementById('preview-section')?.scrollIntoView({
       behavior: 'smooth',
@@ -546,19 +511,6 @@ Dárce: ____________________          Obdarovaný: ____________________
                 ) : (
                   <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-sm text-emerald-200">Smlouva je nastavena správně.</div>
                 )}
-              </div>
-
-              {/* Živý náhled */}
-              <div className="bg-white rounded-3xl p-6 shadow-[0_20px_60px_rgba(0,0,0,0.28)] border border-slate-300 relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-1.5 bg-amber-500" />
-                <div className="mb-3">
-                  <div className="text-[10px] font-black uppercase tracking-[0.24em] text-slate-400">Živý náhled smlouvy</div>
-                  <div className="mt-1 text-xs text-slate-500">Každá změna se okamžitě propisuje sem.</div>
-                </div>
-                <div className="font-serif text-[11px] text-slate-800 leading-relaxed h-[300px] overflow-hidden relative">
-                  <pre className="whitespace-pre-wrap font-serif">{previewText}</pre>
-                  <div className="absolute bottom-0 left-0 w-full h-20 bg-gradient-to-t from-white to-transparent" />
-                </div>
               </div>
 
               {/* Platba */}
