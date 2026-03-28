@@ -249,7 +249,7 @@ export default function CarSaleBuilderPage() {
     return {
       score,
       warnings,
-      label: score >= 85 ? 'Silná ochrana' : score >= 70 ? 'Průměrná ochrana' : 'Rizikovější nastavení',
+      label: score >= 85 ? 'Dobré nastavení' : score >= 70 ? 'Průměrná ochrana' : 'Rizikovější nastavení',
       checkoutBlocked: formData.paymentMethod === 'cash' && priceNumber > 270000,
     };
   }, [formData, priceNumber]);

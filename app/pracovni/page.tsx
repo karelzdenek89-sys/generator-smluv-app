@@ -71,7 +71,7 @@ export default function PracovniPage() {
     if (!form.salary && !form.hourlyRate) { score -= 10; warnings.push({ text: 'Nevyplněna mzda — zaměstnanec ji musí znát.', level: 'medium' }); }
     if (form.employmentType === 'fixed' && !form.endDate) { score -= 10; warnings.push({ text: 'U doby určité chybí datum konce.', level: 'high' }); }
     if (Number(form.trialPeriodMonths) > 3) { warnings.push({ text: 'Zákonné maximum zkušební doby je 3 měsíce (§ 35 ZP). U vedoucích zaměstnanců max. 6 měsíců.', level: 'high' }); }
-    return { score: Math.max(0, score), warnings, label: score >= 85 ? 'Silná ochrana' : score >= 65 ? 'Průměrná ochrana' : 'Slabší ochrana' };
+    return { score: Math.max(0, score), warnings, label: score >= 85 ? 'Dobré nastavení' : score >= 65 ? 'Průměrná ochrana' : 'Slabší ochrana' };
   }, [form]);
 
   const previewSections = useMemo(() => {

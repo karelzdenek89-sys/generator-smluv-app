@@ -67,7 +67,7 @@ export default function KupniPage() {
     if (!form.handoverDate) { score -= 10; warnings.push({ text: 'Není stanoven termín předání.', level: 'medium' }); }
     if (form.itemType === 'car' && !form.carVIN) { score -= 15; warnings.push({ text: 'U vozidla chybí VIN — nelze ověřit historii.', level: 'high' }); }
     if (!form.knownDefects) { score -= 8; warnings.push({ text: 'Nevyplněny vady — doporučujeme uvést "bez vad" nebo konkrétní vady.', level: 'low' }); }
-    return { score: Math.max(0, score), warnings, label: score >= 85 ? 'Silná ochrana' : score >= 65 ? 'Průměrná ochrana' : 'Slabší ochrana' };
+    return { score: Math.max(0, score), warnings, label: score >= 85 ? 'Dobré nastavení' : score >= 65 ? 'Průměrná ochrana' : 'Slabší ochrana' };
   }, [form]);
 
   const previewSections = useMemo(() => {

@@ -102,7 +102,7 @@ export default function PodnajemuPage() {
     return {
       score,
       warnings,
-      label: score >= 85 ? 'Silná ochrana' : score >= 65 ? 'Průměrná ochrana' : 'Slabší ochrana',
+      label: score >= 85 ? 'Dobré nastavení' : score >= 65 ? 'Průměrná ochrana' : 'Slabší ochrana',
     };
   }, [form]);
 

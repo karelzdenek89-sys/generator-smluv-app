@@ -288,7 +288,7 @@ export default function LeaseBuilderPage() {
     return {
       score,
       warnings,
-      label: score >= 85 ? 'Silná ochrana' : score >= 70 ? 'Průměrná ochrana' : 'Slabší ochrana',
+      label: score >= 85 ? 'Dobré nastavení' : score >= 70 ? 'Průměrná ochrana' : 'Slabší ochrana',
     };
   }, [formData, numbers]);
 

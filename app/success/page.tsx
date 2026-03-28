@@ -227,7 +227,7 @@ function SuccessContent() {
             {[
               { title: 'Předávací protokol', desc: 'Součást nájemní smlouvy — zdokumentuje stav bytu při předání.', href: '/najem', badge: 'Bydlení' },
               { title: 'Smlouva o mlčenlivosti (NDA)', desc: 'Pro každý obchodní vztah, kde sdílíte citlivé informace.', href: '/nda', badge: 'Podnikání' },
-              { title: 'Uznání dluhu', desc: 'Obnoví promlčecí lhůtu na 10 let. Nejsilnější nástroj věřitele.', href: '/uznani-dluhu', badge: 'Finance' },
+              { title: 'Uznání dluhu', desc: 'Obnoví promlčecí lhůtu na 10 let. Klíčový dokument pro vymahatelnost pohledávky.', href: '/uznani-dluhu', badge: 'Finance' },
               { title: 'Smlouva o dílo', desc: 'Pro řemeslníky, freelancery i stavební práce — termíny a sankce.', href: '/smlouva-o-dilo', badge: 'Práce' },
               { title: 'Plná moc', desc: 'Zastoupení na úřadě, v bance nebo při podpisu smlouvy.', href: '/plna-moc', badge: 'Obecné' },
             ].map(item => (

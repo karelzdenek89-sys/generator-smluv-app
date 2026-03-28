@@ -138,7 +138,7 @@ export default function LoanBuilderPage() {
     return {
       score: Math.max(0, score),
       warnings,
-      label: score >= 80 ? 'Silná ochrana' : score >= 50 ? 'Průměrná ochrana' : 'Slabší ochrana',
+      label: score >= 80 ? 'Dobré nastavení' : score >= 50 ? 'Průměrná ochrana' : 'Slabší ochrana',
     };
   }, [formData]);
 

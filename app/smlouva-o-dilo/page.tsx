@@ -497,7 +497,7 @@ export default function WorkContractPage() {
                   {riskAnalysis.score}
                 </div>
                 <div>
-                  <div className="font-bold text-white">{riskAnalysis.score >= 85 ? 'Silná ochrana' : riskAnalysis.score >= 65 ? 'Průměrná ochrana' : 'Slabší ochrana'}</div>
+                  <div className="font-bold text-white">{riskAnalysis.score >= 85 ? 'Dobré nastavení' : riskAnalysis.score >= 65 ? 'Průměrná ochrana' : 'Slabší ochrana'}</div>
                   <div className="text-xs text-slate-500">ze 100 bodů</div>
                 </div>
               </div>
