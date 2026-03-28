@@ -159,7 +159,7 @@ export async function GET(req: NextRequest) {
     const pdf = await renderContractPdf(fullData);
     const meta = getContractMeta(fullData.contractType);
 
-    // Počítač stažení + obnovit TTL (7 dní basic/professional, 30 dní complete)
+    // Počítač stažení + obnovit TTL (7 dní basic, 14 dní professional, 30 dní complete)
     const ttl = getTtlForTier(draft.tier);
     await redis.set(
       `contract:draft:${draftId}`,

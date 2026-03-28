@@ -106,7 +106,7 @@ function isProtocolSection(title: string): boolean {
 
 function tierLabel(tier?: string): string {
   if (tier === 'complete')     return 'KOMPLETNÍ';
-  if (tier === 'professional') return 'PROFESIONÁLNÍ';
+  if (tier === 'professional') return 'ROZŠÍŘENÁ';
   return 'ZÁKLADNÍ';
 }
 

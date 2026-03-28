@@ -46,8 +46,8 @@ export type TierFeatures = {
   hasPremiumClauses: boolean;
   /** Zákazník zaplatil za Complete → dostane instrukce + checklist stránky v PDF */
   hasCompletePages: boolean;
-  /** Archivace dokumentu v Redisu */
-  archiveDays: 7 | 30;
+  /** Archivace dokumentu v Redisu: 7 (basic), 14 (professional), 30 (complete) */
+  archiveDays: 7 | 14 | 30;
 };
 
 export function resolveTierFeatures(d: StoredContractData): TierFeatures {
@@ -56,7 +56,7 @@ export function resolveTierFeatures(d: StoredContractData): TierFeatures {
   const legacyPremium = Boolean(d.notaryUpsell); // záměrně d.notaryUpsell — ne hasPremiumClauses
   const hasPremiumClauses = legacyPremium || tier === 'professional' || tier === 'complete';
   const hasCompletePages = tier === 'complete';
-  const archiveDays = tier === 'complete' ? 30 : 7;
+  const archiveDays = tier === 'complete' ? 30 : tier === 'professional' ? 14 : 7;
   return { hasPremiumClauses, hasCompletePages, archiveDays };
 }
 
