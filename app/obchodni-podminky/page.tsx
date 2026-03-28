@@ -47,7 +47,7 @@ export default function TermsPage() {
               <p><strong className="text-white">Obchodní jméno:</strong> SmlouvaHned</p>
               <p><strong className="text-white">IČO:</strong> 23660295</p>
               {/* PŘED SPUŠTĚNÍM: doplňte adresu sídla/místa podnikání dle živnostenského rejstříku */}
-              <p><strong className="text-white">Sídlo / místo podnikání:</strong> <span className="text-amber-400">[DOPLNIT PŘED SPUŠTĚNÍM]</span></p>
+              <p><strong className="text-white">Sídlo / místo podnikání:</strong> <span className="text-amber-400">Plzeňská 189, 345 61 Staňkov</span></p>
               <p><strong className="text-white">Webová adresa:</strong> smlouvahned.cz</p>
               <p><strong className="text-white">Kontaktní e-mail:</strong> <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">info@smlouvahned.cz</a></p>
             </div>
