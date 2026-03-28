@@ -129,7 +129,7 @@ export async function POST(req: Request) {
 
     const baseUrl  = process.env.NEXT_PUBLIC_BASE_URL || new URL(req.url).origin;
     const draftId  = randomUUID();
-    const ttl      = (tier === 'complete' || tier === 'premium') ? 30 * 24 * 3600 : 7 * 24 * 3600;
+    const ttl      = (tier === 'complete' || tier === 'premium') ? 30 * 24 * 3600 : tier === 'professional' ? 14 * 24 * 3600 : 7 * 24 * 3600;
 
     // 4. Uložení draftu do Redisu – FAIL-OPEN
     try {
