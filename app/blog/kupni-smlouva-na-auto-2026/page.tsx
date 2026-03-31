@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
+import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 
 export const metadata: Metadata = {
   title: 'Kupní smlouva na auto 2026: Co musí obsahovat a jak se chránit',
@@ -299,6 +301,14 @@ export default function KupniSmlouvaAutoPage() {
         </div>
       </section>
 
+      {/* ── MID-ARTICLE CTA ─────────────────────── */}
+      <ArticleInlineCta
+        title="Prodáváte nebo kupujete auto? Smlouva připravena za 5 minut."
+        body="Formulář pokryje VIN, stav tachometru, STK, emise, prohlášení o vadách i zástavní právo. Nemusíte nic vymýšlet — stačí vyplnit údaje."
+        buttonLabel="Vytvořit kupní smlouvu na auto"
+        href="/auto"
+      />
+
       {/* ── SECTION 6 ───────────────────────────── */}
       <section id="predani-a-registrace" className="mb-12 scroll-mt-6">
         <h2 className="mb-4 text-2xl font-black tracking-tight text-white">6. Předání vozidla a přepis na úřadu</h2>
@@ -357,6 +367,12 @@ export default function KupniSmlouvaAutoPage() {
           ))}
         </div>
       </section>
+
+      {/* ── TRUST BOX ───────────────────────────── */}
+      <ArticleTrustBox
+        generatorSuitable="Standardní soukromý prodej osobního automobilu, motocyklu nebo jiného vozidla mezi fyzickými osobami. Generátor pokryje VIN, STK, stav tachometru, prohlášení o vadách i podmínky předání."
+        lawyerSuitable="Prodej vozidla zatíženého zástavním právem, spory o stav nebo cenu vozidla, fleetový nebo komerční prodej, nebo situace kde existuje riziko podvodu (podezřelá historie, nejasný vlastník)."
+      />
 
       {/* ── FINAL CTA ───────────────────────────── */}
       <div className="rounded-[2rem] border border-amber-500/20 bg-gradient-to-br from-amber-500/10 to-amber-500/3 p-8 text-center">

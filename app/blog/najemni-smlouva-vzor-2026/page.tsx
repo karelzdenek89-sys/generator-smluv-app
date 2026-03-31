@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
+import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 
 export const metadata: Metadata = {
   title: 'Nájemní smlouva vzor 2026: Co musí obsahovat + nejčastější chyby',
@@ -236,6 +238,14 @@ export default function NajemniSmlouvaVzor2026Page() {
         </div>
       </section>
 
+      {/* ── MID-ARTICLE CTA ─────────────────────── */}
+      <ArticleInlineCta
+        title="Nechcete chyby řešit dodatečně?"
+        body="Nájemní smlouva na SmlouvaHned pokrývá všechna kritická místa automaticky — kauci, podmínky výpovědi, Airbnb doložku i smluvní pokuty. Vyplníte formulář, stáhnete PDF."
+        buttonLabel="Vytvořit nájemní smlouvu"
+        href="/najem"
+      />
+
       {/* ── SECTION 4 ───────────────────────────── */}
       <section id="jak-se-chranit" className="mb-12 scroll-mt-6">
         <h2 className="mb-4 text-2xl font-black tracking-tight text-white">4. Jak se chránit jako pronajímatel i nájemce</h2>
@@ -370,6 +380,12 @@ export default function NajemniSmlouvaVzor2026Page() {
           ))}
         </div>
       </section>
+
+      {/* ── TRUST BOX ───────────────────────────── */}
+      <ArticleTrustBox
+        generatorSuitable="Standardní pronájem bytu nebo domu, kdy potřebujete aktuální smlouvu s kaucí, pravidly užívání a smluvními pokutami. Online generátor vás provede formulářem a vydá hotové PDF."
+        lawyerSuitable="Komerční pronájem nebytových prostor, složité podmínky (opční právo, investice nájemce do nemovitosti), probíhající spory nebo velmi vysoká hodnota nájmu."
+      />
 
       {/* ── FINAL CTA ───────────────────────────── */}
       <div className="rounded-[2rem] border border-amber-500/20 bg-gradient-to-br from-amber-500/10 to-amber-500/3 p-8 text-center">

@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
+import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 
 export const metadata: Metadata = {
   title: 'Smlouva o dílo 2026: Co musí obsahovat a nejčastější chyby',
@@ -334,6 +336,14 @@ export default function SmlouvaODiloPage() {
         </div>
       </section>
 
+      {/* ── MID-ARTICLE CTA ─────────────────────── */}
+      <ArticleInlineCta
+        title="Chcete se těmto chybám vyhnout od začátku?"
+        body="Smlouva o dílo na SmlouvaHned obsahuje specifikaci díla, platební milníky, akceptační postup, smluvní pokuty i záruky — ve strukturovaném formuláři, který vás provede každým krokem."
+        buttonLabel="Vytvořit smlouvu o dílo"
+        href="/smlouva-o-dilo"
+      />
+
       {/* ── SECTION 6 ───────────────────────────── */}
       <section id="smlouva-o-dilo-vs-sluzby" className="mb-12 scroll-mt-6">
         <h2 className="mb-4 text-2xl font-black tracking-tight text-white">6. Smlouva o dílo vs. smlouva o poskytování služeb</h2>
@@ -396,6 +406,12 @@ export default function SmlouvaODiloPage() {
           ))}
         </div>
       </section>
+
+      {/* ── TRUST BOX ───────────────────────────── */}
+      <ArticleTrustBox
+        generatorSuitable="Typické zakázky s jasně definovaným dílem — rekonstrukce, webový projekt, grafické práce, řemeslné práce. Generátor pokryje specifikaci, cenu, termín, akceptaci i záruky."
+        lawyerSuitable="Velké stavební zakázky (statisíce až miliony Kč), zákazkový vývoj s komplexními autorskými právy, subdodavatelské řetězce nebo situace kde jedna strana odmítá standardní podmínky."
+      />
 
       {/* ── FINAL CTA ───────────────────────────── */}
       <div className="rounded-[2rem] border border-amber-500/20 bg-gradient-to-br from-amber-500/10 to-amber-500/3 p-8 text-center">
