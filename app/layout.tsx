@@ -12,9 +12,19 @@ export const metadata: Metadata = {
   description:
     'Vygenerujte si nájemní smlouvu, kupní smlouvu, darovací smlouvu, smlouvu o dílo, zápůjčce nebo NDA za 3 minuty. Aktualizováno pro legislativu 2026. Od 249 Kč.',
   keywords: [
-    'nájemní smlouva', 'kupní smlouva', 'darovací smlouva', 'smlouva o dílo',
-    'smlouva o zápůjčce', 'NDA', 'mlčenlivost', 'generátor smluv', 'online smlouva',
-    'šablona smlouvy', 'právní dokument', 'smlouva PDF', '2026',
+    'nájemní smlouva',
+    'kupní smlouva',
+    'darovací smlouva',
+    'smlouva o dílo',
+    'smlouva o zápůjčce',
+    'NDA',
+    'mlčenlivost',
+    'generátor smluv',
+    'online smlouva',
+    'šablona smlouvy',
+    'právní dokument',
+    'smlouva PDF',
+    '2026',
   ],
   authors: [{ name: 'SmlouvaHned', url: BASE_URL }],
   creator: 'SmlouvaHned',
@@ -24,7 +34,8 @@ export const metadata: Metadata = {
     url: BASE_URL,
     siteName: 'SmlouvaHned',
     title: 'SmlouvaHned | Profesionální smlouvy online — od 249 Kč',
-    description: 'Nájemní smlouva, kupní smlouva, NDA a další — s paragrafy OZ, okamžité PDF ke stažení.',
+    description:
+      'Nájemní smlouva, kupní smlouva, NDA a další — s paragrafy OZ, okamžité PDF ke stažení.',
     images: [
       {
         url: '/og-image.png',
@@ -64,6 +75,10 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <meta name="theme-color" content="#05080f" />
+        <meta
+          name="seznam-wmt"
+          content="xQaMUlE4cn6PrnQkBxclmM5kzajCqWAD"
+        />
       </head>
       <body className="antialiased bg-[#05080f] text-slate-200">
         {children}
