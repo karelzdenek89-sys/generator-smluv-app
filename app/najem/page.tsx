@@ -585,6 +585,8 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
         ]}
         ctaLabel="Vytvořit nájemní smlouvu"
         formId="formular"
+        guideHref="/najemni-smlouva"
+        guideLabel="Průvodce nájemní smlouvou — co obsahuje, kdy ji použít a nejčastější chyby"
       />
 
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8">

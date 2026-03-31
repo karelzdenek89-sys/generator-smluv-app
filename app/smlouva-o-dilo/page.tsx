@@ -236,6 +236,8 @@ export default function WorkContractPage() {
         ]}
         ctaLabel="Vytvořit smlouvu o dílo"
         formId="formular"
+        guideHref="/smlouva-o-dilo-online"
+        guideLabel="Průvodce smlouvou o dílo — kdy ji použít, cena díla, sankce a záruky"
       />
 
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8">

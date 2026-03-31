@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 
 export interface ContractLandingBenefit {
   icon: string;
@@ -43,6 +44,10 @@ export interface ContractLandingSectionProps {
   ctaLabel?: string;
   /** ID formuláře pro smooth scroll */
   formId?: string;
+  /** URL průvodce / informační landing stránky pro daný typ smlouvy (volitelné) */
+  guideHref?: string;
+  /** Text odkazu na průvodce — výchozí: "Průvodce k tomuto dokumentu" */
+  guideLabel?: string;
 }
 
 export default function ContractLandingSection({
@@ -58,6 +63,8 @@ export default function ContractLandingSection({
   faq,
   ctaLabel = 'Pokračovat k vytvoření dokumentu',
   formId = 'formular',
+  guideHref,
+  guideLabel = 'Průvodce k tomuto dokumentu',
 }: ContractLandingSectionProps) {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
@@ -116,6 +123,21 @@ export default function ContractLandingSection({
               Co dokument obsahuje
             </button>
           </div>
+
+          {/* Guide link — cross-link to informational landing page */}
+          {guideHref && (
+            <div className="mt-4">
+              <Link
+                href={guideHref}
+                className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-amber-400 transition underline-offset-4 decoration-slate-700 hover:decoration-amber-400/50 underline"
+              >
+                <svg className="h-3.5 w-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                {guideLabel}
+              </Link>
+            </div>
+          )}
         </div>
       </section>
 

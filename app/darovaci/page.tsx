@@ -240,6 +240,8 @@ export default function GiftContractPage() {
         ]}
         ctaLabel="Vytvořit darovací smlouvu"
         formId="formular"
+        guideHref="/darovaci-smlouva"
+        guideLabel="Průvodce darovací smlouvou — peníze, auto, nemovitost a odvolání daru"
       />
 
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8" id="formular">

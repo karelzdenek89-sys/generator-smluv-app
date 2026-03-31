@@ -156,6 +156,8 @@ export default function PracovniPage() {
         ]}
         ctaLabel="Vytvořit pracovní smlouvu"
         formId="formular"
+        guideHref="/pracovni-smlouva"
+        guideLabel="Průvodce pracovní smlouvou — zákonné náležitosti, zkušební doba a ukončení"
       />
 
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8">

@@ -156,6 +156,8 @@ export default function KupniPage() {
         ]}
         ctaLabel="Vytvořit kupní smlouvu na movitou věc"
         formId="formular"
+        guideHref="/kupni-smlouva"
+        guideLabel="Průvodce kupní smlouvou — co musí obsahovat, záruky a nejčastější chyby"
       />
 
       {/* ═══════════════════════════════════════════════════
