@@ -458,13 +458,13 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
       <ContractLandingSection
         badge="§ 2079 a násl. občanského zákoníku"
         h1Main="Kupní smlouva na"
-        h1Accent="vozidlo online"
-        subtitle="Vytvořte kupní smlouvu pro prodej osobního automobilu, motocyklu nebo jiného motorového vozidla. Dokument pokrývá technické parametry vozidla, historii, stav tachometru, STK, emise a veškeré podmínky převodu."
+        h1Accent="auto online"
+        subtitle="Vytvořte kupní smlouvu při prodeji osobního automobilu, motocyklu nebo jiného motorového vozidla. Dokument zachycuje technické parametry, historii, stav tachometru, STK, emise a veškeré podmínky převodu vlastnictví."
         benefits={[
-          { icon: '🚗', text: 'Přizpůsobeno pro prodej osobního vozidla, motocyklu nebo přívěsu' },
-          { icon: '⚖️', text: 'Sestaveno dle § 2079 OZ s rozšířenými klauzulemi pro vozidla' },
-          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
-          { icon: '🔍', text: 'Pokrývá VIN, STK, emise, historii vozidla i stav tachometru' },
+          { icon: '🚗', text: 'Určeno specificky pro prodej automobilu, motocyklu nebo přívěsu' },
+          { icon: '🔍', text: 'Pokrývá VIN, STK, emise, počet vlastníků i stav tachometru' },
+          { icon: '⚖️', text: 'Přechod vlastnictví, odpovědnost za vady a zákonná záruka' },
+          { icon: '📄', text: 'Profesionální PDF ke stažení ihned po zaplacení' },
         ]}
         contents={[
           'Identifikaci prodávajícího a kupujícího',
@@ -492,7 +492,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
           { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
           { q: 'Jak mám přihlásit vozidlo na nového majitele?', a: 'Po podpisu smlouvy musí kupující vozidlo přepsat na dopravním inspektorátu (MDIC) ve svém místě bydliště. K přepisu potřebuje kupní smlouvu, technický průkaz, doklad totožnosti a potvrzení o zaplacení daně z nabytí (pokud se vztahuje).' },
         ]}
-        ctaLabel="Vytvořit kupní smlouvu na vozidlo"
+        ctaLabel="Vytvořit kupní smlouvu na auto"
         formId="formular"
       />
 

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import ContractPreview from '@/app/components/ContractPreview';
+import ContractLandingSection from '@/app/components/ContractLandingSection';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
 
@@ -39,39 +40,6 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-const BENEFITS = [
-  { icon: '⚖️', text: 'Přehledná struktura podle občanského zákoníku' },
-  { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
-  { icon: '🔒', text: 'Vhodné pro běžné soukromé převody' },
-  { icon: '🏠', text: 'Bez nutnosti návštěvy advokátní kanceláře' },
-];
-
-const CONTRACT_CONTENTS = [
-  'Identifikaci prodávajícího a kupujícího',
-  'Přesný popis prodávané věci',
-  'Kupní cenu a způsob úhrady',
-  'Ujednání o stavu věci a známých vadách',
-  'Datum uzavření smlouvy a podpisové části',
-];
-
-const FAQ = [
-  {
-    q: 'Pro jaké situace je tato kupní smlouva vhodná?',
-    a: 'Je vhodná zejména pro běžný prodej movité věci mezi soukromými osobami — například nábytku, elektroniky, sportovního vybavení nebo dalších použitých věcí.',
-  },
-  {
-    q: 'Je tato varianta vhodná i pro prodej vozidla?',
-    a: 'Pro prodej vozidla doporučujeme použít specializovanou kupní smlouvu na vozidlo, která odpovídá této situaci přesněji.',
-  },
-  {
-    q: 'Dostanu dokument ihned po zaplacení?',
-    a: 'Ano, po dokončení objednávky získáte PDF dokument k okamžitému stažení.',
-  },
-  {
-    q: 'Je možné smlouvu upravit podle vlastních údajů?',
-    a: 'Ano, formulář vás provede doplněním údajů o stranách, předmětu prodeje i ceně.',
-  },
-];
 
 export default function KupniPage() {
   const [form, setForm] = useState<FormData>({
@@ -86,7 +54,6 @@ export default function KupniPage() {
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [gdprConsent, setGdprConsent] = useState(false);
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const set = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -132,10 +99,6 @@ export default function KupniPage() {
 
   const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-amber-400';
 
-  const scrollTo = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
     <main className="min-h-screen bg-[#05080f] text-slate-200 font-sans pb-24">
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[#08101e]/90 backdrop-blur">
@@ -152,67 +115,48 @@ export default function KupniPage() {
       </header>
 
       {/* ═══════════════════════════════════════════════════
-          HERO / LANDING SECTION
+          LANDING SECTION (hero, obsah, FAQ)
       ═══════════════════════════════════════════════════ */}
-      <section className="max-w-7xl mx-auto px-4 lg:px-8 pt-14 pb-10">
-        <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-amber-400 mb-5">
-            § 2079 občanského zákoníku
-          </div>
-          <h1 className="text-4xl lg:text-5xl font-black text-white leading-tight tracking-tight mb-4">
-            Kupní smlouva na<br />
-            <span className="text-amber-400">movitou věc</span> online
-          </h1>
-          <p className="text-lg text-slate-400 leading-relaxed mb-8">
-            Vytvořte si kupní smlouvu pro běžný prodej movité věci rychle, přehledně a v profesionální podobě.
-            Vhodné například pro prodej nábytku, elektroniky, sportovního vybavení nebo jiných použitých věcí mezi soukromými osobami.
-          </p>
-
-          {/* Benefits */}
-          <div className="grid sm:grid-cols-2 gap-3 mb-8">
-            {BENEFITS.map((b) => (
-              <div key={b.text} className="flex items-start gap-3 rounded-2xl bg-[#0c1426] border border-slate-800/80 px-4 py-3">
-                <span className="text-xl leading-none mt-0.5">{b.icon}</span>
-                <span className="text-sm text-slate-300 leading-snug">{b.text}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* CTAs */}
-          <div className="flex flex-wrap gap-3">
-            <button
-              onClick={() => scrollTo('formular')}
-              className="rounded-2xl bg-amber-500 px-7 py-3.5 font-bold text-slate-900 text-base hover:bg-amber-400 active:scale-95 transition"
-            >
-              Pokračovat k vytvoření smlouvy →
-            </button>
-            <button
-              onClick={() => scrollTo('obsah')}
-              className="rounded-2xl border border-slate-700 bg-transparent px-7 py-3.5 font-semibold text-slate-300 text-base hover:border-slate-500 hover:text-white transition"
-            >
-              Co smlouva obsahuje
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════
-          CO SMLOUVA OBSAHUJE
-      ═══════════════════════════════════════════════════ */}
-      <section id="obsah" className="max-w-7xl mx-auto px-4 lg:px-8 py-10 border-t border-slate-800/60">
-        <div className="max-w-2xl">
-          <h2 className="text-xl font-black text-white mb-1">Co tato kupní smlouva obsahuje</h2>
-          <p className="text-sm text-slate-500 mb-5">Standardní obsah dokumentu vygenerovaného pro movitou věc.</p>
-          <ul className="space-y-2.5">
-            {CONTRACT_CONTENTS.map((item) => (
-              <li key={item} className="flex items-start gap-3 text-sm text-slate-300">
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500/20 text-amber-400 text-[11px] font-black">✓</span>
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+      <ContractLandingSection
+        badge="§ 2079 občanského zákoníku"
+        h1Main="Kupní smlouva na"
+        h1Accent="movitou věc"
+        h1Suffix="online"
+        subtitle="Vytvořte kupní smlouvu pro soukromý prodej nábytku, elektroniky, jízdního kola, sportovního vybavení nebo jiné movité věci. Dokument přesně zachycuje prodávajícího, kupujícího, stav věci, kupní cenu a podmínky předání."
+        benefits={[
+          { icon: '⚖️', text: 'Sestaveno dle § 2079 OZ — kupní smlouva na movitou věc' },
+          { icon: '🛋️', text: 'Vhodné pro nábytek, elektroniku, kolo, sportovní vybavení i zboží' },
+          { icon: '📋', text: 'Kupní cena, stav věci, vady a podmínky předání v jednom dokumentu' },
+          { icon: '📄', text: 'Profesionální PDF ke stažení ihned po zaplacení' },
+        ]}
+        contents={[
+          'Identifikaci prodávajícího a kupujícího',
+          'Přesný popis prodávané věci včetně stavu',
+          'Kupní cenu a způsob úhrady',
+          'Ujednání o stavu věci a prohlášení o vadách',
+          'Datum a místo předání',
+          'Záruční podmínky a odpovědnost za vady',
+          'Závěrečná ustanovení, GDPR a vyšší moc',
+        ]}
+        whenSuitable={[
+          'Soukromý prodej nábytku, elektroniky nebo domácích spotřebičů',
+          'Prodej jízdního kola, sportovního vybavení nebo hobby vybavení',
+          'Prodej použitého zboží mezi fyzickými osobami',
+          'Případy, kde je třeba písemně doložit kupní cenu a stav věci',
+        ]}
+        whenOther={[
+          { label: 'Kupní smlouva na auto', href: '/auto', text: 'Pro prodej osobního automobilu, motocyklu nebo jiného motorového vozidla — specializovaný dokument s VIN, STK a emisemi.' },
+        ]}
+        faq={[
+          { q: 'Pro jaké situace je tato kupní smlouva vhodná?', a: 'Je určena pro soukromý prodej movité věci — například nábytku, elektroniky, kola, sportovního vybavení nebo jiných použitých věcí mezi fyzickými osobami.' },
+          { q: 'Je tato varianta vhodná i pro prodej auta?', a: 'Ne — pro prodej motorového vozidla doporučujeme specializovanou kupní smlouvu na auto, která pokrývá VIN, STK, emise a historii vozidla.' },
+          { q: 'Musím smlouvu uzavřít písemně?', a: 'Zákon písemnou formu kupní smlouvy u movité věci výslovně nevyžaduje, ale silně ji doporučujeme. Písemná smlouva je rozhodujícím důkazem v případě sporu o stav věci, cenu nebo podmínky předání.' },
+          { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
+          { q: 'Co mám uvést do popisu předmětu?', a: 'Čím přesnější popis, tím silnější smlouva. Uveďte název, výrobce, model, rok výroby, barvu, rozměry nebo jiné identifikační znaky. Zároveň uveďte stav věci a všechny známé vady.' },
+        ]}
+        ctaLabel="Vytvořit kupní smlouvu na movitou věc"
+        formId="formular"
+      />
 
       {/* ═══════════════════════════════════════════════════
           FORMULÁŘ + SIDEBAR
@@ -483,32 +427,6 @@ export default function KupniPage() {
           </div>
         </div>
       </div>
-
-      {/* ═══════════════════════════════════════════════════
-          FAQ
-      ═══════════════════════════════════════════════════ */}
-      <section className="max-w-7xl mx-auto px-4 lg:px-8 py-14 border-t border-slate-800/60">
-        <h2 className="text-2xl font-black text-white mb-2">Časté dotazy</h2>
-        <p className="text-sm text-slate-500 mb-8">Odpovědi na nejčastější otázky k této smlouvě.</p>
-        <div className="max-w-2xl space-y-3">
-          {FAQ.map((item, idx) => (
-            <div key={idx} className="rounded-2xl border border-slate-800/80 bg-[#0c1426] overflow-hidden">
-              <button
-                className="w-full flex items-center justify-between px-5 py-4 text-left"
-                onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-              >
-                <span className="text-sm font-semibold text-white pr-4">{item.q}</span>
-                <span className={`text-amber-400 text-lg transition-transform duration-200 shrink-0 ${openFaq === idx ? 'rotate-45' : ''}`}>+</span>
-              </button>
-              {openFaq === idx && (
-                <div className="px-5 pb-4 text-sm text-slate-400 leading-relaxed border-t border-slate-800/60 pt-3">
-                  {item.a}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
 
     </main>
   );
