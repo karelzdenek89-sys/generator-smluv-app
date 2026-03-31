@@ -10,6 +10,26 @@ export const metadata: Metadata = {
 
 const articles = [
   {
+    slug: 'smlouva-o-dilo-2026',
+    title: 'Smlouva o dílo 2026: Co musí obsahovat a nejčastější chyby',
+    excerpt:
+      'Průvodce smlouvou o dílo dle § 2586 OZ — specifikace díla, cena, termín, akceptační postup, smluvní pokuty a záruky. Jak se chránit jako objednatel i zhotovitel.',
+    category: 'Podnikání',
+    readTime: '10 min',
+    date: '2026-03-20',
+    tag: 'Smlouva o dílo',
+  },
+  {
+    slug: 'kupni-smlouva-na-auto-2026',
+    title: 'Kupní smlouva na auto 2026: Co musí obsahovat a jak se chránit',
+    excerpt:
+      'Zákonné náležitosti kupní smlouvy na auto — VIN, stav tachometru, STK, prohlášení o vadách. Jak ověřit vozidlo a nejčastější chyby při prodeji ojetého vozu.',
+    category: 'Vozidla',
+    readTime: '9 min',
+    date: '2026-03-15',
+    tag: 'Kupní smlouva na auto',
+  },
+  {
     slug: 'najemni-smlouva-vzor-2026',
     title: 'Nájemní smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
     excerpt:
