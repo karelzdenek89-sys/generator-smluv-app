@@ -187,6 +187,7 @@ export default function Home() {
             <Link href="#vyber-smlouvy" className="hover:text-white transition">Smlouvy</Link>
             <Link href="#jak-to-funguje" className="hover:text-white transition">Jak to funguje</Link>
             <Link href="#cenik" className="hover:text-white transition">Ceník</Link>
+            <Link href="/blog" className="hover:text-white transition">Blog</Link>
             <Link href="#faq" className="hover:text-white transition">FAQ</Link>
             <Link href="/zakaznicka-zona" className="hover:text-white transition">Moje dokumenty</Link>
           </nav>
@@ -212,7 +213,7 @@ export default function Home() {
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link href="#vyber-smlouvy"
               className="inline-flex items-center justify-center rounded-2xl bg-amber-500 px-8 py-4 text-base font-black uppercase tracking-tight text-black shadow-[0_0_40px_rgba(245,158,11,0.28)] transition hover:bg-amber-400">
-              Vytvořit smlouvu →
+              Vybrat typ smlouvy →
             </Link>
             <Link href="#jak-to-funguje" className="text-sm text-slate-400 hover:text-white transition">
               Jak to funguje? ↓
@@ -242,6 +243,33 @@ export default function Home() {
                 <span>{item.label}</span>
               </div>
             ))}
+          </div>
+
+          {/* Factual trust bar */}
+          <div className="mt-8 inline-flex flex-wrap items-center justify-center gap-x-5 gap-y-3 rounded-2xl border border-white/8 bg-white/3 px-6 py-3.5">
+            {/* Secure payment */}
+            <div className="flex items-center gap-1.5 text-sm text-slate-400">
+              <svg className="h-3.5 w-3.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+              </svg>
+              <span>Bezpečná platba přes Stripe</span>
+            </div>
+            <div className="hidden h-4 w-px bg-white/10 sm:block" />
+            {/* PDF ihned */}
+            <div className="flex items-center gap-1.5 text-sm text-slate-400">
+              <svg className="h-3.5 w-3.5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+              </svg>
+              <span>PDF ihned po zaplacení</span>
+            </div>
+            <div className="hidden h-4 w-px bg-white/10 sm:block" />
+            {/* Legislativa */}
+            <div className="flex items-center gap-1.5 text-sm text-slate-400">
+              <svg className="h-3.5 w-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span>Česká legislativa 2026</span>
+            </div>
           </div>
         </section>
 
@@ -286,9 +314,6 @@ export default function Home() {
             ))}
           </div>
 
-          <div className="mt-5 rounded-2xl border border-white/5 bg-white/2 px-6 py-4 text-xs leading-relaxed text-slate-500 text-center">
-            <span className="font-bold text-slate-400">Upozornění:</span> Dokumenty jsou standardní smluvní vzory pro typické situace a nejsou náhradou za individuální právní poradenství. Pro složitější nebo nestandardní případy doporučujeme konzultaci s advokátem.
-          </div>
         </section>
 
         {/* Jak to funguje */}
@@ -386,6 +411,52 @@ export default function Home() {
 
           <div className="mt-4 rounded-2xl border border-amber-500/15 bg-amber-500/5 px-6 py-4 text-sm text-slate-400">
             <span className="font-bold text-amber-400">Vhodné pro:</span> Standardní situace, kde se strany dohodly na podmínkách a potřebují je správně zachytit písemně. <span className="text-slate-300">Není náhradou za individuální právní poradenství</span> — pro složitější případy, spory nebo nestandardní podmínky doporučujeme advokáta.
+          </div>
+        </section>
+
+        {/* Proč lidé volí SmlouvaHned */}
+        <section className="mt-16 md:mt-20">
+          <div className="mb-8 text-center">
+            <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Proč to funguje</div>
+            <h2 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">Proč lidé volí SmlouvaHned</h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-400">
+              Platná smlouva nemusí znamenat návštěvu kanceláře. Tady je proč si ji lidé vyřeší sami.
+            </p>
+          </div>
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            {[
+              {
+                icon: '⚡',
+                title: 'Hotovo do 10 minut',
+                desc: 'Formulář je přehledný a strukturovaný. Vyplníte jej i bez právního vzdělání — průvodce vás provede každým krokem.',
+                tag: 'Rychlost',
+              },
+              {
+                icon: '📄',
+                title: 'PDF rovnou k podpisu',
+                desc: 'Žádné prázdné kolonky ani šablony k přepisování. Výsledek je kompletní dokument — stačí vytisknout nebo zaslat e-mailem.',
+                tag: 'Výstup',
+              },
+              {
+                icon: '⚖️',
+                title: 'Sestaveno dle platného OZ',
+                desc: 'Každý typ smlouvy vychází z příslušných ustanovení občanského zákoníku. Obsah se aktualizuje při každé legislativní změně.',
+                tag: 'Právní základ',
+              },
+              {
+                icon: '🔒',
+                title: 'Bez nutnosti advokáta',
+                desc: 'Pro standardní situace, kde se strany dohodly, není právník nutný. Online řešení šetří čas i desítky set korun za sepsání.',
+                tag: 'Jednoduchost',
+              },
+            ].map(card => (
+              <div key={card.title} className="flex flex-col rounded-3xl border border-white/8 bg-[#0c1426] p-7">
+                <div className="mb-1 text-[10px] font-black uppercase tracking-[0.2em] text-amber-400">{card.tag}</div>
+                <div className="mb-3 text-2xl">{card.icon}</div>
+                <h3 className="mb-2 text-base font-black text-white leading-snug">{card.title}</h3>
+                <p className="text-sm leading-relaxed text-slate-400 flex-grow">{card.desc}</p>
+              </div>
+            ))}
           </div>
         </section>
 
@@ -731,6 +802,7 @@ export default function Home() {
                   <Link href="#vyber-smlouvy" className="hover:text-white transition">Smlouvy</Link>
                   <Link href="#jak-to-funguje" className="hover:text-white transition">Jak to funguje</Link>
                   <Link href="#cenik" className="hover:text-white transition">Ceník</Link>
+                  <Link href="/blog" className="hover:text-white transition">Blog</Link>
                   <Link href="#faq" className="hover:text-white transition">FAQ</Link>
                   <Link href="/zakaznicka-zona" className="hover:text-white transition">Moje dokumenty</Link>
                 </div>
@@ -771,6 +843,13 @@ export default function Home() {
                   <Link href="/plna-moc" className="hover:text-white transition">Plná moc</Link>
                   <Link href="/obchodni-podminky" className="hover:text-white transition">Obchodní podmínky</Link>
                   <Link href="/gdpr" className="hover:text-white transition">Ochrana osobních údajů</Link>
+                </div>
+                <div className="mt-5 text-xs font-black uppercase tracking-[0.18em] text-slate-500">Průvodce & Blog</div>
+                <div className="mt-3 flex flex-col gap-2 text-sm text-slate-400">
+                  <Link href="/blog" className="hover:text-white transition">Všechny články</Link>
+                  <Link href="/blog/najemni-smlouva-vzor-2026" className="hover:text-white transition">Nájemní smlouva 2026</Link>
+                  <Link href="/blog/kupni-smlouva-na-auto-2026" className="hover:text-white transition">Kupní smlouva na auto</Link>
+                  <Link href="/blog/smlouva-o-dilo-2026" className="hover:text-white transition">Smlouva o dílo 2026</Link>
                 </div>
               </div>
             </div>
@@ -817,11 +896,10 @@ export default function Home() {
           </div>
 
           <div className="mt-5 border-t border-white/8 pt-5 text-xs leading-relaxed text-slate-500">
-            <p>
-              Dokumenty na tomto webu slouží pro typické situace a nepředstavují individuální právní službu ani právní zastoupení.
-              U složitějších případů doporučujeme konzultaci s advokátem.
-            </p>
-            <p className="mt-3">© 2026 SmlouvaHned. Všechna práva vyhrazena.</p>
+            <div className="mb-3 rounded-xl border border-white/5 bg-white/2 px-4 py-3 text-slate-600">
+              <span className="font-semibold text-slate-500">Upozornění:</span> Dokumenty jsou standardní smluvní vzory pro typické situace a nejsou náhradou za individuální právní poradenství. Pro složitější nebo nestandardní případy, probíhající spory nebo transakce s vysokou hodnotou doporučujeme konzultaci s advokátem.
+            </div>
+            <p>© 2026 SmlouvaHned. Všechna práva vyhrazena.</p>
           </div>
         </footer>
 
