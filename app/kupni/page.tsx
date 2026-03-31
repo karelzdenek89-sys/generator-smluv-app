@@ -39,6 +39,40 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
+const BENEFITS = [
+  { icon: '⚖️', text: 'Přehledná struktura podle občanského zákoníku' },
+  { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+  { icon: '🔒', text: 'Vhodné pro běžné soukromé převody' },
+  { icon: '🏠', text: 'Bez nutnosti návštěvy advokátní kanceláře' },
+];
+
+const CONTRACT_CONTENTS = [
+  'Identifikaci prodávajícího a kupujícího',
+  'Přesný popis prodávané věci',
+  'Kupní cenu a způsob úhrady',
+  'Ujednání o stavu věci a známých vadách',
+  'Datum uzavření smlouvy a podpisové části',
+];
+
+const FAQ = [
+  {
+    q: 'Pro jaké situace je tato kupní smlouva vhodná?',
+    a: 'Je vhodná zejména pro běžný prodej movité věci mezi soukromými osobami — například nábytku, elektroniky, sportovního vybavení nebo dalších použitých věcí.',
+  },
+  {
+    q: 'Je tato varianta vhodná i pro prodej vozidla?',
+    a: 'Pro prodej vozidla doporučujeme použít specializovanou kupní smlouvu na vozidlo, která odpovídá této situaci přesněji.',
+  },
+  {
+    q: 'Dostanu dokument ihned po zaplacení?',
+    a: 'Ano, po dokončení objednávky získáte PDF dokument k okamžitému stažení.',
+  },
+  {
+    q: 'Je možné smlouvu upravit podle vlastních údajů?',
+    a: 'Ano, formulář vás provede doplněním údajů o stranách, předmětu prodeje i ceně.',
+  },
+];
+
 export default function KupniPage() {
   const [form, setForm] = useState<FormData>({
     sellerName: '', sellerId: '', sellerAddress: '', sellerEmail: '', sellerPhone: '', sellerBankAccount: '',
@@ -52,6 +86,7 @@ export default function KupniPage() {
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [gdprConsent, setGdprConsent] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const set = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -62,12 +97,13 @@ export default function KupniPage() {
   const risk = useMemo(() => {
     let score = 100;
     const warnings: { text: string; level: 'high' | 'medium' | 'low' }[] = [];
-    if (!form.sellerId || !form.buyerId) { score -= 20; warnings.push({ text: 'Chybí identifikace stran — nízká vymahatelnost.', level: 'high' }); }
-    if (!form.price) { score -= 25; warnings.push({ text: 'Neuvedena kupní cena — smlouva je neúplná.', level: 'high' }); }
-    if (!form.handoverDate) { score -= 10; warnings.push({ text: 'Není stanoven termín předání.', level: 'medium' }); }
-    if (form.itemType === 'car' && !form.carVIN) { score -= 15; warnings.push({ text: 'U vozidla chybí VIN — nelze ověřit historii.', level: 'high' }); }
-    if (!form.knownDefects) { score -= 8; warnings.push({ text: 'Nevyplněny vady — doporučujeme uvést "bez vad" nebo konkrétní vady.', level: 'low' }); }
-    return { score: Math.max(0, score), warnings, label: score >= 85 ? 'Dobré nastavení' : score >= 65 ? 'Průměrná ochrana' : 'Slabší ochrana' };
+    if (!form.sellerId || !form.buyerId) { score -= 20; warnings.push({ text: 'Doplňte identifikační údaje pro úplnost smlouvy.', level: 'high' }); }
+    if (!form.price) { score -= 25; warnings.push({ text: 'Doplňte kupní cenu — jde o podstatnou náležitost smlouvy.', level: 'high' }); }
+    if (!form.handoverDate) { score -= 10; warnings.push({ text: 'Doporučujeme doplnit datum předání věci.', level: 'medium' }); }
+    if (form.itemType === 'car' && !form.carVIN) { score -= 15; warnings.push({ text: 'Doplňte VIN vozidla pro jednoznačnou identifikaci.', level: 'high' }); }
+    if (!form.knownDefects) { score -= 8; warnings.push({ text: 'Doporučujeme uvést stav věci nebo konkrétní vady.', level: 'low' }); }
+    const label = score >= 85 ? 'Dobré nastavení' : score >= 65 ? 'Průměrná ochrana' : 'Doporučená doplnění';
+    return { score: Math.max(0, score), warnings, label };
   }, [form]);
 
   const previewSections = useMemo(() => {
@@ -94,7 +130,11 @@ export default function KupniPage() {
     } catch { alert('Chyba platební brány. Zkuste to prosím znovu.'); setIsProcessing(false); }
   };
 
-  const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-rose-400';
+  const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-amber-400';
+
+  const scrollTo = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <main className="min-h-screen bg-[#05080f] text-slate-200 font-sans pb-24">
@@ -111,7 +151,78 @@ export default function KupniPage() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8">
+      {/* ═══════════════════════════════════════════════════
+          HERO / LANDING SECTION
+      ═══════════════════════════════════════════════════ */}
+      <section className="max-w-7xl mx-auto px-4 lg:px-8 pt-14 pb-10">
+        <div className="max-w-2xl">
+          <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-amber-400 mb-5">
+            § 2079 občanského zákoníku
+          </div>
+          <h1 className="text-4xl lg:text-5xl font-black text-white leading-tight tracking-tight mb-4">
+            Kupní smlouva na<br />
+            <span className="text-amber-400">movitou věc</span> online
+          </h1>
+          <p className="text-lg text-slate-400 leading-relaxed mb-8">
+            Vytvořte si kupní smlouvu pro běžný prodej movité věci rychle, přehledně a v profesionální podobě.
+            Vhodné například pro prodej nábytku, elektroniky, sportovního vybavení nebo jiných použitých věcí mezi soukromými osobami.
+          </p>
+
+          {/* Benefits */}
+          <div className="grid sm:grid-cols-2 gap-3 mb-8">
+            {BENEFITS.map((b) => (
+              <div key={b.text} className="flex items-start gap-3 rounded-2xl bg-[#0c1426] border border-slate-800/80 px-4 py-3">
+                <span className="text-xl leading-none mt-0.5">{b.icon}</span>
+                <span className="text-sm text-slate-300 leading-snug">{b.text}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* CTAs */}
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={() => scrollTo('formular')}
+              className="rounded-2xl bg-amber-500 px-7 py-3.5 font-bold text-slate-900 text-base hover:bg-amber-400 active:scale-95 transition"
+            >
+              Pokračovat k vytvoření smlouvy →
+            </button>
+            <button
+              onClick={() => scrollTo('obsah')}
+              className="rounded-2xl border border-slate-700 bg-transparent px-7 py-3.5 font-semibold text-slate-300 text-base hover:border-slate-500 hover:text-white transition"
+            >
+              Co smlouva obsahuje
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════
+          CO SMLOUVA OBSAHUJE
+      ═══════════════════════════════════════════════════ */}
+      <section id="obsah" className="max-w-7xl mx-auto px-4 lg:px-8 py-10 border-t border-slate-800/60">
+        <div className="max-w-2xl">
+          <h2 className="text-xl font-black text-white mb-1">Co tato kupní smlouva obsahuje</h2>
+          <p className="text-sm text-slate-500 mb-5">Standardní obsah dokumentu vygenerovaného pro movitou věc.</p>
+          <ul className="space-y-2.5">
+            {CONTRACT_CONTENTS.map((item) => (
+              <li key={item} className="flex items-start gap-3 text-sm text-slate-300">
+                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500/20 text-amber-400 text-[11px] font-black">✓</span>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════
+          FORMULÁŘ + SIDEBAR
+      ═══════════════════════════════════════════════════ */}
+      <div id="formular" className="max-w-7xl mx-auto px-4 py-8 lg:px-8">
+        <div className="mb-6 border-t border-slate-800/60 pt-8">
+          <h2 className="text-lg font-black text-white uppercase tracking-wide">Vyplňte údaje smlouvy</h2>
+          <p className="text-sm text-slate-500 mt-1">Všechna povinná pole jsou označena *</p>
+        </div>
+
         <div className="grid lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-7 space-y-6">
 
@@ -303,8 +414,8 @@ export default function KupniPage() {
               {risk.warnings.length === 0
                 ? <p className="text-sm text-emerald-400">✓ Smlouva je kompletní a silná.</p>
                 : <ul className="space-y-2">{risk.warnings.map((w, i) => (
-                    <li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-rose-500/10 text-rose-300' : w.level === 'medium' ? 'bg-amber-500/10 text-amber-300' : 'bg-slate-700/40 text-slate-400'}`}>
-                      {w.level === 'high' ? '⚠ ' : w.level === 'medium' ? '▲ ' : '○ '}{w.text}
+                    <li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-amber-500/10 text-amber-300' : w.level === 'medium' ? 'bg-slate-700/40 text-slate-400' : 'bg-slate-700/40 text-slate-400'}`}>
+                      {w.level === 'high' ? '○ ' : '○ '}{w.text}
                     </li>
                   ))}</ul>
               }
@@ -318,9 +429,28 @@ export default function KupniPage() {
                 {form.tier !== 'basic' && <div className="flex justify-between"><span className="text-slate-400">{form.tier === 'complete' ? 'Kompletní balíček' : 'Rozšířená právní ochrana'}</span><span className="text-amber-400 font-bold">{form.tier === 'complete' ? '+500 Kč' : '+200 Kč'}</span></div>}
                 <div className="border-t border-slate-700 pt-2 flex justify-between font-bold text-lg"><span>Celkem</span><span className="text-amber-400">{form.tier === 'complete' ? '749' : form.tier === 'professional' ? '399' : '249'} Kč</span></div>
               </div>
+
+              {/* Trust blok */}
+              <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3">
+                <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Součástí výstupu je</div>
+                <ul className="space-y-1.5">
+                  {[
+                    'Profesionálně strukturované PDF',
+                    'Připraveno k okamžitému stažení',
+                    'Vhodné pro standardní soukromé převody',
+                    'Přehledné uspořádání smluvních ustanovení',
+                  ].map(item => (
+                    <li key={item} className="flex items-start gap-2 text-xs text-slate-400">
+                      <span className="text-amber-500 mt-0.5">✓</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
               {(!form.sellerName || !form.buyerName || !form.price) && !isProcessing && (
-                <div className="mt-4 rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-3 text-xs text-rose-300 space-y-1">
-                  <div className="font-semibold mb-1">Před platbou vyplňte:</div>
+                <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3 text-xs text-slate-400 space-y-1">
+                  <div className="font-semibold mb-1 text-slate-300">Před platbou vyplňte:</div>
                   {!form.sellerName && <div>• Jméno prodávajícího</div>}
                   {!form.buyerName && <div>• Jméno kupujícího</div>}
                   {!form.price && <div>• Kupní cena (sekce 04)</div>}
@@ -353,6 +483,33 @@ export default function KupniPage() {
           </div>
         </div>
       </div>
+
+      {/* ═══════════════════════════════════════════════════
+          FAQ
+      ═══════════════════════════════════════════════════ */}
+      <section className="max-w-7xl mx-auto px-4 lg:px-8 py-14 border-t border-slate-800/60">
+        <h2 className="text-2xl font-black text-white mb-2">Časté dotazy</h2>
+        <p className="text-sm text-slate-500 mb-8">Odpovědi na nejčastější otázky k této smlouvě.</p>
+        <div className="max-w-2xl space-y-3">
+          {FAQ.map((item, idx) => (
+            <div key={idx} className="rounded-2xl border border-slate-800/80 bg-[#0c1426] overflow-hidden">
+              <button
+                className="w-full flex items-center justify-between px-5 py-4 text-left"
+                onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+              >
+                <span className="text-sm font-semibold text-white pr-4">{item.q}</span>
+                <span className={`text-amber-400 text-lg transition-transform duration-200 shrink-0 ${openFaq === idx ? 'rotate-45' : ''}`}>+</span>
+              </button>
+              {openFaq === idx && (
+                <div className="px-5 pb-4 text-sm text-slate-400 leading-relaxed border-t border-slate-800/60 pt-3">
+                  {item.a}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+
     </main>
   );
 }
