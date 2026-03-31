@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
@@ -50,14 +51,14 @@ export default function PlnaMocPage() {
   const risk = useMemo(() => {
     let score = 100;
     const warnings: { text: string; level: 'high' | 'medium' | 'low' }[] = [];
-    if (!form.principalName || !form.principalId) { score -= 20; warnings.push({ text: 'Chybí identifikace zmocnitele.', level: 'high' }); }
-    if (!form.agentName || !form.agentId) { score -= 20; warnings.push({ text: 'Chybí identifikace zmocněnce.', level: 'high' }); }
-    if (form.poaType === 'general' && !form.customScope) { score -= 25; warnings.push({ text: 'Rozsah zmocnění není specifikován.', level: 'high' }); }
+    if (!form.principalName || !form.principalId) { score -= 20; warnings.push({ text: 'Doplňte identifikaci zmocnitele.', level: 'high' }); }
+    if (!form.agentName || !form.agentId) { score -= 20; warnings.push({ text: 'Doplňte identifikaci zmocněnce.', level: 'high' }); }
+    if (form.poaType === 'general' && !form.customScope) { score -= 25; warnings.push({ text: 'Doplňte rozsah zmocnění.', level: 'high' }); }
     if (!form.validUntil && !form.singleUse) { score -= 5; warnings.push({ text: 'Platnost plné moci není omezena (platí do odvolání).', level: 'low' }); }
     if (form.notaryUpsell === false && (form.poaType === 'property' || form.poaType === 'company')) {
       score -= 10; warnings.push({ text: 'Pro nemovitosti a firmy doporučujeme úředně ověřený podpis (ověřená plná moc).', level: 'medium' });
     }
-    return { score: Math.max(0, score), warnings, label: score >= 85 ? 'Kompletní plná moc' : score >= 65 ? 'Doplňte' : 'Neúplná' };
+    return { score: Math.max(0, score), warnings, label: score >= 85 ? 'Kompletní plná moc' : score >= 65 ? 'Doporučená doplnění' : 'Doporučená doplnění' };
   }, [form]);
 
   const previewSections = useMemo(() => {
@@ -90,6 +91,46 @@ export default function PlnaMocPage() {
     general: 'Obecná plná moc', property: 'Nemovitost', court: 'Soud / spor', company: 'Jednání za firmu', bank: 'Bankovní záležitosti',
   };
 
+  const landingProps = {
+    badge: '§ 441 a násl. občanského zákoníku',
+    h1Main: 'Plná moc',
+    h1Accent: 'online',
+    subtitle: 'Vytvořte plnou moc pro zastoupení při právních jednáních, správě nemovitostí, zastupování v soudu nebo přístupu k bankovním účtům. Dokument jasně vymezuje rozsah zmocnění, dobu platnosti a případnou substituci.',
+    benefits: [
+      { icon: '⚖️', text: 'Sestaveno dle § 441–456 OZ — zastoupení na základě plné moci' },
+      { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+      { icon: '🔒', text: 'Pokrývá obecnou i speciální plnou moc (nemovitost, soud, banka)' },
+      { icon: '📅', text: 'Jasně vymezená platnost a případné omezení zmocnění' },
+    ],
+    contents: [
+      'Identifikaci zmocnitele (kdo plnou moc uděluje)',
+      'Identifikaci zmocněnce (komu je zmocnění uděleno)',
+      'Přesné vymezení rozsahu zmocnění',
+      'Dobu platnosti plné moci',
+      'Podmínky pro substitut (přenesení zmocnění)',
+      'Platnost pro jednorázové nebo opakované jednání',
+      'Závěrečná ustanovení a GDPR',
+    ],
+    whenSuitable: [
+      'Zastupování při prodeji nebo koupi nemovitosti',
+      'Zastupování v soudním nebo správním řízení',
+      'Správa bankovního účtu v nepřítomnosti majitele',
+      'Jednání jménem firmy nebo zastupování při podpisech dokumentů',
+    ],
+    whenOther: [
+      { label: 'Smlouva o spolupráci', href: '/spoluprace', text: 'Pokud potřebujete dlouhodobý rámec spolupráce, nikoli jednorázové zmocnění.' },
+    ],
+    faq: [
+      { q: 'Kdy je nutné ověřit podpis na plné moci?', a: 'Úřední ověření podpisu (legalizace) je vyžadováno tam, kde to zákon nebo příjemce dokumentu stanoví — typicky při prodeji nemovitostí, zastupování u katastrálního úřadu nebo při bankovních operacích. Pro běžné zastoupení při každodenních jednáních ověření není povinné.' },
+      { q: 'Jak dlouho platí plná moc?', a: 'Plná moc platí po dobu uvedenou v dokumentu, nebo do jejího odvolání zmocnitelem. Bez časového omezení platí do odvolání nebo smrti zmocnitele.' },
+      { q: 'Může zmocněnec přenést zmocnění na další osobu?', a: 'Pouze pokud to plná moc výslovně umožňuje — tzv. substituce. Bez tohoto ujednání nemůže zmocněnec nikoho dalšího zmocnit.' },
+      { q: 'Je generální plná moc riskantní?', a: 'Plná moc s neomezeným rozsahem zmocnění je velmi silný dokument. Doporučujeme vždy přesně vymezit, k jakým jednáním je zmocněnec oprávněn — omezuje se tak riziko zneužití.' },
+      { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
+    ],
+    ctaLabel: 'Vytvořit plnou moc',
+    formId: 'formular',
+  };
+
   return (
     <main className="min-h-screen bg-[#05080f] text-slate-200 font-sans pb-24">
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[#08101e]/90 backdrop-blur">
@@ -102,7 +143,14 @@ export default function PlnaMocPage() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8">
+      <ContractLandingSection {...landingProps} />
+
+      <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8" id="formular">
+        <div className="mb-6 border-t border-slate-800/60 pt-8">
+          <h2 className="text-lg font-black text-white uppercase tracking-wide">Vyplňte údaje dokumentu</h2>
+          <p className="text-sm text-slate-500 mt-1">Všechna povinná pole jsou označena *</p>
+        </div>
+
         <div className="grid lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-7 space-y-6">
 
@@ -239,7 +287,7 @@ export default function PlnaMocPage() {
                 <div><div className={`font-bold ${scoreColor}`}>{risk.label}</div><div className="text-xs text-slate-500">ze 100 bodů</div></div>
               </div>
               {risk.warnings.length === 0 ? <p className="text-sm text-emerald-400">✓ Plná moc je kompletní.</p>
-                : <ul className="space-y-2">{risk.warnings.map((w, i) => (<li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-rose-500/10 text-rose-300' : w.level === 'medium' ? 'bg-amber-500/10 text-amber-300' : 'bg-slate-700/40 text-slate-400'}`}>{w.level === 'high' ? '⚠ ' : w.level === 'medium' ? '▲ ' : '○ '}{w.text}</li>))}</ul>}
+                : <ul className="space-y-2">{risk.warnings.map((w, i) => (<li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-amber-500/10 text-amber-300' : w.level === 'medium' ? 'bg-amber-500/10 text-amber-300' : 'bg-slate-700/40 text-slate-400'}`}>{w.level === 'high' ? '⚠ ' : w.level === 'medium' ? '▲ ' : '○ '}{w.text}</li>))}</ul>}
             </div>
             <div className={cardClass}>
               <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90 mb-4">Shrnutí</div>
@@ -249,12 +297,22 @@ export default function PlnaMocPage() {
                 <div className="border-t border-slate-700 pt-2 flex justify-between font-bold text-lg"><span>Celkem</span><span className="text-amber-400">{form.tier === 'complete' ? '749' : form.tier === 'professional' ? '399' : '249'} Kč</span></div>
               </div>
               {(!form.principalName || !form.agentName) && !isProcessing && (
-                <div className="mt-4 rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-3 text-xs text-rose-300 space-y-1">
+                <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3 text-xs text-slate-400 space-y-1">
                   <div className="font-semibold mb-1">Před platbou vyplňte:</div>
                   {!form.principalName && <div>• Jméno zmocnitele</div>}
                   {!form.agentName && <div>• Jméno zmocněnce</div>}
                 </div>
               )}
+              <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3">
+                <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Součástí výstupu je</div>
+                <ul className="space-y-1.5">
+                  {['Profesionálně strukturované PDF', 'Připraveno k okamžitému stažení', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
+                    <li key={item} className="flex items-start gap-2 text-xs text-slate-400">
+                      <span className="text-amber-500 mt-0.5">✓</span>{item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
               <label className="flex items-start gap-3 mt-4 mb-4 cursor-pointer">
                 <input type="checkbox" checked={gdprConsent} onChange={(e) => setGdprConsent(e.target.checked)} className="mt-1 h-4 w-4 accent-amber-500 flex-shrink-0" />
                 <span className="text-xs text-slate-400 leading-relaxed">

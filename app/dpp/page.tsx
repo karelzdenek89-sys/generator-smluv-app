@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import ContractPreview from '@/app/components/ContractPreview';
+import ContractLandingSection from '@/app/components/ContractLandingSection';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
 
@@ -61,10 +62,10 @@ export default function DppPage() {
     let score = 100;
     const warnings: { text: string; level: 'high' | 'medium' | 'low' }[] = [];
     if (!form.taskDescription) { score -= 25; warnings.push({ text: 'Popis pracovního úkolu je povinný.', level: 'high' }); }
-    if (!form.estimatedHours) { score -= 15; warnings.push({ text: 'Chybí počet hodin — limit je 300 hod./rok u jednoho zaměstnavatele.', level: 'medium' }); }
+    if (!form.estimatedHours) { score -= 15; warnings.push({ text: 'Doplňte počet hodin — limit je 300 hod./rok u jednoho zaměstnavatele.', level: 'medium' }); }
     if (Number(form.estimatedHours) > 300) { score -= 30; warnings.push({ text: 'Počet hodin překračuje zákonný limit 300 hod./rok (§ 75 ZP)!', level: 'high' }); }
-    if (!form.totalRemuneration && !form.hourlyRate) { score -= 15; warnings.push({ text: 'Neuvedena odměna.', level: 'medium' }); }
-    return { score: Math.max(0, score), warnings, label: score >= 85 ? 'Bez rizik' : score >= 65 ? 'Drobná rizika' : 'Pozor — rizika' };
+    if (!form.totalRemuneration && !form.hourlyRate) { score -= 15; warnings.push({ text: 'Doporučujeme doplnit odměnu.', level: 'medium' }); }
+    return { score: Math.max(0, score), warnings, label: score >= 85 ? 'Bez rizik' : score >= 65 ? 'Drobná rizika' : 'Doporučená doplnění' };
   }, [form]);
 
   const previewSections = useMemo(() => {
@@ -107,141 +108,189 @@ export default function DppPage() {
         </div>
       </header>
 
+      <ContractLandingSection
+        badge="§ 75 zákoníku práce"
+        h1Main="Dohoda o provedení"
+        h1Accent="práce online"
+        subtitle="Vytvořte dohodu o provedení práce (DPP) pro jednorázový nebo opakující se úkol mimo pracovní poměr. Vhodné pro brigády, sezónní výpomoc i krátkodobé projekty. Rozsah práce nesmí překročit 300 hodin ročně u jednoho zaměstnavatele."
+        benefits={[
+          { icon: '⚖️', text: 'Sestaveno dle § 75–76 zákoníku práce (zákon č. 262/2006 Sb.)' },
+          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+          { icon: '👷', text: 'Vhodné pro brigády, výpomoci a jednorázové úkoly' },
+          { icon: '🔒', text: 'Jasně vymezený rozsah práce, odměna a termín splnění' },
+        ]}
+        contents={[
+          'Identifikaci zaměstnavatele a zaměstnance (brigádníka)',
+          'Přesné vymezení pracovního úkolu',
+          'Odměnu za provedení práce (celková nebo hodinová sazba)',
+          'Časový rozsah a termín dokončení',
+          'Místo výkonu práce',
+          'Podmínky platby odměny',
+          'Závěrečná ustanovení a GDPR',
+        ]}
+        whenSuitable={[
+          'Brigáda, sezónní výpomoc nebo jednorázový úkol',
+          'Rozsah do 300 hodin ročně u jednoho zaměstnavatele',
+          'Situace, kdy není vhodný ani žádoucí plný pracovní poměr',
+          'Menší projekty pro fyzické osoby nebo OSVČ vykonávající práci pro zaměstnavatele',
+        ]}
+        whenOther={[
+          { label: 'Pracovní smlouva', href: '/pracovni', text: 'Pokud jde o pravidelný pracovní poměr s pevnou pracovní dobou a trvalým charakterem.' },
+          { label: 'Smlouva o poskytování služeb', href: '/sluzby', text: 'Pokud spolupracujete s OSVČ nebo firmou — nikoliv se zaměstnancem v pracovněprávním vztahu.' },
+        ]}
+        faq={[
+          { q: 'Jaký je rozdíl mezi DPP a pracovní smlouvou?', a: 'DPP je určena pro příležitostné nebo krátkodobé pracovní úkoly (max. 300 hodin ročně u jednoho zaměstnavatele). Pracovní smlouva zakládá trvalý pracovní poměr s pravidelnou pracovní dobou a zákonnou ochranou zaměstnance.' },
+          { q: 'Jaký je limit hodin u DPP?', a: 'Zákoník práce stanoví maximálně 300 hodin ročně u jednoho zaměstnavatele. Při překročení tohoto limitu by bylo nutné uzavřít jiný typ pracovněprávního vztahu.' },
+          { q: 'Musí být DPP písemná?', a: 'Ano, § 77 zákoníku práce vyžaduje písemnou formu DPP. Ústní dohoda není platná.' },
+          { q: 'Platí se z DPP pojistné a daně?', a: 'Při odměně do 10 000 Kč měsíčně (u jednoho zaměstnavatele) se zpravidla neodvádí sociální ani zdravotní pojistné. Z odměny se odvádí daň z příjmů — přesný postup závisí na konkrétní situaci.' },
+          { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
+        ]}
+        ctaLabel="Vytvořit dohodu o provedení práce"
+        formId="formular"
+      />
+
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8">
         <div className="grid lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-7 space-y-6">
 
-            <section className={cardClass}>
-              <SectionTitle index="01" title="Zaměstnavatel" />
-              <div className="grid sm:grid-cols-2 gap-4">
-                <Field label="Název / jméno *"><input className={inputClass} name="employerName" value={form.employerName} onChange={set} placeholder="ABC s.r.o." /></Field>
-                <Field label="IČO *"><input className={inputClass} name="employerIco" value={form.employerIco} onChange={set} placeholder="12345678" /></Field>
-                <Field label="Sídlo / adresa *"><input className={inputClass} name="employerAddress" value={form.employerAddress} onChange={set} placeholder="Náměstí 1, Praha 1" /></Field>
-                <Field label="E-mail"><input className={inputClass} name="employerEmail" value={form.employerEmail} onChange={set} type="email" placeholder="info@firma.cz" /></Field>
+            <div id="formular" className="space-y-6">
+              <div className="mb-6 border-t border-slate-800/60 pt-8">
+                <h2 className="text-lg font-black text-white uppercase tracking-wide">Vyplňte údaje dokumentu</h2>
+                <p className="text-sm text-slate-500 mt-1">Všechna povinná pole jsou označena *</p>
               </div>
-            </section>
 
-            <section className={cardClass}>
-              <SectionTitle index="02" title="Zaměstnanec (brigádník)" />
-              <div className="grid sm:grid-cols-2 gap-4">
-                <Field label="Jméno a příjmení *"><input className={inputClass} name="employeeName" value={form.employeeName} onChange={set} placeholder="Tomáš Pokorný" /></Field>
-                <Field label="Datum narození *"><input className={inputClass} name="employeeBirth" value={form.employeeBirth} onChange={set} placeholder="15.06.2002" /></Field>
-                <Field label="Trvalé bydliště *"><input className={inputClass} name="employeeAddress" value={form.employeeAddress} onChange={set} placeholder="Ulice 5, Brno" /></Field>
-                <Field label="E-mail"><input className={inputClass} name="employeeEmail" value={form.employeeEmail} onChange={set} type="email" placeholder="tomas@email.cz" /></Field>
-              </div>
-            </section>
-
-            <section className={cardClass}>
-              <SectionTitle index="03" title="Pracovní úkol" subtitle="Popište co nejpřesněji — vyhne se sporům o rozsah a výsledek." />
-              <div className="space-y-4">
-                <Field label="Druh práce / název úkolu *">
-                  <input className={inputClass} name="taskDescription" value={form.taskDescription} onChange={set} placeholder="Obsluha letní akce, roznos letáků, překlad dokumentu…" />
-                </Field>
-                <Field label="Podrobný popis (nepovinné)">
-                  <textarea className="w-full min-h-[80px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="taskDetails" value={form.taskDetails} onChange={set} placeholder="Překlady z angličtiny do češtiny, přibl. 10 000 slov, formát DOCX…" />
-                </Field>
+              <section className={cardClass}>
+                <SectionTitle index="01" title="Zaměstnavatel" />
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label="Místo výkonu práce"><input className={inputClass} name="workPlace" value={form.workPlace} onChange={set} placeholder="Praha nebo vzdáleně" /></Field>
-                  <Field label="Předpokládaný rozsah (hod.) *">
-                    <input className={inputClass} name="estimatedHours" value={form.estimatedHours} onChange={set} type="number" placeholder="20" />
-                  </Field>
+                  <Field label="Název / jméno *"><input className={inputClass} name="employerName" value={form.employerName} onChange={set} placeholder="ABC s.r.o." /></Field>
+                  <Field label="IČO *"><input className={inputClass} name="employerIco" value={form.employerIco} onChange={set} placeholder="12345678" /></Field>
+                  <Field label="Sídlo / adresa *"><input className={inputClass} name="employerAddress" value={form.employerAddress} onChange={set} placeholder="Náměstí 1, Praha 1" /></Field>
+                  <Field label="E-mail"><input className={inputClass} name="employerEmail" value={form.employerEmail} onChange={set} type="email" placeholder="info@firma.cz" /></Field>
                 </div>
-              </div>
-            </section>
+              </section>
 
-            <section className={cardClass}>
-              <SectionTitle index="04" title="Trvání a termín splnění" />
-              <div className="grid sm:grid-cols-2 gap-4">
-                <Field label="Typ trvání">
-                  <select className={inputClass} name="durationType" value={form.durationType} onChange={set}>
-                    <option value="fixed">Na dobu určitou</option>
-                    <option value="indefinite">Na dobu neurčitou</option>
-                  </select>
-                </Field>
-                <Field label="Začátek"><input className={inputClass} name="startDate" value={form.startDate} onChange={set} type="date" /></Field>
-                {form.durationType === 'fixed' && <Field label="Konec"><input className={inputClass} name="endDate" value={form.endDate} onChange={set} type="date" /></Field>}
-                <Field label="Termín splnění úkolu (nejpozději)"><input className={inputClass} name="deadline" value={form.deadline} onChange={set} type="date" /></Field>
-              </div>
-            </section>
+              <section className={cardClass}>
+                <SectionTitle index="02" title="Zaměstnanec (brigádník)" />
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <Field label="Jméno a příjmení *"><input className={inputClass} name="employeeName" value={form.employeeName} onChange={set} placeholder="Tomáš Pokorný" /></Field>
+                  <Field label="Datum narození *"><input className={inputClass} name="employeeBirth" value={form.employeeBirth} onChange={set} placeholder="15.06.2002" /></Field>
+                  <Field label="Trvalé bydliště *"><input className={inputClass} name="employeeAddress" value={form.employeeAddress} onChange={set} placeholder="Ulice 5, Brno" /></Field>
+                  <Field label="E-mail"><input className={inputClass} name="employeeEmail" value={form.employeeEmail} onChange={set} type="email" placeholder="tomas@email.cz" /></Field>
+                </div>
+              </section>
 
-            <section className={cardClass}>
-              <SectionTitle index="05" title="Odměna" subtitle="DPP bez odvodů SP/ZP do 10 000 Kč/měsíc u jednoho zaměstnavatele." />
-              <div className="grid sm:grid-cols-2 gap-4">
-                <Field label="Typ odměny">
-                  <select className={inputClass} name="remunerationType" value={form.remunerationType} onChange={set}>
-                    <option value="fixed">Paušální (za celý úkol)</option>
-                    <option value="hourly">Hodinová sazba</option>
-                  </select>
-                </Field>
-                {form.remunerationType === 'fixed'
-                  ? <Field label="Celková odměna (Kč) *"><input className={inputClass} name="totalRemuneration" value={form.totalRemuneration} onChange={set} type="number" placeholder="5000" /></Field>
-                  : <Field label="Hodinová sazba (Kč/hod.) *"><input className={inputClass} name="hourlyRate" value={form.hourlyRate} onChange={set} type="number" placeholder="180" /></Field>
-                }
-                <Field label="Číslo účtu (výplata)"><input className={inputClass} name="paymentAccount" value={form.paymentAccount} onChange={set} placeholder="123456789/0800" /></Field>
-                <Field label="Výplata do (dní po splnění)"><input className={inputClass} name="paymentDays" value={form.paymentDays} onChange={set} type="number" /></Field>
-              </div>
-            </section>
+              <section className={cardClass}>
+                <SectionTitle index="03" title="Pracovní úkol" subtitle="Popište co nejpřesněji — vyhne se sporům o rozsah a výsledek." />
+                <div className="space-y-4">
+                  <Field label="Druh práce / název úkolu *">
+                    <input className={inputClass} name="taskDescription" value={form.taskDescription} onChange={set} placeholder="Obsluha letní akce, roznos letáků, překlad dokumentu…" />
+                  </Field>
+                  <Field label="Podrobný popis (nepovinné)">
+                    <textarea className="w-full min-h-[80px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="taskDetails" value={form.taskDetails} onChange={set} placeholder="Překlady z angličtiny do češtiny, přibl. 10 000 slov, formát DOCX…" />
+                  </Field>
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <Field label="Místo výkonu práce"><input className={inputClass} name="workPlace" value={form.workPlace} onChange={set} placeholder="Praha nebo vzdáleně" /></Field>
+                    <Field label="Předpokládaný rozsah (hod.) *">
+                      <input className={inputClass} name="estimatedHours" value={form.estimatedHours} onChange={set} type="number" placeholder="20" />
+                    </Field>
+                  </div>
+                </div>
+              </section>
 
-            <section className={cardClass}>
-              
-              {/* === VÝBĚR BALÍČKU === */}
-              <div className="space-y-3 mt-6">
-                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Vyberte balíček</div>
-                {([
-                  { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva dle občanského zákoníku v PDF.' },
-                  { value: 'professional', label: 'Rozšířená právní ochrana', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
-                  { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířené právní ochrany + průvodní instrukce, checklist a 30denní archivace.' },
-                ] as const).map((opt) => (
-                  <label
-                    key={opt.value}
-                    className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${
-                      form.tier === opt.value
-                        ? 'border-amber-500 bg-amber-500/10'
-                        : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'
-                    }`}
-                  >
-                    {('recommended' in opt) &&  form.tier !== 'professional' && (
-                      <div className="absolute -top-2.5 left-4">
-                        <span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">
-                          Doporučeno
-                        </span>
-                      </div>
-                    )}
-                    <div className="flex items-start gap-3">
-                      <input
-                        type="radio"
-                        name="tier"
-                        value={opt.value}
-                        checked={form.tier === opt.value}
-                        onChange={(e) => setForm((prev) => ({ ...prev, tier: e.target.value as 'basic' | 'professional' | 'complete', notaryUpsell: e.target.value !== 'basic' }))}
-                        className="mt-1 h-5 w-5 accent-amber-500"
-                      />
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-black uppercase tracking-wide text-amber-400">{opt.label}</span>
-                          <span className="text-sm font-black text-white">{opt.price}</span>
+              <section className={cardClass}>
+                <SectionTitle index="04" title="Trvání a termín splnění" />
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <Field label="Typ trvání">
+                    <select className={inputClass} name="durationType" value={form.durationType} onChange={set}>
+                      <option value="fixed">Na dobu určitou</option>
+                      <option value="indefinite">Na dobu neurčitou</option>
+                    </select>
+                  </Field>
+                  <Field label="Začátek"><input className={inputClass} name="startDate" value={form.startDate} onChange={set} type="date" /></Field>
+                  {form.durationType === 'fixed' && <Field label="Konec"><input className={inputClass} name="endDate" value={form.endDate} onChange={set} type="date" /></Field>}
+                  <Field label="Termín splnění úkolu (nejpozději)"><input className={inputClass} name="deadline" value={form.deadline} onChange={set} type="date" /></Field>
+                </div>
+              </section>
+
+              <section className={cardClass}>
+                <SectionTitle index="05" title="Odměna" subtitle="DPP bez odvodů SP/ZP do 10 000 Kč/měsíc u jednoho zaměstnavatele." />
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <Field label="Typ odměny">
+                    <select className={inputClass} name="remunerationType" value={form.remunerationType} onChange={set}>
+                      <option value="fixed">Paušální (za celý úkol)</option>
+                      <option value="hourly">Hodinová sazba</option>
+                    </select>
+                  </Field>
+                  {form.remunerationType === 'fixed'
+                    ? <Field label="Celková odměna (Kč) *"><input className={inputClass} name="totalRemuneration" value={form.totalRemuneration} onChange={set} type="number" placeholder="5000" /></Field>
+                    : <Field label="Hodinová sazba (Kč/hod.) *"><input className={inputClass} name="hourlyRate" value={form.hourlyRate} onChange={set} type="number" placeholder="180" /></Field>
+                  }
+                  <Field label="Číslo účtu (výplata)"><input className={inputClass} name="paymentAccount" value={form.paymentAccount} onChange={set} placeholder="123456789/0800" /></Field>
+                  <Field label="Výplata do (dní po splnění)"><input className={inputClass} name="paymentDays" value={form.paymentDays} onChange={set} type="number" /></Field>
+                </div>
+              </section>
+
+              <section className={cardClass}>
+
+                {/* === VÝBĚR BALÍČKU === */}
+                <div className="space-y-3 mt-6">
+                  <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Vyberte balíček</div>
+                  {([
+                    { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva dle občanského zákoníku v PDF.' },
+                    { value: 'professional', label: 'Rozšířená právní ochrana', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
+                    { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířené právní ochrany + průvodní instrukce, checklist a 30denní archivace.' },
+                  ] as const).map((opt) => (
+                    <label
+                      key={opt.value}
+                      className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${
+                        form.tier === opt.value
+                          ? 'border-amber-500 bg-amber-500/10'
+                          : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'
+                      }`}
+                    >
+                      {('recommended' in opt) &&  form.tier !== 'professional' && (
+                        <div className="absolute -top-2.5 left-4">
+                          <span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">
+                            Doporučeno
+                          </span>
                         </div>
-                        <div className="mt-1 text-xs leading-relaxed text-slate-400">{opt.desc}</div>
-                        {opt.value === 'professional' && (
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            {['Smluvní pokuty', 'Sankce za prodlení', 'Odpovědnostní doložky'].map(t => (
-                              <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
-                            ))}
+                      )}
+                      <div className="flex items-start gap-3">
+                        <input
+                          type="radio"
+                          name="tier"
+                          value={opt.value}
+                          checked={form.tier === opt.value}
+                          onChange={(e) => setForm((prev) => ({ ...prev, tier: e.target.value as 'basic' | 'professional' | 'complete', notaryUpsell: e.target.value !== 'basic' }))}
+                          className="mt-1 h-5 w-5 accent-amber-500"
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-black uppercase tracking-wide text-amber-400">{opt.label}</span>
+                            <span className="text-sm font-black text-white">{opt.price}</span>
                           </div>
-                        )}
-                        {opt.value === 'complete' && (
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            {['Instrukce k podpisu', 'Checklist', '30denní archivace'].map(t => (
-                              <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
-                            ))}
-                          </div>
-                        )}
+                          <div className="mt-1 text-xs leading-relaxed text-slate-400">{opt.desc}</div>
+                          {opt.value === 'professional' && (
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {['Smluvní pokuty', 'Sankce za prodlení', 'Odpovědnostní doložky'].map(t => (
+                                <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
+                              ))}
+                            </div>
+                          )}
+                          {opt.value === 'complete' && (
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {['Instrukce k podpisu', 'Checklist', '30denní archivace'].map(t => (
+                                <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </label>
-                ))}
-              </div>
-            </section>
+                    </label>
+                  ))}
+                </div>
+              </section>
+            </div>
           </div>
 
           {/* Sidebar */}
@@ -274,14 +323,24 @@ export default function DppPage() {
                 <div className="border-t border-slate-700 pt-2 flex justify-between font-bold text-lg"><span>Celkem</span><span className="text-amber-400">{form.tier === 'complete' ? '749' : form.tier === 'professional' ? '399' : '249'} Kč</span></div>
               </div>
               {(!form.employerName || !form.employeeName || !form.taskDescription) && !isProcessing && (
-                <div className="mt-4 rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-3 text-xs text-rose-300 space-y-1">
-                  <div className="font-semibold mb-1">Před platbou vyplňte:</div>
+                <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3 text-xs text-slate-400 space-y-1">
+                  <div className="font-semibold mb-1">Vyplňte pro pokračování:</div>
                   {!form.employerName && <div>• Název zaměstnavatele</div>}
                   {!form.employeeName && <div>• Jméno zaměstnance</div>}
                   {!form.taskDescription && <div>• Popis pracovního úkolu</div>}
                 </div>
               )}
-              <label className="flex items-start gap-3 mb-4 cursor-pointer">
+              <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3">
+                <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Součástí výstupu je</div>
+                <ul className="space-y-1.5">
+                  {['Profesionálně strukturované PDF', 'Připraveno k okamžitému stažení', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
+                    <li key={item} className="flex items-start gap-2 text-xs text-slate-400">
+                      <span className="text-amber-500 mt-0.5">✓</span>{item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <label className="flex items-start gap-3 mb-4 mt-4 cursor-pointer">
                 <input type="checkbox" checked={gdprConsent} onChange={(e) => setGdprConsent(e.target.checked)} className="mt-1 h-4 w-4 accent-amber-500 flex-shrink-0" />
                 <span className="text-xs text-slate-400 leading-relaxed">
                   Souhlasím se{' '}

@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
@@ -72,7 +73,7 @@ export default function PodnajemuPage() {
 
     if (!form.landlordId || !form.tenantId) {
       score -= 15;
-      warnings.push({ text: 'Chybí rodná čísla / data narození smluvních stran. Bez nich je vymahatelnost oslabena.', level: 'high' });
+      warnings.push({ text: 'Doplňte rodná čísla / data narození smluvních stran. Zvýšíte tím vymahatelnost smlouvy.', level: 'high' });
     }
     if (form.landlordConsent === 'no') {
       score -= 30;
@@ -80,15 +81,15 @@ export default function PodnajemuPage() {
     }
     if (!form.consentDate) {
       score -= 8;
-      warnings.push({ text: 'Chybí datum souhlasu pronajímatele k podnájmu.', level: 'medium' });
+      warnings.push({ text: 'Doplňte datum souhlasu pronajímatele k podnájmu.', level: 'medium' });
     }
     if (form.duration === 'fixed' && !form.endDate) {
       score -= 10;
-      warnings.push({ text: 'U doby určité chybí datum konce podnájmu.', level: 'high' });
+      warnings.push({ text: 'U doby určité doplňte datum konce podnájmu.', level: 'high' });
     }
     if (!form.depositAmount || Number(form.depositAmount) < Number(form.rentAmount)) {
       score -= 10;
-      warnings.push({ text: 'Kauce je nižší než měsíční nájemné. To je slabší ochrana pro podnajímatele.', level: 'medium' });
+      warnings.push({ text: 'Doporučená doplnění: Kauce by měla být alespoň v rozsahu měsíčního nájemného.', level: 'medium' });
     }
     if (form.allowAirbnb) {
       score -= 20;
@@ -96,13 +97,13 @@ export default function PodnajemuPage() {
     }
     if (!form.flatUnitNumber || !form.cadastralArea) {
       score -= 8;
-      warnings.push({ text: 'Byt není dostatečně identifikován (číslo jednotky / katastrální území).', level: 'medium' });
+      warnings.push({ text: 'Doplňte identifikaci bytu (číslo jednotky / katastrální území).', level: 'medium' });
     }
     score = Math.max(0, Math.min(100, score));
     return {
       score,
       warnings,
-      label: score >= 85 ? 'Dobré nastavení' : score >= 65 ? 'Průměrná ochrana' : 'Slabší ochrana',
+      label: score >= 85 ? 'Dobré nastavení' : score >= 65 ? 'Průměrná ochrana' : 'Doporučená doplnění',
     };
   }, [form]);
 
@@ -167,17 +168,50 @@ export default function PodnajemuPage() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-10">
-        {/* Hero */}
-        <div className="mb-10">
-          <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/80 mb-2">Generátor smluv</div>
-          <h1 className="text-3xl sm:text-4xl font-black text-white mb-3">Podnájemní smlouva</h1>
-          <p className="text-slate-400 max-w-xl">Vyplňte formulář a získejte právně závaznou podnájemní smlouvu dle § 2274 a násl. OZ. PDF ke stažení ihned po zaplacení.</p>
-        </div>
+      <ContractLandingSection
+        badge="§ 2274 a násl. občanského zákoníku"
+        h1Main="Podnájemní smlouva"
+        h1Accent="online"
+        subtitle="Vytvořte podnájemní smlouvu, pokud jako nájemce přenecháváte byt nebo jeho část do podnájmu. Dokument pokrývá výši podnájemného, podmínky užívání i práva podnájemce."
+        benefits={[
+          { icon: '⚖️', text: 'Sestaveno dle § 2274–2278 OZ (podnájem bytu)' },
+          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+          { icon: '🏠', text: 'Vhodné pro podnájem celého bytu i jeho části' },
+          { icon: '🔒', text: 'Jasně vymezená práva a povinnosti podnájemce' },
+        ]}
+        contents={[
+          'Identifikaci nájemce (jako pronajímatele) a podnájemce',
+          'Přesný popis předmětu podnájmu (byt nebo část)',
+          'Výši podnájemného a způsob platby',
+          'Dobu podnájmu a podmínky ukončení',
+          'Práva a povinnosti podnájemce',
+          'Podmínky užívání společných prostor',
+          'Závěrečná ustanovení a GDPR',
+        ]}
+        whenSuitable={[
+          'Jste nájemcem bytu a chcete část nebo celý byt přenechat podnájemci',
+          'Spolubydlení — pronájem pokoje v bytě, který sami užíváte',
+          'Dočasné přenechání bytu po dobu vaší nepřítomnosti',
+          'Situace, kdy máte souhlas pronajímatele s podnájmem',
+        ]}
+        whenOther={[
+          { label: 'Nájemní smlouva', href: '/najem', text: 'Pokud jste vlastník nemovitosti a uzavíráte nájemní vztah přímo s nájemcem.' },
+        ]}
+        faq={[
+          { q: 'Potřebuji souhlas pronajímatele k podnájmu?', a: 'Obecně ano — § 2274 OZ vyžaduje souhlas pronajímatele, pokud v bytě nájemce sám nebydlí. Pokud v bytě sám bydlíte a přijímáte spolubydlícího, souhlas není nutný, ale pronajímatele je třeba o změně informovat.' },
+          { q: 'Jaký je rozdíl mezi podnájmem a nájmem?', a: 'Podnájem vzniká, když nájemce přenechá byt (nebo jeho část) třetí osobě. Podnájemce nemá přímý vztah k vlastníkovi nemovitosti a jeho práva jsou odvozena od nájemce.' },
+          { q: 'Co se stane, když skončí nájemní smlouva?', a: 'Ukončením nájemní smlouvy zaniká i podnájemní smlouva — podnájemce nemá právo nadále v bytě setrvat, pokud s ním vlastník neuzavře novou smlouvu.' },
+          { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
+        ]}
+        ctaLabel="Vytvořit podnájemní smlouvu"
+        formId="formular"
+      />
 
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-10">
         <div className="grid lg:grid-cols-12 gap-8">
           {/* Left column – form */}
-          <div className="lg:col-span-7 space-y-6">
+          <div id="formular" className="lg:col-span-7 space-y-6">
+            <div className="mb-6 border-t border-slate-800/60 pt-8"><h2 className="text-lg font-black text-white uppercase tracking-wide">Vyplňte údaje dokumentu</h2><p className="text-sm text-slate-500 mt-1">Všechna povinná pole jsou označena *</p></div>
 
             {/* 01 Podnajímatel */}
             <section className={cardClass}>
@@ -380,7 +414,22 @@ export default function PodnajemuPage() {
 
             {/* Payment card */}
             <div className={cardClass}>
-              <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90 mb-4">Shrnutí objednávky</div>
+              <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90 mb-4">Součástí výstupu je</div>
+              <ul className="space-y-2 text-xs mb-6">
+                <li className="flex items-start gap-2 text-slate-300">
+                  <span className="text-amber-400 mt-1">✓</span>
+                  <span>Profesionálně strukturované PDF</span>
+                </li>
+                <li className="flex items-start gap-2 text-slate-300">
+                  <span className="text-amber-400 mt-1">✓</span>
+                  <span>Připraveno k okamžitému stažení</span>
+                </li>
+                <li className="flex items-start gap-2 text-slate-300">
+                  <span className="text-amber-400 mt-1">✓</span>
+                  <span>Přehledné uspořádání smluvních ustanovení</span>
+                </li>
+              </ul>
+
               <div className="space-y-2 text-sm mb-5">
                 <div className="flex justify-between">
                   <span className="text-slate-400">Podnájemní smlouva</span>

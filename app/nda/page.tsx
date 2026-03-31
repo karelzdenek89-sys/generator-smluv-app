@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import ContractPreview from '@/app/components/ContractPreview';
+import ContractLandingSection from '@/app/components/ContractLandingSection';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
 
@@ -102,19 +103,19 @@ export default function NdaBuilderPage() {
     const warnings: { text: string; level: 'high' | 'medium' | 'low' }[] = [];
     if (!formData.disclosingId || !formData.receivingId) {
       score -= 12;
-      warnings.push({ text: 'Chybí identifikační údaje jedné ze stran. Vymahatelnost může být oslabena.', level: 'medium' });
+      warnings.push({ text: 'Doplňte identifikační údaje jedné ze stran. Vymahatelnost může být oslabena.', level: 'medium' });
     }
     if (!formData.confidentialInfoDesc.trim()) {
       score -= 20;
-      warnings.push({ text: 'Popis důvěrných informací je prázdný. Smlouva bez vymezení předmětu je nevymahatelná.', level: 'high' });
+      warnings.push({ text: 'Doplňte popis důvěrných informací. Smlouva bez vymezení předmětu je nevymahatelná.', level: 'high' });
     }
     if (!formData.purposeOfDisclosure.trim()) {
       score -= 10;
-      warnings.push({ text: 'Chybí účel sdílení informací. Bez účelu je rozsah závazku nejasný.', level: 'medium' });
+      warnings.push({ text: 'Doporučujeme vyplnit účel sdílení informací. Bez účelu je rozsah závazku nejasný.', level: 'medium' });
     }
     if (!formData.penaltyAmount || Number(formData.penaltyAmount) < 50000) {
       score -= 8;
-      warnings.push({ text: 'Smluvní pokuta pod 50 000 Kč je slabší motivace k dodržování mlčenlivosti.', level: 'low' });
+      warnings.push({ text: 'Doporučujeme smluvní pokutu nad 50 000 Kč pro reálnou motivaci k dodržování mlčenlivosti.', level: 'low' });
     }
     if (formData.ndaType === 'bilateral' && (!formData.receivingAddress || !formData.disclosingAddress)) {
       score -= 5;
@@ -124,7 +125,7 @@ export default function NdaBuilderPage() {
     return {
       score,
       warnings,
-      label: score >= 85 ? 'Dobré nastavení' : score >= 65 ? 'Průměrná ochrana' : 'Slabší ochrana',
+      label: score >= 85 ? 'Dobré nastavení' : score >= 65 ? 'Průměrná ochrana' : 'Doporučená doplnění',
     };
   }, [formData]);
 
@@ -176,7 +177,7 @@ export default function NdaBuilderPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#05080f] text-slate-200">
+    <main className="min-h-screen bg-[#05080f] text-slate-200 pb-20">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.07),transparent_30%)] pointer-events-none" />
 
       <header className="relative z-10 border-b border-white/5 bg-[#05080f]/80 backdrop-blur-sm sticky top-0">
@@ -191,7 +192,7 @@ export default function NdaBuilderPage() {
           <div className="hidden md:flex items-center gap-4 text-xs text-slate-400">
             <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />Platba zabezpečena Stripe</span>
             <span>•</span>
-            <span>§ 1724 a násl. OZ + obch. tajemství § 504</span>
+            <span>§ 1746 odst. 2 občanského zákoníku</span>
           </div>
           <span className="text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-full px-3 py-1">
             {formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '399 Kč' : '249 Kč'}
@@ -199,206 +200,250 @@ export default function NdaBuilderPage() {
         </div>
       </header>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 py-8 lg:px-8 pb-20">
-        <div className="mb-8">
-          <div className="text-[10px] font-black uppercase tracking-[0.22em] text-amber-400 mb-2">Ochrana informací</div>
-          <h1 className="text-4xl md:text-5xl font-black italic tracking-tight text-white">SMLOUVA O MLČENLIVOSTI</h1>
-          <p className="text-slate-400 text-sm mt-2 max-w-2xl">NDA pro ochranu obchodního tajemství, know-how, databází a citlivých informací. Vhodné pro byznysové spolupráce, zaměstnance i investory.</p>
-        </div>
+      <ContractLandingSection
+        badge="§ 1746 odst. 2 občanského zákoníku"
+        h1Main="NDA — smlouva o"
+        h1Accent="mlčenlivosti online"
+        subtitle="Vytvořte smlouvu o mlčenlivosti (NDA) pro ochranu důvěrných informací při obchodní spolupráci, jednáních nebo sdílení interních dat. Pokrývá rozsah důvěrných informací, dobu trvání závazku i sankce za porušení."
+        benefits={[
+          { icon: '🔐', text: 'Chrání obchodní tajemství, technická řešení i klientská data' },
+          { icon: '⚖️', text: 'Sestaveno dle § 1746 OZ a § 504 OZ (obchodní tajemství)' },
+          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+          { icon: '🔒', text: 'Pokrývá jednostranné i vzájemné NDA, zákaz konkurence' },
+        ]}
+        contents={[
+          'Identifikaci stran (sdělující a přijímající strana)',
+          'Definici důvěrných informací a jejich rozsahu',
+          'Povinnosti přijímající strany (účel, uchování, omezení)',
+          'Výjimky z mlčenlivosti (veřejně dostupné informace)',
+          'Dobu trvání závazku mlčenlivosti',
+          'Smluvní pokutu za porušení mlčenlivosti',
+          'Volitelný zákaz konkurence (non-compete)',
+          'Závěrečná ustanovení, GDPR a vyšší moc',
+        ]}
+        whenSuitable={[
+          'Před obchodním jednáním, kde sdílíte citlivé informace',
+          'Při zadávání projektu externistovi nebo dodavateli',
+          'Při představení produktu nebo investorovi',
+          'Kdykoli potřebujete ochranu interních dat, algoritmů nebo klientských databází',
+        ]}
+        whenOther={[
+          { label: 'Smlouva o spolupráci', href: '/spoluprace', text: 'Pokud potřebujete mlčenlivost jako součást širšího smluvního rámce spolupráce.' },
+          { label: 'Smlouva o poskytování služeb', href: '/sluzby', text: 'Pokud sdílíte informace v rámci servisního nebo dodavatelského vztahu.' },
+        ]}
+        faq={[
+          { q: 'Co je NDA a kdy ho potřebuji?', a: 'NDA (Non-Disclosure Agreement) neboli smlouva o mlčenlivosti zavazuje příjemce informací k jejich utajení. Potřebujete ji vždy, když sdílíte citlivé informace — obchodní plány, technická řešení, klientské databáze — s někým, kdo není vázán jiným závazkem.' },
+          { q: 'Jaký je rozdíl mezi jednostranným a vzájemným NDA?', a: 'Jednostranné NDA zavazuje pouze jednu stranu (typicky příjemce informací). Vzájemné NDA zavazuje obě strany — vhodné, pokud obě strany sdílejí citlivé informace navzájem.' },
+          { q: 'Jak dlouho může závazek mlčenlivosti trvat?', a: 'Zákon délku neomezuje. Doporučujeme 2–5 let pro obchodní informace, u obchodního tajemství může být závazek sjednán bez časového omezení.' },
+          { q: 'Je NDA vymahatelné?', a: 'Ano, při porušení závazku má sdělující strana právo na náhradu škody a při sjednané smluvní pokutě i na její zaplacení. Písemná forma je pro vymahatelnost zásadní.' },
+          { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
+        ]}
+        ctaLabel="Vytvořit smlouvu o mlčenlivosti"
+        formId="formular"
+      />
 
+      <div className="relative z-10 max-w-7xl mx-auto px-4 py-8 lg:px-8">
         <div className="grid lg:grid-cols-12 gap-8 items-start">
           {/* Left column */}
           <div className="lg:col-span-7 space-y-6">
 
-            {/* 01 Typ NDA */}
-            <section className={cardClass}>
-              <SectionTitle index="01" title="Typ NDA" />
-              <div className="grid sm:grid-cols-2 gap-3">
-                {(['unilateral', 'bilateral'] as const).map(type => (
-                  <button key={type} onClick={() => set('ndaType', type)}
-                    className={`p-4 rounded-2xl border text-left transition ${formData.ndaType === type ? 'border-amber-500/60 bg-amber-500/10' : 'border-slate-700 bg-white/3 hover:border-slate-600'}`}>
-                    <div className="font-bold text-white text-sm mb-1">{type === 'unilateral' ? 'Jednostranná' : 'Oboustranná'}</div>
-                    <div className="text-xs text-slate-400">
-                      {type === 'unilateral' ? 'Jedna strana sdílí informace druhé.' : 'Obě strany si vzájemně sdílejí informace.'}
-                    </div>
-                  </button>
-                ))}
+            {/* Form container */}
+            <div id="formular">
+              <div className="mb-6 border-t border-slate-800/60 pt-8">
+                <h2 className="text-lg font-black text-white uppercase tracking-wide">Vyplňte údaje dokumentu</h2>
+                <p className="text-sm text-slate-500 mt-1">Všechna povinná pole jsou označena *</p>
               </div>
-            </section>
 
-            {/* 02 Poskytující strana */}
-            <section className={cardClass}>
-              <SectionTitle index="02" title="Poskytující strana" subtitle="Strana, která sdílí důvěrné informace." />
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div>
-                  <label className={labelClass}>Jméno / název *</label>
-                  <input value={formData.disclosingName} onChange={e => set('disclosingName', e.target.value)} placeholder="Acme s.r.o." className={inputClass} />
+              {/* 01 Typ NDA */}
+              <section className={cardClass}>
+                <SectionTitle index="01" title="Typ NDA" />
+                <div className="grid sm:grid-cols-2 gap-3">
+                  {(['unilateral', 'bilateral'] as const).map(type => (
+                    <button key={type} onClick={() => set('ndaType', type)}
+                      className={`p-4 rounded-2xl border text-left transition ${formData.ndaType === type ? 'border-amber-500/60 bg-amber-500/10' : 'border-slate-700 bg-white/3 hover:border-slate-600'}`}>
+                      <div className="font-bold text-white text-sm mb-1">{type === 'unilateral' ? 'Jednostranná' : 'Oboustranná'}</div>
+                      <div className="text-xs text-slate-400">
+                        {type === 'unilateral' ? 'Jedna strana sdílí informace druhé.' : 'Obě strany si vzájemně sdílejí informace.'}
+                      </div>
+                    </button>
+                  ))}
                 </div>
-                <div>
-                  <label className={labelClass}>IČO / rodné číslo</label>
-                  <input value={formData.disclosingId} onChange={e => set('disclosingId', e.target.value)} placeholder="12345678" className={inputClass} />
-                </div>
-                <div>
-                  <label className={labelClass}>Sídlo / adresa</label>
-                  <input value={formData.disclosingAddress} onChange={e => set('disclosingAddress', e.target.value)} placeholder="Václavské nám. 1, Praha 1" className={inputClass} />
-                </div>
-                <div>
-                  <label className={labelClass}>E-mail</label>
-                  <input type="email" value={formData.disclosingEmail} onChange={e => set('disclosingEmail', e.target.value)} placeholder="kontakt@acme.cz" className={inputClass} />
-                </div>
-              </div>
-            </section>
+              </section>
 
-            {/* 03 Přijímající strana */}
-            <section className={cardClass}>
-              <SectionTitle index="03" title="Přijímající strana" subtitle="Strana, která přijímá a chrání důvěrné informace." />
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div>
-                  <label className={labelClass}>Jméno / název *</label>
-                  <input value={formData.receivingName} onChange={e => set('receivingName', e.target.value)} placeholder="Jan Novák" className={inputClass} />
-                </div>
-                <div>
-                  <label className={labelClass}>IČO / rodné číslo</label>
-                  <input value={formData.receivingId} onChange={e => set('receivingId', e.target.value)} placeholder="850101/1234" className={inputClass} />
-                </div>
-                <div>
-                  <label className={labelClass}>Sídlo / adresa</label>
-                  <input value={formData.receivingAddress} onChange={e => set('receivingAddress', e.target.value)} placeholder="Dlouhá 5, Brno" className={inputClass} />
-                </div>
-                <div>
-                  <label className={labelClass}>E-mail</label>
-                  <input type="email" value={formData.receivingEmail} onChange={e => set('receivingEmail', e.target.value)} placeholder="jan.novak@email.cz" className={inputClass} />
-                </div>
-              </div>
-            </section>
-
-            {/* 04 Předmět a účel */}
-            <section className={cardClass}>
-              <SectionTitle index="04" title="Předmět a účel NDA" subtitle="Přesné vymezení chráněných informací je klíčem k vymahatelnosti." />
-              <div className="space-y-4">
-                <div>
-                  <label className={labelClass}>Popis důvěrných informací *</label>
-                  <textarea value={formData.confidentialInfoDesc} onChange={e => set('confidentialInfoDesc', e.target.value)}
-                    placeholder="Obchodní strategie, cenové kalkulace, zdrojové kódy, databáze zákazníků, výrobní postupy…"
-                    className={textareaClass} />
-                  <p className="text-xs text-slate-500 mt-1">Čím přesnější popis, tím silnější ochrana v případě sporu.</p>
-                </div>
-                <div>
-                  <label className={labelClass}>Účel sdílení informací</label>
-                  <textarea value={formData.purposeOfDisclosure} onChange={e => set('purposeOfDisclosure', e.target.value)}
-                    placeholder="Hodnocení potenciální obchodní spolupráce / vývoj softwarového produktu / due diligence…"
-                    className={textareaClass} />
-                </div>
-                <div>
-                  <label className={labelClass}>Zvláštní kategorie chráněných informací (volitelné)</label>
-                  <input value={formData.specialInfoCategories} onChange={e => set('specialInfoCategories', e.target.value)}
-                    placeholder="Osobní údaje, zdravotní záznamy, finanční data…" className={inputClass} />
-                </div>
-              </div>
-            </section>
-
-            {/* 05 Podmínky NDA */}
-            <section className={cardClass}>
-              <SectionTitle index="05" title="Podmínky a sankce" />
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div>
-                  <label className={labelClass}>Doba trvání NDA</label>
-                  <input value={formData.ndaDuration} onChange={e => set('ndaDuration', e.target.value)} placeholder="3 let" className={inputClass} />
-                </div>
-                <div>
-                  <label className={labelClass}>Důvěrnost po ukončení</label>
-                  <input value={formData.confidentialityAfterTermination} onChange={e => set('confidentialityAfterTermination', e.target.value)} placeholder="5 let" className={inputClass} />
-                </div>
-                <div>
-                  <label className={labelClass}>Smluvní pokuta (Kč)</label>
-                  <input type="number" value={formData.penaltyAmount} onChange={e => set('penaltyAmount', e.target.value)} placeholder="100 000" className={inputClass} />
-                  <p className="text-xs text-slate-500 mt-1">Min. 50 000 Kč pro reálnou odstrašující hodnotu.</p>
-                </div>
-              </div>
-            </section>
-
-            {/* 06 Volitelné doložky */}
-            <section className={cardClass}>
-              <SectionTitle index="06" title="Volitelné doložky" subtitle="Rozšiřte ochranu o zákaz přetahování zaměstnanců nebo zákaz konkurence." />
-              <div className="space-y-3">
-                <Toggle checked={formData.nonSolicitation} onChange={v => set('nonSolicitation', v)} label="Zákaz přetahování zaměstnanců / klientů" />
-                {formData.nonSolicitation && (
-                  <div className="ml-7">
-                    <label className={labelClass}>Délka zákazu přetahování</label>
-                    <input value={formData.nonSolicitationPeriod} onChange={e => set('nonSolicitationPeriod', e.target.value)} placeholder="12 měsíců" className={inputClass} />
+              {/* 02 Poskytující strana */}
+              <section className={cardClass}>
+                <SectionTitle index="02" title="Poskytující strana" subtitle="Strana, která sdílí důvěrné informace." />
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className={labelClass}>Jméno / název *</label>
+                    <input value={formData.disclosingName} onChange={e => set('disclosingName', e.target.value)} placeholder="Acme s.r.o." className={inputClass} />
                   </div>
-                )}
-                <Toggle checked={formData.nonCompete} onChange={v => set('nonCompete', v)} label="Zákaz konkurence" />
-                {formData.nonCompete && (
-                  <div className="ml-7 space-y-3">
-                    <div>
-                      <label className={labelClass}>Délka zákazu konkurence</label>
-                      <input value={formData.nonCompetePeriod} onChange={e => set('nonCompetePeriod', e.target.value)} placeholder="24 měsíců" className={inputClass} />
-                    </div>
-                    <div>
-                      <label className={labelClass}>Rozsah / odvětví</label>
-                      <input value={formData.nonCompeteScope} onChange={e => set('nonCompeteScope', e.target.value)} placeholder="Vývoj CRM softwaru pro pojišťovny v ČR" className={inputClass} />
-                    </div>
+                  <div>
+                    <label className={labelClass}>IČO / rodné číslo</label>
+                    <input value={formData.disclosingId} onChange={e => set('disclosingId', e.target.value)} placeholder="12345678" className={inputClass} />
                   </div>
-                )}
-              </div>
-            </section>
+                  <div>
+                    <label className={labelClass}>Sídlo / adresa</label>
+                    <input value={formData.disclosingAddress} onChange={e => set('disclosingAddress', e.target.value)} placeholder="Václavské nám. 1, Praha 1" className={inputClass} />
+                  </div>
+                  <div>
+                    <label className={labelClass}>E-mail</label>
+                    <input type="email" value={formData.disclosingEmail} onChange={e => set('disclosingEmail', e.target.value)} placeholder="kontakt@acme.cz" className={inputClass} />
+                  </div>
+                </div>
+              </section>
 
-            {/* Řešení sporů */}
-            <section className={cardClass}>
-              <div className="mb-4">
-                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
-                <select className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
-                  <option value="court">Obecný soud (výchozí)</option>
-                  <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
-                  <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
-                </select>
-              </div>
-            </section>
+              {/* 03 Přijímající strana */}
+              <section className={cardClass}>
+                <SectionTitle index="03" title="Přijímající strana" subtitle="Strana, která přijímá a chrání důvěrné informace." />
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className={labelClass}>Jméno / název *</label>
+                    <input value={formData.receivingName} onChange={e => set('receivingName', e.target.value)} placeholder="Jan Novák" className={inputClass} />
+                  </div>
+                  <div>
+                    <label className={labelClass}>IČO / rodné číslo</label>
+                    <input value={formData.receivingId} onChange={e => set('receivingId', e.target.value)} placeholder="850101/1234" className={inputClass} />
+                  </div>
+                  <div>
+                    <label className={labelClass}>Sídlo / adresa</label>
+                    <input value={formData.receivingAddress} onChange={e => set('receivingAddress', e.target.value)} placeholder="Dlouhá 5, Brno" className={inputClass} />
+                  </div>
+                  <div>
+                    <label className={labelClass}>E-mail</label>
+                    <input type="email" value={formData.receivingEmail} onChange={e => set('receivingEmail', e.target.value)} placeholder="jan.novak@email.cz" className={inputClass} />
+                  </div>
+                </div>
+              </section>
 
-            {/* 07 Výběr balíčku */}
-            <section className={cardClass}>
-              <SectionTitle index="07" title="Výběr balíčku" subtitle="Zvolte úroveň ochrany odpovídající hodnotě sdílených informací." />
-              <div className="space-y-3">
-                {([
-                  { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální NDA dle OZ + obchodní tajemství v PDF.' },
-                  { value: 'professional', label: 'Rozšířená právní ochrana', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty, odpovědnostní doložky.', recommended: true },
-                  { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířené právní ochrany + instrukce k podpisu, checklist a 30denní archivace.' },
-                ] as const).map((opt) => (
-                  <label key={opt.value} className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${formData.tier === opt.value ? 'border-amber-500 bg-amber-500/10' : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'}`}>
-                    {('recommended' in opt) &&  formData.tier !== 'professional' && (
-                      <div className="absolute -top-2.5 left-4"><span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">Doporučeno</span></div>
-                    )}
-                    <div className="flex items-start gap-3">
-                      <input type="radio" name="tier" value={opt.value} checked={formData.tier === opt.value}
-                        onChange={(e) => setFormData((prev) => ({ ...prev, tier: e.target.value as 'basic' | 'professional' | 'complete', notaryUpsell: e.target.value !== 'basic' }))}
-                        className="mt-1 h-5 w-5 accent-amber-500" />
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-black uppercase tracking-wide text-amber-400">{opt.label}</span>
-                          <span className="text-sm font-black text-white">{opt.price}</span>
-                        </div>
-                        <div className="mt-1 text-xs leading-relaxed text-slate-400">{opt.desc}</div>
-                        {opt.value === 'professional' && (
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            {['Smluvní pokuty', 'Sankce za prodlení', 'Odpovědnostní doložky'].map(t => (
-                              <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
-                            ))}
-                          </div>
-                        )}
-                        {opt.value === 'complete' && (
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            {['Instrukce k podpisu', 'Checklist', '30denní archivace'].map(t => (
-                              <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
-                            ))}
-                          </div>
-                        )}
+              {/* 04 Předmět a účel */}
+              <section className={cardClass}>
+                <SectionTitle index="04" title="Předmět a účel NDA" subtitle="Přesné vymezení chráněných informací je klíčem k vymahatelnosti." />
+                <div className="space-y-4">
+                  <div>
+                    <label className={labelClass}>Popis důvěrných informací *</label>
+                    <textarea value={formData.confidentialInfoDesc} onChange={e => set('confidentialInfoDesc', e.target.value)}
+                      placeholder="Obchodní strategie, cenové kalkulace, zdrojové kódy, databáze zákazníků, výrobní postupy…"
+                      className={textareaClass} />
+                    <p className="text-xs text-slate-500 mt-1">Čím přesnější popis, tím silnější ochrana v případě sporu.</p>
+                  </div>
+                  <div>
+                    <label className={labelClass}>Účel sdílení informací</label>
+                    <textarea value={formData.purposeOfDisclosure} onChange={e => set('purposeOfDisclosure', e.target.value)}
+                      placeholder="Hodnocení potenciální obchodní spolupráce / vývoj softwarového produktu / due diligence…"
+                      className={textareaClass} />
+                  </div>
+                  <div>
+                    <label className={labelClass}>Zvláštní kategorie chráněných informací (volitelné)</label>
+                    <input value={formData.specialInfoCategories} onChange={e => set('specialInfoCategories', e.target.value)}
+                      placeholder="Osobní údaje, zdravotní záznamy, finanční data…" className={inputClass} />
+                  </div>
+                </div>
+              </section>
+
+              {/* 05 Podmínky NDA */}
+              <section className={cardClass}>
+                <SectionTitle index="05" title="Podmínky a sankce" />
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className={labelClass}>Doba trvání NDA</label>
+                    <input value={formData.ndaDuration} onChange={e => set('ndaDuration', e.target.value)} placeholder="3 let" className={inputClass} />
+                  </div>
+                  <div>
+                    <label className={labelClass}>Důvěrnost po ukončení</label>
+                    <input value={formData.confidentialityAfterTermination} onChange={e => set('confidentialityAfterTermination', e.target.value)} placeholder="5 let" className={inputClass} />
+                  </div>
+                  <div>
+                    <label className={labelClass}>Smluvní pokuta (Kč)</label>
+                    <input type="number" value={formData.penaltyAmount} onChange={e => set('penaltyAmount', e.target.value)} placeholder="100 000" className={inputClass} />
+                    <p className="text-xs text-slate-500 mt-1">Min. 50 000 Kč pro reálnou odstrašující hodnotu.</p>
+                  </div>
+                </div>
+              </section>
+
+              {/* 06 Volitelné doložky */}
+              <section className={cardClass}>
+                <SectionTitle index="06" title="Volitelné doložky" subtitle="Rozšiřte ochranu o zákaz přetahování zaměstnanců nebo zákaz konkurence." />
+                <div className="space-y-3">
+                  <Toggle checked={formData.nonSolicitation} onChange={v => set('nonSolicitation', v)} label="Zákaz přetahování zaměstnanců / klientů" />
+                  {formData.nonSolicitation && (
+                    <div className="ml-7">
+                      <label className={labelClass}>Délka zákazu přetahování</label>
+                      <input value={formData.nonSolicitationPeriod} onChange={e => set('nonSolicitationPeriod', e.target.value)} placeholder="12 měsíců" className={inputClass} />
+                    </div>
+                  )}
+                  <Toggle checked={formData.nonCompete} onChange={v => set('nonCompete', v)} label="Zákaz konkurence" />
+                  {formData.nonCompete && (
+                    <div className="ml-7 space-y-3">
+                      <div>
+                        <label className={labelClass}>Délka zákazu konkurence</label>
+                        <input value={formData.nonCompetePeriod} onChange={e => set('nonCompetePeriod', e.target.value)} placeholder="24 měsíců" className={inputClass} />
+                      </div>
+                      <div>
+                        <label className={labelClass}>Rozsah / odvětví</label>
+                        <input value={formData.nonCompeteScope} onChange={e => set('nonCompeteScope', e.target.value)} placeholder="Vývoj CRM softwaru pro pojišťovny v ČR" className={inputClass} />
                       </div>
                     </div>
-                  </label>
-                ))}
-              </div>
-            </section>
+                  )}
+                </div>
+              </section>
+
+              {/* Řešení sporů */}
+              <section className={cardClass}>
+                <div className="mb-4">
+                  <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
+                  <select className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
+                    <option value="court">Obecný soud (výchozí)</option>
+                    <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
+                    <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
+                  </select>
+                </div>
+              </section>
+
+              {/* 07 Výběr balíčku */}
+              <section className={cardClass}>
+                <SectionTitle index="07" title="Výběr balíčku" subtitle="Zvolte úroveň ochrany odpovídající hodnotě sdílených informací." />
+                <div className="space-y-3">
+                  {([
+                    { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální NDA dle OZ + obchodní tajemství v PDF.' },
+                    { value: 'professional', label: 'Rozšířená právní ochrana', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty, odpovědnostní doložky.', recommended: true },
+                    { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířené právní ochrany + instrukce k podpisu, checklist a 30denní archivace.' },
+                  ] as const).map((opt) => (
+                    <label key={opt.value} className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${formData.tier === opt.value ? 'border-amber-500 bg-amber-500/10' : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'}`}>
+                      {('recommended' in opt) &&  formData.tier !== 'professional' && (
+                        <div className="absolute -top-2.5 left-4"><span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">Doporučeno</span></div>
+                      )}
+                      <div className="flex items-start gap-3">
+                        <input type="radio" name="tier" value={opt.value} checked={formData.tier === opt.value}
+                          onChange={(e) => setFormData((prev) => ({ ...prev, tier: e.target.value as 'basic' | 'professional' | 'complete', notaryUpsell: e.target.value !== 'basic' }))}
+                          className="mt-1 h-5 w-5 accent-amber-500" />
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-black uppercase tracking-wide text-amber-400">{opt.label}</span>
+                            <span className="text-sm font-black text-white">{opt.price}</span>
+                          </div>
+                          <div className="mt-1 text-xs leading-relaxed text-slate-400">{opt.desc}</div>
+                          {opt.value === 'professional' && (
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {['Smluvní pokuty', 'Sankce za prodlení', 'Odpovědnostní doložky'].map(t => (
+                                <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
+                              ))}
+                            </div>
+                          )}
+                          {opt.value === 'complete' && (
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {['Instrukce k podpisu', 'Checklist', '30denní archivace'].map(t => (
+                                <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </section>
+            </div>
 
           </div>
 
@@ -449,8 +494,20 @@ export default function NdaBuilderPage() {
                 </div>
               </div>
 
+              {/* Trust block */}
+              <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3">
+                <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Součástí výstupu je</div>
+                <ul className="space-y-1.5">
+                  {['Profesionálně strukturované PDF', 'Připraveno k okamžitému stažení', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
+                    <li key={item} className="flex items-start gap-2 text-xs text-slate-400">
+                      <span className="text-amber-500 mt-0.5">✓</span>{item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
               {/* GDPR */}
-              <label className="flex items-start gap-3 mb-5 cursor-pointer">
+              <label className="flex items-start gap-3 mb-5 cursor-pointer mt-5">
                 <input type="checkbox" checked={gdprConsent} onChange={(e) => setGdprConsent(e.target.checked)} className="mt-1 h-4 w-4 accent-amber-500 flex-shrink-0" />
                 <span className="text-xs text-slate-400 leading-relaxed">
                   Souhlasím se{' '}

@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
@@ -55,11 +56,11 @@ export default function UznanidluhuPage() {
   const risk = useMemo(() => {
     let score = 100;
     const warnings: { text: string; level: 'high' | 'medium' | 'low' }[] = [];
-    if (!form.debtorName || !form.debtorId) { score -= 20; warnings.push({ text: 'Chybí identifikace dlužníka — uznání dluhu musí být jednoznačné.', level: 'high' }); }
-    if (!form.debtAmount) { score -= 25; warnings.push({ text: 'Chybí výše dluhu — povinný údaj.', level: 'high' }); }
-    if (!form.repaymentDate && form.repaymentType === 'lump_sum') { score -= 15; warnings.push({ text: 'Chybí termín splacení.', level: 'high' }); }
+    if (!form.debtorName || !form.debtorId) { score -= 20; warnings.push({ text: 'Doplňte identifikaci dlužníka — uznání dluhu musí být jednoznačné.', level: 'high' }); }
+    if (!form.debtAmount) { score -= 25; warnings.push({ text: 'Doplňte výši dluhu — povinný údaj.', level: 'high' }); }
+    if (!form.repaymentDate && form.repaymentType === 'lump_sum') { score -= 15; warnings.push({ text: 'Doplňte termín splacení.', level: 'high' }); }
     if (!form.bankAccount) { score -= 8; warnings.push({ text: 'Bez čísla účtu je platba obtížně doložitelná.', level: 'medium' }); }
-    return { score: Math.max(0, score), warnings, label: score >= 85 ? 'Silné uznání dluhu' : score >= 65 ? 'Doplňte' : 'Neúplné' };
+    return { score: Math.max(0, score), warnings, label: score >= 85 ? 'Silné uznání dluhu' : score >= 65 ? 'Doporučená doplnění' : 'Doporučená doplnění' };
   }, [form]);
 
   const previewSections = useMemo(() => {
@@ -87,6 +88,47 @@ export default function UznanidluhuPage() {
 
   const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-rose-400';
 
+  const landingProps = {
+    badge: '§ 2053 a násl. občanského zákoníku',
+    h1Main: 'Uznání dluhu',
+    h1Accent: 'online',
+    subtitle: 'Vytvořte uznání dluhu pro písemné potvrzení existujícího závazku a nastavení podmínek jeho splacení. Dokument posiluje právní pozici věřitele a obnovuje promlčecí dobu.',
+    benefits: [
+      { icon: '⚖️', text: 'Sestaveno dle § 2053 OZ — uznání závazku co do důvodu a výše' },
+      { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+      { icon: '🔒', text: 'Obnovuje 10letou promlčecí dobu — klíčové pro věřitele' },
+      { icon: '💰', text: 'Pokrývá jednorázové splacení i splátkový kalendář' },
+    ],
+    contents: [
+      'Identifikaci věřitele a dlužníka',
+      'Výši a měnu dluhu',
+      'Původ dluhu (zápůjčka, faktura, škoda, jiné)',
+      'Potvrzení existence závazku dlužníkem',
+      'Způsob splacení — jednorázově nebo ve splátkách',
+      'Termín nebo splátkový kalendář',
+      'Úrok a sankce za prodlení',
+      'Závěrečná ustanovení, GDPR a vyšší moc',
+    ],
+    whenSuitable: [
+      'Dluh existuje, ale chybí písemný doklad — obě strany si přejí situaci vyjasnit',
+      'Blíží se promlčení dluhu — uznání obnovuje promlčecí dobu',
+      'Věřitel chce písemný základ pro případné vymáhání pohledávky',
+      'Dlužník souhlasí se splátkovým kalendářem a chce upravit podmínky splacení',
+    ],
+    whenOther: [
+      { label: 'Smlouva o zápůjčce', href: '/pujcka', text: 'Pokud dluh teprve vzniká — peníze se teprve přenechávají dlužníkovi.' },
+    ],
+    faq: [
+      { q: 'Jaký je rozdíl mezi uznáním dluhu a smlouvou o půjčce?', a: 'Smlouva o zápůjčce zakládá nový dluhový vztah. Uznání dluhu se používá, když dluh již existuje — dlužník pouze písemně potvrzuje, že dluh uznává, a sjednávají se podmínky splacení.' },
+      { q: 'Jak uznání dluhu ovlivňuje promlčení?', a: 'Uznáním dluhu dle § 2053 OZ se promlčecí doba přerušuje a začíná běžet znovu — v délce 10 let. To je klíčové, pokud se blíží původní promlčení pohledávky.' },
+      { q: 'Musí uznání dluhu podepsat obě strany?', a: 'Stačí podpis dlužníka — uznání dluhu je jednostranný právní akt. Podpis věřitele je doporučen pro potvrzení přijetí dokumentu, ale zákonem není vyžadován.' },
+      { q: 'Co se stane, pokud dlužník nesplácí i přes uznání dluhu?', a: 'Věřitel může zahájit soudní vymáhání pohledávky. Písemné uznání dluhu je zásadním důkazem. Při pravomocném rozsudku může věřitel iniciovat exekuci.' },
+      { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
+    ],
+    ctaLabel: 'Vytvořit uznání dluhu',
+    formId: 'formular',
+  };
+
   return (
     <main className="min-h-screen bg-[#05080f] text-slate-200 font-sans pb-24">
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[#08101e]/90 backdrop-blur">
@@ -99,7 +141,14 @@ export default function UznanidluhuPage() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8">
+      <ContractLandingSection {...landingProps} />
+
+      <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8" id="formular">
+        <div className="mb-6 border-t border-slate-800/60 pt-8">
+          <h2 className="text-lg font-black text-white uppercase tracking-wide">Vyplňte údaje dokumentu</h2>
+          <p className="text-sm text-slate-500 mt-1">Všechna povinná pole jsou označena *</p>
+        </div>
+
         <div className="grid lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-7 space-y-6">
 
@@ -173,7 +222,7 @@ export default function UznanidluhuPage() {
             </section>
 
             <section className={cardClass}>
-              
+
               {/* Řešení sporů */}
               <div className="mb-6">
                 <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
@@ -255,7 +304,7 @@ export default function UznanidluhuPage() {
                 <div><div className={`font-bold ${scoreColor}`}>{risk.label}</div><div className="text-xs text-slate-500">ze 100 bodů</div></div>
               </div>
               {risk.warnings.length === 0 ? <p className="text-sm text-emerald-400">✓ Uznání dluhu je kompletní.</p>
-                : <ul className="space-y-2">{risk.warnings.map((w, i) => (<li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-rose-500/10 text-rose-300' : 'bg-amber-500/10 text-amber-300'}`}>{w.level === 'high' ? '⚠ ' : '▲ '}{w.text}</li>))}</ul>}
+                : <ul className="space-y-2">{risk.warnings.map((w, i) => (<li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-amber-500/10 text-amber-300' : 'bg-amber-500/10 text-amber-300'}`}>{w.level === 'high' ? '⚠ ' : '▲ '}{w.text}</li>))}</ul>}
             </div>
             <div className={cardClass}>
               <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90 mb-4">Shrnutí</div>
@@ -265,14 +314,24 @@ export default function UznanidluhuPage() {
                 <div className="border-t border-slate-700 pt-2 flex justify-between font-bold text-lg"><span>Celkem</span><span className="text-amber-400">{form.tier === 'complete' ? '749' : form.tier === 'professional' ? '399' : '249'} Kč</span></div>
               </div>
               {(!form.creditorName || !form.debtorName || !form.debtAmount) && !isProcessing && (
-                <div className="mt-4 rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-3 text-xs text-rose-300 space-y-1">
+                <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3 text-xs text-slate-400 space-y-1">
                   <div className="font-semibold mb-1">Před platbou vyplňte:</div>
                   {!form.creditorName && <div>• Jméno věřitele</div>}
                   {!form.debtorName && <div>• Jméno dlužníka</div>}
                   {!form.debtAmount && <div>• Výše dluhu</div>}
                 </div>
               )}
-              <label className="flex items-start gap-3 mb-4 cursor-pointer">
+              <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3">
+                <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Součástí výstupu je</div>
+                <ul className="space-y-1.5">
+                  {['Profesionálně strukturované PDF', 'Připraveno k okamžitému stažení', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
+                    <li key={item} className="flex items-start gap-2 text-xs text-slate-400">
+                      <span className="text-amber-500 mt-0.5">✓</span>{item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <label className="flex items-start gap-3 mt-4 mb-4 cursor-pointer">
                 <input type="checkbox" checked={gdprConsent} onChange={(e) => setGdprConsent(e.target.checked)} className="mt-1 h-4 w-4 accent-amber-500 flex-shrink-0" />
                 <span className="text-xs text-slate-400 leading-relaxed">
                   Souhlasím se{' '}

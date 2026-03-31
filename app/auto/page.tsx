@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
@@ -175,7 +176,7 @@ export default function CarSaleBuilderPage() {
     if (!formData.carVIN || formData.carVIN.trim().length !== 17) {
       score -= 22;
       warnings.push({
-        text: 'VIN musí mít 17 znaků. Bez správného VIN není vozidlo dostatečně identifikováno.',
+        text: 'Doporučujeme doplnit správný VIN (17 znaků) pro jednoznačnou identifikaci vozidla.',
         level: 'high',
       });
     }
@@ -183,7 +184,7 @@ export default function CarSaleBuilderPage() {
     if (!formData.sellerOP || !formData.buyerOP || !formData.sellerAddress || !formData.buyerAddress) {
       score -= 10;
       warnings.push({
-        text: 'Chybí přesná identifikace stran. Doplň OP a adresy obou stran.',
+        text: 'Doporučujeme doplnit přesnou identifikaci obou stran — OP a adresy.',
         level: 'high',
       });
     }
@@ -191,7 +192,7 @@ export default function CarSaleBuilderPage() {
     if (!formData.handoverDate || !formData.handoverPlace) {
       score -= 10;
       warnings.push({
-        text: 'Chybí datum nebo místo předání vozidla.',
+        text: 'Doporučujeme doplnit datum a místo předání vozidla.',
         level: 'medium',
       });
     }
@@ -199,7 +200,7 @@ export default function CarSaleBuilderPage() {
     if (!formData.knownDefects.trim()) {
       score -= 14;
       warnings.push({
-        text: 'Nejsou uvedeny známé vady. To zvyšuje riziko budoucí reklamace a sporu.',
+        text: 'Doporučujeme doplnit popis známých vad. Detailní popis chrání obě strany.',
         level: 'high',
       });
     }
@@ -207,7 +208,7 @@ export default function CarSaleBuilderPage() {
     if (formData.paymentMethod === 'transfer' && !formData.bankAccount.trim()) {
       score -= 10;
       warnings.push({
-        text: 'Je zvolen bankovní převod, ale chybí číslo účtu prodávajícího.',
+        text: 'Doplňte číslo bankovního účtu prodávajícího pro bankovní převod.',
         level: 'high',
       });
     }
@@ -215,7 +216,7 @@ export default function CarSaleBuilderPage() {
     if (formData.paymentMethod === 'cash' && priceNumber > 270000) {
       score -= 30;
       warnings.push({
-        text: 'Hotovostní platba nad 270 000 Kč je nepřípustná. Změň způsob úhrady na bankovní převod.',
+        text: 'Hotovostní platba nad 270 000 Kč není možná. Změňte způsob úhrady na bankovní převod.',
         level: 'high',
       });
     }
@@ -223,7 +224,7 @@ export default function CarSaleBuilderPage() {
     if (formData.isPledged || formData.isInLeasing || formData.hasThirdPartyRights) {
       score -= 22;
       warnings.push({
-        text: 'Vozidlo je zatíženo právním omezením nebo právy třetích osob. To je zásadní právní riziko.',
+        text: 'Doporučujeme doplnit detaily právního omezení nebo práv třetích osob.',
         level: 'high',
       });
     }
@@ -231,7 +232,7 @@ export default function CarSaleBuilderPage() {
     if (!formData.odometerGuaranteed) {
       score -= 8;
       warnings.push({
-        text: 'Prodávající negarantuje stav tachometru. To snižuje právní jistotu kupujícího.',
+        text: 'Doporučujeme garantovat stav tachometru pro zvýšenou právní jistotu.',
         level: 'medium',
       });
     }
@@ -239,7 +240,7 @@ export default function CarSaleBuilderPage() {
     if (!formData.buyerInspectedVehicle) {
       score -= 6;
       warnings.push({
-        text: 'Není potvrzeno, že se kupující seznámil s technickým stavem vozidla.',
+        text: 'Doporučujeme potvrdit, že se kupující seznámil s technickým stavem vozidla.',
         level: 'low',
       });
     }
@@ -454,7 +455,53 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8">
+      <ContractLandingSection
+        badge="§ 2079 a násl. občanského zákoníku"
+        h1Main="Kupní smlouva na"
+        h1Accent="vozidlo online"
+        subtitle="Vytvořte kupní smlouvu pro prodej osobního automobilu, motocyklu nebo jiného motorového vozidla. Dokument pokrývá technické parametry vozidla, historii, stav tachometru, STK, emise a veškeré podmínky převodu."
+        benefits={[
+          { icon: '🚗', text: 'Přizpůsobeno pro prodej osobního vozidla, motocyklu nebo přívěsu' },
+          { icon: '⚖️', text: 'Sestaveno dle § 2079 OZ s rozšířenými klauzulemi pro vozidla' },
+          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+          { icon: '🔍', text: 'Pokrývá VIN, STK, emise, historii vozidla i stav tachometru' },
+        ]}
+        contents={[
+          'Identifikaci prodávajícího a kupujícího',
+          'Technické parametry vozidla (VIN, SPZ, rok výroby, stav tachometru)',
+          'Platnost STK, emisní kontroly a počet předchozích vlastníků',
+          'Kupní cenu a způsob úhrady',
+          'Stav vozidla, známé závady a vybavení',
+          'Datum a podmínky předání vozidla a dokladů',
+          'Přechod vlastnického práva a odpovědnosti',
+          'Závěrečná ustanovení, GDPR a vyšší moc',
+        ]}
+        whenSuitable={[
+          'Prodej osobního automobilu mezi soukromými osobami',
+          'Prodej motocyklu, skúteru nebo přívěsu',
+          'Prodej firemního vozidla fyzické osobě nebo firmě',
+          'Případy, kde je klíčové jasně zdokumentovat stav vozidla a podmínky převodu',
+        ]}
+        whenOther={[
+          { label: 'Kupní smlouva na movitou věc', href: '/kupni', text: 'Pro prodej nábytku, elektroniky, kola nebo jiné movité věci mimo motorová vozidla.' },
+        ]}
+        faq={[
+          { q: 'Proč potřebuji kupní smlouvu při prodeji auta?', a: 'Kupní smlouva prokazuje podmínky převodu a chrání obě strany. Dokládá smluvní cenu, stav vozidla v okamžiku prodeje a skutečnost, že kupující věděl o případných závadách. Bez smlouvy je obtížné prokázat, co bylo dohodnuto.' },
+          { q: 'Musím kupní smlouvu ověřit u notáře?', a: 'Pro běžný prodej motorového vozidla notářské ověření není vyžadováno. Smlouva je platná podpisem obou stran. Ověřený podpis může pomoci v případě sporu, ale není povinný.' },
+          { q: 'Co je VIN a proč je důležitý?', a: 'VIN (Vehicle Identification Number) je unikátní 17místný identifikátor vozidla. Umožňuje ověřit historii auta, výrobní specifikace a zda vozidlo nebylo kradeno nebo havarováno. Jeho uvedení ve smlouvě je zásadní pro jednoznačnou identifikaci.' },
+          { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
+          { q: 'Jak mám přihlásit vozidlo na nového majitele?', a: 'Po podpisu smlouvy musí kupující vozidlo přepsat na dopravním inspektorátu (MDIC) ve svém místě bydliště. K přepisu potřebuje kupní smlouvu, technický průkaz, doklad totožnosti a potvrzení o zaplacení daně z nabytí (pokud se vztahuje).' },
+        ]}
+        ctaLabel="Vytvořit kupní smlouvu na vozidlo"
+        formId="formular"
+      />
+
+      <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8" id="formular">
+        <div className="mb-6 border-t border-slate-800/60 pt-8">
+          <h2 className="text-lg font-black text-white uppercase tracking-wide">Vyplňte údaje dokumentu</h2>
+          <p className="text-sm text-slate-500 mt-1">Všechna povinná pole jsou označena *</p>
+        </div>
+
         <div className="grid lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-7 space-y-6">
             <section className={cardClass}>
@@ -983,72 +1030,72 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
               </div>
 
               <div className={cardClass}>
-              {/* Řešení sporů */}
-              <div className="mb-6">
-                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
-                <select className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
-                  <option value="court">Obecný soud (výchozí)</option>
-                  <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
-                  <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
-                </select>
-              </div>
-              {/* === VÝBĚR BALÍČKU === */}
-              <div className="space-y-3 mb-4">
-                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Vyberte balíček</div>
-                {([
-                  { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva dle občanského zákoníku v PDF.' },
-                  { value: 'professional', label: 'Rozšířená právní ochrana', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
-                  { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířené právní ochrany + průvodní instrukce, checklist a 30denní archivace.' },
-                ] as const).map((opt) => (
-                  <label
-                    key={opt.value}
-                    className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${
-                      formData.tier === opt.value
-                        ? 'border-amber-500 bg-amber-500/10'
-                        : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'
-                    }`}
-                  >
-                    {('recommended' in opt) &&  formData.tier !== 'professional' && (
-                      <div className="absolute -top-2.5 left-4">
-                        <span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">
-                          Doporučeno
-                        </span>
-                      </div>
-                    )}
-                    <div className="flex items-start gap-3">
-                      <input
-                        type="radio"
-                        name="tier"
-                        value={opt.value}
-                        checked={formData.tier === opt.value}
-                        onChange={(e) => setFormData((prev) => ({ ...prev, tier: e.target.value as 'basic' | 'professional' | 'complete', notaryUpsell: e.target.value !== 'basic' }))}
-                        className="mt-1 h-5 w-5 accent-amber-500"
-                      />
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-black uppercase tracking-wide text-amber-400">{opt.label}</span>
-                          <span className="text-sm font-black text-white">{opt.price}</span>
+                {/* Řešení sporů */}
+                <div className="mb-6">
+                  <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
+                  <select className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
+                    <option value="court">Obecný soud (výchozí)</option>
+                    <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
+                    <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
+                  </select>
+                </div>
+                {/* === VÝBĚR BALÍČKU === */}
+                <div className="space-y-3 mb-4">
+                  <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Vyberte balíček</div>
+                  {([
+                    { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva dle občanského zákoníku v PDF.' },
+                    { value: 'professional', label: 'Rozšířená právní ochrana', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
+                    { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířené právní ochrany + průvodní instrukce, checklist a 30denní archivace.' },
+                  ] as const).map((opt) => (
+                    <label
+                      key={opt.value}
+                      className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${
+                        formData.tier === opt.value
+                          ? 'border-amber-500 bg-amber-500/10'
+                          : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'
+                      }`}
+                    >
+                      {('recommended' in opt) &&  formData.tier !== 'professional' && (
+                        <div className="absolute -top-2.5 left-4">
+                          <span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">
+                            Doporučeno
+                          </span>
                         </div>
-                        <div className="mt-1 text-xs leading-relaxed text-slate-400">{opt.desc}</div>
-                        {opt.value === 'professional' && (
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            {['Smluvní pokuty', 'Sankce za prodlení', 'Odpovědnostní doložky'].map(t => (
-                              <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
-                            ))}
+                      )}
+                      <div className="flex items-start gap-3">
+                        <input
+                          type="radio"
+                          name="tier"
+                          value={opt.value}
+                          checked={formData.tier === opt.value}
+                          onChange={(e) => setFormData((prev) => ({ ...prev, tier: e.target.value as 'basic' | 'professional' | 'complete', notaryUpsell: e.target.value !== 'basic' }))}
+                          className="mt-1 h-5 w-5 accent-amber-500"
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-black uppercase tracking-wide text-amber-400">{opt.label}</span>
+                            <span className="text-sm font-black text-white">{opt.price}</span>
                           </div>
-                        )}
-                        {opt.value === 'complete' && (
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            {['Instrukce k podpisu', 'Checklist', '30denní archivace'].map(t => (
-                              <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
-                            ))}
-                          </div>
-                        )}
+                          <div className="mt-1 text-xs leading-relaxed text-slate-400">{opt.desc}</div>
+                          {opt.value === 'professional' && (
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {['Smluvní pokuty', 'Sankce za prodlení', 'Odpovědnostní doložky'].map(t => (
+                                <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
+                              ))}
+                            </div>
+                          )}
+                          {opt.value === 'complete' && (
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {['Instrukce k podpisu', 'Checklist', '30denní archivace'].map(t => (
+                                <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </label>
-                ))}
-              </div>
+                    </label>
+                  ))}
+                </div>
 
               </div>
 
@@ -1071,8 +1118,19 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   </div>
                 </div>
 
+                <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Součástí výstupu je</div>
+                  <ul className="space-y-1.5">
+                    {['Profesionálně strukturované PDF', 'Připraveno k okamžitému stažení', 'Vhodné pro standardní soukromé převody', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
+                      <li key={item} className="flex items-start gap-2 text-xs text-slate-400">
+                        <span className="text-amber-500 mt-0.5">✓</span>{item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
                 {/* GDPR souhlas */}
-                <label className="flex items-start gap-3 mb-4 cursor-pointer group">
+                <label className="flex items-start gap-3 mb-4 cursor-pointer group mt-4">
                   <input
                     type="checkbox"
                     checked={gdprConsent}

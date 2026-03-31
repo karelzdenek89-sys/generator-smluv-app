@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
@@ -197,7 +198,7 @@ export default function LeaseBuilderPage() {
     if (!formData.landlordId || !formData.tenantId || !formData.landlordOP || !formData.tenantOP) {
       score -= 16;
       warnings.push({
-        text: 'Chybí identifikace smluvních stran. Bez přesných údajů je vymahatelnost slabší.',
+        text: 'Doplňte identifikaci smluvních stran. Bez přesných údajů je vymahatelnost slabší.',
         level: 'high',
       });
     }
@@ -221,7 +222,7 @@ export default function LeaseBuilderPage() {
     if (numbers.rent > 0 && numbers.deposit < numbers.rent * 2) {
       score -= 12;
       warnings.push({
-        text: 'Kauce je nižší než dvojnásobek nájemného. To je z pohledu pronajímatele slabší ochrana.',
+        text: 'Doporučená doplnění: Kauce by měla být alespoň dvojnásobek měsíčního nájemného.',
         level: 'medium',
       });
     }
@@ -245,7 +246,7 @@ export default function LeaseBuilderPage() {
     if (!formData.strictPenalties) {
       score -= 10;
       warnings.push({
-        text: 'Nemáš zapnutý přísnější režim pokut. Smlouva bude slabší při porušení povinností.',
+        text: 'Doporučujeme zapnout přísnější režim pokut. Smlouva bude silnější při porušení povinností.',
         level: 'medium',
       });
     }
@@ -253,7 +254,7 @@ export default function LeaseBuilderPage() {
     if (!formData.inspectionAllowed) {
       score -= 6;
       warnings.push({
-        text: 'Není povolena pravidelná kontrola bytu. To snižuje kontrolu nad stavem nemovitosti.',
+        text: 'Doporučujeme povolit pravidelnou kontrolu bytu. To zvyšuje kontrolu nad stavem nemovitosti.',
         level: 'low',
       });
     }
@@ -261,7 +262,7 @@ export default function LeaseBuilderPage() {
     if (!formData.keysCount || !formData.equipmentList) {
       score -= 6;
       warnings.push({
-        text: 'Chybí údaje pro předávací protokol (klíče / vybavení). To komplikuje dokazování škody.',
+        text: 'Doplňte údaje pro předávací protokol (klíče / vybavení). To usnadňuje dokazování škody.',
         level: 'medium',
       });
     }
@@ -269,7 +270,7 @@ export default function LeaseBuilderPage() {
     if (!formData.utilitiesIncludedText.trim()) {
       score -= 5;
       warnings.push({
-        text: 'Není specifikováno, co přesně zahrnují služby a zálohy.',
+        text: 'Doporučujeme specifikovat, co přesně zahrnují služby a zálohy.',
         level: 'low',
       });
     }
@@ -288,7 +289,7 @@ export default function LeaseBuilderPage() {
     return {
       score,
       warnings,
-      label: score >= 85 ? 'Dobré nastavení' : score >= 70 ? 'Průměrná ochrana' : 'Slabší ochrana',
+      label: score >= 85 ? 'Dobré nastavení' : score >= 70 ? 'Průměrná ochrana' : 'Doporučená doplnění',
     };
   }, [formData, numbers]);
 
@@ -545,9 +546,51 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
         </div>
       </header>
 
+      <ContractLandingSection
+        badge="§ 2235 a násl. občanského zákoníku"
+        h1Main="Nájemní smlouva na"
+        h1Accent="byt online"
+        subtitle="Vytvořte nájemní smlouvu pro pronájem bytu nebo domu rychle, přehledně a v souladu s platným občanským zákoníkem. Pokrývá všechna klíčová ujednání — od výše nájmu a kauce po pravidla užívání a ukončení nájmu."
+        benefits={[
+          { icon: '⚖️', text: 'Sestaveno dle § 2235–2301 OZ (nájemní smlouva na byt)' },
+          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+          { icon: '🏠', text: 'Pokrývá dobu určitou i neurčitou, kauce a poplatky' },
+          { icon: '🔒', text: 'Vhodné pro pronájem bytu, domu nebo jeho části' },
+        ]}
+        contents={[
+          'Identifikaci pronajímatele a nájemce',
+          'Přesný popis bytu (adresa, dispozice, číslo jednotky)',
+          'Výši nájmu, záloh na služby a způsob platby',
+          'Výši a podmínky kauce (jistoty)',
+          'Dobu nájmu a podmínky ukončení',
+          'Práva a povinnosti stran (domácí zvířata, kouření, podnájem)',
+          'Stav bytu při předání a předávací podmínky',
+          'Závěrečná ustanovení, GDPR a vyšší moc',
+        ]}
+        whenSuitable={[
+          'Pronájem celého bytu nebo domu soukromé osobě',
+          'Pronájem části nemovitosti (pokoj, garsonka)',
+          'Uzavření nájemního vztahu na dobu určitou nebo neurčitou',
+          'Případy, kdy potřebujete mít jasně ošetřené podmínky užívání nemovitosti',
+        ]}
+        whenOther={[
+          { label: 'Podnájemní smlouva', href: '/podnajem', text: 'Pokud sám jste nájemcem a dáváte byt nebo jeho část do podnájmu.' },
+        ]}
+        faq={[
+          { q: 'Co je rozdíl mezi nájemní a podnájemní smlouvou?', a: 'Nájemní smlouva je uzavírána přímo s vlastníkem nemovitosti. Podnájemní smlouva se používá, pokud nájemce sám dál pronajímá byt nebo jeho část třetí osobě — k tomu zpravidla potřebuje souhlas pronajímatele.' },
+          { q: 'Je nutná písemná nájemní smlouva?', a: 'Zákon písemnou formu výslovně nevyžaduje, ale silně ji doporučuje. Ústní dohoda je obtížně prokazatelná a v případě sporu může být pro nájemce i pronajímatele nevýhodná.' },
+          { q: 'Jak vysoká může být kauce?', a: 'Podle § 2254 OZ smí kauce (jistota) činit nejvýše trojnásobek měsíčního nájemného. Pronajímatel ji musí po skončení nájmu vrátit, pokud nájemce nezpůsobil škodu.' },
+          { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
+          { q: 'Musí smlouvu ověřit notář?', a: 'Pro běžné nájemní smlouvy na byt notářské ověření není vyžadováno. Podpisy obou stran postačují.' },
+        ]}
+        ctaLabel="Vytvořit nájemní smlouvu"
+        formId="formular"
+      />
+
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8">
         <div className="grid lg:grid-cols-12 gap-8 items-start">
-          <div className="lg:col-span-7 space-y-6">
+          <div id="formular" className="lg:col-span-7 space-y-6">
+            <div className="mb-6 border-t border-slate-800/60 pt-8"><h2 className="text-lg font-black text-white uppercase tracking-wide">Vyplňte údaje dokumentu</h2><p className="text-sm text-slate-500 mt-1">Všechna povinná pole jsou označena *</p></div>
             <section className={cardClass}>
               <SectionTitle
                 index="01"
@@ -1167,6 +1210,26 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
 
               <div className={cardClass}>
                 {/* Price summary */}
+                <div className="mb-4">
+                  <div className="text-[11px] font-black uppercase tracking-[0.22em] text-slate-400">
+                    Součástí výstupu je
+                  </div>
+                  <ul className="mt-2 space-y-1.5 text-xs">
+                    <li className="flex items-start gap-2 text-slate-300">
+                      <span className="text-amber-400 mt-1">✓</span>
+                      <span>Profesionálně strukturované PDF</span>
+                    </li>
+                    <li className="flex items-start gap-2 text-slate-300">
+                      <span className="text-amber-400 mt-1">✓</span>
+                      <span>Připraveno k okamžitému stažení</span>
+                    </li>
+                    <li className="flex items-start gap-2 text-slate-300">
+                      <span className="text-amber-400 mt-1">✓</span>
+                      <span>Přehledné uspořádání smluvních ustanovení</span>
+                    </li>
+                  </ul>
+                </div>
+
                 <div className="mb-4 rounded-2xl border border-white/8 bg-white/3 p-4">
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-sm text-slate-400">Základní dokument</span>

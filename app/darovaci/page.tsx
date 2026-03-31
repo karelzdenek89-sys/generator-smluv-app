@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
@@ -76,7 +77,7 @@ export default function GiftContractPage() {
 
     if (!formData.donorName.trim() || !formData.doneeName.trim()) {
       score -= 25;
-      warnings.push('Chybí jména dárce nebo obdarovaného.');
+      warnings.push('Doporučujeme doplnit jména dárce a obdarovaného.');
     }
     if (!formData.donorId.trim() || !formData.doneeId.trim()) {
       score -= 15;
@@ -84,27 +85,27 @@ export default function GiftContractPage() {
     }
     if (!formData.giftDate) {
       score -= 10;
-      warnings.push('Chybí datum darování.');
+      warnings.push('Doporučujeme doplnit datum darování.');
     }
 
     if (formData.giftType === 'money' && !formData.amount) {
       score -= 30;
-      warnings.push('Není uvedena darovaná částka.');
+      warnings.push('Doporučujeme doplnit darovanou částku.');
     }
     if (formData.giftType === 'car' && (!formData.carVIN || !formData.carMake)) {
       score -= 25;
-      warnings.push('Chybí základní údaje o vozidle (VIN, značka).');
+      warnings.push('Doporučujeme doplnit základní údaje o vozidle (VIN, značka).');
     }
     if (
       formData.giftType === 'property' &&
       (!formData.propertyAddress || !formData.propertyLV)
     ) {
       score -= 35;
-      warnings.push('Chybí klíčové údaje o nemovitosti.');
+      warnings.push('Doporučujeme doplnit klíčové údaje o nemovitosti.');
     }
     if (formData.giftType === 'thing' && !formData.thingDescription.trim()) {
       score -= 20;
-      warnings.push('Chybí popis darované věci.');
+      warnings.push('Doporučujeme doplnit popis darované věci.');
     }
 
     if (score < 0) score = 0;
@@ -202,7 +203,51 @@ export default function GiftContractPage() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8">
+      <ContractLandingSection
+        badge="§ 2055 a násl. občanského zákoníku"
+        h1Main="Darovací smlouva"
+        h1Accent="online"
+        subtitle="Vytvořte darovací smlouvu pro darování peněz, vozidla, movité věci nebo jiného majetku. Dokument jasně vymezuje předmět daru, darování bez odměny a podmínky převodu."
+        benefits={[
+          { icon: '🎁', text: 'Pokrývá darování peněz, věci, vozidla i nemovitosti' },
+          { icon: '⚖️', text: 'Sestaveno dle § 2055 OZ — bezplatný převod vlastnického práva' },
+          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+          { icon: '🔒', text: 'Volitelná podmínka vrácení daru (odvolání daru)' },
+        ]}
+        contents={[
+          'Identifikaci dárce a obdarovaného',
+          'Přesný popis předmětu daru (peníze, věc, vozidlo)',
+          'Potvrzení bezplatnosti převodu vlastnického práva',
+          'Datum darování a podmínky předání',
+          'Volitelnou podmínku vrácení daru (§ 2068–2075 OZ)',
+          'Závěrečná ustanovení, GDPR a vyšší moc',
+        ]}
+        whenSuitable={[
+          'Darování peněz (finanční dar v rodině nebo blízkým)',
+          'Darování vozidla (auto, motocykl)',
+          'Darování movité věci (nábytek, elektronika, starožitnosti)',
+          'Situace, kde je třeba písemně doložit bezplatný převod majetku',
+        ]}
+        whenOther={[
+          { label: 'Kupní smlouva na movitou věc', href: '/kupni', text: 'Pokud za věc obdržíte úplatu — darování je vždy bezplatné.' },
+          { label: 'Kupní smlouva na vozidlo', href: '/auto', text: 'Pokud vozidlo prodáváte za kupní cenu, nikoli darujete.' },
+        ]}
+        faq={[
+          { q: 'Musí být darovací smlouva písemná?', a: 'U movitých věcí předaných ihned písemná forma nutná není. Doporučujeme ji vždy — zejména u vyšší hodnoty daru (peníze, vozidlo), kde je dobré mít doložitelný právní základ.' },
+          { q: 'Platí se daň z darování?', a: 'Darování mezi osobami blízkými (§ 22 zákona o daních z příjmů) je zpravidla osvobozeno od daně. U darování jiným osobám záleží na hodnotě daru a vztahu stran — doporučujeme konzultaci s daňovým poradcem.' },
+          { q: 'Lze dar odvolat?', a: 'Ano, § 2068–2075 OZ umožňuje odvolání daru, pokud se obdarovaný zachová vůči dárci způsobem, který hrubě porušuje dobré mravy. Tento mechanismus lze do smlouvy výslovně zahrnout.' },
+          { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
+        ]}
+        ctaLabel="Vytvořit darovací smlouvu"
+        formId="formular"
+      />
+
+      <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8" id="formular">
+        <div className="mb-6 border-t border-slate-800/60 pt-8">
+          <h2 className="text-lg font-black text-white uppercase tracking-wide">Vyplňte údaje dokumentu</h2>
+          <p className="text-sm text-slate-500 mt-1">Všechna povinná pole jsou označena *</p>
+        </div>
+
         <div className="grid lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-7 space-y-6">
             <section className="bg-[#0c1426] border border-slate-800 rounded-3xl p-8">
@@ -532,7 +577,18 @@ export default function GiftContractPage() {
                   </div>
                 </div>
 
-                <label className="flex items-start gap-3 mb-4 cursor-pointer group">
+                <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Součástí výstupu je</div>
+                  <ul className="space-y-1.5">
+                    {['Profesionálně strukturované PDF', 'Připraveno k okamžitému stažení', 'Vhodné pro standardní soukromé převody', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
+                      <li key={item} className="flex items-start gap-2 text-xs text-slate-400">
+                        <span className="text-amber-500 mt-0.5">✓</span>{item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <label className="flex items-start gap-3 mb-4 cursor-pointer group mt-4">
                   <input
                     type="checkbox"
                     checked={gdprConsent}
