@@ -26,9 +26,31 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Nájemní smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
+  description: 'Kompletní průvodce nájemní smlouvou pro rok 2026. Co musí smlouva obsahovat dle OZ, nejčastější chyby pronajímatelů, jak se chránit a kdy nestačí vzor z internetu.',
+  url: 'https://smlouvahned.cz/blog/najemni-smlouva-vzor-2026',
+  datePublished: '2026-03-01',
+  dateModified: '2026-03-01',
+  author: { '@type': 'Organization', name: 'SmlouvaHned', url: 'https://smlouvahned.cz' },
+  publisher: {
+    '@type': 'Organization',
+    name: 'SmlouvaHned',
+    logo: { '@type': 'ImageObject', url: 'https://smlouvahned.cz/og-image.png' },
+  },
+  image: 'https://smlouvahned.cz/og-image.png',
+  inLanguage: 'cs',
+};
+
 export default function NajemniSmlouvaVzor2026Page() {
   return (
     <article className="mx-auto max-w-3xl px-6 py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+      />
 
       {/* Breadcrumb */}
       <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">

@@ -10,6 +10,36 @@ export const metadata: Metadata = {
 
 const articles = [
   {
+    slug: 'nda-smlouva-mlcenlivost',
+    title: 'NDA smlouva o mlčenlivosti 2026: Co chrání, co ne a jak ji napsat správně',
+    excerpt:
+      'Praktický průvodce dohodou o mlčenlivosti — co NDA chrání a co ne, jednostranná vs. vzájemná NDA, délka trvání, sankce za porušení a nejčastější chyby při uzavírání.',
+    category: 'Podnikání',
+    readTime: '8 min',
+    date: '2026-04-01',
+    tag: 'NDA',
+  },
+  {
+    slug: 'smlouva-o-zapujcce-2026',
+    title: 'Smlouva o zápůjčce (půjčce) 2026: Vzor, náležitosti a jak ji napsat správně',
+    excerpt:
+      'Průvodce smlouvou o zápůjčce dle § 2390 OZ — povinné náležitosti, sjednání úroku, splátkový kalendář, zajištění a co dělat, když dlužník nesplácí.',
+    category: 'Osobní a finanční',
+    readTime: '8 min',
+    date: '2026-03-28',
+    tag: 'Smlouva o půjčce',
+  },
+  {
+    slug: 'kupni-smlouva-movita-vec',
+    title: 'Kupní smlouva na movitou věc 2026: Vzor a náležitosti',
+    excerpt:
+      'Co musí obsahovat kupní smlouva na movitou věc dle § 2079 OZ — přesný popis předmětu, cena, předání, záruky a jak se chránit před vadami při prodeji mezi soukromými osobami.',
+    category: 'Osobní a finanční',
+    readTime: '7 min',
+    date: '2026-03-25',
+    tag: 'Kupní smlouva',
+  },
+  {
     slug: 'pracovni-smlouva-2026',
     title: 'Pracovní smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
     excerpt:

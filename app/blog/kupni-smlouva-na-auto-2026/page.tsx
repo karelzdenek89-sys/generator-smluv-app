@@ -26,9 +26,31 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Kupní smlouva na auto 2026: Co musí obsahovat a jak se chránit',
+  description: 'Průvodce kupní smlouvou na auto pro rok 2026. Co musí smlouva obsahovat, jak ověřit vozidlo, nejčastější chyby prodejců i kupujících a proč nestačí rukou psaná dohoda.',
+  url: 'https://smlouvahned.cz/blog/kupni-smlouva-na-auto-2026',
+  datePublished: '2026-03-15',
+  dateModified: '2026-03-15',
+  author: { '@type': 'Organization', name: 'SmlouvaHned', url: 'https://smlouvahned.cz' },
+  publisher: {
+    '@type': 'Organization',
+    name: 'SmlouvaHned',
+    logo: { '@type': 'ImageObject', url: 'https://smlouvahned.cz/og-image.png' },
+  },
+  image: 'https://smlouvahned.cz/og-image.png',
+  inLanguage: 'cs',
+};
+
 export default function KupniSmlouvaAutoPage() {
   return (
     <article className="mx-auto max-w-3xl px-6 py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+      />
 
       {/* Breadcrumb */}
       <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">

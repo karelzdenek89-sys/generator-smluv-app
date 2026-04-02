@@ -26,9 +26,31 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Pracovní smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
+  description: 'Kompletní průvodce pracovní smlouvou pro rok 2026. Tři zákonné náležitosti dle zákoníku práce, zkušební doba, co smlouva chránit musí, a nejčastější chyby zaměstnavatelů.',
+  url: 'https://smlouvahned.cz/blog/pracovni-smlouva-2026',
+  datePublished: '2026-03-20',
+  dateModified: '2026-03-20',
+  author: { '@type': 'Organization', name: 'SmlouvaHned', url: 'https://smlouvahned.cz' },
+  publisher: {
+    '@type': 'Organization',
+    name: 'SmlouvaHned',
+    logo: { '@type': 'ImageObject', url: 'https://smlouvahned.cz/og-image.png' },
+  },
+  image: 'https://smlouvahned.cz/og-image.png',
+  inLanguage: 'cs',
+};
+
 export default function PracovniSmlouvaVzor2026Page() {
   return (
     <article className="mx-auto max-w-3xl px-6 py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+      />
 
       {/* Breadcrumb */}
       <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">

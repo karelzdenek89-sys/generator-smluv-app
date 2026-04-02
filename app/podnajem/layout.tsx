@@ -15,6 +15,29 @@ export const metadata: Metadata = {
   },
 };
 
+const softwareSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Podnájemní smlouva — formulář online',
+  applicationCategory: 'LegalApplication',
+  operatingSystem: 'Web',
+  url: 'https://smlouvahned.cz/podnajem',
+  inLanguage: 'cs',
+  offers: {
+    '@type': 'Offer',
+    price: '249',
+    priceCurrency: 'CZK',
+  },
+};
+
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema).replace(/</g, '\\u003c') }}
+      />
+      {children}
+    </>
+  );
 }

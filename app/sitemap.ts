@@ -116,7 +116,37 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url: `${BASE_URL}/blog/smlouva-o-dilo-2026`,
+      lastModified: new Date('2026-03-10'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.92,
+    },
+    {
+      url: `${BASE_URL}/blog/darovaci-smlouva-2026`,
+      lastModified: new Date('2026-03-15'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.92,
+    },
+    {
+      url: `${BASE_URL}/blog/pracovni-smlouva-2026`,
       lastModified: new Date('2026-03-20'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.92,
+    },
+    {
+      url: `${BASE_URL}/blog/kupni-smlouva-movita-vec`,
+      lastModified: new Date('2026-03-25'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.92,
+    },
+    {
+      url: `${BASE_URL}/blog/smlouva-o-zapujcce-2026`,
+      lastModified: new Date('2026-03-28'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.92,
+    },
+    {
+      url: `${BASE_URL}/blog/nda-smlouva-mlcenlivost`,
+      lastModified: new Date('2026-04-01'),
       changeFrequency: 'monthly' as const,
       priority: 0.92,
     },

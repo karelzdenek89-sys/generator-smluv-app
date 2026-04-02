@@ -26,9 +26,31 @@ export const metadata: Metadata = {
   },
 };
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Darovací smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
+  description: 'Kompletní průvodce darovací smlouvou pro rok 2026. Zákonné náležitosti dle OZ, kdy musí být písemná, daňové dopady, odvolání daru a nejčastější chyby při darování nemovitostí i movitých věcí.',
+  url: 'https://smlouvahned.cz/blog/darovaci-smlouva-2026',
+  datePublished: '2026-03-15',
+  dateModified: '2026-03-15',
+  author: { '@type': 'Organization', name: 'SmlouvaHned', url: 'https://smlouvahned.cz' },
+  publisher: {
+    '@type': 'Organization',
+    name: 'SmlouvaHned',
+    logo: { '@type': 'ImageObject', url: 'https://smlouvahned.cz/og-image.png' },
+  },
+  image: 'https://smlouvahned.cz/og-image.png',
+  inLanguage: 'cs',
+};
+
 export default function DarovaciSmlouvaVzor2026Page() {
   return (
     <article className="mx-auto max-w-3xl px-6 py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+      />
 
       {/* Breadcrumb */}
       <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">

@@ -1,6 +1,6 @@
 # SmlouvaHned — Intent & Canonical Map
 
-Poslední aktualizace: 2026-03-31
+Poslední aktualizace: 2026-04-02
 
 ---
 
@@ -21,15 +21,15 @@ Poslední aktualizace: 2026-03-31
 |-----|----------------|--------------------|-----------|------------|-------------|
 | `/najem` | vytvořit nájemní smlouvu | nájemní smlouva formulář | self | `/najemni-smlouva` ✅ | `/blog/najemni-smlouva-vzor-2026` ✅ |
 | `/auto` | kupní smlouva na auto | kupní smlouva vozidlo | self | `/blog/kupni-smlouva-na-auto-2026` ✅ | `/blog/kupni-smlouva-na-auto-2026` ✅ |
-| `/kupni` | vytvořit kupní smlouvu | kupní smlouva movitá věc | self | `/kupni-smlouva` ✅ | — |
+| `/kupni` | vytvořit kupní smlouvu | kupní smlouva movitá věc | self | `/kupni-smlouva` ✅ | `/blog/kupni-smlouva-movita-vec` ✅ |
 | `/darovaci` | vytvořit darovací smlouvu | darovací smlouva formulář | self | `/darovaci-smlouva` ✅ | `/blog/darovaci-smlouva-2026` ✅ |
 | `/smlouva-o-dilo` | vytvořit smlouvu o dílo | smlouva o dílo formulář | self | `/smlouva-o-dilo-online` ✅ | `/blog/smlouva-o-dilo-2026` ✅ |
 | `/pracovni` | vytvořit pracovní smlouvu | pracovní smlouva formulář | self | `/pracovni-smlouva` ✅ | `/blog/pracovni-smlouva-2026` ✅ |
 | `/dpp` | vytvořit DPP | dohoda o provedení práce | self | `/dohoda-o-provedeni-prace` ✅ | — |
-| `/nda` | vytvořit NDA | smlouva o mlčenlivosti | self | `/nda-smlouva` ✅ | — |
+| `/nda` | vytvořit NDA | smlouva o mlčenlivosti | self | `/nda-smlouva` ✅ | `/blog/nda-smlouva-mlcenlivost` ✅ |
 | `/plna-moc` | vytvořit plnou moc | plná moc formulář | self | `/plna-moc-online` ✅ | — |
 | `/podnajem` | vytvořit podnájemní smlouvu | podnájem bytu | self | `/podnajemni-smlouva` ✅ | — |
-| `/pujcka` | vytvořit smlouvu o zápůjčce | půjčka smlouva | self | `/pujcka-smlouva` ✅ | — |
+| `/pujcka` | vytvořit smlouvu o zápůjčce | půjčka smlouva | self | `/pujcka-smlouva` ✅ | `/blog/smlouva-o-zapujcce-2026` ✅ |
 | `/sluzby` | vytvořit smlouvu o službách | freelancer smlouva | self | `/smlouva-o-sluzbach` ✅ | — |
 | `/spoluprace` | vytvořit smlouvu o spolupráci | smlouva o spolupráci OSVČ | self | `/smlouva-o-spolupraci` ✅ | — |
 | `/uznani-dluhu` | vytvořit uznání dluhu | uznání dluhu formulář | self | `/uznani-dluhu-vzor` ✅ | — |
@@ -57,7 +57,7 @@ Poslední aktualizace: 2026-03-31
 
 ---
 
-## 🟢 Blog / Průvodce — 5 URL (mezera: chybí 9 typů)
+## 🟢 Blog / Průvodce — 8 URL (mezera: chybí 6 typů)
 
 | URL | Téma | Hlavní keyword | Odkazuje na Form | Landing pair |
 |-----|------|----------------|------------------|--------------|
@@ -66,17 +66,20 @@ Poslední aktualizace: 2026-03-31
 | `/blog/smlouva-o-dilo-2026` | Průvodce smlouvou o dílo | smlouva o dílo 2026 | `/smlouva-o-dilo` ✅ | `/smlouva-o-dilo-online` ✅ |
 | `/blog/darovaci-smlouva-2026` | Průvodce darovací smlouvou | darovací smlouva vzor | `/darovaci` ✅ | `/darovaci-smlouva` ✅ |
 | `/blog/pracovni-smlouva-2026` | Průvodce pracovní smlouvou | pracovní smlouva vzor | `/pracovni` ✅ | `/pracovni-smlouva` ✅ |
+| `/blog/kupni-smlouva-movita-vec` | Kupní smlouva na movitou věc | kupní smlouva movitá věc | `/kupni` ✅ | `/kupni-smlouva` ✅ |
+| `/blog/smlouva-o-zapujcce-2026` | Průvodce smlouvou o zápůjčce | smlouva o půjčce vzor | `/pujcka` ✅ | `/pujcka-smlouva` ✅ |
+| `/blog/nda-smlouva-mlcenlivost` | Průvodce NDA smlouvou | smlouva o mlčenlivosti vzor | `/nda` ✅ | `/nda-smlouva` ✅ |
 
 ### Chybějící blog články (prioritizováno)
 
 | Priorita | URL (návrh) | Téma | Target keyword |
 |----------|-------------|------|----------------|
-| 🟡 Střední | `/blog/kupni-smlouva-movita-vec` | Průvodce kupní smlouvou na věc | kupní smlouva movitá věc |
-| 🟡 Střední | `/blog/smlouva-o-zapujcce-2026` | Průvodce smlouvou o zápůjčce | smlouva o půjčce vzor |
-| 🟡 Střední | `/blog/nda-smlouva-mlcenlivost` | Průvodce NDA smlouvou | smlouva o mlčenlivosti vzor |
 | 🟢 Nižší | `/blog/dpp-dohoda-provedeni-prace` | Průvodce DPP | dohoda o provedení práce |
 | 🟢 Nižší | `/blog/podnajemni-smlouva-2026` | Průvodce podnájemní smlouvou | podnájemní smlouva |
 | 🟢 Nižší | `/blog/smlouva-o-spolupraci-osvč` | Průvodce smlouvou o spolupráci | smlouva o spolupráci OSVČ |
+| 🟢 Nižší | `/blog/plna-moc-2026` | Průvodce plnou mocí | plná moc vzor |
+| 🟢 Nižší | `/blog/smlouva-o-sluzbach-2026` | Průvodce smlouvou o službách | smlouva o poskytování služeb |
+| 🟢 Nižší | `/blog/uznani-dluhu-2026` | Průvodce uznáním dluhu | uznání dluhu vzor |
 
 ---
 
@@ -87,14 +90,14 @@ Poslední aktualizace: 2026-03-31
 | Nájemní | ✅ /najem | ✅ /najemni-smlouva | ✅ blog | **Kompletní** |
 | Kupní auto | ✅ /auto | ⚠️ sdílená /kupni-smlouva | ✅ blog | **Silný** |
 | Smlouva o dílo | ✅ /smlouva-o-dilo | ✅ /smlouva-o-dilo-online | ✅ blog | **Kompletní** |
-| Kupní věc | ✅ /kupni | ✅ /kupni-smlouva | ❌ | **Chybí článek** |
+| Kupní věc | ✅ /kupni | ✅ /kupni-smlouva | ✅ blog | **Kompletní** |
 | Darovací | ✅ /darovaci | ✅ /darovaci-smlouva | ✅ blog | **Kompletní** |
 | Pracovní | ✅ /pracovni | ✅ /pracovni-smlouva | ✅ blog | **Kompletní** |
 | DPP | ✅ /dpp | ✅ /dohoda-o-provedeni-prace | ❌ | **Chybí článek** |
-| NDA | ✅ /nda | ✅ /nda-smlouva | ❌ | **Chybí článek** |
+| NDA | ✅ /nda | ✅ /nda-smlouva | ✅ blog | **Kompletní** |
 | Plná moc | ✅ /plna-moc | ✅ /plna-moc-online | ❌ | **Chybí článek** |
 | Podnájemní | ✅ /podnajem | ✅ /podnajemni-smlouva | ❌ | **Chybí článek** |
-| Zápůjčka | ✅ /pujcka | ✅ /pujcka-smlouva | ❌ | **Chybí článek** |
+| Zápůjčka | ✅ /pujcka | ✅ /pujcka-smlouva | ✅ blog | **Kompletní** |
 | Služby | ✅ /sluzby | ✅ /smlouva-o-sluzbach | ❌ | **Chybí článek** |
 | Spolupráce | ✅ /spoluprace | ✅ /smlouva-o-spolupraci | ❌ | **Chybí článek** |
 | Uznání dluhu | ✅ /uznani-dluhu | ✅ /uznani-dluhu-vzor | ❌ | **Chybí článek** |
