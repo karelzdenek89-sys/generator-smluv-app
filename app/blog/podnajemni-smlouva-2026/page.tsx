@@ -42,6 +42,15 @@ const jsonLd = {
   image: 'https://smlouvahned.cz/og-image.png',
   inLanguage: 'cs',
 };
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
+    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://smlouvahned.cz/blog' },
+    { '@type': 'ListItem', position: 3, name: 'Podnájemní smlouva 2026: Co musí obsahovat a souhlas pronajímatele', item: 'https://smlouvahned.cz/blog/podnajemni-smlouva-2026' },
+  ],
+};
 
 export default function PodnajemniSmlouvaPage() {
   return (
@@ -49,6 +58,10 @@ export default function PodnajemniSmlouvaPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd).replace(/</g, '\\u003c') }}
       />
 
       {/* Breadcrumb */}

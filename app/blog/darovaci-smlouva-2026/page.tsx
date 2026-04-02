@@ -43,6 +43,15 @@ const jsonLd = {
   image: 'https://smlouvahned.cz/og-image.png',
   inLanguage: 'cs',
 };
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
+    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://smlouvahned.cz/blog' },
+    { '@type': 'ListItem', position: 3, name: 'Darovací smlouva vzor 2026: Co musí obsahovat a nejčastější chyby', item: 'https://smlouvahned.cz/blog/darovaci-smlouva-2026' },
+  ],
+};
 
 export default function DarovaciSmlouvaVzor2026Page() {
   return (
@@ -50,6 +59,10 @@ export default function DarovaciSmlouvaVzor2026Page() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd).replace(/</g, '\\u003c') }}
       />
 
       {/* Breadcrumb */}

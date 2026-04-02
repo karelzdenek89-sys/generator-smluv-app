@@ -41,6 +41,15 @@ const jsonLd = {
   image: 'https://smlouvahned.cz/og-image.png',
   inLanguage: 'cs',
 };
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
+    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://smlouvahned.cz/blog' },
+    { '@type': 'ListItem', position: 3, name: 'Kupní smlouva na věc 2026: Co musí obsahovat a nejčastější chyby', item: 'https://smlouvahned.cz/blog/kupni-smlouva-movita-vec' },
+  ],
+};
 
 export default function KupniSmlouvaMovitaVecPage() {
   return (
@@ -48,6 +57,10 @@ export default function KupniSmlouvaMovitaVecPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd).replace(/</g, '\\u003c') }}
       />
 
       {/* Breadcrumb */}

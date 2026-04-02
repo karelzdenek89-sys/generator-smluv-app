@@ -45,6 +45,17 @@ export default function KupniSmlouvaPage() {
     <main className="min-h-screen bg-[#05080f] text-slate-200">
       <script
         type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
+            { '@type': 'ListItem', position: 2, name: 'Kupní smlouva vzor 2026', item: 'https://smlouvahned.cz/kupni-smlouva' },
+          ],
+        }).replace(/</g, '\\u003c') }}
+      />
+      <script
+        type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: "{\"@context\": \"https://schema.org\", \"@type\": \"FAQPage\", \"mainEntity\": [{\"@type\": \"Question\", \"name\": \"Co mus\u00ed kupn\u00ed smlouva obsahovat?\", \"acceptedAnswer\": {\"@type\": \"Answer\", \"text\": \"Kupn\u00ed smlouva mus\u00ed obsahovat identifikaci stran, p\u0159esn\u00fd popis v\u011bci (u auta VIN, u nemovitosti katastr\u00e1ln\u00ed \u00fadaje), kupn\u00ed cenu a zp\u016fsob/term\u00edn zaplacen\u00ed. Bez p\u0159esn\u00e9ho popisu p\u0159edm\u011btu koup\u011b je smlouva ne\u00fapln\u00e1.\"}}, {\"@type\": \"Question\", \"name\": \"Mus\u00ed b\u00fdt kupn\u00ed smlouva p\u00edsemn\u00e1?\", \"acceptedAnswer\": {\"@type\": \"Answer\", \"text\": \"U nemovitost\u00ed v\u017edy ano \u2014 jinak nen\u00ed vklad do katastru mo\u017en\u00fd. U movit\u00fdch v\u011bc\u00ed z\u00e1kon p\u00edsemnou formu nevy\u017eaduje, ale siln\u011b ji doporu\u010dujeme pro hodnoty nad 5 000 K\u010d.\"}}, {\"@type\": \"Question\", \"name\": \"Jak se br\u00e1nit skryt\u00fdm vad\u00e1m?\", \"acceptedAnswer\": {\"@type\": \"Answer\", \"text\": \"Kupn\u00ed smlouva by m\u011bla obsahovat v\u00fdslovn\u00e9 prohl\u00e1\u0161en\u00ed prod\u00e1vaj\u00edc\u00edho o stavu v\u011bci a jej\u00edch vad\u00e1ch. Kupuj\u00edc\u00ed m\u00e1 pr\u00e1vo z odpov\u011bdnosti za vady uplatnit do 2 let od p\u0159ed\u00e1n\u00ed (\u00a7 2165 OZ).\"}}, {\"@type\": \"Question\", \"name\": \"Jak bezpe\u010dn\u011b p\u0159edat platbu?\", \"acceptedAnswer\": {\"@type\": \"Answer\", \"text\": \"P\u0159i vy\u0161\u0161\u00edch \u010d\u00e1stk\u00e1ch doporu\u010dujeme bankovn\u00ed p\u0159evod s jasn\u011b identifikovan\u00fdm \u00fa\u010delem, nebo not\u00e1\u0159skou/advok\u00e1tn\u00ed \u00faschovu. Platba v hotovosti je riskantn\u00ed \u2014 bez p\u0159\u00edjmov\u00e9ho dokladu ji nelze zp\u011btn\u011b prok\u00e1zat.\"}}]}".replace(/</g, '\\u003c') }}
       />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(20,184,166,0.07),transparent_30%)] pointer-events-none" />

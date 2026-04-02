@@ -43,6 +43,17 @@ const faq = [
 export default function UznaniDluhuVzorPage() {
   return (
     <main className="min-h-screen bg-[#05080f] text-slate-200">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
+            { '@type': 'ListItem', position: 2, name: 'Uznání dluhu vzor 2026', item: 'https://smlouvahned.cz/uznani-dluhu-vzor' },
+          ],
+        }).replace(/</g, '\\u003c') }}
+      />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(239,68,68,0.07),transparent_30%)] pointer-events-none" />
 
       <div className="relative z-10 mx-auto max-w-4xl px-6 py-16">

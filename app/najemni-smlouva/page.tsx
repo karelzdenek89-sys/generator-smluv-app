@@ -77,6 +77,17 @@ export default function NajemniSmlouvaPage() {
     <main className="min-h-screen bg-[#05080f] text-slate-200">
       <script
         type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
+            { '@type': 'ListItem', position: 2, name: 'Nájemní smlouva vzor 2026', item: 'https://smlouvahned.cz/najemni-smlouva' },
+          ],
+        }).replace(/</g, '\\u003c') }}
+      />
+      <script
+        type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: "{\"@context\": \"https://schema.org\", \"@type\": \"FAQPage\", \"mainEntity\": [{\"@type\": \"Question\", \"name\": \"Co mus\u00ed n\u00e1jemn\u00ed smlouva obsahovat?\", \"acceptedAnswer\": {\"@type\": \"Answer\", \"text\": \"N\u00e1jemn\u00ed smlouva mus\u00ed identifikovat pronaj\u00edmatele a n\u00e1jemce, p\u0159esn\u011b vymezit p\u0159edm\u011bt n\u00e1jmu (adresa, \u010d\u00edslo bytu, p\u0159\u00edslu\u0161enstv\u00ed), stanovit v\u00fd\u0161i n\u00e1jemn\u00e9ho a dobu n\u00e1jmu. Bez t\u011bchto n\u00e1le\u017eitost\u00ed je smlouva ne\u00fapln\u00e1.\"}}, {\"@type\": \"Question\", \"name\": \"Mus\u00ed b\u00fdt n\u00e1jemn\u00ed smlouva p\u00edsemn\u00e1?\", \"acceptedAnswer\": {\"@type\": \"Answer\", \"text\": \"Z\u00e1kon p\u00edsemnou formu striktn\u011b nevy\u017eaduje, ale je siln\u011b doporu\u010dena. Bez p\u00edsemn\u00e9 smlouvy nem\u00e1te \u017e\u00e1dn\u00fd d\u016fkaz o dohodnut\u00fdch podm\u00ednk\u00e1ch \u2014 v\u00fd\u0161i n\u00e1jemn\u00e9ho, kauci ani pravidlech u\u017e\u00edv\u00e1n\u00ed.\"}}, {\"@type\": \"Question\", \"name\": \"Jak vysok\u00e1 m\u016f\u017ee b\u00fdt kauce?\", \"acceptedAnswer\": {\"@type\": \"Answer\", \"text\": \"Z\u00e1kon (\u00a7 2254 OZ) omezuje kauci na maxim\u00e1ln\u011b trojn\u00e1sobek m\u011bs\u00ed\u010dn\u00edho n\u00e1jemn\u00e9ho. Kauce mus\u00ed b\u00fdt vr\u00e1cena do 1 m\u011bs\u00edce od skon\u010den\u00ed n\u00e1jmu, pokud smlouva nestanov\u00ed jinak.\"}}, {\"@type\": \"Question\", \"name\": \"Jak ukon\u010dit n\u00e1jemn\u00ed smlouvu?\", \"acceptedAnswer\": {\"@type\": \"Answer\", \"text\": \"Smlouvu na dobu ur\u010ditou lze ukon\u010dit uplynut\u00edm doby nebo dohodou. Smlouva na dobu neur\u010ditou vy\u017eaduje v\u00fdpov\u011b\u010f s v\u00fdpov\u011bdn\u00ed lh\u016ftou \u2014 z\u00e1konn\u00e1 je 3 m\u011bs\u00edce. Zam\u011bstnavatel m\u016f\u017ee d\u00e1t v\u00fdpov\u011b\u010f jen ze z\u00e1konn\u00fdch d\u016fvod\u016f.\"}}]}".replace(/</g, '\\u003c') }}
       />
       {/* Background gradient */}

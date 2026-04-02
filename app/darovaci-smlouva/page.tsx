@@ -45,6 +45,17 @@ export default function DarovacijSmlouvaPage() {
     <main className="min-h-screen bg-[#05080f] text-slate-200">
       <script
         type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
+            { '@type': 'ListItem', position: 2, name: 'Darovací smlouva vzor 2026', item: 'https://smlouvahned.cz/darovaci-smlouva' },
+          ],
+        }).replace(/</g, '\\u003c') }}
+      />
+      <script
+        type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: "{\"@context\": \"https://schema.org\", \"@type\": \"FAQPage\", \"mainEntity\": [{\"@type\": \"Question\", \"name\": \"Mus\u00ed b\u00fdt darovac\u00ed smlouva p\u00edsemn\u00e1?\", \"acceptedAnswer\": {\"@type\": \"Answer\", \"text\": \"U darov\u00e1n\u00ed movit\u00e9 v\u011bci p\u0159edan\u00e9 okam\u017eit\u011b p\u00edsemn\u00e1 forma povinn\u00e1 nen\u00ed \u2014 smlouva vznik\u00e1 p\u0159ed\u00e1n\u00edm. P\u00edsemn\u00e1 forma je ale doporu\u010den\u00e1 pro finan\u010dn\u00ed dary, auto a povinn\u00e1 pro nemovitosti. P\u00edsemn\u00fd doklad ochr\u00e1n\u00ed ob\u011b strany p\u0159i pozd\u011bj\u0161\u00edch sporech.\"}}, {\"@type\": \"Question\", \"name\": \"Plat\u00ed se z darov\u00e1n\u00ed da\u0148?\", \"acceptedAnswer\": {\"@type\": \"Answer\", \"text\": \"Od roku 2014 je bez\u00faplatn\u00e9 nabyt\u00ed majetku v p\u0159\u00edm\u00e9 linii (rodi\u010de, d\u011bti, prarodi\u010de) a ve vedlej\u0161\u00ed linii (sourozenci, tety, str\u00fdcov\u00e9) od dan\u011b z p\u0159\u00edjm\u016f osvobozeno. U darov\u00e1n\u00ed mezi jin\u00fdmi osobami se jedn\u00e1 o p\u0159\u00edjem, kter\u00fd m\u016f\u017ee podl\u00e9hat dani z p\u0159\u00edjm\u016f \u2014 doporu\u010dujeme ov\u011b\u0159it s da\u0148ov\u00fdm poradcem.\"}}, {\"@type\": \"Question\", \"name\": \"Lze darovac\u00ed smlouvu odvolat?\", \"acceptedAnswer\": {\"@type\": \"Answer\", \"text\": \"Ano. D\u00e1rce m\u016f\u017ee dar odvolat pro nouzi nebo pro nevd\u011bk (pokud obdarovan\u00fd d\u00e1rci nebo osob\u011b jemu bl\u00edzk\u00e9 \u00famysln\u011b ubl\u00ed\u017e\u00ed). Podm\u00ednky odvol\u00e1n\u00ed by m\u011bla smlouva o\u0161et\u0159it.\"}}, {\"@type\": \"Question\", \"name\": \"Jak darovat auto?\", \"acceptedAnswer\": {\"@type\": \"Answer\", \"text\": \"K darov\u00e1n\u00ed vozidla je pot\u0159eba p\u00edsemn\u00e1 darovac\u00ed smlouva a p\u0159epis na p\u0159\u00edslu\u0161n\u00e9m \u00fa\u0159adu. Smlouva by m\u011bla obsahovat VIN, SPZ, rok v\u00fdroby a prohl\u00e1\u0161en\u00ed o stavu vozidla.\"}}]}".replace(/</g, '\\u003c') }}
       />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(16,185,129,0.07),transparent_30%)] pointer-events-none" />

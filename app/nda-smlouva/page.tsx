@@ -45,6 +45,17 @@ export default function NdaSmlouvaPage() {
     <main className="min-h-screen bg-[#05080f] text-slate-200">
       <script
         type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
+            { '@type': 'ListItem', position: 2, name: 'NDA smlouva o mlčenlivosti', item: 'https://smlouvahned.cz/nda-smlouva' },
+          ],
+        }).replace(/</g, '\\u003c') }}
+      />
+      <script
+        type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: "{\"@context\": \"https://schema.org\", \"@type\": \"FAQPage\", \"mainEntity\": [{\"@type\": \"Question\", \"name\": \"Co chr\u00e1n\u00ed NDA smlouva?\", \"acceptedAnswer\": {\"@type\": \"Answer\", \"text\": \"NDA (Non-Disclosure Agreement, smlouva o ml\u010denlivosti) chr\u00e1n\u00ed d\u016fv\u011brn\u00e9 informace \u2014 obchodn\u00ed tajemstv\u00ed, know-how, z\u00e1kaznick\u00e9 datab\u00e1ze, finan\u010dn\u00ed data nebo produktov\u00e9 pl\u00e1ny. Bez NDA je ochrana t\u011bchto informac\u00ed minim\u00e1ln\u00ed.\"}}, {\"@type\": \"Question\", \"name\": \"Jak dlouho plat\u00ed NDA?\", \"acceptedAnswer\": {\"@type\": \"Answer\", \"text\": \"D\u00e9lku trv\u00e1n\u00ed ml\u010denlivosti si strany sjednaj\u00ed ve smlouv\u011b. Typicky 2\u20135 let po skon\u010den\u00ed spolupr\u00e1ce. Lze sjednat i dobu neur\u010ditou, ale pro obchodn\u00ed tajemstv\u00ed je to m\u00e9n\u011b vymahateln\u00e9.\"}}, {\"@type\": \"Question\", \"name\": \"Jak\u00e1 sankce plat\u00ed za poru\u0161en\u00ed NDA?\", \"acceptedAnswer\": {\"@type\": \"Answer\", \"text\": \"NDA by m\u011bla obsahovat smluvn\u00ed pokutu za poru\u0161en\u00ed \u2014 jinak m\u00e1te n\u00e1rok pouze na n\u00e1hradu \u0161kody, kterou mus\u00edte prok\u00e1zat. Smluvn\u00ed pokuta je jednodu\u0161\u0161\u00ed na vym\u00e1h\u00e1n\u00ed a funguje jako odstra\u0161uj\u00edc\u00ed prvek.\"}}, {\"@type\": \"Question\", \"name\": \"Mus\u00ed b\u00fdt NDA oboustrann\u00e1?\", \"acceptedAnswer\": {\"@type\": \"Answer\", \"text\": \"NDA m\u016f\u017ee b\u00fdt jednostrann\u00e1 (chr\u00e1n\u00ed informace jen jedn\u00e9 strany) nebo vz\u00e1jemn\u00e1 (ob\u011b strany si chr\u00e1n\u00ed sv\u00e9 informace). Vz\u00e1jemn\u00e1 NDA je vhodn\u00e1 p\u0159i rovnocenn\u00e9 obchodn\u00ed spolupr\u00e1ci.\"}}]}".replace(/</g, '\\u003c') }}
       />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(139,92,246,0.07),transparent_30%)] pointer-events-none" />
