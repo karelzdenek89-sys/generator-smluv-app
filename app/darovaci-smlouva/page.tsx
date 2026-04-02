@@ -153,6 +153,7 @@ export default function DarovacijSmlouvaPage() {
 
         <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">
           <Link href="/" className="hover:text-slate-300 transition">← Všechny smlouvy</Link>
+          <Link href="/blog/darovaci-smlouva-2026" className="hover:text-slate-300 transition">📖 Průvodce darovací smlouvou</Link>
           <Link href="/kupni-smlouva" className="hover:text-slate-300 transition">Kupní smlouva</Link>
           <Link href="/najemni-smlouva" className="hover:text-slate-300 transition">Nájemní smlouva</Link>
         </div>

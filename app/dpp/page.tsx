@@ -147,6 +147,8 @@ export default function DppPage() {
         ]}
         ctaLabel="Vytvořit dohodu o provedení práce"
         formId="formular"
+        guideHref="/dohoda-o-provedeni-prace"
+        guideLabel="Průvodce DPP — kdy ji použít, limity hodin a zdanění v 2026"
       />
 
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8">

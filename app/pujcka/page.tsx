@@ -249,6 +249,8 @@ export default function LoanBuilderPage() {
         ]}
         ctaLabel="Vytvořit smlouvu o zápůjčce"
         formId="formular"
+        guideHref="/pujcka-smlouva"
+        guideLabel="Průvodce smlouvou o zápůjčce — úroky, splátkový kalendář a zajištění"
       />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 py-8 lg:px-8">

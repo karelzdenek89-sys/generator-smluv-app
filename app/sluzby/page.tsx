@@ -150,6 +150,8 @@ export default function SluzbyPage() {
         ]}
         ctaLabel="Vytvořit smlouvu o službách"
         formId="formular"
+        guideHref="/smlouva-o-sluzbach"
+        guideLabel="Průvodce smlouvou o službách — SLA, IP práva, mlčenlivost a paušál"
       />
 
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8">

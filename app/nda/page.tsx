@@ -240,6 +240,8 @@ export default function NdaBuilderPage() {
         ]}
         ctaLabel="Vytvořit smlouvu o mlčenlivosti"
         formId="formular"
+        guideHref="/nda-smlouva"
+        guideLabel="Průvodce NDA — jednostranná vs. oboustranná mlčenlivost a rozsah závazku"
       />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 py-8 lg:px-8">

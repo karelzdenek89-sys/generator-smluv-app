@@ -460,6 +460,79 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Průvodce & Blog */}
+        <section className="mt-16 md:mt-20">
+          <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+              <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Průvodce a tipy</div>
+              <h2 className="mt-2 text-3xl font-black tracking-tight text-white md:text-4xl">Než smlouvu vytvoříte</h2>
+            </div>
+            <Link href="/blog" className="text-sm text-slate-400 hover:text-white transition md:text-right">
+              Všechny průvodce →
+            </Link>
+          </div>
+
+          <div className="grid gap-5 md:grid-cols-3">
+            {[
+              {
+                tag: 'Bydlení',
+                title: 'Nájemní smlouva 2026 — co musí obsahovat a čeho se vyvarovat',
+                excerpt: 'Které klauzule chrání pronajímatele, které nájemce, a co se nejčastěji opomíjí. Včetně chyb, kvůli kterým soudy smlouvy neuznají.',
+                href: '/blog/najemni-smlouva-vzor-2026',
+                cta: 'Vytvořit nájemní smlouvu',
+                ctaHref: '/najem',
+                color: 'text-amber-400',
+              },
+              {
+                tag: 'Prodej vozidla',
+                title: 'Kupní smlouva na auto — VIN, STK, vady a bezpečné předání',
+                excerpt: 'Co zkontrolovat před podpisem, jak zapsat stav vozidla a jak se bránit, pokud kupující tvrdí, že auto mělo skryté vady.',
+                href: '/blog/kupni-smlouva-na-auto-2026',
+                cta: 'Vytvořit kupní smlouvu na auto',
+                ctaHref: '/auto',
+                color: 'text-sky-400',
+              },
+              {
+                tag: 'OSVČ a podnikatelé',
+                title: 'Smlouva o dílo 2026 — pevná cena, sankce a akceptační postup',
+                excerpt: 'Kdy použít smlouvu o dílo místo smlouvy o službách, jak nastavit cenu díla a co dělat, když objednatel nezaplatí.',
+                href: '/blog/smlouva-o-dilo-2026',
+                cta: 'Vytvořit smlouvu o dílo',
+                ctaHref: '/smlouva-o-dilo',
+                color: 'text-fuchsia-400',
+              },
+            ].map(article => (
+              <div key={article.href} className="group flex flex-col rounded-3xl border border-white/8 bg-[#0c1426] overflow-hidden">
+                {/* Top accent */}
+                <div className="px-7 pt-6 pb-5 flex-grow">
+                  <div className={`mb-3 text-[10px] font-black uppercase tracking-[0.2em] ${article.color}`}>{article.tag}</div>
+                  <h3 className="mb-3 text-base font-black text-white leading-snug">
+                    <Link href={article.href} className="hover:text-amber-400 transition">
+                      {article.title}
+                    </Link>
+                  </h3>
+                  <p className="text-sm leading-relaxed text-slate-500">{article.excerpt}</p>
+                </div>
+                {/* Bottom actions */}
+                <div className="border-t border-white/8 px-7 py-4 flex items-center justify-between gap-3">
+                  <Link
+                    href={article.href}
+                    className="text-xs text-slate-500 hover:text-slate-300 transition underline underline-offset-4 decoration-slate-700"
+                  >
+                    Číst průvodce →
+                  </Link>
+                  <Link
+                    href={article.ctaHref}
+                    className="rounded-xl bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 text-[11px] font-black uppercase tracking-tight text-amber-400 hover:bg-amber-500/20 transition"
+                  >
+                    {article.cta}
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* Proč ne náhodné vzory */}
         <section className="mt-16 md:mt-20">
           <div className="mb-8 text-center">
@@ -850,6 +923,8 @@ export default function Home() {
                   <Link href="/blog/najemni-smlouva-vzor-2026" className="hover:text-white transition">Nájemní smlouva 2026</Link>
                   <Link href="/blog/kupni-smlouva-na-auto-2026" className="hover:text-white transition">Kupní smlouva na auto</Link>
                   <Link href="/blog/smlouva-o-dilo-2026" className="hover:text-white transition">Smlouva o dílo 2026</Link>
+                  <Link href="/blog/darovaci-smlouva-2026" className="hover:text-white transition">Darovací smlouva 2026</Link>
+                  <Link href="/blog/pracovni-smlouva-2026" className="hover:text-white transition">Pracovní smlouva 2026</Link>
                 </div>
               </div>
             </div>

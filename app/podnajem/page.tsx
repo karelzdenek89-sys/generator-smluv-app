@@ -205,6 +205,8 @@ export default function PodnajemuPage() {
         ]}
         ctaLabel="Vytvořit podnájemní smlouvu"
         formId="formular"
+        guideHref="/podnajemni-smlouva"
+        guideLabel="Průvodce podnájemní smlouvou — souhlas pronajímatele, kauce a práva stran"
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-10">

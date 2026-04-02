@@ -10,13 +10,33 @@ export const metadata: Metadata = {
 
 const articles = [
   {
+    slug: 'pracovni-smlouva-2026',
+    title: 'Pracovní smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
+    excerpt:
+      'Tři povinné náležitosti dle zákoníku práce, zkušební doba, mlčenlivost, home office doložka a nejčastější chyby zaměstnavatelů. Aktuální pro legislativu 2026.',
+    category: 'Práce a zaměstnání',
+    readTime: '9 min',
+    date: '2026-03-20',
+    tag: 'Pracovní smlouva',
+  },
+  {
+    slug: 'darovaci-smlouva-2026',
+    title: 'Darovací smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
+    excerpt:
+      'Zákonné náležitosti darovací smlouvy, kdy je povinná písemná forma, daňové dopady darování v rodině i mimo ni, výhrada dožití a kdy lze dar odvolat.',
+    category: 'Osobní a finanční',
+    readTime: '7 min',
+    date: '2026-03-15',
+    tag: 'Darovací smlouva',
+  },
+  {
     slug: 'smlouva-o-dilo-2026',
     title: 'Smlouva o dílo 2026: Co musí obsahovat a nejčastější chyby',
     excerpt:
       'Průvodce smlouvou o dílo dle § 2586 OZ — specifikace díla, cena, termín, akceptační postup, smluvní pokuty a záruky. Jak se chránit jako objednatel i zhotovitel.',
     category: 'Podnikání',
     readTime: '10 min',
-    date: '2026-03-20',
+    date: '2026-03-10',
     tag: 'Smlouva o dílo',
   },
   {
@@ -26,7 +46,7 @@ const articles = [
       'Zákonné náležitosti kupní smlouvy na auto — VIN, stav tachometru, STK, prohlášení o vadách. Jak ověřit vozidlo a nejčastější chyby při prodeji ojetého vozu.',
     category: 'Vozidla',
     readTime: '9 min',
-    date: '2026-03-15',
+    date: '2026-03-05',
     tag: 'Kupní smlouva na auto',
   },
   {

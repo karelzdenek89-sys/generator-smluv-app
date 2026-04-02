@@ -127,6 +127,8 @@ export default function UznanidluhuPage() {
     ],
     ctaLabel: 'Vytvořit uznání dluhu',
     formId: 'formular',
+    guideHref: '/uznani-dluhu-vzor',
+    guideLabel: 'Průvodce uznáním dluhu — promlčení, splátkový kalendář a vymáhání',
   };
 
   return (

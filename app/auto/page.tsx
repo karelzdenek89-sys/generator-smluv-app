@@ -494,6 +494,8 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
         ]}
         ctaLabel="Vytvořit kupní smlouvu na auto"
         formId="formular"
+        guideHref="/blog/kupni-smlouva-na-auto-2026"
+        guideLabel="Průvodce kupní smlouvou na auto — VIN, STK, vady a bezpečné předání"
       />
 
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8" id="formular">

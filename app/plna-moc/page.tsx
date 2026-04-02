@@ -129,6 +129,8 @@ export default function PlnaMocPage() {
     ],
     ctaLabel: 'Vytvořit plnou moc',
     formId: 'formular',
+    guideHref: '/plna-moc-online',
+    guideLabel: 'Průvodce plnou mocí — obecná, ověřená a generální plná moc',
   };
 
   return (
