@@ -4,7 +4,7 @@ import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 
 export const metadata: Metadata = {
-  title: 'Nájemní smlouva vzor 2026: Co musí obsahovat + nejčastější chyby',
+  title: 'Nájemní smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
   description:
     'Kompletní průvodce nájemní smlouvou pro rok 2026. Co musí smlouva obsahovat dle OZ, nejčastější chyby pronajímatelů, jak se chránit a kdy nestačí vzor z internetu.',
   keywords: [
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: 'https://smlouvahned.cz/blog/najemni-smlouva-vzor-2026' },
   openGraph: {
-    title: 'Nájemní smlouva vzor 2026: Co musí obsahovat + nejčastější chyby',
+    title: 'Nájemní smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
     description:
       'Průvodce nájemní smlouvou — zákonné náležitosti, chyby pronajímatelů, jak se chránit. Aktuální pro legislativu 2026.',
     url: 'https://smlouvahned.cz/blog/najemni-smlouva-vzor-2026',

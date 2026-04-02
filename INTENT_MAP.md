@@ -57,7 +57,7 @@ Poslední aktualizace: 2026-04-02
 
 ---
 
-## 🟢 Blog / Průvodce — 8 URL (mezera: chybí 6 typů)
+## 🟢 Blog / Průvodce — 14 URL (pokryty všechny hlavní typy)
 
 | URL | Téma | Hlavní keyword | Odkazuje na Form | Landing pair |
 |-----|------|----------------|------------------|--------------|
@@ -69,17 +69,16 @@ Poslední aktualizace: 2026-04-02
 | `/blog/kupni-smlouva-movita-vec` | Kupní smlouva na movitou věc | kupní smlouva movitá věc | `/kupni` ✅ | `/kupni-smlouva` ✅ |
 | `/blog/smlouva-o-zapujcce-2026` | Průvodce smlouvou o zápůjčce | smlouva o půjčce vzor | `/pujcka` ✅ | `/pujcka-smlouva` ✅ |
 | `/blog/nda-smlouva-mlcenlivost` | Průvodce NDA smlouvou | smlouva o mlčenlivosti vzor | `/nda` ✅ | `/nda-smlouva` ✅ |
+| `/blog/dpp-dohoda-provedeni-prace` | Průvodce DPP | dohoda o provedení práce | `/dpp` ✅ | `/dohoda-o-provedeni-prace` ✅ |
+| `/blog/podnajemni-smlouva-2026` | Průvodce podnájemní smlouvou | podnájemní smlouva vzor | `/podnajem` ✅ | `/podnajemni-smlouva` ✅ |
+| `/blog/smlouva-o-spolupraci-2026` | Průvodce smlouvou o spolupráci | smlouva o spolupráci OSVČ | `/spoluprace` ✅ | `/smlouva-o-spolupraci` ✅ |
+| `/blog/plna-moc-2026` | Průvodce plnou mocí | plná moc vzor | `/plna-moc` ✅ | `/plna-moc-online` ✅ |
+| `/blog/smlouva-o-sluzbach-2026` | Průvodce smlouvou o službách | smlouva o poskytování služeb | `/sluzby` ✅ | `/smlouva-o-sluzbach` ✅ |
+| `/blog/uznani-dluhu-2026` | Průvodce uznáním dluhu | uznání dluhu vzor | `/uznani-dluhu` ✅ | `/uznani-dluhu-vzor` ✅ |
 
-### Chybějící blog články (prioritizováno)
+### Chybějící blog články
 
-| Priorita | URL (návrh) | Téma | Target keyword |
-|----------|-------------|------|----------------|
-| 🟢 Nižší | `/blog/dpp-dohoda-provedeni-prace` | Průvodce DPP | dohoda o provedení práce |
-| 🟢 Nižší | `/blog/podnajemni-smlouva-2026` | Průvodce podnájemní smlouvou | podnájemní smlouva |
-| 🟢 Nižší | `/blog/smlouva-o-spolupraci-osvč` | Průvodce smlouvou o spolupráci | smlouva o spolupráci OSVČ |
-| 🟢 Nižší | `/blog/plna-moc-2026` | Průvodce plnou mocí | plná moc vzor |
-| 🟢 Nižší | `/blog/smlouva-o-sluzbach-2026` | Průvodce smlouvou o službách | smlouva o poskytování služeb |
-| 🟢 Nižší | `/blog/uznani-dluhu-2026` | Průvodce uznáním dluhu | uznání dluhu vzor |
+Všechny hlavní typy smluv jsou pokryty. Blog je kompletní.
 
 ---
 
@@ -93,14 +92,14 @@ Poslední aktualizace: 2026-04-02
 | Kupní věc | ✅ /kupni | ✅ /kupni-smlouva | ✅ blog | **Kompletní** |
 | Darovací | ✅ /darovaci | ✅ /darovaci-smlouva | ✅ blog | **Kompletní** |
 | Pracovní | ✅ /pracovni | ✅ /pracovni-smlouva | ✅ blog | **Kompletní** |
-| DPP | ✅ /dpp | ✅ /dohoda-o-provedeni-prace | ❌ | **Chybí článek** |
+| DPP | ✅ /dpp | ✅ /dohoda-o-provedeni-prace | ✅ blog | **Kompletní** |
 | NDA | ✅ /nda | ✅ /nda-smlouva | ✅ blog | **Kompletní** |
-| Plná moc | ✅ /plna-moc | ✅ /plna-moc-online | ❌ | **Chybí článek** |
-| Podnájemní | ✅ /podnajem | ✅ /podnajemni-smlouva | ❌ | **Chybí článek** |
+| Plná moc | ✅ /plna-moc | ✅ /plna-moc-online | ✅ blog | **Kompletní** |
+| Podnájemní | ✅ /podnajem | ✅ /podnajemni-smlouva | ✅ blog | **Kompletní** |
 | Zápůjčka | ✅ /pujcka | ✅ /pujcka-smlouva | ✅ blog | **Kompletní** |
-| Služby | ✅ /sluzby | ✅ /smlouva-o-sluzbach | ❌ | **Chybí článek** |
-| Spolupráce | ✅ /spoluprace | ✅ /smlouva-o-spolupraci | ❌ | **Chybí článek** |
-| Uznání dluhu | ✅ /uznani-dluhu | ✅ /uznani-dluhu-vzor | ❌ | **Chybí článek** |
+| Služby | ✅ /sluzby | ✅ /smlouva-o-sluzbach | ✅ blog | **Kompletní** |
+| Spolupráce | ✅ /spoluprace | ✅ /smlouva-o-spolupraci | ✅ blog | **Kompletní** |
+| Uznání dluhu | ✅ /uznani-dluhu | ✅ /uznani-dluhu-vzor | ✅ blog | **Kompletní** |
 
 ---
 

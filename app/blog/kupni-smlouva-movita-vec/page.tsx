@@ -4,7 +4,7 @@ import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 
 export const metadata: Metadata = {
-  title: 'Kupní smlouva na věc 2026: Co musí obsahovat + nejčastější chyby',
+  title: 'Kupní smlouva na věc 2026: Co musí obsahovat a nejčastější chyby',
   description:
     'Průvodce kupní smlouvou na movitou věc pro rok 2026. Zákonné náležitosti dle OZ, jak popsat předmět koupě, odpovědnost za vady, bezpečné předání a nejčastější chyby kupujících i prodávajících.',
   keywords: [
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: 'https://smlouvahned.cz/blog/kupni-smlouva-movita-vec' },
   openGraph: {
-    title: 'Kupní smlouva na věc 2026: Co musí obsahovat + nejčastější chyby',
+    title: 'Kupní smlouva na věc 2026: Co musí obsahovat a nejčastější chyby',
     description: 'Zákonné náležitosti kupní smlouvy na movitou věc, odpovědnost za vady, bezpečné předání a chyby. Aktuální pro 2026.',
     url: 'https://smlouvahned.cz/blog/kupni-smlouva-movita-vec',
     type: 'article',

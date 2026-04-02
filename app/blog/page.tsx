@@ -10,6 +10,66 @@ export const metadata: Metadata = {
 
 const articles = [
   {
+    slug: 'uznani-dluhu-2026',
+    title: 'Uznání dluhu 2026: Co to je, co musí obsahovat a proč je důležité',
+    excerpt:
+      'Co je uznání dluhu (§ 2053 OZ), jak přerušuje promlčecí lhůtu, co musí obsahovat a jak ho použít při vymáhání nezaplacené půjčky nebo faktury.',
+    category: 'Osobní a finanční',
+    readTime: '7 min',
+    date: '2026-04-02',
+    tag: 'Uznání dluhu',
+  },
+  {
+    slug: 'smlouva-o-sluzbach-2026',
+    title: 'Smlouva o poskytování služeb 2026: Vzor, náležitosti a jak se chránit',
+    excerpt:
+      'Průvodce smlouvou o službách — rozdíl oproti smlouvě o dílo, co musí obsahovat, jak sjednat cenu, odpovědnost za vady a výpovědní podmínky.',
+    category: 'Podnikání a OSVČ',
+    readTime: '8 min',
+    date: '2026-04-02',
+    tag: 'Smlouva o službách',
+  },
+  {
+    slug: 'plna-moc-2026',
+    title: 'Plná moc 2026: Kdy ji potřebujete, co musí obsahovat a kdy je nutný notář',
+    excerpt:
+      'Generální vs. speciální plná moc, kdy stačí prostá písemná forma, kdy je nutný ověřený podpis nebo notář, povinné náležitosti a nejčastější chyby.',
+    category: 'Osobní a právní',
+    readTime: '7 min',
+    date: '2026-04-02',
+    tag: 'Plná moc',
+  },
+  {
+    slug: 'smlouva-o-spolupraci-2026',
+    title: 'Smlouva o spolupráci OSVČ 2026: Co musí obsahovat a jak se chránit',
+    excerpt:
+      'Průvodce smlouvou o spolupráci pro OSVČ a freelancery — vymezení předmětu, honorář, autorská práva, mlčenlivost a jak se chránit před švarcsystémem.',
+    category: 'Podnikání a OSVČ',
+    readTime: '9 min',
+    date: '2026-04-02',
+    tag: 'Smlouva o spolupráci',
+  },
+  {
+    slug: 'podnajemni-smlouva-2026',
+    title: 'Podnájemní smlouva 2026: Co musí obsahovat a souhlas pronajímatele',
+    excerpt:
+      'Kdy potřebujete souhlas pronajímatele, co musí podnájemní smlouva obsahovat, práva podnájemce a nejčastější chyby při podnájmu bytu.',
+    category: 'Bydlení',
+    readTime: '8 min',
+    date: '2026-04-02',
+    tag: 'Podnájemní smlouva',
+  },
+  {
+    slug: 'dpp-dohoda-provedeni-prace',
+    title: 'DPP dohoda o provedení práce 2026: Limity, odvody a jak ji správně napsat',
+    excerpt:
+      'Limit 300 hodin ročně, srážková daň do 11 500 Kč, nová oznamovací povinnost na ČSSZ od 2024, povinné náležitosti a nejčastější chyby zaměstnavatelů.',
+    category: 'Práce a zaměstnání',
+    readTime: '9 min',
+    date: '2026-04-02',
+    tag: 'DPP',
+  },
+  {
     slug: 'nda-smlouva-mlcenlivost',
     title: 'NDA smlouva o mlčenlivosti 2026: Co chrání, co ne a jak ji napsat správně',
     excerpt:

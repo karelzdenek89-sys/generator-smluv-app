@@ -4,7 +4,7 @@ import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 
 export const metadata: Metadata = {
-  title: 'NDA smlouva o mlčenlivosti 2026: Co musí obsahovat + nejčastější chyby',
+  title: 'NDA smlouva o mlčenlivosti 2026: Co musí obsahovat a nejčastější chyby',
   description:
     'Průvodce NDA smlouvou o mlčenlivosti pro rok 2026. Co chrání NDA, jak vymezit důvěrné informace, smluvní pokuta, jednostranná vs. vzájemná NDA a nejčastější chyby.',
   keywords: [
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: 'https://smlouvahned.cz/blog/nda-smlouva-mlcenlivost' },
   openGraph: {
-    title: 'NDA smlouva o mlčenlivosti 2026: Co musí obsahovat + nejčastější chyby',
+    title: 'NDA smlouva o mlčenlivosti 2026: Co musí obsahovat a nejčastější chyby',
     description: 'Co chrání NDA, jak vymezit důvěrné informace, smluvní pokuta a nejčastější chyby. Aktuální pro 2026.',
     url: 'https://smlouvahned.cz/blog/nda-smlouva-mlcenlivost',
     type: 'article',

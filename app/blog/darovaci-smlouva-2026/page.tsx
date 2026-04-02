@@ -4,7 +4,7 @@ import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 
 export const metadata: Metadata = {
-  title: 'Darovací smlouva vzor 2026: Co musí obsahovat + nejčastější chyby',
+  title: 'Darovací smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
   description:
     'Kompletní průvodce darovací smlouvou pro rok 2026. Zákonné náležitosti dle OZ, kdy musí být písemná, daňové dopady, odvolání daru a nejčastější chyby při darování nemovitostí i movitých věcí.',
   keywords: [
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: 'https://smlouvahned.cz/blog/darovaci-smlouva-2026' },
   openGraph: {
-    title: 'Darovací smlouva vzor 2026: Co musí obsahovat + nejčastější chyby',
+    title: 'Darovací smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
     description:
       'Průvodce darovací smlouvou — zákonné náležitosti, kdy je povinná písemná forma, daňové dopady a kdy lze dar odvolat. Aktuální pro legislativu 2026.',
     url: 'https://smlouvahned.cz/blog/darovaci-smlouva-2026',

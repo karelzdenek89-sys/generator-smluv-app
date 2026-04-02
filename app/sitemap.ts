@@ -150,6 +150,42 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly' as const,
       priority: 0.92,
     },
+    {
+      url: `${BASE_URL}/blog/dpp-dohoda-provedeni-prace`,
+      lastModified: new Date('2026-04-02'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.92,
+    },
+    {
+      url: `${BASE_URL}/blog/podnajemni-smlouva-2026`,
+      lastModified: new Date('2026-04-02'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.92,
+    },
+    {
+      url: `${BASE_URL}/blog/smlouva-o-spolupraci-2026`,
+      lastModified: new Date('2026-04-02'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.92,
+    },
+    {
+      url: `${BASE_URL}/blog/plna-moc-2026`,
+      lastModified: new Date('2026-04-02'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.92,
+    },
+    {
+      url: `${BASE_URL}/blog/smlouva-o-sluzbach-2026`,
+      lastModified: new Date('2026-04-02'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.92,
+    },
+    {
+      url: `${BASE_URL}/blog/uznani-dluhu-2026`,
+      lastModified: new Date('2026-04-02'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.92,
+    },
     // SEO landing pages
     {
       url: `${BASE_URL}/najemni-smlouva`,

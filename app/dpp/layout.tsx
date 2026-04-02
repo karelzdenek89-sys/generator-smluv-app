@@ -24,8 +24,9 @@ const softwareSchema = {
   url: 'https://smlouvahned.cz/dpp',
   inLanguage: 'cs',
   offers: {
-    '@type': 'Offer',
-    price: '249',
+    '@type': 'AggregateOffer',
+    lowPrice: '249',
+    highPrice: '749',
     priceCurrency: 'CZK',
   },
 };

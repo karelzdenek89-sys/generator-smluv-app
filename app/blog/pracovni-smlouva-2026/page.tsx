@@ -4,7 +4,7 @@ import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 
 export const metadata: Metadata = {
-  title: 'Pracovní smlouva vzor 2026: Co musí obsahovat + nejčastější chyby',
+  title: 'Pracovní smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
   description:
     'Kompletní průvodce pracovní smlouvou pro rok 2026. Tři zákonné náležitosti, zkušební doba, co smlouva chránit musí, a nejčastější chyby zaměstnavatelů. Dle zákoníku práce 2026.',
   keywords: [
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: 'https://smlouvahned.cz/blog/pracovni-smlouva-2026' },
   openGraph: {
-    title: 'Pracovní smlouva vzor 2026: Co musí obsahovat + nejčastější chyby',
+    title: 'Pracovní smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
     description:
       'Průvodce pracovní smlouvou — 3 povinné náležitosti, zkušební doba, přesčas, výpovědní lhůta a nejčastější chyby zaměstnavatelů. Aktuální dle zákoníku práce 2026.',
     url: 'https://smlouvahned.cz/blog/pracovni-smlouva-2026',
