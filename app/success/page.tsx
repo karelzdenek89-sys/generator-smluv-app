@@ -202,7 +202,7 @@ function SuccessContent() {
           <ul className="space-y-3 text-sm text-slate-300">
             <li className="flex items-start gap-3">
               <span className="text-amber-400 font-black">1.</span>
-              <span>Otevřete stažený PDF a zkontrolujte všechny vyplněné údaje.</span>
+              <span>Otevřete stažený PDF a zkontrolujte všechny vyplněné údaje — strany, předmět, ceny, termíny.</span>
             </li>
             <li className="flex items-start gap-3">
               <span className="text-amber-400 font-black">2.</span>
@@ -217,6 +217,15 @@ function SuccessContent() {
               <span>Podepsaný originál uložte na bezpečném místě. Naskenujte zálohu.</span>
             </li>
           </ul>
+        </div>
+
+        {/* Compliance note */}
+        <div className="rounded-2xl border border-white/5 bg-white/2 px-5 py-4 mb-6">
+          <p className="text-xs text-slate-600 leading-relaxed">
+            <span className="font-semibold text-slate-500">Připomínka:</span>{' '}
+            SmlouvaHned.cz je softwarový nástroj pro tvorbu standardizovaných dokumentů — není advokátní kanceláří a neposkytuje právní poradenství. Obsah dokumentu je určen vašimi vstupy. Pokud vaše situace zahrnuje vyšší hodnotu, více stran nebo probíhající spor, doporučujeme konzultaci s advokátem{' '}
+            (<a href="https://www.cak.cz" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-slate-500 transition">cak.cz</a>).
+          </p>
         </div>
 
         {/* Cross-sell sekce */}

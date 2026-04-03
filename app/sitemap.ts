@@ -272,6 +272,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.93,
     },
     {
+      url: `${BASE_URL}/o-projektu`,
+      lastModified: now,
+      changeFrequency: 'yearly',
+      priority: 0.6,
+    },
+    {
       url: `${BASE_URL}/kontakt`,
       lastModified: now,
       changeFrequency: 'yearly',

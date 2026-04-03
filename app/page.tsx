@@ -3,11 +3,11 @@ import Link from 'next/link';
 import ContractCatalog from '@/app/components/ContractCatalog';
 
 export const metadata: Metadata = {
-  title: 'SmlouvaHned | Právní jistota pro vaše každodenní smlouvy — od 249 Kč',
-  description: 'Vytvořte profesionálně zpracovanou smlouvu online — přesně podle vašich podmínek, v souladu s platným českým právem. Nájemní, kupní, darovací smlouva, DPP, NDA a další. Od 249 Kč.',
+  title: 'SmlouvaHned | Automatizovaný generátor smluv online — od 249 Kč',
+  description: 'Vyplňte formulář, zkontrolujte výstup a stáhněte PDF připravené k podpisu. Softwarový nástroj pro tvorbu standardizovaných smluvních dokumentů — nájemní, kupní, darovací smlouva, DPP, NDA a další. Od 249 Kč.',
   openGraph: {
-    title: 'SmlouvaHned | Právní jistota pro vaše každodenní smlouvy',
-    description: 'Profesionálně zpracované smlouvy dle OZ. Formulář, výběr úrovně ochrany, PDF ke stažení. Od 249 Kč.',
+    title: 'SmlouvaHned | Automatizovaný generátor smluv online',
+    description: 'Softwarový nástroj pro tvorbu smluv. Formulář → strukturovaný dokument → PDF ke stažení. Od 249 Kč.',
     url: 'https://smlouvahned.cz',
     siteName: 'SmlouvaHned',
     type: 'website',
@@ -73,8 +73,8 @@ const pricingTiers = [
 
 const faqItems = [
   {
-    question: 'Jsou dokumenty právně platné?',
-    answer: 'Ano. Každá smlouva je sestavena v souladu s platným českým právem — zejména zákonem č. 89/2012 Sb. (občanský zákoník) a dalšími relevantními předpisy. Právní platnost písemné smlouvy nevyžaduje účast notáře ani advokáta, pokud zákon nestanoví jinak.',
+    question: 'Jsou dokumenty připraveny k podpisu?',
+    answer: 'Ano — výstupem je kompletně vyplněný PDF dokument strukturovaný dle příslušných ustanovení občanského zákoníku č. 89/2012 Sb. Písemná smlouva nevyžaduje účast notáře ani advokáta, pokud zákon pro daný typ nestanoví jinak. Obsah dokumentu závisí na vašich vstupech — před podpisem doporučujeme všechna data zkontrolovat.',
   },
   {
     question: 'Čím se liší Základní dokument od Rozšířené právní ochrany?',
@@ -121,36 +121,57 @@ const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'SmlouvaHned',
+  legalName: 'Karel Zdeněk',
   url: 'https://smlouvahned.cz',
-  logo: 'https://smlouvahned.cz/favicon.ico',
+  logo: 'https://smlouvahned.cz/og-image.png',
+  foundingDate: '2024',
+  areaServed: { '@type': 'Country', name: 'CZ' },
   contactPoint: {
     '@type': 'ContactPoint',
     email: 'info@smlouvahned.cz',
     contactType: 'customer service',
     availableLanguage: 'Czech',
   },
+  identifier: {
+    '@type': 'PropertyValue',
+    propertyID: 'ICO',
+    value: '23660295',
+  },
 };
 
-const serviceSchema = {
+const softwareSchema = {
   '@context': 'https://schema.org',
-  '@type': 'Service',
-  serviceType: 'Generátor právních smluv',
-  name: 'SmlouvaHned — Automatizovaný generátor smluv',
-  description: 'Online platforma pro tvorbu standardních právních dokumentů — nájemní smlouva, kupní smlouva, NDA a další. Aktualizováno pro českou legislativu 2026.',
+  '@type': 'SoftwareApplication',
+  name: 'SmlouvaHned — Generátor smluv',
   url: 'https://smlouvahned.cz',
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Web',
+  inLanguage: 'cs',
+  description: 'Online softwarový nástroj pro interaktivní tvorbu a stažení standardizovaných smluvních dokumentů — nájemní smlouva, kupní smlouva, NDA a další. Výstup ve formátu PDF. Není advokátní kanceláří.',
+  featureList: [
+    'Interaktivní formulář pro tvorbu smluvních dokumentů',
+    'Okamžitý export do PDF',
+    '14 typů standardizovaných dokumentů',
+    'Šablony strukturované dle platné legislativy ČR',
+    'Šifrované dočasné úložiště dat',
+  ],
   provider: {
     '@type': 'Organization',
     name: 'SmlouvaHned',
+    url: 'https://smlouvahned.cz',
   },
-  areaServed: {
-    '@type': 'Country',
-    name: 'Czech Republic',
+  offers: {
+    '@type': 'AggregateOffer',
+    priceCurrency: 'CZK',
+    lowPrice: '249',
+    highPrice: '749',
+    offerCount: '3',
+    offers: [
+      { '@type': 'Offer', name: 'Základní dokument', price: '249', priceCurrency: 'CZK' },
+      { '@type': 'Offer', name: 'Rozšířená ochrana', price: '399', priceCurrency: 'CZK' },
+      { '@type': 'Offer', name: 'Kompletní balíček', price: '749', priceCurrency: 'CZK' },
+    ],
   },
-  offers: [
-    { '@type': 'Offer', name: 'Základní dokument', price: '249', priceCurrency: 'CZK' },
-    { '@type': 'Offer', name: 'Rozšířená právní ochrana', price: '399', priceCurrency: 'CZK' },
-    { '@type': 'Offer', name: 'Kompletní balíček', price: '749', priceCurrency: 'CZK' },
-  ],
 };
 
 export default function Home() {
@@ -166,7 +187,7 @@ export default function Home() {
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }}
       />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.10),transparent_28%),radial-gradient(circle_at_80%_20%,rgba(59,130,246,0.08),transparent_22%),linear-gradient(to_bottom,#05080f,#08101e,#05080f)]" />
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:48px_48px] opacity-20" />
@@ -188,7 +209,7 @@ export default function Home() {
             <Link href="#jak-to-funguje" className="hover:text-white transition">Jak to funguje</Link>
             <Link href="#cenik" className="hover:text-white transition">Ceník</Link>
             <Link href="/blog" className="hover:text-white transition">Blog</Link>
-            <Link href="#faq" className="hover:text-white transition">FAQ</Link>
+            <Link href="/o-projektu" className="hover:text-white transition">O projektu</Link>
             <Link href="/zakaznicka-zona" className="hover:text-white transition">Moje dokumenty</Link>
           </nav>
         </header>
@@ -445,8 +466,8 @@ export default function Home() {
               },
               {
                 icon: '🔒',
-                title: 'Bez nutnosti advokáta',
-                desc: 'Pro standardní situace, kde se strany dohodly, není právník nutný. Online řešení šetří čas i desítky set korun za sepsání.',
+                title: 'Přehledný nástroj, ne právní poradna',
+                desc: 'Pro standardní situace, kde se strany dohodly na podmínkách, šetří digitální nástroj čas i náklady na sepsání. Výsledkem je strukturovaný dokument, ne právní posudek.',
                 tag: 'Jednoduchost',
               },
             ].map(card => (
@@ -860,12 +881,16 @@ export default function Home() {
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500 text-sm font-black text-black">SH</div>
                 <div>
                   <div className="font-black tracking-tight text-white">SmlouvaHned</div>
-                  <div className="text-[11px] uppercase tracking-[0.18em] text-slate-500">Právní dokumenty online</div>
+                  <div className="text-[11px] uppercase tracking-[0.18em] text-slate-500">Softwarový nástroj pro tvorbu dokumentů</div>
                 </div>
               </div>
               <p className="mt-4 text-sm leading-relaxed text-slate-400">
-                Profesionálně zpracované dokumenty dle platného českého práva pro typické životní a podnikatelské situace.
+                Softwarový nástroj pro automatizovanou tvorbu standardizovaných smluvních dokumentů. Není advokátní kanceláří a neposkytuje právní poradenství.
               </p>
+              <div className="mt-3 text-xs text-slate-600 space-y-0.5">
+                <p>Provozovatel: Karel Zdeněk</p>
+                <p>IČO: 23660295</p>
+              </div>
             </div>
 
             <div className="grid gap-8 sm:grid-cols-4">
@@ -877,10 +902,12 @@ export default function Home() {
                   <Link href="#cenik" className="hover:text-white transition">Ceník</Link>
                   <Link href="/blog" className="hover:text-white transition">Blog</Link>
                   <Link href="#faq" className="hover:text-white transition">FAQ</Link>
+                  <Link href="/o-projektu" className="hover:text-white transition">O projektu</Link>
                   <Link href="/zakaznicka-zona" className="hover:text-white transition">Moje dokumenty</Link>
                 </div>
                 <div className="mt-5 text-xs font-black uppercase tracking-[0.18em] text-slate-500">Podpora</div>
                 <div className="mt-3 flex flex-col gap-2 text-sm text-slate-400">
+                  <Link href="/kontakt" className="hover:text-white transition">Kontakt</Link>
                   <a href="mailto:info@smlouvahned.cz" className="hover:text-amber-400 transition break-all">info@smlouvahned.cz</a>
                 </div>
               </div>
@@ -972,9 +999,11 @@ export default function Home() {
 
           <div className="mt-5 border-t border-white/8 pt-5 text-xs leading-relaxed text-slate-500">
             <div className="mb-3 rounded-xl border border-white/5 bg-white/2 px-4 py-3 text-slate-600">
-              <span className="font-semibold text-slate-500">Upozornění:</span> Dokumenty jsou standardní smluvní vzory pro typické situace a nejsou náhradou za individuální právní poradenství. Pro složitější nebo nestandardní případy, probíhající spory nebo transakce s vysokou hodnotou doporučujeme konzultaci s advokátem.
+              <span className="font-semibold text-slate-500">Upozornění:</span>{' '}
+              SmlouvaHned.cz je softwarový nástroj pro tvorbu standardizovaných dokumentů. Není advokátní kanceláří a neposkytuje právní poradenství ve smyslu zákona č. 85/1996 Sb. Obsah dokumentu určuje uživatel svými vstupy. Pro nestandardní případy, probíhající spory nebo transakce s vyšší hodnotou doporučujeme konzultaci s advokátem — seznam advokátů na{' '}
+              <a href="https://www.cak.cz" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-slate-400 underline underline-offset-2 transition">cak.cz</a>.
             </div>
-            <p>© 2026 SmlouvaHned. Všechna práva vyhrazena.</p>
+            <p>© 2024–2026 Karel Zdeněk, IČO: 23660295 · SmlouvaHned.cz je softwarový nástroj pro tvorbu dokumentů, nikoli advokátní kancelář.</p>
           </div>
         </footer>
 

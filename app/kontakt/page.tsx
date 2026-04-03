@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Kontakt | SmlouvaHned',
-  description: 'Kontaktujte nás na info@smlouvahned.cz. Odpovídáme do 24 hodin v pracovní dny.',
+  description: 'Dotazy k objednávce, technické podpoře nebo fakturaci. Odpovídáme do 2 pracovních dnů. SmlouvaHned.cz neposkytuje právní poradenství — pro právní rady se obraťte na advokáta.',
 };
 
 export default function KontaktPage() {
@@ -21,9 +21,16 @@ export default function KontaktPage() {
         <h1 className="text-4xl md:text-5xl font-black text-white mb-3 uppercase italic tracking-tighter">
           Kontakt
         </h1>
-        <p className="text-slate-400 text-sm mb-10 max-w-lg">
-          Máte dotaz k objednávce, reklamaci nebo chcete zpětnou vazbu? Napište nám — odpovídáme do 24 hodin v pracovní dny.
+        <p className="text-slate-400 text-sm mb-5 max-w-lg">
+          Máte dotaz k objednávce, fakturaci nebo technickému výstupu dokumentu? Napište nám — odpovídáme zpravidla do 2 pracovních dnů.
         </p>
+        <div className="mb-10 rounded-2xl border border-amber-500/20 bg-amber-500/5 px-5 py-4 text-xs text-slate-400 max-w-lg">
+          <span className="font-bold text-amber-400">Upozornění:</span>{' '}
+          SmlouvaHned.cz neposkytuje právní poradenství. Dotazy na výklad smluv, vhodnost dokumentu pro vaši situaci nebo doporučení v konkrétních případech proto nemůžeme zodpovědět. Pro právní rady se obraťte na advokáta —{' '}
+          <a href="https://www.cak.cz" target="_blank" rel="noopener noreferrer" className="text-amber-400/80 hover:text-amber-400 underline underline-offset-2 transition">
+            seznam advokátů na cak.cz
+          </a>.
+        </div>
 
         <div className="grid sm:grid-cols-2 gap-5 mb-10">
           <a href="mailto:info@smlouvahned.cz"
@@ -31,14 +38,14 @@ export default function KontaktPage() {
             <div className="text-3xl mb-4">✉️</div>
             <div className="text-xs font-black uppercase tracking-widest text-amber-400 mb-1">E-mail</div>
             <div className="font-bold text-white text-sm group-hover:text-amber-400 transition">info@smlouvahned.cz</div>
-            <p className="text-xs text-slate-500 mt-1">Objednávky, reklamace, dotazy</p>
+            <p className="text-xs text-slate-500 mt-1">Objednávky, reklamace, technická podpora</p>
           </a>
 
           <div className="bg-[#0c1426] border border-slate-800 rounded-3xl p-7">
             <div className="text-3xl mb-4">⏱️</div>
             <div className="text-xs font-black uppercase tracking-widest text-amber-400 mb-1">Rychlost odpovědi</div>
-            <div className="font-bold text-white text-sm">Do 24 hodin</div>
-            <p className="text-xs text-slate-500 mt-1">v pracovní dny (Po–Pá)</p>
+            <div className="font-bold text-white text-sm">Do 2 pracovních dnů</div>
+            <p className="text-xs text-slate-500 mt-1">Po–Pá</p>
           </div>
         </div>
 
