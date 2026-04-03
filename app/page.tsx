@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import ContractCatalog from '@/app/components/ContractCatalog';
+import ScrollRevealInit from '@/app/components/ScrollRevealInit';
+import NavbarClient from '@/app/components/NavbarClient';
 
 export const metadata: Metadata = {
   title: 'SmlouvaHned | Automatizovaný generátor smluv online — od 249 Kč',
@@ -170,6 +172,10 @@ export default function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }} />
 
+      {/* Client-side enhancers */}
+      <ScrollRevealInit />
+      <NavbarClient />
+
       {/* ── Fixed Ambient Background ─────────────────────────────────────── */}
       <div className="fixed inset-0 -z-10 pointer-events-none bg-[#04070E]">
         {/* Radial glows */}
@@ -182,7 +188,7 @@ export default function Home() {
 
       {/* ── Floating Navbar ───────────────────────────────────────────────── */}
       <header className="fixed top-3 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-32px)] max-w-6xl">
-        <div className="glass-2 card-luminous flex items-center justify-between px-5 py-0 h-14 rounded-[18px]"
+        <div id="floating-navbar" className="glass-2 card-luminous flex items-center justify-between px-5 py-0 h-14 rounded-[18px]"
           style={{borderRadius: '18px'}}>
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 flex-shrink-0">
@@ -408,7 +414,7 @@ export default function Home() {
         {/* ══════════════════════════════════════════════════════════════════
             JAK TO FUNGUJE — 4 KROKY
         ══════════════════════════════════════════════════════════════════ */}
-        <section id="jak-to-funguje" className="mx-auto max-w-7xl px-6 py-20 md:py-28">
+        <section id="jak-to-funguje" className="reveal mx-auto max-w-7xl px-6 py-20 md:py-28">
           <div className="mb-12 text-center">
             <div className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Postup</div>
             <h2 className="text-[clamp(1.875rem,3vw,2.75rem)] font-black tracking-tight text-white">
@@ -459,7 +465,7 @@ export default function Home() {
         {/* ══════════════════════════════════════════════════════════════════
             VÝBĚR SMLUV
         ══════════════════════════════════════════════════════════════════ */}
-        <section id="vyber-smlouvy" className="mx-auto max-w-7xl px-6 pb-20 md:pb-28">
+        <section id="vyber-smlouvy" className="reveal mx-auto max-w-7xl px-6 pb-20 md:pb-28">
           <div className="mb-10 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
               <div className="mb-2 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Nejčastější situace</div>
@@ -476,7 +482,7 @@ export default function Home() {
         {/* ══════════════════════════════════════════════════════════════════
             PROČ SMLOUVAHNED — DIFFERENTIATORS
         ══════════════════════════════════════════════════════════════════ */}
-        <section className="mx-auto max-w-7xl px-6 pb-20 md:pb-28">
+        <section className="reveal mx-auto max-w-7xl px-6 pb-20 md:pb-28">
           <div className="mb-12 text-center">
             <div className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Proč to funguje</div>
             <h2 className="text-[clamp(1.875rem,3vw,2.75rem)] font-black tracking-tight text-white">
@@ -547,7 +553,7 @@ export default function Home() {
         {/* ══════════════════════════════════════════════════════════════════
             PRO KOHO
         ══════════════════════════════════════════════════════════════════ */}
-        <section className="mx-auto max-w-7xl px-6 pb-20 md:pb-28">
+        <section className="reveal mx-auto max-w-7xl px-6 pb-20 md:pb-28">
           <div className="mb-10 text-center">
             <div className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Pro koho</div>
             <h2 className="text-[clamp(1.875rem,3vw,2.75rem)] font-black tracking-tight text-white">Komu SmlouvaHned pomůže</h2>
@@ -577,7 +583,7 @@ export default function Home() {
         {/* ══════════════════════════════════════════════════════════════════
             UKÁZKOVÝ VÝSTUP — COMPARISON
         ══════════════════════════════════════════════════════════════════ */}
-        <section className="mx-auto max-w-7xl px-6 pb-20 md:pb-28">
+        <section className="reveal mx-auto max-w-7xl px-6 pb-20 md:pb-28">
           <div className="mb-10 text-center">
             <div className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Proč ne vzor zdarma</div>
             <h2 className="text-[clamp(1.875rem,3vw,2.75rem)] font-black tracking-tight text-white">Čím se liší od stažení vzoru?</h2>
@@ -621,7 +627,7 @@ export default function Home() {
         {/* ══════════════════════════════════════════════════════════════════
             BLOG PRŮVODCE
         ══════════════════════════════════════════════════════════════════ */}
-        <section className="mx-auto max-w-7xl px-6 pb-20 md:pb-28">
+        <section className="reveal mx-auto max-w-7xl px-6 pb-20 md:pb-28">
           <div className="mb-10 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
               <div className="mb-2 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Průvodce a tipy</div>
@@ -691,7 +697,7 @@ export default function Home() {
         {/* ══════════════════════════════════════════════════════════════════
             PRICING
         ══════════════════════════════════════════════════════════════════ */}
-        <section id="cenik" className="mx-auto max-w-7xl px-6 pb-20 md:pb-28">
+        <section id="cenik" className="reveal mx-auto max-w-7xl px-6 pb-20 md:pb-28">
           <div className="mb-12 text-center">
             <div className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Ceník</div>
             <h2 className="text-[clamp(1.875rem,3vw,2.75rem)] font-black tracking-tight text-white">Vyberte úroveň zpracování</h2>
@@ -770,7 +776,7 @@ export default function Home() {
         {/* ══════════════════════════════════════════════════════════════════
             GARANCE + METODIKA
         ══════════════════════════════════════════════════════════════════ */}
-        <section className="mx-auto max-w-7xl px-6 pb-20 md:pb-28">
+        <section className="reveal mx-auto max-w-7xl px-6 pb-20 md:pb-28">
           <div className="glass-1 rounded-[24px] overflow-hidden"
             style={{border: '1px solid rgba(16,185,129,0.15)', borderTopColor: 'rgba(16,185,129,0.25)'}}>
             <div className="flex flex-col gap-0 md:flex-row">
@@ -804,7 +810,7 @@ export default function Home() {
         {/* ══════════════════════════════════════════════════════════════════
             FAQ
         ══════════════════════════════════════════════════════════════════ */}
-        <section id="faq" className="mx-auto max-w-4xl px-6 pb-20 md:pb-28">
+        <section id="faq" className="reveal mx-auto max-w-4xl px-6 pb-20 md:pb-28">
           <div className="mb-10">
             <div className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">FAQ</div>
             <h2 className="text-[clamp(1.875rem,3vw,2.75rem)] font-black tracking-tight text-white">Časté otázky</h2>
@@ -830,7 +836,7 @@ export default function Home() {
         {/* ══════════════════════════════════════════════════════════════════
             FINAL CTA
         ══════════════════════════════════════════════════════════════════ */}
-        <section className="mx-auto max-w-7xl px-6 pb-24 md:pb-32">
+        <section className="reveal mx-auto max-w-7xl px-6 pb-24 md:pb-32">
           <div className="relative overflow-hidden rounded-[28px] px-8 py-16 text-center md:px-16"
             style={{
               background: 'linear-gradient(135deg, rgba(245,158,11,0.10) 0%, rgba(10,15,28,0.78) 60%)',
