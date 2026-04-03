@@ -178,12 +178,18 @@ export default function Home() {
 
       {/* ── Fixed Ambient Background ─────────────────────────────────────── */}
       <div className="fixed inset-0 -z-10 pointer-events-none bg-[#04070E]">
-        {/* Radial glows */}
+        {/* Top amber halo — calmer, deeper */}
         <div className="absolute inset-0"
-          style={{background: 'radial-gradient(ellipse 60% 40% at 50% -5%, rgba(245,158,11,0.13) 0%, transparent 60%), radial-gradient(circle at 85% 15%, rgba(59,130,246,0.07) 0%, transparent 35%), radial-gradient(circle at 15% 80%, rgba(245,158,11,0.04) 0%, transparent 30%)'}} />
-        {/* Subtle grid */}
-        <div className="absolute inset-0 opacity-[0.025]"
-          style={{backgroundImage: 'linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)', backgroundSize: '64px 64px'}} />
+          style={{background: 'radial-gradient(ellipse 55% 35% at 50% -8%, rgba(245,158,11,0.09) 0%, transparent 62%)'}} />
+        {/* Subtle deep blue mid-depth — adds dimension without noise */}
+        <div className="absolute inset-0"
+          style={{background: 'radial-gradient(ellipse 80% 50% at 50% 110%, rgba(30,58,138,0.08) 0%, transparent 60%)'}} />
+        {/* Right corner cool accent — very subtle */}
+        <div className="absolute inset-0"
+          style={{background: 'radial-gradient(circle at 88% 12%, rgba(59,130,246,0.05) 0%, transparent 30%)'}} />
+        {/* Refined grid — 48px, slightly tighter */}
+        <div className="absolute inset-0 opacity-[0.022]"
+          style={{backgroundImage: 'linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)', backgroundSize: '48px 48px'}} />
       </div>
 
       {/* ── Floating Navbar ───────────────────────────────────────────────── */}
@@ -228,7 +234,7 @@ export default function Home() {
         {/* ══════════════════════════════════════════════════════════════════
             HERO
         ══════════════════════════════════════════════════════════════════ */}
-        <section className="relative mx-auto max-w-7xl px-6 pt-32 pb-20 md:pt-36 md:pb-28">
+        <section className="relative mx-auto max-w-7xl px-6 pt-36 pb-20 md:pt-44 md:pb-32">
           <div className="flex flex-col gap-12 lg:flex-row lg:items-center lg:gap-16">
 
             {/* Left — text block */}
@@ -240,28 +246,27 @@ export default function Home() {
               </div>
 
               {/* H1 */}
-              <h1 className="text-[clamp(2.8rem,5vw,4.75rem)] font-black leading-[1.05] tracking-tight text-white">
+              <h1 className="text-[clamp(3rem,5.5vw,5rem)] font-black leading-[1.04] tracking-[-0.02em] text-white">
                 Smluvní dokument<br />
                 sestavený<br />
-                <span className="italic text-amber-500">podle vašich podmínek.</span>
+                <span className="italic text-amber-500" style={{letterSpacing: '-0.01em'}}>podle vašich podmínek.</span>
               </h1>
 
               {/* Subheadline */}
-              <p className="mt-6 max-w-lg text-[1.0625rem] leading-[1.7] text-slate-400">
+              <p className="mt-7 max-w-lg text-[1.0625rem] leading-[1.8] text-slate-400">
                 Vyplňte přehledný formulář. Systém sestaví strukturovaný
                 dokument a vygeneruje PDF připravené k podpisu — od&nbsp;249&nbsp;Kč.
               </p>
 
               {/* CTAs */}
-              <div className="mt-9 flex flex-wrap items-center gap-3">
+              <div className="mt-10 flex flex-wrap items-center gap-3">
                 <Link href="#vyber-smlouvy"
-                  className="inline-flex items-center rounded-[16px] bg-amber-500 px-7 py-4 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400 hover:-translate-y-px"
-                  style={{boxShadow: '0 0 0 1px rgba(245,158,11,0.4), 0 4px 20px rgba(245,158,11,0.28), 0 8px 40px rgba(245,158,11,0.12)'}}>
+                  className="shadow-cta inline-flex items-center rounded-[16px] bg-amber-500 px-8 py-4 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400 hover:-translate-y-[2px] active:translate-y-0">
                   Vybrat typ smlouvy →
                 </Link>
                 <Link href="#jak-to-funguje"
-                  className="inline-flex items-center rounded-[16px] border border-white/8 px-5 py-4 text-sm text-slate-400 transition hover:border-white/14 hover:text-white"
-                  style={{backdropFilter: 'blur(8px)'}}>
+                  className="inline-flex items-center rounded-[16px] border border-white/10 px-5 py-4 text-sm text-slate-400 transition hover:border-white/18 hover:text-slate-200"
+                  style={{backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', background: 'rgba(255,255,255,0.03)'}}>
                   Jak to funguje? ↓
                 </Link>
               </div>
@@ -292,7 +297,7 @@ export default function Home() {
 
               {/* PDF Card */}
               <div className="pdf-float glass-4 card-floating w-full max-w-[360px] lg:max-w-none overflow-hidden"
-                style={{transform: 'perspective(1200px) rotateX(3deg) rotateY(-6deg) rotate(-1.5deg) translateY(-8px)'}}>
+                style={{transform: 'perspective(1400px) rotateX(2deg) rotateY(-4deg) rotate(-1deg) translateY(-6px)'}}>
 
                 {/* PDF Top bar */}
                 <div className="px-5 pt-5 pb-4"
@@ -373,16 +378,16 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Floating badge — generated */}
-              <div className="absolute -bottom-3 -left-4 flex items-center gap-2 rounded-full border border-emerald-500/25 bg-emerald-500/12 px-3.5 py-2 text-xs font-bold text-emerald-400"
-                style={{backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)'}}>
-                <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
+              {/* Floating badge — generated (muted emerald, no neon) */}
+              <div className="absolute -bottom-3 -left-3 flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-[rgba(6,22,16,0.82)] px-3 py-1.5 text-[11px] font-semibold text-emerald-400/90"
+                style={{backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', boxShadow: '0 2px 12px rgba(0,0,0,0.4)'}}>
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400/80" />
                 PDF vygenerováno
               </div>
 
               {/* Floating badge — price */}
-              <div className="absolute -top-3 -right-2 rounded-full border border-amber-500/30 bg-amber-500/15 px-3.5 py-1.5 text-sm font-black text-amber-400"
-                style={{backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)'}}>
+              <div className="absolute -top-3 -right-1 rounded-full border border-amber-500/28 bg-[rgba(20,14,4,0.82)] px-3 py-1.5 text-[12px] font-black text-amber-400/90"
+                style={{backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', boxShadow: '0 2px 12px rgba(0,0,0,0.4)'}}>
                 od 249 Kč
               </div>
             </div>
@@ -414,7 +419,7 @@ export default function Home() {
         {/* ══════════════════════════════════════════════════════════════════
             JAK TO FUNGUJE — 4 KROKY
         ══════════════════════════════════════════════════════════════════ */}
-        <section id="jak-to-funguje" className="reveal mx-auto max-w-7xl px-6 py-20 md:py-28">
+        <section id="jak-to-funguje" className="reveal mx-auto max-w-7xl px-6 py-24 md:py-32">
           <div className="mb-12 text-center">
             <div className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Postup</div>
             <h2 className="text-[clamp(1.875rem,3vw,2.75rem)] font-black tracking-tight text-white">
@@ -713,14 +718,14 @@ export default function Home() {
               <div key={tier.name}
                 className={`relative flex flex-col rounded-[24px] p-7 transition-all duration-200 ${
                   tier.highlighted
-                    ? 'glass-3 card-luminous-amber md:-translate-y-3'
-                    : 'glass-1 card-luminous'
+                    ? 'glass-3 card-luminous-amber md:-translate-y-4'
+                    : 'glass-1 card-luminous opacity-90'
                 }`}>
                 {/* Badge */}
                 {tier.badge && (
                   <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
                     <div className="rounded-full bg-amber-500 px-4 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-black whitespace-nowrap"
-                      style={{boxShadow: '0 0 20px rgba(245,158,11,0.4)'}}>
+                      style={{boxShadow: '0 0 24px rgba(245,158,11,0.45), 0 2px 6px rgba(245,158,11,0.3)'}}>
                       {tier.badge}
                     </div>
                   </div>
@@ -730,7 +735,7 @@ export default function Home() {
                 <div className="mb-6">
                   <div className="mb-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">{tier.name}</div>
                   <div className="flex items-end gap-1">
-                    <span className={`text-[2.75rem] font-black leading-none tracking-tight ${tier.highlighted ? 'text-white' : 'text-white'}`}>
+                    <span className="font-tabular text-[2.75rem] font-black leading-none tracking-tight text-white">
                       {tier.price}
                     </span>
                     <span className="mb-1 text-lg font-black text-slate-500">{tier.currency}</span>
@@ -837,13 +842,13 @@ export default function Home() {
             FINAL CTA
         ══════════════════════════════════════════════════════════════════ */}
         <section className="reveal mx-auto max-w-7xl px-6 pb-24 md:pb-32">
-          <div className="relative overflow-hidden rounded-[28px] px-8 py-16 text-center md:px-16"
+          <div className="relative overflow-hidden rounded-[28px] px-8 py-20 text-center md:px-16 md:py-24"
             style={{
-              background: 'linear-gradient(135deg, rgba(245,158,11,0.10) 0%, rgba(10,15,28,0.78) 60%)',
-              border: '1px solid rgba(245,158,11,0.18)',
-              borderTopColor: 'rgba(245,158,11,0.35)',
-              backdropFilter: 'blur(32px)',
-              WebkitBackdropFilter: 'blur(32px)',
+              background: 'linear-gradient(160deg, rgba(245,158,11,0.08) 0%, rgba(8,12,24,0.82) 55%)',
+              border: '1px solid rgba(245,158,11,0.20)',
+              borderTopColor: 'rgba(245,158,11,0.40)',
+              backdropFilter: 'blur(36px)',
+              WebkitBackdropFilter: 'blur(36px)',
             }}>
             {/* Ambient glow */}
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
@@ -861,12 +866,8 @@ export default function Home() {
                 sestavený podle vašich podmínek, připravený k podpisu.
               </p>
               <Link href="#vyber-smlouvy"
-                className="mt-10 inline-flex items-center rounded-[18px] bg-amber-500 px-10 py-4.5 text-base font-black uppercase tracking-tight text-black transition hover:bg-amber-400 hover:-translate-y-px"
-                style={{
-                  paddingTop: '1.125rem',
-                  paddingBottom: '1.125rem',
-                  boxShadow: '0 0 0 1px rgba(245,158,11,0.5), 0 6px 28px rgba(245,158,11,0.32), 0 16px 56px rgba(245,158,11,0.14)',
-                }}>
+                className="shadow-cta mt-10 inline-flex items-center rounded-[18px] bg-amber-500 px-10 text-base font-black uppercase tracking-tight text-black transition hover:bg-amber-400 hover:-translate-y-[2px] active:translate-y-0"
+                style={{paddingTop: '1.125rem', paddingBottom: '1.125rem'}}>
                 Vytvořit smlouvu →
               </Link>
               <div className="mt-5 text-xs text-slate-500">
