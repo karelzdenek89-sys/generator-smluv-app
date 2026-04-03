@@ -458,7 +458,7 @@ export default function LoanBuilderPage() {
                 <SectionTitle index="06" title="Výběr balíčku" subtitle="Zvolte úroveň ochrany dle výše zápůjčky." />
                 <div className="space-y-3">
                   {([
-                    { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva o zápůjčce dle § 2390 OZ v PDF.' },
+                    { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Strukturovaná smlouva o zápůjčce dle § 2390 OZ, výstup v PDF.' },
                     { value: 'professional', label: 'Rozšířený dokument', price: '399 Kč', desc: 'Zajišťovací klauzule, pokuty, podmínky předčasného splacení.', recommended: true },
                     { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířeného dokumentu + instrukce k podpisu, checklist a 30denní archivace.' },
                   ] as const).map((opt) => (

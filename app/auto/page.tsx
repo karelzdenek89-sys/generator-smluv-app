@@ -464,7 +464,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
           { icon: '🚗', text: 'Určeno specificky pro prodej automobilu, motocyklu nebo přívěsu' },
           { icon: '🔍', text: 'Pokrývá VIN, STK, emise, počet vlastníků i stav tachometru' },
           { icon: '⚖️', text: 'Přechod vlastnictví, odpovědnost za vady a zákonná záruka' },
-          { icon: '📄', text: 'Profesionální PDF ke stažení ihned po zaplacení' },
+          { icon: '📄', text: 'PDF dokument ke stažení ihned po ověřené platbě' },
         ]}
         contents={[
           'Identifikaci prodávajícího a kupujícího',
@@ -1045,7 +1045,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 <div className="space-y-3 mb-4">
                   <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Vyberte balíček</div>
                   {([
-                    { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva dle občanského zákoníku v PDF.' },
+                    { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Strukturovaná smlouva dle občanského zákoníku, výstup v PDF.' },
                     { value: 'professional', label: 'Rozšířený dokument', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
                     { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířeného dokumentu + průvodní instrukce, checklist a 30denní archivace.' },
                   ] as const).map((opt) => (

@@ -127,7 +127,7 @@ export default function KupniPage() {
           { icon: '⚖️', text: 'Sestaveno dle § 2079 OZ — kupní smlouva na movitou věc' },
           { icon: '🛋️', text: 'Vhodné pro nábytek, elektroniku, kolo, sportovní vybavení i zboží' },
           { icon: '📋', text: 'Kupní cena, stav věci, vady a podmínky předání v jednom dokumentu' },
-          { icon: '📄', text: 'Profesionální PDF ke stažení ihned po zaplacení' },
+          { icon: '📄', text: 'PDF dokument ke stažení ihned po ověřené platbě' },
         ]}
         contents={[
           'Identifikaci prodávajícího a kupujícího',
@@ -285,7 +285,7 @@ export default function KupniPage() {
               <div className="space-y-3 mt-6">
                 <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Vyberte balíček</div>
                 {([
-                  { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva dle občanského zákoníku v PDF.' },
+                  { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Strukturovaná smlouva dle občanského zákoníku, výstup v PDF.' },
                   { value: 'professional', label: 'Rozšířený dokument', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
                   { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířeného dokumentu + průvodní instrukce, checklist a 30denní archivace.' },
                 ] as const).map((opt) => (

@@ -507,7 +507,7 @@ export default function WorkContractPage() {
                 <h3 className="text-amber-400 uppercase text-xs tracking-widest font-bold mb-6">6. Výběr balíčku</h3>
                 <div className="space-y-3">
                   {([
-                    { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva o dílo dle § 2586 OZ v PDF.' },
+                    { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Strukturovaná smlouva o dílo dle § 2586 OZ, výstup v PDF.' },
                     { value: 'professional', label: 'Rozšířený dokument', price: '399 Kč', desc: 'Rozšířené smluvní pokuty, záruční doložky, odpovědnost za vady.', recommended: true },
                     { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířeného dokumentu + instrukce k podpisu, checklist a 30denní archivace.' },
                   ] as const).map((opt) => (

@@ -13,9 +13,9 @@ type Order = {
 type LookupState = 'idle' | 'loading' | 'done' | 'error';
 
 const TIER_LABEL: Record<string, { label: string; color: string }> = {
-  basic:        { label: 'Základní',       color: 'text-slate-400' },
-  professional: { label: 'Rozšířená',  color: 'text-blue-400' },
-  complete:     { label: 'Kompletní',      color: 'text-amber-400' },
+  basic:        { label: 'Základní dokument',  color: 'text-slate-400' },
+  professional: { label: 'Rozšířený dokument', color: 'text-blue-400'  },
+  complete:     { label: 'Kompletní balíček',  color: 'text-amber-400' },
 };
 
 const TTL_LABEL: Record<string, string> = {

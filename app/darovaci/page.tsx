@@ -5,7 +5,6 @@ import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
-import { motion } from 'framer-motion';
 
 type GiftType = 'money' | 'car' | 'property' | 'thing';
 
