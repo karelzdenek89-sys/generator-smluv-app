@@ -1,58 +1,43 @@
-# SmlouvaHned.cz — Finální homepage copy 10/10
-*Připraveno k implementaci — verze 2026-04-03*
+# SmlouvaHned.cz — Homepage copy · produkční verze v2
+*Opravená a zkrácená verze — 2026-04-03*
 
----
-
-## Hlavní problém současné homepage
-
-Stávající homepage osciluje mezi dvěma polohami, aniž by pevně zakotvila v jedné. Na jedné straně se tváří jako prodejní nástroj s urgentními CTA, na druhé straně se snaží budovat právní důvěryhodnost — a tyto dvě polohy si navzájem škodí. Uživatel s reálnou potřebou (pronajímatel, OSVČ, prodávající auto) nedostane rychlou odpověď na otázku: „Je tohle pro mě vhodné a proč to není totéž jako šablona z Googlu?" Chybí také precizní vymezení služby — co přesně dělá a co nedělá — které je pro právní produkt nezbytné jak z pohledu důvěry, tak z pohledu právní bezpečnosti.
-
-**Tři konkrétní slabiny:**
-1. Hero sekce popisuje výsledek (PDF, rychlost), ne hodnotu (strukturovaný proces, správné paragrafy, žádná improvizace).
-2. Neexistuje silná odpověď na přirozený uživatelský námět: „Vygoogluji si šablonu zadarmo."
-3. Chybí jasný disclaimer integrovaný do toku stránky — ne schovaný v patičce.
+Změny oproti v1: odstraněny všechny výskyty „připravený k podpisu" → „k závěrečné kontrole a podpisu"; opravena gramatika hero subheadline; nahrazena „právně ověřená struktura" → „předem definovaná a průběžně aktualizovaná struktura"; text zkrácen o cca 25 %; tón posunut od vysvětlujícího článku k seriózní produktové stránce.
 
 ---
 
 ## Doporučená struktura homepage
-
-Zachovány všechny požadované sekce. Pořadí mírně upraveno na základě conversion logiky:
 
 ```
 1.  Hero sekce
 2.  Trust / credibility strip
 3.  Co služba dělá
 4.  Proč ne šablona ani AI chat
-5.  Jak služba funguje (kroky)
+5.  Jak služba funguje
 6.  Přehled typů dokumentů
 7.  Co přesně získáte
-8.  Kdy je služba vhodná
-9.  Kdy služba vhodná není
-10. Vymezení vůči individuální právní službě (disclaimer blok)
-11. FAQ
-12. Závěrečné CTA
-13. Footer trust mikrocopy
+8.  Kdy je služba vhodná / kdy nestačí  ← sloučeno do jedné sekce
+9.  Disclaimer blok
+10. FAQ
+11. Závěrečné CTA
+12. Footer trust mikrocopy
 ```
 
-**Změna oproti zadání:** Sekce „Co přesně získáte" je přesunuta před filtrační sekce „Vhodná / nevhodná". Nejprve ukážeme hodnotu, teprve pak uživatele filtrujeme. Disclaimer blok je zároveň samostatná sekce i součást footeru — aby byl viditelný bez scrollování dolů.
+*Sekce „Vhodná / nevhodná" jsou sloučeny — ušetří prostor, přirozený tok (kladné příklady → záporné příklady).*
 
 ---
 
-## Finální texty ke všem sekcím
+## Finální texty
 
 ---
 
 ### 1. HERO SEKCE
-**Účel:** Okamžitě sdělit, co produkt je, pro koho je a proč má smysl. Nezaměnitelně odlišit od AI chatu, generického generátoru i od advokátní kanceláře.
 
----
-
-**Headline (H1):**
+**H1:**
 Sestavte smlouvu správně.
 Bez opisování šablon, bez improvizace.
 
 **Subheadline:**
-SmlouvaHned je online nástroj, který z vašich údajů sestaví standardizovaný smluvní dokument — strukturovaně, s aktuálními odkazem na občanský zákoník a připravený k podpisu. Pro běžné životní a podnikatelské situace, kde nepotřebujete advokáta, ale potřebujete mít vše v pořádku.
+SmlouvaHned je online nástroj, který z vašich údajů sestaví standardizovaný smluvní dokument — strukturovaně, s odkazem na aktuální znění relevantních zákonných ustanovení. Pro běžné životní a podnikatelské situace, kde nepotřebujete advokáta, ale potřebujete mít vše v pořádku.
 
 **Primární CTA:**
 Vybrat typ smlouvy
@@ -60,149 +45,108 @@ Vybrat typ smlouvy
 **Sekundární CTA:**
 Jak to funguje
 
-**Pod CTA — mikrocopy (trust anchor):**
+**Mikrocopy pod CTA:**
 14 typů dokumentů · aktualizováno pro legislativu 2026 · výstup ve formátu PDF
 
 ---
 
 ### 2. TRUST / CREDIBILITY STRIP
-**Účel:** Rychlé vizuální kotviště důvěryhodnosti. Fakta, ne superlativy. Zobrazit ihned pod hero sekcí.
-
----
-
-**Položky (ikona + text):**
 
 — Dokumenty sestavené podle občanského zákoníku a zákoníku práce
 — Strukturovaný formulář, který vás provede každým krokem
-— Výstup jako PDF dokument připravený k podpisu
+— Výstup ve formátu PDF k závěrečné kontrole a podpisu
 — Bez registrace, bez předplatného — platíte jen za dokument
 — IČO: 23660295 · Česká republika
 
-*(Poznámka k implementaci: místo hvězdiček recenzí použijte konkrétní čísla, pokud je máte — např. „přes 4 200 sestavených dokumentů". Pokud ne, vynechejte a nahraďte faktickým claimem o aktualizaci dokumentů.)*
+*Implementační poznámka: pokud máte konkrétní číslo sestavených dokumentů, nahraďte jím poslední položku nebo přidejte jako šestou.*
 
 ---
 
 ### 3. CO SLUŽBA DĚLÁ
-**Účel:** Přesný, klidný popis fungování. Odpovídá na otázku: „Co to vlastně je?" Žádný marketingový jazyk.
-
----
 
 **Nadpis:**
 Co SmlouvaHned dělá
 
 **Perex:**
-SmlouvaHned je nástroj pro document automation — automatizované sestavení standardizovaného smluvního dokumentu na základě údajů, které zadáte do strukturovaného formuláře.
+SmlouvaHned je nástroj pro automatizované sestavení standardizovaného smluvního dokumentu. Na základě údajů, které zadáte do strukturovaného formuláře, systém sestaví dokument podle předem definované a průběžně aktualizované struktury. Nejde o právní poradenství ani o AI, který generuje libovolný text.
 
-Nejde o právní poradenství. Nejde o AI, který generuje libovolný text. Jde o software, který z vašich konkrétních údajů sestaví dokument podle předem definované a právně ověřené struktury.
-
-**Tři pilíře (formát: ikona + nadpis + věta):**
+**Tři pilíře:**
 
 **Strukturovaný formulář**
-Formulář vás provede krok za krokem. Ptá se na to, co do smlouvy patří — strany, předmět, podmínky, lhůty. Nic důležitého neopomenete.
+Formulář vás provede krok za krokem — ptá se na strany, předmět, podmínky, lhůty. Nic podstatného neopomenete.
 
-**Standardizovaná struktura**
-Každý typ dokumentu má přesně definovanou strukturu, která odpovídá běžné praxi a aktuální legislativě. Výsledek není „zhruba správný" — je konzistentní a úplný.
+**Pevná struktura dokumentu**
+Každý typ dokumentu má přesně definovanou strukturu odpovídající běžné praxi a aktuální legislativě. Výsledek je konzistentní a úplný.
 
-**Dokument připravený k podpisu**
-Výstupem je PDF dokument, který si stáhnete ihned po dokončení formuláře. Zkontrolujete jej, podepíšete a použijete.
+**PDF k závěrečné kontrole a podpisu**
+Výstupem je PDF dokument, který stáhnete ihned po dokončení formuláře, zkontrolujete a podepíšete.
 
 ---
 
 ### 4. PROČ NEPOUŽÍT JEN BEZPLATNOU ŠABLONU NEBO AI CHAT
-**Účel:** Nejsilnější obchodní sekce stránky. Musí být věcná, konkrétní a bez útočného tónu. Odpovídá na přirozený uživatelský odpor: „Vygoogluji si to zadarmo."
-
----
 
 **Nadpis:**
-Bezplatná šablona nebo AI chat nestačí. Tady je proč.
+Bezplatná šablona nebo AI chat nestačí
 
-**Úvodní věta:**
-Nejde o to, že šablony nebo AI chat jsou špatné. Jde o to, co s nimi uděláte dál — a co se stane, když to uděláte špatně.
+**Sloupec 1: Co šablona nedělá**
 
----
+- Neptá se vás na vaši situaci. Dostanete generický dokument, do kterého opisujete — bez vodítka, co je povinné a co lze vynechat.
+- Datum vydání neznáte. Šablona z roku 2021 nemusí odpovídat legislativě platné dnes.
+- Nehlídá vnitřní konzistenci. Upravíte jednu klauzuli a nevíte, zda je v souladu s ostatními.
 
-**Sloupec 1: Bezplatná šablona z internetu**
+**Sloupec 2: Co AI chat nedělá**
 
-Nadpis: Co šablona nedělá
+- Generuje text, ne dokument. Výsledek závisí na tom, jak přesně otázku formulujete — a většina lidí neví, na co se zeptat.
+- Pracuje s trénovacími daty, která mohou být zastaralá nebo nepřesná pro českou legislativu.
+- Výstup je pokaždé jiný. Žádná konzistentní struktura, žádná ověřitelná základna.
 
-- Neptá se vás na vaši konkrétní situaci. Dostanete generický dokument, do kterého opisujete — a nevíte, co smíte vynechat a co je povinné.
-- Datum vydání šablony neznáte. Legislativa se mění — šablona z roku 2021 nemusí odpovídat zákoníku práce nebo občanskému zákoníku platném dnes.
-- Šablona nehlídá vnitřní konzistenci. Pokud upravíte jednu klauzuli, neupozorní vás na to, že jiná klauzule je s ní v rozporu.
-- Chybějící nebo nesprávně formulovaná ustanovení nejsou viditelná. Problém se projeví až při sporu.
+**Sloupec 3: Co SmlouvaHned dělá jinak**
 
----
+- Formulář vás provede — my se ptáme vás, ne naopak. Systematicky, bez toho, abyste museli vědět, co do smlouvy patří.
+- Struktura dokumentu je pevně daná a průběžně aktualizovaná. Nezávisí na způsobu formulace dotazu.
+- Výstup je vždy konzistentní. Stejné zadání, stejný výsledek.
 
-**Sloupec 2: AI chat (ChatGPT, Gemini a podobné)**
-
-Nadpis: Co AI chat nedělá
-
-- AI generuje text, ne dokument. Výsledek závisí na tom, jak přesně formulujete dotaz — a většina lidí neví, na co se zeptat.
-- AI nemá přístup k aktuálnímu znění zákonů. Pracuje s trénovacími daty, která mohou být zastaralá nebo nepřesná pro českou legislativu.
-- Výstup z AI chatu je vždy jiný. Neexistuje žádná konzistentní struktura, žádná ověřená šablona — každý vygenerovaný dokument je unikátní, a ne nutně správný.
-- AI chat vám nedá vědět, kdy se mýlí. Formulace může znít přesvědčivě, a přesto být právně nedostatečná nebo zavádějící.
-
----
-
-**Sloupec 3: SmlouvaHned**
-
-Nadpis: Co SmlouvaHned dělá jinak
-
-- Formulář vás provede — neptáte se vy nás, my se ptáme vás. Systematicky, krok za krokem, bez toho, abyste museli vědět, co do smlouvy patří.
-- Struktura dokumentu je pevně daná a ověřená. Nezávisí na tom, jak otázku formulujete.
-- Dokumenty jsou pravidelně aktualizovány podle platné legislativy. Víte, že pracujete s aktuální verzí.
-- Výstup je vždy konzistentní. Stejné zadání, stejný výsledek — žádná improvizace, žádná náhoda.
-
-**Závěrečná věta sekce:**
+**Závěrečná věta:**
 SmlouvaHned není levnější náhrada advokáta. Je to nástroj pro situace, kdy advokáta nepotřebujete — ale potřebujete mít dokument sestavený správně.
 
 ---
 
 ### 5. JAK SLUŽBA FUNGUJE
-**Účel:** Konkrétní, jednoduchý popis procesu. Tři nebo čtyři kroky. Žádná magie.
-
----
 
 **Nadpis:**
 Jak dokument vzniká
 
-**Kroky:**
-
 **Krok 1: Vyberte typ dokumentu**
-Vyberte smlouvu nebo dokument, který potřebujete — nájemní smlouvu, kupní smlouvu, smlouvu o dílo, DPP a další. Každý typ má vlastní formulář.
+Nájemní smlouva, kupní smlouva, smlouva o dílo, DPP a další — každý typ má vlastní formulář přizpůsobený danému smluvnímu vztahu.
 
 **Krok 2: Vyplňte formulář**
-Formulář vás provede krok za krokem. Zadáte údaje o stranách, předmětu, podmínkách a dalších náležitostech. Kde je to potřeba, vysvětlíme, co daná položka znamená.
+Formulář vás provede krok za krokem. Zadáte strany, předmět, podmínky a lhůty. Kde je to potřeba, vysvětlíme, co daná položka znamená.
 
 **Krok 3: Zkontrolujte náhled**
-Před zaplacením si zobrazíte, jak bude dokument vypadat. Máte přehled o tom, co kupujete.
+Před zaplacením si zobrazíte, jak bude dokument vypadat. Víte, co kupujete.
 
 **Krok 4: Stáhněte PDF**
-Po platbě ihned stáhnete hotový PDF dokument připravený k podpisu. Žádné čekání, žádná e-mailová komunikace.
+Po platbě ihned stáhnete PDF k závěrečné kontrole a podpisu. Žádné čekání.
 
-**Mikrocopy pod kroky:**
-Celý proces trvá obvykle 5 až 15 minut v závislosti na typu dokumentu a množství zadávaných údajů.
+**Mikrocopy:**
+Vyplnění formuláře trvá obvykle 5–15 minut.
 
 ---
 
 ### 6. PŘEHLED TYPŮ DOKUMENTŮ
-**Účel:** Přehledný katalog dostupných dokumentů. Konkrétní, bez zbytečného popisování.
-
----
 
 **Nadpis:**
 Dostupné typy dokumentů
 
 **Perex:**
-SmlouvaHned pokrývá nejčastější smluvní potřeby fyzických osob a OSVČ. Všechny dokumenty jsou sestaveny v souladu s platnou českou legislativou.
-
-**Kategorie a dokumenty (formát: název + jednořádkový popis):**
+SmlouvaHned pokrývá nejčastější smluvní potřeby fyzických osob a OSVČ — v souladu s platnou českou legislativou.
 
 **Nájmy a nemovitosti**
 - Nájemní smlouva — pronájem bytu nebo nebytového prostoru
 - Podnájemní smlouva — přenechání najatého prostoru třetí osobě
 
 **Koupě a prodej**
-- Kupní smlouva na movitou věc — prodej vozidla, elektroniky, vybavení a podobně
+- Kupní smlouva na movitou věc — prodej elektroniky, vybavení a podobně
 - Kupní smlouva na auto — specifická varianta pro převod motorového vozidla
 
 **Práce a spolupráce**
@@ -221,90 +165,58 @@ SmlouvaHned pokrývá nejčastější smluvní potřeby fyzických osob a OSVČ.
 - Smlouva o mlčenlivosti (NDA) — ochrana důvěrných informací
 - Plná moc — zmocnění k zastoupení při konkrétním úkonu
 
-**CTA pod katalogem:**
+**CTA:**
 Zobrazit všechny typy dokumentů
 
 ---
 
 ### 7. CO PŘESNĚ ZÍSKÁTE
-**Účel:** Konkrétní, hmatatelný popis výstupu. Odpovídá na otázku „Co dostanu za své peníze?"
-
----
 
 **Nadpis:**
 Co dostanete
 
-**Položky:**
-
 **Strukturovaný PDF dokument**
-Hotový dokument ve formátu PDF s kompletní strukturou odpovídající danému typu smlouvy — záhlaví, identifikace stran, smluvní ujednání, závěrečná ustanovení, místo pro podpisy.
+Kompletní dokument s identifikací stran, smluvními ujednáními, závěrečnými ustanoveními a místem pro podpisy — ke stažení ihned.
 
 **Aktuální legislativní základ**
 Dokumenty obsahují relevantní odkazy na občanský zákoník, zákoník práce nebo jiný příslušný předpis. Pracujete s verzí aktualizovanou pro rok 2026.
 
 **Konzistentní formulace**
-Smluvní klauzule jsou formulovány standardním způsobem, který odpovídá běžné obchodní praxi. Neimprovizujete, neodhadujetě.
+Smluvní klauzule odpovídají běžné obchodní praxi. Neimprovizujete, neodhadujete.
 
-**Okamžitý přístup**
+**Výstup ihned, bez registrace**
 Po dokončení platby dokument ihned stáhnete. Není nutná registrace ani čekání.
 
-**Přehledný formulář jako vedlejší produkt**
-Vyplněním formuláře zároveň projdete všemi podstatnými otázkami, které smlouva řeší. I samotný proces vás přiměje promyslet si podmínky, které by jinak zůstaly nevyřčeny.
-
 ---
 
-### 8. KDY JE SLUŽBA VHODNÁ
-**Účel:** Přesně definovat cílové situace. Zvyšuje relevanci, snižuje nesprávné použití.
-
----
+### 8. KDY JE SLUŽBA VHODNÁ — A KDY NESTAČÍ
 
 **Nadpis:**
-Kdy SmlouvaHned použít
+Pro koho je SmlouvaHned určen
 
-**Perex:**
-Služba je navržena pro standardní, opakující se situace, kde stačí správně sestavený standardizovaný dokument.
+**SmlouvaHned je vhodný, pokud:**
 
-**Typické situace (ikona + text):**
-
-- Pronajímáte byt nebo pokoj a potřebujete nájemní smlouvu, která ošetřuje běžné podmínky.
-- Prodáváte nebo kupujete auto nebo jinou movitou věc a chcete mít převod písemně doložen.
+- Pronajímáte byt nebo pokoj a potřebujete nájemní smlouvu ošetřující běžné podmínky.
+- Prodáváte nebo kupujete auto nebo movitou věc a chcete mít převod písemně doložen.
 - Uzavíráte DPP nebo pracovní smlouvu pro zaměstnance na standardní pozici.
 - Zadáváte nebo přijímáte zakázku a potřebujete smlouvu o dílo s jasným předmětem, cenou a termínem.
 - Půjčujete nebo si půjčujete peníze a chcete mít podmínky vrácení písemně potvrzeny.
-- Spolupracujete s partnerem nebo subdodavatelem a potřebujete ošetřit základní podmínky spolupráce.
-- Potřebujete NDA pro chráněné sdílení informací při obchodním jednání.
+- Potřebujete NDA pro sdílení důvěrných informací při obchodním jednání.
 
----
+**SmlouvaHned nestačí, pokud:**
 
-### 9. KDY SLUŽBA VHODNÁ NENÍ
-**Účel:** Odpovědné vymezení limitů. Buduje důvěru, filtruje nevhodné použití. Neodstrašuje — informuje.
+- Jde o transakci s vysokou hodnotou nebo složitou majetkovou strukturou.
+- Smluvní vztah zahrnuje mezinárodní prvek nebo cizí právo.
+- Dokument musí být ověřen notářem nebo schválen úřadem.
+- Existuje spor nebo hrozí právní řízení.
+- Situace vyžaduje nestandardní ujednání vybočující z běžné praxe.
 
----
-
-**Nadpis:**
-Kdy SmlouvaHned nestačí
-
-**Perex:**
-Ne každá situace je standardní. SmlouvaHned je vhodný pro běžné případy — pokud vaše situace obsahuje níže uvedené prvky, doporučujeme konzultaci s advokátem.
-
-**Situace, kde je vhodná odborná právní pomoc:**
-
-- Transakce s vysokou hodnotou nebo složitou majetkovou strukturou, kde závisí mnoho na přesném znění podmínek.
-- Smluvní vztahy s mezinárodním prvkem nebo s aplikací cizího práva.
-- Situace, kde jedna strana je spotřebitel a druhá podnikatel, a je potřeba ošetřit specifické spotřebitelské podmínky.
-- Dokumenty, které mají být ověřeny notářem nebo schváleny úřadem.
-- Případy, kde již existuje spor nebo hrozí právní řízení.
-- Nestandardní ujednání, která vybočují z běžné praxe a vyžadují individuální formulaci.
-
-**Závěrečná věta:**
+**Závěr:**
 Pokud si nejste jistí, zda vaše situace patří do standardní kategorie, konzultujte ji raději s advokátem předem. Cena konzultace je nižší než cena sporu.
 
 ---
 
-### 10. VYMEZENÍ VŮČI INDIVIDUÁLNÍ PRÁVNÍ SLUŽBĚ (DISCLAIMER BLOK)
-**Účel:** Klíčový právní a důvěryhodnostní prvek stránky. Musí být viditelný, jasný a klidný — ne schovaný v patičce malým písmem.
-
----
+### 9. DISCLAIMER BLOK
 
 **Nadpis:**
 Co SmlouvaHned není
@@ -312,129 +224,116 @@ Co SmlouvaHned není
 **Text:**
 SmlouvaHned je softwarový nástroj pro sestavení standardizovaných dokumentů. Neposkytuje individuální právní poradenství, právní zastoupení ani jakoukoli jinou regulovanou právní službu ve smyslu zákona o advokacii.
 
-Dokument, který pomocí SmlouvaHned sestavíte, je standardizovaný výstup vzniklý automatickým zpracováním vámi zadaných údajů. Jeho obsah závisí na správnosti a úplnosti informací, které jste zadali. SmlouvaHned neodpovídá za právní důsledky dokumentu v konkrétní situaci, za chybně zadané údaje ani za okolnosti, které jsou nestandardní nebo nebyly při sestavení formuláře zohledněny.
+Dokument sestavený pomocí SmlouvaHned je standardizovaný výstup vzniklý automatickým zpracováním vámi zadaných údajů. Jeho obsah závisí na správnosti a úplnosti informací, které jste zadali. SmlouvaHned neodpovídá za právní důsledky dokumentu v konkrétní situaci, za chybně zadané údaje ani za nestandardní okolnosti, které nebyly při sestavení zohledněny.
 
-Před podpisem doporučujeme dokument zkontrolovat a ujistit se, že odpovídá vaší skutečné situaci. U složitějších nebo nestandardních případů doporučujeme konzultaci s advokátem nebo notářem.
+Před podpisem dokument zkontrolujte a ujistěte se, že odpovídá vaší skutečné situaci. U nestandardních nebo složitých případů doporučujeme konzultaci s advokátem nebo notářem.
 
-**Vizuální prvek (doporučení k implementaci):**
-Tento blok by měl mít vizuálně odlišený rámeček — ne výstražný, ale klidný a seriózní (např. tenký levý border v neutrální barvě, mírně odlišené pozadí). Nesmí působit jako varování v drobném tisku, musí působit jako součást profesionální prezentace.
-
----
-
-### 11. FAQ
-**Účel:** Odpovědět na přirozené obavy uživatele ještě předtím, než odejde hledat odpovědi jinam.
+*Implementační poznámka: vizuálně odlišit klidným rámečkem (levý border, mírně odlišené pozadí) — ne jako výstraha, ale jako součást profesionální prezentace.*
 
 ---
+
+### 10. FAQ
 
 **Nadpis:**
 Časté otázky
 
 ---
 
-**Q: Je SmlouvaHned náhradou advokáta?**
+**Je SmlouvaHned náhradou advokáta?**
 
-Ne. SmlouvaHned je softwarový nástroj pro sestavení standardizovaných dokumentů — není poskytovatelem právních služeb, neposkytuje právní poradenství ani právní zastoupení. Pro situace, kde potřebujete individuální právní analýzu, posouzení rizik nebo zastoupení, kontaktujte advokáta.
-
----
-
-**Q: Jaký je rozdíl oproti AI chatu?**
-
-AI chat (ChatGPT, Gemini a podobné) generuje text na základě vašeho dotazu — výsledek závisí na tom, jak přesně otázku formulujete, a může být pokaždé jiný. SmlouvaHned pracuje jinak: má pevně definovanou strukturu pro každý typ dokumentu, formulář vás systematicky provede všemi potřebnými údaji a výstup je vždy konzistentní. Neimprovizujeme, negenerujeme — sestavujeme.
+Ne. SmlouvaHned je softwarový nástroj pro sestavení standardizovaných dokumentů — neposkytuje právní poradenství, právní zastoupení ani žádnou jinou právní službu. Pro situace vyžadující individuální právní analýzu nebo zastoupení kontaktujte advokáta.
 
 ---
 
-**Q: Jaký je rozdíl oproti bezplatné šabloně z internetu?**
+**Jaký je rozdíl oproti AI chatu?**
 
-Bezplatná šablona je statický dokument, který opisujete. SmlouvaHned je strukturovaný formulář, který vás aktivně provede sestavením dokumentu. Nemusíte vědět, co do smlouvy patří — formulář se vás na to systematicky zeptá. Navíc víte, že pracujete s aktualizovanou verzí odpovídající platné legislativě — u náhodně stažené šablony to nevíte.
-
----
-
-**Q: Kdo odpovídá za správnost údajů v dokumentu?**
-
-Za správnost a úplnost zadaných údajů odpovídá uživatel. SmlouvaHned sestavuje dokument na základě informací, které mu poskytnete. Pokud zadáte nesprávné nebo neúplné údaje, výstup tyto nedostatky bude odrážet. Proto doporučujeme dokument před podpisem zkontrolovat.
+AI chat generuje text na základě vašeho dotazu — výsledek závisí na způsobu formulace a může být pokaždé jiný. SmlouvaHned pracuje s pevně definovanou strukturou pro každý typ dokumentu. Formulář vás systematicky provede všemi potřebnými údaji a výstup je vždy konzistentní. Neimprovizujeme — sestavujeme.
 
 ---
 
-**Q: Je SmlouvaHned vhodný i pro složitější případy?**
+**Jaký je rozdíl oproti bezplatné šabloně?**
 
-SmlouvaHned je optimalizován pro standardní situace — ty, kde stačí správně sestavený dokument běžného typu. Pro složitější nebo nestandardní případy — transakce s vysokou hodnotou, mezinárodní prvek, existující spor, specifická smluvní ujednání — doporučujeme konzultaci s advokátem. Snažíme se být upřímní ohledně toho, kde jsou limity tohoto nástroje.
-
----
-
-**Q: Co přesně znamená, že dokument vzniká automaticky?**
-
-Znamená to, že vámi zadané údaje jsou algoritmicky zpracovány a vloženy do předem definované dokumentové struktury. Nevytváříme žádný text „na míru" — kombinujeme vaše údaje s pevnou, ověřenou strukturou příslušného smluvního typu. Výsledkem je dokument, který obsahuje přesně to, co jste zadali, v správném smluvním formátu.
+Šablona je statický dokument, který opisujete. SmlouvaHned je strukturovaný formulář, který vás aktivně provede sestavením dokumentu — ptá se na to, co do smlouvy patří, a vede vás k úplnému výsledku. Navíc víte, že pracujete s verzí odpovídající platné legislativě.
 
 ---
 
-### 12. ZÁVĚREČNÉ CTA
-**Účel:** Kultivovaný, nekřičící závěrečný impuls k akci. Znovu zopakovat hodnotu, ne urgenci.
+**Kdo odpovídá za správnost údajů?**
+
+Za správnost a úplnost zadaných údajů odpovídá uživatel. Pokud zadáte nesprávné nebo neúplné informace, výstup tyto nedostatky bude odrážet. Proto doporučujeme dokument před podpisem zkontrolovat.
 
 ---
+
+**Je SmlouvaHned vhodný i pro složitější případy?**
+
+SmlouvaHned je navržen pro standardní situace. Pro složitější případy — transakce s vysokou hodnotou, mezinárodní prvek, existující spor nebo nestandardní ujednání — doporučujeme konzultaci s advokátem.
+
+---
+
+**Co přesně znamená, že dokument vzniká automaticky?**
+
+Vaše údaje jsou algoritmicky zpracovány a vloženy do předem definované dokumentové struktury. Nekombinujeme text náhodně — vkládáme vaše údaje do pevné, průběžně aktualizované struktury příslušného smluvního typu. Výsledkem je dokument, který obsahuje přesně to, co jste zadali, ve správném smluvním formátu.
+
+---
+
+### 11. ZÁVĚREČNÉ CTA
 
 **Nadpis:**
 Sestavte dokument, který obstojí
 
 **Text:**
-Vyberte typ dokumentu, vyplňte formulář a stáhněte PDF připravené k podpisu. Pro standardní situace bez zbytečných komplikací.
+Vyberte typ dokumentu, vyplňte formulář a stáhněte PDF k závěrečné kontrole a podpisu. Pro standardní situace, kde nepotřebujete advokáta — ale potřebujete mít vše v pořádku.
 
 **Primární CTA:**
 Vybrat typ dokumentu
 
-**Sekundární text pod CTA:**
+**Mikrocopy:**
 14 typů dokumentů · bez registrace · od 249 Kč
 
 ---
 
-### 13. FOOTER TRUST MIKROCOPY
-**Účel:** Posilovat důvěru i v patičce stránky. Konkrétní fakta, ne marketingové fráze.
-
----
-
-**Položky footeru (trust prvky):**
+### 12. FOOTER TRUST MIKROCOPY
 
 — SmlouvaHned.cz · IČO: 23660295 · Česká republika
 — Dokumenty aktualizovány pro legislativu 2026
-— Výstup ve formátu PDF, bez registrace
 — SmlouvaHned není advokátní kancelář a neposkytuje právní poradenství
+— Výstup ve formátu PDF bez registrace
 
-**Copyright linka:**
 © 2026 SmlouvaHned.cz · Obchodní podmínky · Zásady zpracování osobních údajů
 
 ---
 
-## 10 nejdůležitějších principů, které musí homepage dodržet
+## 10 principů, které musí homepage dodržet
 
 **1. Přesnost před přesvědčováním.**
-Každá věta musí být fakticky správná a konkrétní. Žádný claim, který nelze doložit nebo který by mohl být vnímán jako příslib právní správnosti.
+Každý claim musí být fakticky ověřitelný. Žádné přísliby právní správnosti, žádné superlativy bez důkazů.
 
-**2. Vymezení jako pilíř důvěry, ne jako varování.**
-„Co SmlouvaHned není" a disclaimer nejsou povinnou nevítanou poznámkou — jsou součástí toho, čím se produkt odlišuje od pochybných konkurentů. Zobrazit prominentně, ne schovat.
+**2. Vymezení jako pilíř důvěry.**
+Disclaimer a sekce „Co SmlouvaHned není" nejsou nevítaná poznámka — jsou součástí toho, čím se produkt odlišuje. Zobrazit prominentně.
 
 **3. Hodnota nad rychlostí.**
-Nezdůrazňovat „3 minuty" jako hlavní benefit — to evokuje lacině. Zdůrazňovat strukturovanost, konzistenci, aktuálnost a úplnost.
+Nezdůrazňovat „3 minuty" jako hlavní benefit. Strukturovanost, konzistence a aktuálnost jsou silnější argumenty než rychlost.
 
 **4. Srovnání přes fakta, ne přes útok.**
-Sekce o šablonách a AI chatu musí být věcná, ne sarkastická. Uživatel, který přišel přes Google s šablonou v záložce, musí odejít s pocitem, že byl informován — ne přesvědčován.
+Sekce o šablonách a AI chatu musí být věcná. Uživatel musí odejít s pocitem, že byl informován — ne přesvědčován.
 
-**5. CTA kultivovaně, ne urgentně.**
-Žádné „Začněte hned", žádné „Nenechte to na poslední chvíli", žádné odpočítávání. Produkt je pro dospělé lidi, kteří si ho vybírají vědomě.
+**5. CTA kultivovaně.**
+Žádné „Začněte hned", žádná umělá urgence. Produkt si lidé vybírají vědomě.
 
-**6. Jedna informační hierarchie.**
-Každá sekce odpovídá na jednu otázku. Nepřeplňovat. Uživatel nesmí cítit, že mu prodáváte — musí cítit, že mu vysvětlujete.
+**6. Jedna myšlenka na sekci.**
+Každá sekce odpovídá na jednu otázku. Uživatel nesmí cítit, že mu prodáváte — musí cítit, že mu vysvětlujete.
 
-**7. Žádné superlativy bez důkazů.**
-„Nejlepší", „nejkompletnější", „garantovaně správné" — zakázáno. Místo superlativů: konkrétní fakty. Místo „nejlepší smlouva" → „smlouva s odkazem na § 2235 OZ a standardními klauzulemi pro pronájem bytu".
+**7. Žádné neověřitelné superlativy.**
+„Nejlepší", „garantovaně správné", „neprůstřelné" — zakázáno. Místo superlativů: konkrétní fakta.
 
-**8. Právní produkt, ne marketingový produkt.**
-Vizuální tón, délka vět, volba slov — vše musí signalizovat serióznost a profesionalitu. Uživatel má mít pocit, že pracuje s produktem, za kterým stojí odborníci, ne startup, který si hraje na právníka.
+**8. Jeden hlas od H1 po footer.**
+Klidný, přesný, seriózní. Celá stránka musí znít jako jeden autor — ne jako tým, kde každý přidal svůj marketingový střípek.
 
 **9. Filtrace je součástí konverze.**
-Sekce „Kdy služba vhodná není" neodstrašuje zákazníky — filtruje ty, kteří by stejně nebyli spokojeni, a zároveň buduje důvěru u těch, pro které je produkt skutečně určen. Nemazat ji ze strachu z nižší konverze.
+Sekce „Kdy nestačí" neodstrašuje — filtruje nevhodné uživatele a tím buduje důvěru u těch správných.
 
-**10. Konzistence hlasu od H1 po footer.**
-Celá stránka musí mluvit jedním hlasem: klidným, přesným, seriózním. Nesmí existovat sekce, která „prodává" jinak než ostatní. Uživatel musí mít pocit, že stránku psal jeden autor s jasnou vizí — ne tým, kde každý přidal svůj marketingový střípek.
+**10. „Připravený k podpisu" nahradit vždy „k závěrečné kontrole a podpisu".**
+Tato formulace platí pro všechny výskyty na webu — stránky produktů, potvrzovací e-maily, PDF záhlaví. Jde o vědomé právní a důvěryhodnostní rozhodnutí, ne o stylistický detail.
 
 ---
 
-*Dokument připraven pro implementaci. Doporučujeme texty nepřekládat zpět do angličtiny ani neupravovat automatickými nástroji bez lidské kontroly — přesnost formulací je záměrná.*
+*Produkční verze v2 — připraveno k nasazení po závěrečném schválení zadavatelem.*
