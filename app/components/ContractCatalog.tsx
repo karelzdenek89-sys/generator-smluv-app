@@ -213,7 +213,8 @@ function ContractCard({ contract }: { contract: ContractItem }) {
   return (
     <Link
       href={contract.href}
-      className="group relative flex flex-col overflow-hidden rounded-3xl border border-slate-800 bg-[#0c1426] p-6 transition duration-300 hover:-translate-y-1 hover:border-white/15 hover:shadow-[0_20px_60px_rgba(0,0,0,0.35)]"
+      className="group relative flex flex-col overflow-hidden rounded-[20px] p-6 transition duration-200 hover:-translate-y-0.5 glass-1 card-luminous hover:border-white/12"
+      style={{transition: 'all 200ms cubic-bezier(0.2,0,0,1)'}}
     >
       {/* Popular badge */}
       {contract.popular && (

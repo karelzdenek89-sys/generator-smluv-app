@@ -74,13 +74,13 @@ export default function RootLayout({
     <html lang="cs">
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
-        <meta name="theme-color" content="#05080f" />
+        <meta name="theme-color" content="#04070E" />
         <meta
           name="seznam-wmt"
           content="xQaMUlE4cn6PrnQkBxclmM5kzajCqWAD"
         />
       </head>
-      <body className="antialiased bg-[#05080f] text-slate-200">
+      <body className="antialiased bg-[#04070E] text-slate-200" style={{colorScheme: 'dark'}}>
         {children}
       </body>
     </html>
