@@ -166,7 +166,7 @@ async function sendDownloadEmail(
     body: JSON.stringify({
       from: 'SmlouvaHned <dokumenty@smlouvahned.cz>',
       to: [to],
-      subject: `✅ Váš dokument je připraven ke stažení — ${contractName}`,
+      subject: `Váš dokument je připraven ke stažení — ${contractName}`,
       html: `
         <!DOCTYPE html>
         <html lang="cs">
@@ -179,14 +179,17 @@ async function sendDownloadEmail(
               </div>
             </div>
             <h1 style="color:#fff;font-size:26px;font-weight:900;margin:0 0 12px;text-align:center;">
-              Vaše platba byla přijata ✓
+              Platba přijata — dokument je připraven
             </h1>
-            <p style="color:#94a3b8;font-size:15px;text-align:center;margin-bottom:32px;">
+            <p style="color:#94a3b8;font-size:15px;text-align:center;margin-bottom:8px;">
               ${contractName} je připravena ke stažení.
+            </p>
+            <p style="color:#64748b;font-size:13px;text-align:center;margin-bottom:32px;">
+              Před podpisem zkontrolujte, prosím, všechny vyplněné údaje.
             </p>
             <a href="${downloadUrl}"
                style="display:block;text-align:center;background:linear-gradient(135deg,#f59e0b,#eab308);color:#000;font-weight:900;font-size:18px;padding:18px 32px;border-radius:16px;text-decoration:none;margin-bottom:24px;letter-spacing:-0.3px;">
-              STÁHNOUT PDF DOKUMENT
+              Stáhnout PDF dokument
             </a>
             <p style="color:#64748b;font-size:12px;text-align:center;margin:0;">
               Odkaz ke stažení je platný ${tier === 'complete' ? '30 dní' : tier === 'professional' ? '14 dní' : '7 dní'} od zaplacení.<br>
@@ -194,7 +197,7 @@ async function sendDownloadEmail(
             </p>
           </div>
           <p style="color:#334155;font-size:11px;text-align:center;margin-top:24px;">
-            © 2026 SmlouvaHned. Dokumenty jsou generovány automaticky a neslouží jako individuální právní poradenství.
+            © 2026 SmlouvaHned · IČO: 23660295 · SmlouvaHned není advokátní kancelář a neposkytuje právní poradenství.
           </p>
         </body>
         </html>

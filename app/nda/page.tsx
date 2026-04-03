@@ -208,7 +208,7 @@ export default function NdaBuilderPage() {
         benefits={[
           { icon: '🔐', text: 'Chrání obchodní tajemství, technická řešení i klientská data' },
           { icon: '⚖️', text: 'Sestaveno dle § 1746 OZ a § 504 OZ (obchodní tajemství)' },
-          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+          { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
           { icon: '🔒', text: 'Pokrývá jednostranné i vzájemné NDA, zákaz konkurence' },
         ]}
         contents={[

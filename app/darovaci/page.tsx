@@ -210,7 +210,7 @@ export default function GiftContractPage() {
         benefits={[
           { icon: '🎁', text: 'Pokrývá darování peněz, věci, vozidla i nemovitosti' },
           { icon: '⚖️', text: 'Sestaveno dle § 2055 OZ — bezplatný převod vlastnického práva' },
-          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+          { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
           { icon: '🔒', text: 'Volitelná podmínka vrácení daru (odvolání daru)' },
         ]}
         contents={[

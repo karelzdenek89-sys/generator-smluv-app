@@ -553,7 +553,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
         subtitle="Vytvořte nájemní smlouvu pro pronájem bytu nebo domu rychle a přehledně. Šablona pokrývá klíčová ujednání — od výše nájmu a kauce po pravidla užívání a ukončení nájmu, strukturovaná dle § 2235 a násl. OZ."
         benefits={[
           { icon: '⚖️', text: 'Sestaveno dle § 2235–2301 OZ (nájemní smlouva na byt)' },
-          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+          { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
           { icon: '🏠', text: 'Pokrývá dobu určitou i neurčitou, kauce a poplatky' },
           { icon: '🔒', text: 'Vhodné pro pronájem bytu, domu nebo jeho části' },
         ]}

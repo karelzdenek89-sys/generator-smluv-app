@@ -212,7 +212,7 @@ export default function UznaniDluhu2026Page() {
       {/* ── MID CTA ─────────────────────────────── */}
       <ArticleInlineCta
         title="Blíží se konec promlčecí lhůty?"
-        body="Vytvořte uznání dluhu online a přerušte promlčení. Formulář pokryje výši dluhu, důvod vzniku i závazek splatit. PDF ihned k podpisu."
+        body="Vytvořte uznání dluhu online a přerušte promlčení. Formulář pokryje výši dluhu, důvod vzniku i závazek splatit. PDF ke stažení ihned po ověřené platbě."
         buttonLabel="Vytvořit uznání dluhu"
         href="/uznani-dluhu"
       />
@@ -323,7 +323,7 @@ export default function UznaniDluhu2026Page() {
         <div className="mb-2 text-[11px] font-black uppercase tracking-widest text-amber-400">Připraveni?</div>
         <h2 className="mb-4 text-2xl font-black tracking-tight text-white">Vytvořte uznání dluhu online</h2>
         <p className="mx-auto mb-6 max-w-sm text-sm leading-relaxed text-slate-400">
-          Formulář vás provede každou částí dokumentu — od výše dluhu po závazek splatit. PDF ihned k podpisu.
+          Formulář vás provede každou částí dokumentu — od výše dluhu po závazek splatit. PDF ke stažení ihned po ověřené platbě.
         </p>
         <Link
           href="/uznani-dluhu"

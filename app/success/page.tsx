@@ -146,7 +146,7 @@ function SuccessContent() {
           <div className="flex items-center gap-4 p-5 bg-white/3 rounded-2xl border border-white/5 mb-6">
             <div className="text-4xl flex-shrink-0">📄</div>
             <div>
-              <div className="font-bold text-white text-base">Váš právní dokument</div>
+              <div className="font-bold text-white text-base">Váš smluvní dokument</div>
               <div className="text-xs text-slate-500 mt-0.5 uppercase tracking-wider">Generováno po ověřené platbě • Stripe</div>
             </div>
           </div>

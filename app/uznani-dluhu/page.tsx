@@ -95,7 +95,7 @@ export default function UznanidluhuPage() {
     subtitle: 'Vytvořte uznání dluhu pro písemné potvrzení existujícího závazku a nastavení podmínek jeho splacení. Dokument posiluje právní pozici věřitele a obnovuje promlčecí dobu.',
     benefits: [
       { icon: '⚖️', text: 'Sestaveno dle § 2053 OZ — uznání závazku co do důvodu a výše' },
-      { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+      { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
       { icon: '🔒', text: 'Obnovuje 10letou promlčecí dobu — klíčové pro věřitele' },
       { icon: '💰', text: 'Pokrývá jednorázové splacení i splátkový kalendář' },
     ],

@@ -217,7 +217,7 @@ export default function LoanBuilderPage() {
         subtitle="Vytvořte smlouvu o zápůjčce peněz nebo jiné věci. Dokument jasně stanoví výši půjčené částky, podmínky vrácení, úroky a sankce za prodlení — a chrání věřitele i dlužníka."
         benefits={[
           { icon: '⚖️', text: 'Sestaveno dle § 2390–2394 OZ — smlouva o zápůjčce' },
-          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+          { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
           { icon: '💰', text: 'Pokrývá jednorázové splacení i splátkový kalendář' },
           { icon: '🔒', text: 'Smluvní úroky, sankce za prodlení a způsob platby' },
         ]}

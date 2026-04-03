@@ -110,7 +110,7 @@ export default function SpolupraceePage() {
         subtitle="Vytvořte smlouvu o spolupráci pro dlouhodobý obchodní vztah mezi OSVČ nebo firmami. Pokrývá rozdělení odpovědností, podíl na výnosech, duševní vlastnictví, mlčenlivost a podmínky ukončení."
         benefits={[
           { icon: '⚖️', text: 'Inominátní smlouva dle § 1746 OZ — pro obchodní partnerství' },
-          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+          { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
           { icon: '🤝', text: 'Vhodné pro spolupráci OSVČ, freelancerů nebo firem' },
           { icon: '🔒', text: 'Pokrývá IP práva, mlčenlivost, zákaz konkurence a exit klauzule' },
         ]}

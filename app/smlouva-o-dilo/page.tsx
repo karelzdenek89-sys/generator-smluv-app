@@ -204,7 +204,7 @@ export default function WorkContractPage() {
         subtitle="Vytvořte smlouvu o dílo pro zhotovení konkrétního výsledku — stavební práce, řemeslné dílo, webová stránka nebo jiný hmotný či nehmotný výstup. Dokument pokrývá cenu, termín, předání a záruční podmínky."
         benefits={[
           { icon: '⚖️', text: 'Sestaveno dle § 2586–2650 OZ — smlouva o zhotovení díla' },
-          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+          { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
           { icon: '🔨', text: 'Vhodné pro řemeslníky, stavitele, vývojáře i designéry' },
           { icon: '🔒', text: 'Jasně vymezená cena, termín dokončení a akceptační postup' },
         ]}

@@ -118,7 +118,7 @@ export default function SluzbyPage() {
         subtitle="Vytvořte smlouvu o poskytování služeb pro kontinuální nebo opakovanou spolupráci mezi poskytovatelem a klientem. Vhodné pro freelancery, OSVČ i firmy — pokrývá cenu, fakturaci, IP práva a podmínky ukončení."
         benefits={[
           { icon: '⚖️', text: 'Inominátní smlouva dle § 1746 OZ — flexibilní základ pro B2B i B2C' },
-          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+          { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
           { icon: '💼', text: 'Pokrývá hodinovou i paušální cenu, fakturaci a IP práva' },
           { icon: '🔒', text: 'Jasně vymezená odpovědnost, výpovědní podmínky a sankce' },
         ]}

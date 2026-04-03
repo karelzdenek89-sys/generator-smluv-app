@@ -122,7 +122,7 @@ export default function PracovniPage() {
         subtitle="Vytvořte pracovní smlouvu pro vznik pracovního poměru. Dokument splňuje zákonem stanovené náležitosti — druh práce, místo výkonu a den nástupu — a pokrývá i odměňování, zkušební dobu a pracovní dobu."
         benefits={[
           { icon: '⚖️', text: 'Sestaveno dle § 33–65 zákoníku práce (zákon č. 262/2006 Sb.)' },
-          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+          { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
           { icon: '👔', text: 'Splňuje zákonné náležitosti — druh práce, místo, nástup' },
           { icon: '🔒', text: 'Pokrývá zkušební dobu, odměnu i podmínky ukončení' },
         ]}

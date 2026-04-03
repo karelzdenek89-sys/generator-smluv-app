@@ -115,7 +115,7 @@ export default function DppPage() {
         subtitle="Vytvořte dohodu o provedení práce (DPP) pro jednorázový nebo opakující se úkol mimo pracovní poměr. Vhodné pro brigády, sezónní výpomoc i krátkodobé projekty. Rozsah práce nesmí překročit 300 hodin ročně u jednoho zaměstnavatele."
         benefits={[
           { icon: '⚖️', text: 'Sestaveno dle § 75–76 zákoníku práce (zákon č. 262/2006 Sb.)' },
-          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+          { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
           { icon: '👷', text: 'Vhodné pro brigády, výpomoci a jednorázové úkoly' },
           { icon: '🔒', text: 'Jasně vymezený rozsah práce, odměna a termín splnění' },
         ]}

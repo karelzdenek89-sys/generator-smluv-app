@@ -98,7 +98,7 @@ export default function PlnaMocPage() {
     subtitle: 'Vytvořte plnou moc pro zastoupení při právních jednáních, správě nemovitostí, zastupování v soudu nebo přístupu k bankovním účtům. Dokument jasně vymezuje rozsah zmocnění, dobu platnosti a případnou substituci.',
     benefits: [
       { icon: '⚖️', text: 'Sestaveno dle § 441–456 OZ — zastoupení na základě plné moci' },
-      { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+      { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
       { icon: '🔒', text: 'Pokrývá obecnou i speciální plnou moc (nemovitost, soud, banka)' },
       { icon: '📅', text: 'Jasně vymezená platnost a případné omezení zmocnění' },
     ],

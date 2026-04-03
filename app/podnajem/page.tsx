@@ -175,7 +175,7 @@ export default function PodnajemuPage() {
         subtitle="Vytvořte podnájemní smlouvu, pokud jako nájemce přenecháváte byt nebo jeho část do podnájmu. Dokument pokrývá výši podnájemného, podmínky užívání i práva podnájemce."
         benefits={[
           { icon: '⚖️', text: 'Sestaveno dle § 2274–2278 OZ (podnájem bytu)' },
-          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+          { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
           { icon: '🏠', text: 'Vhodné pro podnájem celého bytu i jeho části' },
           { icon: '🔒', text: 'Jasně vymezená práva a povinnosti podnájemce' },
         ]}

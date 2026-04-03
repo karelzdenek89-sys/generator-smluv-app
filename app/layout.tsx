@@ -6,11 +6,11 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: 'SmlouvaHned | Profesionální smlouvy online — od 249 Kč',
+    default: 'SmlouvaHned | Smluvní dokumenty online — od 249 Kč',
     template: '%s | SmlouvaHned',
   },
   description:
-    'Vygenerujte si nájemní smlouvu, kupní smlouvu, darovací smlouvu, smlouvu o dílo, zápůjčce nebo NDA za 3 minuty. Aktualizováno pro legislativu 2026. Od 249 Kč.',
+    'Sestavte nájemní smlouvu, kupní smlouvu, darovací smlouvu, smlouvu o dílo, zápůjčce nebo NDA — strukturovaně, s odkazem na aktuální legislativu. Výstup ve formátu PDF. Od 249 Kč.',
   keywords: [
     'nájemní smlouva',
     'kupní smlouva',
@@ -33,9 +33,9 @@ export const metadata: Metadata = {
     locale: 'cs_CZ',
     url: BASE_URL,
     siteName: 'SmlouvaHned',
-    title: 'SmlouvaHned | Profesionální smlouvy online — od 249 Kč',
+    title: 'SmlouvaHned | Smluvní dokumenty online — od 249 Kč',
     description:
-      'Nájemní smlouva, kupní smlouva, NDA a další — s paragrafy OZ, okamžité PDF ke stažení.',
+      'Nájemní smlouva, kupní smlouva, NDA a další — sestaveno dle platné legislativy, výstup ve formátu PDF.',
     images: [
       {
         url: '/og-image.png',
@@ -47,8 +47,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SmlouvaHned | Profesionální smlouvy online',
-    description: '14 typů smluv s paragrafy OZ. Formulář → PDF. Od 249 Kč.',
+    title: 'SmlouvaHned | Smluvní dokumenty online',
+    description: '14 typů dokumentů. Strukturovaný formulář → PDF. Od 249 Kč.',
     images: ['/og-image.png'],
   },
   robots: {

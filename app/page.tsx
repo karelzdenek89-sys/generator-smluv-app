@@ -6,7 +6,7 @@ import NavbarClient from '@/app/components/NavbarClient';
 
 export const metadata: Metadata = {
   title: 'SmlouvaHned | Automatizovaný generátor smluv online — od 249 Kč',
-  description: 'Vyplňte formulář, zkontrolujte výstup a stáhněte PDF připravené k podpisu. Softwarový nástroj pro tvorbu standardizovaných smluvních dokumentů — nájemní, kupní, darovací smlouva, DPP, NDA a další. Od 249 Kč.',
+  description: 'Sestavte smluvní dokument systematicky — strukturovaný formulář, aktuální legislativa, výstup ve formátu PDF. Nájemní, kupní, darovací smlouva, DPP, NDA a další. Od 249 Kč.',
   openGraph: {
     title: 'SmlouvaHned | Automatizovaný generátor smluv online',
     description: 'Softwarový nástroj pro tvorbu smluv. Formulář → strukturovaný dokument → PDF ke stažení. Od 249 Kč.',
@@ -255,7 +255,7 @@ export default function Home() {
               {/* Subheadline */}
               <p className="mt-7 max-w-lg text-[1.0625rem] leading-[1.8] text-slate-400">
                 Vyplňte přehledný formulář. Systém sestaví strukturovaný
-                dokument a vygeneruje PDF připravené k podpisu — od&nbsp;249&nbsp;Kč.
+                dokument a vygeneruje PDF k závěrečné kontrole a podpisu — od&nbsp;249&nbsp;Kč.
               </p>
 
               {/* CTAs */}
@@ -402,7 +402,7 @@ export default function Home() {
           <div className="mx-auto max-w-5xl px-6">
             <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
               {[
-                { icon: '✓', text: 'PDF připravené k podpisu ihned po zaplacení' },
+                { icon: '✓', text: 'PDF ke stažení ihned po ověřené platbě' },
                 { icon: '✓', text: 'Šablony strukturovány dle platného OZ' },
                 { icon: '✓', text: '14 typů dokumentů v jednom místě' },
                 { icon: '✓', text: 'Provozovatel ověřen · IČO 23660295' },
@@ -863,7 +863,7 @@ export default function Home() {
               </h2>
               <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-slate-300 md:text-base">
                 Formulář vyplníte za přibližně 5 minut. Výsledkem je strukturovaný dokument
-                sestavený podle vašich podmínek, připravený k podpisu.
+                sestavený podle vašich podmínek — k závěrečné kontrole a podpisu.
               </p>
               <Link href="#vyber-smlouvy"
                 className="shadow-cta mt-10 inline-flex items-center rounded-[18px] bg-amber-500 px-10 text-base font-black uppercase tracking-tight text-black transition hover:bg-amber-400 hover:-translate-y-[2px] active:translate-y-0"
