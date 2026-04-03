@@ -67,6 +67,44 @@ export const metadata: Metadata = {
   },
 };
 
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'SmlouvaHned',
+  url: 'https://smlouvahned.cz',
+  logo: 'https://smlouvahned.cz/og-image.png',
+  description: 'Generátor právních smluv online — nájemní smlouva, kupní smlouva, smlouva o dílo, NDA a další. Od 249 Kč, PDF ihned.',
+  inLanguage: 'cs',
+  areaServed: 'CZ',
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer service',
+    email: 'info@smlouvahned.cz',
+    availableLanguage: 'Czech',
+  },
+  founder: {
+    '@type': 'Person',
+    name: 'Karel Zdeněk',
+  },
+  taxID: '23660295',
+};
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'SmlouvaHned',
+  url: 'https://smlouvahned.cz',
+  inLanguage: 'cs',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: 'https://smlouvahned.cz/blog?q={search_term_string}',
+    },
+    'query-input': 'required name=search_term_string',
+  },
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -78,6 +116,14 @@ export default function RootLayout({
         <meta
           name="seznam-wmt"
           content="xQaMUlE4cn6PrnQkBxclmM5kzajCqWAD"
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema).replace(/</g, '\\u003c') }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema).replace(/</g, '\\u003c') }}
         />
       </head>
       <body className="antialiased bg-[#04070E] text-slate-200" style={{colorScheme: 'dark'}}>
