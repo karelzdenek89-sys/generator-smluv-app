@@ -19,7 +19,7 @@ const softwareSchema = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
   name: 'Nájemní smlouva — formulář online',
-  applicationCategory: 'LegalApplication',
+  applicationCategory: 'BusinessApplication',
   operatingSystem: 'Web',
   url: 'https://smlouvahned.cz/najem',
   inLanguage: 'cs',

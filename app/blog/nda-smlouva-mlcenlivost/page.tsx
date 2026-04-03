@@ -84,7 +84,7 @@ export default function NdaSmlouvaPage() {
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-400">
           Sdílíte obchodní tajemství, zákaznické databáze nebo know-how s partnerem, dodavatelem nebo
-          zaměstnancem? Bez NDA smlouvy nemáte právní ochranu. Tento průvodce vám ukáže, co má NDA
+          zaměstnancem? Bez NDA smlouvy je ochrana sdílených informací obtížně vymahatelná. Tento průvodce vám ukáže, co má NDA
           obsahovat a jak se vyhnout chybám, pro které jsou NDA smlouvy nevymahatelné.
         </p>
 

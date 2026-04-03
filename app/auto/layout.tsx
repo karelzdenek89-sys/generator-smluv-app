@@ -19,7 +19,7 @@ const softwareSchema = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
   name: 'Kupní smlouva na auto — formulář online',
-  applicationCategory: 'LegalApplication',
+  applicationCategory: 'BusinessApplication',
   operatingSystem: 'Web',
   url: 'https://smlouvahned.cz/auto',
   inLanguage: 'cs',

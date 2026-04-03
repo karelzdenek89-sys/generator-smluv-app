@@ -19,7 +19,7 @@ const softwareSchema = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
   name: 'Uznání dluhu — formulář online',
-  applicationCategory: 'LegalApplication',
+  applicationCategory: 'BusinessApplication',
   operatingSystem: 'Web',
   url: 'https://smlouvahned.cz/uznani-dluhu',
   inLanguage: 'cs',

@@ -86,7 +86,7 @@ export default function TermsPage() {
             </h2>
             <div className="bg-[#0c1426]/60 border border-white/5 rounded-2xl p-5 space-y-2 text-sm mb-3">
               <div className="flex justify-between"><span className="text-slate-400">Základní dokument</span><span className="font-bold text-white">249 Kč vč. DPH</span></div>
-              <div className="flex justify-between"><span className="text-slate-400">Rozšířená právní ochrana</span><span className="font-bold text-white">399 Kč vč. DPH</span></div>
+              <div className="flex justify-between"><span className="text-slate-400">Rozšířený dokument</span><span className="font-bold text-white">399 Kč vč. DPH</span></div>
               <div className="flex justify-between"><span className="text-slate-400">Kompletní balíček</span><span className="font-bold text-white">749 Kč vč. DPH</span></div>
             </div>
             <p className="mb-3">
@@ -102,7 +102,7 @@ export default function TermsPage() {
               05. Dostupnost dokumentu ke stažení
             </h2>
             <p>
-              Odkaz ke stažení PDF dokumentu je aktivní po dobu <strong className="text-white">7 dní</strong> (Základní dokument), <strong className="text-white">14 dní</strong> (Rozšířená právní ochrana) nebo <strong className="text-white">30 dní</strong> (Kompletní balíček) od okamžiku zaplacení. Po uplynutí této doby může být dokument nedostupný z důvodu automatického mazání dočasného úložiště. Zákazníkovi doporučujeme dokument ihned po stažení uložit na bezpečném místě. V případě problémů nás kontaktujte na <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">info@smlouvahned.cz</a>.
+              Odkaz ke stažení PDF dokumentu je aktivní po dobu <strong className="text-white">7 dní</strong> (Základní dokument), <strong className="text-white">14 dní</strong> (Rozšířený dokument) nebo <strong className="text-white">30 dní</strong> (Kompletní balíček) od okamžiku zaplacení. Po uplynutí této doby může být dokument nedostupný z důvodu automatického mazání dočasného úložiště. Zákazníkovi doporučujeme dokument ihned po stažení uložit na bezpečném místě. V případě problémů nás kontaktujte na <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">info@smlouvahned.cz</a>.
             </p>
           </section>
 

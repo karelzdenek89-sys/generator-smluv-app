@@ -550,7 +550,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
         badge="§ 2235 a násl. občanského zákoníku"
         h1Main="Nájemní smlouva na"
         h1Accent="byt online"
-        subtitle="Vytvořte nájemní smlouvu pro pronájem bytu nebo domu rychle, přehledně a v souladu s platným občanským zákoníkem. Pokrývá všechna klíčová ujednání — od výše nájmu a kauce po pravidla užívání a ukončení nájmu."
+        subtitle="Vytvořte nájemní smlouvu pro pronájem bytu nebo domu rychle a přehledně. Šablona pokrývá klíčová ujednání — od výše nájmu a kauce po pravidla užívání a ukončení nájmu, strukturovaná dle § 2235 a násl. OZ."
         benefits={[
           { icon: '⚖️', text: 'Sestaveno dle § 2235–2301 OZ (nájemní smlouva na byt)' },
           { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
@@ -1036,8 +1036,8 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
               <div className="space-y-3">
                 {([
                   { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva dle občanského zákoníku v PDF.' },
-                  { value: 'professional', label: 'Rozšířená právní ochrana', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
-                  { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířené právní ochrany + průvodní instrukce, checklist a 30denní archivace.' },
+                  { value: 'professional', label: 'Rozšířený dokument', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
+                  { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířeného dokumentu + průvodní instrukce, checklist a 30denní archivace.' },
                 ] as const).map((opt) => (
                   <label
                     key={opt.value}
@@ -1239,7 +1239,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   </div>
                   {formData.tier !== 'basic' && (
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm text-slate-400">{formData.tier === 'complete' ? 'Kompletní balíček' : 'Rozšířená právní ochrana'}</span>
+                      <span className="text-sm text-slate-400">{formData.tier === 'complete' ? 'Kompletní balíček' : 'Rozšířený dokument'}</span>
                       <span className="text-sm font-bold text-amber-400">{formData.tier === 'complete' ? '+500 Kč' : '+200 Kč'}</span>
                     </div>
                   )}

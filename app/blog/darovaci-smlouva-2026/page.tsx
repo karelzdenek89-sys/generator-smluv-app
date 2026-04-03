@@ -175,7 +175,7 @@ export default function DarovaciSmlouvaVzor2026Page() {
           <li className="flex items-start gap-3">
             <span className="mt-1 flex-shrink-0 text-amber-500 font-bold">✓</span>
             <div>
-              <strong className="text-slate-300">Datum a místo uzavření smlouvy</strong> — pro právní jistotu a případné prokázání
+              <strong className="text-slate-300">Datum a místo uzavření smlouvy</strong> — pro přesné zachycení okamžiku uzavření a případné prokázání
               předcházení dluhovým problémům (odporovatelnost darování).
             </div>
           </li>

@@ -485,8 +485,8 @@ export default function GiftContractPage() {
               <div className="space-y-3">
                 {([
                   { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Kompletní darovací smlouva dle OZ v PDF.' },
-                  { value: 'professional', label: 'Rozšířená právní ochrana', price: '399 Kč', desc: 'Rozšířené klauzule, odpovědnostní ustanovení a sankce.', recommended: true },
-                  { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířené právní ochrany + instrukce k podpisu, checklist a 30denní archivace.' },
+                  { value: 'professional', label: 'Rozšířený dokument', price: '399 Kč', desc: 'Rozšířené klauzule, odpovědnostní ustanovení a sankce.', recommended: true },
+                  { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířeného dokumentu + instrukce k podpisu, checklist a 30denní archivace.' },
                 ] as const).map((opt) => (
                   <label
                     key={opt.value}
@@ -569,7 +569,7 @@ export default function GiftContractPage() {
                   </div>
                   {formData.tier !== 'basic' && (
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm text-slate-400">{formData.tier === 'complete' ? 'Kompletní balíček' : 'Rozšířená právní ochrana'}</span>
+                      <span className="text-sm text-slate-400">{formData.tier === 'complete' ? 'Kompletní balíček' : 'Rozšířený dokument'}</span>
                       <span className="text-sm font-bold text-amber-400">{formData.tier === 'complete' ? '+500 Kč' : '+200 Kč'}</span>
                     </div>
                   )}

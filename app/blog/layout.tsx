@@ -23,7 +23,7 @@ export default function BlogLayout({ children }: { children: ReactNode }) {
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500 text-sm font-black text-black">SH</div>
             <div>
               <div className="font-black tracking-tight text-white leading-tight">SmlouvaHned</div>
-              <div className="text-[10px] uppercase tracking-widest text-slate-500">Právní dokumenty online</div>
+              <div className="text-[10px] uppercase tracking-widest text-slate-500">Softwarový nástroj pro tvorbu dokumentů</div>
             </div>
           </Link>
           <nav className="hidden items-center gap-5 text-sm text-slate-400 md:flex">
@@ -44,9 +44,10 @@ export default function BlogLayout({ children }: { children: ReactNode }) {
       <footer className="relative z-10 border-t border-white/6 py-8 mt-8">
         <div className="mx-auto max-w-4xl px-6 flex flex-wrap items-center justify-between gap-4">
           <div className="text-xs text-slate-600">
-            © 2026 SmlouvaHned · Standardní smluvní vzory — nejsou náhradou za individuální právní poradenství.
+            © 2024–2026 Karel Zdeněk, IČO: 23660295 · SmlouvaHned · Standardní smluvní vzory — nejsou náhradou za individuální právní poradenství.
           </div>
           <div className="flex gap-4 text-xs text-slate-600">
+            <Link href="/o-projektu" className="hover:text-slate-400 transition">O projektu</Link>
             <Link href="/obchodni-podminky" className="hover:text-slate-400 transition">Obchodní podmínky</Link>
             <Link href="/gdpr" className="hover:text-slate-400 transition">GDPR</Link>
             <Link href="/kontakt" className="hover:text-slate-400 transition">Kontakt</Link>

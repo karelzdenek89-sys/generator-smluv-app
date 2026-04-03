@@ -119,7 +119,7 @@ export default function NdaBuilderPage() {
     }
     if (formData.ndaType === 'bilateral' && (!formData.receivingAddress || !formData.disclosingAddress)) {
       score -= 5;
-      warnings.push({ text: 'U oboustranné NDA doplňte adresy obou stran pro právní jistotu.', level: 'low' });
+      warnings.push({ text: 'U oboustranné NDA doplňte adresy obou stran pro úplnost identifikace smluvních stran.', level: 'low' });
     }
     score = Math.max(0, Math.min(100, score));
     return {
@@ -408,8 +408,8 @@ export default function NdaBuilderPage() {
                 <div className="space-y-3">
                   {([
                     { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální NDA dle OZ + obchodní tajemství v PDF.' },
-                    { value: 'professional', label: 'Rozšířená právní ochrana', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty, odpovědnostní doložky.', recommended: true },
-                    { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířené právní ochrany + instrukce k podpisu, checklist a 30denní archivace.' },
+                    { value: 'professional', label: 'Rozšířený dokument', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty, odpovědnostní doložky.', recommended: true },
+                    { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířeného dokumentu + instrukce k podpisu, checklist a 30denní archivace.' },
                   ] as const).map((opt) => (
                     <label key={opt.value} className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${formData.tier === opt.value ? 'border-amber-500 bg-amber-500/10' : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'}`}>
                       {('recommended' in opt) &&  formData.tier !== 'professional' && (
@@ -486,7 +486,7 @@ export default function NdaBuilderPage() {
                 </div>
                 {formData.tier !== 'basic' && (
                   <div className="flex justify-between">
-                    <span className="text-slate-400">{formData.tier === 'complete' ? 'Kompletní balíček' : 'Rozšířená právní ochrana'}</span>
+                    <span className="text-slate-400">{formData.tier === 'complete' ? 'Kompletní balíček' : 'Rozšířený dokument'}</span>
                     <span className="font-bold text-amber-400">{formData.tier === 'complete' ? '+500 Kč' : '+200 Kč'}</span>
                   </div>
                 )}

@@ -46,7 +46,7 @@ const faq = [
   },
   {
     q: 'Jaký je rozdíl mezi základní smlouvou a rozšířenou právní ochranou?',
-    a: 'Základní dokument obsahuje všechna povinná zákonná ustanovení. Rozšířená právní ochrana (+200 Kč) přidává smluvní pokuty za porušení povinností, detailní odpovědnostní klauzule a sankce za prodlení — váš protějšek ví, že smlouva má reálné důsledky.',
+    a: 'Základní dokument obsahuje všechna povinná zákonná ustanovení. Rozšířený dokument (+200 Kč) přidává smluvní pokuty za porušení povinností, detailní odpovědnostní klauzule a sankce za prodlení — váš protějšek ví, že smlouva má reálné důsledky.',
   },
   {
     q: 'Je moje platba a osobní údaje v bezpečí?',
@@ -62,7 +62,7 @@ const contents = [
   { icon: '📅', label: 'Doba nájmu', desc: 'Na dobu určitou nebo neurčitou, výpovědní podmínky dle OZ.' },
   { icon: '📋', label: 'Práva a povinnosti', desc: 'Pravidla pro zvířata, kouření, Airbnb, podnájem, opravy, kontroly.' },
   { icon: '📄', label: 'Předávací protokol', desc: 'Stav bytu, odečty měřidel, soupis vybavení — automatická příloha.' },
-  { icon: '⚖️', label: 'Sankce a ochranné klauzule', desc: 'Smluvní pokuty za prodlení, porušení podmínek a ochranu pro obě strany (ve variantě Rozšířená právní ochrana).' },
+  { icon: '⚖️', label: 'Sankce a ochranné klauzule', desc: 'Smluvní pokuty za prodlení, porušení podmínek a ochranu pro obě strany (ve variantě Rozšířený dokument).' },
 ];
 
 const steps = [
@@ -301,7 +301,7 @@ export default function NajemniSmlouvaPage() {
               <div className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-amber-500 px-4 py-1 text-[10px] font-black uppercase tracking-widest text-black shadow-lg">
                 Nejčastěji voleno
               </div>
-              <div className="mb-1 text-[11px] font-black uppercase tracking-widest text-amber-500">Rozšířená právní ochrana</div>
+              <div className="mb-1 text-[11px] font-black uppercase tracking-widest text-amber-500">Rozšířený dokument</div>
               <div className="mb-1 text-4xl font-black text-white">399 Kč</div>
               <p className="mb-5 text-sm text-slate-400">Smluvní pokuty, odpovědnost a sankce za prodlení</p>
               <ul className="mb-6 space-y-2">

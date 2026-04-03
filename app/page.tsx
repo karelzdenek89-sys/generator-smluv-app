@@ -19,7 +19,7 @@ const pricingTiers = [
   {
     name: 'Základní dokument',
     price: '249 Kč',
-    description: 'Právně validní základ pro přímočaré situace',
+    description: 'Standardní dokumenty pro přímočaré situace',
     features: [
       'Všechna zákonná povinná ustanovení dle OZ',
       'Dokument sestavený dynamicky dle zadaných údajů',
@@ -34,11 +34,11 @@ const pricingTiers = [
     badge: null,
   },
   {
-    name: 'Rozšířená právní ochrana',
+    name: 'Rozšířený dokument',
     price: '399 Kč',
     description: 'Smluvní pokuty, odpovědnost a sankční mechanismy',
     features: [
-      'Vše ze Základního dokumentu',
+      'Vše ze základního balíčku',
       'Smluvní pokuty za porušení povinností',
       'Rozšířené odpovědnostní a doručovací klauzule',
       'Podrobná prohlášení smluvních stran',
@@ -56,7 +56,7 @@ const pricingTiers = [
     price: '749 Kč',
     description: 'Úplná dokumentace s podporou a 30denní archivací',
     features: [
-      'Vše z Rozšířené právní ochrany',
+      'Vše z Rozšířeného dokumentu',
       'Průvodní instrukce k podpisu a archivaci',
       'Předávací protokol (dle typu smlouvy)',
       'Checklist: co ověřit před podpisem',
@@ -77,8 +77,8 @@ const faqItems = [
     answer: 'Ano — výstupem je kompletně vyplněný PDF dokument strukturovaný dle příslušných ustanovení občanského zákoníku č. 89/2012 Sb. Písemná smlouva nevyžaduje účast notáře ani advokáta, pokud zákon pro daný typ nestanoví jinak. Obsah dokumentu závisí na vašich vstupech — před podpisem doporučujeme všechna data zkontrolovat.',
   },
   {
-    question: 'Čím se liší Základní dokument od Rozšířené právní ochrany?',
-    answer: 'Základní dokument obsahuje všechna zákonem povinná ustanovení. Rozšířená právní ochrana přidává klauzule, které vaši smluvní pozici lépe vymezují — zejména smluvní pokuty za porušení povinností, podrobnější odpovědnostní ustanovení a sankční mechanismy pro případ nesplnění závazku.',
+    question: 'Čím se liší Základní dokument od Rozšířeného dokumentu?',
+    answer: 'Základní dokument obsahuje povinná strukturální ustanovení. Rozšířený dokument přidává klauzule o smluvních pokutách za porušení povinností, podrobnější odpovědnostní ustanovení a sankční mechanismy pro případ nesplnění závazku.',
   },
   {
     question: 'Jak celý proces funguje?',
@@ -94,7 +94,7 @@ const faqItems = [
   },
   {
     question: 'Jsou bezpečně uložena moje data?',
-    answer: 'Údaje jsou uloženy pouze dočasně v šifrovaném úložišti po dobu 7–30 dní dle zakoupeného balíčku (Základní 7 dní, Rozšířená právní ochrana 14 dní, Kompletní balíček 30 dní) a poté automaticky smazány. Platební údaje zpracovává výhradně Stripe — na naše servery se nikdy nedostanou.',
+    answer: 'Údaje jsou uloženy pouze dočasně v šifrovaném úložišti po dobu 7–30 dní dle zakoupeného balíčku (Základní 7 dní, Rozšířený 14 dní, Kompletní 30 dní) a poté automaticky smazány. Platební údaje zpracovává výhradně Stripe — na naše servery se nikdy nedostanou.',
   },
   {
     question: 'Je to náhrada individuální právní služby?',
@@ -168,7 +168,7 @@ const softwareSchema = {
     offerCount: '3',
     offers: [
       { '@type': 'Offer', name: 'Základní dokument', price: '249', priceCurrency: 'CZK' },
-      { '@type': 'Offer', name: 'Rozšířená ochrana', price: '399', priceCurrency: 'CZK' },
+      { '@type': 'Offer', name: 'Rozšířený dokument', price: '399', priceCurrency: 'CZK' },
       { '@type': 'Offer', name: 'Kompletní balíček', price: '749', priceCurrency: 'CZK' },
     ],
   },
@@ -222,13 +222,13 @@ export default function Home() {
           </div>
 
           <h1 className="mx-auto max-w-4xl text-5xl font-black tracking-tight text-white md:text-6xl xl:text-7xl leading-[1.08]">
-            Právní dokument sestavený<br />
-            <span className="text-amber-500 italic">přesně pro vaši situaci.</span>
+            Smluvní dokument sestavený<br />
+            <span className="text-amber-500 italic">podle vašich podmínek.</span>
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-slate-400 md:text-lg">
             Vyplníte přehledný formulář krok za krokem. Dokument se sestaví podle vašich údajů
-            a výsledkem je kompletní PDF připravené k podpisu — v souladu s platným českým právem.
+            a výsledkem je kompletní PDF připravené k podpisu — strukturované dle příslušných ustanovení občanského zákoníku.
           </p>
 
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
