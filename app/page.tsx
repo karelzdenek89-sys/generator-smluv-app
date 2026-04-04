@@ -234,7 +234,6 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema).replace(/</g, '\\u003c') }}
       />
 
-      <NavbarClient />
       <div className="home-reference-bg fixed inset-0 -z-10" aria-hidden />
 
       <header id="main-navbar" className="navbar-flat fixed left-0 right-0 top-0 z-50">
@@ -255,9 +254,12 @@ export default function Home() {
               ))}
             </nav>
 
-            <Link href="#dokumenty" className="nav-cta-ref">
-              Vybrat typ smlouvy <span aria-hidden>→</span>
-            </Link>
+            <div className="flex items-center gap-2">
+              <Link href="#dokumenty" className="nav-cta-ref hidden lg:inline-flex">
+                Vybrat typ smlouvy <span aria-hidden>→</span>
+              </Link>
+              <NavbarClient />
+            </div>
           </div>
         </div>
       </header>
@@ -441,9 +443,40 @@ export default function Home() {
             ))}
           </div>
         </section>
+
+      <section id="vsechny-dokumenty" className="mx-auto mt-8 max-w-[1220px] px-5 md:px-8">
+        <div className="section-heading-ref">
+          <p className="section-kicker-ref">Kompletní přehled</p>
+          <h2 className="section-title-ref">Všechny typy dokumentů</h2>
+        </div>
+        <div className="contracts-grid-ref" style={{gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))'}}>
+          {[
+            { href: '/najem', title: 'Nájemní smlouva', subtitle: 'Byt, dům, nebytové prostory' },
+            { href: '/auto', title: 'Kupní smlouva na vozidlo', subtitle: 'Auto, motocykl, přívěs' },
+            { href: '/kupni', title: 'Kupní smlouva', subtitle: 'Movité věci, B2B i spotřebitel' },
+            { href: '/darovaci', title: 'Darovací smlouva', subtitle: 'Majetek, peníze, movité věci' },
+            { href: '/smlouva-o-dilo', title: 'Smlouva o dílo', subtitle: 'Práce, projekty, zakázky' },
+            { href: '/sluzby', title: 'Smlouva o službách', subtitle: 'Opakované nebo jednorázové služby' },
+            { href: '/spoluprace', title: 'Smlouva o spolupráci', subtitle: 'Obchodní partnerství, B2B' },
+            { href: '/pracovni', title: 'Pracovní smlouva', subtitle: 'HPP, zaměstnanecký poměr' },
+            { href: '/dpp', title: 'Dohoda o provedení práce', subtitle: 'DPP, vedlejší příjem' },
+            { href: '/pujcka', title: 'Smlouva o zápůjčce', subtitle: 'Peníze, movité věci' },
+            { href: '/uznani-dluhu', title: 'Uznání dluhu', subtitle: 'Potvrzení závazku s splátkovým plá.' },
+            { href: '/nda', title: 'NDA – Mlčenlivost', subtitle: 'Ochrana informací, non-compete' },
+            { href: '/podnajem', title: 'Podnájemní smlouva', subtitle: 'Podnájem bytu nebo prostor' },
+            { href: '/plna-moc', title: 'Plná moc', subtitle: 'Obecná, speciální nebo notářská' },
+          ].map(card => (
+            <Link key={card.href} href={card.href} className="contract-card-ref">
+              <div className="contract-card-icon-ref"><DocumentIcon /></div>
+              <h3>{card.title}</h3>
+              <p>{card.subtitle}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
       </main>
 
-      <footer id="vsechny-dokumenty" className="footer-ref">
+      <footer className="footer-ref">
         <div className="mx-auto max-w-[1220px] px-5 py-8 md:px-8 md:py-10">
           <div className="flex flex-col gap-2 text-sm text-[#97a3bb] md:flex-row md:items-center md:justify-between">
             <p>© 2024-2026 SmlouvaHned · Karel Zdeněk · IČO 23660295</p>

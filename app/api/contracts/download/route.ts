@@ -185,12 +185,11 @@ export async function GET(req: NextRequest) {
         'Cache-Control': 'no-store, max-age=0',
       },
     });
-  } catch (error) {
-    console.error('Download PDF error:', error);
-
+  } catch (err) {
+    console.error('[download] Chyba při generování dokumentu:', err);
     return NextResponse.json(
-      { error: 'Nepodařilo se vygenerovat PDF.' },
-      { status: 500 }
+      { error: 'Interní chyba serveru při generování dokumentu.' },
+      { status: 500 },
     );
   }
 }
