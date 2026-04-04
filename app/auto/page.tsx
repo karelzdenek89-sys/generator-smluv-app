@@ -447,7 +447,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
             <div>
               <div className="font-bold tracking-tight text-white uppercase">SmlouvaHned Auto</div>
               <div className="text-[11px] text-slate-500 uppercase tracking-widest">
-                Kupní smlouva vozidla
+                Kupní smlouva na vozidlo
               </div>
             </div>
           </div>
@@ -465,43 +465,43 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
         badge="§ 2079 a násl. občanského zákoníku"
         h1Main="Kupní smlouva na"
         h1Accent="auto online"
-        subtitle="Vytvořte kupní smlouvu při prodeji osobního automobilu, motocyklu nebo jiného motorového vozidla. Dokument zachycuje technické parametry, historii, stav tachometru, STK, emise a veškeré podmínky převodu vlastnictví."
+        subtitle="Vytvořte přehlednou kupní smlouvu pro prodej osobního auta, motocyklu nebo jiného motorového vozidla. Dokument zachycuje identifikaci stran, technické parametry, stav vozidla, známé vady i podmínky předání a úhrady."
         benefits={[
-          { icon: '🚗', text: 'Určeno specificky pro prodej automobilu, motocyklu nebo přívěsu' },
-          { icon: '🔍', text: 'Pokrývá VIN, STK, emise, počet vlastníků i stav tachometru' },
-          { icon: '⚖️', text: 'Přechod vlastnictví, odpovědnost za vady a zákonná záruka' },
-          { icon: '📄', text: 'PDF dokument ke stažení ihned po ověřené platbě' },
+          { icon: '🚗', text: 'Navrženo pro prodej osobních aut, motocyklů i přívěsů mezi soukromými osobami i firmami' },
+          { icon: '🔍', text: 'Pokrývá VIN, SPZ, stav tachometru, STK, emise i historii a vybavení vozidla' },
+          { icon: '⚖️', text: 'Řeší přechod vlastnictví, odpovědnost za vady a důležitá prohlášení prodávajícího' },
+          { icon: '📄', text: 'PDF dokument je připraven ke stažení ihned po dokončení platby' },
         ]}
         contents={[
           'Identifikaci prodávajícího a kupujícího',
-          'Technické parametry vozidla (VIN, SPZ, rok výroby, stav tachometru)',
-          'Platnost STK, emisní kontroly a počet předchozích vlastníků',
-          'Kupní cenu a způsob úhrady',
-          'Stav vozidla, známé závady a vybavení',
-          'Datum a podmínky předání vozidla a dokladů',
-          'Přechod vlastnického práva a odpovědnosti',
-          'Závěrečná ustanovení, GDPR a vyšší moc',
+          'Technické parametry vozidla včetně VIN, SPZ, roku výroby a stavu tachometru',
+          'Údaje o STK, emisní kontrole a počtu předchozích vlastníků',
+          'Kupní cenu, způsob úhrady a okamžik přechodu vlastnictví',
+          'Popis známých vad, vybavení a předávaných dokladů',
+          'Datum, místo a podmínky předání vozidla',
+          'Prohlášení o právním stavu vozidla a právech třetích osob',
+          'Závěrečná ustanovení a přehlednou smluvní strukturu pro podpis',
         ]}
         whenSuitable={[
           'Prodej osobního automobilu mezi soukromými osobami',
           'Prodej motocyklu, skúteru nebo přívěsu',
           'Prodej firemního vozidla fyzické osobě nebo firmě',
-          'Případy, kde je klíčové jasně zdokumentovat stav vozidla a podmínky převodu',
+          'Situace, kdy potřebujete jasně doložit stav vozidla a podmínky převodu',
         ]}
         whenOther={[
           { label: 'Kupní smlouva na movitou věc', href: '/kupni', text: 'Pro prodej nábytku, elektroniky, kola nebo jiné movité věci mimo motorová vozidla.' },
         ]}
         faq={[
-          { q: 'Proč potřebuji kupní smlouvu při prodeji auta?', a: 'Kupní smlouva prokazuje podmínky převodu a chrání obě strany. Dokládá smluvní cenu, stav vozidla v okamžiku prodeje a skutečnost, že kupující věděl o případných závadách. Bez smlouvy je obtížné prokázat, co bylo dohodnuto.' },
-          { q: 'Musím kupní smlouvu ověřit u notáře?', a: 'Pro běžný prodej motorového vozidla notářské ověření není vyžadováno. Smlouva je platná podpisem obou stran. Ověřený podpis může pomoci v případě sporu, ale není povinný.' },
-          { q: 'Co je VIN a proč je důležitý?', a: 'VIN (Vehicle Identification Number) je unikátní 17místný identifikátor vozidla. Umožňuje ověřit historii auta, výrobní specifikace a zda vozidlo nebylo kradeno nebo havarováno. Jeho uvedení ve smlouvě je zásadní pro jednoznačnou identifikaci.' },
-          { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
-          { q: 'Jak mám přihlásit vozidlo na nového majitele?', a: 'Po podpisu smlouvy musí kupující vozidlo přepsat na dopravním inspektorátu (MDIC) ve svém místě bydliště. K přepisu potřebuje kupní smlouvu, technický průkaz, doklad totožnosti a potvrzení o zaplacení daně z nabytí (pokud se vztahuje).' },
+          { q: 'Proč je písemná kupní smlouva při prodeji auta důležitá?', a: 'Kupní smlouva přesně zachycuje, co bylo mezi prodávajícím a kupujícím dohodnuto. Je zásadní pro kupní cenu, identifikaci vozidla, popis jeho stavu i doložení okamžiku předání.' },
+          { q: 'Je potřeba smlouvu ověřovat u notáře?', a: 'U běžného prodeje motorového vozidla se notářské ověření obvykle nevyžaduje. Standardně postačí podpis obou stran, pokud konkrétní situace nevyžaduje něco navíc.' },
+          { q: 'Co je VIN a proč na něm záleží?', a: 'VIN je jedinečný sedmnáctimístný identifikátor vozidla. Díky němu lze bezpečně určit konkrétní auto a předejít sporům o to, jaké vozidlo bylo skutečně prodáno.' },
+          { q: 'Je dokument dostupný ihned po zaplacení?', a: 'Ano. Po úspěšném dokončení platby je PDF ihned připravené ke stažení.' },
+          { q: 'Co je potřeba pro přepis vozidla na nového majitele?', a: 'Po podpisu smlouvy je potřeba vyřídit zápis změny vlastníka v registru vozidel na příslušném úřadu obce s rozšířenou působností. Typicky budete potřebovat kupní smlouvu, doklady k vozidlu a doklady totožnosti obou stran.' },
         ]}
         ctaLabel="Vytvořit kupní smlouvu na auto"
         formId="formular"
         guideHref="/blog/kupni-smlouva-na-auto-2026"
-        guideLabel="Průvodce kupní smlouvou na auto — VIN, STK, vady a bezpečné předání"
+        guideLabel="Průvodce kupní smlouvou na auto – VIN, STK, vady a bezpečné předání"
       />
 
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8" id="formular">
@@ -892,8 +892,8 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
             <section className={cardClass}>
               <SectionTitle
                 index="05"
-                title="Právní nastavení"
-                subtitle="Přepínače mění obsah smlouvy i risk score."
+                title="Pravni nastaveni"
+                subtitle="Prepinace meni obsah smlouvy i miru ochrany jednotlivych ustanoveni."
               />
               <div className="grid sm:grid-cols-2 gap-4">
                 <ToggleCard
@@ -919,7 +919,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   name="odometerGuaranteed"
                   checked={formData.odometerGuaranteed}
                   label="Garantovat stav tachometru"
-                  hint="Silnější ochrana kupujícího, ale jen pokud si jsi tím jistý."
+                  hint="Silnejsi ochrana kupujiciho, ale jen pokud to muzete odpovedne potvrdit."
                 />
                 <ToggleCard
                   name="buyerInspectedVehicle"
@@ -1031,7 +1031,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     ))
                   ) : (
                     <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-sm text-emerald-200">
-                      Smlouva je nastavena velmi dobře a obsahuje silná právní prohlášení.
+                      Smlouva je vyplnena ve velmi dobre kvalite a obsahuje dulezita prohlaseni ke stavu vozidla.
                     </div>
                   )}
                 </div>
@@ -1044,7 +1044,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     Živý náhled smlouvy
                   </div>
                   <div className="mt-1 text-xs text-slate-500">
-                    Každý klik i každé písmeno se okamžitě propíše sem.
+                    Nahled se aktualizuje podle vyplnenych udaju.
                   </div>
                 </div>
 
@@ -1145,15 +1145,17 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 {/* Price summary */}
                 <div className="mb-4 rounded-2xl border border-white/8 bg-white/3 p-4">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm text-slate-400">Základní dokument</span>
-                    <span className="text-sm font-bold text-white">249 Kč</span>
+                    <span className="text-sm text-slate-400">Vybraný balíček</span>
+                    <span className="text-sm font-bold text-white">
+                      {formData.tier === 'complete' ? 'Kompletní balíček' : formData.tier === 'professional' ? 'Rozšířený dokument' : 'Základní dokument'}
+                    </span>
                   </div>
-                  {formData.tier !== 'basic' && (
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm text-slate-400">{formData.tier === 'complete' ? 'Kompletní balíček' : 'Rozšířený dokument'}</span>
-                      <span className="text-sm font-bold text-amber-400">{formData.tier === 'complete' ? '+500 Kč' : '+200 Kč'}</span>
-                    </div>
-                  )}
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-sm text-slate-400">Cena balíčku</span>
+                    <span className="text-sm font-bold text-white">
+                      {formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '399 Kč' : '249 Kč'}
+                    </span>
+                  </div>
                   <div className="border-t border-white/8 mt-2 pt-2 flex items-center justify-between">
                     <span className="text-sm font-black text-white">Celkem</span>
                     <span className="text-xl font-black text-amber-400">{formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '399 Kč' : '249 Kč'}</span>

@@ -112,8 +112,8 @@ export default function KupniPage() {
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500 text-slate-900 font-black text-sm">SH</div>
             <div>
-              <div className="font-bold tracking-tight text-white">SmlouvaHned Builder</div>
-              <div className="text-[11px] text-slate-500">Kupní smlouva — § 2079 OZ</div>
+              <div className="font-bold tracking-tight text-white">SmlouvaHned Prodej</div>
+              <div className="text-[11px] text-slate-500">Kupní smlouva na movitou věc</div>
             </div>
           </div>
           <button onClick={() => window.location.href = '/'} className="text-sm text-slate-400 hover:text-white transition">Zavřít</button>
@@ -128,12 +128,12 @@ export default function KupniPage() {
         h1Main="Kupní smlouva na"
         h1Accent="movitou věc"
         h1Suffix="online"
-        subtitle="Vytvořte kupní smlouvu pro soukromý prodej nábytku, elektroniky, jízdního kola, sportovního vybavení nebo jiné movité věci. Dokument přesně zachycuje prodávajícího, kupujícího, stav věci, kupní cenu a podmínky předání."
+        subtitle="Vytvořte přehlednou kupní smlouvu pro soukromý prodej nábytku, elektroniky, jízdního kola, sportovního vybavení nebo jiné movité věci. Dokument zachycuje strany, stav věci, kupní cenu i podmínky předání."
         benefits={[
-          { icon: '⚖️', text: 'Sestaveno dle § 2079 OZ — kupní smlouva na movitou věc' },
-          { icon: '🛋️', text: 'Vhodné pro nábytek, elektroniku, kolo, sportovní vybavení i zboží' },
-          { icon: '📋', text: 'Kupní cena, stav věci, vady a podmínky předání v jednom dokumentu' },
-          { icon: '📄', text: 'PDF dokument ke stažení ihned po ověřené platbě' },
+          { icon: '⚖️', text: 'Vychází z pravidel občanského zákoníku pro kupní smlouvu na movitou věc' },
+          { icon: '🛋️', text: 'Vhodné pro nábytek, elektroniku, kola, vybavení i běžné soukromé prodeje' },
+          { icon: '📋', text: 'Řeší kupní cenu, stav věci, známé vady i podmínky předání v jednom dokumentu' },
+          { icon: '📄', text: 'PDF dokument je připraven ke stažení ihned po dokončení platby' },
         ]}
         contents={[
           'Identifikaci prodávajícího a kupujícího',
@@ -141,29 +141,29 @@ export default function KupniPage() {
           'Kupní cenu a způsob úhrady',
           'Ujednání o stavu věci a prohlášení o vadách',
           'Datum a místo předání',
-          'Záruční podmínky a odpovědnost za vady',
-          'Závěrečná ustanovení, GDPR a vyšší moc',
+          'Ujednání o odpovědnosti za vady a stavu věci',
+          'Závěrečná ustanovení a přehlednou strukturu připravenou k podpisu',
         ]}
         whenSuitable={[
           'Soukromý prodej nábytku, elektroniky nebo domácích spotřebičů',
           'Prodej jízdního kola, sportovního vybavení nebo hobby vybavení',
           'Prodej použitého zboží mezi fyzickými osobami',
-          'Případy, kde je třeba písemně doložit kupní cenu a stav věci',
+          'Situace, kdy potřebujete písemně doložit kupní cenu a stav věci',
         ]}
         whenOther={[
           { label: 'Kupní smlouva na auto', href: '/auto', text: 'Pro prodej osobního automobilu, motocyklu nebo jiného motorového vozidla — specializovaný dokument s VIN, STK a emisemi.' },
         ]}
         faq={[
-          { q: 'Pro jaké situace je tato kupní smlouva vhodná?', a: 'Je určena pro soukromý prodej movité věci — například nábytku, elektroniky, kola, sportovního vybavení nebo jiných použitých věcí mezi fyzickými osobami.' },
+          { q: 'Pro jaké situace je tato kupní smlouva vhodná?', a: 'Je určena pro soukromý prodej movité věci, například nábytku, elektroniky, kola, sportovního vybavení nebo jiných použitých věcí mezi fyzickými osobami.' },
           { q: 'Je tato varianta vhodná i pro prodej auta?', a: 'Ne — pro prodej motorového vozidla doporučujeme specializovanou kupní smlouvu na auto, která pokrývá VIN, STK, emise a historii vozidla.' },
           { q: 'Musím smlouvu uzavřít písemně?', a: 'Zákon písemnou formu kupní smlouvy u movité věci výslovně nevyžaduje, ale silně ji doporučujeme. Písemná smlouva je rozhodujícím důkazem v případě sporu o stav věci, cenu nebo podmínky předání.' },
-          { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
-          { q: 'Co mám uvést do popisu předmětu?', a: 'Čím přesnější popis, tím silnější smlouva. Uveďte název, výrobce, model, rok výroby, barvu, rozměry nebo jiné identifikační znaky. Zároveň uveďte stav věci a všechny známé vady.' },
+          { q: 'Je dokument dostupný ihned po zaplacení?', a: 'Ano. Po úspěšném dokončení platby je PDF ihned připravené ke stažení.' },
+          { q: 'Co mám uvést do popisu předmětu?', a: 'Čím přesnější popis, tím silnější smlouva. Uveďte název, výrobce, model, rok výroby, barvu, rozměry nebo jiné identifikační znaky a doplňte stav věci i všechny známé vady.' },
         ]}
         ctaLabel="Vytvořit kupní smlouvu na movitou věc"
         formId="formular"
         guideHref="/kupni-smlouva"
-        guideLabel="Průvodce kupní smlouvou — co musí obsahovat, záruky a nejčastější chyby"
+        guideLabel="Průvodce kupní smlouvou – co musí obsahovat, záruky a nejčastější chyby"
       />
 
       {/* ═══════════════════════════════════════════════════

@@ -1,30 +1,36 @@
 import type { Metadata } from 'next';
-import { Inter, Playfair_Display } from 'next/font/google';
+import localFont from 'next/font/local';
 import './globals.css';
 import CookiesBanner from '@/app/components/CookiesBanner';
 
-const inter = Inter({
-  subsets: ['latin', 'latin-ext'],
+const inter = localFont({
+  src: [
+    { path: '../public/fonts/Roboto-Regular.ttf', weight: '400', style: 'normal' },
+    { path: '../public/fonts/Roboto-Bold.ttf', weight: '700', style: 'normal' },
+  ],
   variable: '--font-sans',
   display: 'swap',
 });
 
-const playfair = Playfair_Display({
-  subsets: ['latin', 'latin-ext'],
+const playfair = localFont({
+  src: [
+    { path: '../public/fonts/Roboto-Regular.ttf', weight: '400', style: 'normal' },
+    { path: '../public/fonts/Roboto-Bold.ttf', weight: '700', style: 'normal' },
+  ],
   variable: '--font-serif',
   display: 'swap',
 });
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: 'SmlouvaHned | Smluvní dokumenty online — od 249 Kč',
+    default: 'SmlouvaHned | Smluvní dokumenty online',
     template: '%s | SmlouvaHned',
   },
   description:
-    'Sestavte nájemní smlouvu, kupní smlouvu, darovací smlouvu, smlouvu o dílo, zápůjčce nebo NDA — strukturovaně, s odkazem na aktuální legislativu. Výstup ve formátu PDF. Od 249 Kč.',
+    'Sestavte nájemní smlouvu, kupní smlouvu, darovací smlouvu, smlouvu o dílo, zápůjčku nebo NDA online. Přehledný formulář, bezpečná platba a PDF výstup připravený ke kontrole a podpisu.',
   keywords: [
     'nájemní smlouva',
     'kupní smlouva',
@@ -47,22 +53,22 @@ export const metadata: Metadata = {
     locale: 'cs_CZ',
     url: BASE_URL,
     siteName: 'SmlouvaHned',
-    title: 'SmlouvaHned | Smluvní dokumenty online — od 249 Kč',
+    title: 'SmlouvaHned | Smluvní dokumenty online',
     description:
-      'Nájemní smlouva, kupní smlouva, NDA a další — sestaveno dle platné legislativy, výstup ve formátu PDF.',
+      'Nájemní smlouva, kupní smlouva, NDA a další dokumenty online. Přehledný formulář a PDF výstup připravený ke kontrole a podpisu.',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'SmlouvaHned — Generátor smluv',
+        alt: 'SmlouvaHned – smluvní dokumenty online',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'SmlouvaHned | Smluvní dokumenty online',
-    description: '14 typů dokumentů. Strukturovaný formulář → PDF. Od 249 Kč.',
+    description: 'Typové smluvní dokumenty online. Přehledný formulář, bezpečná platba a PDF výstup.',
     images: ['/og-image.png'],
   },
   robots: {
@@ -86,9 +92,10 @@ const organizationSchema = {
   '@type': 'Organization',
   name: 'SmlouvaHned',
   legalName: 'Karel Zdeněk',
-  url: 'https://smlouvahned.cz',
-  logo: 'https://smlouvahned.cz/og-image.png',
-  description: 'Softwarový nástroj pro automatizovanou tvorbu standardizovaných smluvních dokumentů online — nájemní smlouva, kupní smlouva, smlouva o dílo, NDA a další. Od 249 Kč.',
+  url: BASE_URL,
+  logo: `${BASE_URL}/og-image.png`,
+  description:
+    'Online software pro sestavení standardizovaných smluvních dokumentů pro běžné životní a podnikatelské situace.',
   inLanguage: 'cs',
   areaServed: 'CZ',
   address: {
@@ -115,13 +122,13 @@ const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'SmlouvaHned',
-  url: 'https://smlouvahned.cz',
+  url: BASE_URL,
   inLanguage: 'cs',
   potentialAction: {
     '@type': 'SearchAction',
     target: {
       '@type': 'EntryPoint',
-      urlTemplate: 'https://smlouvahned.cz/blog?q={search_term_string}',
+      urlTemplate: `${BASE_URL}/blog?q={search_term_string}`,
     },
     'query-input': 'required name=search_term_string',
   },
@@ -135,10 +142,7 @@ export default function RootLayout({
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <meta name="theme-color" content="#060912" />
-        <meta
-          name="seznam-wmt"
-          content="xQaMUlE4cn6PrnQkBxclmM5kzajCqWAD"
-        />
+        <meta name="seznam-wmt" content="xQaMUlE4cn6PrnQkBxclmM5kzajCqWAD" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema).replace(/</g, '\\u003c') }}
@@ -149,7 +153,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${inter.variable} ${playfair.variable} antialiased bg-[#060912] text-[#d7dee8]`}
+        className={`${inter.variable} ${playfair.variable} bg-[#060912] text-[#d7dee8] antialiased`}
         style={{ colorScheme: 'dark' }}
       >
         {children}

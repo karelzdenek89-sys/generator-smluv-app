@@ -186,8 +186,8 @@ export default function GiftContractPage() {
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500 text-slate-900 font-black text-sm">SH</div>
             <div>
-              <div className="font-bold tracking-tight text-white">SmlouvaHned Builder</div>
-              <div className="text-[11px] text-slate-500">Prémiový generátor darovací smlouvy</div>
+              <div className="font-bold tracking-tight text-white">SmlouvaHned Darování</div>
+              <div className="text-[11px] text-slate-500">Darovací smlouva pro běžné situace</div>
             </div>
           </div>
           <button onClick={() => (window.location.href = '/')} className="text-sm text-slate-400 hover:text-white transition">Zavřít</button>
@@ -198,41 +198,41 @@ export default function GiftContractPage() {
         badge="§ 2055 a násl. občanského zákoníku"
         h1Main="Darovací smlouva"
         h1Accent="online"
-        subtitle="Vytvořte darovací smlouvu pro darování peněz, vozidla, movité věci nebo jiného majetku. Dokument jasně vymezuje předmět daru, darování bez odměny a podmínky převodu."
+        subtitle="Vytvořte přehlednou darovací smlouvu pro darování peněz, vozidla, movité věci nebo jiného majetku. Dokument jasně vymezuje předmět daru, bezúplatnost převodu i podmínky předání."
         benefits={[
-          { icon: '🎁', text: 'Pokrývá darování peněz, věci, vozidla i nemovitosti' },
-          { icon: '⚖️', text: 'Sestaveno dle § 2055 OZ — bezplatný převod vlastnického práva' },
-          { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
-          { icon: '🔒', text: 'Volitelná podmínka vrácení daru (odvolání daru)' },
+          { icon: '🎁', text: 'Pokrývá darování peněz, věcí, vozidel i vybraných majetkových hodnot' },
+          { icon: '⚖️', text: 'Vychází z pravidel občanského zákoníku pro bezúplatný převod vlastnického práva' },
+          { icon: '📄', text: 'PDF dokument je připraven ke stažení ihned po dokončení platby' },
+          { icon: '🔒', text: 'Umožňuje doplnit i podmínku vrácení daru nebo zvláštní ujednání' },
         ]}
         contents={[
           'Identifikaci dárce a obdarovaného',
           'Přesný popis předmětu daru (peníze, věc, vozidlo)',
-          'Potvrzení bezplatnosti převodu vlastnického práva',
+          'Potvrzení bezúplatnosti převodu vlastnického práva',
           'Datum darování a podmínky předání',
           'Volitelnou podmínku vrácení daru (§ 2068–2075 OZ)',
-          'Závěrečná ustanovení, GDPR a vyšší moc',
+          'Závěrečná ustanovení a přehlednou strukturu připravenou k podpisu',
         ]}
         whenSuitable={[
           'Darování peněz (finanční dar v rodině nebo blízkým)',
           'Darování vozidla (auto, motocykl)',
           'Darování movité věci (nábytek, elektronika, starožitnosti)',
-          'Situace, kde je třeba písemně doložit bezplatný převod majetku',
+          'Situace, kdy potřebujete písemně doložit bezúplatný převod majetku',
         ]}
         whenOther={[
           { label: 'Kupní smlouva na movitou věc', href: '/kupni', text: 'Pokud za věc obdržíte úplatu — darování je vždy bezplatné.' },
           { label: 'Kupní smlouva na vozidlo', href: '/auto', text: 'Pokud vozidlo prodáváte za kupní cenu, nikoli darujete.' },
         ]}
         faq={[
-          { q: 'Musí být darovací smlouva písemná?', a: 'U movitých věcí předaných ihned písemná forma nutná není. Doporučujeme ji vždy — zejména u vyšší hodnoty daru (peníze, vozidlo), kde je dobré mít doložitelný právní základ.' },
-          { q: 'Platí se daň z darování?', a: 'Darování mezi osobami blízkými (§ 22 zákona o daních z příjmů) je zpravidla osvobozeno od daně. U darování jiným osobám záleží na hodnotě daru a vztahu stran — doporučujeme konzultaci s daňovým poradcem.' },
-          { q: 'Lze dar odvolat?', a: 'Ano, § 2068–2075 OZ umožňuje odvolání daru, pokud se obdarovaný zachová vůči dárci způsobem, který hrubě porušuje dobré mravy. Tento mechanismus lze do smlouvy výslovně zahrnout.' },
-          { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
+          { q: 'Musí být darovací smlouva písemná?', a: 'U některých jednodušších situací nemusí být písemná forma vždy nezbytná, ale z praktického hlediska ji doporučujeme. U vyšší hodnoty daru je písemná podoba výrazně bezpečnější.' },
+          { q: 'Platí se daň z darování?', a: 'Daňové dopady závisí na vztahu mezi stranami a na povaze daru. U některých případů může být dar osvobozen, jindy je vhodné ověřit konkrétní situaci s daňovým poradcem.' },
+          { q: 'Lze dar odvolat?', a: 'Ano, občanský zákoník v určitých situacích umožňuje odvolání daru. Pokud chceš tuto možnost výslovně řešit i textem dokumentu, lze ji do smlouvy doplnit.' },
+          { q: 'Je dokument dostupný ihned po zaplacení?', a: 'Ano. Po úspěšném dokončení platby je PDF ihned připravené ke stažení.' },
         ]}
         ctaLabel="Vytvořit darovací smlouvu"
         formId="formular"
         guideHref="/darovaci-smlouva"
-        guideLabel="Průvodce darovací smlouvou — peníze, auto, nemovitost a odvolání daru"
+        guideLabel="Průvodce darovací smlouvou – peníze, auto, nemovitost a odvolání daru"
       />
 
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8" id="formular">

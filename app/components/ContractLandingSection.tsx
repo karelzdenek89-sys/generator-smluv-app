@@ -20,33 +20,19 @@ export interface ContractLandingAlternative {
 }
 
 export interface ContractLandingSectionProps {
-  /** Právní základ — krátký text do badge, např. "§ 2079 občanského zákoníku" */
   badge: string;
-  /** Část H1 před akcentem */
   h1Main: string;
-  /** Akcentovaná (amber) část H1 — pokud není, celý H1 je bílý */
   h1Accent?: string;
-  /** Část H1 za akcentem (volitelná) */
   h1Suffix?: string;
-  /** Perex pod H1 */
   subtitle: string;
-  /** 3–5 benefit karet */
   benefits: ContractLandingBenefit[];
-  /** Výčet položek sekce "Co dokument obsahuje" */
   contents: string[];
-  /** Vhodné použití — 2–4 situace */
   whenSuitable: string[];
-  /** Odlišení od jiných dokumentů (volitelné) */
   whenOther?: ContractLandingAlternative[];
-  /** FAQ — 3–5 otázek */
   faq: ContractLandingFaq[];
-  /** Text hlavního CTA tlačítka */
   ctaLabel?: string;
-  /** ID formuláře pro smooth scroll */
   formId?: string;
-  /** URL průvodce / informační landing stránky pro daný typ smlouvy (volitelné) */
   guideHref?: string;
-  /** Text odkazu na průvodce — výchozí: "Průvodce k tomuto dokumentu" */
   guideLabel?: string;
 }
 
@@ -74,15 +60,13 @@ export default function ContractLandingSection({
 
   return (
     <>
-      {/* ─── HERO ─────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 lg:px-8 pt-16 pb-14">
+      <section className="mx-auto max-w-7xl px-4 pb-14 pt-16 lg:px-8">
         <div className="max-w-2xl">
-          {/* Legal badge */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/25 bg-amber-500/8 px-4 py-1.5 text-[11px] font-black uppercase tracking-[0.2em] text-amber-400 mb-6">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-amber-500/25 bg-amber-500/8 px-4 py-1.5 text-[11px] font-black uppercase tracking-[0.2em] text-amber-400">
             {badge}
           </div>
 
-          <h1 className="text-4xl lg:text-5xl font-black text-white leading-[1.1] tracking-tight mb-5">
+          <h1 className="mb-5 text-4xl font-black leading-[1.1] tracking-tight text-white lg:text-5xl">
             {h1Accent ? (
               <>
                 {h1Main}{' '}
@@ -94,68 +78,69 @@ export default function ContractLandingSection({
             )}
           </h1>
 
-          <p className="text-lg text-slate-400 leading-relaxed mb-10">{subtitle}</p>
+          <p className="mb-10 text-lg leading-relaxed text-slate-400">{subtitle}</p>
 
-          {/* Benefits — more breathing room */}
-          <div className="grid sm:grid-cols-2 gap-4 mb-10">
-            {benefits.map((b) => (
+          <div className="mb-10 grid gap-4 sm:grid-cols-2">
+            {benefits.map(item => (
               <div
-                key={b.text}
-                className="flex items-start gap-3 rounded-2xl bg-[#0c1426] border border-slate-800/60 px-5 py-4"
+                key={item.text}
+                className="flex items-start gap-3 rounded-2xl border border-slate-800/60 bg-[#0c1426] px-5 py-4"
               >
-                <span className="text-xl leading-none mt-0.5 shrink-0">{b.icon}</span>
-                <span className="text-sm text-slate-300 leading-snug">{b.text}</span>
+                <span className="mt-0.5 shrink-0 text-xl leading-none">{item.icon}</span>
+                <span className="text-sm leading-snug text-slate-300">{item.text}</span>
               </div>
             ))}
           </div>
 
-          {/* CTAs */}
           <div className="flex flex-wrap items-center gap-4">
             <button
               onClick={() => scrollTo(formId)}
-              className="rounded-2xl bg-amber-500 px-8 py-4 font-black text-slate-900 text-base hover:bg-amber-400 active:scale-95 transition shadow-[0_0_30px_rgba(245,158,11,0.2)]"
+              className="rounded-2xl bg-amber-500 px-8 py-4 text-base font-black text-slate-900 shadow-[0_0_30px_rgba(245,158,11,0.2)] transition hover:bg-amber-400 active:scale-95"
             >
               {ctaLabel} →
             </button>
             <button
               onClick={() => scrollTo('obsah')}
-              className="text-sm font-semibold text-slate-400 hover:text-white transition underline underline-offset-4 decoration-slate-700"
+              className="text-sm font-semibold text-slate-400 underline decoration-slate-700 underline-offset-4 transition hover:text-white"
             >
               Co dokument obsahuje ↓
             </button>
           </div>
 
-          {/* Guide link */}
-          {guideHref && (
-            <div className="mt-5 pt-5 border-t border-slate-800/50">
+          {guideHref ? (
+            <div className="mt-5 border-t border-slate-800/50 pt-5">
               <Link
                 href={guideHref}
-                className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-amber-400 transition"
+                className="inline-flex items-center gap-2 text-sm text-slate-500 transition hover:text-amber-400"
               >
                 <svg className="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                  />
                 </svg>
                 {guideLabel}
               </Link>
             </div>
-          )}
+          ) : null}
         </div>
       </section>
 
-      {/* ─── CO DOKUMENT OBSAHUJE ─────────────────────────────── */}
-      <section id="obsah" className="max-w-7xl mx-auto px-4 lg:px-8 py-14 border-t border-slate-800/50">
+      <section id="obsah" className="mx-auto max-w-7xl border-t border-slate-800/50 px-4 py-14 lg:px-8">
         <div className="mb-8">
-          <div className="text-[11px] font-black uppercase tracking-[0.2em] text-amber-400 mb-2">Obsah dokumentu</div>
+          <div className="mb-2 text-[11px] font-black uppercase tracking-[0.2em] text-amber-400">Obsah dokumentu</div>
           <h2 className="text-2xl font-black text-white">Co dokument obsahuje</h2>
-          <p className="mt-2 text-sm text-slate-500">Standardní obsah vygenerovaného dokumentu — sestaveno dle vašich podmínek.</p>
+          <p className="mt-2 text-sm text-slate-500">
+            Standardní obsah vygenerovaného dokumentu sestaveného podle vyplněných údajů.
+          </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* Obsah list */}
+        <div className="grid gap-12 lg:grid-cols-2">
           <ul className="space-y-3">
-            {contents.map((item) => (
+            {contents.map(item => (
               <li key={item} className="flex items-start gap-3 text-sm text-slate-300">
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500/15 text-amber-400 text-[11px] font-black">
+                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500/15 text-[11px] font-black text-amber-400">
                   ✓
                 </span>
                 {item}
@@ -163,15 +148,14 @@ export default function ContractLandingSection({
             ))}
           </ul>
 
-          {/* Kdy je vhodná + alternativy */}
           <div className="space-y-8">
             <div>
-              <div className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2">Vhodné pro</div>
-              <h2 className="text-2xl font-black text-white mb-6">Kdy je tento dokument vhodný</h2>
+              <div className="mb-2 text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">Vhodné pro</div>
+              <h2 className="mb-6 text-2xl font-black text-white">Kdy je tento dokument vhodný</h2>
               <ul className="space-y-3">
-                {whenSuitable.map((item) => (
+                {whenSuitable.map(item => (
                   <li key={item} className="flex items-start gap-3 text-sm text-slate-300">
-                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-slate-700/60 text-slate-400 text-[11px] font-black">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-slate-700/60 text-[11px] font-black text-slate-400">
                       →
                     </span>
                     {item}
@@ -180,61 +164,60 @@ export default function ContractLandingSection({
               </ul>
             </div>
 
-            {whenOther && whenOther.length > 0 && (
+            {whenOther && whenOther.length > 0 ? (
               <div>
-                <div className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 mb-3">Jiný dokument?</div>
-                <h3 className="text-base font-black text-white mb-4">Kdy zvolit jiný typ</h3>
+                <div className="mb-3 text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">Jiný dokument?</div>
+                <h3 className="mb-4 text-base font-black text-white">Kdy zvolit jiný typ</h3>
                 <div className="space-y-3">
-                  {whenOther.map((alt) => (
+                  {whenOther.map(item => (
                     <a
-                      key={alt.href}
-                      href={alt.href}
-                      className="flex items-start gap-3 rounded-2xl border border-slate-700/50 bg-[#0c1426]/60 px-5 py-4 hover:border-amber-500/30 hover:bg-amber-500/4 transition group"
+                      key={item.href}
+                      href={item.href}
+                      className="group flex items-start gap-3 rounded-2xl border border-slate-700/50 bg-[#0c1426]/60 px-5 py-4 transition hover:border-amber-500/30 hover:bg-amber-500/4"
                     >
-                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-slate-700 text-slate-400 text-[10px] group-hover:border-amber-500/50 group-hover:text-amber-400 transition">
+                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-slate-700 text-[10px] text-slate-400 transition group-hover:border-amber-500/50 group-hover:text-amber-400">
                         ↗
                       </span>
                       <div>
-                        <div className="text-xs font-bold text-amber-400/80 mb-0.5">{alt.label}</div>
-                        <div className="text-xs text-slate-400 leading-snug">{alt.text}</div>
+                        <div className="mb-0.5 text-xs font-bold text-amber-400/80">{item.label}</div>
+                        <div className="text-xs leading-snug text-slate-400">{item.text}</div>
                       </div>
                     </a>
                   ))}
                 </div>
               </div>
-            )}
+            ) : null}
           </div>
         </div>
       </section>
 
-      {/* ─── FAQ ──────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 lg:px-8 py-14 border-t border-slate-800/50">
+      <section className="mx-auto max-w-7xl border-t border-slate-800/50 px-4 py-14 lg:px-8">
         <div className="mb-8">
-          <div className="text-[11px] font-black uppercase tracking-[0.2em] text-amber-400 mb-2">Časté otázky</div>
+          <div className="mb-2 text-[11px] font-black uppercase tracking-[0.2em] text-amber-400">Časté otázky</div>
           <h2 className="text-2xl font-black text-white">Nejčastější dotazy</h2>
         </div>
         <div className="max-w-2xl space-y-3">
           {faq.map((item, idx) => (
-            <div key={idx} className="rounded-2xl border border-slate-800/60 bg-[#0c1426] overflow-hidden">
+            <div key={item.q} className="overflow-hidden rounded-2xl border border-slate-800/60 bg-[#0c1426]">
               <button
-                className="w-full flex items-center justify-between px-6 py-5 text-left"
+                className="flex w-full items-center justify-between px-6 py-5 text-left"
                 onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
                 aria-expanded={openFaq === idx}
               >
-                <span className="text-sm font-semibold text-white pr-4 leading-snug">{item.q}</span>
+                <span className="pr-4 text-sm font-semibold leading-snug text-white">{item.q}</span>
                 <span
-                  className={`text-amber-400 text-lg transition-transform duration-200 shrink-0 ${
+                  className={`shrink-0 text-lg text-amber-400 transition-transform duration-200 ${
                     openFaq === idx ? 'rotate-45' : ''
                   }`}
                 >
                   +
                 </span>
               </button>
-              {openFaq === idx && (
-                <div className="px-6 pb-5 text-sm text-slate-400 leading-relaxed border-t border-slate-800/50 pt-4">
+              {openFaq === idx ? (
+                <div className="border-t border-slate-800/50 px-6 pb-5 pt-4 text-sm leading-relaxed text-slate-400">
                   {item.a}
                 </div>
-              )}
+              ) : null}
             </div>
           ))}
         </div>

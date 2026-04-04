@@ -4,26 +4,31 @@ import Link from 'next/link';
 import NavbarClient from '@/app/components/NavbarClient';
 
 export const metadata: Metadata = {
-  title: 'SmlouvaHned | Smluvni dokumenty online',
+  title: 'SmlouvaHned | Smluvní dokumenty online',
   description:
-    'Sestavte smluvni dokument podle vasich podminek. Prehledny formular, bezpecna platba, PDF pripravene k podpisu.',
+    'Sestavte smluvní dokument podle svých podmínek. Přehledný formulář, bezpečná platba a PDF připravené ke kontrole a podpisu.',
+  alternates: { canonical: 'https://www.smlouvahned.cz' },
 };
 
 const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'SmlouvaHned',
-  legalName: 'Karel Zdenek',
-  url: 'https://smlouvahned.cz',
-  logo: 'https://smlouvahned.cz/og-image.png',
-  inLanguage: 'cs',
+  legalName: 'Karel Zdeněk',
+  url: 'https://www.smlouvahned.cz',
+  logo: 'https://www.smlouvahned.cz/og-image.png',
   areaServed: 'CZ',
-  taxID: '23660295',
+  inLanguage: 'cs-CZ',
+  identifier: {
+    '@type': 'PropertyValue',
+    propertyID: 'IČO',
+    value: '23660295',
+  },
   contactPoint: {
     '@type': 'ContactPoint',
-    contactType: 'customer service',
+    contactType: 'customer support',
     email: 'info@smlouvahned.cz',
-    availableLanguage: 'Czech',
+    availableLanguage: ['cs'],
   },
 };
 
@@ -99,7 +104,11 @@ function GiftIcon() {
   return (
     <svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden>
       <rect x="4.2" y="13.4" width="21.6" height="12.4" rx="1.8" stroke="var(--gold)" strokeWidth="1.7" />
-      <path d="M4.2 17.3h21.6M15 13.4v12.4M15 13.4c0 0-4-1-4-4s4-4 4 0M15 13.4c0 0 4-1 4-4s-4-4-4 0" stroke="var(--gold)" strokeWidth="1.5" />
+      <path
+        d="M4.2 17.3h21.6M15 13.4v12.4M15 13.4c0 0-4-1-4-4s4-4 4 0M15 13.4c0 0 4-1 4-4s-4-4-4 0"
+        stroke="var(--gold)"
+        strokeWidth="1.5"
+      />
     </svg>
   );
 }
@@ -124,49 +133,88 @@ function DocumentIcon() {
 
 const navLinks = [
   { href: '#jak-to-funguje', label: 'Jak to funguje' },
-  { href: '#dokumenty', label: 'Typy dokumentu' },
-  { href: '#cenik', label: 'Cenik' },
-  { href: '/blog', label: 'Pravni pruvodce' },
-  { href: '/o-projektu', label: 'O nas' },
+  { href: '#dokumenty', label: 'Typy dokumentů' },
+  { href: '#cenik', label: 'Ceník' },
+  { href: '/blog', label: 'Právní průvodce' },
+  { href: '/o-projektu', label: 'O projektu' },
 ];
 
 const trustItems = [
-  { icon: <ShieldIcon />, text: 'Aktualizovano pro ceskou legislativu 2024/2025' },
-  { icon: <LockIcon />, text: 'Platba zabezpecena pres Stripe' },
-  { icon: <FileIcon />, text: 'PDF ihned po zaplaceni pripravene k podpisu' },
-  { icon: <CheckIcon />, text: 'Proverene pravniky pravne konzistentni' },
+  { icon: <ShieldIcon />, text: 'Obsah a šablony průběžně revidujeme podle české legislativy platné v roce 2026.' },
+  { icon: <LockIcon />, text: 'Platba probíhá přes Stripe. Platební údaje se nezpracovávají přímo na našem webu.' },
+  { icon: <FileIcon />, text: 'PDF dokument je ke stažení ihned po zaplacení a po omezenou dobu zůstává dostupný online.' },
+  { icon: <CheckIcon />, text: 'Provozovatel, obchodní podmínky, GDPR a kontakt jsou na webu veřejně dostupné.' },
+];
+
+const proofItems = [
+  { value: '14', label: 'typů dokumentů' },
+  { value: '249 Kč', label: 'od základní varianty' },
+  { value: 'Ihned', label: 'ke stažení po zaplacení' },
 ];
 
 const contractCards = [
   {
     href: '/najem',
-    title: 'Najemni smlouva',
-    subtitle: 'Byty, domy, nebytove prostory',
+    title: 'Nájemní smlouva',
+    subtitle: 'Byty, domy, nebytové prostory',
     icon: <HouseIcon />,
   },
   {
     href: '/auto',
-    title: 'Kupni smlouva',
-    subtitle: 'na vozidlo',
+    title: 'Kupní smlouva na vozidlo',
+    subtitle: 'Osobní auta, motocykly, přívěsy',
     icon: <CarIcon />,
   },
   {
     href: '/darovaci',
-    title: 'Darovaci smlouva',
-    subtitle: 'Majetek, penize, movite veci',
+    title: 'Darovací smlouva',
+    subtitle: 'Majetek, peníze, movité věci',
     icon: <GiftIcon />,
   },
   {
     href: '/smlouva-o-dilo',
-    title: 'Smlouva o dilo',
-    subtitle: 'Prace, sluzby, projekty',
+    title: 'Smlouva o dílo',
+    subtitle: 'Práce, služby, projekty',
     icon: <PenIcon />,
   },
   {
     href: '#vsechny-dokumenty',
-    title: 'Dalsi dokumenty',
-    subtitle: 'Plna moc, vypoved a dalsi',
+    title: 'Další dokumenty',
+    subtitle: 'Plná moc, zápůjčka a další',
     icon: <DocumentIcon />,
+  },
+];
+
+const pricingTiers = [
+  {
+    title: 'Základní dokument',
+    price: '249 Kč',
+    intro: 'Pro standardní situace, kdy se strany dohodly na obsahu a potřebují jej správně zachytit písemně.',
+    points: [
+      'PDF dokument sestavený podle vyplněných údajů',
+      'Základní smluvní struktura pro běžné použití',
+      'Odkaz ke stažení aktivní po dobu 7 dní',
+    ],
+  },
+  {
+    title: 'Rozšířená ochrana',
+    price: '399 Kč',
+    intro: 'Pro případy, kdy chcete podrobněji řešit odpovědnost, sankce a ochranná ujednání.',
+    points: [
+      'Vše ze Základního dokumentu',
+      'Rozšířené klauzule a sankční ustanovení podle typu dokumentu',
+      'Odkaz ke stažení aktivní po dobu 14 dní',
+    ],
+  },
+  {
+    title: 'Kompletní balíček',
+    price: '749 Kč',
+    intro: 'Pro situace, kdy chcete i instrukce k podpisu, checklist a delší archivaci odkazu.',
+    points: [
+      'Vše z Rozšířené ochrany',
+      'Průvodní checklist a instrukce k podpisu',
+      'Odkaz ke stažení aktivní po dobu 30 dní',
+    ],
   },
 ];
 
@@ -211,15 +259,17 @@ export default function Home() {
           <div className="hero-frame-ref">
             <div className="hero-grid-ref">
               <div className="hero-copy-ref">
+                <p className="hero-kicker-ref">Online nástroj pro standardizované smluvní dokumenty</p>
                 <h1 className="hero-title-ref">
-                  <span>Smluvni dokument</span>
-                  <span>sestaveny podle vasich</span>
-                  <span>podminek</span>
+                  <span>Smluvní dokument</span>
+                  <span>sestavený podle vašich</span>
+                  <span>podmínek</span>
                 </h1>
 
                 <p className="hero-lead-ref">
-                  Vyplnte prehledny formular a behem nekolika minut ziskate profesionalne zpracovany dokument pripraveny k podpisu.
-                  Pro bezne zivotni i podnikatelske situace.
+                  Vyplníte přehledný formulář a během několika minut získáte strukturovaný dokument připravený
+                  ke kontrole a podpisu. Služba je určená pro běžné životní a podnikatelské situace, ve kterých
+                  se strany shodly na obsahu a potřebují jej zachytit přehledně a písemně.
                 </p>
 
                 <div className="hero-cta-row-ref">
@@ -227,8 +277,17 @@ export default function Home() {
                     Vybrat typ smlouvy <span aria-hidden>→</span>
                   </Link>
                   <Link href="#jak-to-funguje" className="btn-outline-ref">
-                    Jak sluzba funguje
+                    Jak služba funguje
                   </Link>
+                </div>
+
+                <div className="proof-strip-ref">
+                  {proofItems.map(item => (
+                    <div key={item.label} className="proof-item-ref">
+                      <div className="proof-value-ref">{item.value}</div>
+                      <div className="proof-label-ref">{item.label}</div>
+                    </div>
+                  ))}
                 </div>
 
                 <div className="trust-row-ref">
@@ -245,7 +304,7 @@ export default function Home() {
                 <div className="hero-visual-inner-ref">
                   <Image
                     src="/images/hero-reference.png"
-                    alt="Nahled smlouvy a pera"
+                    alt="Náhled dokumentu SmlouvaHned"
                     width={1200}
                     height={900}
                     priority
@@ -257,8 +316,8 @@ export default function Home() {
             </div>
 
             <section id="dokumenty" className="contracts-panel-ref">
-              <p className="contracts-label-ref">Vyberte dokument, ktery potrebujete</p>
-              <h2 className="contracts-title-ref">Nejcastejsi smlouvy a dokumenty</h2>
+              <p className="contracts-label-ref">Vyberte dokument, který potřebujete</p>
+              <h2 className="contracts-title-ref">Nejčastější smlouvy a dokumenty</h2>
 
               <div className="contracts-grid-ref">
                 {contractCards.map(card => (
@@ -271,18 +330,24 @@ export default function Home() {
               </div>
 
               <div className="contracts-more-ref">
-                <Link href="#vsechny-dokumenty">Zobrazit vsechny typy dokumentu <span aria-hidden>→</span></Link>
+                <Link href="#vsechny-dokumenty">
+                  Zobrazit všechny typy dokumentů <span aria-hidden>→</span>
+                </Link>
               </div>
             </section>
           </div>
         </section>
 
         <section id="jak-to-funguje" className="mx-auto mt-12 max-w-[1220px] px-5 md:px-8">
+          <div className="section-heading-ref">
+            <p className="section-kicker-ref">Jednoduchý postup</p>
+            <h2 className="section-title-ref">Jak služba funguje</h2>
+          </div>
           <div className="steps-shell-ref">
             {[
-              'Vyberete typ dokumentu a projdete prehledny formular.',
-              'Pred platbou uvidite souhrn vsech zadanych podminek.',
-              'Po zaplaceni dostanete PDF pripravene k podpisu.',
+              'Vyberete typ dokumentu a vyplníte formulář s konkrétními podmínkami.',
+              'Před platbou zkontrolujete souhrn údajů, vybranou variantu a cenu.',
+              'Po zaplacení si stáhnete PDF dokument a můžete jej zkontrolovat před podpisem.',
             ].map((text, index) => (
               <div key={text} className="step-item-ref">
                 <div className="step-index-ref">0{index + 1}</div>
@@ -293,16 +358,25 @@ export default function Home() {
         </section>
 
         <section id="cenik" className="mx-auto mt-8 max-w-[1220px] px-5 md:px-8">
+          <div className="section-heading-ref">
+            <p className="section-kicker-ref">Vyberte úroveň zpracování</p>
+            <h2 className="section-title-ref">Ceník a obsah balíčků</h2>
+          </div>
           <div className="pricing-shell-ref">
-            {[
-              { title: 'Zakladni', price: '249 Kc', text: 'Pro bezne situace a standardni smluvni vztahy.' },
-              { title: 'Rozsirena ochrana', price: '399 Kc', text: 'Vice ochrannych klauzuli a pokrocilejsi obsah.' },
-              { title: 'Kompletni', price: '749 Kc', text: 'Instrukce, checklist a delsi archivace dokumentu.' },
-            ].map(item => (
-              <div key={item.title} className="pricing-card-ref">
+            {pricingTiers.map((item, index) => (
+              <div key={item.title} className={`pricing-card-ref ${index === 1 ? 'pricing-card-featured-ref' : ''}`}>
+                {index === 1 ? <div className="pricing-badge-ref">Doporučená volba</div> : null}
                 <h3>{item.title}</h3>
                 <p className="price-ref">{item.price}</p>
-                <p>{item.text}</p>
+                <p>{item.intro}</p>
+                <ul className="mt-4 space-y-2 text-sm text-[#bdc7d9]">
+                  {item.points.map(point => (
+                    <li key={point} className="flex items-start gap-2">
+                      <span className="mt-[2px] text-[var(--gold)]">•</span>
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
@@ -312,9 +386,9 @@ export default function Home() {
       <footer id="vsechny-dokumenty" className="footer-ref">
         <div className="mx-auto max-w-[1220px] px-5 py-8 md:px-8 md:py-10">
           <div className="flex flex-col gap-2 text-sm text-[#97a3bb] md:flex-row md:items-center md:justify-between">
-            <p>© 2024–2026 SmlouvaHned · Karel Zdenek · ICO 23660295</p>
+            <p>© 2024-2026 SmlouvaHned · Karel Zdeněk · IČO 23660295</p>
             <div className="flex gap-4">
-              <Link href="/obchodni-podminky">Obchodni podminky</Link>
+              <Link href="/obchodni-podminky">Obchodní podmínky</Link>
               <Link href="/gdpr">GDPR</Link>
               <Link href="/kontakt">Kontakt</Link>
             </div>

@@ -3,94 +3,124 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Kontakt | SmlouvaHned',
-  description: 'Dotazy k objednávce, technické podpoře nebo fakturaci. Odpovídáme do 2 pracovních dnů. SmlouvaHned.cz neposkytuje právní poradenství — pro právní rady se obraťte na advokáta.',
+  description:
+    'Dotazy k objednávce, platbě, fakturaci nebo technickému zpřístupnění dokumentu. Odpovídáme obvykle do 2 pracovních dnů.',
+  alternates: { canonical: 'https://www.smlouvahned.cz/kontakt' },
 };
+
+const supportTopics = [
+  'číslo nebo popis objednávky',
+  'e-mail použitý při objednávce, pokud byl zadán',
+  'stručný popis problému nebo dotazu',
+  'screenshot nebo přesnou citaci chybové hlášky, pokud je k dispozici',
+];
 
 export default function KontaktPage() {
   return (
-    <main className="min-h-screen bg-[#05080f] text-slate-200 flex items-center justify-center px-6 py-20">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(245,158,11,0.08),transparent_45%)] pointer-events-none" />
+    <main className="flex min-h-screen items-center justify-center bg-[#05080f] px-6 py-20 text-slate-200">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(245,158,11,0.08),transparent_45%)]" />
 
-      <div className="relative z-10 max-w-2xl w-full">
+      <div className="relative z-10 w-full max-w-2xl">
         <div className="mb-6">
-          <Link href="/" className="text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-amber-400 transition">
+          <Link
+            href="/"
+            className="text-xs font-bold uppercase tracking-widest text-slate-500 transition hover:text-amber-400"
+          >
             ← SmlouvaHned
           </Link>
         </div>
 
-        <h1 className="text-4xl md:text-5xl font-black text-white mb-3 uppercase italic tracking-tighter">
-          Kontakt
-        </h1>
-        <p className="text-slate-400 text-sm mb-5 max-w-lg">
-          Máte dotaz k objednávce, fakturaci nebo technickému výstupu dokumentu? Napište nám — odpovídáme zpravidla do 2 pracovních dnů.
+        <h1 className="mb-3 text-4xl font-black uppercase tracking-tight text-white md:text-5xl">Kontakt</h1>
+        <p className="mb-5 max-w-lg text-sm text-slate-400">
+          Máte dotaz k objednávce, fakturaci, reklamaci nebo technickému zpřístupnění dokumentu? Napište nám a
+          přidejte co nejvíce informací, abychom vám mohli odpovědět co nejrychleji.
         </p>
-        <div className="mb-10 rounded-2xl border border-amber-500/20 bg-amber-500/5 px-5 py-4 text-xs text-slate-400 max-w-lg">
-          <span className="font-bold text-amber-400">Upozornění:</span>{' '}
-          SmlouvaHned.cz neposkytuje právní poradenství. Dotazy na výklad smluv, vhodnost dokumentu pro vaši situaci nebo doporučení v konkrétních případech proto nemůžeme zodpovědět. Pro právní rady se obraťte na advokáta —{' '}
-          <a href="https://www.cak.cz" target="_blank" rel="noopener noreferrer" className="text-amber-400/80 hover:text-amber-400 underline underline-offset-2 transition">
-            seznam advokátů na cak.cz
-          </a>.
+
+        <div className="mb-10 max-w-lg rounded-2xl border border-amber-500/20 bg-amber-500/5 px-5 py-4 text-xs text-slate-400">
+          <span className="font-bold text-amber-400">Poznámka:</span>{' '}
+          SmlouvaHned neposkytuje individuální právní poradenství. Dotazy na právní výklad, posouzení konkrétní
+          situace nebo doporučení vhodného právního postupu proto nemůžeme řešit. V takovém případě doporučujeme
+          obrátit se na advokáta.
         </div>
 
-        <div className="grid sm:grid-cols-2 gap-5 mb-10">
-          <a href="mailto:info@smlouvahned.cz"
-            className="group bg-[#0c1426] border border-slate-800 hover:border-amber-500/40 rounded-3xl p-7 transition hover:-translate-y-0.5">
-            <div className="text-3xl mb-4">✉️</div>
-            <div className="text-xs font-black uppercase tracking-widest text-amber-400 mb-1">E-mail</div>
-            <div className="font-bold text-white text-sm group-hover:text-amber-400 transition">info@smlouvahned.cz</div>
-            <p className="text-xs text-slate-500 mt-1">Objednávky, reklamace, technická podpora</p>
+        <div className="mb-10 grid gap-5 sm:grid-cols-2">
+          <a
+            href="mailto:info@smlouvahned.cz"
+            className="group rounded-3xl border border-slate-800 bg-[#0c1426] p-7 transition hover:-translate-y-0.5 hover:border-amber-500/40"
+          >
+            <div className="mb-4 text-3xl">E-mail</div>
+            <div className="mb-1 text-xs font-black uppercase tracking-widest text-amber-400">Hlavní kontakt</div>
+            <div className="text-sm font-bold text-white transition group-hover:text-amber-400">info@smlouvahned.cz</div>
+            <p className="mt-2 text-xs text-slate-500">Objednávky, reklamace, technická podpora, fakturace</p>
           </a>
 
-          <div className="bg-[#0c1426] border border-slate-800 rounded-3xl p-7">
-            <div className="text-3xl mb-4">⏱️</div>
-            <div className="text-xs font-black uppercase tracking-widest text-amber-400 mb-1">Rychlost odpovědi</div>
-            <div className="font-bold text-white text-sm">Do 2 pracovních dnů</div>
-            <p className="text-xs text-slate-500 mt-1">Po–Pá</p>
+          <div className="rounded-3xl border border-slate-800 bg-[#0c1426] p-7">
+            <div className="mb-4 text-3xl">Čas odpovědi</div>
+            <div className="mb-1 text-xs font-black uppercase tracking-widest text-amber-400">Orientačně</div>
+            <div className="text-sm font-bold text-white">Obvykle do 2 pracovních dnů</div>
+            <p className="mt-2 text-xs text-slate-500">Po–Pá, podle vytížení podpory</p>
           </div>
         </div>
 
-        <div className="bg-[#0c1426] border border-slate-800 rounded-3xl p-7 mb-8">
-          <h2 className="font-black text-white text-sm mb-4 uppercase tracking-wider">Nejčastější dotazy</h2>
+        <div className="mb-8 rounded-3xl border border-slate-800 bg-[#0c1426] p-7">
+          <h2 className="mb-4 text-sm font-black uppercase tracking-wider text-white">Co je dobré do zprávy uvést</h2>
+          <ul className="space-y-2">
+            {supportTopics.map(item => (
+              <li key={item} className="flex items-start gap-2 text-sm text-slate-400">
+                <span className="mt-0.5 text-amber-500">•</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="mb-8 rounded-3xl border border-slate-800 bg-[#0c1426] p-7">
+          <h2 className="mb-4 text-sm font-black uppercase tracking-wider text-white">Nejčastější dotazy</h2>
           <div className="space-y-4">
             {[
               {
                 q: 'Nenašel jsem odkaz ke stažení dokumentu.',
-                a: 'Zkontrolujte e-mail (i spam). Pokud odkaz není, pošlete nám ID platby z potvrzení Stripe na info@smlouvahned.cz a dokument vám zašleme.',
+                a: 'Zkontrolujte e-mailovou schránku včetně složky spam, pokud jste při objednávce zadali e-mail. Pokud odkaz nenajdete, napište nám a připojte identifikaci objednávky nebo potvrzení o platbě.',
               },
               {
-                q: 'Potřebuji v dokumentu opravit chybu.',
-                a: 'Pošlete nám na e-mail přesný popis chyby a ID vaší objednávky. Pokud je chyba způsobena vaším špatným zadáním, vygenerujeme nový dokument za sníženou cenu.',
+                q: 'V dokumentu jsem našel technickou chybu.',
+                a: 'Pošlete nám přesný popis problému, identifikaci objednávky a ideálně i screenshot nebo citaci chybové části. Podle typu problému navrhneme další postup.',
               },
               {
-                q: 'Nestihl jsem stáhnout dokument do 7 dní.',
-                a: 'Kontaktujte nás e-mailem s důkazem platby. V odůvodněných případech odkaz obnovíme.',
+                q: 'Nestihl jsem dokument stáhnout včas.',
+                a: 'Napište nám s identifikací objednávky. Pokud bude možné objednávku bezpečně ověřit, pokusíme se vám pomoci s obnovením přístupu.',
               },
               {
-                q: 'Potřebuji smlouvu, která není v nabídce.',
-                a: 'Napište nám — aktivně rozšiřujeme katalog. Váš podnět zohledníme při plánování dalšího rozvoje.',
+                q: 'Hledám dokument, který není v nabídce.',
+                a: 'Můžete nám napsat, o jaký typ dokumentu jde. Nové typy dokumentů přidáváme postupně podle poptávky a vhodnosti pro standardizované použití.',
               },
             ].map(item => (
-              <details key={item.q} className="group border border-white/5 rounded-2xl p-4">
-                <summary className="cursor-pointer text-sm font-bold text-white list-none flex justify-between items-center gap-3">
+              <details key={item.q} className="group rounded-2xl border border-white/5 p-4">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-bold text-white">
                   <span>{item.q}</span>
-                  <span className="text-slate-500 group-open:rotate-45 transition-transform flex-shrink-0">+</span>
+                  <span className="shrink-0 text-slate-500 transition-transform group-open:rotate-45">+</span>
                 </summary>
-                <p className="mt-3 text-xs text-slate-400 leading-relaxed">{item.a}</p>
+                <p className="mt-3 text-xs leading-relaxed text-slate-400">{item.a}</p>
               </details>
             ))}
           </div>
         </div>
 
         <div className="text-center">
-          <Link href="/"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-amber-500 hover:bg-amber-400 text-black font-black uppercase text-sm rounded-2xl transition shadow-[0_0_30px_rgba(245,158,11,0.2)]">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-8 py-4 text-sm font-black uppercase text-black transition hover:bg-amber-400"
+          >
             ← Zpět na výběr smluv
           </Link>
         </div>
 
-        <div className="mt-10 pt-8 border-t border-white/5 text-xs text-slate-600 leading-relaxed text-center">
+        <div className="mt-10 border-t border-white/5 pt-8 text-center text-xs leading-relaxed text-slate-600">
           <p>Provozovatel: Karel Zdeněk · IČO: 23660295 · Plzeňská 189, 345 61 Staňkov</p>
-          <p className="mt-1">SmlouvaHned.cz je obchodní označení online platformy provozované touto osobou. Neposkytujeme právní poradenství.</p>
+          <p className="mt-1">
+            SmlouvaHned je obchodní označení online služby provozované touto osobou. Neposkytujeme právní
+            poradenství.
+          </p>
         </div>
       </div>
     </main>

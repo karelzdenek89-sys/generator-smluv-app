@@ -538,8 +538,8 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
               SH
             </div>
             <div>
-              <div className="font-bold tracking-tight text-white">SmlouvaHned Builder</div>
-              <div className="text-[11px] text-slate-500">Prémiový generátor nájemní smlouvy</div>
+              <div className="font-bold tracking-tight text-white">SmlouvaHned Nájem</div>
+              <div className="text-[11px] text-slate-500">Nájemní smlouva na byt a dům</div>
             </div>
           </div>
 
@@ -556,12 +556,12 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
         badge="§ 2235 a násl. občanského zákoníku"
         h1Main="Nájemní smlouva na"
         h1Accent="byt online"
-        subtitle="Vytvořte nájemní smlouvu pro pronájem bytu nebo domu rychle a přehledně. Šablona pokrývá klíčová ujednání — od výše nájmu a kauce po pravidla užívání a ukončení nájmu, strukturovaná dle § 2235 a násl. OZ."
+        subtitle="Vytvořte přehlednou nájemní smlouvu pro pronájem bytu nebo domu. Dokument pokrývá výši nájmu, zálohy, kauci, pravidla užívání, předání bytu i podmínky ukončení nájmu v běžných situacích."
         benefits={[
-          { icon: '⚖️', text: 'Sestaveno dle § 2235–2301 OZ (nájemní smlouva na byt)' },
-          { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
-          { icon: '🏠', text: 'Pokrývá dobu určitou i neurčitou, kauce a poplatky' },
-          { icon: '🔒', text: 'Vhodné pro pronájem bytu, domu nebo jeho části' },
+          { icon: '⚖️', text: 'Vychází z pravidel občanského zákoníku pro nájem bytu a domu' },
+          { icon: '📄', text: 'PDF dokument je připraven ke stažení ihned po dokončení platby' },
+          { icon: '🏠', text: 'Pokrývá nájem na dobu určitou i neurčitou, kauci a zálohy na služby' },
+          { icon: '🔒', text: 'Vhodné pro pronájem bytu, domu i samostatné části nemovitosti' },
         ]}
         contents={[
           'Identifikaci pronajímatele a nájemce',
@@ -571,28 +571,28 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
           'Dobu nájmu a podmínky ukončení',
           'Práva a povinnosti stran (domácí zvířata, kouření, podnájem)',
           'Stav bytu při předání a předávací podmínky',
-          'Závěrečná ustanovení, GDPR a vyšší moc',
+          'Závěrečná ustanovení a přehlednou strukturu připravenou k podpisu',
         ]}
         whenSuitable={[
           'Pronájem celého bytu nebo domu soukromé osobě',
           'Pronájem části nemovitosti (pokoj, garsonka)',
           'Uzavření nájemního vztahu na dobu určitou nebo neurčitou',
-          'Případy, kdy potřebujete mít jasně ošetřené podmínky užívání nemovitosti',
+          'Situace, kdy potřebujete jasně ošetřit pravidla užívání nemovitosti',
         ]}
         whenOther={[
           { label: 'Podnájemní smlouva', href: '/podnajem', text: 'Pokud sám jste nájemcem a dáváte byt nebo jeho část do podnájmu.' },
         ]}
         faq={[
-          { q: 'Co je rozdíl mezi nájemní a podnájemní smlouvou?', a: 'Nájemní smlouva je uzavírána přímo s vlastníkem nemovitosti. Podnájemní smlouva se používá, pokud nájemce sám dál pronajímá byt nebo jeho část třetí osobě — k tomu zpravidla potřebuje souhlas pronajímatele.' },
-          { q: 'Je nutná písemná nájemní smlouva?', a: 'Zákon písemnou formu výslovně nevyžaduje, ale silně ji doporučuje. Ústní dohoda je obtížně prokazatelná a v případě sporu může být pro nájemce i pronajímatele nevýhodná.' },
-          { q: 'Jak vysoká může být kauce?', a: 'Podle § 2254 OZ smí kauce (jistota) činit nejvýše trojnásobek měsíčního nájemného. Pronajímatel ji musí po skončení nájmu vrátit, pokud nájemce nezpůsobil škodu.' },
-          { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
-          { q: 'Musí smlouvu ověřit notář?', a: 'Pro běžné nájemní smlouvy na byt notářské ověření není vyžadováno. Podpisy obou stran postačují.' },
+          { q: 'Jaký je rozdíl mezi nájemní a podnájemní smlouvou?', a: 'Nájemní smlouva se uzavírá přímo s vlastníkem nemovitosti. Podnájemní smlouva se používá tehdy, když nájemce dále přenechává byt nebo jeho část třetí osobě.' },
+          { q: 'Je písemná nájemní smlouva nutná?', a: 'Písemná forma je v praxi velmi důležitá, protože usnadňuje prokazování dohodnutých podmínek. U nájmu bytu nebo domu je to bezpečnější varianta pro obě strany.' },
+          { q: 'Jak vysoká může být kauce?', a: 'Kauce by měla odpovídat zákonným limitům a smyslu nájemního vztahu. Na této stránce proto zároveň upozorňujeme i na riziko nepřiměřeně vysoké jistoty.' },
+          { q: 'Je dokument dostupný ihned po zaplacení?', a: 'Ano. Po úspěšném dokončení platby je PDF ihned připravené ke stažení.' },
+          { q: 'Je potřeba nájemní smlouvu ověřovat u notáře?', a: 'Pro běžný nájem bytu nebo domu se notářské ověření standardně nevyžaduje. Obvykle postačí podpis pronajímatele a nájemce.' },
         ]}
         ctaLabel="Vytvořit nájemní smlouvu"
         formId="formular"
         guideHref="/najemni-smlouva"
-        guideLabel="Průvodce nájemní smlouvou — co obsahuje, kdy ji použít a nejčastější chyby"
+        guideLabel="Průvodce nájemní smlouvou – co obsahuje, kdy ji použít a nejčastější chyby"
       />
 
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8">
