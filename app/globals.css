@@ -1,27 +1,43 @@
 @import "tailwindcss";
 
 :root {
-  --background: #080d1c;
-  --foreground: #ffffff;
+  --background: #060912;
+  --foreground: #f2f4f8;
   --muted: #c9d1e1;
-  --gold: #d4af37;
-  --gold-hover: #e0bc4a;
-  --panel: #0c1224;
+  --gold-deep: #a8843f;
+  --gold: #c5a059;
+  --gold-light: #e8d092;
+  --panel: #0e1528;
+  --panel-elevated: #121a30;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
-  --color-gold: #d4af37;
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-gold: var(--gold);
 }
 
 body {
   background: var(--background);
   color: var(--muted);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Celostránkové „luxusní“ pozadí — jemnější střed, tmavší okraje (bez backdrop-blur) */
+.home-ambient-bg {
+  background-color: #04060d;
+  background-image: radial-gradient(
+    ellipse 90% 70% at 50% -10%,
+    rgba(30, 42, 78, 0.55) 0%,
+    rgba(12, 18, 36, 0.35) 35%,
+    transparent 70%
+  ),
+    radial-gradient(ellipse 120% 80% at 50% 100%, rgba(4, 6, 13, 0.9) 0%, transparent 50%);
+}
+
+.font-heading-serif {
+  font-family: var(--font-serif), ui-serif, Georgia, serif;
 }
 
 /* ─── Panel System ──────────────────────────────────────────────────────────── */
@@ -30,28 +46,28 @@ body {
   background: var(--panel);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
 }
 
 .panel-lg {
   background: var(--panel);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.45);
 }
 
 .panel-xl {
   background: var(--panel);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
-  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
 }
 
 .panel-gold {
-  background: var(--panel);
-  border: 1px solid rgba(212, 175, 55, 0.28);
+  background: var(--panel-elevated);
+  border: 1px solid rgba(197, 160, 89, 0.35);
   border-radius: 16px;
-  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
 }
 
 /* ─── Flat Navbar ───────────────────────────────────────────────────────────── */
@@ -62,7 +78,7 @@ body {
 }
 
 .navbar-flat-scrolled {
-  background: #080d1c;
+  background: rgba(6, 9, 18, 0.97);
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
   border-bottom-color: rgba(255, 255, 255, 0.08);
 }
@@ -71,19 +87,21 @@ body {
 .cta-primary {
   display: inline-flex;
   align-items: center;
-  background: var(--gold);
-  color: #080d1c;
-  font-weight: 900;
+  background: linear-gradient(145deg, var(--gold-deep) 0%, var(--gold) 42%, var(--gold-light) 100%);
+  color: #0a0c12;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.01em;
-  border-radius: 10px;
+  letter-spacing: 0.04em;
+  border-radius: 6px;
   padding: 0.875rem 1.75rem;
-  font-size: 0.875rem;
-  transition: background 150ms ease, transform 150ms ease;
+  font-size: 0.8125rem;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+  transition: filter 150ms ease, transform 150ms ease, box-shadow 150ms ease;
 }
 .cta-primary:hover {
-  background: var(--gold-hover);
+  filter: brightness(1.06);
   transform: translateY(-1px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
 }
 .cta-primary:active {
   transform: translateY(0);
@@ -92,16 +110,18 @@ body {
 .cta-outline {
   display: inline-flex;
   align-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  color: #c9d1e1;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  color: #f2f4f8;
   font-size: 0.875rem;
-  border-radius: 10px;
+  border-radius: 6px;
   padding: 0.875rem 1.5rem;
-  transition: border-color 150ms ease, color 150ms ease, transform 150ms ease;
+  background: transparent;
+  transition: border-color 150ms ease, color 150ms ease, transform 150ms ease, background 150ms ease;
 }
 .cta-outline:hover {
   border-color: rgba(255, 255, 255, 0.55);
   color: #ffffff;
+  background: rgba(255, 255, 255, 0.04);
   transform: translateY(-1px);
 }
 .cta-outline:active {
@@ -111,33 +131,42 @@ body {
 .btn-nav-outline {
   display: inline-flex;
   align-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.35);
-  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  color: #f2f4f8;
   font-size: 0.8125rem;
-  font-weight: 800;
-  border-radius: 10px;
+  font-weight: 700;
+  border-radius: 6px;
   padding: 0.5rem 1.125rem;
+  background: transparent;
   transition: border-color 150ms ease, background 150ms ease;
 }
 .btn-nav-outline:hover {
   border-color: rgba(255, 255, 255, 0.55);
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 /* ─── Section labels ────────────────────────────────────────────────────────── */
 .section-label {
+  font-family: var(--font-sans), sans-serif;
   font-size: 10px;
-  font-weight: 900;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.28em;
   color: var(--gold);
   display: block;
   margin-bottom: 0.75rem;
 }
 
+/* Blok dokumentů podle předlohy — lehčí panel, horní oddělení */
+.documents-band {
+  background: linear-gradient(180deg, rgba(14, 21, 40, 0.92) 0%, rgba(8, 12, 24, 0.98) 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 0 rgba(197, 160, 89, 0.06);
+}
+
 /* ─── Document type cards (homepage) ───────────────────────────────────────── */
 .contract-home-card {
-  background: var(--panel);
+  background: var(--panel-elevated);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   padding: 1.75rem 1.25rem 1.5rem;
@@ -145,17 +174,27 @@ body {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.32);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.38);
   transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
 }
 .contract-home-card:hover {
-  border-color: rgba(212, 175, 55, 0.35);
+  border-color: rgba(197, 160, 89, 0.4);
   transform: translateY(-2px);
-  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 22px 56px rgba(0, 0, 0, 0.48);
 }
 
 /* ─── Tabular Numerals ──────────────────────────────────────────────────────── */
 .font-tabular {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
+}
+
+/* Zlatý textový odkaz jako na předloze */
+.link-gold-elegant {
+  color: var(--gold-light);
+  font-weight: 600;
+  transition: color 150ms ease, opacity 150ms ease;
+}
+.link-gold-elegant:hover {
+  color: var(--gold);
 }

@@ -1,0 +1,19 @@
+[33mcommit 77030ca0ac0a22665652f6a466ba0be4ec7dc879[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Karel Zdenek <karelzdenek89@gmail.com>
+Date:   Sat Apr 4 18:59:20 2026 +0200
+
+    Redesign homepage dle nového art direction — teplo zlato, flat navbar, photo-hero
+    
+    - Nová barevná paleta: teplé zlato #C9A96E místo amber #F59E0B
+    - Flat navbar (průhledný → tmavý při scrollu) s novými nav položkami
+      a dvěma tlačítky (Přihlásit se outline + Vybrat typ smlouvy filled)
+    - Logo redesign: SVG dokument icon + SmlouvaHned.cz
+    - Hero: nový overline, headline bez line break, paper dokument na leather
+      pozadí s dekorativním perem, 4-slot trust row s ikonkami
+    - Trust bar: ČOI / ÚOOÚ / GDPR badge row s circular badges
+    - 5 rychlých icon karet smluv (Nájemní, Auto, Darovací, Dílo, Další)
+      před kompletním katalogem
+    - Všechny amber třídy nahrazeny warm gold (#C9A96E) inline styly
+    - NavbarClient přepsán na class toggle (navbar-flat-scrolled)
+    
+    Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>

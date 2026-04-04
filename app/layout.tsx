@@ -1,6 +1,19 @@
 import type { Metadata } from 'next';
+import { Inter, Playfair_Display } from 'next/font/google';
 import './globals.css';
 import CookiesBanner from '@/app/components/CookiesBanner';
+
+const inter = Inter({
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-sans',
+  display: 'swap',
+});
+
+const playfair = Playfair_Display({
+  subsets: ['latin', 'latin-ext'],
+  variable: '--font-serif',
+  display: 'swap',
+});
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
@@ -121,7 +134,7 @@ export default function RootLayout({
     <html lang="cs">
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
-        <meta name="theme-color" content="#080D1C" />
+        <meta name="theme-color" content="#060912" />
         <meta
           name="seznam-wmt"
           content="xQaMUlE4cn6PrnQkBxclmM5kzajCqWAD"
@@ -135,7 +148,10 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema).replace(/</g, '\\u003c') }}
         />
       </head>
-      <body className="antialiased bg-[#080D1C] text-[#C9D1E1]" style={{ colorScheme: 'dark' }}>
+      <body
+        className={`${inter.variable} ${playfair.variable} antialiased bg-[#060912] text-[#d7dee8]`}
+        style={{ colorScheme: 'dark' }}
+      >
         {children}
         <CookiesBanner />
       </body>
