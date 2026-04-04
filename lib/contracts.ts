@@ -51,7 +51,9 @@ export type TierFeatures = {
 };
 
 export function resolveTierFeatures(d: StoredContractData): TierFeatures {
-  const tier = String(d.tier ?? 'basic').toLowerCase() as Tier;
+  const raw = String(d.tier ?? 'basic').toLowerCase();
+  // „premium“ je legacy alias checkoutu → stejná práva jako complete (STRIPE_PRICE_ID_PREMIUM)
+  const tier = (raw === 'premium' ? 'complete' : raw) as Tier;
   // notaryUpsell je fallback pro starší drafty uložené před zavedením tierů
   const legacyPremium = Boolean(d.notaryUpsell); // záměrně d.notaryUpsell — ne hasPremiumClauses
   const hasPremiumClauses = legacyPremium || tier === 'professional' || tier === 'complete';

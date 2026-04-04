@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useState, useMemo } from 'react';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
@@ -198,13 +199,13 @@ export default function LoanBuilderPage() {
 
       <header className="relative z-10 border-b border-white/5 bg-[#05080f]/80 backdrop-blur-sm sticky top-0">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3">
             <div className="w-9 h-9 bg-amber-500 rounded-xl flex items-center justify-center text-xs font-black text-black">SH</div>
             <div>
               <div className="font-black text-white text-sm">SmlouvaHned</div>
               <div className="text-[10px] uppercase tracking-widest text-slate-500">Legal document builder</div>
             </div>
-          </a>
+          </Link>
           <div className="hidden md:flex items-center gap-4 text-xs text-slate-400">
             <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />Platba zabezpečena Stripe</span>
             <span>•</span>
@@ -618,7 +619,7 @@ export default function LoanBuilderPage() {
               <p className="text-center text-xs text-slate-600 mt-3">🔒 Platba přes Stripe · PDF ke stažení ihned</p>
             </div>
 
-            <a href="/" className="block text-center text-xs text-slate-600 hover:text-slate-400 transition">← Zpět na výběr smluv</a>
+            <Link href="/" className="block text-center text-xs text-slate-600 hover:text-slate-400 transition">← Zpět na výběr smluv</Link>
           </div>
         </div>
       </div>

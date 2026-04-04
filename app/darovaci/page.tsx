@@ -113,20 +113,6 @@ export default function GiftContractPage() {
     return { score, warnings };
   }, [formData]);
 
-  const scoreColor =
-    riskAnalysis.score >= 85
-      ? 'bg-emerald-500'
-      : riskAnalysis.score >= 65
-        ? 'bg-amber-500'
-        : 'bg-rose-500';
-
-  const scrollToPreview = () => {
-    document.getElementById('preview-section')?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
-  };
-
   const previewSections = useMemo(() => {
     try {
       if (!formData.donorName) return [];

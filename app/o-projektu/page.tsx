@@ -88,7 +88,7 @@ export default function OProjektuPage() {
           <div>
             <h2 className="text-xl font-black text-white mb-3">Co SmlouvaHned.cz je</h2>
             <p>
-              SmlouvaHned.cz je <strong className="text-white">softwarový nástroj kategorie „document automation"</strong> — interaktivní generátor smluvních dokumentů. Funguje tak, že uživatel vyplní formulář s konkrétními podmínkami a systém na základě těchto vstupů sestaví strukturovaný PDF dokument.
+              SmlouvaHned.cz je <strong className="text-white">softwarový nástroj kategorie „document automation“</strong> — interaktivní generátor smluvních dokumentů. Funguje tak, že uživatel vyplní formulář s konkrétními podmínkami a systém na základě těchto vstupů sestaví strukturovaný PDF dokument.
             </p>
             <p className="mt-3">
               Šablony jsou postaveny na analýze textu příslušných zákonů — zejména zákona č. 89/2012 Sb. (občanský zákoník) a dalších relevantních předpisů. Každé pole v šabloně odpovídá konkrétní smluvní náležitosti. Povinné náležitosti jsou obsaženy vždy; nepovinná ujednání jsou ve formuláři označena.

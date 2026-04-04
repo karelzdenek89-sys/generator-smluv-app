@@ -333,12 +333,24 @@ export default function PracovniPage() {
                 </div>
                 {form.notaryUpsell && (
                   <div className="mt-4 grid sm:grid-cols-2 gap-4">
-                    <label htmlFor="nonCompetePeriod" className={`flex items-start gap-3 cursor-pointer rounded-xl border p-4 transition ${form.nonCompete ? 'border-amber-500/70 bg-amber-500/10' : 'border-slate-700/60 bg-[#111c31]'}`}>
-                      <input type="checkbox" name="nonCompete" checked={form.nonCompete} onChange={set} className="mt-0.5 h-4 w-4 accent-amber-500" />
+                    <label htmlFor="nonCompete" className={`flex items-start gap-3 cursor-pointer rounded-xl border p-4 transition ${form.nonCompete ? 'border-amber-500/70 bg-amber-500/10' : 'border-slate-700/60 bg-[#111c31]'}`}>
+                      <input id="nonCompete" type="checkbox" name="nonCompete" checked={form.nonCompete} onChange={set} className="mt-0.5 h-4 w-4 accent-amber-500" />
                       <div className="text-sm text-white">Konkurenční doložka</div>
                     </label>
-                    {form.nonCompete && <Field label="Délka zákazu (měsíce)"><input className={inputClass} name="nonCompetePeriod" value={form.nonCompetePeriod} onChange={set} type="number" min="1" max="12" /></Field>}
-                      id="nonCompetePeriod"
+                    {form.nonCompete && (
+                      <Field label="Délka zákazu (měsíce)">
+                        <input
+                          id="nonCompetePeriod"
+                          className={inputClass}
+                          name="nonCompetePeriod"
+                          value={form.nonCompetePeriod}
+                          onChange={set}
+                          type="number"
+                          min="1"
+                          max="12"
+                        />
+                      </Field>
+                    )}
                   </div>
                 )}
               </section>

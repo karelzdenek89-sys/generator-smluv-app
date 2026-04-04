@@ -54,7 +54,7 @@ export default function TermsPage() {
               <p><strong className="text-white">Kontaktní e-mail:</strong> <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">info@smlouvahned.cz</a></p>
             </div>
             <p className="mt-3 text-slate-400 text-xs">
-              Tyto obchodní podmínky (dále jen „OP") upravují práva a povinnosti mezi Poskytovatelem (Karel Zdeněk, IČO 23660295, dále jen „Poskytovatel") a uživatelem (dále jen „Zákazník").
+              Tyto obchodní podmínky (dále jen „OP“) upravují práva a povinnosti mezi Poskytovatelem (Karel Zdeněk, IČO 23660295, dále jen „Poskytovatel“) a uživatelem (dále jen „Zákazník“).
             </p>
           </section>
 

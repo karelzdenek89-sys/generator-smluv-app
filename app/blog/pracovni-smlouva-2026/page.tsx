@@ -284,7 +284,7 @@ export default function PracovniSmlouvaVzor2026Page() {
           <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span>Max. 8 hodin přesčasů týdně, max. 150 hodin ročně na příkaz zaměstnavatele</li>
           <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span>Dalších 125 hodin ročně lze sjednat individuálně se zaměstnancem</li>
           <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span>Přesčas se kompenzuje příplatkem 25 % nebo náhradním volnem (po dohodě)</li>
-          <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span>U vedoucích lze sjednat mzdu „s přihlédnutím k přesčasům" — ale pouze do rozsahu 150/325 hodin ročně</li>
+          <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span>U vedoucích lze sjednat mzdu „s přihlédnutím k přesčasům“ — ale pouze do rozsahu 150/325 hodin ročně</li>
         </ul>
 
         <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm text-slate-400 leading-relaxed">

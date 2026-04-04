@@ -74,7 +74,6 @@ const defaultData: WorkContractData = {
 
 export default function WorkContractPage() {
   const [formData, setFormData] = useState<WorkContractData>(defaultData);
-  const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [gdprConsent, setGdprConsent] = useState(false);
   const [withdrawalConsent, setWithdrawalConsent] = useState(false);

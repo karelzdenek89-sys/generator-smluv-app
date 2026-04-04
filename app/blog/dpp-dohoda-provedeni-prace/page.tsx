@@ -276,7 +276,7 @@ export default function DppPage() {
             <div className="mb-2 text-sm font-black text-white">Potvrzení o zaměstnání (Zápočtový list)</div>
             <p className="text-sm text-slate-400 leading-relaxed">
               Při skončení DPP je zaměstnavatel povinen vydat potvrzení o zaměstnání (§ 313 ZP),
-              i když se jedná „pouze" o brigádu na dohodu.
+              i když se jedná „pouze“ o brigádu na dohodu.
             </p>
           </div>
         </div>

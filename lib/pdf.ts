@@ -31,7 +31,8 @@ async function getFonts(): Promise<{ regular: string; bold: string }> {
 }
 
 async function ensurePdfFonts(doc: jsPDF): Promise<void> {
-  const pdfDoc = doc as any;
+  type PdfWithVfs = jsPDF & { internal: { vFS?: Record<string, string> } };
+  const pdfDoc = doc as PdfWithVfs;
   if (!pdfDoc.internal.vFS) {
     pdfDoc.internal.vFS = {};
   }
@@ -416,7 +417,7 @@ function estimateTocPageCount(sections: { title: string }[]): number {
   const visibleSections = sections.filter(s => !isSignatureSection(s.title));
   let y = 32 + 7; // header 22 + heading block ~10 + first row offset
   let pages = 1;
-  for (const _ of visibleSections) {
+  for (let i = 0; i < visibleSections.length; i += 1) {
     y += 7;
     if (y > 270) { pages++; y = 29; }
   }

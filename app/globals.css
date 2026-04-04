@@ -1,99 +1,78 @@
 @import "tailwindcss";
 
 :root {
-  --background: #080B15;
-  --foreground: #F0EDE8;
-  --gold: #C9A96E;
-  --gold-light: #D4B87A;
-  --gold-dark: #A8843A;
-  --gold-muted: rgba(201,169,110,0.18);
+  --background: #080d1c;
+  --foreground: #ffffff;
+  --muted: #c9d1e1;
+  --gold: #d4af37;
+  --gold-hover: #e0bc4a;
+  --panel: #0c1224;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-gold: #C9A96E;
-  --color-gold-light: #D4B87A;
+  --color-muted: var(--muted);
+  --color-gold: #d4af37;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 body {
-  background: #080B15;
-  color: #E8E4DC;
+  background: var(--background);
+  color: var(--muted);
   font-family: Arial, Helvetica, sans-serif;
 }
 
 /* ─── Panel System ──────────────────────────────────────────────────────────── */
 
 .panel {
-  background: #0D1228;
-  border: 1px solid rgba(255,255,255,0.07);
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
 }
 
 .panel-lg {
-  background: #0D1228;
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 20px;
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
 }
 
 .panel-xl {
-  background: #0D1228;
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 24px;
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.45);
 }
 
-.panel-inset {
-  background: #080B15;
-  border: 1px solid rgba(255,255,255,0.05);
-  border-radius: 12px;
-}
-
-/* Featured pricing panel — gold border accent */
 .panel-gold {
-  background: #0D1228;
-  border: 1px solid rgba(201,169,110,0.22);
-  border-top-color: rgba(201,169,110,0.42);
-  border-radius: 24px;
+  background: var(--panel);
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  border-radius: 16px;
+  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.45);
 }
 
 /* ─── Flat Navbar ───────────────────────────────────────────────────────────── */
 .navbar-flat {
   background: transparent;
-  transition: background 300ms ease, box-shadow 300ms ease, border-color 300ms ease;
+  transition: background 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
   border-bottom: 1px solid transparent;
 }
 
 .navbar-flat-scrolled {
-  background: rgba(8,11,21,0.97);
-  box-shadow: 0 1px 0 rgba(255,255,255,0.05), 0 4px 24px rgba(0,0,0,0.45);
-  border-bottom-color: rgba(255,255,255,0.06);
-}
-
-/* ─── Document card shadow (hero preview) ───────────────────────────────────── */
-.doc-shadow {
-  box-shadow:
-    0 4px 16px rgba(0,0,0,0.45),
-    0 20px 60px rgba(0,0,0,0.55),
-    0 40px 100px rgba(0,0,0,0.30);
-}
-
-/* ─── Card interaction states ───────────────────────────────────────────────── */
-.panel-interactive {
-  transition: border-color 180ms ease, transform 180ms ease;
-}
-.panel-interactive:hover {
-  border-color: rgba(201,169,110,0.20);
-  transform: translateY(-2px);
+  background: #080d1c;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
 }
 
 /* ─── CTA Buttons ───────────────────────────────────────────────────────────── */
 .cta-primary {
   display: inline-flex;
   align-items: center;
-  background: #C9A96E;
-  color: #0A0B12;
+  background: var(--gold);
+  color: #080d1c;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.01em;
@@ -103,7 +82,7 @@ body {
   transition: background 150ms ease, transform 150ms ease;
 }
 .cta-primary:hover {
-  background: #D4B87A;
+  background: var(--gold-hover);
   transform: translateY(-1px);
 }
 .cta-primary:active {
@@ -113,52 +92,36 @@ body {
 .cta-outline {
   display: inline-flex;
   align-items: center;
-  border: 1px solid rgba(255,255,255,0.14);
-  color: #9CA3AF;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #c9d1e1;
   font-size: 0.875rem;
   border-radius: 10px;
   padding: 0.875rem 1.5rem;
   transition: border-color 150ms ease, color 150ms ease, transform 150ms ease;
 }
 .cta-outline:hover {
-  border-color: rgba(255,255,255,0.28);
-  color: #E5E7EB;
+  border-color: rgba(255, 255, 255, 0.55);
+  color: #ffffff;
   transform: translateY(-1px);
 }
+.cta-outline:active {
+  transform: translateY(0);
+}
 
-/* Outlined gold button (nav "Přihlásit se") */
-.btn-gold-outline {
+.btn-nav-outline {
   display: inline-flex;
   align-items: center;
-  border: 1px solid rgba(201,169,110,0.45);
-  color: #C9A96E;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #ffffff;
   font-size: 0.8125rem;
-  font-weight: 700;
-  border-radius: 8px;
-  padding: 0.5rem 1rem;
+  font-weight: 800;
+  border-radius: 10px;
+  padding: 0.5rem 1.125rem;
   transition: border-color 150ms ease, background 150ms ease;
 }
-.btn-gold-outline:hover {
-  border-color: rgba(201,169,110,0.75);
-  background: rgba(201,169,110,0.06);
-}
-
-/* Filled gold button (nav "Vybrat typ smlouvy") */
-.btn-gold-filled {
-  display: inline-flex;
-  align-items: center;
-  background: #C9A96E;
-  color: #0A0B12;
-  font-size: 0.8125rem;
-  font-weight: 900;
-  border-radius: 8px;
-  padding: 0.5rem 1.125rem;
-  letter-spacing: 0.01em;
-  transition: background 150ms ease, transform 150ms ease;
-}
-.btn-gold-filled:hover {
-  background: #D4B87A;
-  transform: translateY(-1px);
+.btn-nav-outline:hover {
+  border-color: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 /* ─── Section labels ────────────────────────────────────────────────────────── */
@@ -167,55 +130,32 @@ body {
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  color: #C9A96E;
+  color: var(--gold);
   display: block;
   margin-bottom: 0.75rem;
 }
 
-/* ─── Quick contract icon cards ─────────────────────────────────────────────── */
-.contract-icon-card {
-  background: #0C1025;
-  border: 1px solid rgba(201,169,110,0.14);
+/* ─── Document type cards (homepage) ───────────────────────────────────────── */
+.contract-home-card {
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
-  padding: 1.75rem 1rem 1.5rem;
+  padding: 1.75rem 1.25rem 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  transition: border-color 180ms ease, transform 180ms ease, background 180ms ease;
-  cursor: pointer;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.32);
+  transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
 }
-.contract-icon-card:hover {
-  border-color: rgba(201,169,110,0.35);
-  transform: translateY(-3px);
-  background: #0F1530;
+.contract-home-card:hover {
+  border-color: rgba(212, 175, 55, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.4);
 }
-
-/* ─── Scroll Reveal ─────────────────────────────────────────────────────────── */
-.reveal {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.55s cubic-bezier(0.16,1,0.3,1), transform 0.55s cubic-bezier(0.16,1,0.3,1);
-}
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.reveal-delay-1 { transition-delay: 80ms; }
-.reveal-delay-2 { transition-delay: 160ms; }
-.reveal-delay-3 { transition-delay: 240ms; }
-.reveal-delay-4 { transition-delay: 320ms; }
 
 /* ─── Tabular Numerals ──────────────────────────────────────────────────────── */
 .font-tabular {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
-}
-
-/* ─── Mobile ────────────────────────────────────────────────────────────────── */
-@media (max-width: 768px) {
-  .doc-tilt {
-    transform: none !important;
-  }
 }

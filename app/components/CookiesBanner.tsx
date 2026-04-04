@@ -9,13 +9,16 @@ export default function CookiesBanner() {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    try {
-      if (localStorage.getItem(STORAGE_KEY) !== '1') {
+    const id = window.setTimeout(() => {
+      try {
+        if (localStorage.getItem(STORAGE_KEY) !== '1') {
+          setVisible(true);
+        }
+      } catch {
         setVisible(true);
       }
-    } catch {
-      // localStorage může být nedostupný (private mode, SSR)
-    }
+    }, 0);
+    return () => clearTimeout(id);
   }, []);
 
   const accept = () => {

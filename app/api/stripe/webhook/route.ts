@@ -62,12 +62,26 @@ export async function POST(req: Request) {
         const existing = await redis.get<Record<string, unknown>>(key);
 
         if (existing) {
-          const tier = session.metadata?.tier || (existing as any).tier || 'basic';
-          const ttl = tier === 'complete' ? TTL_COMPLETE : tier === 'professional' ? TTL_PROFESSIONAL : TTL_BASIC;
+          const existingRecord = existing as Record<string, unknown>;
+          const tierRaw = String(session.metadata?.tier ?? existingRecord.tier ?? 'basic').toLowerCase();
+          // premium = legacy alias stejné cenové hladiny jako complete (viz checkout getPriceId)
+          const tierForTtl =
+            tierRaw === 'complete' || tierRaw === 'premium'
+              ? 'complete'
+              : tierRaw === 'professional'
+                ? 'professional'
+                : 'basic';
+          const ttl =
+            tierForTtl === 'complete'
+              ? TTL_COMPLETE
+              : tierForTtl === 'professional'
+                ? TTL_PROFESSIONAL
+                : TTL_BASIC;
           await redis.set(
             key,
             {
               ...existing,
+              tier: tierForTtl,
               paid: true,
               paidAt: new Date().toISOString(),
               stripeSessionId: session.id,
@@ -112,7 +126,7 @@ export async function POST(req: Request) {
               session.id,
               session.metadata?.contractType || 'dokument',
               process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz',
-              tier,
+              tierForTtl,
             ).catch((err) => console.error('[webhook] E-mail error:', err));
           }
         }

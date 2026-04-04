@@ -193,7 +193,7 @@ export default function KupniSmlouvaAutoPage() {
           <li className="flex items-start gap-3">
             <span className="mt-1 flex-shrink-0 text-amber-500 font-bold">✓</span>
             <div>
-              <strong className="text-slate-300">Odpovědnost za vady</strong> — prodej "jak stojí a leží" (as is) u ojetých vozů
+              <strong className="text-slate-300">Odpovědnost za vady</strong> — prodej „jak stojí a leží“ (as is) u ojetých vozů
               je legitimitní, ale musí být výslovně sjednán a nesmí zakrývat úmyslně zamlčené vady.
             </div>
           </li>
@@ -234,7 +234,7 @@ export default function KupniSmlouvaAutoPage() {
         <ul className="mb-5 space-y-2 text-slate-400">
           <li className="flex items-start gap-2"><span className="mt-1 text-amber-500 flex-shrink-0">•</span>Datum platnosti STK (s razítkem a příslušnou přilepenou nálepkou)</li>
           <li className="flex items-start gap-2"><span className="mt-1 text-amber-500 flex-shrink-0">•</span>Datum poslední emisní kontroly (pro vozy podléhající emisní kontrole)</li>
-          <li className="flex items-start gap-2"><span className="mt-1 text-amber-500 flex-shrink-0">•</span>Případné závady zjištěné při poslední STK (i tzv. "doporučení")</li>
+          <li className="flex items-start gap-2"><span className="mt-1 text-amber-500 flex-shrink-0">•</span>Případné závady zjištěné při poslední STK (i tzv. „doporučení“)</li>
         </ul>
 
         <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm text-slate-400 leading-relaxed">

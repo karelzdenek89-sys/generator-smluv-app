@@ -11,7 +11,7 @@ const TTL_PROFESSIONAL  = 60 * 60 * 24 * 14;  // 14 dní pro Profesionální bal
 const TTL_COMPLETE      = 60 * 60 * 24 * 30;  // 30 dní pro Kompletní balíček
 
 function getTtlForTier(tier?: string): number {
-  if (tier === 'complete') return TTL_COMPLETE;
+  if (tier === 'complete' || tier === 'premium') return TTL_COMPLETE;
   if (tier === 'professional') return TTL_PROFESSIONAL;
   return TTL_BASIC;
 }
@@ -132,13 +132,18 @@ export async function GET(req: NextRequest) {
     }
 
     // Tier je primární zdroj pravdy — odvozujeme ho z více míst pro robustnost
-    const resolvedTier = (draft.tier || (draft.payload as any).tier || 'basic') as 'basic' | 'professional' | 'complete';
+    const payloadExtras = draft.payload as StoredContractData & {
+      tier?: DraftRecord['tier'];
+      notaryUpsell?: boolean;
+    };
+    const rawTier = (draft.tier || payloadExtras.tier || 'basic') as string;
+    const resolvedTier = (rawTier === 'premium' ? 'complete' : rawTier) as DraftRecord['tier'];
 
     // notaryUpsell = true pro professional a complete (i když Redis draft neobsahuje flag)
     // Tím je zajištěno, že zákazník dostane přesně ten obsah, za který zaplatil
     const resolvedNotaryUpsell =
       draft.notaryUpsell === true ||
-      Boolean((draft.payload as any).notaryUpsell) ||
+      Boolean(payloadExtras.notaryUpsell) ||
       resolvedTier === 'professional' ||
       resolvedTier === 'complete';
 

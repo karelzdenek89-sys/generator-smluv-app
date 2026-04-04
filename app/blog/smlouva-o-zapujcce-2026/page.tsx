@@ -133,9 +133,9 @@ export default function SmlouvaOZapujcce2026Page() {
         </ul>
 
         <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm text-slate-400 leading-relaxed">
-          <strong className="text-blue-400">📌 Půjčka vs. zápůjčka:</strong> Správný právní termín dle OZ je „zápůjčka" (§ 2390).
-          Hovorový výraz „půjčka" je v praxi přijatelný, ale v titulku smlouvy doporučujeme použít
-          zákonný termín „smlouva o zápůjčce". Právně jde o totéž.
+          <strong className="text-blue-400">📌 Půjčka vs. zápůjčka:</strong> Správný právní termín dle OZ je „zápůjčka“ (§ 2390).
+          Hovorový výraz „půjčka“ je v praxi přijatelný, ale v titulku smlouvy doporučujeme použít
+          zákonný termín „smlouva o zápůjčce“. Právně jde o totéž.
         </div>
       </section>
 

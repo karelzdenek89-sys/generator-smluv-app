@@ -1,6 +1,7 @@
 'use client';
 
-import { Suspense, useEffect, useMemo, useState, useRef, useCallback } from 'react';
+import { Suspense, useEffect, useMemo, useState, useRef } from 'react';
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
 const pageShell = 'min-h-screen bg-[#05080f] text-slate-200 py-16 px-6';
@@ -36,10 +37,7 @@ function SuccessContent() {
 
   // Polling: ověřujeme stav platby přes Stripe před zobrazením tlačítka
   useEffect(() => {
-    if (!sessionId) {
-      setDlState('ready');
-      return;
-    }
+    if (!sessionId) return;
 
     const maxAttempts = 12; // 12 × 1500 ms = 18 s max
     let cancelled = false;
@@ -94,9 +92,12 @@ function SuccessContent() {
           <p className="text-slate-400 text-sm mb-8">
             Tato stránka je přístupná pouze po přesměrování z platební brány.
           </p>
-          <a href="/" className="inline-block px-8 py-4 bg-amber-500 text-black font-black uppercase rounded-2xl hover:bg-amber-400 transition text-sm">
+          <Link
+            href="/"
+            className="inline-block px-8 py-4 bg-amber-500 text-black font-black uppercase rounded-2xl hover:bg-amber-400 transition text-sm"
+          >
             Vybrat smlouvu
-          </a>
+          </Link>
         </div>
       </main>
     );
@@ -257,10 +258,12 @@ function SuccessContent() {
 
         {/* Links */}
         <div className="flex flex-col sm:flex-row gap-3">
-          <a href="/"
-            className="flex-1 py-3 bg-white/5 border border-white/10 text-white font-bold text-sm text-center rounded-2xl hover:bg-white/10 transition uppercase tracking-wider">
+          <Link
+            href="/"
+            className="flex-1 py-3 bg-white/5 border border-white/10 text-white font-bold text-sm text-center rounded-2xl hover:bg-white/10 transition uppercase tracking-wider"
+          >
             Všechny smlouvy
-          </a>
+          </Link>
           <a href="/zakaznicka-zona"
             className="flex-1 py-3 bg-white/5 border border-white/10 text-slate-400 font-bold text-sm text-center rounded-2xl hover:bg-white/10 transition uppercase tracking-wider">
             Moje dokumenty

@@ -142,7 +142,7 @@ export default function CustomerZone() {
               <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2 px-1">
                 Nalezeno {orders.length} {orders.length === 1 ? 'dokument' : orders.length < 5 ? 'dokumenty' : 'dokumentů'}
               </div>
-              {orders.map((order, index) => {
+              {orders.map(order => {
                 const tierInfo = TIER_LABEL[order.tier] ?? TIER_LABEL.basic;
                 const ttlLabel = TTL_LABEL[order.tier] ?? '7 dní';
                 return (

@@ -121,7 +121,7 @@ export default function RootLayout({
     <html lang="cs">
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
-        <meta name="theme-color" content="#04070E" />
+        <meta name="theme-color" content="#080D1C" />
         <meta
           name="seznam-wmt"
           content="xQaMUlE4cn6PrnQkBxclmM5kzajCqWAD"
@@ -135,7 +135,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema).replace(/</g, '\\u003c') }}
         />
       </head>
-      <body className="antialiased bg-[#04070E] text-slate-200" style={{colorScheme: 'dark'}}>
+      <body className="antialiased bg-[#080D1C] text-[#C9D1E1]" style={{ colorScheme: 'dark' }}>
         {children}
         <CookiesBanner />
       </body>

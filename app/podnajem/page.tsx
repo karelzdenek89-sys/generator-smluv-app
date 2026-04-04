@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
@@ -164,7 +165,7 @@ export default function PodnajemuPage() {
       {/* Header */}
       <div className="sticky top-0 z-30 bg-[#080f1e]/95 backdrop-blur border-b border-slate-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-          <a href="/" className="text-amber-400 font-black text-lg tracking-tight">SmlouvaHned.cz</a>
+          <Link href="/" className="text-amber-400 font-black text-lg tracking-tight">SmlouvaHned.cz</Link>
           <div className="flex items-center gap-3">
             <span className="text-xs text-slate-400 hidden sm:block">Podnájemní smlouva</span>
             <span className="text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-full px-3 py-1">
