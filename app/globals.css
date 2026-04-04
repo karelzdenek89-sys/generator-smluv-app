@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #080D1C;
+  --foreground: #F0EDE8;
 }
 
 @theme inline {
@@ -12,173 +12,151 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: #080D1C;
+  color: #E8E4DC;
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* --- Přidaná animace pro levitující Risk Score --- */
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
-}
+/* ─── Panel System ──────────────────────────────────────────────────────────── */
+/* Solid dark panels — no blur, no glow. Depth through shadow, not glass.       */
 
-.animate-float {
-  animation: float 4s ease-in-out infinite;
-}
-
-/* ─── Premium Glass System ─────────────────────────────────────────────────── */
-
-/* Floating PDF preview animation — slow luxury idle */
-@keyframes pdf-float {
-  0%   { transform: perspective(1400px) rotateX(2deg) rotateY(-4deg) rotate(-1deg) translateY(-6px); }
-  50%  { transform: perspective(1400px) rotateX(1.5deg) rotateY(-3.5deg) rotate(-0.75deg) translateY(3px); }
-  100% { transform: perspective(1400px) rotateX(2deg) rotateY(-4deg) rotate(-1deg) translateY(-6px); }
-}
-
-.pdf-float {
-  animation: pdf-float 13s ease-in-out infinite;
-  will-change: transform;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .pdf-float {
-    animation: none;
-    transform: perspective(1400px) rotateX(2deg) rotateY(-4deg) rotate(-1deg);
-  }
-}
-
-/* Glass card layers — Premium 2026 hierarchy
-   L1 = cards/sections  L2 = navbar  L3 = featured  L4 = PDF hero
-   Rule: každá vrstva +8px blur, +0.04–0.06 opacity, brighter saturate */
-.glass-1 {
-  backdrop-filter: blur(24px) saturate(170%) brightness(1.02);
-  -webkit-backdrop-filter: blur(24px) saturate(170%) brightness(1.02);
-  background: rgba(8,13,24,0.60);
-}
-.glass-2 {
-  backdrop-filter: blur(32px) saturate(180%) brightness(1.04);
-  -webkit-backdrop-filter: blur(32px) saturate(180%) brightness(1.04);
-  background: rgba(7,11,22,0.76);
-}
-.glass-3 {
-  backdrop-filter: blur(40px) saturate(190%) brightness(1.07);
-  -webkit-backdrop-filter: blur(40px) saturate(190%) brightness(1.07);
-  background: rgba(10,15,28,0.80);
-}
-.glass-4 {
-  backdrop-filter: blur(48px) saturate(200%) brightness(1.09);
-  -webkit-backdrop-filter: blur(48px) saturate(200%) brightness(1.09);
-  background: rgba(12,18,32,0.84);
-}
-
-/* Luminous card — light from top edge (premium refraction effect) */
-.card-luminous {
+.panel {
+  background: #0D1428;
   border: 1px solid rgba(255,255,255,0.07);
-  border-top-color: rgba(255,255,255,0.18);
-  border-radius: 20px;
-  box-shadow:
-    0 1px 0 0 rgba(255,255,255,0.07) inset,
-    0 -1px 0 0 rgba(255,255,255,0.03) inset,
-    0 4px 8px -2px rgba(0,0,0,0.55),
-    0 20px 40px -8px rgba(0,0,0,0.45);
-}
-.card-luminous-amber {
-  border: 1px solid rgba(245,158,11,0.25);
-  border-top-color: rgba(245,158,11,0.50);
-  border-radius: 24px;
-  box-shadow:
-    0 1px 0 0 rgba(245,158,11,0.12) inset,
-    0 4px 8px -2px rgba(0,0,0,0.55),
-    0 24px 48px -8px rgba(0,0,0,0.45),
-    0 0 80px -8px rgba(245,158,11,0.22),
-    0 0 140px -20px rgba(245,158,11,0.12);
-}
-.card-floating {
-  border: 1px solid rgba(255,255,255,0.10);
-  border-top-color: rgba(255,255,255,0.24);
   border-radius: 16px;
-  box-shadow:
-    0 1px 0 0 rgba(255,255,255,0.10) inset,
-    0 8px 20px -4px rgba(0,0,0,0.65),
-    0 32px 64px -12px rgba(0,0,0,0.55),
-    0 0 100px -24px rgba(245,158,11,0.12);
 }
 
-/* Scroll reveal — initial state */
+.panel-lg {
+  background: #0D1428;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+}
+
+.panel-xl {
+  background: #0D1428;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 24px;
+}
+
+.panel-inset {
+  background: #080D1C;
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 12px;
+}
+
+/* Featured pricing panel — gold border accent */
+.panel-gold {
+  background: #0D1428;
+  border: 1px solid rgba(245,158,11,0.22);
+  border-top-color: rgba(245,158,11,0.42);
+  border-radius: 24px;
+}
+
+/* Navbar floating pill */
+.navbar-pill {
+  background: rgba(8,13,28,0.96);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 18px;
+  transition: box-shadow 220ms ease, border-color 220ms ease;
+}
+
+.navbar-pill-scrolled {
+  box-shadow: 0 4px 28px rgba(0,0,0,0.55), 0 1px 0 rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.11);
+}
+
+/* ─── Document card shadow (hero preview) ───────────────────────────────────── */
+.doc-shadow {
+  box-shadow:
+    0 4px 16px rgba(0,0,0,0.45),
+    0 20px 60px rgba(0,0,0,0.55),
+    0 40px 100px rgba(0,0,0,0.30);
+}
+
+/* ─── Card interaction states ───────────────────────────────────────────────── */
+.panel-interactive {
+  transition: border-color 180ms ease, transform 180ms ease;
+}
+.panel-interactive:hover {
+  border-color: rgba(255,255,255,0.13);
+  transform: translateY(-2px);
+}
+
+/* ─── CTA Buttons ───────────────────────────────────────────────────────────── */
+.cta-primary {
+  display: inline-flex;
+  align-items: center;
+  background: #F59E0B;
+  color: #000;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  border-radius: 14px;
+  padding: 1rem 2rem;
+  font-size: 0.875rem;
+  transition: background 150ms ease, transform 150ms ease;
+}
+.cta-primary:hover {
+  background: #FBBF24;
+  transform: translateY(-1px);
+}
+.cta-primary:active {
+  transform: translateY(0);
+}
+
+.cta-outline {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(255,255,255,0.11);
+  color: #9CA3AF;
+  font-size: 0.875rem;
+  border-radius: 14px;
+  padding: 1rem 1.5rem;
+  transition: border-color 150ms ease, color 150ms ease, transform 150ms ease;
+}
+.cta-outline:hover {
+  border-color: rgba(255,255,255,0.22);
+  color: #E5E7EB;
+  transform: translateY(-1px);
+}
+
+/* ─── Section labels ────────────────────────────────────────────────────────── */
+.section-label {
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: #F59E0B;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+/* ─── Scroll Reveal ─────────────────────────────────────────────────────────── */
 .reveal {
   opacity: 0;
-  transform: translateY(22px);
-  transition: opacity 0.60s cubic-bezier(0.16,1,0.3,1), transform 0.60s cubic-bezier(0.16,1,0.3,1);
+  transform: translateY(20px);
+  transition: opacity 0.55s cubic-bezier(0.16,1,0.3,1), transform 0.55s cubic-bezier(0.16,1,0.3,1);
 }
 .reveal.visible {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* Stagger delay helpers */
 .reveal-delay-1 { transition-delay: 80ms; }
 .reveal-delay-2 { transition-delay: 160ms; }
 .reveal-delay-3 { transition-delay: 240ms; }
 .reveal-delay-4 { transition-delay: 320ms; }
 
-/* ─── Mobile Polish ────────────────────────────────────────────────────────── */
-@media (max-width: 768px) {
-  /* Disable 3D tilt on PDF card — performance + no awkward tilt on small screens */
-  .pdf-float {
-    animation: none;
-    transform: none !important;
-    will-change: auto;
-  }
-
-  /* Reduce blur on mobile — CoreWebVitals + battery */
-  .glass-1 {
-    backdrop-filter: blur(12px) saturate(150%);
-    -webkit-backdrop-filter: blur(12px) saturate(150%);
-  }
-  .glass-2 {
-    backdrop-filter: blur(16px) saturate(160%);
-    -webkit-backdrop-filter: blur(16px) saturate(160%);
-  }
-  .glass-3 {
-    backdrop-filter: blur(20px) saturate(170%);
-    -webkit-backdrop-filter: blur(20px) saturate(170%);
-  }
-  .glass-4 {
-    backdrop-filter: blur(24px) saturate(180%);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-  }
-}
-
-/* Tabular numerals for pricing — prevents layout shift on price display */
+/* ─── Tabular Numerals ──────────────────────────────────────────────────────── */
 .font-tabular {
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
 }
 
-/* CTA button shadow — reusable amber glow */
-.shadow-cta {
-  box-shadow:
-    0 0 0 1px rgba(245,158,11,0.45),
-    0 4px 20px rgba(245,158,11,0.28),
-    0 8px 40px rgba(245,158,11,0.13);
-}
-
-/* Ambient noise overlay */
-.noise-overlay::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
-  pointer-events: none;
-  z-index: 0;
+/* ─── Mobile ────────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .doc-tilt {
+    transform: none !important;
+  }
 }

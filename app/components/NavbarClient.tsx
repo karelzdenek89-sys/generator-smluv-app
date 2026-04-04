@@ -1,11 +1,10 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 /**
- * Enhances the floating navbar with scroll-driven shadow/blur intensification.
- * Reads the navbar element via a ref and updates its box-shadow on scroll.
- * The navbar remains a server-rendered element; this only adds scroll behavior.
+ * Adds a clean depth shadow to the floating navbar on scroll.
+ * No background color override — the navbar-pill class handles base styling.
  */
 export default function NavbarClient() {
   useEffect(() => {
@@ -20,12 +19,11 @@ export default function NavbarClient() {
       requestAnimationFrame(() => {
         const scrolled = window.scrollY > 60;
         if (scrolled) {
-          navbar!.style.boxShadow =
-            '0 2px 0 0 rgba(255,255,255,0.06) inset, 0 8px 24px -4px rgba(0,0,0,0.7), 0 24px 48px -8px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.05)';
-          navbar!.style.background = 'rgba(6,10,20,0.85)';
+          navbar!.style.boxShadow = '0 4px 28px rgba(0,0,0,0.55)';
+          navbar!.style.borderColor = 'rgba(255,255,255,0.11)';
         } else {
           navbar!.style.boxShadow = '';
-          navbar!.style.background = '';
+          navbar!.style.borderColor = '';
         }
         ticking = false;
       });
