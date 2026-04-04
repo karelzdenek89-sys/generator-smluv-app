@@ -4,7 +4,7 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'DPP — Dohoda o provedení práce 2026 — vzor online | SmlouvaHned',
   description:
-    'Dohoda o provedení práce (DPP) pro brigády a jednorázové úkoly. Max. 300 hod./rok. Dle zákoníku práce 2026. IP doložka, bezodvodový rámec. PDF ihned od 249 Kč.',
+    'Dohoda o provedení práce (DPP) pro brigády a jednorázové úkoly. Max. 300 hod./rok. Dle zákoníku práce 2026. IP doložka, bezodvodový rámec. PDF ke stažení od 249 Kč.',
   keywords: [
     'DPP', 'dohoda o provedení práce', 'dohoda o provedení práce vzor', 'DPP 2026',
     'dohoda o provedení práce online', 'DPP ke stažení', 'brigáda smlouva',
@@ -86,7 +86,7 @@ export default function DohodaOProvedeniPracePage() {
             className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-8 py-4 text-base font-black uppercase tracking-tight text-black shadow-[0_0_30px_rgba(245,158,11,0.25)] transition hover:bg-amber-400">
             Sestavit DPP →
           </Link>
-          <div className="mt-4 text-sm text-slate-500">Od 249 Kč · PDF ihned · Zákoník práce 2026</div>
+          <div className="mt-4 text-sm text-slate-500">Od 249 Kč · PDF ke stažení · Zákoník práce 2026</div>
         </div>
 
         <section className="mb-12 rounded-3xl border border-white/8 bg-[#0c1426] p-8">
@@ -153,7 +153,7 @@ export default function DohodaOProvedeniPracePage() {
             className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-8 py-4 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400">
             Sestavit DPP →
           </Link>
-          <div className="mt-3 text-xs text-slate-600">Od 249 Kč · § 75 ZP · PDF ihned</div>
+          <div className="mt-3 text-xs text-slate-600">Od 249 Kč · § 75 ZP · PDF ke stažení</div>
         </section>
 
         <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">

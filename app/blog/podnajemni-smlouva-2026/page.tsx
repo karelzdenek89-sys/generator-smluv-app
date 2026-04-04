@@ -91,7 +91,7 @@ export default function PodnajemniSmlouvaPage() {
 
         <div className="mt-7 rounded-2xl border border-amber-500/20 bg-amber-500/8 p-5">
           <p className="mb-3 text-sm font-bold text-white">Potřebujete podnájemní smlouvu?</p>
-          <p className="mb-4 text-sm text-slate-400">Vytvořte podnájemní smlouvu online — s právem podnájemce, povinnostmi, výší podnájemného a výpovědními podmínkami. PDF ihned.</p>
+          <p className="mb-4 text-sm text-slate-400">Vytvořte podnájemní smlouvu online — s právem podnájemce, povinnostmi, výší podnájemného a výpovědními podmínkami. PDF ke stažení po ověřené platbě.</p>
           <Link
             href="/podnajem"
             className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-2.5 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400"
@@ -348,7 +348,7 @@ export default function PodnajemniSmlouvaPage() {
         <div className="mb-2 text-[11px] font-black uppercase tracking-widest text-amber-400">Připraveni?</div>
         <h2 className="mb-4 text-2xl font-black tracking-tight text-white">Vytvořte podnájemní smlouvu online</h2>
         <p className="mx-auto mb-6 max-w-sm text-sm leading-relaxed text-slate-400">
-          Formulář vás provede každou částí smlouvy — od předmětu podnájmu po výpovědní podmínky. PDF ihned.
+          Formulář vás provede každou částí smlouvy — od předmětu podnájmu po výpovědní podmínky. PDF ke stažení po ověřené platbě.
         </p>
         <Link
           href="/podnajem"
@@ -364,10 +364,10 @@ export default function PodnajemniSmlouvaPage() {
         <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-600">Mohlo by vás zajímat</div>
         <div className="flex flex-wrap gap-3">
           {[
-            { href: '/podnajemni-smlouva', label: '🏠 Podnájemní smlouva — přehled' },
-            { href: '/blog/najemni-smlouva-vzor-2026', label: '🔑 Nájemní smlouva' },
-            { href: '/najemni-smlouva', label: '📋 Průvodce nájemní smlouvou' },
-            { href: '/najem', label: '📝 Vytvořit nájemní smlouvu' },
+            { href: '/podnajemni-smlouva', label: '🏘️ Podnájemní smlouva — formulář' },
+            { href: '/blog/najemni-smlouva-vzor-2026', label: '🏠 Nájemní smlouva — průvodce' },
+            { href: '/blog/smlouva-o-dilo-2026', label: '🔨 Smlouva o dílo — průvodce' },
+            { href: '/blog/kupni-smlouva-movita-vec', label: '🛒 Kupní smlouva — průvodce' },
             { href: '/', label: '📋 Všechny smlouvy' },
           ].map(l => (
             <Link key={l.href} href={l.href} className="rounded-xl border border-white/8 bg-white/3 px-4 py-2 text-sm text-slate-400 transition hover:border-white/15 hover:text-white">{l.label}</Link>

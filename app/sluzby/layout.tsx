@@ -4,12 +4,12 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
 export const metadata: Metadata = {
   title: 'Smlouva o poskytování služeb online 2026 | SmlouvaHned',
-  description: 'Smlouva o poskytování služeb pro freelancery a agentury. SLA, IP práva, mlčenlivost. PDF ihned. Od 249 Kč.',
+  description: 'Smlouva o poskytování služeb pro freelancery a agentury. SLA, IP práva, mlčenlivost. PDF ke stažení po ověřené platbě. Od 249 Kč.',
   keywords: ['smlouva o poskytování služeb', 'smlouva o službách vzor 2026', 'freelancer smlouva', 'smlouva o službách online'],
   alternates: { canonical: `${BASE_URL}/sluzby` },
   openGraph: {
     title: 'Smlouva o poskytování služeb online 2026 | SmlouvaHned',
-    description: 'Smlouva o poskytování služeb pro freelancery a agentury. SLA, IP práva, mlčenlivost. PDF ihned. Od 249 Kč.',
+    description: 'Smlouva o poskytování služeb pro freelancery a agentury. SLA, IP práva, mlčenlivost. PDF ke stažení po ověřené platbě. Od 249 Kč.',
     url: `${BASE_URL}/sluzby`,
     type: 'website',
   },

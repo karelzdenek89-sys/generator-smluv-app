@@ -470,10 +470,10 @@ export default function SmlouvaODiloPage() {
         <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-600">Mohlo by vás zajímat</div>
         <div className="flex flex-wrap gap-3">
           {[
-            { href: '/smlouva-o-dilo', label: '📐 Smlouva o dílo — landing page' },
-            { href: '/sluzby', label: '🔧 Smlouva o poskytování služeb' },
-            { href: '/spoluprace', label: '🤝 Smlouva o spolupráci' },
-            { href: '/blog/kupni-smlouva-na-auto-2026', label: '🚗 Kupní smlouva na auto — průvodce' },
+            { href: '/smlouva-o-dilo', label: '📐 Smlouva o dílo — formulář' },
+            { href: '/blog/smlouva-o-sluzbach-2026', label: '🔧 Smlouva o službách — průvodce' },
+            { href: '/blog/smlouva-o-spolupraci-2026', label: '🤝 Smlouva o spolupráci — průvodce' },
+            { href: '/blog/nda-smlouva-mlcenlivost', label: '🔒 NDA smlouva — průvodce' },
             { href: '/', label: '📑 Všechny smlouvy' },
           ].map(l => (
             <Link

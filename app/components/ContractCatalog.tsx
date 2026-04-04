@@ -95,7 +95,7 @@ const groups: ContractGroup[] = [
       },
       {
         title:       'Darovací smlouva',
-        description: 'Pro převod peněz, auta nebo nemovitosti jako dar. Právně čistý doklad vhodný pro rodinu i osoby mimo příbuzenstvo.',
+        description: 'Pro převod peněz, auta nebo nemovitosti jako dar. Strukturovaný dokument vhodný pro rodinu i osoby mimo příbuzenstvo.',
         href:        '/darovaci',
         price:       'od 249 Kč',
         accentKey:   'gift',

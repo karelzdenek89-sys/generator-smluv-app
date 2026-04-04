@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   alternates: { canonical: `${BASE_URL}/darovaci` },
   openGraph: {
     title: 'Vytvořit darovací smlouvu — formulář online | SmlouvaHned',
-    description: 'Formulář krok za krokem. Darovací smlouva dle § 2055 OZ. PDF ihned ke stažení. Od 249 Kč.',
+    description: 'Formulář krok za krokem. Darovací smlouva dle § 2055 OZ. PDF ke stažení po ověřené platbě. Od 249 Kč.',
     url: `${BASE_URL}/darovaci`,
     type: 'website',
   },

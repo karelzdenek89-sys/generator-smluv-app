@@ -431,10 +431,10 @@ export default function KupniSmlouvaAutoPage() {
         <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-600">Mohlo by vás zajímat</div>
         <div className="flex flex-wrap gap-3">
           {[
-            { href: '/auto', label: '🚗 Kupní smlouva na auto — landing page' },
-            { href: '/kupni', label: '📦 Kupní smlouva na movitou věc' },
-            { href: '/blog/najemni-smlouva-vzor-2026', label: '🏠 Nájemní smlouva — průvodce' },
-            { href: '/plna-moc', label: '📋 Plná moc' },
+            { href: '/auto', label: '🚗 Kupní smlouva na auto — formulář' },
+            { href: '/blog/kupni-smlouva-movita-vec', label: '📦 Kupní smlouva — movitá věc' },
+            { href: '/blog/darovaci-smlouva-2026', label: '🎁 Darovací smlouva — průvodce' },
+            { href: '/blog/smlouva-o-zapujcce-2026', label: '💰 Smlouva o zápůjčce — průvodce' },
             { href: '/', label: '📑 Všechny smlouvy' },
           ].map(l => (
             <Link

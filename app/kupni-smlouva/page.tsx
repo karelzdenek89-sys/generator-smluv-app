@@ -4,7 +4,7 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Kupní smlouva online 2026 — vzor ke stažení | SmlouvaHned',
   description:
-    'Kupní smlouva na auto, elektroniku, nábytek nebo jakoukoliv věc. Dle § 2079 OZ 2026. Vady, záruka, prohlášení prodávajícího. PDF ihned od 249 Kč.',
+    'Kupní smlouva na auto, elektroniku, nábytek nebo jakoukoliv věc. Dle § 2079 OZ 2026. Vady, záruka, prohlášení prodávajícího. PDF ke stažení od 249 Kč.',
   keywords: [
     'kupní smlouva', 'kupní smlouva vzor', 'kupní smlouva online', 'kupní smlouva 2026',
     'kupní smlouva auto', 'kupní smlouva PDF', 'kupní smlouva movitá věc',
@@ -96,7 +96,7 @@ export default function KupniSmlouvaPage() {
               Kupní smlouva na auto →
             </Link>
           </div>
-          <div className="text-sm text-slate-500">Od 249 Kč · PDF ihned · Dle § 2079 OZ</div>
+          <div className="text-sm text-slate-500">Od 249 Kč · PDF ke stažení · Dle § 2079 OZ</div>
         </div>
 
         <section className="mb-12 rounded-3xl border border-white/8 bg-[#0c1426] p-8">
@@ -160,7 +160,7 @@ export default function KupniSmlouvaPage() {
         <section className="rounded-3xl border border-amber-500/20 bg-gradient-to-br from-amber-500/10 to-transparent p-8 text-center">
           <h2 className="text-2xl font-black text-white mb-3">Sestavte kupní smlouvu</h2>
           <p className="text-slate-400 text-sm mb-6 max-w-md mx-auto">
-            Formulář pro prodej věci nebo auta — přesně dle vašich podmínek, PDF ihned.
+            Formulář pro prodej věci nebo auta — přesně dle vašich podmínek, PDF ke stažení po ověřené platbě.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link href="/kupni"
@@ -172,7 +172,7 @@ export default function KupniSmlouvaPage() {
               Kupní smlouva na auto →
             </Link>
           </div>
-          <div className="mt-3 text-xs text-slate-600">Od 249 Kč · § 2079 OZ · PDF ihned</div>
+          <div className="mt-3 text-xs text-slate-600">Od 249 Kč · § 2079 OZ · PDF ke stažení</div>
         </section>
 
         <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">

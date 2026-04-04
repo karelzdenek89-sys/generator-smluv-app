@@ -452,10 +452,10 @@ export default function PracovniSmlouvaVzor2026Page() {
         <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-600">Mohlo by vás zajímat</div>
         <div className="flex flex-wrap gap-3">
           {[
-            { href: '/pracovni-smlouva', label: '👔 Pracovní smlouva — přehled' },
-            { href: '/dpp', label: '📄 Dohoda o provedení práce' },
-            { href: '/smlouva-o-dilo-online', label: '🔨 Smlouva o dílo' },
-            { href: '/blog/smlouva-o-dilo-2026', label: '📖 Smlouva o dílo vzor' },
+            { href: '/pracovni-smlouva', label: '👔 Pracovní smlouva — formulář' },
+            { href: '/blog/dpp-dohoda-provedeni-prace', label: '📄 DPP — průvodce' },
+            { href: '/blog/smlouva-o-dilo-2026', label: '🔨 Smlouva o dílo — průvodce' },
+            { href: '/blog/nda-smlouva-mlcenlivost', label: '🔒 NDA smlouva — průvodce' },
             { href: '/', label: '📋 Všechny smlouvy' },
           ].map(l => (
             <Link

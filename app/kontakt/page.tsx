@@ -87,6 +87,11 @@ export default function KontaktPage() {
             ← Zpět na výběr smluv
           </Link>
         </div>
+
+        <div className="mt-10 pt-8 border-t border-white/5 text-xs text-slate-600 leading-relaxed text-center">
+          <p>Provozovatel: Karel Zdeněk · IČO: 23660295 · Plzeňská 189, 345 61 Staňkov</p>
+          <p className="mt-1">SmlouvaHned.cz je obchodní označení online platformy provozované touto osobou. Neposkytujeme právní poradenství.</p>
+        </div>
       </div>
     </main>
   );

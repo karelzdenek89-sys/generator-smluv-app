@@ -275,7 +275,7 @@ export default function Home() {
               <div className="mt-8 flex flex-wrap gap-x-6 gap-y-2">
                 {[
                   { icon: '🔒', label: 'Platby přes Stripe' },
-                  { icon: '📄', label: 'PDF ihned ke stažení' },
+                  { icon: '📄', label: 'PDF ke stažení po ověřené platbě' },
                   { icon: '📋', label: '14 typů dokumentů' },
                   { icon: '🏢', label: 'IČO 23660295' },
                 ].map(t => (
@@ -517,8 +517,8 @@ export default function Home() {
                   </svg>
                 ),
                 tag: 'Výstup',
-                title: 'PDF rovnou k podpisu',
-                desc: 'Žádné prázdné kolonky ani šablony k přepisování. Výsledkem je kompletní dokument — stačí vytisknout nebo zaslat e-mailem.',
+                title: 'Strukturovaný výstup ve formátu PDF',
+                desc: 'Žádné prázdné kolonky ani šablony k přepisování. Výsledkem je kompletní dokument sestavený podle vašich podmínek — k závěrečné kontrole a podpisu.',
               },
               {
                 icon: (
@@ -859,7 +859,7 @@ export default function Home() {
             <div className="relative z-10">
               <div className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Začít</div>
               <h2 className="text-[clamp(1.875rem,4vw,3rem)] font-black tracking-tight text-white">
-                Váš dokument je na pár kliknutí
+                Sestavte smluvní dokument systematicky
               </h2>
               <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-slate-300 md:text-base">
                 Formulář vyplníte za přibližně 5 minut. Výsledkem je strukturovaný dokument
@@ -899,10 +899,11 @@ export default function Home() {
                 </p>
                 <div className="mt-4 space-y-0.5 text-xs text-slate-600">
                   <p>Provozovatel: Karel Zdeněk</p>
-                  <p>IČO: 23660295</p>
+                  <p>IČO: 23660295 · Plzeňská 189, 345 61 Staňkov</p>
                   <p>
                     <a href="mailto:info@smlouvahned.cz" className="hover:text-amber-400 transition">info@smlouvahned.cz</a>
                   </p>
+                  <p className="mt-1 text-slate-700">SmlouvaHned.cz je obchodní označení platformy provozované výše uvedenou osobou.</p>
                 </div>
               </div>
 

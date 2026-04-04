@@ -91,7 +91,7 @@ export default function UznaniDluhu2026Page() {
 
         <div className="mt-7 rounded-2xl border border-amber-500/20 bg-amber-500/8 p-5">
           <p className="mb-3 text-sm font-bold text-white">Potřebujete uznání dluhu?</p>
-          <p className="mb-4 text-sm text-slate-400">Vytvořte uznání dluhu online — s přesnou výší dluhu, důvodem vzniku a závazkem splácení. PDF ihned.</p>
+          <p className="mb-4 text-sm text-slate-400">Vytvořte uznání dluhu online — s přesnou výší dluhu, důvodem vzniku a závazkem splácení. PDF ke stažení po ověřené platbě.</p>
           <Link
             href="/uznani-dluhu"
             className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-2.5 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400"

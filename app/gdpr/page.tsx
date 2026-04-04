@@ -32,15 +32,14 @@ export default function GdprPage() {
               1. Správce osobních údajů
             </h2>
             <p className="mb-3">
-              Správcem osobních údajů je provozovatel platformy <strong className="text-white">SmlouvaHned</strong> (dále jen „Správce"):
+              Správcem osobních údajů je <strong className="text-white">Karel Zdeněk</strong>, IČO 23660295, s místem podnikání Plzeňská 189, 345 61 Staňkov, kontaktní e-mail: <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">info@smlouvahned.cz</a> (dále jen „Správce"). Web SmlouvaHned.cz je obchodní označení online platformy provozované tímto správcem.
             </p>
             <div className="bg-white/3 border border-white/8 rounded-xl p-4 text-slate-300 space-y-1 text-sm">
-              <p><strong className="text-white">SmlouvaHned</strong></p>
+              <p><strong className="text-white">Karel Zdeněk</strong></p>
               <p>IČO: 23660295</p>
-              {/* PŘED SPUŠTĚNÍM: doplňte adresu sídla/místa podnikání */}
-              <p>Sídlo: <span className="text-amber-400">Plzeňská 189, 345 61 Staňkov</span></p>
+              <p>Místo podnikání: Plzeňská 189, 345 61 Staňkov</p>
               <p>Kontaktní e-mail: <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">info@smlouvahned.cz</a></p>
-              <p>Web: smlouvahned.cz</p>
+              <p>Obchodní označení platformy: SmlouvaHned.cz</p>
             </div>
             <p className="mt-3 text-slate-400 text-xs">
               Správce zpracovává osobní údaje v souladu s nařízením Evropského parlamentu a Rady (EU) 2016/679 (GDPR) a zákonem č. 110/2019 Sb., o zpracování osobních údajů.
@@ -154,7 +153,7 @@ export default function GdprPage() {
           </section>
 
           <section className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-[10px] text-slate-600 uppercase tracking-widest">SmlouvaHned © 2026</p>
+            <p className="text-[10px] text-slate-600 uppercase tracking-widest">Karel Zdeněk · IČO 23660295 · SmlouvaHned.cz © 2026</p>
             <Link href="/" className="px-8 py-3 bg-white/5 border border-white/10 rounded-full text-white text-[10px] font-black uppercase hover:bg-amber-500 hover:text-black transition">
               Zpět na úvodní stránku
             </Link>

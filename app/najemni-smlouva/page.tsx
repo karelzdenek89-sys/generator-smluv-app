@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Nájemní smlouva jednoduše a správně — vzor 2026 online',
+  title: 'Nájemní smlouva online — strukturovaný formulář | vzor 2026',
   description:
     'Vytvořte nájemní smlouvu na byt nebo dům online. Vhodné pro běžné pronájmy, bez složitého hledání vzorů. Aktuální dle OZ 2026, předávací protokol v ceně. Od 249 Kč.',
   keywords: [
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: 'https://smlouvahned.cz/najemni-smlouva' },
   openGraph: {
-    title: 'Nájemní smlouva jednoduše a správně — vzor 2026',
+    title: 'Nájemní smlouva online — strukturovaný formulář | vzor 2026',
     description:
       'Nájemní smlouva online pro pronajímatele i nájemníky. Aktuální dle OZ 2026. Předávací protokol v ceně. Od 249 Kč.',
     url: 'https://smlouvahned.cz/najemni-smlouva',
@@ -133,7 +133,7 @@ export default function NajemniSmlouvaPage() {
 
           <h1 className="mt-2 max-w-3xl text-4xl font-black leading-tight tracking-tight text-white md:text-5xl lg:text-6xl">
             Nájemní smlouva<br />
-            <span className="text-amber-500 italic">jednoduše a správně</span>
+            <span className="text-amber-500 italic">strukturovaně a systematicky</span>
           </h1>
 
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-slate-400">
@@ -145,7 +145,7 @@ export default function NajemniSmlouvaPage() {
             {[
               '✓ Aktuální dle OZ 2026',
               '✓ Předávací protokol v ceně',
-              '✓ PDF ihned ke stažení',
+              '✓ PDF ke stažení po ověřené platbě',
               '✓ Platba přes Stripe',
             ].map(b => (
               <li key={b} className="rounded-full border border-white/10 bg-white/4 px-4 py-1.5 text-xs font-semibold text-slate-300">
@@ -283,7 +283,7 @@ export default function NajemniSmlouvaPage() {
                   'Všechna zákonná povinná ustanovení',
                   'Přizpůsobená vašim podmínkám',
                   'Předávací protokol jako příloha',
-                  'PDF ihned ke stažení',
+                  'PDF ke stažení po ověřené platbě',
                   'Platné pro legislativu 2026',
                 ].map(f => (
                   <li key={f} className="flex items-start gap-2 text-sm text-slate-300">
@@ -373,7 +373,7 @@ export default function NajemniSmlouvaPage() {
               <span className="text-lg">→</span>
             </Link>
             <div className="mt-4 text-xs text-slate-600">
-              Od 249 Kč · PDF ihned · Dle § 2201 OZ · Bez závazků
+              Od 249 Kč · PDF ke stažení · Dle § 2201 OZ · Bez závazků
             </div>
           </div>
         </section>

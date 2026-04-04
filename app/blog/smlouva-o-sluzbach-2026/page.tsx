@@ -91,7 +91,7 @@ export default function SmlouvaOSluzbach2026Page() {
 
         <div className="mt-7 rounded-2xl border border-amber-500/20 bg-amber-500/8 p-5">
           <p className="mb-3 text-sm font-bold text-white">Potřebujete smlouvu o službách?</p>
-          <p className="mb-4 text-sm text-slate-400">Vytvořte smlouvu o poskytování služeb online — s popisem služby, cenou, reklamačními podmínkami a výpovědí. PDF ihned.</p>
+          <p className="mb-4 text-sm text-slate-400">Vytvořte smlouvu o poskytování služeb online — s popisem služby, cenou, reklamačními podmínkami a výpovědí. PDF ke stažení po ověřené platbě.</p>
           <Link
             href="/sluzby"
             className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-2.5 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400"

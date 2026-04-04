@@ -91,7 +91,7 @@ export default function NdaSmlouvaPage() {
               Vytvořit NDA smlouvu →
             </Link>
           </div>
-          <div className="text-sm text-slate-500">Od 249 Kč · PDF ihned · Dle § 504 OZ</div>
+          <div className="text-sm text-slate-500">Od 249 Kč · PDF ke stažení · Dle § 504 OZ</div>
         </div>
 
         <section className="mb-12 rounded-3xl border border-white/8 bg-[#0c1426] p-8">
@@ -155,7 +155,7 @@ export default function NdaSmlouvaPage() {
         <section className="rounded-3xl border border-violet-500/20 bg-gradient-to-br from-violet-500/10 to-transparent p-8 text-center">
           <h2 className="text-2xl font-black text-white mb-3">Sestavte NDA smlouvu</h2>
           <p className="text-slate-400 text-sm mb-6 max-w-md mx-auto">
-            Formulář pro ochranu citlivých informací — jednostranná nebo oboustranná, PDF ihned.
+            Formulář pro ochranu citlivých informací — jednostranná nebo oboustranná, PDF ke stažení po ověřené platbě.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link href="/nda"
@@ -163,7 +163,7 @@ export default function NdaSmlouvaPage() {
               Vytvořit NDA smlouvu →
             </Link>
           </div>
-          <div className="mt-3 text-xs text-slate-600">Od 249 Kč · § 504 OZ · PDF ihned</div>
+          <div className="mt-3 text-xs text-slate-600">Od 249 Kč · § 504 OZ · PDF ke stažení</div>
         </section>
 
         <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">

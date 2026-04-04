@@ -33,7 +33,7 @@ export default function TermsPage() {
               <div>
                 <div className="font-black text-white text-sm mb-1">Důležité upozornění</div>
                 <p className="text-rose-200 text-xs leading-relaxed">
-                  SmlouvaHned <strong>není advokátní kanceláří</strong> a neposkytuje právní služby ve smyslu zákona č. 85/1996 Sb., o advokacii. Platforma je automatizovaný software (SaaS) pro generování standardních právních dokumentů. U složitých, sporných nebo nestandardních případů doporučujeme konzultaci s advokátem.
+                  Platforma SmlouvaHned.cz <strong>není advokátní kanceláří</strong> a neposkytuje právní služby ve smyslu zákona č. 85/1996 Sb., o advokacii. Provozovatelem je fyzická osoba — podnikatel Karel Zdeněk (IČO 23660295); platforma je automatizovaný software (SaaS) pro tvorbu standardizovaných smluvních dokumentů. U složitých, sporných nebo nestandardních případů doporučujeme konzultaci s advokátem.
                 </p>
               </div>
             </div>
@@ -43,16 +43,18 @@ export default function TermsPage() {
             <h2 className="text-amber-500 font-black uppercase text-xs tracking-widest mb-4">
               01. Provozovatel a identifikační údaje
             </h2>
+            <p className="mb-3 text-slate-300">
+              Provozovatelem webu, prodávajícím a poskytovatelem služby je <strong className="text-white">Karel Zdeněk</strong>, IČO 23660295, s místem podnikání Plzeňská 189, 345 61 Staňkov, kontaktní e-mail: <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">info@smlouvahned.cz</a>. Web SmlouvaHned.cz je obchodní označení online platformy provozované touto osobou.
+            </p>
             <div className="bg-[#0c1426]/60 border border-white/5 rounded-2xl p-5 text-sm space-y-1">
-              <p><strong className="text-white">Obchodní jméno:</strong> SmlouvaHned</p>
+              <p><strong className="text-white">Provozovatel:</strong> Karel Zdeněk</p>
               <p><strong className="text-white">IČO:</strong> 23660295</p>
-              {/* PŘED SPUŠTĚNÍM: doplňte adresu sídla/místa podnikání dle živnostenského rejstříku */}
-              <p><strong className="text-white">Sídlo / místo podnikání:</strong> <span className="text-amber-400">Plzeňská 189, 345 61 Staňkov</span></p>
-              <p><strong className="text-white">Webová adresa:</strong> smlouvahned.cz</p>
+              <p><strong className="text-white">Místo podnikání:</strong> Plzeňská 189, 345 61 Staňkov</p>
+              <p><strong className="text-white">Obchodní označení platformy:</strong> SmlouvaHned.cz</p>
               <p><strong className="text-white">Kontaktní e-mail:</strong> <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">info@smlouvahned.cz</a></p>
             </div>
             <p className="mt-3 text-slate-400 text-xs">
-              Tyto obchodní podmínky (dále jen „OP") upravují práva a povinnosti mezi Provozovatelem platformy SmlouvaHned (dále jen „Poskytovatel") a uživatelem (dále jen „Zákazník").
+              Tyto obchodní podmínky (dále jen „OP") upravují práva a povinnosti mezi Poskytovatelem (Karel Zdeněk, IČO 23660295, dále jen „Poskytovatel") a uživatelem (dále jen „Zákazník").
             </p>
           </section>
 
@@ -61,7 +63,7 @@ export default function TermsPage() {
               02. Předmět služby
             </h2>
             <p className="mb-3">
-              Předmětem služby je umožnění Zákazníkovi sestavit si vlastní právní dokument na základě jím vložených údajů do inteligentního online formuláře. Výstupem je soubor ve formátu PDF připravený k tisku a použití.
+              Předmětem služby je umožnění Zákazníkovi sestavit strukturovaný smluvní dokument na základě údajů vložených do online formuláře. Platforma funguje jako softwarový nástroj (SaaS) pro automatizovanou tvorbu standardizovaných dokumentů — neposkytuje právní poradenství ani právní zastoupení. Výstupem je soubor ve formátu PDF určený k závěrečné kontrole a podpisu.
             </p>
             <p>
               Aktuálně dostupné typy dokumentů: Nájemní smlouva, Podnájemní smlouva, Kupní smlouva, Kupní smlouva na vozidlo, Darovací smlouva, Smlouva o dílo, Smlouva o zápůjčce, Smlouva o mlčenlivosti (NDA), Pracovní smlouva, Dohoda o provedení práce (DPP), Smlouva o poskytování služeb, Smlouva o spolupráci, Plná moc, Uznání dluhu.
@@ -155,7 +157,7 @@ export default function TermsPage() {
           </section>
 
           <section className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-[10px] text-slate-600 uppercase tracking-widest">SmlouvaHned © 2026 • Právní jistota na jeden klik</p>
+            <p className="text-[10px] text-slate-600 uppercase tracking-widest">Karel Zdeněk · IČO 23660295 · SmlouvaHned.cz © 2026</p>
             <Link href="/" className="px-8 py-3 bg-white/5 border border-white/10 rounded-full text-white text-[10px] font-black uppercase hover:bg-amber-500 hover:text-black transition">
               Zpět na úvodní stránku
             </Link>

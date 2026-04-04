@@ -444,10 +444,10 @@ export default function NajemniSmlouvaVzor2026Page() {
         <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-600">Mohlo by vás zajímat</div>
         <div className="flex flex-wrap gap-3">
           {[
-            { href: '/najemni-smlouva', label: '🏠 Nájemní smlouva — landing page' },
-            { href: '/podnajem', label: '🏘️ Podnájemní smlouva' },
-            { href: '/kupni-smlouva', label: '🛒 Kupní smlouva' },
-            { href: '/pracovni-smlouva', label: '💼 Pracovní smlouva' },
+            { href: '/najemni-smlouva', label: '🏠 Nájemní smlouva — formulář' },
+            { href: '/blog/podnajemni-smlouva-2026', label: '🏘️ Podnájemní smlouva — průvodce' },
+            { href: '/blog/kupni-smlouva-movita-vec', label: '🛒 Kupní smlouva — průvodce' },
+            { href: '/blog/pracovni-smlouva-2026', label: '💼 Pracovní smlouva — průvodce' },
             { href: '/', label: '📋 Všechny smlouvy' },
           ].map(l => (
             <Link

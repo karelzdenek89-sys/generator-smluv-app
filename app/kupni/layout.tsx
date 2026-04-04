@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   alternates: { canonical: `${BASE_URL}/kupni` },
   openGraph: {
     title: 'Vytvořit kupní smlouvu na věc — formulář | SmlouvaHned',
-    description: 'Formulář krok za krokem. Kupní smlouva na movitou věc v PDF ihned. Od 249 Kč.',
+    description: 'Formulář krok za krokem. Kupní smlouva na movitou věc v PDF ke stažení po ověřené platbě. Od 249 Kč.',
     url: `${BASE_URL}/kupni`,
     type: 'website',
   },
