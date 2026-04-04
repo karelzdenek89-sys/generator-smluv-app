@@ -1,69 +1,74 @@
 @import "tailwindcss";
 
 :root {
-  --background: #080D1C;
+  --background: #080B15;
   --foreground: #F0EDE8;
+  --gold: #C9A96E;
+  --gold-light: #D4B87A;
+  --gold-dark: #A8843A;
+  --gold-muted: rgba(201,169,110,0.18);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-gold: #C9A96E;
+  --color-gold-light: #D4B87A;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 body {
-  background: #080D1C;
+  background: #080B15;
   color: #E8E4DC;
   font-family: Arial, Helvetica, sans-serif;
 }
 
 /* ─── Panel System ──────────────────────────────────────────────────────────── */
-/* Solid dark panels — no blur, no glow. Depth through shadow, not glass.       */
 
 .panel {
-  background: #0D1428;
+  background: #0D1228;
   border: 1px solid rgba(255,255,255,0.07);
   border-radius: 16px;
 }
 
 .panel-lg {
-  background: #0D1428;
+  background: #0D1228;
   border: 1px solid rgba(255,255,255,0.07);
   border-radius: 20px;
 }
 
 .panel-xl {
-  background: #0D1428;
+  background: #0D1228;
   border: 1px solid rgba(255,255,255,0.07);
   border-radius: 24px;
 }
 
 .panel-inset {
-  background: #080D1C;
+  background: #080B15;
   border: 1px solid rgba(255,255,255,0.05);
   border-radius: 12px;
 }
 
 /* Featured pricing panel — gold border accent */
 .panel-gold {
-  background: #0D1428;
-  border: 1px solid rgba(245,158,11,0.22);
-  border-top-color: rgba(245,158,11,0.42);
+  background: #0D1228;
+  border: 1px solid rgba(201,169,110,0.22);
+  border-top-color: rgba(201,169,110,0.42);
   border-radius: 24px;
 }
 
-/* Navbar floating pill */
-.navbar-pill {
-  background: rgba(8,13,28,0.96);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 18px;
-  transition: box-shadow 220ms ease, border-color 220ms ease;
+/* ─── Flat Navbar ───────────────────────────────────────────────────────────── */
+.navbar-flat {
+  background: transparent;
+  transition: background 300ms ease, box-shadow 300ms ease, border-color 300ms ease;
+  border-bottom: 1px solid transparent;
 }
 
-.navbar-pill-scrolled {
-  box-shadow: 0 4px 28px rgba(0,0,0,0.55), 0 1px 0 rgba(255,255,255,0.05);
-  border-color: rgba(255,255,255,0.11);
+.navbar-flat-scrolled {
+  background: rgba(8,11,21,0.97);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.05), 0 4px 24px rgba(0,0,0,0.45);
+  border-bottom-color: rgba(255,255,255,0.06);
 }
 
 /* ─── Document card shadow (hero preview) ───────────────────────────────────── */
@@ -79,7 +84,7 @@ body {
   transition: border-color 180ms ease, transform 180ms ease;
 }
 .panel-interactive:hover {
-  border-color: rgba(255,255,255,0.13);
+  border-color: rgba(201,169,110,0.20);
   transform: translateY(-2px);
 }
 
@@ -87,18 +92,18 @@ body {
 .cta-primary {
   display: inline-flex;
   align-items: center;
-  background: #F59E0B;
-  color: #000;
+  background: #C9A96E;
+  color: #0A0B12;
   font-weight: 900;
   text-transform: uppercase;
-  letter-spacing: -0.01em;
-  border-radius: 14px;
-  padding: 1rem 2rem;
+  letter-spacing: 0.01em;
+  border-radius: 10px;
+  padding: 0.875rem 1.75rem;
   font-size: 0.875rem;
   transition: background 150ms ease, transform 150ms ease;
 }
 .cta-primary:hover {
-  background: #FBBF24;
+  background: #D4B87A;
   transform: translateY(-1px);
 }
 .cta-primary:active {
@@ -108,16 +113,51 @@ body {
 .cta-outline {
   display: inline-flex;
   align-items: center;
-  border: 1px solid rgba(255,255,255,0.11);
+  border: 1px solid rgba(255,255,255,0.14);
   color: #9CA3AF;
   font-size: 0.875rem;
-  border-radius: 14px;
-  padding: 1rem 1.5rem;
+  border-radius: 10px;
+  padding: 0.875rem 1.5rem;
   transition: border-color 150ms ease, color 150ms ease, transform 150ms ease;
 }
 .cta-outline:hover {
-  border-color: rgba(255,255,255,0.22);
+  border-color: rgba(255,255,255,0.28);
   color: #E5E7EB;
+  transform: translateY(-1px);
+}
+
+/* Outlined gold button (nav "Přihlásit se") */
+.btn-gold-outline {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(201,169,110,0.45);
+  color: #C9A96E;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+.btn-gold-outline:hover {
+  border-color: rgba(201,169,110,0.75);
+  background: rgba(201,169,110,0.06);
+}
+
+/* Filled gold button (nav "Vybrat typ smlouvy") */
+.btn-gold-filled {
+  display: inline-flex;
+  align-items: center;
+  background: #C9A96E;
+  color: #0A0B12;
+  font-size: 0.8125rem;
+  font-weight: 900;
+  border-radius: 8px;
+  padding: 0.5rem 1.125rem;
+  letter-spacing: 0.01em;
+  transition: background 150ms ease, transform 150ms ease;
+}
+.btn-gold-filled:hover {
+  background: #D4B87A;
   transform: translateY(-1px);
 }
 
@@ -127,9 +167,28 @@ body {
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  color: #F59E0B;
+  color: #C9A96E;
   display: block;
   margin-bottom: 0.75rem;
+}
+
+/* ─── Quick contract icon cards ─────────────────────────────────────────────── */
+.contract-icon-card {
+  background: #0C1025;
+  border: 1px solid rgba(201,169,110,0.14);
+  border-radius: 16px;
+  padding: 1.75rem 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: border-color 180ms ease, transform 180ms ease, background 180ms ease;
+  cursor: pointer;
+}
+.contract-icon-card:hover {
+  border-color: rgba(201,169,110,0.35);
+  transform: translateY(-3px);
+  background: #0F1530;
 }
 
 /* ─── Scroll Reveal ─────────────────────────────────────────────────────────── */

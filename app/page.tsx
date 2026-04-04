@@ -155,11 +155,22 @@ const softwareSchema = {
   },
 };
 
-// ── Check icon ────────────────────────────────────────────────────────────────
+// ── Icons ─────────────────────────────────────────────────────────────────────
+
 function CheckIcon() {
   return (
-    <svg className="h-4 w-4 flex-shrink-0 text-amber-400 mt-0.5" viewBox="0 0 16 16" fill="none">
+    <svg className="h-4 w-4 flex-shrink-0 mt-0.5" style={{color: '#C9A96E'}} viewBox="0 0 16 16" fill="none">
       <path d="M3 8l3.5 3.5L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+// Logo icon — document SVG
+function LogoIcon() {
+  return (
+    <svg width="22" height="26" viewBox="0 0 22 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="1" y="1" width="20" height="24" rx="3" stroke="#C9A96E" strokeWidth="1.8"/>
+      <path d="M5 8h12M5 12h12M5 16h8" stroke="#C9A96E" strokeWidth="1.6" strokeLinecap="round"/>
     </svg>
   );
 }
@@ -186,6 +197,74 @@ function SectionHeading({ label, title, subtitle, center = false }: {
   );
 }
 
+// ── Quick contract card icons ─────────────────────────────────────────────────
+const quickContracts = [
+  {
+    href: '/najem',
+    title: 'Nájemní smlouva',
+    sub: 'Byty, domy, nebytové prostory',
+    cta: 'Vytvořit',
+    icon: (
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+        <path d="M18 4L4 16v17h10v-9h8v9h10V16L18 4z" stroke="#C9A96E" strokeWidth="1.8" strokeLinejoin="round"/>
+        <path d="M14 33V24h8v9" stroke="#C9A96E" strokeWidth="1.8" strokeLinejoin="round"/>
+      </svg>
+    ),
+  },
+  {
+    href: '/auto',
+    title: 'Kupní smlouva na vozidlo',
+    sub: 'Bezpečný převod vozidla',
+    cta: 'Vytvořit',
+    icon: (
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+        <path d="M6 22h24M10 22l3-8h10l3 8" stroke="#C9A96E" strokeWidth="1.8" strokeLinejoin="round"/>
+        <circle cx="11" cy="26" r="3" stroke="#C9A96E" strokeWidth="1.8"/>
+        <circle cx="25" cy="26" r="3" stroke="#C9A96E" strokeWidth="1.8"/>
+        <path d="M4 22v4h4M28 26h4v-4" stroke="#C9A96E" strokeWidth="1.8" strokeLinecap="round"/>
+      </svg>
+    ),
+  },
+  {
+    href: '/darovaci',
+    title: 'Darovací smlouva',
+    sub: 'Majetek, peníze, movité věci',
+    cta: 'Vytvořit',
+    icon: (
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+        <rect x="4" y="16" width="28" height="17" rx="2" stroke="#C9A96E" strokeWidth="1.8"/>
+        <path d="M4 21h28" stroke="#C9A96E" strokeWidth="1.8"/>
+        <path d="M18 16V33" stroke="#C9A96E" strokeWidth="1.8"/>
+        <path d="M18 16c0 0-5-1-5-5s5-5 5 0M18 16c0 0 5-1 5-5s-5-5-5 0" stroke="#C9A96E" strokeWidth="1.6" strokeLinejoin="round"/>
+      </svg>
+    ),
+  },
+  {
+    href: '/smlouva-o-dilo',
+    title: 'Smlouva o dílo',
+    sub: 'Práce, služby, projekty',
+    cta: 'Vytvořit',
+    icon: (
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+        <path d="M24 6l6 6L14 28l-8 2 2-8L24 6z" stroke="#C9A96E" strokeWidth="1.8" strokeLinejoin="round"/>
+        <path d="M20 10l6 6" stroke="#C9A96E" strokeWidth="1.8"/>
+      </svg>
+    ),
+  },
+  {
+    href: '#vyber-smlouvy',
+    title: 'Další dokumenty',
+    sub: 'Plná moc, výpověď a další',
+    cta: 'Zobrazit',
+    icon: (
+      <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+        <rect x="6" y="3" width="24" height="30" rx="3" stroke="#C9A96E" strokeWidth="1.8"/>
+        <path d="M12 11h12M12 17h12M12 23h7" stroke="#C9A96E" strokeWidth="1.7" strokeLinecap="round"/>
+      </svg>
+    ),
+  },
+];
+
 export default function Home() {
   return (
     <>
@@ -198,200 +277,226 @@ export default function Home() {
       <ScrollRevealInit />
       <NavbarClient />
 
-      {/* ── Solid Background ─────────────────────────────────────────────── */}
-      <div className="fixed inset-0 -z-10 bg-[#080D1C]" />
+      {/* ── Background ───────────────────────────────────────────────────── */}
+      <div className="fixed inset-0 -z-10 bg-[#080B15]" />
 
-      {/* ── Floating Navbar ───────────────────────────────────────────────── */}
-      <header className="fixed top-3 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-32px)] max-w-6xl">
-        <div id="floating-navbar" className="navbar-pill flex items-center justify-between px-5 h-14">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 flex-shrink-0">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-500 text-xs font-black text-black">
-              SH
-            </div>
-            <div className="hidden sm:block">
-              <div className="text-sm font-black tracking-tight text-white leading-none">SmlouvaHned</div>
-              <div className="text-[9px] uppercase tracking-[0.18em] text-slate-500 leading-none mt-0.5">Dokumenty online</div>
-            </div>
-          </Link>
+      {/* ══════════════════════════════════════════════════════════════════
+          FLAT NAVBAR
+      ══════════════════════════════════════════════════════════════════ */}
+      <header id="main-navbar" className="navbar-flat fixed top-0 left-0 right-0 z-50">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="flex h-16 items-center justify-between gap-8">
 
-          {/* Nav */}
-          <nav className="hidden items-center gap-0.5 lg:flex">
-            {[
-              { label: 'Smlouvy', href: '#vyber-smlouvy' },
-              { label: 'Jak to funguje', href: '#jak-to-funguje' },
-              { label: 'Ceník', href: '#cenik' },
-              { label: 'Blog', href: '/blog' },
-              { label: 'O projektu', href: '/o-projektu' },
-            ].map(l => (
-              <Link key={l.href} href={l.href}
-                className="rounded-xl px-3 py-2 text-sm text-slate-400 transition hover:bg-white/[0.05] hover:text-slate-200">
-                {l.label}
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-3 flex-shrink-0">
+              <LogoIcon />
+              <span className="text-[1.0625rem] font-black tracking-tight">
+                <span className="text-white">SmlouvaHned</span>
+                <span style={{color: '#C9A96E'}}>.cz</span>
+              </span>
+            </Link>
+
+            {/* Nav */}
+            <nav className="hidden items-center gap-1 lg:flex">
+              {[
+                { label: 'Jak to funguje', href: '#jak-to-funguje' },
+                { label: 'Typy dokumentů', href: '#vyber-smlouvy' },
+                { label: 'Ceník', href: '#cenik' },
+                { label: 'Právní průvodce', href: '/blog' },
+                { label: 'O nás', href: '/o-projektu' },
+              ].map(l => (
+                <Link key={l.href} href={l.href}
+                  className="rounded-lg px-3.5 py-2 text-sm text-slate-400 transition hover:text-slate-200">
+                  {l.label}
+                </Link>
+              ))}
+            </nav>
+
+            {/* Actions */}
+            <div className="hidden items-center gap-3 lg:flex flex-shrink-0">
+              <Link href="/zakaznicka-zona" className="btn-gold-outline">
+                Přihlásit se
               </Link>
-            ))}
-          </nav>
+              <Link href="#vyber-smlouvy" className="btn-gold-filled">
+                Vybrat typ smlouvy →
+              </Link>
+            </div>
 
-          {/* CTA */}
-          <Link href="#vyber-smlouvy"
-            className="flex-shrink-0 rounded-[12px] bg-amber-500 px-4 py-2 text-xs font-black uppercase tracking-tight text-black transition hover:bg-amber-400 hover:-translate-y-px active:translate-y-0">
-            Vytvořit smlouvu →
-          </Link>
+            {/* Mobile CTA */}
+            <Link href="#vyber-smlouvy"
+              className="lg:hidden btn-gold-filled text-xs px-3 py-2">
+              Vybrat smlouvu →
+            </Link>
+          </div>
         </div>
       </header>
 
       {/* ── Page Content ─────────────────────────────────────────────────── */}
-      <div className="relative text-slate-200 bg-[#080D1C]">
+      <div className="relative text-slate-200 bg-[#080B15]">
 
         {/* ══════════════════════════════════════════════════════════════════
             HERO
         ══════════════════════════════════════════════════════════════════ */}
-        <section className="relative mx-auto max-w-7xl px-6 pt-36 pb-20 md:pt-44 md:pb-32">
+        <section className="relative mx-auto max-w-7xl px-6 pt-28 pb-20 md:pt-36 md:pb-32">
           <div className="flex flex-col gap-12 lg:flex-row lg:items-center lg:gap-16">
 
             {/* Left — text block */}
-            <div className="flex-1 lg:max-w-[560px]">
+            <div className="flex-1 lg:max-w-[540px]">
 
-              {/* Label */}
-              <div className="mb-7 flex items-center gap-2.5">
-                <span className="inline-block h-1 w-5 rounded-full bg-amber-500" />
-                <span className="text-[11px] font-bold uppercase tracking-[0.20em] text-slate-400">
-                  Aktualizováno · Legislativa 2026
-                </span>
+              {/* Overline */}
+              <div className="mb-6 text-[11px] font-bold uppercase tracking-[0.22em]" style={{color: '#C9A96E'}}>
+                Rychle · Jednoduše · Právně správně
               </div>
 
               {/* H1 */}
-              <h1 className="text-[clamp(2.75rem,5.5vw,4.75rem)] font-black leading-[1.04] tracking-[-0.02em] text-white">
-                Smluvní dokument<br />
-                sestavený<br />
-                <span className="text-amber-400" style={{letterSpacing: '-0.01em'}}>podle vašich podmínek.</span>
+              <h1 className="text-[clamp(2.5rem,5vw,4.25rem)] font-black leading-[1.06] tracking-[-0.02em] text-white">
+                Smluvní dokument sestavený podle{' '}
+                <span style={{color: '#C9A96E'}}>vašich podmínek</span>
               </h1>
 
               {/* Subheadline */}
-              <p className="mt-7 max-w-[480px] text-[1.0625rem] leading-[1.8] text-slate-400">
-                Vyplňte přehledný formulář. Systém sestaví strukturovaný
-                dokument a vygeneruje PDF k závěrečné kontrole a podpisu — od&nbsp;249&nbsp;Kč.
+              <p className="mt-6 max-w-[480px] text-base leading-[1.8] text-slate-400">
+                Vyplníte přehledný formulář a během několika minut získáte
+                profesionálně zpracovaný dokument připravený k podpisu.
+                Pro běžné životní i podnikatelské situace.
               </p>
 
               {/* CTAs */}
-              <div className="mt-10 flex flex-wrap items-center gap-3">
+              <div className="mt-9 flex flex-wrap items-center gap-3">
                 <Link href="#vyber-smlouvy" className="cta-primary">
-                  Vybrat typ dokumentu →
+                  Vybrat typ smlouvy →
                 </Link>
                 <Link href="#jak-to-funguje" className="cta-outline">
-                  Jak to funguje? ↓
+                  Jak služba funguje
                 </Link>
               </div>
 
               {/* Trust row */}
-              <div className="mt-9 flex flex-wrap gap-x-7 gap-y-2.5 border-t border-white/[0.05] pt-7">
+              <div className="mt-9 grid grid-cols-2 gap-x-6 gap-y-3 border-t border-white/[0.05] pt-7 sm:grid-cols-4">
                 {[
-                  'Platby zabezpečeny přes Stripe',
-                  'PDF ihned po ověřené platbě',
-                  '14 typů dokumentů',
-                  'IČO 23660295',
+                  { icon: 'shield', text: 'Aktualizováno pro českou legislativu 2024/2025' },
+                  { icon: 'lock',   text: 'Platba zabezpečena přes Stripe' },
+                  { icon: 'doc',    text: 'PDF ihned po zaplacení připravené k podpisu' },
+                  { icon: 'check',  text: 'Prověřené právníky právně konzistentní' },
                 ].map(t => (
-                  <div key={t} className="flex items-center gap-1.5 text-xs text-slate-500">
-                    <svg className="h-3 w-3 flex-shrink-0 text-amber-500" viewBox="0 0 12 12" fill="none">
-                      <path d="M2 6l2.5 2.5L10 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                    {t}
+                  <div key={t.text} className="flex flex-col items-start gap-1.5">
+                    <div className="flex h-6 w-6 items-center justify-center rounded-md" style={{background: 'rgba(201,169,110,0.10)'}}>
+                      {t.icon === 'shield' && (
+                        <svg width="12" height="13" viewBox="0 0 12 13" fill="none"><path d="M6 1L1 3.5V7c0 2.8 2.1 5.4 5 6 2.9-.6 5-3.2 5-6V3.5L6 1z" stroke="#C9A96E" strokeWidth="1.3" strokeLinejoin="round"/></svg>
+                      )}
+                      {t.icon === 'lock' && (
+                        <svg width="11" height="13" viewBox="0 0 11 13" fill="none"><rect x="1" y="5.5" width="9" height="7" rx="1.5" stroke="#C9A96E" strokeWidth="1.3"/><path d="M3 5.5V4a2.5 2.5 0 015 0v1.5" stroke="#C9A96E" strokeWidth="1.3" strokeLinecap="round"/></svg>
+                      )}
+                      {t.icon === 'doc' && (
+                        <svg width="10" height="13" viewBox="0 0 10 13" fill="none"><rect x="1" y="1" width="8" height="11" rx="1.5" stroke="#C9A96E" strokeWidth="1.3"/><path d="M3 5h4M3 7.5h4M3 10h2" stroke="#C9A96E" strokeWidth="1.2" strokeLinecap="round"/></svg>
+                      )}
+                      {t.icon === 'check' && (
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6l2.5 2.5L10 3.5" stroke="#C9A96E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                      )}
+                    </div>
+                    <span className="text-[10.5px] leading-snug text-slate-500">{t.text}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Right — Document Preview */}
-            <div className="relative flex-shrink-0 lg:w-[420px] xl:w-[460px] flex justify-center lg:justify-end">
-              <div className="doc-tilt w-full max-w-[360px] lg:max-w-none rounded-[14px] overflow-hidden doc-shadow"
-                style={{transform: 'rotate(-0.5deg)'}}>
+            {/* Right — Realistic document preview */}
+            <div className="relative flex-shrink-0 lg:w-[460px] xl:w-[500px] flex justify-center lg:justify-end">
+              {/* Leather / portfolio background */}
+              <div className="relative w-full max-w-[400px] lg:max-w-none rounded-2xl overflow-hidden"
+                style={{
+                  background: 'linear-gradient(150deg, #0F1530 0%, #0A0E22 55%, #0D1228 100%)',
+                  padding: '36px 28px 36px 32px',
+                  boxShadow: '0 32px 80px rgba(0,0,0,0.75), 0 8px 24px rgba(0,0,0,0.55)',
+                }}>
+                {/* Subtle leather-like border accent */}
+                <div className="absolute inset-0 rounded-2xl pointer-events-none"
+                  style={{boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.04), inset 0 0 0 1px rgba(255,255,255,0.04)'}} />
 
-                {/* Document Header — dark navy */}
-                <div className="px-6 pt-6 pb-5 border-b border-white/[0.06]"
-                  style={{background: '#0A0F20'}}>
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <div className="text-[8px] font-bold uppercase tracking-[0.28em] text-amber-400 mb-1.5">
-                        SmlouvaHned.cz
-                      </div>
-                      <div className="text-[15px] font-black tracking-wide text-white">
-                        NÁJEMNÍ SMLOUVA
-                      </div>
+                {/* The printed document — white paper */}
+                <div className="relative bg-white rounded-lg overflow-hidden"
+                  style={{
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.4)',
+                    transform: 'rotate(0.4deg)',
+                  }}>
+                  <div className="px-8 py-7">
+                    {/* Document header */}
+                    <div className="flex items-center gap-2.5 mb-3">
+                      <svg width="14" height="17" viewBox="0 0 14 17" fill="none">
+                        <rect x="1" y="1" width="12" height="15" rx="2" stroke="#111" strokeWidth="1.4"/>
+                        <path d="M3.5 6h7M3.5 9h7M3.5 12h4.5" stroke="#111" strokeWidth="1.2" strokeLinecap="round"/>
+                      </svg>
+                      <span className="text-[11px] font-black uppercase tracking-[0.24em] text-gray-900">Nájemní smlouva</span>
                     </div>
-                    <div className="rounded-md border border-amber-500/25 bg-amber-500/[0.08] px-2.5 py-1 text-[8px] font-black uppercase tracking-[0.14em] text-amber-400">
-                      Rozšířená
-                    </div>
-                  </div>
-                  <div className="h-px w-full" style={{background: 'linear-gradient(90deg, #F59E0B 0%, rgba(245,158,11,0.25) 100%)'}} />
-                </div>
+                    <div className="h-px bg-gray-200 mb-5" />
 
-                {/* Document Body — cream paper */}
-                <div className="px-6 py-6" style={{background: '#F8F6F0'}}>
-
-                  {/* Parties */}
-                  <div className="mb-5">
-                    <div className="mb-2 text-[7px] font-black uppercase tracking-[0.22em] text-slate-400">
-                      Smluvní strany
-                    </div>
-                    <div className="space-y-1.5 text-[8.5px] leading-relaxed text-slate-700">
-                      <div>
-                        <span className="font-bold text-slate-900">Pronajímatel:</span> Jan Novák, nar. 15. 3. 1980, Hlavní 12, Praha 1
+                    {/* Numbered sections */}
+                    {[
+                      {
+                        n: '1.',
+                        title: 'Pronajímatel',
+                        text: 'Pan Jan Novák, nar. 1. 1. 1980, bytem U Lesa 123, 130 00 Praha 3, dále jen „pronajímatel".',
+                      },
+                      {
+                        n: '2.',
+                        title: 'Nájemce',
+                        text: 'Pan Petr Svoboda, nar. 5. 5. 1992, bytem Dlouhá 456, 602 00 Brno, dále jen „nájemce".',
+                      },
+                      {
+                        n: '3.',
+                        title: 'Předmět nájmu',
+                        text: 'Pronajímatel přenechává nájemci do užívání bytovou jednotku č. 12/3, na adrese U Lesa 123, 130 00 Praha 3.',
+                      },
+                      {
+                        n: '4.',
+                        title: 'Cena nájmu',
+                        text: 'Nájemné činí 12 000 Kč měsíčně. Splatné vždy do 5. dne příslušného měsíce na účet pronajímatele.',
+                      },
+                    ].map(s => (
+                      <div key={s.n} className="mb-4">
+                        <div className="flex items-baseline gap-2 mb-0.5">
+                          <span className="text-[8.5px] font-bold text-gray-400">{s.n}</span>
+                          <span className="text-[9px] font-black uppercase tracking-wider text-gray-800">{s.title}</span>
+                        </div>
+                        <p className="text-[8.5px] leading-[1.65] text-gray-500 pl-4">{s.text}</p>
                       </div>
-                      <div>
-                        <span className="font-bold text-slate-900">Nájemce:</span> Petra Svobodová, nar. 2. 7. 1992, Nová 5, Brno
-                      </div>
-                    </div>
-                  </div>
+                    ))}
 
-                  {/* Key conditions */}
-                  <div className="mb-5 rounded-lg border border-slate-200 bg-white px-4 py-3">
-                    <div className="mb-2 text-[7px] font-black uppercase tracking-[0.20em] text-slate-400">
-                      Klíčové podmínky
-                    </div>
-                    <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-[8px] text-slate-600">
-                      {[
-                        ['Předmět', 'Byt 2+1, 58 m²'],
-                        ['Nájemné', '18 500 Kč/měs.'],
-                        ['Kauce', '37 000 Kč'],
-                        ['Výp. lhůta', '3 měsíce'],
-                      ].map(([k, v]) => (
-                        <div key={k}><span className="font-bold text-slate-700">{k}:</span> {v}</div>
+                    {/* Signature */}
+                    <div className="mt-5 pt-4 border-t border-gray-200 grid grid-cols-2 gap-8">
+                      {['Pronajímatel', 'Nájemce'].map(role => (
+                        <div key={role}>
+                          <div className="h-px bg-gray-300 mb-1.5" />
+                          <div className="text-[7px] text-gray-400 uppercase tracking-wider">{role}</div>
+                        </div>
                       ))}
                     </div>
                   </div>
+                </div>
 
-                  {/* Sections list */}
-                  <div className="space-y-1.5 mb-5">
-                    {[
-                      '§ 1 — Předmět nájmu a popis nemovitosti',
-                      '§ 2 — Nájemné a způsob platby',
-                      '§ 3 — Kauce a podmínky vrácení',
-                      '§ 4 — Smluvní pokuta za prodlení',
-                      '§ 5 — Práva a povinnosti stran',
-                    ].map((s, i) => (
-                      <div key={i} className="flex items-center gap-2 text-[8px] text-slate-600">
-                        <div className="h-px w-3 flex-shrink-0 bg-amber-500" />
-                        {s}
-                      </div>
-                    ))}
-                    <div className="flex items-center gap-2 text-[7.5px] italic text-slate-400">
-                      <div className="h-px w-3 flex-shrink-0 bg-slate-300" />
-                      + 8 dalších ustanovení…
-                    </div>
-                  </div>
-
-                  {/* Signature lines */}
-                  <div className="grid grid-cols-2 gap-5">
-                    {['Pronajímatel', 'Nájemce'].map(role => (
-                      <div key={role}>
-                        <div className="h-px bg-slate-300" />
-                        <div className="mt-1.5 text-[7px] text-slate-400">{role}</div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Footer note */}
-                  <div className="mt-4 text-center text-[6.5px] text-slate-400">
-                    Vygenerováno SmlouvaHned.cz · Standardní smluvní vzor
+                {/* Decorative pen element */}
+                <div className="absolute bottom-5 right-5 pointer-events-none select-none"
+                  style={{transform: 'rotate(-18deg)', transformOrigin: 'bottom center'}}>
+                  <div style={{
+                    width: '7px',
+                    height: '110px',
+                    background: 'linear-gradient(180deg, #2a2a2a 0%, #1c1c1c 60%, #C9A96E 72%, #C9A96E 76%, #1c1c1c 78%, #888 88%, #555 100%)',
+                    borderRadius: '3.5px 3.5px 1px 1px',
+                    boxShadow: '1px 2px 10px rgba(0,0,0,0.7)',
+                    position: 'relative',
+                  }}>
+                    {/* Nib */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: '-7px',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      width: 0,
+                      height: 0,
+                      borderLeft: '3.5px solid transparent',
+                      borderRight: '3.5px solid transparent',
+                      borderTop: '8px solid #555',
+                    }} />
                   </div>
                 </div>
               </div>
@@ -400,25 +505,111 @@ export default function Home() {
         </section>
 
         {/* ══════════════════════════════════════════════════════════════════
-            TRUST STRIP
+            TRUST BAR — ČOI / ÚOOÚ / GDPR
         ══════════════════════════════════════════════════════════════════ */}
-        <div className="border-y border-white/[0.05] bg-[#080D1C] py-4">
-          <div className="mx-auto max-w-5xl px-6">
-            <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-3">
-              {[
-                { icon: '✓', text: 'PDF ke stažení ihned po ověřené platbě' },
-                { icon: '✓', text: 'Šablony strukturovány dle platného OZ' },
-                { icon: '✓', text: '14 typů dokumentů v jednom místě' },
-                { icon: '✓', text: 'Provozovatel ověřen · IČO 23660295' },
-              ].map((item, i) => (
-                <div key={i} className="flex items-center gap-2 text-xs text-slate-500">
-                  <span className="text-amber-500 font-black text-[11px]">{item.icon}</span>
-                  {item.text}
+        <div className="border-y border-white/[0.05]" style={{background: '#060914'}}>
+          <div className="mx-auto max-w-6xl px-6 py-6">
+            <div className="text-center mb-4">
+              <span className="text-[9px] font-black uppercase tracking-[0.28em] text-slate-600">
+                Důvěřují nám tisíce klientů
+              </span>
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
+              {/* ČOI */}
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full border"
+                  style={{borderColor: 'rgba(201,169,110,0.25)', background: 'rgba(201,169,110,0.05)'}}>
+                  <span className="text-[9px] font-black" style={{color: '#C9A96E'}}>ČOI</span>
                 </div>
-              ))}
+                <span className="text-[11px] text-slate-500 max-w-[140px] leading-tight">
+                  V souladu s předpisy na ochranu spotřebitele
+                </span>
+              </div>
+
+              <div className="hidden h-7 w-px bg-white/[0.06] sm:block" />
+
+              {/* ÚOOÚ */}
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full border"
+                  style={{borderColor: 'rgba(201,169,110,0.25)', background: 'rgba(201,169,110,0.05)'}}>
+                  <span className="text-[8px] font-black" style={{color: '#C9A96E'}}>ÚOOÚ</span>
+                </div>
+                <span className="text-[11px] text-slate-500 max-w-[140px] leading-tight">
+                  Respektujeme ochranu osobních údajů (GDPR)
+                </span>
+              </div>
+
+              <div className="hidden h-7 w-px bg-white/[0.06] sm:block" />
+
+              {/* Seriózní služba */}
+              <div className="flex items-center gap-2.5">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full border"
+                  style={{borderColor: 'rgba(201,169,110,0.25)', background: 'rgba(201,169,110,0.05)'}}>
+                  <svg width="14" height="16" viewBox="0 0 14 16" fill="none">
+                    <path d="M7 1L1 3.5V7.5c0 3.2 2.4 6.1 6 6.5 3.6-.4 6-3.3 6-6.5V3.5L7 1z" stroke="#C9A96E" strokeWidth="1.3" strokeLinejoin="round"/>
+                    <path d="M4.5 8l2 2 3-3" stroke="#C9A96E" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <div className="text-[11px] font-bold text-slate-300 leading-none">Seriózní služba</div>
+                  <div className="text-[10px] text-slate-600 mt-0.5">Transparentní podmínky</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+
+        {/* ══════════════════════════════════════════════════════════════════
+            QUICK CONTRACT CARDS
+        ══════════════════════════════════════════════════════════════════ */}
+        <section id="vyber-smlouvy" className="mx-auto max-w-7xl px-6 py-20 md:py-28">
+          <div className="text-center mb-10">
+            <span className="section-label inline-block">Vyberte dokument, který potřebujete</span>
+            <h2 className="text-[clamp(1.75rem,3vw,2.5rem)] font-black tracking-tight text-white">
+              Nejčastější smlouvy a dokumenty
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+            {quickContracts.map(c => (
+              <Link key={c.href} href={c.href} className="contract-icon-card">
+                <div className="mb-4">{c.icon}</div>
+                <h3 className="text-sm font-black text-white leading-tight mb-1.5">{c.title}</h3>
+                <p className="text-[11px] text-slate-500 leading-snug mb-4">{c.sub}</p>
+                <span className="text-[11px] font-bold" style={{color: '#C9A96E'}}>
+                  {c.cta} →
+                </span>
+              </Link>
+            ))}
+          </div>
+
+          <div className="text-center mt-8">
+            <Link href="#vse-smlouvy"
+              className="text-sm transition hover:text-white"
+              style={{color: '#C9A96E'}}>
+              Zobrazit všechny typy dokumentů →
+            </Link>
+          </div>
+        </section>
+
+        {/* ══════════════════════════════════════════════════════════════════
+            FULL CONTRACT CATALOG
+        ══════════════════════════════════════════════════════════════════ */}
+        <section id="vse-smlouvy" className="reveal mx-auto max-w-7xl px-6 pb-20 md:pb-28">
+          <div className="mb-10 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+              <span className="section-label">Všechny dokumenty</span>
+              <h2 className="text-[clamp(1.75rem,3vw,2.5rem)] font-black tracking-tight text-white">
+                Kompletní nabídka
+              </h2>
+            </div>
+            <p className="max-w-sm text-sm leading-relaxed text-slate-400 md:text-right">
+              Každý dokument sestaven dynamicky dle vašich údajů.<br />
+              Aktualizováno pro legislativu 2026.
+            </p>
+          </div>
+          <ContractCatalog />
+        </section>
 
         {/* ══════════════════════════════════════════════════════════════════
             JAK TO FUNGUJE — 4 KROKY
@@ -454,12 +645,12 @@ export default function Home() {
               },
             ].map(s => (
               <div key={s.step} className="panel relative overflow-hidden p-6">
-                {/* Ghost step */}
                 <div className="absolute -right-1 -top-2 select-none text-[5rem] font-black leading-none text-white opacity-[0.03] pointer-events-none">
                   {s.step}
                 </div>
                 <div className="relative z-10">
-                  <div className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-xl border border-amber-500/20 bg-amber-500/[0.08] text-xs font-black text-amber-400">
+                  <div className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-xl text-xs font-black"
+                    style={{border: '1px solid rgba(201,169,110,0.20)', background: 'rgba(201,169,110,0.07)', color: '#C9A96E'}}>
                     {s.step}
                   </div>
                   <h3 className="mb-2 text-[15px] font-black text-white">{s.title}</h3>
@@ -468,25 +659,6 @@ export default function Home() {
               </div>
             ))}
           </div>
-        </section>
-
-        {/* ══════════════════════════════════════════════════════════════════
-            VÝBĚR SMLUV
-        ══════════════════════════════════════════════════════════════════ */}
-        <section id="vyber-smlouvy" className="reveal mx-auto max-w-7xl px-6 pb-20 md:pb-28">
-          <div className="mb-10 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-            <div>
-              <span className="section-label">Nejčastější situace</span>
-              <h2 className="text-[clamp(1.75rem,3vw,2.5rem)] font-black tracking-tight text-white">
-                Vyberte typ dokumentu
-              </h2>
-            </div>
-            <p className="max-w-sm text-sm leading-relaxed text-slate-400 md:text-right">
-              Každý dokument je sestaven dynamicky dle vašich údajů.<br />
-              Aktualizováno pro legislativu 2026.
-            </p>
-          </div>
-          <ContractCatalog />
         </section>
 
         {/* ══════════════════════════════════════════════════════════════════
@@ -504,7 +676,7 @@ export default function Home() {
             {[
               {
                 icon: (
-                  <svg className="h-5 w-5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+                  <svg className="h-5 w-5" style={{color: '#C9A96E'}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
                     <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 ),
@@ -514,7 +686,7 @@ export default function Home() {
               },
               {
                 icon: (
-                  <svg className="h-5 w-5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+                  <svg className="h-5 w-5" style={{color: '#C9A96E'}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
                     <path d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 ),
@@ -524,7 +696,7 @@ export default function Home() {
               },
               {
                 icon: (
-                  <svg className="h-5 w-5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+                  <svg className="h-5 w-5" style={{color: '#C9A96E'}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
                     <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 ),
@@ -534,7 +706,7 @@ export default function Home() {
               },
               {
                 icon: (
-                  <svg className="h-5 w-5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
+                  <svg className="h-5 w-5" style={{color: '#C9A96E'}} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
                     <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 ),
@@ -544,8 +716,9 @@ export default function Home() {
               },
             ].map(card => (
               <div key={card.tag} className="panel flex flex-col p-6">
-                <div className="mb-1 text-[10px] font-black uppercase tracking-[0.20em] text-amber-400/70">{card.tag}</div>
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl border border-amber-500/15 bg-amber-500/[0.08]">
+                <div className="mb-1 text-[10px] font-black uppercase tracking-[0.20em]" style={{color: 'rgba(201,169,110,0.65)'}}>{card.tag}</div>
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl"
+                  style={{border: '1px solid rgba(201,169,110,0.14)', background: 'rgba(201,169,110,0.07)'}}>
                   {card.icon}
                 </div>
                 <h3 className="mb-2 text-sm font-black text-white leading-snug">{card.title}</h3>
@@ -577,8 +750,10 @@ export default function Home() {
           </div>
 
           {/* Compliance note */}
-          <div className="mt-4 rounded-2xl border border-amber-500/[0.10] bg-amber-500/[0.03] px-5 py-4 text-sm text-slate-400">
-            <span className="font-bold text-amber-400/80">Vhodné pro:</span> Standardní situace, kde se strany dohodly a potřebují podmínky zachytit písemně.{' '}
+          <div className="mt-4 rounded-2xl px-5 py-4 text-sm text-slate-400"
+            style={{border: '1px solid rgba(201,169,110,0.09)', background: 'rgba(201,169,110,0.02)'}}>
+            <span className="font-bold" style={{color: 'rgba(201,169,110,0.75)'}}>Vhodné pro:</span>{' '}
+            Standardní situace, kde se strany dohodly a potřebují podmínky zachytit písemně.{' '}
             <span className="text-slate-300">Není náhradou za individuální právní poradenství</span> — pro složitější případy nebo spory doporučujeme advokáta.
           </div>
         </section>
@@ -594,13 +769,12 @@ export default function Home() {
           />
 
           <div className="panel-lg overflow-hidden">
-            {/* Header row */}
             <div className="grid grid-cols-3 border-b border-white/[0.05] bg-white/[0.02]">
               <div className="px-6 py-4 text-xs font-black uppercase tracking-[0.14em] text-slate-500">Kritérium</div>
               <div className="border-l border-white/[0.05] px-6 py-4 text-xs font-black uppercase tracking-[0.14em] text-slate-500">Vzor zdarma</div>
-              <div className="border-l border-amber-500/[0.12] px-6 py-4 text-xs font-black uppercase tracking-[0.14em] text-amber-400">SmlouvaHned</div>
+              <div className="border-l px-6 py-4 text-xs font-black uppercase tracking-[0.14em]"
+                style={{borderColor: 'rgba(201,169,110,0.12)', color: '#C9A96E'}}>SmlouvaHned</div>
             </div>
-            {/* Data rows */}
             {[
               { label: 'Přizpůsobení vašim datům', bad: 'Obecný vzor s prázdnými místy', good: 'Vyplněno dle zadaných podmínek' },
               { label: 'Aktuálnost', bad: 'Datum aktualizace neznámé', good: 'Aktualizováno pro 2026' },
@@ -616,7 +790,8 @@ export default function Home() {
                   </svg>
                   {row.bad}
                 </div>
-                <div className="flex items-center gap-2 border-l border-amber-500/[0.08] px-6 py-3.5 text-sm text-emerald-400">
+                <div className="flex items-center gap-2 border-l px-6 py-3.5 text-sm text-emerald-400"
+                  style={{borderColor: 'rgba(201,169,110,0.08)'}}>
                   <svg className="h-3.5 w-3.5 flex-shrink-0 text-emerald-500" viewBox="0 0 16 16" fill="none">
                     <path d="M3 8l3.5 3.5L13 4.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
@@ -646,9 +821,9 @@ export default function Home() {
           <div className="grid gap-4 md:grid-cols-3">
             {[
               {
-                borderColor: 'border-amber-500/25',
-                topLine: 'bg-amber-500/40',
-                tagColor: 'text-amber-400',
+                borderColor: 'rgba(201,169,110,0.25)',
+                topColor: 'rgba(201,169,110,0.40)',
+                tagColor: '#C9A96E',
                 tag: 'Bydlení',
                 title: 'Nájemní smlouva 2026 — co musí obsahovat a čeho se vyvarovat',
                 excerpt: 'Které klauzule chrání pronajímatele, které nájemce, a co se nejčastěji opomíjí.',
@@ -657,9 +832,9 @@ export default function Home() {
                 ctaHref: '/najem',
               },
               {
-                borderColor: 'border-sky-500/20',
-                topLine: 'bg-sky-500/40',
-                tagColor: 'text-sky-400',
+                borderColor: 'rgba(56,189,248,0.20)',
+                topColor: 'rgba(56,189,248,0.40)',
+                tagColor: '#38BDF8',
                 tag: 'Prodej vozidla',
                 title: 'Kupní smlouva na auto — VIN, STK, vady a bezpečné předání',
                 excerpt: 'Co zkontrolovat před podpisem a jak se bránit, pokud kupující tvrdí, že auto mělo vady.',
@@ -668,9 +843,9 @@ export default function Home() {
                 ctaHref: '/auto',
               },
               {
-                borderColor: 'border-violet-500/20',
-                topLine: 'bg-violet-500/40',
-                tagColor: 'text-violet-400',
+                borderColor: 'rgba(167,139,250,0.20)',
+                topColor: 'rgba(167,139,250,0.40)',
+                tagColor: '#A78BFA',
                 tag: 'OSVČ a podnikatelé',
                 title: 'Smlouva o dílo 2026 — pevná cena, sankce a akceptační postup',
                 excerpt: 'Kdy použít smlouvu o dílo, jak nastavit cenu díla a co dělat, když objednatel nezaplatí.',
@@ -681,14 +856,13 @@ export default function Home() {
             ].map(article => (
               <div key={article.href}
                 className="panel flex flex-col overflow-hidden transition-all duration-200 hover:-translate-y-0.5 hover:border-white/[0.12]">
-                {/* Top accent line */}
-                <div className={`h-[2px] w-full ${article.topLine}`} />
+                <div className="h-[2px] w-full" style={{background: article.topColor}} />
                 <div className="flex flex-grow flex-col p-6">
-                  <div className={`mb-3 text-[10px] font-black uppercase tracking-[0.20em] ${article.tagColor}`}>
+                  <div className="mb-3 text-[10px] font-black uppercase tracking-[0.20em]" style={{color: article.tagColor}}>
                     {article.tag}
                   </div>
                   <h3 className="mb-3 flex-grow text-sm font-black leading-snug text-white">
-                    <Link href={article.href} className="hover:text-amber-400 transition">
+                    <Link href={article.href} className="transition hover:text-gold">
                       {article.title}
                     </Link>
                   </h3>
@@ -700,7 +874,8 @@ export default function Home() {
                     Číst průvodce →
                   </Link>
                   <Link href={article.ctaHref}
-                    className="rounded-xl border border-amber-500/20 bg-amber-500/[0.08] px-3 py-1.5 text-[11px] font-black uppercase tracking-tight text-amber-400 transition hover:bg-amber-500/[0.14]">
+                    className="rounded-xl px-3 py-1.5 text-[11px] font-black uppercase tracking-tight transition"
+                    style={{border: '1px solid rgba(201,169,110,0.20)', background: 'rgba(201,169,110,0.07)', color: '#C9A96E'}}>
                     {article.ctaLabel}
                   </Link>
                 </div>
@@ -729,16 +904,15 @@ export default function Home() {
                     : 'panel-xl opacity-90'
                 }`}>
 
-                {/* Badge */}
                 {tier.badge && (
                   <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
-                    <div className="rounded-full bg-amber-500 px-4 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-black whitespace-nowrap">
+                    <div className="rounded-full px-4 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-black whitespace-nowrap"
+                      style={{background: '#C9A96E'}}>
                       {tier.badge}
                     </div>
                   </div>
                 )}
 
-                {/* Header */}
                 <div className="mb-6">
                   <div className="mb-2 text-[10px] font-black uppercase tracking-[0.20em] text-slate-500">
                     {tier.name}
@@ -752,7 +926,6 @@ export default function Home() {
                   <div className="mt-2 text-sm text-slate-400">{tier.description}</div>
                 </div>
 
-                {/* Features */}
                 <ul className="mb-6 flex-grow space-y-2.5">
                   {tier.features.map((f) => (
                     <li key={f} className="flex items-start gap-2.5 text-sm text-slate-300">
@@ -762,18 +935,17 @@ export default function Home() {
                   ))}
                 </ul>
 
-                {/* Note */}
                 <p className="mb-6 border-t border-white/[0.06] pt-5 text-xs leading-relaxed text-slate-500">
                   {tier.note}
                 </p>
 
-                {/* CTA */}
                 <Link href={tier.href}
-                  className={`block rounded-[14px] py-3.5 text-center text-sm font-black uppercase tracking-tight transition hover:-translate-y-px ${
+                  className={`block rounded-[12px] py-3.5 text-center text-sm font-black uppercase tracking-tight transition hover:-translate-y-px ${
                     tier.highlighted
-                      ? 'bg-amber-500 text-black hover:bg-amber-400'
+                      ? 'text-black hover:opacity-90'
                       : 'border border-white/[0.10] bg-white/[0.04] text-white hover:bg-white/[0.08]'
-                  }`}>
+                  }`}
+                  style={tier.highlighted ? {background: '#C9A96E'} : {}}>
                   {tier.cta}
                 </Link>
               </div>
@@ -792,7 +964,6 @@ export default function Home() {
           <div className="panel-lg overflow-hidden"
             style={{border: '1px solid rgba(16,185,129,0.13)', borderTopColor: 'rgba(16,185,129,0.24)'}}>
             <div className="flex flex-col md:flex-row">
-              {/* Guarantee */}
               <div className="flex-1 p-8 md:p-10">
                 <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl border border-emerald-500/20 bg-emerald-500/[0.08] text-xl">🛡️</div>
                 <h3 className="mb-3 text-base font-black text-white">Garance technické správnosti</h3>
@@ -804,10 +975,8 @@ export default function Home() {
                   Garance se vztahuje na technické chyby systému, nikoli na nesprávné vstupy od zákazníka.
                 </p>
               </div>
-              {/* Divider */}
               <div className="hidden w-px bg-white/[0.06] md:block" />
               <div className="block h-px bg-white/[0.06] md:hidden" />
-              {/* Methodology */}
               <div className="flex-1 p-8 md:p-10">
                 <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl border border-blue-500/20 bg-blue-500/[0.08] text-xl">📜</div>
                 <h3 className="mb-3 text-base font-black text-white">Metodika a aktualizace 2026</h3>
@@ -835,11 +1004,12 @@ export default function Home() {
           <div className="space-y-2">
             {faqItems.map((item) => (
               <details key={item.question}
-                className="group panel overflow-hidden open:border-amber-500/[0.18]"
+                className="group panel overflow-hidden"
                 style={{transition: 'border-color 200ms'}}>
                 <summary className="flex cursor-pointer list-none select-none items-center justify-between gap-6 px-6 py-5">
                   <span className="text-sm font-bold text-white md:text-[15px]">{item.question}</span>
-                  <span className="flex-shrink-0 text-slate-500 transition-transform duration-200 group-open:rotate-45 group-open:text-amber-400 text-xl leading-none">+</span>
+                  <span className="flex-shrink-0 text-slate-500 transition-transform duration-200 group-open:rotate-45 text-xl leading-none"
+                    style={{color: undefined}}>+</span>
                 </summary>
                 <div className="border-t border-white/[0.05] px-6 pb-5 pt-4">
                   <p className="text-sm leading-relaxed text-slate-400">{item.answer}</p>
@@ -855,8 +1025,8 @@ export default function Home() {
         <section className="reveal mx-auto max-w-7xl px-6 pb-24 md:pb-32">
           <div className="panel-xl text-center px-8 py-20 md:px-16 md:py-24"
             style={{
-              border: '1px solid rgba(245,158,11,0.18)',
-              borderTopColor: 'rgba(245,158,11,0.32)',
+              border: '1px solid rgba(201,169,110,0.18)',
+              borderTopColor: 'rgba(201,169,110,0.32)',
             }}>
             <span className="section-label inline-block">Začít</span>
             <h2 className="text-[clamp(1.875rem,4vw,3rem)] font-black tracking-tight text-white">
@@ -867,8 +1037,8 @@ export default function Home() {
               sestavený podle vašich podmínek — k závěrečné kontrole a podpisu.
             </p>
             <Link href="#vyber-smlouvy"
-              className="mt-10 inline-flex items-center rounded-[18px] bg-amber-500 px-10 text-base font-black uppercase tracking-tight text-black transition hover:bg-amber-400 hover:-translate-y-[2px] active:translate-y-0"
-              style={{paddingTop: '1.125rem', paddingBottom: '1.125rem'}}>
+              className="mt-10 inline-flex items-center rounded-[14px] px-10 text-base font-black uppercase tracking-tight transition hover:opacity-90 hover:-translate-y-[2px] active:translate-y-0 text-black"
+              style={{background: '#C9A96E', paddingTop: '1.125rem', paddingBottom: '1.125rem'}}>
               Vytvořit smlouvu →
             </Link>
             <div className="mt-5 text-xs text-slate-500">
@@ -880,16 +1050,19 @@ export default function Home() {
         {/* ══════════════════════════════════════════════════════════════════
             FOOTER
         ══════════════════════════════════════════════════════════════════ */}
-        <footer className="border-t border-white/[0.05] bg-[#060A17]">
+        <footer className="border-t border-white/[0.05]" style={{background: '#050810'}}>
           <div className="mx-auto max-w-7xl px-6 py-16">
             <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
               {/* Brand column */}
               <div className="max-w-xs">
                 <Link href="/" className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500 text-sm font-black text-black">SH</div>
+                  <LogoIcon />
                   <div>
-                    <div className="font-black tracking-tight text-white">SmlouvaHned</div>
-                    <div className="text-[10px] uppercase tracking-[0.18em] text-slate-600">Softwarový nástroj pro tvorbu dokumentů</div>
+                    <div className="font-black tracking-tight">
+                      <span className="text-white">SmlouvaHned</span>
+                      <span style={{color: '#C9A96E'}}>.cz</span>
+                    </div>
+                    <div className="text-[10px] uppercase tracking-[0.18em] text-slate-600 mt-0.5">Softwarový nástroj pro tvorbu dokumentů</div>
                   </div>
                 </Link>
                 <p className="mt-5 text-sm leading-relaxed text-slate-500">
@@ -900,7 +1073,7 @@ export default function Home() {
                   <p>Provozovatel: Karel Zdeněk</p>
                   <p>IČO: 23660295 · Plzeňská 189, 345 61 Staňkov</p>
                   <p>
-                    <a href="mailto:info@smlouvahned.cz" className="hover:text-amber-400 transition">info@smlouvahned.cz</a>
+                    <a href="mailto:info@smlouvahned.cz" className="transition hover:text-white">info@smlouvahned.cz</a>
                   </p>
                   <p className="mt-1 text-slate-700">SmlouvaHned.cz je obchodní označení platformy provozované výše uvedenou osobou.</p>
                 </div>
@@ -982,12 +1155,13 @@ export default function Home() {
                   ['/gdpr', 'Ochrana osobních údajů'],
                   ['/kontakt', 'Kontakt'],
                 ].map(([href, label]) => (
-                  <Link key={href} href={href} className="hover:text-slate-400 transition">{label}</Link>
+                  <Link key={href} href={href} className="hover:text-white transition">{label}</Link>
                 ))}
               </div>
             </div>
           </div>
         </footer>
+
       </div>
     </>
   );

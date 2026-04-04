@@ -3,12 +3,11 @@
 import { useEffect } from 'react';
 
 /**
- * Adds a clean depth shadow to the floating navbar on scroll.
- * No background color override — the navbar-pill class handles base styling.
+ * Adds background + shadow to the flat navbar on scroll.
  */
 export default function NavbarClient() {
   useEffect(() => {
-    const navbar = document.getElementById('floating-navbar');
+    const navbar = document.getElementById('main-navbar');
     if (!navbar) return;
 
     let ticking = false;
@@ -17,13 +16,11 @@ export default function NavbarClient() {
       if (ticking) return;
       ticking = true;
       requestAnimationFrame(() => {
-        const scrolled = window.scrollY > 60;
+        const scrolled = window.scrollY > 40;
         if (scrolled) {
-          navbar!.style.boxShadow = '0 4px 28px rgba(0,0,0,0.55)';
-          navbar!.style.borderColor = 'rgba(255,255,255,0.11)';
+          navbar!.classList.add('navbar-flat-scrolled');
         } else {
-          navbar!.style.boxShadow = '';
-          navbar!.style.borderColor = '';
+          navbar!.classList.remove('navbar-flat-scrolled');
         }
         ticking = false;
       });
