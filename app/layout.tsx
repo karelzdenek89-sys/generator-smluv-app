@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import CookiesBanner from '@/app/components/CookiesBanner';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
@@ -136,6 +137,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased bg-[#04070E] text-slate-200" style={{colorScheme: 'dark'}}>
         {children}
+        <CookiesBanner />
       </body>
     </html>
   );

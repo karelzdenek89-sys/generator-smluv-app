@@ -129,8 +129,37 @@ export default function GdprPage() {
             <h2 className="text-amber-500 font-black uppercase text-xs tracking-widest mb-4">
               6. Cookies a analytika
             </h2>
-            <p>
-              SmlouvaHned nepoužívá marketingové ani profilující cookies třetích stran. Pro základní fungování aplikace mohou být použity technicky nezbytné session cookies. Na webu není nasazena žádná behaviorální reklamní platforma (Facebook Pixel, Google Ads remarketing apod.).
+            <p className="mb-5">
+              SmlouvaHned.cz nepoužívá marketingové ani profilující cookies třetích stran. Na webu není nasazena žádná behaviorální reklamní platforma (Facebook Pixel, Google Ads remarketing apod.).
+            </p>
+            <div className="overflow-x-auto mb-5">
+              <table className="w-full text-xs border-collapse">
+                <thead>
+                  <tr className="border-b border-white/10">
+                    <th className="py-2 pr-4 text-left font-black text-slate-400 uppercase tracking-wide">Název</th>
+                    <th className="py-2 pr-4 text-left font-black text-slate-400 uppercase tracking-wide">Typ</th>
+                    <th className="py-2 pr-4 text-left font-black text-slate-400 uppercase tracking-wide">Účel</th>
+                    <th className="py-2 text-left font-black text-slate-400 uppercase tracking-wide">Platnost</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  <tr>
+                    <td className="py-3 pr-4 font-mono text-amber-400">cookies_accepted</td>
+                    <td className="py-3 pr-4 text-slate-400">First-party, localStorage</td>
+                    <td className="py-3 pr-4 text-slate-400">Uložení souhlasu s cookies informací</td>
+                    <td className="py-3 text-slate-400">Trvalé (localStorage)</td>
+                  </tr>
+                  <tr>
+                    <td className="py-3 pr-4 font-mono text-amber-400">session (Stripe)</td>
+                    <td className="py-3 pr-4 text-slate-400">Third-party</td>
+                    <td className="py-3 pr-4 text-slate-400">Zpracování platby</td>
+                    <td className="py-3 text-slate-400">Relace</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p className="text-xs text-slate-500">
+              Nepoužíváme žádné analytické, marketingové ani profilující cookies. Vercel (hosting) může nastavovat technické cookies nezbytné pro provoz CDN sítě.
             </p>
           </section>
 

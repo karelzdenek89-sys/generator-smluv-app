@@ -60,6 +60,8 @@ export default function PodnajemuPage() {
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [gdprConsent, setGdprConsent] = useState(false);
+  const [withdrawalConsent, setWithdrawalConsent] = useState(false);
+  const [withdrawalError, setWithdrawalError] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -128,6 +130,10 @@ export default function PodnajemuPage() {
     ];
     const missing = required.filter((r) => !r.field.trim()).map((r) => r.msg);
     if (form.duration === 'fixed' && !form.endDate) missing.push('Datum konce podnájmu');
+        if (!withdrawalConsent) {
+      setWithdrawalError(true);
+      return;
+    }
     if (!gdprConsent) { alert('Pro pokračování je nutný souhlas se zpracováním osobních údajů.'); return; }
     if (missing.length > 0) { alert(`Vyplňte prosím: ${missing.join(', ')}`); return; }
 
@@ -459,6 +465,31 @@ export default function PodnajemuPage() {
                   <a href="/obchodni-podminky" className="text-amber-400 underline hover:text-amber-300" target="_blank" rel="noopener noreferrer">obchodními podmínkami</a>.
                 </span>
               </label>
+                {/* § 1837 l) OZ — povinný souhlas s neodstoupením od smlouvy */}
+                <label className="flex items-start gap-3 mb-1 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={withdrawalConsent}
+                    onChange={(e) => {
+                      setWithdrawalConsent(e.target.checked);
+                      if (e.target.checked) setWithdrawalError(false);
+                    }}
+                    className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
+                  />
+                  <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
+                    Beru na vědomí, že objednávám digitální obsah, který bude ihned zpřístupněn po zaplacení.
+                    Výslovně souhlasím s tím, že ztrácím právo na odstoupení od smlouvy ve lhůtě 14 dní dle{' '}
+                    <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">
+                      § 1837 písm. l) zákona č. 89/2012 Sb.
+                    </a>
+                  </span>
+                </label>
+                {withdrawalError && (
+                  <p className="mb-3 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-2 text-xs text-rose-300">
+                    Pro pokračování musíte souhlasit s podmínkami digitálního obsahu.
+                  </p>
+                )}
+
 
               <button
                 onClick={handlePayment}

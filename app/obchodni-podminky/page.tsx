@@ -130,8 +130,13 @@ export default function TermsPage() {
             <p className="mb-3">
               Reklamaci lze uplatnit zejména v případě, kdy vygenerovaný dokument neodpovídá zadaným údajům (technická chyba systému). Reklamace se nevztahuje na nevhodné použití dokumentu nebo chyby vzniklé nesprávným vyplněním ze strany Zákazníka.
             </p>
+            <p className="mb-3">
+              Zákazník je oprávněn obrátit se na <strong className="text-white">Českou obchodní inspekci (ČOI)</strong> jako subjekt mimosoudního řešení spotřebitelských sporů. Návrh na mimosoudní řešení sporu lze podat na adrese:{' '}
+              <a href="https://adr.coi.cz" target="_blank" rel="noopener" className="text-amber-400 hover:underline">adr.coi.cz</a>.
+            </p>
             <p>
-              Zákazník je oprávněn obrátit se na Českou obchodní inspekci (ČOI) nebo využít platformu pro online řešení spotřebitelských sporů EU: <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener" className="text-amber-400 hover:underline">ec.europa.eu/consumers/odr</a>.
+              Zákazník může rovněž využít platformu pro online řešení spotřebitelských sporů EU:{' '}
+              <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener" className="text-amber-400 hover:underline">ec.europa.eu/consumers/odr</a>.
             </p>
           </section>
 
@@ -152,7 +157,7 @@ export default function TermsPage() {
               Tyto OP se řídí právním řádem České republiky. Případné spory budou řešeny věcně a místně příslušným soudem.
             </p>
             <p>
-              Poskytovatel je oprávněn OP jednostranně měnit. O změnách informuje zveřejněním aktualizované verze na tomto místě. Aktuální znění OP je vždy dostupné na smlouvahned.cz/obchodni-podminky.
+              Poskytovatel je oprávněn OP jednostranně měnit. O podstatných změnách informuje zákazníky — spotřebitele zveřejněním aktualizované verze na tomto místě a zasláním informace na e-mailovou adresu zadanou při objednávce, a to nejméně 14 dní před nabytím účinnosti změny. Změna OP nemá vliv na objednávky dokončené před její účinností. Aktuální znění OP je vždy dostupné na smlouvahned.cz/obchodni-podminky.
             </p>
           </section>
 

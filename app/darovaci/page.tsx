@@ -65,6 +65,8 @@ export default function GiftContractPage() {
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [gdprConsent, setGdprConsent] = useState(false);
+  const [withdrawalConsent, setWithdrawalConsent] = useState(false);
+  const [withdrawalError, setWithdrawalError] = useState(false);
 
   const updateField = (field: keyof FormDataType, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -149,6 +151,10 @@ export default function GiftContractPage() {
       return;
     }
 
+        if (!withdrawalConsent) {
+      setWithdrawalError(true);
+      return;
+    }
     if (!gdprConsent) {
       alert('Potvrďte prosím souhlas se zpracováním osobních údajů a obchodními podmínkami.');
       return;
@@ -395,6 +401,20 @@ export default function GiftContractPage() {
 
               {formData.giftType === 'property' && (
                 <div className="space-y-4">
+                  {/* Alert — darování nemovitosti vyžaduje notáře + katastr */}
+                  <div className="flex items-start gap-3 rounded-2xl border border-amber-500/40 bg-amber-500/10 p-5">
+                    <span className="mt-0.5 flex-shrink-0 text-xl">⚠️</span>
+                    <div>
+                      <div className="mb-1 text-sm font-black text-amber-300">
+                        Důležité upozornění k darování nemovitosti
+                      </div>
+                      <p className="text-xs leading-relaxed text-amber-100/80">
+                        Převod nemovitosti vyžaduje <strong className="text-amber-200">úředně ověřené podpisy obou stran</strong> a podání návrhu na vklad do katastru nemovitostí.
+                        Vygenerovaný dokument slouží jako podklad — k dokončení převodu je nutné zajistit ověření podpisů (Czech POINT, notář) a podat návrh na vklad.
+                        SmlouvaHned.cz nezajišťuje notářské ani katastrální služby.
+                      </p>
+                    </div>
+                  </div>
                   <input
                     type="text"
                     placeholder="Adresa nemovitosti"
@@ -604,6 +624,31 @@ export default function GiftContractPage() {
                     Beru na vědomí, že digitální obsah je doručen ihned a nelze od smlouvy odstoupit.
                   </span>
                 </label>
+                {/* § 1837 l) OZ — povinný souhlas s neodstoupením od smlouvy */}
+                <label className="flex items-start gap-3 mb-1 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={withdrawalConsent}
+                    onChange={(e) => {
+                      setWithdrawalConsent(e.target.checked);
+                      if (e.target.checked) setWithdrawalError(false);
+                    }}
+                    className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
+                  />
+                  <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
+                    Beru na vědomí, že objednávám digitální obsah, který bude ihned zpřístupněn po zaplacení.
+                    Výslovně souhlasím s tím, že ztrácím právo na odstoupení od smlouvy ve lhůtě 14 dní dle{' '}
+                    <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">
+                      § 1837 písm. l) zákona č. 89/2012 Sb.
+                    </a>
+                  </span>
+                </label>
+                {withdrawalError && (
+                  <p className="mb-3 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-2 text-xs text-rose-300">
+                    Pro pokračování musíte souhlasit s podmínkami digitálního obsahu.
+                  </p>
+                )}
+
 
                 <button
                   onClick={handlePayment}
