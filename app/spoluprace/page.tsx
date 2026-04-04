@@ -26,7 +26,7 @@ const inputClass = 'w-full bg-[#111c31] border border-slate-700/80 text-white ro
 const cardClass = 'bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]';
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (<div><label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</label>{children}</div>);
+  return (<label className="block"><span className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</span>{children}</label>);
 }
 function SectionTitle({ index, title, subtitle }: { index: string; title: string; subtitle?: string }) {
   return (<div className="mb-6"><div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90">{index}. {title}</div>{subtitle && <p className="mt-2 text-sm text-slate-400">{subtitle}</p>}</div>);
@@ -213,7 +213,7 @@ export default function SpolupraceePage() {
                 <SectionTitle index="05" title="Odměňování a rozdělení výnosů" />
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Field label="Model odměňování">
-                    <select className={inputClass} name="revenueModel" value={form.revenueModel} onChange={set}>
+                    <select aria-label="Podíl na výnosech (%)" className={inputClass} name="revenueModel" value={form.revenueModel} onChange={set}>
                       <option value="revenue_share">Podíl na výnosech (%)</option>
                       <option value="fixed_fee">Pevná odměna za spolupráci</option>
                       <option value="custom">Vlastní popis</option>
@@ -234,7 +234,7 @@ export default function SpolupraceePage() {
                 <SectionTitle index="06" title="Duševní vlastnictví a trvání" />
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Field label="Vlastnictví výstupů IP">
-                    <select className={inputClass} name="ipSharing" value={form.ipSharing} onChange={set}>
+                    <select aria-label="Společné vlastnictví (50/50)" className={inputClass} name="ipSharing" value={form.ipSharing} onChange={set}>
                       <option value="joint">Společné vlastnictví (50/50)</option>
                       <option value="partyA">Náleží Straně A</option>
                       <option value="separate">Každý vlastní, co vytvořil</option>
@@ -242,7 +242,7 @@ export default function SpolupraceePage() {
                   </Field>
                   <Field label="Koordinátor (nepovinné)"><input className={inputClass} name="coordinatorName" value={form.coordinatorName} onChange={set} placeholder="Jan Novák" /></Field>
                   <Field label="Trvání smlouvy">
-                    <select className={inputClass} name="durationType" value={form.durationType} onChange={set}>
+                    <select aria-label="Na dobu neurčitou" className={inputClass} name="durationType" value={form.durationType} onChange={set}>
                       <option value="indefinite">Na dobu neurčitou</option>
                       <option value="fixed">Na dobu určitou</option>
                     </select>
@@ -256,7 +256,7 @@ export default function SpolupraceePage() {
                 {/* Řešení sporů */}
                 <div className="mb-6">
                   <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
-                  <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set}>
+                  <select aria-label="Obecný soud (výchozí)" className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set}>
                     <option value="court">Obecný soud (výchozí)</option>
                     <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                     <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>

@@ -26,7 +26,7 @@ const cardClass = 'bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shado
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div><label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</label>{children}</div>
+    <label className="block"><span className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</span>{children}</label>
   );
 }
 function SectionTitle({ index, title, subtitle }: { index: string; title: string; subtitle?: string }) {
@@ -179,7 +179,7 @@ export default function SluzbyPage() {
                   <Field label="E-mail *"><input className={inputClass} name="providerEmail" value={form.providerEmail} onChange={set} type="email" placeholder="jan@studio.cz" /></Field>
                   <Field label="Telefon"><input className={inputClass} name="providerPhone" value={form.providerPhone} onChange={set} placeholder="+420 600 000 000" /></Field>
                   <Field label="Plátce DPH">
-                    <select className={inputClass} name="vatPayer" value={form.vatPayer} onChange={set}>
+                    <select aria-label="Neplátce DPH" className={inputClass} name="vatPayer" value={form.vatPayer} onChange={set}>
                       <option value="no">Neplátce DPH</option>
                       <option value="yes">Plátce DPH</option>
                     </select>
@@ -217,7 +217,7 @@ export default function SluzbyPage() {
                 <SectionTitle index="04" title="Trvání smlouvy" />
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Field label="Typ smlouvy">
-                    <select className={inputClass} name="durationType" value={form.durationType} onChange={set}>
+                    <select aria-label="Na dobu neurčitou" className={inputClass} name="durationType" value={form.durationType} onChange={set}>
                       <option value="indefinite">Na dobu neurčitou</option>
                       <option value="fixed">Na dobu určitou</option>
                     </select>
@@ -233,7 +233,7 @@ export default function SluzbyPage() {
                 <SectionTitle index="05" title="Cena a fakturace" />
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Field label="Model ceny">
-                    <select className={inputClass} name="pricingType" value={form.pricingType} onChange={set}>
+                    <select aria-label="Měsíční paušál" className={inputClass} name="pricingType" value={form.pricingType} onChange={set}>
                       <option value="monthly_flat">Měsíční paušál</option>
                       <option value="hourly">Hodinová sazba</option>
                       <option value="lump_sum">Pevná cena za projekt</option>
@@ -251,7 +251,7 @@ export default function SluzbyPage() {
                 <SectionTitle index="06" title="Duševní vlastnictví" />
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Field label="Vlastnictví výstupů">
-                    <select className={inputClass} name="ipOwnership" value={form.ipOwnership} onChange={set}>
+                    <select aria-label="Objednatel (výstupy patří klientovi)" className={inputClass} name="ipOwnership" value={form.ipOwnership} onChange={set}>
                       <option value="client">Objednatel (výstupy patří klientovi)</option>
                       <option value="provider">Poskytovatel (licence klientovi)</option>
                     </select>
@@ -264,7 +264,7 @@ export default function SluzbyPage() {
                 {/* Řešení sporů */}
                 <div className="mb-6">
                   <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
-                  <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set}>
+                  <select aria-label="Obecný soud (výchozí)" className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set}>
                     <option value="court">Obecný soud (výchozí)</option>
                     <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                     <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>

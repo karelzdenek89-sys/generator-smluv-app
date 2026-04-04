@@ -25,7 +25,7 @@ const inputClass = 'w-full bg-[#111c31] border border-slate-700/80 text-white ro
 const cardClass = 'bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]';
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (<div><label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</label>{children}</div>);
+  return (<label className="block"><span className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</span>{children}</label>);
 }
 function SectionTitle({ index, title, subtitle }: { index: string; title: string; subtitle?: string }) {
   return (<div className="mb-6"><div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90">{index}. {title}</div>{subtitle && <p className="mt-2 text-sm text-slate-400">{subtitle}</p>}</div>);
@@ -188,10 +188,10 @@ export default function UznanidluhuPage() {
               <SectionTitle index="03" title="Výše a původ dluhu" />
               <div className="grid sm:grid-cols-2 gap-4">
                 <Field label="Výše dluhu (Kč) *"><input className={inputClass} name="debtAmount" value={form.debtAmount} onChange={set} type="number" placeholder="50000" /></Field>
-                <Field label="Měna"><select className={inputClass} name="currency" value={form.currency} onChange={set}><option>Kč</option><option>EUR</option></select></Field>
+                <Field label="Měna"><select aria-label="Půjčka / zápůjčka" className={inputClass} name="currency" value={form.currency} onChange={set}><option>Kč</option><option>EUR</option></select></Field>
                 <div className="sm:col-span-2"><Field label="Výše dluhu slovy"><input className={inputClass} name="debtAmountWords" value={form.debtAmountWords} onChange={set} placeholder="padesát tisíc korun českých" /></Field></div>
                 <Field label="Vznik dluhu">
-                  <select className={inputClass} name="debtOrigin" value={form.debtOrigin} onChange={set}>
+                  <select aria-label="Půjčka / zápůjčka" className={inputClass} name="debtOrigin" value={form.debtOrigin} onChange={set}>
                     <option value="loan">Půjčka / zápůjčka</option>
                     <option value="invoice">Nezaplacená faktura</option>
                     <option value="damage">Náhrada škody</option>
@@ -209,7 +209,7 @@ export default function UznanidluhuPage() {
               <SectionTitle index="04" title="Způsob a termín splacení" />
               <div className="grid sm:grid-cols-2 gap-4">
                 <Field label="Způsob splácení">
-                  <select className={inputClass} name="repaymentType" value={form.repaymentType} onChange={set}>
+                  <select aria-label="Jednorázové splacení" className={inputClass} name="repaymentType" value={form.repaymentType} onChange={set}>
                     <option value="lump_sum">Jednorázové splacení</option>
                     <option value="installments">Splátky</option>
                   </select>
@@ -234,7 +234,7 @@ export default function UznanidluhuPage() {
               {/* Řešení sporů */}
               <div className="mb-6">
                 <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
-                <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set}>
+                <select aria-label="Obecný soud (výchozí)" className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set}>
                   <option value="court">Obecný soud (výchozí)</option>
                   <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                   <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>

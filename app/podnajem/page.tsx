@@ -25,7 +25,7 @@ const textareaClass = 'w-full min-h-[100px] resize-y bg-[#111c31] border border-
 const cardClass = 'bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]';
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (<div><label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</label>{children}</div>);
+  return (<label className="block"><span className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</span>{children}</label>);
 }
 function SectionTitle({ index, title, subtitle }: { index: string; title: string; subtitle?: string }) {
   return (<div className="mb-6"><div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90">{index}. {title}</div>{subtitle && <p className="mt-2 text-sm text-slate-400">{subtitle}</p>}</div>);
@@ -265,7 +265,7 @@ export default function PodnajemuPage() {
               <SectionTitle index="04" title="Souhlas pronajímatele" subtitle="Podnájem bytu vyžaduje souhlas vlastníka / hlavního pronajímatele dle § 2274 OZ." />
               <div className="space-y-4">
                 <Field label="Souhlas pronajímatele byl udělen?">
-                  <select name="landlordConsent" value={form.landlordConsent} onChange={handleChange} className={inputClass}>
+                  <select aria-label="Ano, souhlas byl udělen" name="landlordConsent" value={form.landlordConsent} onChange={handleChange} className={inputClass}>
                     <option value="yes">Ano, souhlas byl udělen</option>
                     <option value="no">Ne (pozor – podnájem bez souhlasu je protiprávní)</option>
                   </select>
@@ -290,7 +290,7 @@ export default function PodnajemuPage() {
               <div className="space-y-4">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Field label="Typ doby">
-                    <select name="duration" value={form.duration} onChange={handleChange} className={inputClass}>
+                    <select aria-label="Doba určitá" name="duration" value={form.duration} onChange={handleChange} className={inputClass}>
                       <option value="fixed">Doba určitá</option>
                       <option value="indefinite">Doba neurčitá</option>
                     </select>

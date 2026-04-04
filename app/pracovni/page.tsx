@@ -34,10 +34,10 @@ function SectionTitle({ index, title, subtitle }: { index: string; title: string
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div>
-      <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</label>
+    <label className="block">
+      <span className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</span>
       {children}
-    </div>
+    </label>
   );
 }
 
@@ -207,7 +207,7 @@ export default function PracovniPage() {
                     </Field>
                   </div>
                   <Field label="Možnost home office">
-                    <select className={inputClass} name="remoteWork" value={form.remoteWork} onChange={set}>
+                    <select aria-label="— nevyplněno —" className={inputClass} name="remoteWork" value={form.remoteWork} onChange={set}>
                       <option value="">— nevyplněno —</option>
                       <option value="plný remote (100 %)">Plný remote (100 %)</option>
                       <option value="hybridní (dle dohody)">Hybridní (dle dohody)</option>
@@ -221,7 +221,7 @@ export default function PracovniPage() {
                 <SectionTitle index="04" title="Trvání pracovního poměru" />
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Field label="Druh poměru">
-                    <select className={inputClass} name="employmentType" value={form.employmentType} onChange={set}>
+                    <select aria-label="Na dobu neurčitou" className={inputClass} name="employmentType" value={form.employmentType} onChange={set}>
                       <option value="indefinite">Na dobu neurčitou</option>
                       <option value="fixed">Na dobu určitou</option>
                     </select>
@@ -252,7 +252,7 @@ export default function PracovniPage() {
                 <SectionTitle index="06" title="Mzda a odměňování" />
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Field label="Typ mzdy">
-                    <select className={inputClass} name="salaryType" value={form.salaryType} onChange={set}>
+                    <select aria-label="Měsíční" className={inputClass} name="salaryType" value={form.salaryType} onChange={set}>
                       <option value="monthly">Měsíční</option>
                       <option value="hourly">Hodinová</option>
                     </select>
@@ -333,11 +333,12 @@ export default function PracovniPage() {
                 </div>
                 {form.notaryUpsell && (
                   <div className="mt-4 grid sm:grid-cols-2 gap-4">
-                    <label className={`flex items-start gap-3 cursor-pointer rounded-xl border p-4 transition ${form.nonCompete ? 'border-amber-500/70 bg-amber-500/10' : 'border-slate-700/60 bg-[#111c31]'}`}>
+                    <label htmlFor="nonCompetePeriod" className={`flex items-start gap-3 cursor-pointer rounded-xl border p-4 transition ${form.nonCompete ? 'border-amber-500/70 bg-amber-500/10' : 'border-slate-700/60 bg-[#111c31]'}`}>
                       <input type="checkbox" name="nonCompete" checked={form.nonCompete} onChange={set} className="mt-0.5 h-4 w-4 accent-amber-500" />
                       <div className="text-sm text-white">Konkurenční doložka</div>
                     </label>
                     {form.nonCompete && <Field label="Délka zákazu (měsíce)"><input className={inputClass} name="nonCompetePeriod" value={form.nonCompetePeriod} onChange={set} type="number" min="1" max="12" /></Field>}
+                      id="nonCompetePeriod"
                   </div>
                 )}
               </section>

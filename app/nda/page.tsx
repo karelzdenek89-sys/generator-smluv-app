@@ -284,19 +284,19 @@ export default function NdaBuilderPage() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label className={labelClass}>Jméno / název *</label>
-                    <input value={formData.disclosingName} onChange={e => set('disclosingName', e.target.value)} placeholder="Acme s.r.o." className={inputClass} />
+                    <input value={formData.disclosingName} onChange={e => set('disclosingName', e.target.value)} placeholder="Acme s.r.o." aria-label="Jméno / název *" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>IČO / rodné číslo</label>
-                    <input value={formData.disclosingId} onChange={e => set('disclosingId', e.target.value)} placeholder="12345678" className={inputClass} />
+                    <input value={formData.disclosingId} onChange={e => set('disclosingId', e.target.value)} placeholder="12345678" aria-label="IČO / rodné číslo" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>Sídlo / adresa</label>
-                    <input value={formData.disclosingAddress} onChange={e => set('disclosingAddress', e.target.value)} placeholder="Václavské nám. 1, Praha 1" className={inputClass} />
+                    <input value={formData.disclosingAddress} onChange={e => set('disclosingAddress', e.target.value)} placeholder="Václavské nám. 1, Praha 1" aria-label="Sídlo / adresa" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>E-mail</label>
-                    <input type="email" value={formData.disclosingEmail} onChange={e => set('disclosingEmail', e.target.value)} placeholder="kontakt@acme.cz" className={inputClass} />
+                    <input type="email" value={formData.disclosingEmail} onChange={e => set('disclosingEmail', e.target.value)} placeholder="kontakt@acme.cz" aria-label="E-mail" className={inputClass} />
                   </div>
                 </div>
               </section>
@@ -307,19 +307,19 @@ export default function NdaBuilderPage() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label className={labelClass}>Jméno / název *</label>
-                    <input value={formData.receivingName} onChange={e => set('receivingName', e.target.value)} placeholder="Jan Novák" className={inputClass} />
+                    <input value={formData.receivingName} onChange={e => set('receivingName', e.target.value)} placeholder="Jan Novák" aria-label="Jméno / název *" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>IČO / rodné číslo</label>
-                    <input value={formData.receivingId} onChange={e => set('receivingId', e.target.value)} placeholder="850101/1234" className={inputClass} />
+                    <input value={formData.receivingId} onChange={e => set('receivingId', e.target.value)} placeholder="850101/1234" aria-label="IČO / rodné číslo" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>Sídlo / adresa</label>
-                    <input value={formData.receivingAddress} onChange={e => set('receivingAddress', e.target.value)} placeholder="Dlouhá 5, Brno" className={inputClass} />
+                    <input value={formData.receivingAddress} onChange={e => set('receivingAddress', e.target.value)} placeholder="Dlouhá 5, Brno" aria-label="Sídlo / adresa" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>E-mail</label>
-                    <input type="email" value={formData.receivingEmail} onChange={e => set('receivingEmail', e.target.value)} placeholder="jan.novak@email.cz" className={inputClass} />
+                    <input type="email" value={formData.receivingEmail} onChange={e => set('receivingEmail', e.target.value)} placeholder="jan.novak@email.cz" aria-label="E-mail" className={inputClass} />
                   </div>
                 </div>
               </section>
@@ -332,6 +332,7 @@ export default function NdaBuilderPage() {
                     <label className={labelClass}>Popis důvěrných informací *</label>
                     <textarea value={formData.confidentialInfoDesc} onChange={e => set('confidentialInfoDesc', e.target.value)}
                       placeholder="Obchodní strategie, cenové kalkulace, zdrojové kódy, databáze zákazníků, výrobní postupy…"
+                      aria-label="Obchodní strategie, cenové kalkulace, zdrojové kódy, databáze zákazníků, výrobní postupy…"
                       className={textareaClass} />
                     <p className="text-xs text-slate-500 mt-1">Čím přesnější popis, tím silnější ochrana v případě sporu.</p>
                   </div>
@@ -339,6 +340,7 @@ export default function NdaBuilderPage() {
                     <label className={labelClass}>Účel sdílení informací</label>
                     <textarea value={formData.purposeOfDisclosure} onChange={e => set('purposeOfDisclosure', e.target.value)}
                       placeholder="Hodnocení potenciální obchodní spolupráce / vývoj softwarového produktu / due diligence…"
+                      aria-label="Hodnocení potenciální obchodní spolupráce / vývoj softwarového produktu / due diligence…"
                       className={textareaClass} />
                   </div>
                   <div>
@@ -355,15 +357,15 @@ export default function NdaBuilderPage() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label className={labelClass}>Doba trvání NDA</label>
-                    <input value={formData.ndaDuration} onChange={e => set('ndaDuration', e.target.value)} placeholder="3 let" className={inputClass} />
+                    <input value={formData.ndaDuration} onChange={e => set('ndaDuration', e.target.value)} placeholder="3 let" aria-label="Doba trvání NDA" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>Důvěrnost po ukončení</label>
-                    <input value={formData.confidentialityAfterTermination} onChange={e => set('confidentialityAfterTermination', e.target.value)} placeholder="5 let" className={inputClass} />
+                    <input value={formData.confidentialityAfterTermination} onChange={e => set('confidentialityAfterTermination', e.target.value)} placeholder="5 let" aria-label="Důvěrnost po ukončení" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>Smluvní pokuta (Kč)</label>
-                    <input type="number" value={formData.penaltyAmount} onChange={e => set('penaltyAmount', e.target.value)} placeholder="100 000" className={inputClass} />
+                    <input type="number" value={formData.penaltyAmount} onChange={e => set('penaltyAmount', e.target.value)} placeholder="100 000" aria-label="Smluvní pokuta (Kč)" className={inputClass} />
                     <p className="text-xs text-slate-500 mt-1">Min. 50 000 Kč pro reálnou odstrašující hodnotu.</p>
                   </div>
                 </div>
@@ -377,7 +379,7 @@ export default function NdaBuilderPage() {
                   {formData.nonSolicitation && (
                     <div className="ml-7">
                       <label className={labelClass}>Délka zákazu přetahování</label>
-                      <input value={formData.nonSolicitationPeriod} onChange={e => set('nonSolicitationPeriod', e.target.value)} placeholder="12 měsíců" className={inputClass} />
+                      <input value={formData.nonSolicitationPeriod} onChange={e => set('nonSolicitationPeriod', e.target.value)} placeholder="12 měsíců" aria-label="Délka zákazu přetahování" className={inputClass} />
                     </div>
                   )}
                   <Toggle checked={formData.nonCompete} onChange={v => set('nonCompete', v)} label="Zákaz konkurence" />
@@ -385,11 +387,11 @@ export default function NdaBuilderPage() {
                     <div className="ml-7 space-y-3">
                       <div>
                         <label className={labelClass}>Délka zákazu konkurence</label>
-                        <input value={formData.nonCompetePeriod} onChange={e => set('nonCompetePeriod', e.target.value)} placeholder="24 měsíců" className={inputClass} />
+                        <input value={formData.nonCompetePeriod} onChange={e => set('nonCompetePeriod', e.target.value)} placeholder="24 měsíců" aria-label="Délka zákazu konkurence" className={inputClass} />
                       </div>
                       <div>
                         <label className={labelClass}>Rozsah / odvětví</label>
-                        <input value={formData.nonCompeteScope} onChange={e => set('nonCompeteScope', e.target.value)} placeholder="Vývoj CRM softwaru pro pojišťovny v ČR" className={inputClass} />
+                        <input value={formData.nonCompeteScope} onChange={e => set('nonCompeteScope', e.target.value)} placeholder="Vývoj CRM softwaru pro pojišťovny v ČR" aria-label="Rozsah / odvětví" className={inputClass} />
                       </div>
                     </div>
                   )}
@@ -400,7 +402,7 @@ export default function NdaBuilderPage() {
               <section className={cardClass}>
                 <div className="mb-4">
                   <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
-                  <select className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
+                  <select aria-label="Obecný soud (výchozí)" className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
                     <option value="court">Obecný soud (výchozí)</option>
                     <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                     <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>

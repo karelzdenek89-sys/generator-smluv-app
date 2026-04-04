@@ -288,6 +288,7 @@ export default function GiftContractPage() {
                   <input
                     type="text"
                     placeholder="Celé jméno"
+                    aria-label="Celé jméno"
                     className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                     value={formData.donorName}
                     onChange={(e) => updateField('donorName', e.target.value)}
@@ -295,6 +296,7 @@ export default function GiftContractPage() {
                   <input
                     type="text"
                     placeholder="Rodné číslo / Datum narození"
+                    aria-label="Rodné číslo / Datum narození"
                     className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                     value={formData.donorId}
                     onChange={(e) => updateField('donorId', e.target.value)}
@@ -302,6 +304,7 @@ export default function GiftContractPage() {
                   <input
                     type="text"
                     placeholder="Trvalé bydliště"
+                    aria-label="Trvalé bydliště"
                     className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                     value={formData.donorAddress}
                     onChange={(e) => updateField('donorAddress', e.target.value)}
@@ -315,6 +318,7 @@ export default function GiftContractPage() {
                   <input
                     type="text"
                     placeholder="Celé jméno"
+                    aria-label="Celé jméno"
                     className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                     value={formData.doneeName}
                     onChange={(e) => updateField('doneeName', e.target.value)}
@@ -322,6 +326,7 @@ export default function GiftContractPage() {
                   <input
                     type="text"
                     placeholder="Rodné číslo / Datum narození"
+                    aria-label="Rodné číslo / Datum narození"
                     className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                     value={formData.doneeId}
                     onChange={(e) => updateField('doneeId', e.target.value)}
@@ -329,6 +334,7 @@ export default function GiftContractPage() {
                   <input
                     type="text"
                     placeholder="Trvalé bydliště"
+                    aria-label="Trvalé bydliště"
                     className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                     value={formData.doneeAddress}
                     onChange={(e) => updateField('doneeAddress', e.target.value)}
@@ -345,6 +351,7 @@ export default function GiftContractPage() {
                   <input
                     type="number"
                     placeholder="Darovaná částka"
+                    aria-label="Darovaná částka"
                     className="bg-[#05080f] border border-slate-700 p-4 rounded-2xl"
                     value={formData.amount}
                     onChange={(e) => updateField('amount', e.target.value)}
@@ -352,6 +359,7 @@ export default function GiftContractPage() {
                   <input
                     type="text"
                     placeholder="Měna"
+                    aria-label="Měna"
                     className="bg-[#05080f] border border-slate-700 p-4 rounded-2xl"
                     value={formData.currency}
                     onChange={(e) => updateField('currency', e.target.value)}
@@ -364,6 +372,7 @@ export default function GiftContractPage() {
                   <input
                     type="text"
                     placeholder="Značka"
+                    aria-label="Značka"
                     className="bg-[#05080f] border border-slate-700 p-4 rounded-2xl"
                     value={formData.carMake}
                     onChange={(e) => updateField('carMake', e.target.value)}
@@ -371,6 +380,7 @@ export default function GiftContractPage() {
                   <input
                     type="text"
                     placeholder="Model"
+                    aria-label="Model"
                     className="bg-[#05080f] border border-slate-700 p-4 rounded-2xl"
                     value={formData.carModel}
                     onChange={(e) => updateField('carModel', e.target.value)}
@@ -378,6 +388,7 @@ export default function GiftContractPage() {
                   <input
                     type="text"
                     placeholder="VIN kód"
+                    aria-label="VIN kód"
                     className="bg-[#05080f] border border-slate-700 p-4 rounded-2xl"
                     value={formData.carVIN}
                     onChange={(e) => updateField('carVIN', e.target.value)}
@@ -385,6 +396,7 @@ export default function GiftContractPage() {
                   <input
                     type="text"
                     placeholder="SPZ"
+                    aria-label="SPZ"
                     className="bg-[#05080f] border border-slate-700 p-4 rounded-2xl"
                     value={formData.carPlate}
                     onChange={(e) => updateField('carPlate', e.target.value)}
@@ -392,6 +404,7 @@ export default function GiftContractPage() {
                   <input
                     type="text"
                     placeholder="Rok výroby"
+                    aria-label="Rok výroby"
                     className="bg-[#05080f] border border-slate-700 p-4 rounded-2xl"
                     value={formData.carYear}
                     onChange={(e) => updateField('carYear', e.target.value)}
@@ -418,6 +431,7 @@ export default function GiftContractPage() {
                   <input
                     type="text"
                     placeholder="Adresa nemovitosti"
+                    aria-label="Adresa nemovitosti"
                     className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl"
                     value={formData.propertyAddress}
                     onChange={(e) => updateField('propertyAddress', e.target.value)}
@@ -426,6 +440,7 @@ export default function GiftContractPage() {
                     <input
                       type="text"
                       placeholder="List vlastnictví (LV)"
+                      aria-label="List vlastnictví (LV)"
                       className="bg-[#05080f] border border-slate-700 p-4 rounded-2xl"
                       value={formData.propertyLV}
                       onChange={(e) => updateField('propertyLV', e.target.value)}
@@ -433,6 +448,7 @@ export default function GiftContractPage() {
                     <input
                       type="text"
                       placeholder="Katastrální území"
+                      aria-label="Katastrální území"
                       className="bg-[#05080f] border border-slate-700 p-4 rounded-2xl"
                       value={formData.propertyCadastre}
                       onChange={(e) => updateField('propertyCadastre', e.target.value)}
@@ -444,6 +460,7 @@ export default function GiftContractPage() {
               {formData.giftType === 'thing' && (
                 <textarea
                   placeholder="Podrobný popis darované věci..."
+                  aria-label="Podrobný popis darované věci..."
                   className="w-full h-40 bg-[#05080f] border border-slate-700 p-4 rounded-2xl resize-y"
                   value={formData.thingDescription}
                   onChange={(e) => updateField('thingDescription', e.target.value)}
@@ -453,7 +470,7 @@ export default function GiftContractPage() {
 
             <section className="bg-[#0c1426] border border-slate-800 rounded-3xl p-8 space-y-6">
               <div>
-                <label className="block text-xs uppercase tracking-widest text-slate-500 mb-2">
+                <label className="block text-xs uppercase tracking-widest text-slate-400 mb-2">
                   Datum darování
                 </label>
                 <input
@@ -477,6 +494,7 @@ export default function GiftContractPage() {
               {formData.withReservation && (
                 <textarea
                   placeholder="Popis výminku..."
+                  aria-label="Popis výminku..."
                   className="w-full h-28 bg-[#05080f] border border-slate-700 p-4 rounded-2xl"
                   value={formData.reservationDescription}
                   onChange={(e) => updateField('reservationDescription', e.target.value)}
@@ -487,8 +505,8 @@ export default function GiftContractPage() {
 
             {/* Řešení sporů */}
             <section className="bg-[#0c1426] border border-slate-800 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
-              <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
-              <select className="w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none focus:border-amber-500/60 transition" name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
+              <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Řešení sporů</div>
+              <select aria-label="Obecný soud (výchozí)" className="w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none focus:border-amber-500/60 transition" name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
                 <option value="court">Obecný soud (výchozí)</option>
                 <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                 <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>

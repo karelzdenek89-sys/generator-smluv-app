@@ -23,10 +23,10 @@ const cardClass = 'bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shado
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div>
-      <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</label>
+    <label className="block">
+      <span className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</span>
       {children}
-    </div>
+    </label>
   );
 }
 
@@ -209,7 +209,7 @@ export default function DppPage() {
                 <SectionTitle index="04" title="Trvání a termín splnění" />
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Field label="Typ trvání">
-                    <select className={inputClass} name="durationType" value={form.durationType} onChange={set}>
+                    <select aria-label="Na dobu určitou" className={inputClass} name="durationType" value={form.durationType} onChange={set}>
                       <option value="fixed">Na dobu určitou</option>
                       <option value="indefinite">Na dobu neurčitou</option>
                     </select>
@@ -224,7 +224,7 @@ export default function DppPage() {
                 <SectionTitle index="05" title="Odměna" subtitle="DPP bez odvodů SP/ZP do 10 000 Kč/měsíc u jednoho zaměstnavatele." />
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Field label="Typ odměny">
-                    <select className={inputClass} name="remunerationType" value={form.remunerationType} onChange={set}>
+                    <select aria-label="Paušální (za celý úkol)" className={inputClass} name="remunerationType" value={form.remunerationType} onChange={set}>
                       <option value="fixed">Paušální (za celý úkol)</option>
                       <option value="hourly">Hodinová sazba</option>
                     </select>

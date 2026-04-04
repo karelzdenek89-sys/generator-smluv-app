@@ -611,6 +611,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="landlordName"
                   placeholder="Celé jméno"
+                  aria-label="Celé jméno"
                   className={inputClass}
                 />
                 <input
@@ -618,6 +619,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="landlordId"
                   placeholder="Rodné číslo / datum narození"
+                  aria-label="Rodné číslo / datum narození"
                   className={inputClass}
                 />
               </div>
@@ -627,6 +629,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="landlordAddress"
                   placeholder="Trvalé bydliště"
+                  aria-label="Trvalé bydliště"
                   className={inputClass}
                 />
                 <input
@@ -634,6 +637,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="landlordOP"
                   placeholder="Číslo OP"
+                  aria-label="Číslo OP"
                   className={inputClass}
                 />
               </div>
@@ -643,6 +647,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="landlordEmail"
                   placeholder="E-mail (volitelné)"
+                  aria-label="E-mail (volitelné)"
                   className={inputClass}
                 />
                 <input
@@ -650,6 +655,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="landlordPhone"
                   placeholder="Telefon (volitelné)"
+                  aria-label="Telefon (volitelné)"
                   className={inputClass}
                 />
               </div>
@@ -667,6 +673,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="tenantName"
                   placeholder="Celé jméno"
+                  aria-label="Celé jméno"
                   className={inputClass}
                 />
                 <input
@@ -674,6 +681,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="tenantId"
                   placeholder="Rodné číslo / datum narození"
+                  aria-label="Rodné číslo / datum narození"
                   className={inputClass}
                 />
               </div>
@@ -683,6 +691,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="tenantAddress"
                   placeholder="Trvalé bydliště"
+                  aria-label="Trvalé bydliště"
                   className={inputClass}
                 />
                 <input
@@ -690,6 +699,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="tenantOP"
                   placeholder="Číslo OP"
+                  aria-label="Číslo OP"
                   className={inputClass}
                 />
               </div>
@@ -699,6 +709,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="tenantEmail"
                   placeholder="E-mail (volitelné)"
+                  aria-label="E-mail (volitelné)"
                   className={inputClass}
                 />
                 <input
@@ -706,6 +717,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="tenantPhone"
                   placeholder="Telefon (volitelné)"
+                  aria-label="Telefon (volitelné)"
                   className={inputClass}
                 />
               </div>
@@ -723,6 +735,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="flatAddress"
                   placeholder="Adresa bytu"
+                  aria-label="Adresa bytu"
                   className={inputClass}
                 />
                 <input
@@ -730,6 +743,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="flatLayout"
                   placeholder="Dispozice (např. 2+kk)"
+                  aria-label="Dispozice (např. 2+kk)"
                   className={inputClass}
                 />
               </div>
@@ -739,6 +753,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="flatUnitNumber"
                   placeholder="Číslo jednotky"
+                  aria-label="Číslo jednotky"
                   className={inputClass}
                 />
                 <input
@@ -746,6 +761,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="ownershipSheet"
                   placeholder="List vlastnictví"
+                  aria-label="List vlastnictví"
                   className={inputClass}
                 />
                 <input
@@ -753,6 +769,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="cadastralArea"
                   placeholder="Katastrální území"
+                  aria-label="Katastrální území"
                   className={inputClass}
                 />
               </div>
@@ -761,6 +778,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                 onChange={handleChange}
                 name="floor"
                 placeholder="Podlaží / patro"
+                aria-label="Podlaží / patro"
                 className={inputClass}
               />
             </section>
@@ -773,10 +791,11 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
               />
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label className="mb-2 block text-xs uppercase tracking-widest text-slate-500">
+                  <label htmlFor="startDate" className="mb-2 block text-xs uppercase tracking-widest text-slate-400">
                     Začátek nájmu
                   </label>
                   <input
+                    id="startDate"
                     value={formData.startDate}
                     onChange={handleChange}
                     type="date"
@@ -785,10 +804,11 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   />
                 </div>
                 <div>
-                  <label className="mb-2 block text-xs uppercase tracking-widest text-slate-500">
+                  <label htmlFor="handoverDate" className="mb-2 block text-xs uppercase tracking-widest text-slate-400">
                     Předání bytu
                   </label>
                   <input
+                    id="handoverDate"
                     value={formData.handoverDate}
                     onChange={handleChange}
                     type="date"
@@ -799,7 +819,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
               </div>
 
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
-                <select
+                <select aria-label="Doba určitá"
                   value={formData.duration}
                   onChange={handleChange}
                   name="duration"
@@ -814,6 +834,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                     value={formData.endDate}
                     onChange={handleChange}
                     type="date"
+                    aria-label="Konec smlouvy"
                     name="endDate"
                     className={inputClass}
                   />
@@ -831,6 +852,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   type="number"
                   name="rentAmount"
                   placeholder="Nájem (Kč)"
+                  aria-label="Nájem (Kč)"
                   className={inputClass}
                 />
                 <input
@@ -839,6 +861,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   type="number"
                   name="utilityAmount"
                   placeholder="Služby (Kč)"
+                  aria-label="Služby (Kč)"
                   className={inputClass}
                 />
                 <div>
@@ -848,6 +871,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                     type="number"
                     name="depositAmount"
                     placeholder="Kauce (Kč)"
+                    aria-label="Kauce (Kč)"
                     className={inputClass}
                   />
                   {Number(formData.rentAmount) > 0 && Number(formData.depositAmount) > Number(formData.rentAmount) * 6 && (
@@ -862,6 +886,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="bankAccount"
                   placeholder="Číslo účtu"
+                  aria-label="Číslo účtu"
                   className={inputClass}
                 />
                 <input
@@ -870,6 +895,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   type="number"
                   name="paymentDay"
                   placeholder="Den splatnosti"
+                  aria-label="Den splatnosti"
                   className={inputClass}
                 />
                 <input
@@ -877,6 +903,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="variableSymbol"
                   placeholder="Variabilní symbol"
+                  aria-label="Variabilní symbol"
                   className={inputClass}
                 />
               </div>
@@ -886,6 +913,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                 onChange={handleChange}
                 name="utilitiesIncludedText"
                 placeholder="Co zahrnují služby? Např. voda, teplo, úklid společných prostor, osvětlení domu, internet..."
+                aria-label="Co zahrnují služby? Např. voda, teplo, úklid společných prostor, osvětlení domu, internet..."
                 className={textareaClass}
               />
 
@@ -914,6 +942,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   type="number"
                   name="keysCount"
                   placeholder="Počet klíčů"
+                  aria-label="Počet klíčů"
                   className={inputClass}
                 />
                 <input
@@ -921,6 +950,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="electricityMeter"
                   placeholder="Elektroměr"
+                  aria-label="Elektroměr"
                   className={inputClass}
                 />
                 <input
@@ -928,6 +958,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="gasMeter"
                   placeholder="Plynoměr"
+                  aria-label="Plynoměr"
                   className={inputClass}
                 />
                 <input
@@ -935,6 +966,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="waterMeter"
                   placeholder="Vodoměr"
+                  aria-label="Vodoměr"
                   className={inputClass}
                 />
               </div>
@@ -945,6 +977,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="equipmentList"
                   placeholder="Seznam vybavení bytu. Např. kuchyňská linka, trouba, lednice, myčka, postel, skříně..."
+                  aria-label="Seznam vybavení bytu. Např. kuchyňská linka, trouba, lednice, myčka, postel, skříně..."
                   className={textareaClass}
                 />
               </div>
@@ -954,6 +987,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                 onChange={handleChange}
                 name="knownDefects"
                 placeholder="Známé vady / poškození / poznámky. Např. oděrky na podlaze, prasklina u umyvadla, chybějící žaluzie..."
+                aria-label="Známé vady / poškození / poznámky. Např. oděrky na podlaze, prasklina u umyvadla, chybějící žaluzie..."
                 className={textareaClass}
               />
             </section>
@@ -1007,7 +1041,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
               </div>
 
               <div className="rounded-2xl border border-slate-700/80 bg-[#111c31] p-4 w-fit">
-                <div className="text-xs uppercase tracking-widest text-slate-500 mb-2">
+                <div className="text-xs uppercase tracking-widest text-slate-400 mb-2">
                   Maximální počet osob
                 </div>
                 <input
@@ -1015,6 +1049,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   type="number"
                   name="maxOccupants"
+                  aria-label="Maximální počet osob"
                   className="bg-transparent w-24 text-2xl font-black text-white outline-none"
                 />
               </div>
@@ -1023,8 +1058,8 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
             {/* Řešení sporů */}
             <section className={cardClass}>
               <div className="mb-2">
-                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
-                <select className="w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none focus:border-amber-500/60 transition" name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
+                <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Řešení sporů</div>
+                <select aria-label="Obecný soud (výchozí)" className="w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none focus:border-amber-500/60 transition" name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
                   <option value="court">Obecný soud (výchozí)</option>
                   <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                   <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
@@ -1065,6 +1100,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                         type="radio"
                         name="tier"
                         value={opt.value}
+                        aria-label={opt.label}
                         checked={formData.tier === opt.value}
                         onChange={(e) => setFormData((prev) => ({ ...prev, tier: e.target.value as 'basic' | 'professional' | 'complete', notaryUpsell: e.target.value !== 'basic' }))}
                         className="mt-1 h-5 w-5 accent-amber-500"

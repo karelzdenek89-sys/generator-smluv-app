@@ -33,10 +33,10 @@ function SectionTitle({ index, title, subtitle }: { index: string; title: string
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div>
-      <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</label>
+    <label className="block">
+      <span className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</span>
       {children}
-    </div>
+    </label>
   );
 }
 
@@ -208,7 +208,7 @@ export default function KupniPage() {
               <SectionTitle index="03" title="Předmět prodeje" subtitle="Co prodáváte? Čím přesnější popis, tím silnější smlouva." />
               <div className="space-y-4">
                 <Field label="Typ předmětu">
-                  <select className={inputClass} name="itemType" value={form.itemType} onChange={set}>
+                  <select aria-label="Obecná movitá věc (nábytek, kolo, zboží…)" className={inputClass} name="itemType" value={form.itemType} onChange={set}>
                     <option value="general">Obecná movitá věc (nábytek, kolo, zboží…)</option>
                     <option value="electronics">Elektronika / stroje</option>
                     <option value="car">Motorové vozidlo</option>
@@ -231,7 +231,7 @@ export default function KupniPage() {
                   </div>
                 )}
                 <Field label="Stav předmětu">
-                  <select className={inputClass} name="itemCondition" value={form.itemCondition} onChange={set}>
+                  <select aria-label="— vyberte —" className={inputClass} name="itemCondition" value={form.itemCondition} onChange={set}>
                     <option value="">— vyberte —</option>
                     <option value="Nový, nepoužitý">Nový, nepoužitý</option>
                     <option value="Výborný stav">Výborný stav (jako nový)</option>
@@ -251,10 +251,10 @@ export default function KupniPage() {
               <SectionTitle index="04" title="Kupní cena a platba" />
               <div className="grid sm:grid-cols-2 gap-4">
                 <Field label="Kupní cena *"><input className={inputClass} name="price" value={form.price} onChange={set} type="number" placeholder="15000" /></Field>
-                <Field label="Měna"><select className={inputClass} name="currency" value={form.currency} onChange={set}><option>Kč</option><option>EUR</option></select></Field>
+                <Field label="Měna"><select aria-label="Bankovní převod" className={inputClass} name="currency" value={form.currency} onChange={set}><option>Kč</option><option>EUR</option></select></Field>
                 <Field label="Cena slovy"><input className={inputClass} name="priceWords" value={form.priceWords} onChange={set} placeholder="patnáct tisíc korun českých" /></Field>
                 <Field label="Způsob úhrady">
-                  <select className={inputClass} name="paymentMethod" value={form.paymentMethod} onChange={set}>
+                  <select aria-label="Bankovní převod" className={inputClass} name="paymentMethod" value={form.paymentMethod} onChange={set}>
                     <option value="transfer">Bankovní převod</option>
                     <option value="cash">Hotovost při předání</option>
                     <option value="escrow">Notářská/advokátní úschova</option>
@@ -281,7 +281,7 @@ export default function KupniPage() {
               {/* Řešení sporů */}
               <div className="mb-6">
                 <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
-                <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set}>
+                <select aria-label="Obecný soud (výchozí)" className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set}>
                   <option value="court">Obecný soud (výchozí)</option>
                   <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                   <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
