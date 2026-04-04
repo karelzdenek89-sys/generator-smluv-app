@@ -3,9 +3,9 @@ import Link from 'next/link';
 import NavbarClient from '@/app/components/NavbarClient';
 
 export const metadata: Metadata = {
-  title: 'SmlouvaHned | Smluvní dokumenty online',
+  title: 'SmlouvaHned | Standardizované smluvní dokumenty online',
   description:
-    'Sestavte smluvní dokument podle svých podmínek. Přehledný formulář, bezpečná platba a PDF připravené ke kontrole a podpisu.',
+    'Online nástroj pro tvorbu standardizovaných smluvních dokumentů pro běžné situace. Přehledný formulář, bezpečná platba a PDF připravené ke kontrole a podpisu.',
   alternates: { canonical: 'https://www.smlouvahned.cz' },
 };
 
@@ -148,16 +148,16 @@ const navLinks = [
 ];
 
 const trustItems = [
-  { icon: <ShieldIcon />, text: 'Obsah a šablony průběžně revidujeme podle české legislativy platné v roce 2026.' },
-  { icon: <LockIcon />, text: 'Platba probíhá přes Stripe. Platební údaje se nezpracovávají přímo na našem webu.' },
-  { icon: <FileIcon />, text: 'PDF dokument je ke stažení ihned po zaplacení a po omezenou dobu zůstává dostupný online.' },
-  { icon: <CheckIcon />, text: 'Provozovatel, obchodní podmínky, GDPR a kontakt jsou na webu veřejně dostupné.' },
+  { icon: <ShieldIcon />, text: 'Šablony průběžně revidované pro českou legislativu 2026' },
+  { icon: <LockIcon />, text: 'Bezpečná platba přes Stripe bez zpracování karty na našem webu' },
+  { icon: <FileIcon />, text: 'PDF ke stažení ihned po zaplacení a dostupné po omezenou dobu online' },
+  { icon: <CheckIcon />, text: 'Transparentní provozovatel, obchodní podmínky, GDPR a kontakt veřejně na webu' },
 ];
 
 const proofItems = [
   { value: '14', label: 'typů dokumentů' },
-  { value: '249 Kč', label: 'od základní varianty' },
-  { value: 'Ihned', label: 'ke stažení po zaplacení' },
+  { value: '3', label: 'varianty výstupu' },
+  { value: 'PDF', label: 'připravené po zaplacení' },
 ];
 
 const contractCards = [
@@ -197,33 +197,50 @@ const pricingTiers = [
   {
     title: 'Základní dokument',
     price: '249 Kč',
-    intro: 'Pro standardní situace, kdy se strany dohodly na obsahu a potřebují jej správně zachytit písemně.',
+    intro: 'Pro běžné situace, kdy potřebujete přehledný finální dokument v PDF.',
     points: [
-      'PDF dokument sestavený podle vyplněných údajů',
-      'Základní smluvní struktura pro běžné použití',
-      'Odkaz ke stažení aktivní po dobu 7 dní',
+      'Dokument sestavený podle vyplněných údajů',
+      'Základní smluvní struktura pro standardní použití',
+      'Dostupnost odkazu ke stažení po dobu 7 dní',
     ],
   },
   {
-    title: 'Rozšířená ochrana',
+    title: 'Rozšířený dokument',
     price: '399 Kč',
-    intro: 'Pro případy, kdy chcete podrobněji řešit odpovědnost, sankce a ochranná ujednání.',
+    intro: 'Pro případy, kdy chcete doplnit ochranná ustanovení a sankční klauzule.',
     points: [
       'Vše ze Základního dokumentu',
-      'Rozšířené klauzule a sankční ustanovení podle typu dokumentu',
-      'Odkaz ke stažení aktivní po dobu 14 dní',
+      'Rozšířené klauzule podle typu dokumentu',
+      'Dostupnost odkazu ke stažení po dobu 14 dní',
     ],
   },
   {
     title: 'Kompletní balíček',
     price: '749 Kč',
-    intro: 'Pro situace, kdy chcete i instrukce k podpisu, checklist a delší archivaci odkazu.',
+    intro: 'Pro uživatele, kteří chtějí i doprovodné podklady a delší dostupnost.',
     points: [
-      'Vše z Rozšířené ochrany',
-      'Průvodní checklist a instrukce k podpisu',
-      'Odkaz ke stažení aktivní po dobu 30 dní',
+      'Vše z Rozšířeného dokumentu',
+      'Checklist a doprovodné instrukce podle varianty',
+      'Dostupnost odkazu ke stažení po dobu 30 dní',
     ],
   },
+];
+
+const allDocumentCards = [
+  { href: '/najem', title: 'Nájemní smlouva', subtitle: 'Byt, dům, nebytové prostory' },
+  { href: '/auto', title: 'Kupní smlouva na vozidlo', subtitle: 'Auto, motocykl, přívěs' },
+  { href: '/kupni', title: 'Kupní smlouva', subtitle: 'Movité věci, B2B i spotřebitel' },
+  { href: '/darovaci', title: 'Darovací smlouva', subtitle: 'Majetek, peníze, movité věci' },
+  { href: '/smlouva-o-dilo', title: 'Smlouva o dílo', subtitle: 'Práce, projekty, zakázky' },
+  { href: '/sluzby', title: 'Smlouva o službách', subtitle: 'Opakované nebo jednorázové služby' },
+  { href: '/spoluprace', title: 'Smlouva o spolupráci', subtitle: 'Obchodní partnerství, B2B' },
+  { href: '/pracovni', title: 'Pracovní smlouva', subtitle: 'HPP, zaměstnanecký poměr' },
+  { href: '/dpp', title: 'Dohoda o provedení práce', subtitle: 'DPP, vedlejší příjem' },
+  { href: '/pujcka', title: 'Smlouva o zápůjčce', subtitle: 'Peníze, movité věci' },
+  { href: '/uznani-dluhu', title: 'Uznání dluhu', subtitle: 'Potvrzení závazku a splácení' },
+  { href: '/nda', title: 'NDA – Mlčenlivost', subtitle: 'Ochrana informací a obchodního tajemství' },
+  { href: '/podnajem', title: 'Podnájemní smlouva', subtitle: 'Podnájem bytu nebo prostor' },
+  { href: '/plna-moc', title: 'Plná moc', subtitle: 'Obecná i speciální plná moc' },
 ];
 
 export default function Home() {
@@ -256,7 +273,7 @@ export default function Home() {
 
             <div className="flex items-center gap-2">
               <Link href="#dokumenty" className="nav-cta-ref hidden lg:inline-flex">
-                Vybrat typ smlouvy <span aria-hidden>→</span>
+                Vybrat dokument <span aria-hidden>→</span>
               </Link>
               <NavbarClient />
             </div>
@@ -271,20 +288,19 @@ export default function Home() {
               <div className="hero-copy-ref">
                 <p className="hero-kicker-ref">Online nástroj pro standardizované smluvní dokumenty</p>
                 <h1 className="hero-title-ref">
-                  <span>Smluvní dokument</span>
-                  <span>sestavený podle vašich</span>
-                  <span>podmínek</span>
+                  <span>Standardizovaný dokument</span>
+                  <span>sestavený podle</span>
+                  <span>vašich údajů</span>
                 </h1>
 
                 <p className="hero-lead-ref">
-                  Vyplňte přehledný formulář a během několika minut získáte strukturovaný dokument připravený ke kontrole a podpisu.
-                  Služba je určená pro běžné životní a podnikatelské situace, ve kterých se strany shodly na obsahu a
-                  potřebují jej zachytit přehledně a písemně.
+                  Vyplníte přehledný formulář, zvolíte variantu a po zaplacení získáte dokument v PDF připravený ke kontrole
+                  a podpisu. Pro běžné životní a podnikatelské situace, ve kterých se strany shodly na obsahu.
                 </p>
 
                 <div className="hero-cta-row-ref">
                   <Link href="#dokumenty" className="btn-primary-ref">
-                    Vybrat typ smlouvy <span aria-hidden>→</span>
+                    Vybrat dokument <span aria-hidden>→</span>
                   </Link>
                   <Link href="#jak-to-funguje" className="btn-outline-ref">
                     Jak služba funguje
@@ -296,15 +312,6 @@ export default function Home() {
                     <div key={item.label} className="proof-item-ref">
                       <div className="proof-value-ref">{item.value}</div>
                       <div className="proof-label-ref">{item.label}</div>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="trust-row-ref">
-                  {trustItems.map(item => (
-                    <div key={item.text} className="trust-item-ref">
-                      <div className="trust-icon-ref">{item.icon}</div>
-                      <p>{item.text}</p>
                     </div>
                   ))}
                 </div>
@@ -322,7 +329,7 @@ export default function Home() {
                         </span>
                         <div>
                           <div className="hero-sheet-kicker-ref">SmlouvaHned.cz</div>
-                          <div className="hero-sheet-title-ref">Smluvní dokument</div>
+                          <div className="hero-sheet-title-ref">Připravený dokument</div>
                         </div>
                       </div>
 
@@ -330,21 +337,20 @@ export default function Home() {
                         <span />
                         <span />
                         <span />
-                        <span />
                       </div>
 
                       <div className="hero-sheet-grid-ref">
                         <div className="hero-sheet-section-ref">
-                          <div className="hero-sheet-label-ref">Identifikace stran</div>
-                          <div className="hero-sheet-copy-ref">Jasně strukturované údaje připravené ke kontrole.</div>
+                          <div className="hero-sheet-label-ref">Strany</div>
+                          <div className="hero-sheet-copy-ref">Identifikace účastníků a základní údaje na jednom místě.</div>
                         </div>
                         <div className="hero-sheet-section-ref">
-                          <div className="hero-sheet-label-ref">Klíčová ujednání</div>
-                          <div className="hero-sheet-copy-ref">Cena, termíny, odpovědnost a podmínky předání.</div>
+                          <div className="hero-sheet-label-ref">Podmínky</div>
+                          <div className="hero-sheet-copy-ref">Cena, termíny a klíčová ujednání ve čitelné struktuře.</div>
                         </div>
                         <div className="hero-sheet-section-ref">
-                          <div className="hero-sheet-label-ref">Připraveno k podpisu</div>
-                          <div className="hero-sheet-copy-ref">Profesionální výstup ve formátu PDF.</div>
+                          <div className="hero-sheet-label-ref">Podpis</div>
+                          <div className="hero-sheet-copy-ref">Finální PDF připravené ke kontrole, podpisu a archivaci.</div>
                         </div>
                       </div>
 
@@ -358,26 +364,87 @@ export default function Home() {
                     </div>
 
                     <div className="hero-premium-sidecard-ref">
-                      <div className="hero-sidecard-kicker-ref">Důvěra a pořádek</div>
-                      <div className="hero-sidecard-title-ref">Prémiově působící dokumentace</div>
+                      <div className="hero-sidecard-kicker-ref">Po zaplacení</div>
+                      <div className="hero-sidecard-title-ref">PDF připravené ke kontrole a podpisu</div>
                       <ul className="hero-sidecard-points-ref">
-                        <li>Strukturované sekce</li>
-                        <li>Čisté formátování</li>
-                        <li>Okamžité stažení</li>
+                        <li>Jasná struktura</li>
+                        <li>Přehledné sekce</li>
+                        <li>Dostupnost dle varianty</li>
                       </ul>
-                    </div>
-
-                    <div className="hero-pen-ref">
-                      <span className="hero-pen-cap-ref" />
-                      <span className="hero-pen-band-ref" />
-                      <span className="hero-pen-tip-ref" />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <section id="dokumenty" className="contracts-panel-ref">
+            <section className="premium-page-card-soft-ref mt-6 p-6">
+              <div className="mb-2 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">
+                Jasně vymezená služba pro běžné situace
+              </div>
+              <p className="max-w-4xl text-sm leading-relaxed text-slate-300 md:text-base">
+                SmlouvaHned je online nástroj pro tvorbu standardizovaných smluvních dokumentů. Nejde o individuální právní
+                poradenství. Právě proto na webu otevřeně uvádíme, kdy je služba vhodná a kdy už doporučujeme obrátit se na advokáta.
+              </p>
+            </section>
+
+            <div className="trust-row-ref">
+              {trustItems.map(item => (
+                <div key={item.text} className="trust-item-ref">
+                  <div className="trust-icon-ref">{item.icon}</div>
+                  <p>{item.text}</p>
+                </div>
+              ))}
+            </div>
+
+            <section className="premium-page-card-ref mt-6 p-8">
+              <div className="section-heading-ref mb-6 text-left">
+                <p className="section-kicker-ref">Po dokončení objednávky</p>
+                <h2 className="section-title-ref">Co přesně získáte po zaplacení</h2>
+              </div>
+              <p className="max-w-3xl text-sm leading-relaxed text-slate-300 md:text-base">
+                Hotový dokument v PDF připravený k podpisu, sestavený podle údajů, které zadáte ve formuláři. U vybraných typů
+                dokumentů také odpovídající přílohy a doprovodné podklady podle zvolené varianty.
+              </p>
+              <div className="premium-page-grid-ref two mt-8">
+                <div className="premium-note-card-ref p-6">
+                  <div className="mb-3 text-xs font-black uppercase tracking-[0.18em] text-amber-400">Preview struktury dokumentu</div>
+                  <ul className="space-y-3 text-sm text-slate-300">
+                    {[
+                      'Identifikace smluvních stran',
+                      'Vymezení předmětu smlouvy',
+                      'Cena, termíny a podmínky plnění',
+                      'Odpovědnost, sankce a závěrečná ustanovení',
+                      'Podpisová část a přílohy dle typu dokumentu',
+                    ].map(item => (
+                      <li key={item} className="flex items-start gap-3">
+                        <span className="mt-0.5 text-amber-400">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="premium-note-card-ref p-6">
+                  <div className="mb-3 text-xs font-black uppercase tracking-[0.18em] text-amber-400">Varianty služby</div>
+                  <div className="space-y-4 text-sm text-slate-300">
+                    <div>
+                      <div className="font-bold text-white">Základní dokument</div>
+                      <p className="mt-1 text-slate-400">Přehledný finální dokument v PDF pro standardní použití.</p>
+                    </div>
+                    <div>
+                      <div className="font-bold text-white">Rozšířený dokument</div>
+                      <p className="mt-1 text-slate-400">Doplňuje ochranná ustanovení a další rozšířené klauzule.</p>
+                    </div>
+                    <div>
+                      <div className="font-bold text-white">Kompletní balíček</div>
+                      <p className="mt-1 text-slate-400">Obsahuje i doprovodné podklady a delší dostupnost odkazu.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section id="dokumenty" className="contracts-panel-ref mt-6">
               <p className="contracts-label-ref">Vyberte dokument, který potřebujete</p>
               <h2 className="contracts-title-ref">Nejčastější smlouvy a dokumenty</h2>
 
@@ -444,36 +511,23 @@ export default function Home() {
           </div>
         </section>
 
-      <section id="vsechny-dokumenty" className="mx-auto mt-8 max-w-[1220px] px-5 md:px-8">
-        <div className="section-heading-ref">
-          <p className="section-kicker-ref">Kompletní přehled</p>
-          <h2 className="section-title-ref">Všechny typy dokumentů</h2>
-        </div>
-        <div className="contracts-grid-ref" style={{gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))'}}>
-          {[
-            { href: '/najem', title: 'Nájemní smlouva', subtitle: 'Byt, dům, nebytové prostory' },
-            { href: '/auto', title: 'Kupní smlouva na vozidlo', subtitle: 'Auto, motocykl, přívěs' },
-            { href: '/kupni', title: 'Kupní smlouva', subtitle: 'Movité věci, B2B i spotřebitel' },
-            { href: '/darovaci', title: 'Darovací smlouva', subtitle: 'Majetek, peníze, movité věci' },
-            { href: '/smlouva-o-dilo', title: 'Smlouva o dílo', subtitle: 'Práce, projekty, zakázky' },
-            { href: '/sluzby', title: 'Smlouva o službách', subtitle: 'Opakované nebo jednorázové služby' },
-            { href: '/spoluprace', title: 'Smlouva o spolupráci', subtitle: 'Obchodní partnerství, B2B' },
-            { href: '/pracovni', title: 'Pracovní smlouva', subtitle: 'HPP, zaměstnanecký poměr' },
-            { href: '/dpp', title: 'Dohoda o provedení práce', subtitle: 'DPP, vedlejší příjem' },
-            { href: '/pujcka', title: 'Smlouva o zápůjčce', subtitle: 'Peníze, movité věci' },
-            { href: '/uznani-dluhu', title: 'Uznání dluhu', subtitle: 'Potvrzení závazku s splátkovým plá.' },
-            { href: '/nda', title: 'NDA – Mlčenlivost', subtitle: 'Ochrana informací, non-compete' },
-            { href: '/podnajem', title: 'Podnájemní smlouva', subtitle: 'Podnájem bytu nebo prostor' },
-            { href: '/plna-moc', title: 'Plná moc', subtitle: 'Obecná, speciální nebo notářská' },
-          ].map(card => (
-            <Link key={card.href} href={card.href} className="contract-card-ref">
-              <div className="contract-card-icon-ref"><DocumentIcon /></div>
-              <h3>{card.title}</h3>
-              <p>{card.subtitle}</p>
-            </Link>
-          ))}
-        </div>
-      </section>
+        <section id="vsechny-dokumenty" className="mx-auto mt-8 max-w-[1220px] px-5 md:px-8">
+          <div className="section-heading-ref">
+            <p className="section-kicker-ref">Kompletní přehled</p>
+            <h2 className="section-title-ref">Všechny typy dokumentů</h2>
+          </div>
+          <div className="contracts-grid-ref" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}>
+            {allDocumentCards.map(card => (
+              <Link key={card.href} href={card.href} className="contract-card-ref">
+                <div className="contract-card-icon-ref">
+                  <DocumentIcon />
+                </div>
+                <h3>{card.title}</h3>
+                <p>{card.subtitle}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
       </main>
 
       <footer className="footer-ref">

@@ -1,4 +1,10 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 /** @type {import('next').NextConfig} */
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const securityHeaders = [
   { key: "X-Frame-Options", value: "SAMEORIGIN" },
@@ -31,6 +37,9 @@ const securityHeaders = [
 ];
 
 const nextConfig = {
+  turbopack: {
+    root: __dirname,
+  },
   async headers() {
     return [
       {

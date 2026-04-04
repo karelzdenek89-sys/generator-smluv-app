@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 
 const navLinks = [
@@ -11,29 +11,22 @@ const navLinks = [
   { href: '/o-projektu', label: 'O projektu' },
 ];
 
-/**
- * Adds background + shadow to the flat navbar on scroll.
- * Also provides mobile hamburger menu.
- */
 export default function NavbarClient() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const navbar = document.getElementById('main-navbar');
     if (!navbar) return;
+    const navbarElement = navbar;
 
     let ticking = false;
 
     function handleScroll() {
       if (ticking) return;
       ticking = true;
+
       requestAnimationFrame(() => {
-        const scrolled = window.scrollY > 40;
-        if (scrolled) {
-          navbar!.classList.add('navbar-flat-scrolled');
-        } else {
-          navbar!.classList.remove('navbar-flat-scrolled');
-        }
+        navbarElement.classList.toggle('navbar-flat-scrolled', window.scrollY > 40);
         ticking = false;
       });
     }
@@ -42,26 +35,26 @@ export default function NavbarClient() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close menu on resize to desktop
   useEffect(() => {
-    function onResize() {
+    function handleResize() {
       if (window.innerWidth >= 1024) setMenuOpen(false);
     }
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Prevent body scroll when menu is open
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [menuOpen]);
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   return (
     <>
-      {/* Hamburger button — visible only on mobile/tablet */}
       <button
         id="mobile-menu-btn"
         aria-label={menuOpen ? 'Zavřít menu' : 'Otevřít menu'}
@@ -74,35 +67,21 @@ export default function NavbarClient() {
         <span className={`mobile-menu-bar-ref ${menuOpen ? 'mobile-bar-bot-open' : ''}`} />
       </button>
 
-      {/* Mobile overlay menu */}
-      {menuOpen && (
-        <div
-          className="mobile-overlay-ref"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Navigační menu"
-        >
+      {menuOpen ? (
+        <div className="mobile-overlay-ref" role="dialog" aria-modal="true" aria-label="Navigační menu">
           <nav className="mobile-nav-ref">
             {navLinks.map(link => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={closeMenu}
-                className="mobile-nav-link-ref"
-              >
+              <Link key={link.href} href={link.href} onClick={closeMenu} className="mobile-nav-link-ref">
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="#dokumenty"
-              onClick={closeMenu}
-              className="mobile-nav-cta-ref"
-            >
-              Vybrat typ smlouvy →
+
+            <Link href="#dokumenty" onClick={closeMenu} className="mobile-nav-cta-ref">
+              Vybrat dokument <span aria-hidden>→</span>
             </Link>
           </nav>
         </div>
-      )}
+      ) : null}
     </>
   );
 }
