@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
 import NavbarClient from '@/app/components/NavbarClient';
 
@@ -127,6 +126,15 @@ function DocumentIcon() {
     <svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden>
       <rect x="7" y="4.5" width="16" height="21" rx="2" stroke="var(--gold)" strokeWidth="1.7" />
       <path d="M11 11h8M11 15h8M11 19h5" stroke="var(--gold)" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function HeroContractIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden>
+      <rect x="3.25" y="2.75" width="15.5" height="16.5" rx="2.25" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M7 8h8M7 11h8M7 14h4.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
     </svg>
   );
 }
@@ -267,9 +275,9 @@ export default function Home() {
                 </h1>
 
                 <p className="hero-lead-ref">
-                  Vyplníte přehledný formulář a během několika minut získáte strukturovaný dokument připravený
-                  ke kontrole a podpisu. Služba je určená pro běžné životní a podnikatelské situace, ve kterých
-                  se strany shodly na obsahu a potřebují jej zachytit přehledně a písemně.
+                  Vyplňte přehledný formulář a během několika minut získáte strukturovaný dokument připravený ke kontrole a podpisu.
+                  Služba je určená pro běžné životní a podnikatelské situace, ve kterých se strany shodly na obsahu a
+                  potřebují jej zachytit přehledně a písemně.
                 </p>
 
                 <div className="hero-cta-row-ref">
@@ -302,15 +310,67 @@ export default function Home() {
 
               <div className="hero-visual-ref">
                 <div className="hero-visual-inner-ref">
-                  <Image
-                    src="/images/hero-reference.png"
-                    alt="Náhled dokumentu SmlouvaHned"
-                    width={1200}
-                    height={900}
-                    priority
-                    sizes="(max-width: 1024px) 100vw, 620px"
-                    className="h-auto w-full object-cover"
-                  />
+                  <div className="hero-premium-art-ref" aria-hidden>
+                    <div className="hero-premium-backdrop-ref" />
+                    <div className="hero-premium-folder-ref" />
+                    <div className="hero-premium-sheet-ref">
+                      <div className="hero-sheet-header-ref">
+                        <span className="hero-sheet-icon-ref">
+                          <HeroContractIcon />
+                        </span>
+                        <div>
+                          <div className="hero-sheet-kicker-ref">SmlouvaHned.cz</div>
+                          <div className="hero-sheet-title-ref">Smluvní dokument</div>
+                        </div>
+                      </div>
+
+                      <div className="hero-sheet-lines-ref">
+                        <span />
+                        <span />
+                        <span />
+                        <span />
+                      </div>
+
+                      <div className="hero-sheet-grid-ref">
+                        <div className="hero-sheet-section-ref">
+                          <div className="hero-sheet-label-ref">Identifikace stran</div>
+                          <div className="hero-sheet-copy-ref">Jasně strukturované údaje připravené ke kontrole.</div>
+                        </div>
+                        <div className="hero-sheet-section-ref">
+                          <div className="hero-sheet-label-ref">Klíčová ujednání</div>
+                          <div className="hero-sheet-copy-ref">Cena, termíny, odpovědnost a podmínky předání.</div>
+                        </div>
+                        <div className="hero-sheet-section-ref">
+                          <div className="hero-sheet-label-ref">Připraveno k podpisu</div>
+                          <div className="hero-sheet-copy-ref">Profesionální výstup ve formátu PDF.</div>
+                        </div>
+                      </div>
+
+                      <div className="hero-sheet-footer-ref">
+                        <div className="hero-seal-ref" />
+                        <div className="hero-signatures-ref">
+                          <span />
+                          <span />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="hero-premium-sidecard-ref">
+                      <div className="hero-sidecard-kicker-ref">Důvěra a pořádek</div>
+                      <div className="hero-sidecard-title-ref">Prémiově působící dokumentace</div>
+                      <ul className="hero-sidecard-points-ref">
+                        <li>Strukturované sekce</li>
+                        <li>Čisté formátování</li>
+                        <li>Okamžité stažení</li>
+                      </ul>
+                    </div>
+
+                    <div className="hero-pen-ref">
+                      <span className="hero-pen-cap-ref" />
+                      <span className="hero-pen-band-ref" />
+                      <span className="hero-pen-tip-ref" />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

@@ -17,36 +17,35 @@ const supportTopics = [
 
 export default function KontaktPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#05080f] px-6 py-20 text-slate-200">
+    <main className="premium-page-bg-ref flex min-h-screen items-center justify-center px-6 py-20 text-slate-200">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(245,158,11,0.08),transparent_45%)]" />
 
-      <div className="relative z-10 w-full max-w-2xl">
+      <div className="premium-page-shell-ref max-w-2xl">
         <div className="mb-6">
-          <Link
-            href="/"
-            className="text-xs font-bold uppercase tracking-widest text-slate-500 transition hover:text-amber-400"
-          >
+          <Link href="/" className="premium-back-link-ref">
             ← SmlouvaHned
           </Link>
         </div>
 
-        <h1 className="mb-3 text-4xl font-black uppercase tracking-tight text-white md:text-5xl">Kontakt</h1>
-        <p className="mb-5 max-w-lg text-sm text-slate-400">
-          Máte dotaz k objednávce, fakturaci, reklamaci nebo technickému zpřístupnění dokumentu? Napište nám a
-          přidejte co nejvíce informací, abychom vám mohli odpovědět co nejrychleji.
-        </p>
-
-        <div className="mb-10 max-w-lg rounded-2xl border border-amber-500/20 bg-amber-500/5 px-5 py-4 text-xs text-slate-400">
-          <span className="font-bold text-amber-400">Poznámka:</span>{' '}
-          SmlouvaHned neposkytuje individuální právní poradenství. Dotazy na právní výklad, posouzení konkrétní
-          situace nebo doporučení vhodného právního postupu proto nemůžeme řešit. V takovém případě doporučujeme
-          obrátit se na advokáta.
+        <div className="premium-page-hero-ref mb-8">
+          <h1 className="mb-3 text-4xl font-black uppercase tracking-tight text-white md:text-5xl">Kontakt</h1>
+          <p className="max-w-lg text-sm text-slate-400">
+            Máte dotaz k objednávce, fakturaci, reklamaci nebo technickému zpřístupnění dokumentu? Napište nám a přidejte
+            co nejvíce informací, abychom vám mohli odpovědět co nejrychleji.
+          </p>
         </div>
 
-        <div className="mb-10 grid gap-5 sm:grid-cols-2">
+        <div className="premium-page-card-soft-ref mb-10 max-w-lg px-5 py-4 text-xs text-slate-400">
+          <span className="font-bold text-amber-400">Poznámka:</span>{' '}
+          SmlouvaHned neposkytuje individuální právní poradenství. Dotazy na právní výklad, posouzení konkrétní situace
+          nebo doporučení vhodného právního postupu proto nemůžeme řešit. V takovém případě doporučujeme obrátit se na
+          advokáta.
+        </div>
+
+        <div className="premium-page-grid-ref two mb-10">
           <a
             href="mailto:info@smlouvahned.cz"
-            className="group rounded-3xl border border-slate-800 bg-[#0c1426] p-7 transition hover:-translate-y-0.5 hover:border-amber-500/40"
+            className="premium-page-card-ref group p-7 transition hover:-translate-y-0.5 hover:border-amber-500/40"
           >
             <div className="mb-4 text-3xl">E-mail</div>
             <div className="mb-1 text-xs font-black uppercase tracking-widest text-amber-400">Hlavní kontakt</div>
@@ -54,7 +53,7 @@ export default function KontaktPage() {
             <p className="mt-2 text-xs text-slate-500">Objednávky, reklamace, technická podpora, fakturace</p>
           </a>
 
-          <div className="rounded-3xl border border-slate-800 bg-[#0c1426] p-7">
+          <div className="premium-page-card-ref p-7">
             <div className="mb-4 text-3xl">Čas odpovědi</div>
             <div className="mb-1 text-xs font-black uppercase tracking-widest text-amber-400">Orientačně</div>
             <div className="text-sm font-bold text-white">Obvykle do 2 pracovních dnů</div>
@@ -62,7 +61,7 @@ export default function KontaktPage() {
           </div>
         </div>
 
-        <div className="mb-8 rounded-3xl border border-slate-800 bg-[#0c1426] p-7">
+        <div className="premium-page-card-ref mb-8 p-7">
           <h2 className="mb-4 text-sm font-black uppercase tracking-wider text-white">Co je dobré do zprávy uvést</h2>
           <ul className="space-y-2">
             {supportTopics.map(item => (
@@ -74,7 +73,7 @@ export default function KontaktPage() {
           </ul>
         </div>
 
-        <div className="mb-8 rounded-3xl border border-slate-800 bg-[#0c1426] p-7">
+        <div className="premium-page-card-ref mb-8 p-7">
           <h2 className="mb-4 text-sm font-black uppercase tracking-wider text-white">Nejčastější dotazy</h2>
           <div className="space-y-4">
             {[
@@ -115,11 +114,10 @@ export default function KontaktPage() {
           </Link>
         </div>
 
-        <div className="mt-10 border-t border-white/5 pt-8 text-center text-xs leading-relaxed text-slate-600">
+        <div className="premium-footer-ref mt-10 text-center text-xs leading-relaxed text-slate-600">
           <p>Provozovatel: Karel Zdeněk · IČO: 23660295 · Plzeňská 189, 345 61 Staňkov</p>
           <p className="mt-1">
-            SmlouvaHned je obchodní označení online služby provozované touto osobou. Neposkytujeme právní
-            poradenství.
+            SmlouvaHned je obchodní označení online služby provozované touto osobou. Neposkytujeme právní poradenství.
           </p>
         </div>
       </div>

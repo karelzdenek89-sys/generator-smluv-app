@@ -36,6 +36,20 @@ export interface ContractLandingSectionProps {
   guideLabel?: string;
 }
 
+function LandingDocumentIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M7 3.75h7.2l3.05 3.05V18.5A1.75 1.75 0 0 1 15.5 20.25h-8A1.75 1.75 0 0 1 5.75 18.5v-13A1.75 1.75 0 0 1 7.5 3.75Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <path d="M14.25 3.9v3.4h3.35" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M8.75 11h6.5M8.75 14.25h6.5" stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" />
+    </svg>
+  );
+}
+
 export default function ContractLandingSection({
   badge,
   h1Main,
@@ -61,69 +75,124 @@ export default function ContractLandingSection({
   return (
     <>
       <section className="mx-auto max-w-7xl px-4 pb-14 pt-16 lg:px-8">
-        <div className="max-w-2xl">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-amber-500/25 bg-amber-500/8 px-4 py-1.5 text-[11px] font-black uppercase tracking-[0.2em] text-amber-400">
-            {badge}
-          </div>
-
-          <h1 className="mb-5 text-4xl font-black leading-[1.1] tracking-tight text-white lg:text-5xl">
-            {h1Accent ? (
-              <>
-                {h1Main}{' '}
-                <span className="text-amber-400">{h1Accent}</span>
-                {h1Suffix ? <> {h1Suffix}</> : null}
-              </>
-            ) : (
-              h1Main
-            )}
-          </h1>
-
-          <p className="mb-10 text-lg leading-relaxed text-slate-400">{subtitle}</p>
-
-          <div className="mb-10 grid gap-4 sm:grid-cols-2">
-            {benefits.map(item => (
-              <div
-                key={item.text}
-                className="flex items-start gap-3 rounded-2xl border border-slate-800/60 bg-[#0c1426] px-5 py-4"
-              >
-                <span className="mt-0.5 shrink-0 text-xl leading-none">{item.icon}</span>
-                <span className="text-sm leading-snug text-slate-300">{item.text}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="flex flex-wrap items-center gap-4">
-            <button
-              onClick={() => scrollTo(formId)}
-              className="rounded-2xl bg-amber-500 px-8 py-4 text-base font-black text-slate-900 shadow-[0_0_30px_rgba(245,158,11,0.2)] transition hover:bg-amber-400 active:scale-95"
-            >
-              {ctaLabel} →
-            </button>
-            <button
-              onClick={() => scrollTo('obsah')}
-              className="text-sm font-semibold text-slate-400 underline decoration-slate-700 underline-offset-4 transition hover:text-white"
-            >
-              Co dokument obsahuje ↓
-            </button>
-          </div>
-
-          {guideHref ? (
-            <div className="mt-5 border-t border-slate-800/50 pt-5">
-              <Link
-                href={guideHref}
-                className="inline-flex items-center gap-2 text-sm text-slate-500 transition hover:text-amber-400"
-              >
-                <svg className="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                  />
-                </svg>
-                {guideLabel}
-              </Link>
+        <div className="contract-hero-shell-ref">
+          <div className="contract-hero-copy-ref">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-amber-500/25 bg-amber-500/8 px-4 py-1.5 text-[11px] font-black uppercase tracking-[0.2em] text-amber-400">
+              {badge}
             </div>
-          ) : null}
+
+            <h1 className="mb-5 text-4xl font-black leading-[1.05] tracking-tight text-white lg:text-5xl">
+              {h1Accent ? (
+                <>
+                  {h1Main} <span className="text-amber-400">{h1Accent}</span>
+                  {h1Suffix ? <> {h1Suffix}</> : null}
+                </>
+              ) : (
+                h1Main
+              )}
+            </h1>
+
+            <p className="mb-10 max-w-2xl text-lg leading-relaxed text-slate-400">{subtitle}</p>
+
+            <div className="mb-10 grid gap-4 sm:grid-cols-2">
+              {benefits.map(item => (
+                <div
+                  key={item.text}
+                  className="flex items-start gap-3 rounded-2xl border border-slate-800/60 bg-[#0c1426] px-5 py-4"
+                >
+                  <span className="mt-0.5 shrink-0 text-xl leading-none">{item.icon}</span>
+                  <span className="text-sm leading-snug text-slate-300">{item.text}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-wrap items-center gap-4">
+              <button
+                onClick={() => scrollTo(formId)}
+                className="rounded-2xl bg-amber-500 px-8 py-4 text-base font-black text-slate-900 shadow-[0_0_30px_rgba(245,158,11,0.2)] transition hover:bg-amber-400 active:scale-95"
+              >
+                {ctaLabel} →
+              </button>
+              <button
+                onClick={() => scrollTo('obsah')}
+                className="text-sm font-semibold text-slate-400 underline decoration-slate-700 underline-offset-4 transition hover:text-white"
+              >
+                Co dokument obsahuje ↓
+              </button>
+            </div>
+
+            {guideHref ? (
+              <div className="mt-5 border-t border-slate-800/50 pt-5">
+                <Link
+                  href={guideHref}
+                  className="inline-flex items-center gap-2 text-sm text-slate-500 transition hover:text-amber-400"
+                >
+                  <svg className="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                    />
+                  </svg>
+                  {guideLabel}
+                </Link>
+              </div>
+            ) : null}
+          </div>
+
+          <div className="contract-hero-art-ref" aria-hidden="true">
+            <div className="contract-hero-art-backdrop-ref" />
+            <div className="contract-hero-folder-ref" />
+
+            <div className="contract-hero-sheet-ref">
+              <div className="contract-hero-sheet-head-ref">
+                <span className="contract-hero-sheet-icon-ref">
+                  <LandingDocumentIcon />
+                </span>
+                <div>
+                  <div className="contract-hero-sheet-kicker-ref">SmlouvaHned</div>
+                  <div className="contract-hero-sheet-title-ref">Připravený dokument</div>
+                </div>
+              </div>
+
+              <div className="contract-hero-lines-ref">
+                <span />
+                <span />
+                <span />
+              </div>
+
+              <div className="contract-hero-panels-ref">
+                <div className="contract-hero-panel-ref">
+                  <div className="contract-hero-panel-label-ref">Strany</div>
+                  <div className="contract-hero-panel-copy-ref">
+                    Údaje o účastnících, adrese a identifikaci se propíšou do přehledné finální podoby.
+                  </div>
+                </div>
+                <div className="contract-hero-panel-ref">
+                  <div className="contract-hero-panel-label-ref">Podmínky</div>
+                  <div className="contract-hero-panel-copy-ref">
+                    Cena, termíny a další ujednání jsou rozdělené do logických bloků pro rychlou kontrolu.
+                  </div>
+                </div>
+                <div className="contract-hero-panel-ref">
+                  <div className="contract-hero-panel-label-ref">Podpis</div>
+                  <div className="contract-hero-panel-copy-ref">
+                    Výsledný PDF dokument je připravený k vytištění, podpisu a založení do evidence.
+                  </div>
+                </div>
+              </div>
+
+              <div className="contract-hero-sheet-foot-ref">
+                <span />
+                <span />
+              </div>
+            </div>
+
+            <div className="contract-hero-note-ref">
+              <div className="contract-hero-note-kicker-ref">Prémiový výstup</div>
+              <div className="contract-hero-note-title-ref">Jasná struktura a čisté PDF bez rušivých prvků</div>
+            </div>
+          </div>
         </div>
       </section>
 

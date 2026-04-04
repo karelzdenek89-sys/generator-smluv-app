@@ -30,7 +30,7 @@ const limits = [
   },
   {
     title: 'Neposkytujeme individuální právní poradenství',
-    text: 'Nástroj neposuzuje vaši konkrétní situaci a nedoporučuje, jaké řešení je pro vás právně nejvýhodnější.',
+    text: 'Nástroj neposuzuje vaši konkrétní situaci a nedoporučuje, jaké řešení je pro vás právně nejvhodnější.',
   },
   {
     title: 'Výsledek sporu negarantujeme',
@@ -40,22 +40,18 @@ const limits = [
 
 export default function OProjektuPage() {
   return (
-    <main className="min-h-screen bg-[#05080f] px-6 py-16 text-slate-200">
+    <main className="premium-page-bg-ref px-6 py-16 text-slate-200">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
-
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_10%,rgba(245,158,11,0.06),transparent_40%)]" />
 
-      <div className="relative z-10 mx-auto max-w-3xl">
+      <div className="premium-page-shell-ref max-w-3xl">
         <div className="mb-8">
-          <Link
-            href="/"
-            className="text-xs font-bold uppercase tracking-widest text-slate-500 transition hover:text-amber-400"
-          >
+          <Link href="/" className="premium-back-link-ref">
             ← SmlouvaHned
           </Link>
         </div>
 
-        <div className="mb-12">
+        <div className="premium-page-hero-ref mb-12">
           <div className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Transparentnost</div>
           <h1 className="mb-4 text-4xl font-black tracking-tight text-white md:text-5xl">
             Co SmlouvaHned je
@@ -63,12 +59,12 @@ export default function OProjektuPage() {
             <span className="text-amber-500">a kde má své limity</span>
           </h1>
           <p className="max-w-2xl text-base leading-relaxed text-slate-400">
-            SmlouvaHned je online nástroj pro sestavení standardizovaných smluvních dokumentů. Chceme mít jasně
-            popsáno, kdo službu provozuje, jak funguje a kdy je rozumnější obrátit se přímo na advokáta.
+            SmlouvaHned je online nástroj pro sestavení standardizovaných smluvních dokumentů. Chceme mít jasně popsáno,
+            kdo službu provozuje, jak funguje a kdy je rozumnější obrátit se přímo na advokáta.
           </p>
         </div>
 
-        <section className="mb-10 rounded-3xl border border-white/8 bg-[#0c1426] p-7">
+        <section className="premium-page-card-ref mb-10 p-7">
           <div className="mb-5 text-xs font-black uppercase tracking-[0.18em] text-amber-400">Provozovatel</div>
           <div className="grid gap-4 text-sm sm:grid-cols-2">
             {[
@@ -87,32 +83,32 @@ export default function OProjektuPage() {
           </div>
         </section>
 
-        <section className="mb-10 space-y-6 text-sm leading-relaxed text-slate-300">
+        <section className="space-y-6 text-sm leading-relaxed text-slate-300">
           <div>
             <h2 className="mb-3 text-xl font-black text-white">Jak nástroj funguje</h2>
             <p>
-              Uživatel vyplní formulář s konkrétními údaji a systém z nich sestaví dokument podle připravené
-              šablony pro daný typ smlouvy. Smyslem nástroje je zjednodušit běžné situace, ve kterých se strany
-              na obsahu již shodly a potřebují jej zachytit přehledně a písemně.
+              Uživatel vyplní formulář s konkrétními údaji a systém z nich sestaví dokument podle připravené šablony pro
+              daný typ smlouvy. Smyslem nástroje je zjednodušit běžné situace, ve kterých se strany na obsahu již shodly a
+              potřebují jej zachytit přehledně a písemně.
             </p>
             <p className="mt-3">
-              Obsah šablon vychází z obvyklých náležitostí daného typu dokumentu a z české legislativy platné v
-              době poslední textové revize. Při změnách právních předpisů nebo po zjištěných nepřesnostech obsah
-              průběžně upravujeme.
+              Obsah šablon vychází z obvyklých náležitostí daného typu dokumentu a z české legislativy platné v době
+              poslední textové revize. Při změnách právních předpisů nebo po zjištěných nepřesnostech obsah průběžně
+              upravujeme.
             </p>
           </div>
 
           <div>
             <h2 className="mb-3 text-xl font-black text-white">Co od služby čekat</h2>
             <p>
-              SmlouvaHned pomáhá se strukturovaným zapsáním dohodnutých podmínek. Soustředíme se na srozumitelný
-              formulář, jasné vysvětlení variant služby a transparentní obchodní informace.
+              SmlouvaHned pomáhá se strukturovaným zapsáním dohodnutých podmínek. Soustředíme se na srozumitelný formulář,
+              jasné vysvětlení variant služby a transparentní obchodní informace.
             </p>
           </div>
 
           <div>
             <h2 className="mb-3 text-xl font-black text-white">Co od služby nečekat</h2>
-            <div className="space-y-3 rounded-2xl border border-rose-500/20 bg-rose-500/5 p-6">
+            <div className="premium-page-card-soft-ref space-y-3 p-6">
               {limits.map(item => (
                 <div key={item.title} className="flex items-start gap-3">
                   <span className="mt-0.5 shrink-0 font-black text-rose-400">×</span>
@@ -133,7 +129,7 @@ export default function OProjektuPage() {
                 'Pokud je ve věci mezinárodní prvek nebo nejistota ohledně rozhodného práva.',
                 'Pokud mezi stranami už probíhá spor nebo je pravděpodobné, že vznikne.',
                 'Pokud potřebujete individuální návrh nestandardních ustanovení.',
-                'Pokud je potřeba notářského zápisu nebo úředního ověření podpisu podle konkrétní situace.',
+                'Pokud je potřeba notářský zápis nebo úřední ověření podpisu podle konkrétní situace.',
               ].map(item => (
                 <li key={item} className="flex items-start gap-2 text-sm text-slate-400">
                   <span className="mt-0.5 shrink-0 text-amber-500">→</span>
@@ -155,16 +151,16 @@ export default function OProjektuPage() {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-6">
+          <div className="premium-page-card-soft-ref p-6">
             <div className="mb-2 text-sm font-black text-white">Aktuálnost obsahu</div>
             <p className="text-xs leading-relaxed text-slate-400">
-              Obsah webu a textové šablony průběžně revidujeme. Poslední textová revize hlavních informací o
-              službě proběhla 4. dubna 2026.
+              Obsah webu a textové šablony průběžně revidujeme. Poslední textová revize hlavních informací o službě
+              proběhla 4. dubna 2026.
             </p>
           </div>
         </section>
 
-        <div className="flex flex-col gap-4 sm:flex-row">
+        <div className="mt-10 flex flex-col gap-4 sm:flex-row">
           <Link
             href="/"
             className="flex-1 rounded-2xl bg-amber-500 py-4 text-center text-sm font-black uppercase text-black transition hover:bg-amber-400"
@@ -179,11 +175,11 @@ export default function OProjektuPage() {
           </Link>
         </div>
 
-        <div className="mt-10 border-t border-white/8 pt-8 text-xs leading-relaxed text-slate-600">
+        <div className="premium-footer-ref mt-10 text-xs leading-relaxed text-slate-600">
           <p>Provozovatel: Karel Zdeněk · IČO: 23660295 · smlouvahned.cz</p>
           <p className="mt-1">
-            SmlouvaHned je software pro tvorbu standardizovaných dokumentů. Neposkytuje právní poradenství a
-            není advokátní kanceláří ve smyslu zákona č. 85/1996 Sb.
+            SmlouvaHned je software pro tvorbu standardizovaných dokumentů. Neposkytuje právní poradenství a není
+            advokátní kanceláří ve smyslu zákona č. 85/1996 Sb.
           </p>
         </div>
       </div>
