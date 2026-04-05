@@ -243,8 +243,8 @@ export default function Home() {
       </header>
 
       <main className="relative pb-16 pt-[94px] text-[#d5dbea] md:pt-[112px]">
-        <section className="mx-auto max-w-[1220px] px-5 md:px-8">
-          <div className="hero-frame-ref hero-frame-monolith-ref">
+        <section className="mx-auto max-w-[1320px] px-5 md:px-8">
+          <div className="hero-editorial-ref hero-frame-ref hero-frame-monolith-ref">
             <section className="hero-image-stage-ref">
               <div className="hero-image-shell-ref">
                 <div className="hero-image-vignette-ref" aria-hidden />
@@ -255,15 +255,18 @@ export default function Home() {
                   height={768}
                   priority
                   quality={100}
-                  sizes="(max-width: 820px) 100vw, (max-width: 1280px) 88vw, 1040px"
+                  sizes="(max-width: 820px) 100vw, (max-width: 1280px) 92vw, 1160px"
                   className="hero-image-asset-ref"
                 />
 
                 <div className="hero-image-copy-ref">
                   <p className="hero-image-kicker-ref">{"Online n\u00e1stroj pro standardizovan\u00e9 smluvn\u00ed dokumenty"}</p>
-                  <h1 className="hero-image-title-ref">{"Smluvn\u00ed dokument"}</h1>
+                  <h1 className="hero-image-title-ref">
+                    <span>{"Smluvn\u00ed dokument"}</span>
+                    <span className="hero-image-title-subline-ref">{"ke kontrole a podpisu"}</span>
+                  </h1>
                   <p className="hero-image-subtitle-ref">
-                    {"Standardizovan\u00fd v\u00fdstup p\u0159ipraven\u00fd ke kontrole a podpisu. Pro b\u011b\u017en\u00e9 \u017eivotn\u00ed a podnikatelsk\u00e9 situace."}
+                    {"Standardizovan\u00fd dokument sestaven\u00fd podle va\u0161ich \u00fadaj\u016f. Pro b\u011b\u017en\u00e9 \u017eivotn\u00ed a podnikatelsk\u00e9 situace."}
                   </p>
 
                   <div className="hero-image-actions-ref">
@@ -276,7 +279,7 @@ export default function Home() {
                   </div>
 
                   <p className="hero-image-trustline-ref">
-                    {"Dokument ihned po zaplacen\u00ed"} <span aria-hidden>&middot;</span> {"bezpe\u010dn\u00e1 platba p\u0159es Stripe"}
+                    {"PDF v\u00fdstup ihned po zaplacen\u00ed"} <span aria-hidden>&middot;</span> {"bezpe\u010dn\u00e1 platba p\u0159es Stripe"}
                   </p>
                 </div>
               </div>
