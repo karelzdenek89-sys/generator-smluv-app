@@ -1,10 +1,10 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Darovací smlouva online 2026 — vzor ke stažení | SmlouvaHned',
   description:
-    'Darovací smlouva na peníze, auto nebo nemovitost. Strukturovaný dokument pro obě strany dle § 2055 OZ 2026. PDF ke stažení po ověřené platbě od 249 Kč.',
+    'Darovací smlouva na peníze, auto nebo nemovitost. Právně čistý doklad pro obě strany. Dle § 2055 OZ 2026. PDF ihned ke stažení od 249 Kč.',
   keywords: [
     'darovací smlouva',
     'darovací smlouva vzor 2026',
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 const faq = [
   {
     q: 'Musí být darovací smlouva písemná?',
-    a: 'U darování movité věci předané okamžitě písemná forma povinná není — smlouva vzniká předáním. Písemná forma je ale doporučená pro finanční dary, auto a povinná pro nemovitosti. Písemný doklad pomáhá přehledně zachytit darování pro případ pozdějších sporů.',
+    a: 'U darování movité věci předané okamžitě písemná forma povinná není — smlouva vzniká předáním. Písemná forma je ale doporučená pro finanční dary, auto a povinná pro nemovitosti. Písemný doklad ochrání obě strany při pozdějších sporech.',
   },
   {
     q: 'Platí se z darování daň?',
@@ -91,7 +91,7 @@ export default function DarovacijSmlouvaPage() {
               Vytvořit darovací smlouvu →
             </Link>
           </div>
-          <div className="text-sm text-slate-500">Od 249 Kč · PDF ke stažení · Dle § 2055 OZ</div>
+          <div className="text-sm text-slate-500">Od 249 Kč · PDF ihned · Dle § 2055 OZ</div>
         </div>
 
         <section className="mb-12 rounded-3xl border border-white/8 bg-[#0c1426] p-8">
@@ -155,7 +155,7 @@ export default function DarovacijSmlouvaPage() {
         <section className="rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 to-transparent p-8 text-center">
           <h2 className="text-2xl font-black text-white mb-3">Sestavte darovací smlouvu</h2>
           <p className="text-slate-400 text-sm mb-6 max-w-md mx-auto">
-            Formulář pro darování peněz, auta nebo věci — přesně dle vašich podmínek, PDF ke stažení po ověřené platbě.
+            Formulář pro darování peněz, auta nebo věci — přesně dle vašich podmínek, PDF ihned.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link href="/darovaci"
@@ -163,7 +163,7 @@ export default function DarovacijSmlouvaPage() {
               Vytvořit darovací smlouvu →
             </Link>
           </div>
-          <div className="mt-3 text-xs text-slate-600">Od 249 Kč · § 2055 OZ · PDF ke stažení</div>
+          <div className="mt-3 text-xs text-slate-600">Od 249 Kč · § 2055 OZ · PDF ihned</div>
         </section>
 
         <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">
@@ -176,4 +176,3 @@ export default function DarovacijSmlouvaPage() {
     </main>
   );
 }
-

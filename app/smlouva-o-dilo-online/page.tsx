@@ -4,7 +4,7 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Smlouva o dílo online 2026 — vzor ke stažení | SmlouvaHned',
   description:
-    'Smlouva o dílo pro řemeslníky, freelancery i objednatele. Termíny, cena, sankce, záruky. Dle § 2586 OZ. PDF ke stažení od 249 Kč. Vhodné pro standardní zakázky.',
+    'Smlouva o dílo pro řemeslníky, freelancery i objednatele. Termíny, cena, sankce, záruky. Dle § 2586 OZ. PDF ihned od 249 Kč. Vhodné pro standardní zakázky.',
   keywords: [
     'smlouva o dílo', 'smlouva o dílo vzor', 'smlouva o dílo online', 'smlouva o dílo 2026',
     'smlouva o dílo PDF', 'smlouva o dílo ke stažení', 'smlouva o dílo freelancer',
@@ -90,7 +90,7 @@ export default function SmlouvaODiloOnlinePage() {
             className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-8 py-4 text-base font-black uppercase tracking-tight text-black shadow-[0_0_30px_rgba(245,158,11,0.25)] transition hover:bg-amber-400">
             Sestavit smlouvu o dílo →
           </Link>
-          <div className="mt-4 text-sm text-slate-500">Od 249 Kč · PDF ke stažení · Dle § 2586 OZ</div>
+          <div className="mt-4 text-sm text-slate-500">Od 249 Kč · PDF ihned · Dle § 2586 OZ</div>
         </div>
 
         <section className="mb-12 rounded-3xl border border-white/8 bg-[#0c1426] p-8">
@@ -160,7 +160,7 @@ export default function SmlouvaODiloOnlinePage() {
             className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-8 py-4 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400">
             Sestavit smlouvu o dílo →
           </Link>
-          <div className="mt-3 text-xs text-slate-600">Od 249 Kč · § 2586 OZ · PDF ke stažení</div>
+          <div className="mt-3 text-xs text-slate-600">Od 249 Kč · § 2586 OZ · PDF ihned</div>
         </section>
 
         <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">

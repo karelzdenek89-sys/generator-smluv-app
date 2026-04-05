@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -284,7 +284,7 @@ export default function PracovniSmlouvaVzor2026Page() {
           <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span>Max. 8 hodin přesčasů týdně, max. 150 hodin ročně na příkaz zaměstnavatele</li>
           <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span>Dalších 125 hodin ročně lze sjednat individuálně se zaměstnancem</li>
           <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span>Přesčas se kompenzuje příplatkem 25 % nebo náhradním volnem (po dohodě)</li>
-          <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span>U vedoucích lze sjednat mzdu „s přihlédnutím k přesčasům“ — ale pouze do rozsahu 150/325 hodin ročně</li>
+          <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span>U vedoucích lze sjednat mzdu „s přihlédnutím k přesčasům" — ale pouze do rozsahu 150/325 hodin ročně</li>
         </ul>
 
         <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm text-slate-400 leading-relaxed">
@@ -404,7 +404,7 @@ export default function PracovniSmlouvaVzor2026Page() {
       <section id="zaver" className="mb-12 scroll-mt-6">
         <h2 className="mb-4 text-2xl font-black tracking-tight text-white">7. Shrnutí a doporučení</h2>
         <p className="mb-4 text-slate-400 leading-relaxed">
-          Pracovní smlouva je základ každého pracovního vztahu. Pečlivě připravená chrání zaměstnavatele i
+          Pracovní smlouva je základ každého pracovního vztahu. Správně sestavená chrání zaměstnavatele i
           zaměstnance — a předchází zbytečným sporům.
         </p>
         <div className="mb-6 space-y-2">
@@ -426,7 +426,7 @@ export default function PracovniSmlouvaVzor2026Page() {
 
       {/* ── TRUST BOX ───────────────────────────── */}
       <ArticleTrustBox
-        generatorSuitable="Standardní pracovní smlouva pro jednoho zaměstnance — na dobu určitou i neurčitou, se zkušební dobou, mlčenlivostí a home office doložkou. Online nástroj obvykle pokrývá všechny zákonné náležitosti."
+        generatorSuitable="Standardní pracovní smlouva pro jednoho zaměstnance — na dobu určitou i neurčitou, se zkušební dobou, mlčenlivostí a home office doložkou. Generátor pokryje všechny zákonné náležitosti."
         lawyerSuitable="Agenturní zaměstnávání, hromadné propouštění, převod podniku, zaměstnávání cizinců, složité konkurenční doložky nebo spory ze skončení pracovního poměru."
       />
 
@@ -452,10 +452,10 @@ export default function PracovniSmlouvaVzor2026Page() {
         <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-600">Mohlo by vás zajímat</div>
         <div className="flex flex-wrap gap-3">
           {[
-            { href: '/pracovni-smlouva', label: '👔 Pracovní smlouva — formulář' },
-            { href: '/blog/dpp-dohoda-provedeni-prace', label: '📄 DPP — průvodce' },
-            { href: '/blog/smlouva-o-dilo-2026', label: '🔨 Smlouva o dílo — průvodce' },
-            { href: '/blog/nda-smlouva-mlcenlivost', label: '🔒 NDA smlouva — průvodce' },
+            { href: '/pracovni-smlouva', label: '👔 Pracovní smlouva — přehled' },
+            { href: '/dpp', label: '📄 Dohoda o provedení práce' },
+            { href: '/smlouva-o-dilo-online', label: '🔨 Smlouva o dílo' },
+            { href: '/blog/smlouva-o-dilo-2026', label: '📖 Smlouva o dílo vzor' },
             { href: '/', label: '📋 Všechny smlouvy' },
           ].map(l => (
             <Link
@@ -472,5 +472,3 @@ export default function PracovniSmlouvaVzor2026Page() {
     </article>
   );
 }
-
-

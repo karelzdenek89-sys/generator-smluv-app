@@ -90,7 +90,7 @@ export default function NdaSmlouvaPage() {
 
         <div className="mt-7 rounded-2xl border border-amber-500/20 bg-amber-500/8 p-5">
           <p className="mb-3 text-sm font-bold text-white">Chcete přeskočit teorii?</p>
-          <p className="mb-4 text-sm text-slate-400">Vytvořte si NDA smlouvu online — jednostrannou nebo vzájemnou, s vymezením rozsahu. PDF ke stažení po ověřené platbě.</p>
+          <p className="mb-4 text-sm text-slate-400">Vytvořte si NDA smlouvu online — jednostrannou nebo vzájemnou, s vymezením rozsahu. PDF ihned.</p>
           <Link
             href="/nda"
             className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-2.5 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400"

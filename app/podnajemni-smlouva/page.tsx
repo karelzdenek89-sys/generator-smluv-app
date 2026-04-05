@@ -4,7 +4,7 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Podnájemní smlouva online 2026 — vzor ke stažení | SmlouvaHned',
   description:
-    'Podnájemní smlouva se souhlasem pronajímatele. Kauce, pravidla, předávací protokol. Dle § 2274 OZ 2026. PDF ke stažení po ověřené platbě od 249 Kč.',
+    'Podnájemní smlouva se souhlasem pronajímatele. Kauce, pravidla, předávací protokol. Dle § 2274 OZ 2026. PDF ihned ke stažení od 249 Kč.',
   keywords: [
     'podnájemní smlouva',
     'podnájemní smlouva vzor 2026',
@@ -87,7 +87,7 @@ export default function PodnajemniSmlouvaPage() {
               Vytvořit podnájemní smlouvu →
             </Link>
           </div>
-          <div className="text-sm text-slate-500">Od 249 Kč · PDF ke stažení · Dle § 2274 OZ</div>
+          <div className="text-sm text-slate-500">Od 249 Kč · PDF ihned · Dle § 2274 OZ</div>
         </div>
 
         <section className="mb-12 rounded-3xl border border-white/8 bg-[#0c1426] p-8">
@@ -151,7 +151,7 @@ export default function PodnajemniSmlouvaPage() {
         <section className="rounded-3xl border border-yellow-500/20 bg-gradient-to-br from-yellow-500/10 to-transparent p-8 text-center">
           <h2 className="text-2xl font-black text-white mb-3">Sestavte podnájemní smlouvu</h2>
           <p className="text-slate-400 text-sm mb-6 max-w-md mx-auto">
-            Formulář pro podnájem bytu nebo pokoje — se souhlasem pronajímatele, PDF ke stažení po ověřené platbě.
+            Formulář pro podnájem bytu nebo pokoje — se souhlasem pronajímatele, PDF ihned.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link href="/podnajem"
@@ -159,7 +159,7 @@ export default function PodnajemniSmlouvaPage() {
               Vytvořit podnájemní smlouvu →
             </Link>
           </div>
-          <div className="mt-3 text-xs text-slate-600">Od 249 Kč · § 2274 OZ · PDF ke stažení</div>
+          <div className="mt-3 text-xs text-slate-600">Od 249 Kč · § 2274 OZ · PDF ihned</div>
         </section>
 
         <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">

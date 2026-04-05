@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -86,7 +86,7 @@ export default function SmlouvaODiloPage() {
           Smlouva o dílo 2026: Co musí obsahovat a nejčastější chyby
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-400">
-          Stavíte, renovujete nebo zadáváte vývoj softwaru? Bez pečlivě připravené smlouvy o dílo
+          Stavíte, renovujete nebo zadáváte vývoj softwaru? Bez správně sepsané smlouvy o dílo
           riskujete spory o cenu, termín nebo kvalitu výsledku. Zjistěte, co zákon vyžaduje
           a jak se chránit jako objednatel i zhotovitel.
         </p>
@@ -422,7 +422,7 @@ export default function SmlouvaODiloPage() {
         <h2 className="mb-4 text-2xl font-black tracking-tight text-white">7. Shrnutí a doporučení</h2>
         <p className="mb-4 text-slate-400 leading-relaxed">
           Smlouva o dílo je základ každé zakázky — ať jde o rekonstrukci koupelny, vývoj aplikace
-          nebo výrobu nábytku. Pečlivě připravená pomáhá přehledně upravit práva a povinnosti stran; vágní nebo chybějící je zárodkem sporu.
+          nebo výrobu nábytku. Správně sepsaná chrání obě strany; vágní nebo chybějící je zárodkem sporu.
         </p>
         <div className="mb-6 space-y-2">
           {[
@@ -444,7 +444,7 @@ export default function SmlouvaODiloPage() {
 
       {/* ── TRUST BOX ───────────────────────────── */}
       <ArticleTrustBox
-        generatorSuitable="Typické zakázky s jasně definovaným dílem — rekonstrukce, webový projekt, grafické práce, řemeslné práce. Online nástroj obvykle pokrývá specifikaci, cenu, termín, akceptaci i záruky."
+        generatorSuitable="Typické zakázky s jasně definovaným dílem — rekonstrukce, webový projekt, grafické práce, řemeslné práce. Generátor pokryje specifikaci, cenu, termín, akceptaci i záruky."
         lawyerSuitable="Velké stavební zakázky (statisíce až miliony Kč), zákazkový vývoj s komplexními autorskými právy, subdodavatelské řetězce nebo situace kde jedna strana odmítá standardní podmínky."
       />
 
@@ -470,10 +470,10 @@ export default function SmlouvaODiloPage() {
         <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-600">Mohlo by vás zajímat</div>
         <div className="flex flex-wrap gap-3">
           {[
-            { href: '/smlouva-o-dilo', label: '📐 Smlouva o dílo — formulář' },
-            { href: '/blog/smlouva-o-sluzbach-2026', label: '🔧 Smlouva o službách — průvodce' },
-            { href: '/blog/smlouva-o-spolupraci-2026', label: '🤝 Smlouva o spolupráci — průvodce' },
-            { href: '/blog/nda-smlouva-mlcenlivost', label: '🔒 NDA smlouva — průvodce' },
+            { href: '/smlouva-o-dilo', label: '📐 Smlouva o dílo — landing page' },
+            { href: '/sluzby', label: '🔧 Smlouva o poskytování služeb' },
+            { href: '/spoluprace', label: '🤝 Smlouva o spolupráci' },
+            { href: '/blog/kupni-smlouva-na-auto-2026', label: '🚗 Kupní smlouva na auto — průvodce' },
             { href: '/', label: '📑 Všechny smlouvy' },
           ].map(l => (
             <Link
@@ -490,5 +490,3 @@ export default function SmlouvaODiloPage() {
     </article>
   );
 }
-
-

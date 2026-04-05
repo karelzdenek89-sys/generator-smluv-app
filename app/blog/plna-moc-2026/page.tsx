@@ -91,7 +91,7 @@ export default function PlnaMoc2026Page() {
 
         <div className="mt-7 rounded-2xl border border-amber-500/20 bg-amber-500/8 p-5">
           <p className="mb-3 text-sm font-bold text-white">Potřebujete plnou moc?</p>
-          <p className="mb-4 text-sm text-slate-400">Vytvořte plnou moc online — pro úřady, soudy, správu nemovitostí nebo zastoupení při podpisu smlouvy. PDF ke stažení po ověřené platbě.</p>
+          <p className="mb-4 text-sm text-slate-400">Vytvořte plnou moc online — pro úřady, soudy, správu nemovitostí nebo zastoupení při podpisu smlouvy. PDF ihned.</p>
           <Link
             href="/plna-moc"
             className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-2.5 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400"
@@ -237,7 +237,7 @@ export default function PlnaMoc2026Page() {
       {/* ── MID CTA ─────────────────────────────── */}
       <ArticleInlineCta
         title="Potřebujete plnou moc rychle?"
-        body="Vytvořte plnou moc online za pár minut — speciální nebo generální, pro úřady i soukromé úkony. Formulář vás provede každou částí. PDF ke stažení po ověřené platbě."
+        body="Vytvořte plnou moc online za pár minut — speciální nebo generální, pro úřady i soukromé úkony. Formulář vás provede každou částí. PDF ihned."
         buttonLabel="Vytvořit plnou moc"
         href="/plna-moc"
       />
@@ -325,7 +325,7 @@ export default function PlnaMoc2026Page() {
         <div className="mb-2 text-[11px] font-black uppercase tracking-widest text-amber-400">Připraveni?</div>
         <h2 className="mb-4 text-2xl font-black tracking-tight text-white">Vytvořte plnou moc online</h2>
         <p className="mx-auto mb-6 max-w-sm text-sm leading-relaxed text-slate-400">
-          Formulář vás provede každou částí plné moci — od rozsahu zmocnění po dobu platnosti. PDF ke stažení po ověřené platbě.
+          Formulář vás provede každou částí plné moci — od rozsahu zmocnění po dobu platnosti. PDF ihned.
         </p>
         <Link
           href="/plna-moc"

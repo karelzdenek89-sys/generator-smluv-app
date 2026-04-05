@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useMemo, useState } from 'react';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
@@ -142,8 +142,6 @@ export default function CarSaleBuilderPage() {
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [gdprConsent, setGdprConsent] = useState(false);
-  const [withdrawalConsent, setWithdrawalConsent] = useState(false);
-  const [withdrawalError, setWithdrawalError] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -202,7 +200,7 @@ export default function CarSaleBuilderPage() {
     if (!formData.knownDefects.trim()) {
       score -= 14;
       warnings.push({
-        text: 'Doporučujeme doplnit popis známých vad. Detailní popis pomáhá přehledně zachytit stav vozidla pro obě strany.',
+        text: 'Doporučujeme doplnit popis známých vad. Detailní popis chrání obě strany.',
         level: 'high',
       });
     }
@@ -333,10 +331,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
       return;
     }
 
-        if (!withdrawalConsent) {
-      setWithdrawalError(true);
-      return;
-    }
     if (!gdprConsent) {
       alert('Potvrďte prosím souhlas se zpracováním osobních údajů a obchodními podmínkami.');
       return;
@@ -447,7 +441,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
             <div>
               <div className="font-bold tracking-tight text-white uppercase">SmlouvaHned Auto</div>
               <div className="text-[11px] text-slate-500 uppercase tracking-widest">
-                Kupní smlouva na vozidlo
+                Kupní smlouva vozidla
               </div>
             </div>
           </div>
@@ -465,43 +459,43 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
         badge="§ 2079 a násl. občanského zákoníku"
         h1Main="Kupní smlouva na"
         h1Accent="auto online"
-        subtitle="Vytvořte přehlednou kupní smlouvu pro prodej osobního auta, motocyklu nebo jiného motorového vozidla. Dokument zachycuje identifikaci stran, technické parametry, stav vozidla, známé vady i podmínky předání a úhrady."
+        subtitle="Vytvořte kupní smlouvu při prodeji osobního automobilu, motocyklu nebo jiného motorového vozidla. Dokument zachycuje technické parametry, historii, stav tachometru, STK, emise a veškeré podmínky převodu vlastnictví."
         benefits={[
-          { icon: '🚗', text: 'Navrženo pro prodej osobních aut, motocyklů i přívěsů mezi soukromými osobami i firmami' },
-          { icon: '🔍', text: 'Pokrývá VIN, SPZ, stav tachometru, STK, emise i historii a vybavení vozidla' },
-          { icon: '⚖️', text: 'Řeší přechod vlastnictví, odpovědnost za vady a důležitá prohlášení prodávajícího' },
-          { icon: '📄', text: 'PDF dokument je zpřístupněn ihned po dokončení platby a je určen ke kontrole a podpisu' },
+          { icon: '🚗', text: 'Určeno specificky pro prodej automobilu, motocyklu nebo přívěsu' },
+          { icon: '🔍', text: 'Pokrývá VIN, STK, emise, počet vlastníků i stav tachometru' },
+          { icon: '⚖️', text: 'Přechod vlastnictví, odpovědnost za vady a zákonná záruka' },
+          { icon: '📄', text: 'Profesionální PDF ke stažení ihned po zaplacení' },
         ]}
         contents={[
           'Identifikaci prodávajícího a kupujícího',
-          'Technické parametry vozidla včetně VIN, SPZ, roku výroby a stavu tachometru',
-          'Údaje o STK, emisní kontrole a počtu předchozích vlastníků',
-          'Kupní cenu, způsob úhrady a okamžik přechodu vlastnictví',
-          'Popis známých vad, vybavení a předávaných dokladů',
-          'Datum, místo a podmínky předání vozidla',
-          'Prohlášení o právním stavu vozidla a právech třetích osob',
-          'Závěrečná ustanovení a přehlednou smluvní strukturu pro podpis',
+          'Technické parametry vozidla (VIN, SPZ, rok výroby, stav tachometru)',
+          'Platnost STK, emisní kontroly a počet předchozích vlastníků',
+          'Kupní cenu a způsob úhrady',
+          'Stav vozidla, známé závady a vybavení',
+          'Datum a podmínky předání vozidla a dokladů',
+          'Přechod vlastnického práva a odpovědnosti',
+          'Závěrečná ustanovení, GDPR a vyšší moc',
         ]}
         whenSuitable={[
           'Prodej osobního automobilu mezi soukromými osobami',
           'Prodej motocyklu, skúteru nebo přívěsu',
           'Prodej firemního vozidla fyzické osobě nebo firmě',
-          'Situace, kdy potřebujete jasně doložit stav vozidla a podmínky převodu',
+          'Případy, kde je klíčové jasně zdokumentovat stav vozidla a podmínky převodu',
         ]}
         whenOther={[
           { label: 'Kupní smlouva na movitou věc', href: '/kupni', text: 'Pro prodej nábytku, elektroniky, kola nebo jiné movité věci mimo motorová vozidla.' },
         ]}
         faq={[
-          { q: 'Proč je písemná kupní smlouva při prodeji auta důležitá?', a: 'Kupní smlouva přesně zachycuje, co bylo mezi prodávajícím a kupujícím dohodnuto. Je zásadní pro kupní cenu, identifikaci vozidla, popis jeho stavu i doložení okamžiku předání.' },
-          { q: 'Je potřeba smlouvu ověřovat u notáře?', a: 'U běžného prodeje motorového vozidla se notářské ověření obvykle nevyžaduje. Standardně postačí podpis obou stran, pokud konkrétní situace nevyžaduje něco navíc.' },
-          { q: 'Co je VIN a proč na něm záleží?', a: 'VIN je jedinečný sedmnáctimístný identifikátor vozidla. Díky němu lze bezpečně určit konkrétní auto a předejít sporům o to, jaké vozidlo bylo skutečně prodáno.' },
-          { q: 'Je dokument dostupný ihned po zaplacení?', a: 'Ano. Po úspěšném dokončení platby je PDF ihned zpřístupněné a určené ke kontrole a podpisu.' },
-          { q: 'Co je potřeba pro přepis vozidla na nového majitele?', a: 'Po podpisu smlouvy je potřeba vyřídit zápis změny vlastníka v registru vozidel na příslušném úřadu obce s rozšířenou působností. Typicky budete potřebovat kupní smlouvu, doklady k vozidlu a doklady totožnosti obou stran.' },
+          { q: 'Proč potřebuji kupní smlouvu při prodeji auta?', a: 'Kupní smlouva prokazuje podmínky převodu a chrání obě strany. Dokládá smluvní cenu, stav vozidla v okamžiku prodeje a skutečnost, že kupující věděl o případných závadách. Bez smlouvy je obtížné prokázat, co bylo dohodnuto.' },
+          { q: 'Musím kupní smlouvu ověřit u notáře?', a: 'Pro běžný prodej motorového vozidla notářské ověření není vyžadováno. Smlouva je platná podpisem obou stran. Ověřený podpis může pomoci v případě sporu, ale není povinný.' },
+          { q: 'Co je VIN a proč je důležitý?', a: 'VIN (Vehicle Identification Number) je unikátní 17místný identifikátor vozidla. Umožňuje ověřit historii auta, výrobní specifikace a zda vozidlo nebylo kradeno nebo havarováno. Jeho uvedení ve smlouvě je zásadní pro jednoznačnou identifikaci.' },
+          { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
+          { q: 'Jak mám přihlásit vozidlo na nového majitele?', a: 'Po podpisu smlouvy musí kupující vozidlo přepsat na dopravním inspektorátu (MDIC) ve svém místě bydliště. K přepisu potřebuje kupní smlouvu, technický průkaz, doklad totožnosti a potvrzení o zaplacení daně z nabytí (pokud se vztahuje).' },
         ]}
         ctaLabel="Vytvořit kupní smlouvu na auto"
         formId="formular"
         guideHref="/blog/kupni-smlouva-na-auto-2026"
-        guideLabel="Průvodce kupní smlouvou na auto – VIN, STK, vady a bezpečné předání"
+        guideLabel="Průvodce kupní smlouvou na auto — VIN, STK, vady a bezpečné předání"
       />
 
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8" id="formular">
@@ -524,7 +518,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.sellerName}
                   onChange={handleChange}
                   placeholder="Prodávající – celé jméno"
-                  aria-label="Prodávající – celé jméno"
                   className={inputClass}
                 />
                 <input
@@ -532,7 +525,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.sellerId}
                   onChange={handleChange}
                   placeholder="Prodávající – RČ / datum narození"
-                  aria-label="Prodávající – RČ / datum narození"
                   className={inputClass}
                 />
               </div>
@@ -542,7 +534,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.sellerAddress}
                   onChange={handleChange}
                   placeholder="Prodávající – adresa"
-                  aria-label="Prodávající – adresa"
                   className={inputClass}
                 />
                 <input
@@ -550,7 +541,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.sellerOP}
                   onChange={handleChange}
                   placeholder="Prodávající – číslo OP"
-                  aria-label="Prodávající – číslo OP"
                   className={inputClass}
                 />
               </div>
@@ -560,7 +550,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.sellerEmail}
                   onChange={handleChange}
                   placeholder="Prodávající – e-mail (volitelné)"
-                  aria-label="Prodávající – e-mail (volitelné)"
                   className={inputClass}
                 />
                 <input
@@ -568,7 +557,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.sellerPhone}
                   onChange={handleChange}
                   placeholder="Prodávající – telefon (volitelné)"
-                  aria-label="Prodávající – telefon (volitelné)"
                   className={inputClass}
                 />
               </div>
@@ -580,7 +568,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     value={formData.buyerName}
                     onChange={handleChange}
                     placeholder="Kupující – celé jméno"
-                    aria-label="Kupující – celé jméno"
                     className={inputClass}
                   />
                   <input
@@ -588,7 +575,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     value={formData.buyerId}
                     onChange={handleChange}
                     placeholder="Kupující – RČ / datum narození"
-                    aria-label="Kupující – RČ / datum narození"
                     className={inputClass}
                   />
                 </div>
@@ -598,7 +584,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     value={formData.buyerAddress}
                     onChange={handleChange}
                     placeholder="Kupující – adresa"
-                    aria-label="Kupující – adresa"
                     className={inputClass}
                   />
                   <input
@@ -606,7 +591,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     value={formData.buyerOP}
                     onChange={handleChange}
                     placeholder="Kupující – číslo OP"
-                    aria-label="Kupující – číslo OP"
                     className={inputClass}
                   />
                 </div>
@@ -616,7 +600,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     value={formData.buyerEmail}
                     onChange={handleChange}
                     placeholder="Kupující – e-mail (volitelné)"
-                    aria-label="Kupující – e-mail (volitelné)"
                     className={inputClass}
                   />
                   <input
@@ -624,7 +607,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     value={formData.buyerPhone}
                     onChange={handleChange}
                     placeholder="Kupující – telefon (volitelné)"
-                    aria-label="Kupující – telefon (volitelné)"
                     className={inputClass}
                   />
                 </div>
@@ -643,7 +625,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.carMake}
                   onChange={handleChange}
                   placeholder="Značka"
-                  aria-label="Značka"
                   className={inputClass}
                 />
                 <input
@@ -651,7 +632,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.carModel}
                   onChange={handleChange}
                   placeholder="Model"
-                  aria-label="Model"
                   className={inputClass}
                 />
               </div>
@@ -661,7 +641,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 value={formData.carVIN}
                 onChange={handleChange}
                 placeholder="VIN (17 znaků)"
-                aria-label="VIN (17 znaků)"
                 className={`${inputClass} font-mono tracking-widest mb-4`}
               />
 
@@ -672,7 +651,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.carYear}
                   onChange={handleChange}
                   placeholder="Rok výroby"
-                  aria-label="Rok výroby"
                   className={inputClass}
                 />
                 <input
@@ -681,7 +659,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.carMileage}
                   onChange={handleChange}
                   placeholder="Nájezd (km)"
-                  aria-label="Nájezd (km)"
                   className={inputClass}
                 />
                 <input
@@ -689,7 +666,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.carPlate}
                   onChange={handleChange}
                   placeholder="SPZ"
-                  aria-label="SPZ"
                   className={inputClass}
                 />
               </div>
@@ -700,7 +676,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.carColor}
                   onChange={handleChange}
                   placeholder="Barva"
-                  aria-label="Barva"
                   className={inputClass}
                 />
                 <input
@@ -708,7 +683,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.fuelType}
                   onChange={handleChange}
                   placeholder="Palivo"
-                  aria-label="Palivo"
                   className={inputClass}
                 />
                 <input
@@ -716,7 +690,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.carFirstRegistration}
                   onChange={handleChange}
                   placeholder="První registrace"
-                  aria-label="První registrace"
                   className={inputClass}
                 />
               </div>
@@ -727,7 +700,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.engineCapacity}
                   onChange={handleChange}
                   placeholder="Objem (cm³)"
-                  aria-label="Objem (cm³)"
                   className={inputClass}
                 />
                 <input
@@ -735,7 +707,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.powerKW}
                   onChange={handleChange}
                   placeholder="Výkon (kW)"
-                  aria-label="Výkon (kW)"
                   className={inputClass}
                 />
                 <input
@@ -743,7 +714,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.techCardNumber}
                   onChange={handleChange}
                   placeholder="Číslo technického průkazu"
-                  aria-label="Číslo technického průkazu"
                   className={inputClass}
                 />
               </div>
@@ -762,10 +732,9 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.priceAmount}
                   onChange={handleChange}
                   placeholder="Kupní cena (Kč)"
-                  aria-label="Kupní cena (Kč)"
                   className={`${inputClass} text-xl font-bold`}
                 />
-                <select aria-label="Bankovní převod"
+                <select
                   name="paymentMethod"
                   value={formData.paymentMethod}
                   onChange={handleChange}
@@ -783,7 +752,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     value={formData.bankAccount}
                     onChange={handleChange}
                     placeholder="Číslo účtu prodávajícího"
-                    aria-label="Číslo účtu prodávajícího"
                     className={inputClass}
                   />
                   <input
@@ -791,7 +759,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     value={formData.variableSymbol}
                     onChange={handleChange}
                     placeholder="Variabilní symbol"
-                    aria-label="Variabilní symbol"
                     className={inputClass}
                   />
                 </div>
@@ -807,7 +774,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.handoverDate}
                   onChange={handleChange}
                   placeholder="Datum předání"
-                  aria-label="Datum předání"
                   className={inputClass}
                 />
                 <input
@@ -815,12 +781,11 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.handoverPlace}
                   onChange={handleChange}
                   placeholder="Místo předání"
-                  aria-label="Místo předání"
                   className={inputClass}
                 />
               </div>
 
-              <select aria-label="Vlastnictví přechází zaplacením"
+              <select
                 name="ownershipTransferMoment"
                 value={formData.ownershipTransferMoment}
                 onChange={handleChange}
@@ -844,7 +809,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.keysCount}
                   onChange={handleChange}
                   placeholder="Počet klíčů"
-                  aria-label="Počet klíčů"
                   className={inputClass}
                 />
                 <input
@@ -852,7 +816,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.tiresInfo}
                   onChange={handleChange}
                   placeholder="Pneumatiky / kola"
-                  aria-label="Pneumatiky / kola"
                   className={inputClass}
                 />
               </div>
@@ -863,7 +826,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.knownDefects}
                   onChange={handleChange}
                   placeholder="Popiš všechny známé vady: lak, koroze, motor, převodovka, podvozek, elektronika, klima, interiér..."
-                  aria-label="Popiš všechny známé vady: lak, koroze, motor, převodovka, podvozek, elektronika, klima, interiér..."
                   className={textareaClass}
                 />
               </div>
@@ -874,7 +836,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.documentsIncluded}
                   onChange={handleChange}
                   placeholder="Předané doklady"
-                  aria-label="Předané doklady"
                   className={textareaClass}
                 />
               </div>
@@ -884,7 +845,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 value={formData.equipmentIncluded}
                 onChange={handleChange}
                 placeholder="Předané příslušenství a výbava: sada kol, rezervní klíč, střešní nosič, rádio, zimní pneu..."
-                aria-label="Předané příslušenství a výbava: sada kol, rezervní klíč, střešní nosič, rádio, zimní pneu..."
                 className={textareaClass}
               />
             </section>
@@ -892,8 +852,8 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
             <section className={cardClass}>
               <SectionTitle
                 index="05"
-                title="Pravni nastaveni"
-                subtitle="Prepinace meni obsah smlouvy i miru ochrany jednotlivych ustanoveni."
+                title="Právní nastavení"
+                subtitle="Přepínače mění obsah smlouvy i risk score."
               />
               <div className="grid sm:grid-cols-2 gap-4">
                 <ToggleCard
@@ -919,7 +879,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   name="odometerGuaranteed"
                   checked={formData.odometerGuaranteed}
                   label="Garantovat stav tachometru"
-                  hint="Silnejsi ochrana kupujiciho, ale jen pokud to muzete odpovedne potvrdit."
+                  hint="Silnější ochrana kupujícího, ale jen pokud si jsi tím jistý."
                 />
                 <ToggleCard
                   name="buyerInspectedVehicle"
@@ -1031,7 +991,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     ))
                   ) : (
                     <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-sm text-emerald-200">
-                      Smlouva je vyplnena ve velmi dobre kvalite a obsahuje dulezita prohlaseni ke stavu vozidla.
+                      Smlouva je nastavena velmi dobře a obsahuje silná právní prohlášení.
                     </div>
                   )}
                 </div>
@@ -1044,7 +1004,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     Živý náhled smlouvy
                   </div>
                   <div className="mt-1 text-xs text-slate-500">
-                    Nahled se aktualizuje podle vyplnenych udaju.
+                    Každý klik i každé písmeno se okamžitě propíše sem.
                   </div>
                 </div>
 
@@ -1074,8 +1034,8 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
               <div className={cardClass}>
                 {/* Řešení sporů */}
                 <div className="mb-6">
-                  <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Řešení sporů</div>
-                  <select aria-label="Obecný soud (výchozí)" className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
+                  <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
+                  <select className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
                     <option value="court">Obecný soud (výchozí)</option>
                     <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                     <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
@@ -1083,9 +1043,9 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 </div>
                 {/* === VÝBĚR BALÍČKU === */}
                 <div className="space-y-3 mb-4">
-                  <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2">Vyberte balíček</div>
+                  <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Vyberte balíček</div>
                   {([
-                    { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Strukturovaná smlouva dle občanského zákoníku, výstup v PDF.' },
+                    { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva dle občanského zákoníku v PDF.' },
                     { value: 'professional', label: 'Rozšířený dokument', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
                     { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířeného dokumentu + průvodní instrukce, checklist a 30denní archivace.' },
                   ] as const).map((opt) => (
@@ -1145,17 +1105,15 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 {/* Price summary */}
                 <div className="mb-4 rounded-2xl border border-white/8 bg-white/3 p-4">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm text-slate-400">Vybraný balíček</span>
-                    <span className="text-sm font-bold text-white">
-                      {formData.tier === 'complete' ? 'Kompletní balíček' : formData.tier === 'professional' ? 'Rozšířený dokument' : 'Základní dokument'}
-                    </span>
+                    <span className="text-sm text-slate-400">Základní dokument</span>
+                    <span className="text-sm font-bold text-white">249 Kč</span>
                   </div>
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm text-slate-400">Cena balíčku</span>
-                    <span className="text-sm font-bold text-white">
-                      {formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '399 Kč' : '249 Kč'}
-                    </span>
-                  </div>
+                  {formData.tier !== 'basic' && (
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm text-slate-400">{formData.tier === 'complete' ? 'Kompletní balíček' : 'Rozšířený dokument'}</span>
+                      <span className="text-sm font-bold text-amber-400">{formData.tier === 'complete' ? '+500 Kč' : '+200 Kč'}</span>
+                    </div>
+                  )}
                   <div className="border-t border-white/8 mt-2 pt-2 flex items-center justify-between">
                     <span className="text-sm font-black text-white">Celkem</span>
                     <span className="text-xl font-black text-amber-400">{formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '399 Kč' : '249 Kč'}</span>
@@ -1165,7 +1123,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3">
                   <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Součástí výstupu je</div>
                   <ul className="space-y-1.5">
-                    {['Profesionálně strukturované PDF', 'PDF dokument určený ke kontrole a podpisu', 'Vhodné pro standardní soukromé převody', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
+                    {['Profesionálně strukturované PDF', 'Připraveno k okamžitému stažení', 'Vhodné pro standardní soukromé převody', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
                       <li key={item} className="flex items-start gap-2 text-xs text-slate-400">
                         <span className="text-amber-500 mt-0.5">✓</span>{item}
                       </li>
@@ -1186,36 +1144,11 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     <a href="/gdpr" target="_blank" className="text-amber-400 underline hover:text-amber-300">zpracováním osobních údajů</a>
                     {' '}a s{' '}
                     <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">obchodními podmínkami</a>.
-                    Beru na vědomí, že objednávám standardizovaný digitální dokument vytvořený podle mnou zadaných údajů a že digitální obsah je zpřístupněn ihned po zaplacení, takže nelze od smlouvy odstoupit v obvyklé 14denní lhůtě.
+                    Beru na vědomí, že digitální obsah je doručen ihned a nelze od smlouvy odstoupit.
                   </span>
                 </label>
 
                 {/* Platební tlačítko */}
-
-                {/* § 1837 l) OZ — povinný souhlas s neodstoupením od smlouvy */}
-                <label className="flex items-start gap-3 mb-1 cursor-pointer group">
-                  <input
-                    type="checkbox"
-                    checked={withdrawalConsent}
-                    onChange={(e) => {
-                      setWithdrawalConsent(e.target.checked);
-                      if (e.target.checked) setWithdrawalError(false);
-                    }}
-                    className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
-                  />
-                  <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
-                    Beru na vědomí, že objednávám standardizovaný digitální dokument vytvořený podle mnou zadaných údajů, nikoli individuální právní službu. Digitální obsah bude ihned zpřístupněn po zaplacení.
-                    Výslovně souhlasím s tím, že ztrácím právo na odstoupení od smlouvy ve lhůtě 14 dní dle{' '}
-                    <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">
-                      § 1837 písm. l) zákona č. 89/2012 Sb.
-                    </a>
-                  </span>
-                </label>
-                {withdrawalError && (
-                  <p className="mb-3 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-2 text-xs text-rose-300">
-                    Pro pokračování musíte souhlasit s podmínkami digitálního obsahu.
-                  </p>
-                )}
                 <button
                   onClick={handlePayment}
                   disabled={isProcessing || !gdprConsent}
@@ -1242,5 +1175,3 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
     </main>
   );
 }
-
-

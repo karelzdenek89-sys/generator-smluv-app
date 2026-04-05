@@ -3,224 +3,163 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Ochrana osobních údajů (GDPR) | SmlouvaHned',
-  description:
-    'Zásady zpracování osobních údajů platformy SmlouvaHned.cz v souladu s GDPR a českými právními předpisy.',
-  alternates: { canonical: 'https://www.smlouvahned.cz/gdpr' },
+  description: 'Zásady zpracování osobních údajů platformy SmlouvaHned.cz v souladu s GDPR (nařízení EU 2016/679).',
 };
-
-const rights = [
-  {
-    title: 'Právo na přístup',
-    desc: 'Můžete požádat o informaci, jaké osobní údaje o vás zpracováváme a za jakým účelem.',
-  },
-  {
-    title: 'Právo na opravu',
-    desc: 'Můžete požadovat opravu nepřesných nebo neúplných osobních údajů.',
-  },
-  {
-    title: 'Právo na výmaz',
-    desc: 'Můžete požádat o výmaz údajů, pokud jsou splněny podmínky stanovené GDPR.',
-  },
-  {
-    title: 'Právo na omezení',
-    desc: 'V některých situacích můžete žádat o dočasné omezení zpracování.',
-  },
-  {
-    title: 'Právo na přenositelnost',
-    desc: 'U údajů zpracovávaných automatizovaně na základě smlouvy můžete požadovat jejich předání ve strojově čitelném formátu.',
-  },
-  {
-    title: 'Právo vznést námitku',
-    desc: 'Můžete vznést námitku proti zpracování založenému na oprávněném zájmu.',
-  },
-];
 
 export default function GdprPage() {
   return (
-    <main className="premium-page-bg-ref px-6 py-16 text-slate-300">
-      <div className="pointer-events-none absolute left-1/2 top-0 h-64 w-full -translate-x-1/2 bg-amber-500/4 blur-[120px]" />
+    <main className="min-h-screen bg-[#05080f] text-slate-300 py-16 px-6">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-64 bg-amber-500/4 blur-[120px] pointer-events-none" />
 
-      <div className="premium-page-shell-ref max-w-4xl">
+      <div className="max-w-3xl mx-auto relative z-10">
         <div className="mb-3">
-          <Link href="/" className="premium-back-link-ref">
+          <Link href="/" className="text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-amber-400 transition">
             ← SmlouvaHned
           </Link>
         </div>
 
-        <div className="premium-page-hero-ref mb-12">
-          <div className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Ochrana osobních údajů</div>
-          <h1 className="font-heading-serif text-4xl text-white md:text-5xl">
-            Ochrana osobních <span className="text-amber-400">údajů</span>
-          </h1>
-          <p className="mt-4 text-xs font-bold uppercase tracking-[0.22em] text-slate-500">
-            Platné od 4. 4. 2026 · dle GDPR a zákona č. 110/2019 Sb.
-          </p>
-        </div>
+        <h1 className="text-4xl md:text-5xl font-black text-white mb-3 uppercase italic tracking-tighter">
+          Ochrana osobních <span className="text-amber-500">údajů</span>
+        </h1>
+        <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.25em] mb-12">
+          Platné od 1. 1. 2026 • Dle nařízení EU 2016/679 (GDPR)
+        </p>
 
         <div className="space-y-10 text-sm leading-relaxed">
-          <section className="premium-page-card-ref p-8">
-            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">1. Správce osobních údajů</h2>
+
+          <section className="bg-[#0c1426]/60 border border-white/5 p-8 rounded-[28px]">
+            <h2 className="text-amber-500 font-black uppercase text-xs tracking-widest mb-4">
+              1. Správce osobních údajů
+            </h2>
             <p className="mb-3">
-              Správcem osobních údajů je <strong className="text-white">Karel Zdeněk</strong>, IČO 23660295, s místem podnikání
-              Plzeňská 189, 345 61 Staňkov, kontaktní e-mail:{' '}
-              <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">
-                info@smlouvahned.cz
-              </a>
-              .
+              Správcem osobních údajů je provozovatel platformy <strong className="text-white">SmlouvaHned</strong> (dále jen „Správce"):
             </p>
-            <div className="space-y-1 rounded-xl border border-white/8 bg-white/3 p-4 text-sm text-slate-300">
-              <p>
-                <strong className="text-white">Karel Zdeněk</strong>
-              </p>
+            <div className="bg-white/3 border border-white/8 rounded-xl p-4 text-slate-300 space-y-1 text-sm">
+              <p><strong className="text-white">SmlouvaHned</strong></p>
               <p>IČO: 23660295</p>
-              <p>Místo podnikání: Plzeňská 189, 345 61 Staňkov</p>
-              <p>
-                Kontaktní e-mail:{' '}
-                <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">
-                  info@smlouvahned.cz
-                </a>
-              </p>
+              {/* PŘED SPUŠTĚNÍM: doplňte adresu sídla/místa podnikání */}
+              <p>Sídlo: <span className="text-amber-400">Plzeňská 189, 345 61 Staňkov</span></p>
+              <p>Kontaktní e-mail: <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">info@smlouvahned.cz</a></p>
+              <p>Web: smlouvahned.cz</p>
             </div>
-            <p className="mt-3 text-xs text-slate-400">
-              Osobní údaje zpracováváme v souladu s nařízením Evropského parlamentu a Rady (EU) 2016/679 (GDPR) a
-              příslušnými českými právními předpisy.
+            <p className="mt-3 text-slate-400 text-xs">
+              Správce zpracovává osobní údaje v souladu s nařízením Evropského parlamentu a Rady (EU) 2016/679 (GDPR) a zákonem č. 110/2019 Sb., o zpracování osobních údajů.
             </p>
           </section>
 
           <section>
-            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">2. Jaké údaje zpracováváme a proč</h2>
+            <h2 className="text-amber-500 font-black uppercase text-xs tracking-widest mb-4">
+              2. Jaké osobní údaje zpracováváme a proč
+            </h2>
             <div className="space-y-4">
-              {[
-                {
-                  title: 'Údaje zadané do formuláře dokumentu',
-                  copy:
-                    'Typicky jména, adresy, data narození, IČO, identifikační údaje stran a další informace, které do formuláře zadáte vy sami.',
-                  meta: [
-                    'Účel: sestavení požadovaného dokumentu a jeho zpřístupnění.',
-                    'Právní základ: plnění smlouvy podle čl. 6 odst. 1 písm. b) GDPR.',
-                    'Doba uchování: po dobu dostupnosti odkazu ke stažení podle zakoupené varianty, nejdéle 30 dnů, pokud právní předpis nevyžaduje delší uchování konkrétních souvisejících údajů.',
-                  ],
-                },
-                {
-                  title: 'E-mailová adresa',
-                  copy:
-                    'Pokud ji při objednávce zadáte, použijeme ji pro zaslání odkazu ke stažení, komunikaci k objednávce nebo vyřízení reklamace.',
-                  meta: [
-                    'Právní základ: plnění smlouvy a v odůvodněných případech oprávněný zájem podle čl. 6 odst. 1 písm. b) a f) GDPR.',
-                  ],
-                },
-                {
-                  title: 'Údaje o objednávce a platbě',
-                  copy:
-                    'Evidujeme základní údaje o objednávce, variantě služby, stavu platby a technickém zpřístupnění dokumentu.',
-                  meta: [
-                    'Právní základ: plnění smlouvy, plnění zákonných povinností a oprávněný zájem na prokázání řádného poskytnutí služby.',
-                  ],
-                },
-                {
-                  title: 'Platební údaje',
-                  copy:
-                    'Údaje o platební kartě nebo bankovní údaje zpracovává přímo platební brána Stripe. Poskytovatel k těmto údajům nemá přímý přístup.',
-                  meta: [],
-                },
-              ].map(item => (
-                <div key={item.title} className="premium-page-card-ref p-5">
-                  <div className="mb-2 font-bold text-white">{item.title}</div>
-                  <p className="mb-2 text-xs text-slate-400">{item.copy}</p>
-                  {item.meta.map(line => {
-                    const [label, ...rest] = line.split(':');
-                    return (
-                      <div key={line} className="text-xs text-slate-500">
-                        <span className="font-bold text-amber-400">{label}:</span> {rest.join(':').trim()}
-                      </div>
-                    );
-                  })}
-                </div>
-              ))}
+              <div className="border border-white/8 rounded-2xl p-5">
+                <div className="font-bold text-white mb-2">Údaje zadané do formuláře smlouvy</div>
+                <p className="text-slate-400 text-xs mb-2">Jména, adresy, data narození, čísla OP a IČO smluvních stran, které do formuláře zadáte vy sami.</p>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Účel:</span> Vygenerování právního dokumentu dle vašich zadaných dat.</div>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Právní základ:</span> Plnění smlouvy (čl. 6 odst. 1 písm. b) GDPR).</div>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> 7–30 dní od zaplacení podle zakoupeného balíčku (Základní 7 dní, Rozšířená 14 dní, Kompletní 30 dní), poté jsou automaticky smazána z dočasného úložiště.</div>
+              </div>
+              <div className="border border-white/8 rounded-2xl p-5">
+                <div className="font-bold text-white mb-2">E-mailová adresa</div>
+                <p className="text-slate-400 text-xs mb-2">Pokud ji dobrovolně zadáte při objednávce.</p>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Účel:</span> Zaslání odkazu ke stažení hotového dokumentu.</div>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Právní základ:</span> Plnění smlouvy + oprávněný zájem (čl. 6 odst. 1 písm. b) a f) GDPR).</div>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> 7–30 dní od objednávky podle zakoupeného balíčku, poté automaticky smazáno.</div>
+              </div>
+              <div className="border border-white/8 rounded-2xl p-5">
+                <div className="font-bold text-white mb-2">Platební údaje</div>
+                <p className="text-slate-400 text-xs mb-2">Čísla platebních karet a bankovní údaje jsou zpracovávány výhradně platební bránou <strong>Stripe</strong> (Stripe, Inc., USA). Správce k nim nemá přístup.</p>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Více o Stripe GDPR:</span> <a href="https://stripe.com/privacy" target="_blank" rel="noopener" className="text-amber-400 hover:underline">stripe.com/privacy</a></div>
+              </div>
             </div>
           </section>
 
-          <section className="premium-page-card-ref p-8">
-            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">3. Příjemci a zpracovatelé</h2>
-            <ul className="space-y-2 text-slate-400">
-              {[
-                'Stripe – zpracování plateb a souvisejících technických informací.',
-                'Upstash – dočasné uložení dat potřebných pro generování a zpřístupnění dokumentu.',
-                'Resend – odesílání transakčních e-mailů, pokud zákazník zadá e-mailovou adresu.',
-                'Vercel – hosting a technický provoz webu.',
-              ].map(item => (
-                <li key={item} className="flex gap-3">
-                  <span className="flex-shrink-0 font-bold text-amber-400">→</span>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-            <p className="mt-3 text-xs text-slate-500">Osobní údaje neprodáváme třetím stranám a nepoužíváme je pro marketingové profilování.</p>
-          </section>
-
-          <section className="premium-page-card-ref p-8">
-            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">4. Předávání údajů mimo EHP</h2>
-            <p>
-              Někteří zpracovatelé mohou sídlit mimo Evropský hospodářský prostor, zejména v USA. V takovém případě
-              využíváme pouze poskytovatele, kteří deklarují odpovídající smluvní a organizační záruky, například
-              standardní smluvní doložky nebo jiný platný mechanismus podle GDPR.
-            </p>
-          </section>
-
-          <section className="premium-page-card-ref p-8">
-            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">5. Cookies a technické údaje</h2>
+          <section>
+            <h2 className="text-amber-500 font-black uppercase text-xs tracking-widest mb-4">
+              3. Příjemci osobních údajů
+            </h2>
             <p className="mb-3">
-              Web nepoužívá marketingové ani remarketingové cookies třetích stran. Mohou být používány pouze technické
-              prostředky nezbytné pro fungování webu, platební proces nebo zapamatování souhlasu s cookies lištou.
+              Osobní údaje mohou být předány těmto zpracovatelům:
             </p>
-            <p className="text-xs text-slate-500">Pokud se technické nastavení webu změní, budou tyto informace průběžně aktualizovány.</p>
+            <ul className="space-y-2 text-slate-400">
+              <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Stripe, Inc.</strong> — zpracování plateb. Zpracovatel dle čl. 28 GDPR, certifikace PCI DSS Level 1.</span></li>
+              <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Upstash (Redis)</strong> — dočasné uložení dat formuláře po dobu generování a stažení dokumentu (7–30 dní dle balíčku).</span></li>
+              <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Resend</strong> — zasílání transakčních e-mailů (odkaz ke stažení). Pouze pokud zadáte e-mail.</span></li>
+              <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Vercel</strong> — hosting platformy. Údaje jsou zpracovávány v rámci EHP nebo za odpovídajících záruk.</span></li>
+            </ul>
+            <p className="mt-3 text-xs text-slate-500">
+              Správce neprodává osobní údaje třetím stranám a nepoužívá je pro marketingové účely.
+            </p>
           </section>
 
-          <section className="premium-page-card-ref p-8">
-            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">6. Zabezpečení údajů</h2>
+          <section>
+            <h2 className="text-amber-500 font-black uppercase text-xs tracking-widest mb-4">
+              4. Předávání údajů mimo EHP
+            </h2>
             <p>
-              Přenos dat mezi zařízením uživatele a webem je zabezpečen šifrovaným připojením HTTPS. Přístup k údajům je
-              omezen na technicky nezbytný rozsah a údaje určené pro generování dokumentu jsou uchovávány pouze dočasně po
-              dobu potřebnou k jeho zpřístupnění.
+              Stripe, Inc. a Resend sídlí v USA. Předávání je zabezpečeno prostřednictvím standardních smluvních doložek (SCC) schválených Evropskou komisí a doplňkových technických opatření. Upstash a Vercel umožňují volbu regionu EU (platí pro naše nasazení).
             </p>
           </section>
 
-          <section className="premium-page-card-ref p-8">
-            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">7. Vaše práva</h2>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {rights.map(item => (
-                <div key={item.title} className="premium-note-card-ref p-4">
-                  <div className="mb-1 text-xs font-bold text-white">{item.title}</div>
-                  <div className="text-xs text-slate-400">{item.desc}</div>
+          <section>
+            <h2 className="text-amber-500 font-black uppercase text-xs tracking-widest mb-4">
+              5. Vaše práva
+            </h2>
+            <p className="mb-4">Jako subjekt údajů máte tato práva:</p>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {[
+                { title: 'Právo na přístup', desc: 'Máte právo vědět, jaké osobní údaje o vás zpracováváme.' },
+                { title: 'Právo na opravu', desc: 'Máte právo na opravu nepřesných osobních údajů.' },
+                { title: 'Právo na výmaz', desc: 'Máte právo požádat o smazání vašich údajů za podmínek čl. 17 GDPR.' },
+                { title: 'Právo na omezení', desc: 'Máte právo požadovat omezení zpracování vašich údajů.' },
+                { title: 'Právo na přenositelnost', desc: 'Máte právo obdržet vaše údaje ve strojově čitelném formátu.' },
+                { title: 'Právo vznést námitku', desc: 'Máte právo vznést námitku proti zpracování na základě oprávněného zájmu.' },
+              ].map(r => (
+                <div key={r.title} className="border border-white/8 rounded-xl p-4">
+                  <div className="font-bold text-white text-xs mb-1">{r.title}</div>
+                  <div className="text-xs text-slate-400">{r.desc}</div>
                 </div>
               ))}
             </div>
             <p className="mt-4 text-xs text-slate-400">
-              Své žádosti a dotazy můžete zasílat na{' '}
-              <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">
-                info@smlouvahned.cz
-              </a>
-              .
+              Práva uplatňujte na: <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">info@smlouvahned.cz</a>. Na vaši žádost odpovíme do 30 dnů.
             </p>
           </section>
 
-          <section className="premium-page-card-ref p-8">
-            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">8. Právo podat stížnost</h2>
+          <section>
+            <h2 className="text-amber-500 font-black uppercase text-xs tracking-widest mb-4">
+              6. Cookies a analytika
+            </h2>
             <p>
-              Máte právo podat stížnost u dozorového úřadu, kterým je <strong className="text-white">Úřad pro ochranu osobních údajů</strong>, Pplk. Sochora 27, 170 00 Praha 7,{' '}
-              <a href="https://www.uoou.cz" target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:underline">
-                www.uoou.cz
-              </a>
-              .
+              SmlouvaHned nepoužívá marketingové ani profilující cookies třetích stran. Pro základní fungování aplikace mohou být použity technicky nezbytné session cookies. Na webu není nasazena žádná behaviorální reklamní platforma (Facebook Pixel, Google Ads remarketing apod.).
             </p>
           </section>
 
-          <section className="premium-footer-ref flex flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left">
-            <p className="text-[10px] uppercase tracking-[0.22em] text-slate-600">Karel Zdeněk · IČO 23660295 · SmlouvaHned.cz © 2026</p>
-            <Link href="/" className="btn-outline-ref rounded-full px-8 py-3 text-[10px] font-black uppercase">
+          <section>
+            <h2 className="text-amber-500 font-black uppercase text-xs tracking-widest mb-4">
+              7. Zabezpečení údajů
+            </h2>
+            <p>
+              Veškerá komunikace je šifrována protokolem TLS (HTTPS). Data formulářů jsou ukládána v šifrovaném dočasném úložišti s automatickým výmazem po 7–30 dnech (dle zakoupeného balíčku). Přístup k datům je omezen na technicky nezbytné osoby. Platební údaje nikdy neprocházejí našimi servery.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-amber-500 font-black uppercase text-xs tracking-widest mb-4">
+              8. Právo podat stížnost
+            </h2>
+            <p>
+              Máte právo podat stížnost u dozorového úřadu — <strong className="text-white">Úřad pro ochranu osobních údajů (ÚOOÚ)</strong>, se sídlem Pplk. Sochora 27, 170 00 Praha 7, <a href="https://www.uoou.cz" target="_blank" rel="noopener" className="text-amber-400 hover:underline">www.uoou.cz</a>.
+            </p>
+          </section>
+
+          <section className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-[10px] text-slate-600 uppercase tracking-widest">SmlouvaHned © 2026</p>
+            <Link href="/" className="px-8 py-3 bg-white/5 border border-white/10 rounded-full text-white text-[10px] font-black uppercase hover:bg-amber-500 hover:text-black transition">
               Zpět na úvodní stránku
             </Link>
           </section>
+
         </div>
       </div>
     </main>

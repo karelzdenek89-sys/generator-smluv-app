@@ -11,7 +11,7 @@ const TTL_PROFESSIONAL  = 60 * 60 * 24 * 14;  // 14 dní pro Profesionální bal
 const TTL_COMPLETE      = 60 * 60 * 24 * 30;  // 30 dní pro Kompletní balíček
 
 function getTtlForTier(tier?: string): number {
-  if (tier === 'complete' || tier === 'premium') return TTL_COMPLETE;
+  if (tier === 'complete') return TTL_COMPLETE;
   if (tier === 'professional') return TTL_PROFESSIONAL;
   return TTL_BASIC;
 }
@@ -132,18 +132,13 @@ export async function GET(req: NextRequest) {
     }
 
     // Tier je primární zdroj pravdy — odvozujeme ho z více míst pro robustnost
-    const payloadExtras = draft.payload as StoredContractData & {
-      tier?: DraftRecord['tier'];
-      notaryUpsell?: boolean;
-    };
-    const rawTier = (draft.tier || payloadExtras.tier || 'basic') as string;
-    const resolvedTier = (rawTier === 'premium' ? 'complete' : rawTier) as DraftRecord['tier'];
+    const resolvedTier = (draft.tier || (draft.payload as any).tier || 'basic') as 'basic' | 'professional' | 'complete';
 
     // notaryUpsell = true pro professional a complete (i když Redis draft neobsahuje flag)
     // Tím je zajištěno, že zákazník dostane přesně ten obsah, za který zaplatil
     const resolvedNotaryUpsell =
       draft.notaryUpsell === true ||
-      Boolean(payloadExtras.notaryUpsell) ||
+      Boolean((draft.payload as any).notaryUpsell) ||
       resolvedTier === 'professional' ||
       resolvedTier === 'complete';
 
@@ -185,11 +180,12 @@ export async function GET(req: NextRequest) {
         'Cache-Control': 'no-store, max-age=0',
       },
     });
-  } catch (err) {
-    console.error('[download] Chyba při generování dokumentu:', err);
+  } catch (error) {
+    console.error('Download PDF error:', error);
+
     return NextResponse.json(
-      { error: 'Interní chyba serveru při generování dokumentu.' },
-      { status: 500 },
+      { error: 'Nepodařilo se vygenerovat PDF.' },
+      { status: 500 }
     );
   }
 }

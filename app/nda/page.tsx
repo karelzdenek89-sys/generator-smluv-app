@@ -1,6 +1,5 @@
-﻿'use client';
+'use client';
 
-import Link from 'next/link';
 import { useState, useMemo } from 'react';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
@@ -95,8 +94,6 @@ export default function NdaBuilderPage() {
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [gdprConsent, setGdprConsent] = useState(false);
-  const [withdrawalConsent, setWithdrawalConsent] = useState(false);
-  const [withdrawalError, setWithdrawalError] = useState(false);
 
   const set = (field: keyof NdaFormData, value: string | boolean) =>
     setFormData((p) => ({ ...p, [field]: value }));
@@ -152,10 +149,6 @@ export default function NdaBuilderPage() {
       alert('Vyplňte prosím popis důvěrných informací.');
       return;
     }
-        if (!withdrawalConsent) {
-      setWithdrawalError(true);
-      return;
-    }
     if (!gdprConsent) {
       alert('Pro pokračování je nutný souhlas se zpracováním osobních údajů.');
       return;
@@ -189,13 +182,13 @@ export default function NdaBuilderPage() {
 
       <header className="relative z-10 border-b border-white/5 bg-[#05080f]/80 backdrop-blur-sm sticky top-0">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3">
+          <a href="/" className="flex items-center gap-3">
             <div className="w-9 h-9 bg-amber-500 rounded-xl flex items-center justify-center text-xs font-black text-black">SH</div>
             <div>
               <div className="font-black text-white text-sm">SmlouvaHned</div>
               <div className="text-[10px] uppercase tracking-widest text-slate-500">Legal document builder</div>
             </div>
-          </Link>
+          </a>
           <div className="hidden md:flex items-center gap-4 text-xs text-slate-400">
             <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />Platba zabezpečena Stripe</span>
             <span>•</span>
@@ -215,7 +208,7 @@ export default function NdaBuilderPage() {
         benefits={[
           { icon: '🔐', text: 'Chrání obchodní tajemství, technická řešení i klientská data' },
           { icon: '⚖️', text: 'Sestaveno dle § 1746 OZ a § 504 OZ (obchodní tajemství)' },
-          { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
+          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
           { icon: '🔒', text: 'Pokrývá jednostranné i vzájemné NDA, zákaz konkurence' },
         ]}
         contents={[
@@ -285,19 +278,19 @@ export default function NdaBuilderPage() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label className={labelClass}>Jméno / název *</label>
-                    <input value={formData.disclosingName} onChange={e => set('disclosingName', e.target.value)} placeholder="Acme s.r.o." aria-label="Jméno / název *" className={inputClass} />
+                    <input value={formData.disclosingName} onChange={e => set('disclosingName', e.target.value)} placeholder="Acme s.r.o." className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>IČO / rodné číslo</label>
-                    <input value={formData.disclosingId} onChange={e => set('disclosingId', e.target.value)} placeholder="12345678" aria-label="IČO / rodné číslo" className={inputClass} />
+                    <input value={formData.disclosingId} onChange={e => set('disclosingId', e.target.value)} placeholder="12345678" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>Sídlo / adresa</label>
-                    <input value={formData.disclosingAddress} onChange={e => set('disclosingAddress', e.target.value)} placeholder="Václavské nám. 1, Praha 1" aria-label="Sídlo / adresa" className={inputClass} />
+                    <input value={formData.disclosingAddress} onChange={e => set('disclosingAddress', e.target.value)} placeholder="Václavské nám. 1, Praha 1" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>E-mail</label>
-                    <input type="email" value={formData.disclosingEmail} onChange={e => set('disclosingEmail', e.target.value)} placeholder="kontakt@acme.cz" aria-label="E-mail" className={inputClass} />
+                    <input type="email" value={formData.disclosingEmail} onChange={e => set('disclosingEmail', e.target.value)} placeholder="kontakt@acme.cz" className={inputClass} />
                   </div>
                 </div>
               </section>
@@ -308,19 +301,19 @@ export default function NdaBuilderPage() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label className={labelClass}>Jméno / název *</label>
-                    <input value={formData.receivingName} onChange={e => set('receivingName', e.target.value)} placeholder="Jan Novák" aria-label="Jméno / název *" className={inputClass} />
+                    <input value={formData.receivingName} onChange={e => set('receivingName', e.target.value)} placeholder="Jan Novák" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>IČO / rodné číslo</label>
-                    <input value={formData.receivingId} onChange={e => set('receivingId', e.target.value)} placeholder="850101/1234" aria-label="IČO / rodné číslo" className={inputClass} />
+                    <input value={formData.receivingId} onChange={e => set('receivingId', e.target.value)} placeholder="850101/1234" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>Sídlo / adresa</label>
-                    <input value={formData.receivingAddress} onChange={e => set('receivingAddress', e.target.value)} placeholder="Dlouhá 5, Brno" aria-label="Sídlo / adresa" className={inputClass} />
+                    <input value={formData.receivingAddress} onChange={e => set('receivingAddress', e.target.value)} placeholder="Dlouhá 5, Brno" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>E-mail</label>
-                    <input type="email" value={formData.receivingEmail} onChange={e => set('receivingEmail', e.target.value)} placeholder="jan.novak@email.cz" aria-label="E-mail" className={inputClass} />
+                    <input type="email" value={formData.receivingEmail} onChange={e => set('receivingEmail', e.target.value)} placeholder="jan.novak@email.cz" className={inputClass} />
                   </div>
                 </div>
               </section>
@@ -333,7 +326,6 @@ export default function NdaBuilderPage() {
                     <label className={labelClass}>Popis důvěrných informací *</label>
                     <textarea value={formData.confidentialInfoDesc} onChange={e => set('confidentialInfoDesc', e.target.value)}
                       placeholder="Obchodní strategie, cenové kalkulace, zdrojové kódy, databáze zákazníků, výrobní postupy…"
-                      aria-label="Obchodní strategie, cenové kalkulace, zdrojové kódy, databáze zákazníků, výrobní postupy…"
                       className={textareaClass} />
                     <p className="text-xs text-slate-500 mt-1">Čím přesnější popis, tím silnější ochrana v případě sporu.</p>
                   </div>
@@ -341,7 +333,6 @@ export default function NdaBuilderPage() {
                     <label className={labelClass}>Účel sdílení informací</label>
                     <textarea value={formData.purposeOfDisclosure} onChange={e => set('purposeOfDisclosure', e.target.value)}
                       placeholder="Hodnocení potenciální obchodní spolupráce / vývoj softwarového produktu / due diligence…"
-                      aria-label="Hodnocení potenciální obchodní spolupráce / vývoj softwarového produktu / due diligence…"
                       className={textareaClass} />
                   </div>
                   <div>
@@ -358,15 +349,15 @@ export default function NdaBuilderPage() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label className={labelClass}>Doba trvání NDA</label>
-                    <input value={formData.ndaDuration} onChange={e => set('ndaDuration', e.target.value)} placeholder="3 let" aria-label="Doba trvání NDA" className={inputClass} />
+                    <input value={formData.ndaDuration} onChange={e => set('ndaDuration', e.target.value)} placeholder="3 let" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>Důvěrnost po ukončení</label>
-                    <input value={formData.confidentialityAfterTermination} onChange={e => set('confidentialityAfterTermination', e.target.value)} placeholder="5 let" aria-label="Důvěrnost po ukončení" className={inputClass} />
+                    <input value={formData.confidentialityAfterTermination} onChange={e => set('confidentialityAfterTermination', e.target.value)} placeholder="5 let" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>Smluvní pokuta (Kč)</label>
-                    <input type="number" value={formData.penaltyAmount} onChange={e => set('penaltyAmount', e.target.value)} placeholder="100 000" aria-label="Smluvní pokuta (Kč)" className={inputClass} />
+                    <input type="number" value={formData.penaltyAmount} onChange={e => set('penaltyAmount', e.target.value)} placeholder="100 000" className={inputClass} />
                     <p className="text-xs text-slate-500 mt-1">Min. 50 000 Kč pro reálnou odstrašující hodnotu.</p>
                   </div>
                 </div>
@@ -380,7 +371,7 @@ export default function NdaBuilderPage() {
                   {formData.nonSolicitation && (
                     <div className="ml-7">
                       <label className={labelClass}>Délka zákazu přetahování</label>
-                      <input value={formData.nonSolicitationPeriod} onChange={e => set('nonSolicitationPeriod', e.target.value)} placeholder="12 měsíců" aria-label="Délka zákazu přetahování" className={inputClass} />
+                      <input value={formData.nonSolicitationPeriod} onChange={e => set('nonSolicitationPeriod', e.target.value)} placeholder="12 měsíců" className={inputClass} />
                     </div>
                   )}
                   <Toggle checked={formData.nonCompete} onChange={v => set('nonCompete', v)} label="Zákaz konkurence" />
@@ -388,11 +379,11 @@ export default function NdaBuilderPage() {
                     <div className="ml-7 space-y-3">
                       <div>
                         <label className={labelClass}>Délka zákazu konkurence</label>
-                        <input value={formData.nonCompetePeriod} onChange={e => set('nonCompetePeriod', e.target.value)} placeholder="24 měsíců" aria-label="Délka zákazu konkurence" className={inputClass} />
+                        <input value={formData.nonCompetePeriod} onChange={e => set('nonCompetePeriod', e.target.value)} placeholder="24 měsíců" className={inputClass} />
                       </div>
                       <div>
                         <label className={labelClass}>Rozsah / odvětví</label>
-                        <input value={formData.nonCompeteScope} onChange={e => set('nonCompeteScope', e.target.value)} placeholder="Vývoj CRM softwaru pro pojišťovny v ČR" aria-label="Rozsah / odvětví" className={inputClass} />
+                        <input value={formData.nonCompeteScope} onChange={e => set('nonCompeteScope', e.target.value)} placeholder="Vývoj CRM softwaru pro pojišťovny v ČR" className={inputClass} />
                       </div>
                     </div>
                   )}
@@ -403,7 +394,7 @@ export default function NdaBuilderPage() {
               <section className={cardClass}>
                 <div className="mb-4">
                   <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
-                  <select aria-label="Obecný soud (výchozí)" className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
+                  <select className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
                     <option value="court">Obecný soud (výchozí)</option>
                     <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                     <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
@@ -509,7 +500,7 @@ export default function NdaBuilderPage() {
               <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3">
                 <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Součástí výstupu je</div>
                 <ul className="space-y-1.5">
-                  {['Profesionálně strukturované PDF', 'PDF dokument určený ke kontrole a podpisu', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
+                  {['Profesionálně strukturované PDF', 'Připraveno k okamžitému stažení', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
                     <li key={item} className="flex items-start gap-2 text-xs text-slate-400">
                       <span className="text-amber-500 mt-0.5">✓</span>{item}
                     </li>
@@ -528,31 +519,6 @@ export default function NdaBuilderPage() {
                 </span>
               </label>
 
-                {/* § 1837 l) OZ — povinný souhlas s neodstoupením od smlouvy */}
-                <label className="flex items-start gap-3 mb-1 cursor-pointer group">
-                  <input
-                    type="checkbox"
-                    checked={withdrawalConsent}
-                    onChange={(e) => {
-                      setWithdrawalConsent(e.target.checked);
-                      if (e.target.checked) setWithdrawalError(false);
-                    }}
-                    className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
-                  />
-                  <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
-                    Beru na vědomí, že objednávám standardizovaný digitální dokument vytvořený podle mnou zadaných údajů, nikoli individuální právní službu. Digitální obsah bude ihned zpřístupněn po zaplacení.
-                    Výslovně souhlasím s tím, že ztrácím právo na odstoupení od smlouvy ve lhůtě 14 dní dle{' '}
-                    <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">
-                      § 1837 písm. l) zákona č. 89/2012 Sb.
-                    </a>
-                  </span>
-                </label>
-                {withdrawalError && (
-                  <p className="mb-3 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-2 text-xs text-rose-300">
-                    Pro pokračování musíte souhlasit s podmínkami digitálního obsahu.
-                  </p>
-                )}
-
               <button
                 onClick={handleSubmit}
                 disabled={isProcessing || !gdprConsent}
@@ -570,11 +536,10 @@ export default function NdaBuilderPage() {
               <p className="text-center text-xs text-slate-600 mt-3">🔒 Platba přes Stripe · PDF ke stažení ihned</p>
             </div>
 
-            <Link href="/" className="block text-center text-xs text-slate-600 hover:text-slate-400 transition">← Zpět na výběr smluv</Link>
+            <a href="/" className="block text-center text-xs text-slate-600 hover:text-slate-400 transition">← Zpět na výběr smluv</a>
           </div>
         </div>
       </div>
     </main>
   );
 }
-

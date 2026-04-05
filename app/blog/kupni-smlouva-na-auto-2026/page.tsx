@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -85,7 +85,7 @@ export default function KupniSmlouvaAutoPage() {
           Kupní smlouva na auto 2026: Co musí obsahovat a jak se chránit
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-400">
-          Prodáváte nebo kupujete ojetý vůz? Pečlivě připravená kupní smlouva na auto pomůže přehledně upravit práva a povinnosti stran před
+          Prodáváte nebo kupujete ojetý vůz? Správně sepsaná kupní smlouva na auto vás ochrání před
           spory o stav vozidla, skryté vady i manipulovaný tachometr. Zjistěte, co nesmí chybět.
         </p>
 
@@ -193,7 +193,7 @@ export default function KupniSmlouvaAutoPage() {
           <li className="flex items-start gap-3">
             <span className="mt-1 flex-shrink-0 text-amber-500 font-bold">✓</span>
             <div>
-              <strong className="text-slate-300">Odpovědnost za vady</strong> — prodej „jak stojí a leží“ (as is) u ojetých vozů
+              <strong className="text-slate-300">Odpovědnost za vady</strong> — prodej "jak stojí a leží" (as is) u ojetých vozů
               je legitimitní, ale musí být výslovně sjednán a nesmí zakrývat úmyslně zamlčené vady.
             </div>
           </li>
@@ -234,7 +234,7 @@ export default function KupniSmlouvaAutoPage() {
         <ul className="mb-5 space-y-2 text-slate-400">
           <li className="flex items-start gap-2"><span className="mt-1 text-amber-500 flex-shrink-0">•</span>Datum platnosti STK (s razítkem a příslušnou přilepenou nálepkou)</li>
           <li className="flex items-start gap-2"><span className="mt-1 text-amber-500 flex-shrink-0">•</span>Datum poslední emisní kontroly (pro vozy podléhající emisní kontrole)</li>
-          <li className="flex items-start gap-2"><span className="mt-1 text-amber-500 flex-shrink-0">•</span>Případné závady zjištěné při poslední STK (i tzv. „doporučení“)</li>
+          <li className="flex items-start gap-2"><span className="mt-1 text-amber-500 flex-shrink-0">•</span>Případné závady zjištěné při poslední STK (i tzv. "doporučení")</li>
         </ul>
 
         <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm text-slate-400 leading-relaxed">
@@ -383,7 +383,7 @@ export default function KupniSmlouvaAutoPage() {
       <section id="zaver" className="mb-12 scroll-mt-6">
         <h2 className="mb-4 text-2xl font-black tracking-tight text-white">7. Shrnutí a doporučení</h2>
         <p className="mb-4 text-slate-400 leading-relaxed">
-          Kupní smlouva na auto je při prodeji ojetého vozidla naprosto zásadní. Pomáhá přehledně upravit práva a povinnosti stran —
+          Kupní smlouva na auto je při prodeji ojetého vozidla naprosto zásadní. Chrání obě strany —
           prodávajícího před neoprávněnými reklamacemi, kupujícího před skrytými vadami.
         </p>
         <div className="mb-6 space-y-2">
@@ -405,7 +405,7 @@ export default function KupniSmlouvaAutoPage() {
 
       {/* ── TRUST BOX ───────────────────────────── */}
       <ArticleTrustBox
-        generatorSuitable="Standardní soukromý prodej osobního automobilu, motocyklu nebo jiného vozidla mezi fyzickými osobami. Online nástroj obvykle pokrývá VIN, STK, stav tachometru, prohlášení o vadách i podmínky předání."
+        generatorSuitable="Standardní soukromý prodej osobního automobilu, motocyklu nebo jiného vozidla mezi fyzickými osobami. Generátor pokryje VIN, STK, stav tachometru, prohlášení o vadách i podmínky předání."
         lawyerSuitable="Prodej vozidla zatíženého zástavním právem, spory o stav nebo cenu vozidla, fleetový nebo komerční prodej, nebo situace kde existuje riziko podvodu (podezřelá historie, nejasný vlastník)."
       />
 
@@ -431,10 +431,10 @@ export default function KupniSmlouvaAutoPage() {
         <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-600">Mohlo by vás zajímat</div>
         <div className="flex flex-wrap gap-3">
           {[
-            { href: '/auto', label: '🚗 Kupní smlouva na auto — formulář' },
-            { href: '/blog/kupni-smlouva-movita-vec', label: '📦 Kupní smlouva — movitá věc' },
-            { href: '/blog/darovaci-smlouva-2026', label: '🎁 Darovací smlouva — průvodce' },
-            { href: '/blog/smlouva-o-zapujcce-2026', label: '💰 Smlouva o zápůjčce — průvodce' },
+            { href: '/auto', label: '🚗 Kupní smlouva na auto — landing page' },
+            { href: '/kupni', label: '📦 Kupní smlouva na movitou věc' },
+            { href: '/blog/najemni-smlouva-vzor-2026', label: '🏠 Nájemní smlouva — průvodce' },
+            { href: '/plna-moc', label: '📋 Plná moc' },
             { href: '/', label: '📑 Všechny smlouvy' },
           ].map(l => (
             <Link
@@ -451,5 +451,3 @@ export default function KupniSmlouvaAutoPage() {
     </article>
   );
 }
-
-

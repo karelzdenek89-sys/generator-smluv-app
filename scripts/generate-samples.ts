@@ -378,8 +378,7 @@ async function loadFontBase64(fileName: string): Promise<string> {
 }
 
 async function setupFonts(doc: jsPDF): Promise<void> {
-  type PdfWithVfs = jsPDF & { internal: { vFS?: Record<string, string> } };
-  const pdfDoc = doc as PdfWithVfs;
+  const pdfDoc = doc as any;
   if (!pdfDoc.internal.vFS) pdfDoc.internal.vFS = {};
   const [regular, bold] = await Promise.all([
     loadFontBase64('Roboto-Regular.ttf'),

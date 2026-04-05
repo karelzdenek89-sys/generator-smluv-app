@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useMemo, useState } from 'react';
 import ContractPreview from '@/app/components/ContractPreview';
@@ -34,10 +34,10 @@ function SectionTitle({ index, title, subtitle }: { index: string; title: string
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="block">
-      <span className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</span>
+    <div>
+      <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</label>
       {children}
-    </label>
+    </div>
   );
 }
 
@@ -56,8 +56,6 @@ export default function PracovniPage() {
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [gdprConsent, setGdprConsent] = useState(false);
-  const [withdrawalConsent, setWithdrawalConsent] = useState(false);
-  const [withdrawalError, setWithdrawalError] = useState(false);
 
   const set = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -88,11 +86,7 @@ export default function PracovniPage() {
 
   const handlePayment = async () => {
     try {
-          if (!withdrawalConsent) {
-      setWithdrawalError(true);
-      return;
-    }
-    if (!gdprConsent) { alert('Pro pokračování je nutný souhlas se zpracováním osobních údajů.'); return; }
+      if (!gdprConsent) { alert('Pro pokračování je nutný souhlas se zpracováním osobních údajů.'); return; }
     setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -128,7 +122,7 @@ export default function PracovniPage() {
         subtitle="Vytvořte pracovní smlouvu pro vznik pracovního poměru. Dokument splňuje zákonem stanovené náležitosti — druh práce, místo výkonu a den nástupu — a pokrývá i odměňování, zkušební dobu a pracovní dobu."
         benefits={[
           { icon: '⚖️', text: 'Sestaveno dle § 33–65 zákoníku práce (zákon č. 262/2006 Sb.)' },
-          { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
+          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
           { icon: '👔', text: 'Splňuje zákonné náležitosti — druh práce, místo, nástup' },
           { icon: '🔒', text: 'Pokrývá zkušební dobu, odměnu i podmínky ukončení' },
         ]}
@@ -207,7 +201,7 @@ export default function PracovniPage() {
                     </Field>
                   </div>
                   <Field label="Možnost home office">
-                    <select aria-label="— nevyplněno —" className={inputClass} name="remoteWork" value={form.remoteWork} onChange={set}>
+                    <select className={inputClass} name="remoteWork" value={form.remoteWork} onChange={set}>
                       <option value="">— nevyplněno —</option>
                       <option value="plný remote (100 %)">Plný remote (100 %)</option>
                       <option value="hybridní (dle dohody)">Hybridní (dle dohody)</option>
@@ -221,7 +215,7 @@ export default function PracovniPage() {
                 <SectionTitle index="04" title="Trvání pracovního poměru" />
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Field label="Druh poměru">
-                    <select aria-label="Na dobu neurčitou" className={inputClass} name="employmentType" value={form.employmentType} onChange={set}>
+                    <select className={inputClass} name="employmentType" value={form.employmentType} onChange={set}>
                       <option value="indefinite">Na dobu neurčitou</option>
                       <option value="fixed">Na dobu určitou</option>
                     </select>
@@ -252,7 +246,7 @@ export default function PracovniPage() {
                 <SectionTitle index="06" title="Mzda a odměňování" />
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Field label="Typ mzdy">
-                    <select aria-label="Měsíční" className={inputClass} name="salaryType" value={form.salaryType} onChange={set}>
+                    <select className={inputClass} name="salaryType" value={form.salaryType} onChange={set}>
                       <option value="monthly">Měsíční</option>
                       <option value="hourly">Hodinová</option>
                     </select>
@@ -278,7 +272,7 @@ export default function PracovniPage() {
                 <div className="space-y-3 mt-6">
                   <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Vyberte balíček</div>
                   {([
-                    { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Strukturovaná smlouva dle občanského zákoníku, výstup v PDF.' },
+                    { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva dle občanského zákoníku v PDF.' },
                     { value: 'professional', label: 'Rozšířený dokument', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
                     { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířeného dokumentu + průvodní instrukce, checklist a 30denní archivace.' },
                   ] as const).map((opt) => (
@@ -333,24 +327,11 @@ export default function PracovniPage() {
                 </div>
                 {form.notaryUpsell && (
                   <div className="mt-4 grid sm:grid-cols-2 gap-4">
-                    <label htmlFor="nonCompete" className={`flex items-start gap-3 cursor-pointer rounded-xl border p-4 transition ${form.nonCompete ? 'border-amber-500/70 bg-amber-500/10' : 'border-slate-700/60 bg-[#111c31]'}`}>
-                      <input id="nonCompete" type="checkbox" name="nonCompete" checked={form.nonCompete} onChange={set} className="mt-0.5 h-4 w-4 accent-amber-500" />
+                    <label className={`flex items-start gap-3 cursor-pointer rounded-xl border p-4 transition ${form.nonCompete ? 'border-amber-500/70 bg-amber-500/10' : 'border-slate-700/60 bg-[#111c31]'}`}>
+                      <input type="checkbox" name="nonCompete" checked={form.nonCompete} onChange={set} className="mt-0.5 h-4 w-4 accent-amber-500" />
                       <div className="text-sm text-white">Konkurenční doložka</div>
                     </label>
-                    {form.nonCompete && (
-                      <Field label="Délka zákazu (měsíce)">
-                        <input
-                          id="nonCompetePeriod"
-                          className={inputClass}
-                          name="nonCompetePeriod"
-                          value={form.nonCompetePeriod}
-                          onChange={set}
-                          type="number"
-                          min="1"
-                          max="12"
-                        />
-                      </Field>
-                    )}
+                    {form.nonCompete && <Field label="Délka zákazu (měsíce)"><input className={inputClass} name="nonCompetePeriod" value={form.nonCompetePeriod} onChange={set} type="number" min="1" max="12" /></Field>}
                   </div>
                 )}
               </section>
@@ -397,7 +378,7 @@ export default function PracovniPage() {
               <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3">
                 <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Součástí výstupu je</div>
                 <ul className="space-y-1.5">
-                  {['Profesionálně strukturované PDF', 'PDF dokument určený ke kontrole a podpisu', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
+                  {['Profesionálně strukturované PDF', 'Připraveno k okamžitému stažení', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
                     <li key={item} className="flex items-start gap-2 text-xs text-slate-400">
                       <span className="text-amber-500 mt-0.5">✓</span>{item}
                     </li>
@@ -413,36 +394,11 @@ export default function PracovniPage() {
                   <a href="/obchodni-podminky" className="text-amber-400 underline hover:text-amber-300" target="_blank" rel="noopener noreferrer">obchodními podmínkami</a>.
                 </span>
               </label>
-
-                {/* § 1837 l) OZ — povinný souhlas s neodstoupením od smlouvy */}
-                <label className="flex items-start gap-3 mb-1 cursor-pointer group">
-                  <input
-                    type="checkbox"
-                    checked={withdrawalConsent}
-                    onChange={(e) => {
-                      setWithdrawalConsent(e.target.checked);
-                      if (e.target.checked) setWithdrawalError(false);
-                    }}
-                    className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
-                  />
-                  <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
-                    Beru na vědomí, že objednávám standardizovaný digitální dokument vytvořený podle mnou zadaných údajů, nikoli individuální právní službu. Digitální obsah bude ihned zpřístupněn po zaplacení.
-                    Výslovně souhlasím s tím, že ztrácím právo na odstoupení od smlouvy ve lhůtě 14 dní dle{' '}
-                    <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">
-                      § 1837 písm. l) zákona č. 89/2012 Sb.
-                    </a>
-                  </span>
-                </label>
-                {withdrawalError && (
-                  <p className="mb-3 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-2 text-xs text-rose-300">
-                    Pro pokračování musíte souhlasit s podmínkami digitálního obsahu.
-                  </p>
-                )}
               <button onClick={handlePayment} disabled={isProcessing || !gdprConsent || !form.employerName || !form.employeeName || !form.jobTitle}
                 className="mt-4 w-full rounded-2xl bg-amber-500 px-6 py-4 font-bold text-slate-900 text-lg hover:bg-amber-400 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed">
                 {isProcessing ? 'Přesměrování…' : 'Zaplatit a stáhnout PDF →'}
               </button>
-              <p className="mt-3 text-center text-xs text-slate-500">Platba kartou přes Stripe · PDF dokument zpřístupněný ihned po zaplacení</p>
+              <p className="mt-3 text-center text-xs text-slate-500">Platba kartou přes Stripe · PDF ke stažení ihned</p>
               <div className="mt-4 rounded-xl bg-amber-500/10 border border-amber-500/20 p-3 text-xs text-amber-300">
                 <strong>Důležité:</strong> Pracovní smlouva musí být uzavřena před nástupem do práce a zaměstnanec musí obdržet jedno vyhotovení (§ 37 ZP).
               </div>
@@ -453,4 +409,3 @@ export default function PracovniPage() {
     </main>
   );
 }
-

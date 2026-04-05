@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useMemo, useState } from 'react';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
@@ -130,8 +130,6 @@ export default function LeaseBuilderPage() {
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [gdprConsent, setGdprConsent] = useState(false);
-  const [withdrawalConsent, setWithdrawalConsent] = useState(false);
-  const [withdrawalError, setWithdrawalError] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -426,10 +424,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
       return;
     }
 
-        if (!withdrawalConsent) {
-      setWithdrawalError(true);
-      return;
-    }
     if (!gdprConsent) {
       alert('Potvrďte prosím souhlas se zpracováním osobních údajů a obchodními podmínkami.');
       return;
@@ -538,8 +532,8 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
               SH
             </div>
             <div>
-              <div className="font-bold tracking-tight text-white">SmlouvaHned Nájem</div>
-              <div className="text-[11px] text-slate-500">Nájemní smlouva na byt a dům</div>
+              <div className="font-bold tracking-tight text-white">SmlouvaHned Builder</div>
+              <div className="text-[11px] text-slate-500">Prémiový generátor nájemní smlouvy</div>
             </div>
           </div>
 
@@ -556,12 +550,12 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
         badge="§ 2235 a násl. občanského zákoníku"
         h1Main="Nájemní smlouva na"
         h1Accent="byt online"
-        subtitle="Vytvořte přehlednou nájemní smlouvu pro pronájem bytu nebo domu. Dokument pokrývá výši nájmu, zálohy, kauci, pravidla užívání, předání bytu i podmínky ukončení nájmu v běžných situacích."
+        subtitle="Vytvořte nájemní smlouvu pro pronájem bytu nebo domu rychle a přehledně. Šablona pokrývá klíčová ujednání — od výše nájmu a kauce po pravidla užívání a ukončení nájmu, strukturovaná dle § 2235 a násl. OZ."
         benefits={[
-          { icon: '⚖️', text: 'Vychází z pravidel občanského zákoníku pro nájem bytu a domu' },
-          { icon: '📄', text: 'PDF dokument je zpřístupněn ihned po dokončení platby a je určen ke kontrole a podpisu' },
-          { icon: '🏠', text: 'Pokrývá nájem na dobu určitou i neurčitou, kauci a zálohy na služby' },
-          { icon: '🔒', text: 'Vhodné pro pronájem bytu, domu i samostatné části nemovitosti' },
+          { icon: '⚖️', text: 'Sestaveno dle § 2235–2301 OZ (nájemní smlouva na byt)' },
+          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+          { icon: '🏠', text: 'Pokrývá dobu určitou i neurčitou, kauce a poplatky' },
+          { icon: '🔒', text: 'Vhodné pro pronájem bytu, domu nebo jeho části' },
         ]}
         contents={[
           'Identifikaci pronajímatele a nájemce',
@@ -571,28 +565,28 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
           'Dobu nájmu a podmínky ukončení',
           'Práva a povinnosti stran (domácí zvířata, kouření, podnájem)',
           'Stav bytu při předání a předávací podmínky',
-          'Závěrečná ustanovení a přehlednou strukturu připravenou k podpisu',
+          'Závěrečná ustanovení, GDPR a vyšší moc',
         ]}
         whenSuitable={[
           'Pronájem celého bytu nebo domu soukromé osobě',
           'Pronájem části nemovitosti (pokoj, garsonka)',
           'Uzavření nájemního vztahu na dobu určitou nebo neurčitou',
-          'Situace, kdy potřebujete jasně ošetřit pravidla užívání nemovitosti',
+          'Případy, kdy potřebujete mít jasně ošetřené podmínky užívání nemovitosti',
         ]}
         whenOther={[
           { label: 'Podnájemní smlouva', href: '/podnajem', text: 'Pokud sám jste nájemcem a dáváte byt nebo jeho část do podnájmu.' },
         ]}
         faq={[
-          { q: 'Jaký je rozdíl mezi nájemní a podnájemní smlouvou?', a: 'Nájemní smlouva se uzavírá přímo s vlastníkem nemovitosti. Podnájemní smlouva se používá tehdy, když nájemce dále přenechává byt nebo jeho část třetí osobě.' },
-          { q: 'Je písemná nájemní smlouva nutná?', a: 'Písemná forma je v praxi velmi důležitá, protože usnadňuje prokazování dohodnutých podmínek. U nájmu bytu nebo domu je to bezpečnější varianta pro obě strany.' },
-          { q: 'Jak vysoká může být kauce?', a: 'Kauce by měla odpovídat zákonným limitům a smyslu nájemního vztahu. Na této stránce proto zároveň upozorňujeme i na riziko nepřiměřeně vysoké jistoty.' },
-          { q: 'Je dokument dostupný ihned po zaplacení?', a: 'Ano. Po úspěšném dokončení platby je PDF ihned zpřístupněné a určené ke kontrole a podpisu.' },
-          { q: 'Je potřeba nájemní smlouvu ověřovat u notáře?', a: 'Pro běžný nájem bytu nebo domu se notářské ověření standardně nevyžaduje. Obvykle postačí podpis pronajímatele a nájemce.' },
+          { q: 'Co je rozdíl mezi nájemní a podnájemní smlouvou?', a: 'Nájemní smlouva je uzavírána přímo s vlastníkem nemovitosti. Podnájemní smlouva se používá, pokud nájemce sám dál pronajímá byt nebo jeho část třetí osobě — k tomu zpravidla potřebuje souhlas pronajímatele.' },
+          { q: 'Je nutná písemná nájemní smlouva?', a: 'Zákon písemnou formu výslovně nevyžaduje, ale silně ji doporučuje. Ústní dohoda je obtížně prokazatelná a v případě sporu může být pro nájemce i pronajímatele nevýhodná.' },
+          { q: 'Jak vysoká může být kauce?', a: 'Podle § 2254 OZ smí kauce (jistota) činit nejvýše trojnásobek měsíčního nájemného. Pronajímatel ji musí po skončení nájmu vrátit, pokud nájemce nezpůsobil škodu.' },
+          { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
+          { q: 'Musí smlouvu ověřit notář?', a: 'Pro běžné nájemní smlouvy na byt notářské ověření není vyžadováno. Podpisy obou stran postačují.' },
         ]}
         ctaLabel="Vytvořit nájemní smlouvu"
         formId="formular"
         guideHref="/najemni-smlouva"
-        guideLabel="Průvodce nájemní smlouvou – co obsahuje, kdy ji použít a nejčastější chyby"
+        guideLabel="Průvodce nájemní smlouvou — co obsahuje, kdy ji použít a nejčastější chyby"
       />
 
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8">
@@ -611,7 +605,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="landlordName"
                   placeholder="Celé jméno"
-                  aria-label="Celé jméno"
                   className={inputClass}
                 />
                 <input
@@ -619,7 +612,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="landlordId"
                   placeholder="Rodné číslo / datum narození"
-                  aria-label="Rodné číslo / datum narození"
                   className={inputClass}
                 />
               </div>
@@ -629,7 +621,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="landlordAddress"
                   placeholder="Trvalé bydliště"
-                  aria-label="Trvalé bydliště"
                   className={inputClass}
                 />
                 <input
@@ -637,7 +628,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="landlordOP"
                   placeholder="Číslo OP"
-                  aria-label="Číslo OP"
                   className={inputClass}
                 />
               </div>
@@ -647,7 +637,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="landlordEmail"
                   placeholder="E-mail (volitelné)"
-                  aria-label="E-mail (volitelné)"
                   className={inputClass}
                 />
                 <input
@@ -655,7 +644,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="landlordPhone"
                   placeholder="Telefon (volitelné)"
-                  aria-label="Telefon (volitelné)"
                   className={inputClass}
                 />
               </div>
@@ -673,7 +661,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="tenantName"
                   placeholder="Celé jméno"
-                  aria-label="Celé jméno"
                   className={inputClass}
                 />
                 <input
@@ -681,7 +668,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="tenantId"
                   placeholder="Rodné číslo / datum narození"
-                  aria-label="Rodné číslo / datum narození"
                   className={inputClass}
                 />
               </div>
@@ -691,7 +677,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="tenantAddress"
                   placeholder="Trvalé bydliště"
-                  aria-label="Trvalé bydliště"
                   className={inputClass}
                 />
                 <input
@@ -699,7 +684,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="tenantOP"
                   placeholder="Číslo OP"
-                  aria-label="Číslo OP"
                   className={inputClass}
                 />
               </div>
@@ -709,7 +693,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="tenantEmail"
                   placeholder="E-mail (volitelné)"
-                  aria-label="E-mail (volitelné)"
                   className={inputClass}
                 />
                 <input
@@ -717,7 +700,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="tenantPhone"
                   placeholder="Telefon (volitelné)"
-                  aria-label="Telefon (volitelné)"
                   className={inputClass}
                 />
               </div>
@@ -735,7 +717,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="flatAddress"
                   placeholder="Adresa bytu"
-                  aria-label="Adresa bytu"
                   className={inputClass}
                 />
                 <input
@@ -743,7 +724,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="flatLayout"
                   placeholder="Dispozice (např. 2+kk)"
-                  aria-label="Dispozice (např. 2+kk)"
                   className={inputClass}
                 />
               </div>
@@ -753,7 +733,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="flatUnitNumber"
                   placeholder="Číslo jednotky"
-                  aria-label="Číslo jednotky"
                   className={inputClass}
                 />
                 <input
@@ -761,7 +740,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="ownershipSheet"
                   placeholder="List vlastnictví"
-                  aria-label="List vlastnictví"
                   className={inputClass}
                 />
                 <input
@@ -769,7 +747,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="cadastralArea"
                   placeholder="Katastrální území"
-                  aria-label="Katastrální území"
                   className={inputClass}
                 />
               </div>
@@ -778,7 +755,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                 onChange={handleChange}
                 name="floor"
                 placeholder="Podlaží / patro"
-                aria-label="Podlaží / patro"
                 className={inputClass}
               />
             </section>
@@ -791,11 +767,10 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
               />
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label htmlFor="startDate" className="mb-2 block text-xs uppercase tracking-widest text-slate-400">
+                  <label className="mb-2 block text-xs uppercase tracking-widest text-slate-500">
                     Začátek nájmu
                   </label>
                   <input
-                    id="startDate"
                     value={formData.startDate}
                     onChange={handleChange}
                     type="date"
@@ -804,11 +779,10 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   />
                 </div>
                 <div>
-                  <label htmlFor="handoverDate" className="mb-2 block text-xs uppercase tracking-widest text-slate-400">
+                  <label className="mb-2 block text-xs uppercase tracking-widest text-slate-500">
                     Předání bytu
                   </label>
                   <input
-                    id="handoverDate"
                     value={formData.handoverDate}
                     onChange={handleChange}
                     type="date"
@@ -819,7 +793,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
               </div>
 
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
-                <select aria-label="Doba určitá"
+                <select
                   value={formData.duration}
                   onChange={handleChange}
                   name="duration"
@@ -834,7 +808,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                     value={formData.endDate}
                     onChange={handleChange}
                     type="date"
-                    aria-label="Konec smlouvy"
                     name="endDate"
                     className={inputClass}
                   />
@@ -852,7 +825,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   type="number"
                   name="rentAmount"
                   placeholder="Nájem (Kč)"
-                  aria-label="Nájem (Kč)"
                   className={inputClass}
                 />
                 <input
@@ -861,7 +833,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   type="number"
                   name="utilityAmount"
                   placeholder="Služby (Kč)"
-                  aria-label="Služby (Kč)"
                   className={inputClass}
                 />
                 <div>
@@ -871,7 +842,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                     type="number"
                     name="depositAmount"
                     placeholder="Kauce (Kč)"
-                    aria-label="Kauce (Kč)"
                     className={inputClass}
                   />
                   {Number(formData.rentAmount) > 0 && Number(formData.depositAmount) > Number(formData.rentAmount) * 6 && (
@@ -886,7 +856,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="bankAccount"
                   placeholder="Číslo účtu"
-                  aria-label="Číslo účtu"
                   className={inputClass}
                 />
                 <input
@@ -895,7 +864,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   type="number"
                   name="paymentDay"
                   placeholder="Den splatnosti"
-                  aria-label="Den splatnosti"
                   className={inputClass}
                 />
                 <input
@@ -903,7 +871,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="variableSymbol"
                   placeholder="Variabilní symbol"
-                  aria-label="Variabilní symbol"
                   className={inputClass}
                 />
               </div>
@@ -913,7 +880,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                 onChange={handleChange}
                 name="utilitiesIncludedText"
                 placeholder="Co zahrnují služby? Např. voda, teplo, úklid společných prostor, osvětlení domu, internet..."
-                aria-label="Co zahrnují služby? Např. voda, teplo, úklid společných prostor, osvětlení domu, internet..."
                 className={textareaClass}
               />
 
@@ -942,7 +908,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   type="number"
                   name="keysCount"
                   placeholder="Počet klíčů"
-                  aria-label="Počet klíčů"
                   className={inputClass}
                 />
                 <input
@@ -950,7 +915,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="electricityMeter"
                   placeholder="Elektroměr"
-                  aria-label="Elektroměr"
                   className={inputClass}
                 />
                 <input
@@ -958,7 +922,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="gasMeter"
                   placeholder="Plynoměr"
-                  aria-label="Plynoměr"
                   className={inputClass}
                 />
                 <input
@@ -966,7 +929,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="waterMeter"
                   placeholder="Vodoměr"
-                  aria-label="Vodoměr"
                   className={inputClass}
                 />
               </div>
@@ -977,7 +939,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   name="equipmentList"
                   placeholder="Seznam vybavení bytu. Např. kuchyňská linka, trouba, lednice, myčka, postel, skříně..."
-                  aria-label="Seznam vybavení bytu. Např. kuchyňská linka, trouba, lednice, myčka, postel, skříně..."
                   className={textareaClass}
                 />
               </div>
@@ -987,7 +948,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                 onChange={handleChange}
                 name="knownDefects"
                 placeholder="Známé vady / poškození / poznámky. Např. oděrky na podlaze, prasklina u umyvadla, chybějící žaluzie..."
-                aria-label="Známé vady / poškození / poznámky. Např. oděrky na podlaze, prasklina u umyvadla, chybějící žaluzie..."
                 className={textareaClass}
               />
             </section>
@@ -1041,7 +1001,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
               </div>
 
               <div className="rounded-2xl border border-slate-700/80 bg-[#111c31] p-4 w-fit">
-                <div className="text-xs uppercase tracking-widest text-slate-400 mb-2">
+                <div className="text-xs uppercase tracking-widest text-slate-500 mb-2">
                   Maximální počet osob
                 </div>
                 <input
@@ -1049,7 +1009,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   type="number"
                   name="maxOccupants"
-                  aria-label="Maximální počet osob"
                   className="bg-transparent w-24 text-2xl font-black text-white outline-none"
                 />
               </div>
@@ -1058,8 +1017,8 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
             {/* Řešení sporů */}
             <section className={cardClass}>
               <div className="mb-2">
-                <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Řešení sporů</div>
-                <select aria-label="Obecný soud (výchozí)" className="w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none focus:border-amber-500/60 transition" name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
+                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
+                <select className="w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none focus:border-amber-500/60 transition" name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
                   <option value="court">Obecný soud (výchozí)</option>
                   <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                   <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
@@ -1072,11 +1031,11 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
               <SectionTitle
                 index="07"
                 title="Vyberte úroveň ochrany"
-                subtitle="Vyšší varianta doplňuje další ustanovení nebo doprovodné podklady podle typu dokumentu."
+                subtitle="Čím vyšší balíček, tím silnější smlouva a více doprovodných materiálů."
               />
               <div className="space-y-3">
                 {([
-                  { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Strukturovaná smlouva dle občanského zákoníku, výstup v PDF.' },
+                  { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva dle občanského zákoníku v PDF.' },
                   { value: 'professional', label: 'Rozšířený dokument', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
                   { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířeného dokumentu + průvodní instrukce, checklist a 30denní archivace.' },
                 ] as const).map((opt) => (
@@ -1100,7 +1059,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                         type="radio"
                         name="tier"
                         value={opt.value}
-                        aria-label={opt.label}
                         checked={formData.tier === opt.value}
                         onChange={(e) => setFormData((prev) => ({ ...prev, tier: e.target.value as 'basic' | 'professional' | 'complete', notaryUpsell: e.target.value !== 'basic' }))}
                         className="mt-1 h-5 w-5 accent-amber-500"
@@ -1265,7 +1223,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                     </li>
                     <li className="flex items-start gap-2 text-slate-300">
                       <span className="text-amber-400 mt-1">✓</span>
-                      <span>PDF dokument určený ke kontrole a podpisu</span>
+                      <span>Připraveno k okamžitému stažení</span>
                     </li>
                     <li className="flex items-start gap-2 text-slate-300">
                       <span className="text-amber-400 mt-1">✓</span>
@@ -1304,36 +1262,11 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                     <a href="/gdpr" target="_blank" className="text-amber-400 underline hover:text-amber-300">zpracováním osobních údajů</a>
                     {' '}a s{' '}
                     <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">obchodními podmínkami</a>.
-                    Beru na vědomí, že objednávám standardizovaný digitální dokument vytvořený podle mnou zadaných údajů a že digitální obsah je zpřístupněn ihned po zaplacení, takže nelze od smlouvy odstoupit v obvyklé 14denní lhůtě.
+                    Beru na vědomí, že digitální obsah je doručen ihned a nelze od smlouvy odstoupit.
                   </span>
                 </label>
 
                 {/* Platební tlačítko */}
-
-                {/* § 1837 l) OZ — povinný souhlas s neodstoupením od smlouvy */}
-                <label className="flex items-start gap-3 mb-1 cursor-pointer group">
-                  <input
-                    type="checkbox"
-                    checked={withdrawalConsent}
-                    onChange={(e) => {
-                      setWithdrawalConsent(e.target.checked);
-                      if (e.target.checked) setWithdrawalError(false);
-                    }}
-                    className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
-                  />
-                  <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
-                    Beru na vědomí, že objednávám standardizovaný digitální dokument vytvořený podle mnou zadaných údajů, nikoli individuální právní službu. Digitální obsah bude ihned zpřístupněn po zaplacení.
-                    Výslovně souhlasím s tím, že ztrácím právo na odstoupení od smlouvy ve lhůtě 14 dní dle{' '}
-                    <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">
-                      § 1837 písm. l) zákona č. 89/2012 Sb.
-                    </a>
-                  </span>
-                </label>
-                {withdrawalError && (
-                  <p className="mb-3 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-2 text-xs text-rose-300">
-                    Pro pokračování musíte souhlasit s podmínkami digitálního obsahu.
-                  </p>
-                )}
                 <button
                   onClick={handlePayment}
                   disabled={isProcessing || !gdprConsent}
@@ -1360,4 +1293,3 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
     </main>
   );
 }
-

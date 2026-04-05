@@ -1,30 +1,35 @@
-import { BLOG_DISCLAIMER } from '@/lib/servicePositioning';
-
 interface ArticleTrustBoxProps {
+  /** Co produktový generátor zvládne dobře */
   generatorSuitable: string;
+  /** Kdy raději zvolit advokáta */
   lawyerSuitable: string;
 }
 
+/**
+ * Trust box pro blogové články — objektivně informuje uživatele,
+ * kdy je online generátor dostačující a kdy je vhodné sáhnout
+ * po individuální právní pomoci. Posiluje důvěryhodnost produktu
+ * a snižuje riziko negativního dojmu u uživatelů s atypickými případy.
+ */
 export default function ArticleTrustBox({
   generatorSuitable,
   lawyerSuitable,
 }: ArticleTrustBoxProps) {
   return (
-    <div className="my-10 rounded-[1.75rem] border border-slate-700/40 bg-gradient-to-br from-slate-800/40 to-slate-900/40 px-6 py-6 shadow-[0_16px_40px_rgba(0,0,0,0.18)]">
-      <div className="mb-3 text-[10px] font-black uppercase tracking-[0.22em] text-slate-500">
-        Kdy postačí online nástroj a kdy už řešit advokáta
+    <div className="my-10 rounded-2xl border border-slate-700/40 bg-slate-800/25 px-6 py-5">
+      <div className="mb-3 text-[10px] font-black uppercase tracking-widest text-slate-500">
+        Kdy použít generátor a kdy advokáta
       </div>
-      <div className="grid gap-4 text-sm sm:grid-cols-2">
-        <div className="rounded-2xl border border-emerald-500/15 bg-emerald-500/5 p-4">
-          <div className="mb-1.5 font-bold text-emerald-400">✓ Vhodné pro standardní situaci</div>
-          <p className="leading-relaxed text-slate-300">{generatorSuitable}</p>
+      <div className="grid gap-4 sm:grid-cols-2 text-sm">
+        <div>
+          <div className="mb-1.5 font-bold text-emerald-400">✓ Generátor postačuje</div>
+          <p className="text-slate-400 leading-relaxed">{generatorSuitable}</p>
         </div>
-        <div className="rounded-2xl border border-white/8 bg-white/3 p-4">
-          <div className="mb-1.5 font-bold text-slate-300">⚖ Zvažte advokáta</div>
-          <p className="leading-relaxed text-slate-400">{lawyerSuitable}</p>
+        <div>
+          <div className="mb-1.5 font-bold text-slate-400">⚖ Zvažte advokáta</div>
+          <p className="text-slate-500 leading-relaxed">{lawyerSuitable}</p>
         </div>
       </div>
-      <p className="mt-4 text-xs leading-relaxed text-slate-500">{BLOG_DISCLAIMER}</p>
     </div>
   );
 }

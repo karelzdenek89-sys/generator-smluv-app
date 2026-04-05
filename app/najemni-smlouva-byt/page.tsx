@@ -1,10 +1,10 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Nájemní smlouva na byt 2026 — vzor | SmlouvaHned',
   description:
-    'Nájemní smlouva na byt nebo dům. Kauce, zvířata, předávací protokol, Airbnb doložka. Dle § 2235 OZ 2026. PDF ke stažení od 249 Kč.',
+    'Nájemní smlouva na byt nebo dům. Kauce, zvířata, předávací protokol, Airbnb doložka. Dle § 2235 OZ 2026. PDF ihned od 249 Kč.',
   keywords: [
     'nájemní smlouva byt 2026',
     'nájemní smlouva na byt vzor',
@@ -79,7 +79,7 @@ export default function NajemniSmlouvaBytPage() {
             <span className="text-amber-500 italic">vzor 2026</span>
           </h1>
           <p className="text-lg text-slate-400 leading-relaxed max-w-2xl mb-8">
-            Pronajímáte nebo si pronajímáte byt nebo dům? Nájemní smlouva pomáhá přehledně upravit kauci, pravidla užívání, předání bytu a podmínky ukončení.
+            Pronajímáte nebo si pronajímáte byt nebo dům? Nájemní smlouva ochrání obě strany — kauce, pravidla, předání bytu a podmínky ukončení.
           </p>
           <div className="flex flex-wrap gap-3 mb-8">
             <Link href="/najem"
@@ -87,7 +87,7 @@ export default function NajemniSmlouvaBytPage() {
               Vytvořit nájemní smlouvu →
             </Link>
           </div>
-          <div className="text-sm text-slate-500">Od 249 Kč · PDF ke stažení · Dle § 2235 OZ</div>
+          <div className="text-sm text-slate-500">Od 249 Kč · PDF ihned · Dle § 2235 OZ</div>
         </div>
 
         <section className="mb-12 rounded-3xl border border-white/8 bg-[#0c1426] p-8">
@@ -151,7 +151,7 @@ export default function NajemniSmlouvaBytPage() {
         <section className="rounded-3xl border border-teal-500/20 bg-gradient-to-br from-teal-500/10 to-transparent p-8 text-center">
           <h2 className="text-2xl font-black text-white mb-3">Sestavte nájemní smlouvu</h2>
           <p className="text-slate-400 text-sm mb-6 max-w-md mx-auto">
-            Formulář pro pronájem bytu či domu — kauce, zvířata, pravidla, PDF ke stažení po ověřené platbě.
+            Formulář pro pronájem bytu či domu — kauce, zvířata, pravidla, PDF ihned.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link href="/najem"
@@ -159,7 +159,7 @@ export default function NajemniSmlouvaBytPage() {
               Vytvořit nájemní smlouvu →
             </Link>
           </div>
-          <div className="mt-3 text-xs text-slate-600">Od 249 Kč · § 2235 OZ · PDF ke stažení</div>
+          <div className="mt-3 text-xs text-slate-600">Od 249 Kč · § 2235 OZ · PDF ihned</div>
         </section>
 
         <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">
@@ -171,4 +171,3 @@ export default function NajemniSmlouvaBytPage() {
     </main>
   );
 }
-

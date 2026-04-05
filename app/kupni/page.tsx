@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useMemo, useState } from 'react';
 import ContractPreview from '@/app/components/ContractPreview';
@@ -33,10 +33,10 @@ function SectionTitle({ index, title, subtitle }: { index: string; title: string
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="block">
-      <span className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</span>
+    <div>
+      <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</label>
       {children}
-    </label>
+    </div>
   );
 }
 
@@ -54,8 +54,6 @@ export default function KupniPage() {
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [gdprConsent, setGdprConsent] = useState(false);
-  const [withdrawalConsent, setWithdrawalConsent] = useState(false);
-  const [withdrawalError, setWithdrawalError] = useState(false);
 
   const set = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -86,11 +84,7 @@ export default function KupniPage() {
 
   const handlePayment = async () => {
     try {
-          if (!withdrawalConsent) {
-      setWithdrawalError(true);
-      return;
-    }
-    if (!gdprConsent) { alert('Pro pokračování je nutný souhlas se zpracováním osobních údajů.'); return; }
+      if (!gdprConsent) { alert('Pro pokračování je nutný souhlas se zpracováním osobních údajů.'); return; }
     setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST',
@@ -112,8 +106,8 @@ export default function KupniPage() {
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500 text-slate-900 font-black text-sm">SH</div>
             <div>
-              <div className="font-bold tracking-tight text-white">SmlouvaHned Prodej</div>
-              <div className="text-[11px] text-slate-500">Kupní smlouva na movitou věc</div>
+              <div className="font-bold tracking-tight text-white">SmlouvaHned Builder</div>
+              <div className="text-[11px] text-slate-500">Kupní smlouva — § 2079 OZ</div>
             </div>
           </div>
           <button onClick={() => window.location.href = '/'} className="text-sm text-slate-400 hover:text-white transition">Zavřít</button>
@@ -128,12 +122,12 @@ export default function KupniPage() {
         h1Main="Kupní smlouva na"
         h1Accent="movitou věc"
         h1Suffix="online"
-        subtitle="Vytvořte přehlednou kupní smlouvu pro soukromý prodej nábytku, elektroniky, jízdního kola, sportovního vybavení nebo jiné movité věci. Dokument zachycuje strany, stav věci, kupní cenu i podmínky předání."
+        subtitle="Vytvořte kupní smlouvu pro soukromý prodej nábytku, elektroniky, jízdního kola, sportovního vybavení nebo jiné movité věci. Dokument přesně zachycuje prodávajícího, kupujícího, stav věci, kupní cenu a podmínky předání."
         benefits={[
-          { icon: '⚖️', text: 'Vychází z pravidel občanského zákoníku pro kupní smlouvu na movitou věc' },
-          { icon: '🛋️', text: 'Vhodné pro nábytek, elektroniku, kola, vybavení i běžné soukromé prodeje' },
-          { icon: '📋', text: 'Řeší kupní cenu, stav věci, známé vady i podmínky předání v jednom dokumentu' },
-          { icon: '📄', text: 'PDF dokument je zpřístupněn ihned po dokončení platby a je určen ke kontrole a podpisu' },
+          { icon: '⚖️', text: 'Sestaveno dle § 2079 OZ — kupní smlouva na movitou věc' },
+          { icon: '🛋️', text: 'Vhodné pro nábytek, elektroniku, kolo, sportovní vybavení i zboží' },
+          { icon: '📋', text: 'Kupní cena, stav věci, vady a podmínky předání v jednom dokumentu' },
+          { icon: '📄', text: 'Profesionální PDF ke stažení ihned po zaplacení' },
         ]}
         contents={[
           'Identifikaci prodávajícího a kupujícího',
@@ -141,29 +135,29 @@ export default function KupniPage() {
           'Kupní cenu a způsob úhrady',
           'Ujednání o stavu věci a prohlášení o vadách',
           'Datum a místo předání',
-          'Ujednání o odpovědnosti za vady a stavu věci',
-          'Závěrečná ustanovení a přehlednou strukturu připravenou k podpisu',
+          'Záruční podmínky a odpovědnost za vady',
+          'Závěrečná ustanovení, GDPR a vyšší moc',
         ]}
         whenSuitable={[
           'Soukromý prodej nábytku, elektroniky nebo domácích spotřebičů',
           'Prodej jízdního kola, sportovního vybavení nebo hobby vybavení',
           'Prodej použitého zboží mezi fyzickými osobami',
-          'Situace, kdy potřebujete písemně doložit kupní cenu a stav věci',
+          'Případy, kde je třeba písemně doložit kupní cenu a stav věci',
         ]}
         whenOther={[
           { label: 'Kupní smlouva na auto', href: '/auto', text: 'Pro prodej osobního automobilu, motocyklu nebo jiného motorového vozidla — specializovaný dokument s VIN, STK a emisemi.' },
         ]}
         faq={[
-          { q: 'Pro jaké situace je tato kupní smlouva vhodná?', a: 'Je určena pro soukromý prodej movité věci, například nábytku, elektroniky, kola, sportovního vybavení nebo jiných použitých věcí mezi fyzickými osobami.' },
+          { q: 'Pro jaké situace je tato kupní smlouva vhodná?', a: 'Je určena pro soukromý prodej movité věci — například nábytku, elektroniky, kola, sportovního vybavení nebo jiných použitých věcí mezi fyzickými osobami.' },
           { q: 'Je tato varianta vhodná i pro prodej auta?', a: 'Ne — pro prodej motorového vozidla doporučujeme specializovanou kupní smlouvu na auto, která pokrývá VIN, STK, emise a historii vozidla.' },
           { q: 'Musím smlouvu uzavřít písemně?', a: 'Zákon písemnou formu kupní smlouvy u movité věci výslovně nevyžaduje, ale silně ji doporučujeme. Písemná smlouva je rozhodujícím důkazem v případě sporu o stav věci, cenu nebo podmínky předání.' },
-          { q: 'Je dokument dostupný ihned po zaplacení?', a: 'Ano. Po úspěšném dokončení platby je PDF ihned zpřístupněné a určené ke kontrole a podpisu.' },
-          { q: 'Co mám uvést do popisu předmětu?', a: 'Čím přesnější popis, tím silnější smlouva. Uveďte název, výrobce, model, rok výroby, barvu, rozměry nebo jiné identifikační znaky a doplňte stav věci i všechny známé vady.' },
+          { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
+          { q: 'Co mám uvést do popisu předmětu?', a: 'Čím přesnější popis, tím silnější smlouva. Uveďte název, výrobce, model, rok výroby, barvu, rozměry nebo jiné identifikační znaky. Zároveň uveďte stav věci a všechny známé vady.' },
         ]}
         ctaLabel="Vytvořit kupní smlouvu na movitou věc"
         formId="formular"
         guideHref="/kupni-smlouva"
-        guideLabel="Průvodce kupní smlouvou – co musí obsahovat, záruky a nejčastější chyby"
+        guideLabel="Průvodce kupní smlouvou — co musí obsahovat, záruky a nejčastější chyby"
       />
 
       {/* ═══════════════════════════════════════════════════
@@ -208,7 +202,7 @@ export default function KupniPage() {
               <SectionTitle index="03" title="Předmět prodeje" subtitle="Co prodáváte? Čím přesnější popis, tím silnější smlouva." />
               <div className="space-y-4">
                 <Field label="Typ předmětu">
-                  <select aria-label="Obecná movitá věc (nábytek, kolo, zboží…)" className={inputClass} name="itemType" value={form.itemType} onChange={set}>
+                  <select className={inputClass} name="itemType" value={form.itemType} onChange={set}>
                     <option value="general">Obecná movitá věc (nábytek, kolo, zboží…)</option>
                     <option value="electronics">Elektronika / stroje</option>
                     <option value="car">Motorové vozidlo</option>
@@ -231,7 +225,7 @@ export default function KupniPage() {
                   </div>
                 )}
                 <Field label="Stav předmětu">
-                  <select aria-label="— vyberte —" className={inputClass} name="itemCondition" value={form.itemCondition} onChange={set}>
+                  <select className={inputClass} name="itemCondition" value={form.itemCondition} onChange={set}>
                     <option value="">— vyberte —</option>
                     <option value="Nový, nepoužitý">Nový, nepoužitý</option>
                     <option value="Výborný stav">Výborný stav (jako nový)</option>
@@ -251,10 +245,10 @@ export default function KupniPage() {
               <SectionTitle index="04" title="Kupní cena a platba" />
               <div className="grid sm:grid-cols-2 gap-4">
                 <Field label="Kupní cena *"><input className={inputClass} name="price" value={form.price} onChange={set} type="number" placeholder="15000" /></Field>
-                <Field label="Měna"><select aria-label="Bankovní převod" className={inputClass} name="currency" value={form.currency} onChange={set}><option>Kč</option><option>EUR</option></select></Field>
+                <Field label="Měna"><select className={inputClass} name="currency" value={form.currency} onChange={set}><option>Kč</option><option>EUR</option></select></Field>
                 <Field label="Cena slovy"><input className={inputClass} name="priceWords" value={form.priceWords} onChange={set} placeholder="patnáct tisíc korun českých" /></Field>
                 <Field label="Způsob úhrady">
-                  <select aria-label="Bankovní převod" className={inputClass} name="paymentMethod" value={form.paymentMethod} onChange={set}>
+                  <select className={inputClass} name="paymentMethod" value={form.paymentMethod} onChange={set}>
                     <option value="transfer">Bankovní převod</option>
                     <option value="cash">Hotovost při předání</option>
                     <option value="escrow">Notářská/advokátní úschova</option>
@@ -281,7 +275,7 @@ export default function KupniPage() {
               {/* Řešení sporů */}
               <div className="mb-6">
                 <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
-                <select aria-label="Obecný soud (výchozí)" className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set}>
+                <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set}>
                   <option value="court">Obecný soud (výchozí)</option>
                   <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                   <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
@@ -291,7 +285,7 @@ export default function KupniPage() {
               <div className="space-y-3 mt-6">
                 <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Vyberte balíček</div>
                 {([
-                  { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Strukturovaná smlouva dle občanského zákoníku, výstup v PDF.' },
+                  { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva dle občanského zákoníku v PDF.' },
                   { value: 'professional', label: 'Rozšířený dokument', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
                   { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířeného dokumentu + průvodní instrukce, checklist a 30denní archivace.' },
                 ] as const).map((opt) => (
@@ -388,7 +382,7 @@ export default function KupniPage() {
                 <ul className="space-y-1.5">
                   {[
                     'Profesionálně strukturované PDF',
-                    'PDF dokument určený ke kontrole a podpisu',
+                    'Připraveno k okamžitému stažení',
                     'Vhodné pro standardní soukromé převody',
                     'Přehledné uspořádání smluvních ustanovení',
                   ].map(item => (
@@ -423,31 +417,6 @@ export default function KupniPage() {
                   za účelem vyhotovení smlouvy.
                 </span>
               </label>
-
-                {/* § 1837 l) OZ — povinný souhlas s neodstoupením od smlouvy */}
-                <label className="flex items-start gap-3 mb-1 cursor-pointer group">
-                  <input
-                    type="checkbox"
-                    checked={withdrawalConsent}
-                    onChange={(e) => {
-                      setWithdrawalConsent(e.target.checked);
-                      if (e.target.checked) setWithdrawalError(false);
-                    }}
-                    className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
-                  />
-                  <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
-                    Beru na vědomí, že objednávám standardizovaný digitální dokument vytvořený podle mnou zadaných údajů, nikoli individuální právní službu. Digitální obsah bude ihned zpřístupněn po zaplacení.
-                    Výslovně souhlasím s tím, že ztrácím právo na odstoupení od smlouvy ve lhůtě 14 dní dle{' '}
-                    <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">
-                      § 1837 písm. l) zákona č. 89/2012 Sb.
-                    </a>
-                  </span>
-                </label>
-                {withdrawalError && (
-                  <p className="mb-3 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-2 text-xs text-rose-300">
-                    Pro pokračování musíte souhlasit s podmínkami digitálního obsahu.
-                  </p>
-                )}
               <button
                 onClick={handlePayment}
                 disabled={isProcessing || !gdprConsent || !form.sellerName || !form.buyerName || !form.price}
@@ -455,7 +424,7 @@ export default function KupniPage() {
               >
                 {isProcessing ? 'Přesměrování…' : 'Zaplatit a stáhnout PDF →'}
               </button>
-              <p className="mt-3 text-center text-xs text-slate-500">Platba kartou přes Stripe · PDF dokument zpřístupněný ihned po zaplacení</p>
+              <p className="mt-3 text-center text-xs text-slate-500">Platba kartou přes Stripe · PDF ke stažení ihned</p>
             </div>
           </div>
         </div>
@@ -464,4 +433,3 @@ export default function KupniPage() {
     </main>
   );
 }
-

@@ -4,12 +4,12 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
 export const metadata: Metadata = {
   title: 'Smlouva o poskytování služeb online 2026 | SmlouvaHned',
-  description: 'Smlouva o poskytování služeb pro freelancery a agentury. SLA, IP práva, mlčenlivost. PDF ke stažení po ověřené platbě. Od 249 Kč.',
+  description: 'Smlouva o poskytování služeb pro freelancery a agentury. SLA, IP práva, mlčenlivost. PDF ihned. Od 249 Kč.',
   keywords: ['smlouva o poskytování služeb', 'smlouva o službách vzor 2026', 'freelancer smlouva', 'smlouva o službách online'],
   alternates: { canonical: `${BASE_URL}/sluzby` },
   openGraph: {
     title: 'Smlouva o poskytování služeb online 2026 | SmlouvaHned',
-    description: 'Smlouva o poskytování služeb pro freelancery a agentury. SLA, IP práva, mlčenlivost. PDF ke stažení po ověřené platbě. Od 249 Kč.',
+    description: 'Smlouva o poskytování služeb pro freelancery a agentury. SLA, IP práva, mlčenlivost. PDF ihned. Od 249 Kč.',
     url: `${BASE_URL}/sluzby`,
     type: 'website',
   },
@@ -31,35 +31,12 @@ const softwareSchema = {
   },
 };
 
-
-const breadcrumbSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    {
-      '@type': 'ListItem',
-      position: 1,
-      name: 'SmlouvaHned',
-      item: 'https://smlouvahned.cz',
-    },
-    {
-      '@type': 'ListItem',
-      position: 2,
-      name: 'Smlouva o poskytování služeb',
-      item: 'https://smlouvahned.cz/sluzby',
-    },
-  ],
-};
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema).replace(/</g, '\\u003c') }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c') }}
       />
       {children}
     </>

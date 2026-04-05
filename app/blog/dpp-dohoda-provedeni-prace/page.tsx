@@ -91,7 +91,7 @@ export default function DppPage() {
 
         <div className="mt-7 rounded-2xl border border-amber-500/20 bg-amber-500/8 p-5">
           <p className="mb-3 text-sm font-bold text-white">Potřebujete DPP hned?</p>
-          <p className="mb-4 text-sm text-slate-400">Vytvořte dohodu o provedení práce online — s výpočtem hodinové odměny, správným vymezením práce a všemi povinnostmi zaměstnavatele. PDF ke stažení po ověřené platbě.</p>
+          <p className="mb-4 text-sm text-slate-400">Vytvořte dohodu o provedení práce online — s výpočtem hodinové odměny, správným vymezením práce a všemi povinnostmi zaměstnavatele. PDF ihned.</p>
           <Link
             href="/dpp"
             className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-2.5 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400"
@@ -276,7 +276,7 @@ export default function DppPage() {
             <div className="mb-2 text-sm font-black text-white">Potvrzení o zaměstnání (Zápočtový list)</div>
             <p className="text-sm text-slate-400 leading-relaxed">
               Při skončení DPP je zaměstnavatel povinen vydat potvrzení o zaměstnání (§ 313 ZP),
-              i když se jedná „pouze“ o brigádu na dohodu.
+              i když se jedná „pouze" o brigádu na dohodu.
             </p>
           </div>
         </div>

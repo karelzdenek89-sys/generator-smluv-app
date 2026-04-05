@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -84,7 +84,7 @@ export default function KupniSmlouvaMovitaVecPage() {
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-400">
           Prodáváte nebo kupujete věc — elektroniku, nábytek, stroj nebo jiný hodnotný předmět?
-          Správná kupní smlouva pomáhá přehledně upravit práva a povinnosti stran při sporech o stav věci, skrytých vadách nebo
+          Správná kupní smlouva ochrání obě strany při sporech o stav věci, skrytých vadách nebo
           odmítnutí zaplatit. Bez ní se spoléháte jen na dobrou vůli druhé strany.
         </p>
 
@@ -155,7 +155,7 @@ export default function KupniSmlouvaMovitaVecPage() {
 
         <h3 className="mb-3 text-lg font-black text-white">Co zahrnout do popisu věci</h3>
         <ul className="mb-5 space-y-2 text-slate-400">
-          <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span><span><strong className="text-slate-300">Výrobce a model</strong> — plný název, ne jen „notebook“ nebo „pračka“</span></li>
+          <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span><span><strong className="text-slate-300">Výrobce a model</strong> — plný název, ne jen „notebook" nebo „pračka"</span></li>
           <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span><span><strong className="text-slate-300">Sériové číslo nebo jiný identifikátor</strong> — u elektroniky, nářadí, přístrojů</span></li>
           <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span><span><strong className="text-slate-300">Rok výroby nebo datum zakoupení</strong> — relevantní pro odpovědnost za vady</span></li>
           <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span><span><strong className="text-slate-300">Stav věci</strong> — nová, použitá, stav X/10, viditelné opotřebení</span></li>
@@ -164,8 +164,8 @@ export default function KupniSmlouvaMovitaVecPage() {
         </ul>
 
         <div className="rounded-2xl border border-amber-500/15 bg-amber-500/5 p-5 text-sm text-slate-400 leading-relaxed">
-          <strong className="text-amber-400">⚠ Příklad špatného popisu:</strong> „Jeden notebook.“<br />
-          <strong className="text-emerald-400 mt-2 inline-block">✓ Správný popis:</strong> „Laptop Lenovo ThinkPad X1 Carbon Gen 10, s/n PF3XY12, rok výroby 2023, 16 GB RAM, 512 GB SSD, barva černá, použitý, funkční stav, mírné škrábance na víku, bez adaptéru.“
+          <strong className="text-amber-400">⚠ Příklad špatného popisu:</strong> „Jeden notebook."<br />
+          <strong className="text-emerald-400 mt-2 inline-block">✓ Správný popis:</strong> „Laptop Lenovo ThinkPad X1 Carbon Gen 10, s/n PF3XY12, rok výroby 2023, 16 GB RAM, 512 GB SSD, barva černá, použitý, funkční stav, mírné škrábance na víku, bez adaptéru."
         </div>
       </section>
 
@@ -199,7 +199,7 @@ export default function KupniSmlouvaMovitaVecPage() {
 
         <div className="rounded-2xl border border-amber-500/15 bg-amber-500/5 p-5 text-sm text-slate-400 leading-relaxed">
           <strong className="text-amber-400">⚠ Důležité:</strong> Prodávající vždy odpovídá za vady, o nichž věděl a úmyslně je zatajil (§ 2103 OZ).
-          Klauzule „prodáno v daném stavu, bez nároku na reklamaci“ chrání pouze před neznámými vadami,
+          Klauzule „prodáno v daném stavu, bez nároku na reklamaci" chrání pouze před neznámými vadami,
           nikoli před záměrně skrytými závadami.
         </div>
       </section>
@@ -309,7 +309,7 @@ export default function KupniSmlouvaMovitaVecPage() {
 
       {/* ── TRUST BOX ───────────────────────────── */}
       <ArticleTrustBox
-        generatorSuitable="Prodej nebo koupě movité věci mezi fyzickými osobami nebo od podnikatele — elektronika, nábytek, nářadí, stroje nebo jiné hodnotné předměty. Online nástroj obvykle pokrývá popis věci, prohlášení o stavu a způsob předání."
+        generatorSuitable="Prodej nebo koupě movité věci mezi fyzickými osobami nebo od podnikatele — elektronika, nábytek, nářadí, stroje nebo jiné hodnotné předměty. Generátor pokryje popis věci, prohlášení o stavu a způsob předání."
         lawyerSuitable="Prodej věci vyšší hodnoty (nad 200 000 Kč), spory o vady nebo stav věci, koupě věci zatížené zástavním právem nebo probíhající exekucí, obchodní transakce mezi firmami."
       />
 
@@ -347,5 +347,3 @@ export default function KupniSmlouvaMovitaVecPage() {
     </article>
   );
 }
-
-

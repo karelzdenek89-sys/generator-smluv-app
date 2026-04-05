@@ -1,6 +1,5 @@
-﻿'use client';
+'use client';
 
-import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
@@ -26,7 +25,7 @@ const textareaClass = 'w-full min-h-[100px] resize-y bg-[#111c31] border border-
 const cardClass = 'bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]';
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (<label className="block"><span className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</span>{children}</label>);
+  return (<div><label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</label>{children}</div>);
 }
 function SectionTitle({ index, title, subtitle }: { index: string; title: string; subtitle?: string }) {
   return (<div className="mb-6"><div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90">{index}. {title}</div>{subtitle && <p className="mt-2 text-sm text-slate-400">{subtitle}</p>}</div>);
@@ -61,8 +60,6 @@ export default function PodnajemuPage() {
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [gdprConsent, setGdprConsent] = useState(false);
-  const [withdrawalConsent, setWithdrawalConsent] = useState(false);
-  const [withdrawalError, setWithdrawalError] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -131,10 +128,6 @@ export default function PodnajemuPage() {
     ];
     const missing = required.filter((r) => !r.field.trim()).map((r) => r.msg);
     if (form.duration === 'fixed' && !form.endDate) missing.push('Datum konce podnájmu');
-        if (!withdrawalConsent) {
-      setWithdrawalError(true);
-      return;
-    }
     if (!gdprConsent) { alert('Pro pokračování je nutný souhlas se zpracováním osobních údajů.'); return; }
     if (missing.length > 0) { alert(`Vyplňte prosím: ${missing.join(', ')}`); return; }
 
@@ -165,7 +158,7 @@ export default function PodnajemuPage() {
       {/* Header */}
       <div className="sticky top-0 z-30 bg-[#080f1e]/95 backdrop-blur border-b border-slate-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-          <Link href="/" className="text-amber-400 font-black text-lg tracking-tight">SmlouvaHned.cz</Link>
+          <a href="/" className="text-amber-400 font-black text-lg tracking-tight">SmlouvaHned.cz</a>
           <div className="flex items-center gap-3">
             <span className="text-xs text-slate-400 hidden sm:block">Podnájemní smlouva</span>
             <span className="text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-full px-3 py-1">
@@ -182,7 +175,7 @@ export default function PodnajemuPage() {
         subtitle="Vytvořte podnájemní smlouvu, pokud jako nájemce přenecháváte byt nebo jeho část do podnájmu. Dokument pokrývá výši podnájemného, podmínky užívání i práva podnájemce."
         benefits={[
           { icon: '⚖️', text: 'Sestaveno dle § 2274–2278 OZ (podnájem bytu)' },
-          { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
+          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
           { icon: '🏠', text: 'Vhodné pro podnájem celého bytu i jeho části' },
           { icon: '🔒', text: 'Jasně vymezená práva a povinnosti podnájemce' },
         ]}
@@ -266,7 +259,7 @@ export default function PodnajemuPage() {
               <SectionTitle index="04" title="Souhlas pronajímatele" subtitle="Podnájem bytu vyžaduje souhlas vlastníka / hlavního pronajímatele dle § 2274 OZ." />
               <div className="space-y-4">
                 <Field label="Souhlas pronajímatele byl udělen?">
-                  <select aria-label="Ano, souhlas byl udělen" name="landlordConsent" value={form.landlordConsent} onChange={handleChange} className={inputClass}>
+                  <select name="landlordConsent" value={form.landlordConsent} onChange={handleChange} className={inputClass}>
                     <option value="yes">Ano, souhlas byl udělen</option>
                     <option value="no">Ne (pozor – podnájem bez souhlasu je protiprávní)</option>
                   </select>
@@ -291,7 +284,7 @@ export default function PodnajemuPage() {
               <div className="space-y-4">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Field label="Typ doby">
-                    <select aria-label="Doba určitá" name="duration" value={form.duration} onChange={handleChange} className={inputClass}>
+                    <select name="duration" value={form.duration} onChange={handleChange} className={inputClass}>
                       <option value="fixed">Doba určitá</option>
                       <option value="indefinite">Doba neurčitá</option>
                     </select>
@@ -341,7 +334,7 @@ export default function PodnajemuPage() {
 
             {/* 08 Předávací protokol */}
             <section className={cardClass}>
-              <SectionTitle index="08" title="Předávací protokol" subtitle="Stav bytu a vybavení při předání. Pomáhá přehledně doložit stav bytu při vrácení kauce." />
+              <SectionTitle index="08" title="Předávací protokol" subtitle="Stav bytu a vybavení při předání. Chrání obě strany při vrácení kauce." />
               <div className="space-y-4">
                 <Field label="Vybavení bytu (výčet)"><textarea name="equipmentList" value={form.equipmentList} onChange={handleChange} placeholder="Sporák, lednice, pračka, stůl, 2× židle…" className={textareaClass} /></Field>
                 <Field label="Známé závady při předání"><textarea name="knownDefects" value={form.knownDefects} onChange={handleChange} placeholder="Poškrábaná podlaha v ložnici, chybějící klika u okna v kuchyni…" className={textareaClass} /></Field>
@@ -431,7 +424,7 @@ export default function PodnajemuPage() {
                 </li>
                 <li className="flex items-start gap-2 text-slate-300">
                   <span className="text-amber-400 mt-1">✓</span>
-                  <span>PDF dokument určený ke kontrole a podpisu</span>
+                  <span>Připraveno k okamžitému stažení</span>
                 </li>
                 <li className="flex items-start gap-2 text-slate-300">
                   <span className="text-amber-400 mt-1">✓</span>
@@ -466,31 +459,6 @@ export default function PodnajemuPage() {
                   <a href="/obchodni-podminky" className="text-amber-400 underline hover:text-amber-300" target="_blank" rel="noopener noreferrer">obchodními podmínkami</a>.
                 </span>
               </label>
-                {/* § 1837 l) OZ — povinný souhlas s neodstoupením od smlouvy */}
-                <label className="flex items-start gap-3 mb-1 cursor-pointer group">
-                  <input
-                    type="checkbox"
-                    checked={withdrawalConsent}
-                    onChange={(e) => {
-                      setWithdrawalConsent(e.target.checked);
-                      if (e.target.checked) setWithdrawalError(false);
-                    }}
-                    className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
-                  />
-                  <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
-                    Beru na vědomí, že objednávám standardizovaný digitální dokument vytvořený podle mnou zadaných údajů, nikoli individuální právní službu. Digitální obsah bude ihned zpřístupněn po zaplacení.
-                    Výslovně souhlasím s tím, že ztrácím právo na odstoupení od smlouvy ve lhůtě 14 dní dle{' '}
-                    <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">
-                      § 1837 písm. l) zákona č. 89/2012 Sb.
-                    </a>
-                  </span>
-                </label>
-                {withdrawalError && (
-                  <p className="mb-3 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-2 text-xs text-rose-300">
-                    Pro pokračování musíte souhlasit s podmínkami digitálního obsahu.
-                  </p>
-                )}
-
 
               <button
                 onClick={handlePayment}
@@ -517,5 +485,3 @@ export default function PodnajemuPage() {
     </main>
   );
 }
-
-

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useMemo, useState } from 'react';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
@@ -22,7 +22,7 @@ const inputClass = 'w-full bg-[#111c31] border border-slate-700/80 text-white ro
 const cardClass = 'bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]';
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (<label className="block"><span className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</span>{children}</label>);
+  return (<div><label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</label>{children}</div>);
 }
 function SectionTitle({ index, title, subtitle }: { index: string; title: string; subtitle?: string }) {
   return (<div className="mb-6"><div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90">{index}. {title}</div>{subtitle && <p className="mt-2 text-sm text-slate-400">{subtitle}</p>}</div>);
@@ -42,8 +42,6 @@ export default function PlnaMocPage() {
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [gdprConsent, setGdprConsent] = useState(false);
-  const [withdrawalConsent, setWithdrawalConsent] = useState(false);
-  const [withdrawalError, setWithdrawalError] = useState(false);
 
   const set = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -74,10 +72,6 @@ export default function PlnaMocPage() {
 
   const handlePayment = async () => {
     if (!form.principalName || !form.agentName) { alert('Vyplňte prosím jména zmocnitele a zmocněnce.'); return; }
-        if (!withdrawalConsent) {
-      setWithdrawalError(true);
-      return;
-    }
     if (!gdprConsent) { alert('Pro pokračování je nutný souhlas se zpracováním osobních údajů.'); return; }
     try {
       setIsProcessing(true);
@@ -104,7 +98,7 @@ export default function PlnaMocPage() {
     subtitle: 'Vytvořte plnou moc pro zastoupení při právních jednáních, správě nemovitostí, zastupování v soudu nebo přístupu k bankovním účtům. Dokument jasně vymezuje rozsah zmocnění, dobu platnosti a případnou substituci.',
     benefits: [
       { icon: '⚖️', text: 'Sestaveno dle § 441–456 OZ — zastoupení na základě plné moci' },
-      { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
+      { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
       { icon: '🔒', text: 'Pokrývá obecnou i speciální plnou moc (nemovitost, soud, banka)' },
       { icon: '📅', text: 'Jasně vymezená platnost a případné omezení zmocnění' },
     ],
@@ -173,19 +167,6 @@ export default function PlnaMocPage() {
                 ))}
               </div>
             </section>
-
-            {/* Informační panel — úřední ověření podpisu */}
-            <div className="flex items-start gap-3 rounded-2xl border border-blue-500/25 bg-blue-500/8 p-5">
-              <span className="mt-0.5 flex-shrink-0 text-xl">ℹ️</span>
-              <div>
-                <div className="mb-1 text-sm font-black text-blue-300">Kdy je potřeba úředně ověřený podpis</div>
-                <p className="text-xs leading-relaxed text-blue-100/80">
-                  Některé úkony vyžadují úředně ověřený podpis na plné moci — například zastoupení při prodeji nemovitosti, při jednání s katastrem nebo při zastoupení před soudem.
-                  Ověření zajistí <strong className="text-blue-200">Czech POINT</strong> nebo <strong className="text-blue-200">notář</strong>.
-                  Pokud si nejste jisti, zda váš případ vyžaduje ověření, konzultujte s příslušným úřadem nebo advokátem.
-                </p>
-              </div>
-            </div>
 
             <section className={cardClass}>
               <SectionTitle index="02" title="Zmocnitel" subtitle="Osoba udělující plnou moc (oprávňující zmocněnce jednat)." />
@@ -327,7 +308,7 @@ export default function PlnaMocPage() {
               <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3">
                 <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Součástí výstupu je</div>
                 <ul className="space-y-1.5">
-                  {['Profesionálně strukturované PDF', 'PDF dokument určený ke kontrole a podpisu', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
+                  {['Profesionálně strukturované PDF', 'Připraveno k okamžitému stažení', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
                     <li key={item} className="flex items-start gap-2 text-xs text-slate-400">
                       <span className="text-amber-500 mt-0.5">✓</span>{item}
                     </li>
@@ -343,31 +324,6 @@ export default function PlnaMocPage() {
                   <a href="/obchodni-podminky" className="text-amber-400 underline hover:text-amber-300" target="_blank" rel="noopener noreferrer">obchodními podmínkami</a>.
                 </span>
               </label>
-
-                {/* § 1837 l) OZ — povinný souhlas s neodstoupením od smlouvy */}
-                <label className="flex items-start gap-3 mb-1 cursor-pointer group">
-                  <input
-                    type="checkbox"
-                    checked={withdrawalConsent}
-                    onChange={(e) => {
-                      setWithdrawalConsent(e.target.checked);
-                      if (e.target.checked) setWithdrawalError(false);
-                    }}
-                    className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
-                  />
-                  <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
-                    Beru na vědomí, že objednávám standardizovaný digitální dokument vytvořený podle mnou zadaných údajů, nikoli individuální právní službu. Digitální obsah bude ihned zpřístupněn po zaplacení.
-                    Výslovně souhlasím s tím, že ztrácím právo na odstoupení od smlouvy ve lhůtě 14 dní dle{' '}
-                    <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">
-                      § 1837 písm. l) zákona č. 89/2012 Sb.
-                    </a>
-                  </span>
-                </label>
-                {withdrawalError && (
-                  <p className="mb-3 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-2 text-xs text-rose-300">
-                    Pro pokračování musíte souhlasit s podmínkami digitálního obsahu.
-                  </p>
-                )}
               <button onClick={handlePayment} disabled={isProcessing || !form.principalName || !form.agentName || !gdprConsent}
                 className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none">
                 {isProcessing ? (
@@ -379,7 +335,7 @@ export default function PlnaMocPage() {
                   `Zaplatit ${form.tier === 'complete' ? '749 Kč' : form.tier === 'professional' ? '399 Kč' : '249 Kč'} a stáhnout PDF →`
                 )}
               </button>
-              <p className="mt-3 text-center text-[11px] text-slate-500">🔒 Zabezpečená platba přes Stripe · PDF ke stažení</p>
+              <p className="mt-3 text-center text-[11px] text-slate-500">🔒 Zabezpečená platba přes Stripe · PDF ihned</p>
             </div>
           </div>
         </div>
@@ -387,4 +343,3 @@ export default function PlnaMocPage() {
     </main>
   );
 }
-

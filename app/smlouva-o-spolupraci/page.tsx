@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
@@ -36,7 +36,7 @@ const faq = [
   },
   {
     q: 'Musím smlouvu o spolupráci registrovat?',
-    a: 'Ne. Smlouva o spolupráci nevyžaduje žádnou registraci ani notářské ověření. Písemná forma je doporučena zejména při hodnotnějších spolupracích — pomáhá přehledně zachytit podmínky pro případ sporu.',
+    a: 'Ne. Smlouva o spolupráci nevyžaduje žádnou registraci ani notářské ověření. Písemná forma je doporučena zejména při hodnotnějších spolupracích — chrání obě strany v případě sporu.',
   },
 ];
 
@@ -87,7 +87,7 @@ export default function SmlouvaOSpolupraci() {
               Vytvořit smlouvu →
             </Link>
           </div>
-          <div className="text-sm text-slate-500">Od 249 Kč · PDF ke stažení · Dle § 1746 OZ</div>
+          <div className="text-sm text-slate-500">Od 249 Kč · PDF ihned · Dle § 1746 OZ</div>
         </div>
 
         <section className="mb-12 rounded-3xl border border-white/8 bg-[#0c1426] p-8">
@@ -151,7 +151,7 @@ export default function SmlouvaOSpolupraci() {
         <section className="rounded-3xl border border-lime-500/20 bg-gradient-to-br from-lime-500/10 to-transparent p-8 text-center">
           <h2 className="text-2xl font-black text-white mb-3">Sestavte smlouvu o spolupráci</h2>
           <p className="text-slate-400 text-sm mb-6 max-w-md mx-auto">
-            Formulář pro spolupráci — role, výnosy, IP práva, exit, PDF ke stažení po ověřené platbě.
+            Formulář pro spolupráci — role, výnosy, IP práva, exit, PDF ihned.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link href="/spoluprace"
@@ -159,7 +159,7 @@ export default function SmlouvaOSpolupraci() {
               Vytvořit smlouvu →
             </Link>
           </div>
-          <div className="mt-3 text-xs text-slate-600">Od 249 Kč · § 1746 OZ · PDF ke stažení</div>
+          <div className="mt-3 text-xs text-slate-600">Od 249 Kč · § 1746 OZ · PDF ihned</div>
         </section>
 
         <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">
@@ -171,4 +171,3 @@ export default function SmlouvaOSpolupraci() {
     </main>
   );
 }
-

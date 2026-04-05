@@ -87,7 +87,7 @@ export default function UznaniDluhuVzorPage() {
               Vytvořit uznání dluhu →
             </Link>
           </div>
-          <div className="text-sm text-slate-500">Od 249 Kč · PDF ke stažení · Dle § 2053 OZ</div>
+          <div className="text-sm text-slate-500">Od 249 Kč · PDF ihned · Dle § 2053 OZ</div>
         </div>
 
         <section className="mb-12 rounded-3xl border border-white/8 bg-[#0c1426] p-8">
@@ -151,7 +151,7 @@ export default function UznaniDluhuVzorPage() {
         <section className="rounded-3xl border border-red-500/20 bg-gradient-to-br from-red-500/10 to-transparent p-8 text-center">
           <h2 className="text-2xl font-black text-white mb-3">Sestavte uznání dluhu</h2>
           <p className="text-slate-400 text-sm mb-6 max-w-md mx-auto">
-            Formulář pro uznaní dluhu — obnovení promlčecí lhůty, splátky, PDF ke stažení po ověřené platbě.
+            Formulář pro uznaní dluhu — obnovení promlčecí lhůty, splátky, PDF ihned.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link href="/uznani-dluhu"
@@ -159,7 +159,7 @@ export default function UznaniDluhuVzorPage() {
               Vytvořit uznání dluhu →
             </Link>
           </div>
-          <div className="mt-3 text-xs text-slate-600">Od 249 Kč · § 2053 OZ · PDF ke stažení</div>
+          <div className="mt-3 text-xs text-slate-600">Od 249 Kč · § 2053 OZ · PDF ihned</div>
         </section>
 
         <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">

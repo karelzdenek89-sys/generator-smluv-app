@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   alternates: { canonical: `${BASE_URL}/pracovni` },
   openGraph: {
     title: 'Vytvořit pracovní smlouvu — formulář online | SmlouvaHned',
-    description: 'Formulář krok za krokem. Pracovní smlouva dle zákoníku práce v PDF ke stažení po ověřené platbě. Od 249 Kč.',
+    description: 'Formulář krok za krokem. Pracovní smlouva dle zákoníku práce v PDF ihned. Od 249 Kč.',
     url: `${BASE_URL}/pracovni`,
     type: 'website',
   },
@@ -31,35 +31,12 @@ const softwareSchema = {
   },
 };
 
-
-const breadcrumbSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    {
-      '@type': 'ListItem',
-      position: 1,
-      name: 'SmlouvaHned',
-      item: 'https://smlouvahned.cz',
-    },
-    {
-      '@type': 'ListItem',
-      position: 2,
-      name: 'Pracovní smlouva',
-      item: 'https://smlouvahned.cz/pracovni',
-    },
-  ],
-};
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema).replace(/</g, '\\u003c') }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c') }}
       />
       {children}
     </>

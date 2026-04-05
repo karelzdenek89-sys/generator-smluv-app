@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
@@ -79,7 +79,7 @@ export default function SmlouvaOSluzbach() {
             <span className="text-amber-500 italic">vzor 2026</span>
           </h1>
           <p className="text-lg text-slate-400 leading-relaxed max-w-2xl mb-8">
-            Freelancer, konzultant nebo agentura poskytuje opakované nebo projektové služby. Jasná smlouva pomáhá přehledně zachytit cenu, SLA a IP práva.
+            Freelancer, konzultant nebo agentura poskytuje opakované nebo projektové služby. Jasná smlouva zachytí cenu, SLA, IP práva a ochrání obě strany.
           </p>
           <div className="flex flex-wrap gap-3 mb-8">
             <Link href="/sluzby"
@@ -87,7 +87,7 @@ export default function SmlouvaOSluzbach() {
               Vytvořit smlouvu →
             </Link>
           </div>
-          <div className="text-sm text-slate-500">Od 249 Kč · PDF ke stažení · Dle § 1746 OZ</div>
+          <div className="text-sm text-slate-500">Od 249 Kč · PDF ihned · Dle § 1746 OZ</div>
         </div>
 
         <section className="mb-12 rounded-3xl border border-white/8 bg-[#0c1426] p-8">
@@ -151,7 +151,7 @@ export default function SmlouvaOSluzbach() {
         <section className="rounded-3xl border border-pink-500/20 bg-gradient-to-br from-pink-500/10 to-transparent p-8 text-center">
           <h2 className="text-2xl font-black text-white mb-3">Sestavte smlouvu o službách</h2>
           <p className="text-slate-400 text-sm mb-6 max-w-md mx-auto">
-            Formulář pro freelancery a agentury — SLA, IP práva, mlčenlivost, PDF ke stažení po ověřené platbě.
+            Formulář pro freelancery a agentury — SLA, IP práva, mlčenlivost, PDF ihned.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link href="/sluzby"
@@ -159,7 +159,7 @@ export default function SmlouvaOSluzbach() {
               Vytvořit smlouvu →
             </Link>
           </div>
-          <div className="mt-3 text-xs text-slate-600">Od 249 Kč · § 1746 OZ · PDF ke stažení</div>
+          <div className="mt-3 text-xs text-slate-600">Od 249 Kč · § 1746 OZ · PDF ihned</div>
         </section>
 
         <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">
@@ -171,4 +171,3 @@ export default function SmlouvaOSluzbach() {
     </main>
   );
 }
-

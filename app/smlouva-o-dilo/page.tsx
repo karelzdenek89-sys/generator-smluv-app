@@ -1,9 +1,8 @@
-﻿'use client';
+'use client';
 
 import { useState, useMemo } from 'react';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
-import { getCompanyIdValidationMessage, normalizeCompanyId } from '@/lib/czechBusiness';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
 
@@ -75,17 +74,13 @@ const defaultData: WorkContractData = {
 
 export default function WorkContractPage() {
   const [formData, setFormData] = useState<WorkContractData>(defaultData);
+  const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [gdprConsent, setGdprConsent] = useState(false);
-  const [withdrawalConsent, setWithdrawalConsent] = useState(false);
-  const [withdrawalError, setWithdrawalError] = useState(false);
 
   const updateField = (field: keyof WorkContractData, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
-
-  const clientRegNoError = useMemo(() => getCompanyIdValidationMessage(formData.clientRegNo), [formData.clientRegNo]);
-  const contractorRegNoError = useMemo(() => getCompanyIdValidationMessage(formData.contractorRegNo), [formData.contractorRegNo]);
 
   const riskAnalysis = useMemo(() => {
     let score = 100;
@@ -134,64 +129,12 @@ export default function WorkContractPage() {
     return { score: Math.max(0, score), warnings, label: score >= 85 ? 'Silná smlouva' : score >= 65 ? 'Průměrná ochrana' : 'Doporučená doplnění' };
   }, [formData]);
 
-  const effectiveRiskAnalysis = useMemo(() => {
-    let score = riskAnalysis.score;
-    const warnings = [...riskAnalysis.warnings];
-
-    if (formData.contractorRegNo.trim() && contractorRegNoError) {
-      score -= 15;
-      warnings.push({ text: 'Zkontrolujte IČO zhotovitele – formát nebo kontrolní cifra nesedí.', level: 'high' as const });
-    }
-
-    if (formData.clientRegNo.trim() && clientRegNoError) {
-      score -= 8;
-      warnings.push({ text: 'IČO objednatele nevypadá jako platné osmimístné IČO.', level: 'medium' as const });
-    }
-
-    return {
-      score: Math.max(0, score),
-      warnings,
-    };
-  }, [clientRegNoError, contractorRegNoError, formData.clientRegNo, formData.contractorRegNo, riskAnalysis]);
-
   const scoreColor =
-    effectiveRiskAnalysis.score >= 85
+    riskAnalysis.score >= 85
       ? 'text-emerald-400'
-      : effectiveRiskAnalysis.score >= 65
+      : riskAnalysis.score >= 65
         ? 'text-amber-400'
         : 'text-rose-400';
-
-  const completionStats = useMemo(() => {
-    const checkpoints = [
-      formData.clientName.trim(),
-      formData.clientRegNo.trim(),
-      formData.clientAddress.trim(),
-      formData.contractorName.trim(),
-      formData.contractorRegNo.trim(),
-      formData.contractorAddress.trim(),
-      formData.workTitle.trim(),
-      formData.workDescription.trim().length >= 30 ? 'detail' : '',
-      formData.priceAmount,
-      formData.endDate,
-    ];
-
-    const completed = checkpoints.filter(Boolean).length;
-    const total = checkpoints.length;
-    const percent = Math.round((completed / total) * 100);
-
-    return {
-      completed,
-      total,
-      percent,
-      remaining: total - completed,
-      eta:
-        completed >= 8
-          ? 'Zbývá přibližně 1 minuta.'
-          : completed >= 5
-            ? 'Zbývají přibližně 2 minuty.'
-            : 'Vyplnění obvykle zabere přibližně 3 minuty.',
-    };
-  }, [formData]);
 
   const previewSections = useMemo(() => {
     try {
@@ -205,20 +148,12 @@ export default function WorkContractPage() {
   const handleSubmit = async () => {
     if (!formData.clientName || !formData.contractorName) { alert('Vyplňte prosím jména objednatel a zhotovitele.'); return; }
     if (!formData.priceAmount) { alert('Vyplňte prosím cenu díla.'); return; }
-    if (clientRegNoError) { alert('Zkontrolujte prosím IČO objednatele.'); return; }
-    if (contractorRegNoError) { alert('Zkontrolujte prosím IČO zhotovitele.'); return; }
-        if (!withdrawalConsent) {
-      setWithdrawalError(true);
-      return;
-    }
     if (!gdprConsent) { alert('Pro pokračování je nutný souhlas se zpracováním osobních údajů.'); return; }
     try {
       setIsProcessing(true);
 
       const payload = {
         ...formData,
-        clientRegNo: normalizeCompanyId(formData.clientRegNo),
-        contractorRegNo: normalizeCompanyId(formData.contractorRegNo),
         contractType: 'work_contract' as const,
       };
 
@@ -269,7 +204,7 @@ export default function WorkContractPage() {
         subtitle="Vytvořte smlouvu o dílo pro zhotovení konkrétního výsledku — stavební práce, řemeslné dílo, webová stránka nebo jiný hmotný či nehmotný výstup. Dokument pokrývá cenu, termín, předání a záruční podmínky."
         benefits={[
           { icon: '⚖️', text: 'Sestaveno dle § 2586–2650 OZ — smlouva o zhotovení díla' },
-          { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
+          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
           { icon: '🔨', text: 'Vhodné pro řemeslníky, stavitele, vývojáře i designéry' },
           { icon: '🔒', text: 'Jasně vymezená cena, termín dokončení a akceptační postup' },
         ]}
@@ -313,38 +248,6 @@ export default function WorkContractPage() {
               <div className="mb-6 border-t border-slate-800/60 pt-8">
                 <h2 className="text-lg font-black text-white uppercase tracking-wide">Vyplňte údaje dokumentu</h2>
                 <p className="text-sm text-slate-500 mt-1">Všechna povinná pole jsou označena *</p>
-                <div className="mt-5 grid gap-4 md:grid-cols-[1.2fr_0.8fr]">
-                  <div className="rounded-3xl border border-white/8 bg-[#0b1221]/80 p-5 shadow-[0_10px_30px_rgba(0,0,0,0.18)]">
-                    <div className="flex items-center justify-between gap-3">
-                      <div>
-                        <div className="text-[11px] font-black uppercase tracking-[0.18em] text-amber-400">Průběh vyplnění</div>
-                        <div className="mt-1 text-sm text-slate-300">
-                          Hotovo {completionStats.completed} z {completionStats.total} klíčových údajů
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="text-2xl font-black text-white">{completionStats.percent}%</div>
-                        <div className="text-xs text-slate-500">orientačně</div>
-                      </div>
-                    </div>
-                    <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-800">
-                      <div
-                        className="h-full rounded-full bg-gradient-to-r from-amber-500 via-amber-400 to-[#d9c7a3] transition-all duration-300"
-                        style={{ width: `${completionStats.percent}%` }}
-                      />
-                    </div>
-                    <div className="mt-3 text-xs text-slate-400">{completionStats.eta}</div>
-                  </div>
-
-                  <div className="rounded-3xl border border-white/8 bg-[#0b1221]/80 p-5 shadow-[0_10px_30px_rgba(0,0,0,0.18)]">
-                    <div className="text-[11px] font-black uppercase tracking-[0.18em] text-amber-400">Nejčastější chyby</div>
-                    <ul className="mt-3 space-y-2 text-xs leading-relaxed text-slate-300">
-                      <li>IČO a adresa nesedí s reálným subjektem.</li>
-                      <li>Popis díla je příliš stručný a později vyvolá spor o rozsah.</li>
-                      <li>Před platbou se vyplatí zkontrolovat termín dokončení a cenu.</li>
-                    </ul>
-                  </div>
-                </div>
               </div>
 
               <div className="grid md:grid-cols-2 gap-8">
@@ -356,7 +259,6 @@ export default function WorkContractPage() {
                     <input
                       type="text"
                       placeholder="Jméno / Název firmy"
-                      aria-label="Jméno / Název firmy"
                       className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                       value={formData.clientName}
                       onChange={(e) => updateField('clientName', e.target.value)}
@@ -364,22 +266,13 @@ export default function WorkContractPage() {
                     <input
                       type="text"
                       placeholder="IČO"
-                      aria-label="IČO"
                       className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
-                      inputMode="numeric"
-                      maxLength={8}
-                      pattern="[0-9]{8}"
                       value={formData.clientRegNo}
-                      onChange={(e) => updateField('clientRegNo', normalizeCompanyId(e.target.value))}
+                      onChange={(e) => updateField('clientRegNo', e.target.value)}
                     />
-                    {clientRegNoError ? <p className="text-xs leading-relaxed text-rose-300">{clientRegNoError}</p> : null}
-                    <p className="text-xs leading-relaxed text-slate-500">
-                      Pokud vyplňujete podnikatele nebo firmu, ověřte IČO podle veřejného registru. Přesné označení strany snižuje riziko sporu o identitu.
-                    </p>
                     <input
                       type="text"
                       placeholder="Adresa / Sídlo"
-                      aria-label="Adresa / Sídlo"
                       className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                       value={formData.clientAddress}
                       onChange={(e) => updateField('clientAddress', e.target.value)}
@@ -395,7 +288,6 @@ export default function WorkContractPage() {
                     <input
                       type="text"
                       placeholder="Jméno / Název firmy"
-                      aria-label="Jméno / Název firmy"
                       className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                       value={formData.contractorName}
                       onChange={(e) => updateField('contractorName', e.target.value)}
@@ -403,22 +295,13 @@ export default function WorkContractPage() {
                     <input
                       type="text"
                       placeholder="IČO (povinné)"
-                      aria-label="IČO (povinné)"
                       className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
-                      inputMode="numeric"
-                      maxLength={8}
-                      pattern="[0-9]{8}"
                       value={formData.contractorRegNo}
-                      onChange={(e) => updateField('contractorRegNo', normalizeCompanyId(e.target.value))}
+                      onChange={(e) => updateField('contractorRegNo', e.target.value)}
                     />
-                    {contractorRegNoError ? <p className="text-xs leading-relaxed text-rose-300">{contractorRegNoError}</p> : null}
-                    <p className="text-xs leading-relaxed text-slate-500">
-                      U zhotovitele je IČO zásadní. Bez něj se hůř prokazuje, kdo měl dílo dodat a fakturovat.
-                    </p>
                     <input
                       type="text"
                       placeholder="Adresa / Místo podnikání"
-                      aria-label="Adresa / Místo podnikání"
                       className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                       value={formData.contractorAddress}
                       onChange={(e) => updateField('contractorAddress', e.target.value)}
@@ -435,25 +318,19 @@ export default function WorkContractPage() {
                   <input
                     type="text"
                     placeholder="Název díla (např. Rekonstrukce kuchyně)"
-                    aria-label="Název díla (např. Rekonstrukce kuchyně)"
                     className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                     value={formData.workTitle}
                     onChange={(e) => updateField('workTitle', e.target.value)}
                   />
                   <textarea
                     placeholder="Detailní popis prací a rozsahu díla..."
-                    aria-label="Detailní popis prací a rozsahu díla..."
                     className="w-full h-40 bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 resize-y outline-none"
                     value={formData.workDescription}
                     onChange={(e) => updateField('workDescription', e.target.value)}
                   />
-                  <div className="rounded-2xl border border-slate-800/80 bg-slate-900/40 px-4 py-3 text-xs leading-relaxed text-slate-400">
-                    Pomáhá uvést alespoň: co má být výsledkem, v jakém rozsahu, z jakých podkladů a kdy se má dílo považovat za dokončené.
-                  </div>
                   <input
                     type="text"
                     placeholder="Místo realizace"
-                    aria-label="Místo realizace"
                     className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                     value={formData.workLocation}
                     onChange={(e) => updateField('workLocation', e.target.value)}
@@ -494,14 +371,12 @@ export default function WorkContractPage() {
                       <input
                         type="number"
                         placeholder="0"
-                        aria-label="0"
                         className="flex-1 bg-[#05080f] border border-slate-700 p-4 rounded-l-2xl focus:border-amber-500 outline-none"
                         value={formData.priceAmount}
                         onChange={(e) => updateField('priceAmount', e.target.value)}
                       />
                       <input
                         type="text"
-                        aria-label="Měna"
                         className="w-20 bg-[#05080f] border border-l-0 border-slate-700 p-4 rounded-r-2xl text-center outline-none"
                         value={formData.currency}
                         onChange={(e) => updateField('currency', e.target.value)}
@@ -514,7 +389,6 @@ export default function WorkContractPage() {
                     <select
                       value={formData.paymentType}
                       onChange={(e) => updateField('paymentType', e.target.value as PaymentType)}
-                      aria-label="Způsob platby"
                       className="w-full mt-2 bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                     >
                       <option value="after_completion">Jednorázově po dokončení</option>
@@ -529,7 +403,6 @@ export default function WorkContractPage() {
                       <input
                         type="number"
                         placeholder="Záloha"
-                        aria-label="Záloha"
                         className="w-full mt-2 bg-[#05080f] border border-amber-500/30 p-4 rounded-2xl outline-none"
                         value={formData.depositAmount}
                         onChange={(e) => updateField('depositAmount', e.target.value)}
@@ -540,7 +413,6 @@ export default function WorkContractPage() {
                   <div>
                     <label className="text-xs text-slate-400">Zahájení prací</label>
                     <input
-                      aria-label="Zahájení prací"
                       type="date"
                       className="w-full mt-2 bg-[#05080f] border border-slate-700 p-4 rounded-2xl outline-none"
                       value={formData.startDate}
@@ -550,7 +422,6 @@ export default function WorkContractPage() {
                   <div>
                     <label className="text-xs text-slate-400">Dokončení díla</label>
                     <input
-                      aria-label="Dokončení díla"
                       type="date"
                       className="w-full mt-2 bg-[#05080f] border border-slate-700 p-4 rounded-2xl outline-none"
                       value={formData.endDate}
@@ -568,7 +439,6 @@ export default function WorkContractPage() {
                   <div>
                     <label className="text-xs text-slate-400">Záruka (měsíce)</label>
                     <input
-                      aria-label="Záruka (měsíce)"
                       type="number"
                       className="w-full mt-2 bg-[#05080f] border border-slate-700 p-4 rounded-2xl outline-none"
                       value={formData.warrantyMonths}
@@ -578,16 +448,12 @@ export default function WorkContractPage() {
                   <div>
                     <label className="text-xs text-slate-400">Pokuta za prodlení (%/den)</label>
                     <input
-                      aria-label="Pokuta za prodlení (%/den)"
                       type="number"
                       step="0.01"
                       className="w-full mt-2 bg-[#05080f] border border-slate-700 p-4 rounded-2xl outline-none"
                       value={formData.delayPenaltyPerDay}
                       onChange={(e) => updateField('delayPenaltyPerDay', e.target.value)}
                     />
-                    <p className="mt-2 text-xs leading-relaxed text-slate-500">
-                      Smluvní pokuta motivuje k dodržení termínu dokončení. Nejde o totéž co úrok z prodlení, který se používá hlavně u opožděné platby.
-                    </p>
                   </div>
                 </div>
 
@@ -628,15 +494,12 @@ export default function WorkContractPage() {
 
               {/* Řešení sporů */}
               <section className="bg-[#0c1426] border border-slate-800 rounded-3xl p-6">
-                <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Řešení sporů</div>
-                <select aria-label="Obecný soud (výchozí)" className="w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none focus:border-amber-500/60 transition" name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
+                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
+                <select className="w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none focus:border-amber-500/60 transition" name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
                   <option value="court">Obecný soud (výchozí)</option>
                   <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                   <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
                 </select>
-                <p className="mt-3 text-xs leading-relaxed text-slate-500">
-                  Pokud si nejste jistí, nechte výchozí obecný soud. Alternativní řešení dává smysl hlavně tehdy, když obě strany předem vědí, proč ho chtějí použít.
-                </p>
               </section>
 
               {/* Tier selection */}
@@ -644,7 +507,7 @@ export default function WorkContractPage() {
                 <h3 className="text-amber-400 uppercase text-xs tracking-widest font-bold mb-6">6. Výběr balíčku</h3>
                 <div className="space-y-3">
                   {([
-                    { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Strukturovaná smlouva o dílo dle § 2586 OZ, výstup v PDF.' },
+                    { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva o dílo dle § 2586 OZ v PDF.' },
                     { value: 'professional', label: 'Rozšířený dokument', price: '399 Kč', desc: 'Rozšířené smluvní pokuty, záruční doložky, odpovědnost za vady.', recommended: true },
                     { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířeného dokumentu + instrukce k podpisu, checklist a 30denní archivace.' },
                   ] as const).map((opt) => (
@@ -679,21 +542,21 @@ export default function WorkContractPage() {
               <ContractPreview sections={previewSections} title="Smlouva o dílo" />
             )}
 
-            {/* Completion check */}
+            {/* Risk analysis */}
             <div className="bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
-              <div className="text-[10px] font-black uppercase tracking-widest text-amber-400 mb-4">Kontrola úplnosti</div>
+              <div className="text-[10px] font-black uppercase tracking-widest text-amber-400 mb-4">Analýza smlouvy</div>
               <div className="flex items-center gap-4 mb-4">
                 <div className={`text-5xl font-black ${scoreColor}`}>
-                  {effectiveRiskAnalysis.score}
+                  {riskAnalysis.score}
                 </div>
                 <div>
-                  <div className={`font-bold ${scoreColor}`}>{effectiveRiskAnalysis.score >= 85 ? 'Silné zadání' : effectiveRiskAnalysis.score >= 65 ? 'Ještě doladit' : 'Doporučená doplnění'}</div>
-                  <div className="text-xs text-slate-500">orientační kontrola formuláře</div>
+                  <div className={`font-bold ${scoreColor}`}>{riskAnalysis.score >= 85 ? 'Dobré nastavení' : riskAnalysis.score >= 65 ? 'Průměrná ochrana' : 'Doporučená doplnění'}</div>
+                  <div className="text-xs text-slate-500">ze 100 bodů</div>
                 </div>
               </div>
-              {effectiveRiskAnalysis.warnings.length === 0
-                ? <p className="text-sm text-emerald-400">✓ Klíčové údaje pro smlouvu o dílo vypadají v pořádku.</p>
-                : <ul className="space-y-2">{effectiveRiskAnalysis.warnings.map((w, i) => (
+              {riskAnalysis.warnings.length === 0
+                ? <p className="text-sm text-emerald-400">✓ Smlouva o dílo je v pořádku.</p>
+                : <ul className="space-y-2">{riskAnalysis.warnings.map((w, i) => (
                     <li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-rose-500/10 text-rose-300' : 'bg-amber-500/10 text-amber-300'}`}>{w.level === 'high' ? '⚠ ' : '▲ '}{w.text}</li>
                   ))}</ul>
               }
@@ -722,7 +585,7 @@ export default function WorkContractPage() {
               <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3">
                 <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Součástí výstupu je</div>
                 <ul className="space-y-1.5">
-                  {['Profesionálně strukturované PDF', 'PDF dokument určený ke kontrole a podpisu', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
+                  {['Profesionálně strukturované PDF', 'Připraveno k okamžitému stažení', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
                     <li key={item} className="flex items-start gap-2 text-xs text-slate-400">
                       <span className="text-amber-500 mt-0.5">✓</span>{item}
                     </li>
@@ -741,34 +604,9 @@ export default function WorkContractPage() {
                 </span>
               </label>
 
-                {/* § 1837 l) OZ — povinný souhlas s neodstoupením od smlouvy */}
-                <label className="flex items-start gap-3 mb-1 cursor-pointer group">
-                  <input
-                    type="checkbox"
-                    checked={withdrawalConsent}
-                    onChange={(e) => {
-                      setWithdrawalConsent(e.target.checked);
-                      if (e.target.checked) setWithdrawalError(false);
-                    }}
-                    className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
-                  />
-                  <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
-                    Beru na vědomí, že objednávám standardizovaný digitální dokument vytvořený podle mnou zadaných údajů, nikoli individuální právní službu. Digitální obsah bude ihned zpřístupněn po zaplacení.
-                    Výslovně souhlasím s tím, že ztrácím právo na odstoupení od smlouvy ve lhůtě 14 dní dle{' '}
-                    <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">
-                      § 1837 písm. l) zákona č. 89/2012 Sb.
-                    </a>
-                  </span>
-                </label>
-                {withdrawalError && (
-                  <p className="mb-3 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-2 text-xs text-rose-300">
-                    Pro pokračování musíte souhlasit s podmínkami digitálního obsahu.
-                  </p>
-                )}
-
               <button
                 onClick={handleSubmit}
-                disabled={isProcessing || !gdprConsent || Boolean(clientRegNoError) || Boolean(contractorRegNoError)}
+                disabled={isProcessing || !gdprConsent}
                 className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
               >
                 {isProcessing ? (
@@ -780,11 +618,6 @@ export default function WorkContractPage() {
                   `Zaplatit ${formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '399 Kč' : '249 Kč'} a stáhnout PDF →`
                 )}
               </button>
-              {(clientRegNoError || contractorRegNoError) ? (
-                <p className="mt-3 text-xs leading-relaxed text-rose-300">
-                  Před pokračováním opravte IČO u některé ze smluvních stran. Tím snížíte riziko chyb v identifikaci stran přímo ve výsledném dokumentu.
-                </p>
-              ) : null}
               <p className="text-center text-xs text-slate-600 mt-3">🔒 Platba přes Stripe · PDF ke stažení ihned</p>
             </div>
 
@@ -794,4 +627,3 @@ export default function WorkContractPage() {
     </main>
   );
 }
-

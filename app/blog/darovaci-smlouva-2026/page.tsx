@@ -1,4 +1,4 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -391,7 +391,7 @@ export default function DarovaciSmlouvaVzor2026Page() {
       <section id="zaver" className="mb-12 scroll-mt-6">
         <h2 className="mb-4 text-2xl font-black tracking-tight text-white">7. Shrnutí a doporučení</h2>
         <p className="mb-4 text-slate-400 leading-relaxed">
-          Darovací smlouva pomáhá přehledně upravit práva a povinnosti stran — dárce i obdarovaného. Pečlivě připravená předchází
+          Darovací smlouva chrání obě strany — dárce i obdarovaného. Správně sestavená předchází
           sporům o vlastnictví, daňovým komplikacím i rodinným nedorozuměním.
         </p>
         <div className="mb-6 space-y-2">
@@ -413,7 +413,7 @@ export default function DarovaciSmlouvaVzor2026Page() {
 
       {/* ── TRUST BOX ───────────────────────────── */}
       <ArticleTrustBox
-        generatorSuitable="Darování movitých věcí, vozidel a peněz mezi příbuznými nebo blízkými osobami. Online nástroj obvykle pokrývá povinné náležitosti, prohlášení o stavu daru a podmínky odvolání."
+        generatorSuitable="Darování movitých věcí, vozidel a peněz mezi příbuznými nebo blízkými osobami. Online generátor pokryje povinné náležitosti, prohlášení o stavu daru a podmínky odvolání."
         lawyerSuitable="Darování nemovitostí s výhradou dožití nebo věcným břemenem, darování obchodního podílu, situace, kdy má dárce dluhy (riziko odporovatelnosti), nebo spory po odvolání daru."
       />
 
@@ -459,5 +459,3 @@ export default function DarovaciSmlouvaVzor2026Page() {
     </article>
   );
 }
-
-

@@ -4,7 +4,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
 export const metadata: Metadata = {
   title: 'Vytvořit nájemní smlouvu — formulář online | SmlouvaHned',
-  description: 'Formulář pro nájemní smlouvu krok za krokem. Vyplníte strany, nájemné, kauci a pravidla — výsledkem je PDF ke stažení ihned po ověřené platbě. Od 249 Kč.',
+  description: 'Formulář pro nájemní smlouvu krok za krokem. Vyplníte strany, nájemné, kausi a pravidla — výsledkem je kompletní PDF připravené k podpisu. Od 249 Kč.',
   keywords: ['vytvořit nájemní smlouvu', 'nájemní smlouva formulář', 'nájemní smlouva generátor', 'nájemní smlouva PDF ke stažení'],
   alternates: { canonical: `${BASE_URL}/najem` },
   openGraph: {
@@ -31,35 +31,12 @@ const softwareSchema = {
   },
 };
 
-const breadcrumbSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    {
-      '@type': 'ListItem',
-      position: 1,
-      name: 'SmlouvaHned',
-      item: 'https://smlouvahned.cz',
-    },
-    {
-      '@type': 'ListItem',
-      position: 2,
-      name: 'Nájemní smlouva',
-      item: 'https://smlouvahned.cz/najem',
-    },
-  ],
-};
-
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema).replace(/</g, '\\u003c') }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c') }}
       />
       {children}
     </>
