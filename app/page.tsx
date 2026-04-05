@@ -245,7 +245,7 @@ export default function Home() {
         <section className="mx-auto max-w-[1220px] px-5 md:px-8">
           <div className="hero-frame-ref hero-frame-monolith-ref">
             <section className="hero-refined-grid">
-              <div className="hero-refined-copy">
+              <div className="hero-refined-copy hero-refined-copy-hidden">
                 <p className="hero-refined-kicker">{"Online n\u00e1stroj pro standardizovan\u00e9 smluvn\u00ed dokumenty"}</p>
                 <h1 className="hero-refined-title">
                   <span>{"Smluvn\u00ed dokument"}</span>
@@ -269,7 +269,7 @@ export default function Home() {
                 </p>
               </div>
 
-              <div className="hero-refined-visual" aria-hidden>
+              <div className="hero-refined-visual hero-refined-visual-main">
                 <div className="hero-refined-mark-shell">
                   <div className="hero-refined-mark-glow" />
                   <div className="hero-refined-mark-back" />
@@ -282,6 +282,30 @@ export default function Home() {
 
                     <div className="hero-refined-mark-kicker">{"Standardizovan\u00e9 smluvn\u00ed dokumenty"}</div>
 
+                    <h1 className="hero-refined-mark-hero-title">
+                      <span>{"Smluvn\u00ed"}</span>
+                      <span>{"dokument"}</span>
+                      <span>{"p\u0159ipraven\u00fd"}</span>
+                      <span>{"k podpisu"}</span>
+                    </h1>
+
+                    <p className="hero-refined-mark-description">
+                      {"Vypln\u00edte p\u0159ehledn\u00fd formul\u00e1\u0159, zvol\u00edte variantu a po zaplacen\u00ed z\u00edsk\u00e1te standardizovan\u00fd dokument sestaven\u00fd podle va\u0161ich \u00fadaj\u016f."}
+                    </p>
+
+                    <div className="hero-refined-mark-actions">
+                      <Link href="#dokumenty" className="btn-primary-ref">
+                        {"Vybrat dokument"} <span aria-hidden>&rarr;</span>
+                      </Link>
+                      <Link href="#jak-to-funguje" className="btn-outline-ref">
+                        {"Jak slu\u017eba funguje"}
+                      </Link>
+                    </div>
+
+                    <p className="hero-refined-mark-trustline">
+                      {"Dokument ihned po zaplacen\u00ed"} <span aria-hidden>&middot;</span> {"bezpe\u010dn\u00e1 platba p\u0159es Stripe"}
+                    </p>
+
                     <div className="hero-refined-mark-title">
                       <span>{"Smluvn\u00ed"}</span>
                       <span>{"dokument"}</span>
@@ -292,11 +316,6 @@ export default function Home() {
                     <div className="hero-refined-mark-divider" />
                     <div className="hero-refined-mark-meta">{"Pro b\u011b\u017en\u00e9 \u017eivotn\u00ed a podnikatelsk\u00e9 situace"}</div>
                   </div>
-                </div>
-
-                <div className="hero-refined-caption">
-                  <div className="hero-refined-caption-title">{"Pr\u00e9miov\u00fd vizu\u00e1ln\u00ed podpis zna\u010dky"}</div>
-                  <div className="hero-refined-caption-meta">{"Klidn\u00fd luxus \u2022 d\u016fv\u011bryhodn\u00fd produktov\u00fd dojem"}</div>
                 </div>
               </div>
             </section>

@@ -2844,6 +2844,10 @@ summary:focus-visible {
   max-width: 40rem;
 }
 
+.hero-refined-copy-hidden {
+  display: none;
+}
+
 .hero-refined-kicker {
   margin: 0 0 1.25rem;
   color: var(--gold-soft);
@@ -2921,10 +2925,15 @@ summary:focus-visible {
   min-width: 0;
 }
 
+.hero-refined-visual-main {
+  max-width: 54rem;
+  margin: 0 auto;
+}
+
 .hero-refined-mark-shell {
   position: relative;
   border-radius: 28px;
-  min-height: 34rem;
+  min-height: 38rem;
   padding: 1.1rem;
   background: linear-gradient(180deg, rgba(13, 22, 33, 0.92), rgba(10, 17, 26, 0.96));
   border: 1px solid var(--line-premium);
@@ -2951,15 +2960,15 @@ summary:focus-visible {
 
 .hero-refined-mark-back {
   position: absolute;
-  inset: 1.8rem 1.6rem auto auto;
-  width: 84%;
-  height: calc(100% - 3.4rem);
+  inset: 2rem 1.8rem auto auto;
+  width: 90%;
+  height: calc(100% - 4rem);
   border-radius: 28px;
   background:
     linear-gradient(145deg, rgba(16, 27, 40, 0.7), rgba(10, 18, 28, 0.84));
   border: 1px solid rgba(255, 255, 255, 0.04);
-  transform: rotate(-2.2deg);
-  opacity: 0.52;
+  transform: rotate(-1.4deg);
+  opacity: 0.48;
   z-index: 1;
 }
 
@@ -2967,9 +2976,9 @@ summary:focus-visible {
   position: relative;
   z-index: 2;
   height: 100%;
-  min-height: 31.8rem;
+  min-height: 34.8rem;
   border-radius: 24px;
-  padding: 1.85rem 2rem 1.9rem;
+  padding: 2rem 2.15rem 2rem;
   background:
     radial-gradient(ellipse at 24% 16%, rgba(224, 194, 142, 0.07), transparent 28%),
     radial-gradient(ellipse at 80% 14%, rgba(120, 174, 180, 0.06), transparent 24%),
@@ -2982,6 +2991,42 @@ summary:focus-visible {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+}
+
+.hero-refined-mark-hero-title {
+  margin: 2rem 0 0;
+  color: var(--text-primary);
+  font-family: var(--font-serif), "Times New Roman", serif;
+  font-size: clamp(3.2rem, 6.3vw, 5.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.04em;
+  max-width: 8ch;
+}
+
+.hero-refined-mark-hero-title span {
+  display: block;
+}
+
+.hero-refined-mark-description {
+  margin: 1.45rem 0 0;
+  max-width: 39rem;
+  color: var(--text-secondary);
+  font-size: 1.04rem;
+  line-height: 1.78;
+}
+
+.hero-refined-mark-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-top: 1.75rem;
+}
+
+.hero-refined-mark-trustline {
+  margin: 1rem 0 0;
+  color: rgba(181, 193, 206, 0.92);
+  font-size: 0.92rem;
+  line-height: 1.55;
 }
 
 .hero-refined-mark-top {
@@ -3007,7 +3052,7 @@ summary:focus-visible {
 }
 
 .hero-refined-mark-kicker {
-  margin-top: 2.2rem;
+  margin-top: 2.4rem;
   color: rgba(224, 194, 142, 0.68);
   font-size: 0.74rem;
   font-weight: 700;
@@ -3016,14 +3061,14 @@ summary:focus-visible {
 }
 
 .hero-refined-mark-title {
-  margin-top: 1rem;
+  margin-top: 2.2rem;
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 0.06rem;
   color: var(--gold-soft);
   font-family: var(--font-serif), "Times New Roman", serif;
-  font-size: clamp(2.5rem, 4.8vw, 4.2rem);
-  line-height: 0.96;
+  font-size: clamp(1.7rem, 3.4vw, 2.6rem);
+  line-height: 0.98;
   letter-spacing: -0.03em;
   text-shadow:
     0 1px 0 rgba(255, 245, 222, 0.14),
@@ -3041,7 +3086,7 @@ summary:focus-visible {
 }
 
 .hero-refined-mark-divider {
-  margin-top: 2.1rem;
+  margin-top: 1.8rem;
   width: min(100%, 17rem);
   height: 1px;
   background: linear-gradient(90deg, rgba(224, 194, 142, 0.72), rgba(120, 174, 180, 0.14), transparent);
@@ -3056,19 +3101,7 @@ summary:focus-visible {
 }
 
 .hero-refined-caption {
-  margin-top: 0.9rem;
-  text-align: center;
-}
-
-.hero-refined-caption-title {
-  color: var(--text-primary);
-  font-size: 0.94rem;
-}
-
-.hero-refined-caption-meta {
-  margin-top: 0.22rem;
-  color: var(--text-secondary);
-  font-size: 0.84rem;
+  display: none;
 }
 
 .premium-page-card-ref,
@@ -3303,33 +3336,11 @@ summary:focus-visible {
 
 @media (max-width: 1180px) {
   .hero-refined-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    padding-top: 1.1rem;
-  }
-
-  .hero-refined-copy {
-    max-width: none;
-    text-align: center;
-    margin: 0 auto;
-  }
-
-  .hero-refined-title {
-    max-width: 10ch;
-    margin-inline: auto;
-  }
-
-  .hero-refined-subtitle,
-  .hero-refined-trustline {
-    margin-inline: auto;
-  }
-
-  .hero-refined-actions {
-    justify-content: center;
+    padding-top: 0.9rem;
   }
 
   .hero-refined-visual {
-    max-width: 42rem;
+    max-width: 48rem;
     margin: 0 auto;
     width: 100%;
   }
@@ -3341,7 +3352,6 @@ summary:focus-visible {
   }
 
   .hero-refined-grid {
-    gap: 1.5rem;
     padding: 0.75rem 0 0.5rem;
   }
 
@@ -3357,6 +3367,26 @@ summary:focus-visible {
   .hero-refined-mark-panel {
     min-height: 25.8rem;
     padding: 1.45rem 1.3rem 1.5rem;
+  }
+
+  .hero-refined-mark-hero-title {
+    font-size: clamp(2.4rem, 10vw, 3.8rem);
+    max-width: 9ch;
+  }
+
+  .hero-refined-mark-description {
+    font-size: 0.96rem;
+    line-height: 1.7;
+  }
+
+  .hero-refined-mark-actions {
+    flex-direction: column;
+  }
+
+  .hero-refined-mark-actions .btn-primary-ref,
+  .hero-refined-mark-actions .btn-outline-ref {
+    width: 100%;
+    justify-content: center;
   }
 
   .hero-refined-mark-title {
