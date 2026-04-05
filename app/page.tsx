@@ -246,90 +246,57 @@ export default function Home() {
           <div className="hero-frame-ref hero-frame-monolith-ref">
             <section className="hero-refined-grid">
               <div className="hero-refined-copy">
-                <p className="hero-refined-kicker">Online nĂˇstroj pro standardizovanĂ© smluvnĂ­ dokumenty</p>
+                <p className="hero-refined-kicker">{"Online n\u00e1stroj pro standardizovan\u00e9 smluvn\u00ed dokumenty"}</p>
                 <h1 className="hero-refined-title">
-                  <span>SmluvnĂ­ dokument</span>
-                  <span>pĹ™ipravenĂ˝ k podpisu</span>
+                  <span>{"Smluvn\u00ed dokument"}</span>
+                  <span>{"p\u0159ipraven\u00fd k podpisu"}</span>
                 </h1>
                 <p className="hero-refined-subtitle">
-                  VyplnĂ­te pĹ™ehlednĂ˝ formulĂˇĹ™, zvolĂ­te variantu a po zaplacenĂ­ zĂ­skĂˇte standardizovanĂ˝ dokument v PDF
-                  sestavenĂ˝ podle vaĹˇich ĂşdajĹŻ. Pro bÄ›ĹľnĂ© ĹľivotnĂ­ a podnikatelskĂ© situace.
+                  {"Vypln\u00edte p\u0159ehledn\u00fd formul\u00e1\u0159, zvol\u00edte variantu a po zaplacen\u00ed z\u00edsk\u00e1te standardizovan\u00fd dokument sestaven\u00fd podle va\u0161ich \u00fadaj\u016f. Pro b\u011b\u017en\u00e9 \u017eivotn\u00ed a podnikatelsk\u00e9 situace."}
                 </p>
 
                 <div className="hero-refined-actions">
                   <Link href="#dokumenty" className="btn-primary-ref">
-                    Vybrat dokument <span aria-hidden>â†’</span>
+                    {"Vybrat dokument"} <span aria-hidden>&rarr;</span>
                   </Link>
                   <Link href="#jak-to-funguje" className="btn-outline-ref">
-                    Jak sluĹľba funguje
+                    {"Jak slu\u017eba funguje"}
                   </Link>
                 </div>
 
-                <p className="hero-refined-trustline">PDF vĂ˝stup ihned po zaplacenĂ­ â€ˇ bezpeÄŤnĂˇ platba pĹ™es Stripe</p>
+                <p className="hero-refined-trustline">
+                  {"Dokument ihned po zaplacen\u00ed"} <span aria-hidden>&middot;</span> {"bezpe\u010dn\u00e1 platba p\u0159es Stripe"}
+                </p>
               </div>
 
               <div className="hero-refined-visual" aria-hidden>
-                <div className="hero-refined-preview-shell">
-                  <div className="hero-refined-preview-glow" />
+                <div className="hero-refined-mark-shell">
+                  <div className="hero-refined-mark-glow" />
+                  <div className="hero-refined-mark-back" />
 
-                  <div className="hero-refined-preview-back">
-                    <div className="hero-refined-preview-sheet">
-                      <div className="hero-refined-preview-mini-line w-28" />
-                      <div className="hero-refined-preview-mini-line w-36" />
-                      <div className="hero-refined-preview-mini-line w-24" />
-                      <div className="hero-refined-preview-mini-line w-40" />
+                  <div className="hero-refined-mark-panel">
+                    <div className="hero-refined-mark-top">
+                      <span className="hero-refined-mark-label">{"SmlouvaHned.cz"}</span>
+                      <span className="hero-refined-mark-rule" />
                     </div>
-                  </div>
 
-                  <div className="hero-refined-preview-main">
-                    <div className="hero-refined-preview-page">
-                      <div className="hero-refined-preview-page-top">
-                        <div className="hero-refined-preview-badge">PDF</div>
-                        <div className="hero-refined-preview-brand">SmlouvaHned.cz</div>
-                      </div>
+                    <div className="hero-refined-mark-kicker">{"Standardizovan\u00e9 smluvn\u00ed dokumenty"}</div>
 
-                      <div className="hero-refined-preview-title-wrap">
-                        <div className="hero-refined-preview-kicker">UkĂˇzka vĂ˝slednĂ©ho dokumentu</div>
-                        <div className="hero-refined-preview-title">NĂJEMNĂŤ SMLOUVA</div>
-                      </div>
-
-                      <div className="hero-refined-preview-section">
-                        <div className="hero-refined-preview-section-title">1. SmluvnĂ­ strany</div>
-                        <p>PronajĂ­matel: Jan NovĂˇk, nar. 12. 2. 1986, bytem U Lesa 123, 130 00 Praha 3.</p>
-                        <p>NĂˇjemce: Petra SvobodovĂˇ, nar. 8. 7. 1991, bytem DlouhĂˇ 18, 602 00 Brno.</p>
-                      </div>
-
-                      <div className="hero-refined-preview-section">
-                        <div className="hero-refined-preview-section-title">2. PĹ™edmÄ›t nĂˇjmu</div>
-                        <p>
-                          PĹ™edmÄ›tem nĂˇjmu je bytovĂˇ jednotka ÄŤ. 12 o dispozici 2+kk, nachĂˇzejĂ­cĂ­ se v domÄ› na adrese
-                          U Lesa 123, Praha 3.
-                        </p>
-                      </div>
-
-                      <div className="hero-refined-preview-section">
-                        <div className="hero-refined-preview-section-title">3. NĂˇjemnĂ© a splatnost</div>
-                        <p>
-                          NĂˇjemnĂ© ÄŤinĂ­ 18&nbsp;500 KÄŤ mÄ›sĂ­ÄŤnÄ›. Splatnost je stanovena do 5. dne pĹ™Ă­sluĹˇnĂ©ho kalendĂˇĹ™nĂ­ho
-                          mÄ›sĂ­ce.
-                        </p>
-                      </div>
-
-                      <div className="hero-refined-preview-signatures">
-                        <div>
-                          <span>PronajĂ­matel</span>
-                        </div>
-                        <div>
-                          <span>NĂˇjemce</span>
-                        </div>
-                      </div>
+                    <div className="hero-refined-mark-title">
+                      <span>{"Smluvn\u00ed"}</span>
+                      <span>{"dokument"}</span>
+                      <span>{"p\u0159ipraven\u00fd"}</span>
+                      <span>{"k podpisu"}</span>
                     </div>
+
+                    <div className="hero-refined-mark-divider" />
+                    <div className="hero-refined-mark-meta">{"Pro b\u011b\u017en\u00e9 \u017eivotn\u00ed a podnikatelsk\u00e9 situace"}</div>
                   </div>
                 </div>
 
                 <div className="hero-refined-caption">
-                  <div className="hero-refined-caption-title">UkĂˇzka vĂ˝slednĂ©ho PDF dokumentu</div>
-                  <div className="hero-refined-caption-meta">VzorovĂ© Ăşdaje â€ˇ finĂˇlnĂ­ struktura pĹ™ipravenĂˇ ke kontrole a podpisu</div>
+                  <div className="hero-refined-caption-title">{"Pr\u00e9miov\u00fd vizu\u00e1ln\u00ed podpis zna\u010dky"}</div>
+                  <div className="hero-refined-caption-meta">{"Klidn\u00fd luxus \u2022 d\u016fv\u011bryhodn\u00fd produktov\u00fd dojem"}</div>
                 </div>
               </div>
             </section>
