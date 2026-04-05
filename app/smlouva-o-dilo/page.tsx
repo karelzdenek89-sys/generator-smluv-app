@@ -266,12 +266,12 @@ export default function WorkContractPage() {
         badge="§ 2586 a násl. občanského zákoníku"
         h1Main="Smlouva o dílo"
         h1Accent="online"
-        subtitle="Vytvořte smlouvu o dílo pro zhotovení konkrétního výsledku — stavební práce, řemeslné dílo, webová stránka nebo jiný hmotný či nehmotný výstup. Dokument pokrývá cenu, termín, předání a záruční podmínky."
+        subtitle="Sestavte smlouvu o dílo pro zhotovení konkrétního výsledku — stavební práce, řemeslné dílo, webová stránka nebo jiný hmotný či nehmotný výstup. Dokument přehledně zachycuje cenu, termín, předání a záruční podmínky."
         benefits={[
-          { icon: '⚖️', text: 'Sestaveno dle § 2586–2650 OZ — smlouva o zhotovení díla' },
+          { icon: '⚖️', text: 'Vychází ze standardních náležitostí obvyklých pro smlouvu o dílo podle občanského zákoníku' },
           { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
           { icon: '🔨', text: 'Vhodné pro řemeslníky, stavitele, vývojáře i designéry' },
-          { icon: '🔒', text: 'Jasně vymezená cena, termín dokončení a akceptační postup' },
+          { icon: '🔒', text: 'Přehledně zachycená cena, termín dokončení a akceptační postup' },
         ]}
         contents={[
           'Identifikaci zhotovitele a objednatele',

@@ -4,7 +4,7 @@ import App from '../App';
 export const metadata: Metadata = {
   title: 'SmlouvaHned | Standardizované smluvní dokumenty online',
   description:
-    'Online nástroj pro sestavení standardizovaných smluvních dokumentů pro běžné situace. Přehledný průvodce, bezpečná platba a PDF dokument určený ke kontrole a podpisu.',
+    'Online nástroj pro sestavení standardizovaných smluvních dokumentů pro běžné situace. Přehledný postup, bezpečná platba a PDF dokument určený ke kontrole a podpisu.',
   alternates: { canonical: 'https://www.smlouvahned.cz' },
 };
 

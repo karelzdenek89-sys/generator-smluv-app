@@ -556,12 +556,12 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
         badge="§ 2235 a násl. občanského zákoníku"
         h1Main="Nájemní smlouva na"
         h1Accent="byt online"
-        subtitle="Vytvořte přehlednou nájemní smlouvu pro pronájem bytu nebo domu. Dokument pokrývá výši nájmu, zálohy, kauci, pravidla užívání, předání bytu i podmínky ukončení nájmu v běžných situacích."
+        subtitle="Sestavte nájemní smlouvu pro běžný pronájem bytu nebo domu. Dokument přehledně zachycuje nájemné, zálohy, kauci, pravidla užívání, předání bytu i základní podmínky ukončení nájmu."
         benefits={[
-          { icon: '⚖️', text: 'Vychází z pravidel občanského zákoníku pro nájem bytu a domu' },
+          { icon: '⚖️', text: 'Vychází ze standardních náležitostí obvyklých pro nájem bytu a domu' },
           { icon: '📄', text: 'PDF dokument je zpřístupněn ihned po dokončení platby a je určen ke kontrole a podpisu' },
           { icon: '🏠', text: 'Pokrývá nájem na dobu určitou i neurčitou, kauci a zálohy na služby' },
-          { icon: '🔒', text: 'Vhodné pro pronájem bytu, domu i samostatné části nemovitosti' },
+          { icon: '🔒', text: 'Vhodné pro běžné nájemní situace mezi pronajímatelem a nájemcem' },
         ]}
         contents={[
           'Identifikaci pronajímatele a nájemce',

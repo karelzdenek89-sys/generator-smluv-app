@@ -465,11 +465,11 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
         badge="§ 2079 a násl. občanského zákoníku"
         h1Main="Kupní smlouva na"
         h1Accent="auto online"
-        subtitle="Vytvořte přehlednou kupní smlouvu pro prodej osobního auta, motocyklu nebo jiného motorového vozidla. Dokument zachycuje identifikaci stran, technické parametry, stav vozidla, známé vady i podmínky předání a úhrady."
+        subtitle="Sestavte kupní smlouvu pro běžný prodej osobního auta, motocyklu nebo jiného motorového vozidla. Dokument přehledně zachycuje identifikaci stran, technické parametry, stav vozidla, známé vady i podmínky předání a úhrady."
         benefits={[
-          { icon: '🚗', text: 'Navrženo pro prodej osobních aut, motocyklů i přívěsů mezi soukromými osobami i firmami' },
+          { icon: '🚗', text: 'Vhodné pro běžný prodej osobních aut, motocyklů i přívěsů mezi soukromými osobami i firmami' },
           { icon: '🔍', text: 'Pokrývá VIN, SPZ, stav tachometru, STK, emise i historii a vybavení vozidla' },
-          { icon: '⚖️', text: 'Řeší přechod vlastnictví, odpovědnost za vady a důležitá prohlášení prodávajícího' },
+          { icon: '⚖️', text: 'Přehledně zachycuje přechod vlastnictví, známé vady a důležitá prohlášení prodávajícího' },
           { icon: '📄', text: 'PDF dokument je zpřístupněn ihned po dokončení platby a je určen ke kontrole a podpisu' },
         ]}
         contents={[

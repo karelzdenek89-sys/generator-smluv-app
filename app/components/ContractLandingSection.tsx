@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { PDF_OUTPUT_TEXT, SERVICE_DISCLAIMER_CZ, SERVICE_SHORT_SCOPE } from '@/lib/servicePositioning';
+import { CHECKOUT_SCOPE_TEXT, PDF_OUTPUT_TEXT, SERVICE_DISCLAIMER_CZ, SERVICE_SHORT_SCOPE } from '@/lib/servicePositioning';
 
 export interface ContractLandingBenefit {
   icon: string;
@@ -36,6 +36,21 @@ export interface ContractLandingSectionProps {
   guideHref?: string;
   guideLabel?: string;
 }
+
+const tierCards = [
+  {
+    title: '249 Kč · Základní dokument',
+    text: 'Pro rychlé standardní použití, když potřebujete jasně zachytit základní podmínky.',
+  },
+  {
+    title: '399 Kč · Rozšířený dokument',
+    text: 'Pro vyšší jistotu, když chcete doplnit důležitá ujednání a snížit riziko běžných nejasností.',
+  },
+  {
+    title: '749 Kč · Kompletní balíček',
+    text: 'Pro situace, kdy chcete i doprovodné podklady, checklist a lepší připravenost k podpisu nebo předání.',
+  },
+];
 
 function LandingDocumentIcon() {
   return (
@@ -229,8 +244,8 @@ export default function ContractLandingSection({
 
             {whenOther && whenOther.length > 0 ? (
               <div className="premium-page-card-soft-ref p-6">
-                <div className="mb-2 text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">Jiný dokument?</div>
-                <h3 className="mb-4 text-base font-black text-white">Kdy zvolit jiný typ</h3>
+                <div className="mb-2 text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">Jiný dokument nebo advokát?</div>
+                <h3 className="mb-4 text-base font-black text-white">Kdy zvolit jiný postup</h3>
                 <div className="space-y-3">
                   {whenOther.map(item => (
                     <a
@@ -252,10 +267,37 @@ export default function ContractLandingSection({
             ) : null}
 
             <div className="premium-page-card-soft-ref p-6">
-              <div className="mb-2 text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">Vymezení služby</div>
-              <p className="text-xs leading-relaxed text-slate-400">{SERVICE_DISCLAIMER_CZ}</p>
+              <div className="mb-2 text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">Kdy už řešit advokáta</div>
+              <p className="text-xs leading-relaxed text-slate-400">
+                Pokud jsou mezi stranami sporné podmínky, jde o nestandardní nastavení, vysokou hodnotu plnění,
+                složitý majetkový vztah nebo situaci s vyšším rizikem budoucího sporu, bývá vhodnější individuální
+                konzultace s advokátem.
+              </p>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl border-t border-slate-800/50 px-4 py-14 lg:px-8">
+        <div className="section-heading-ref !text-left">
+          <p className="section-kicker-ref">Varianty služby</p>
+          <h2 className="section-title-ref">Jak se liší 249 / 399 / 749 Kč</h2>
+          <p className="mt-3 max-w-2xl text-sm text-slate-400">
+            Vyšší varianta neznamená jen více textu, ale větší jistotu, lepší připravenost k podpisu a více doprovodných podkladů.
+          </p>
+        </div>
+
+        <div className="premium-page-grid-ref three mt-8">
+          {tierCards.map(item => (
+            <div key={item.title} className="premium-note-card-ref p-6">
+              <div className="text-sm font-black text-white">{item.title}</div>
+              <p className="mt-3 text-sm leading-relaxed text-slate-400">{item.text}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-6 rounded-3xl border border-white/8 bg-[#0c1426]/70 px-6 py-5 text-sm leading-relaxed text-slate-400">
+          {CHECKOUT_SCOPE_TEXT}
         </div>
       </section>
 
@@ -288,6 +330,12 @@ export default function ContractLandingSection({
               ) : null}
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl border-t border-slate-800/50 px-4 py-10 lg:px-8">
+        <div className="rounded-3xl border border-white/8 bg-[#0c1426]/70 px-6 py-5 text-sm leading-relaxed text-slate-400">
+          {SERVICE_DISCLAIMER_CZ}
         </div>
       </section>
     </>
