@@ -318,7 +318,7 @@ summary:focus-visible {
 .hero-premium-art-ref {
   position: relative;
   min-height: 560px;
-  padding: 2rem 1.5rem;
+  padding: 1.1rem 1.05rem 0.95rem;
   background:
     radial-gradient(circle at 22% 18%, rgba(233, 199, 140, 0.18), transparent 24%),
     radial-gradient(circle at 78% 20%, rgba(255, 255, 255, 0.08), transparent 18%),
@@ -327,7 +327,7 @@ summary:focus-visible {
 
 .hero-premium-backdrop-ref {
   position: absolute;
-  inset: 1.2rem 2rem 1.6rem 2.2rem;
+  inset: 0.9rem 1rem 0.9rem 1rem;
   border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background:
@@ -578,20 +578,21 @@ summary:focus-visible {
 
 .hero-pdf-preview-stage-ref {
   position: relative;
-  min-height: 520px;
-  padding: 2.25rem 2rem 1.6rem;
+  min-height: 534px;
+  padding: 1.2rem 1.25rem 0;
 }
 
 .hero-pdf-page-back-ref {
   position: absolute;
-  inset: 4.3rem auto auto 2rem;
-  width: min(60%, 320px);
-  min-height: 350px;
-  border-radius: 16px;
-  background: linear-gradient(180deg, rgba(232, 236, 245, 0.94), rgba(211, 218, 230, 0.92));
-  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.22);
-  transform: rotate(-7deg);
-  opacity: 0.82;
+  top: 4.1rem;
+  left: 1.3rem;
+  width: min(54%, 295px);
+  min-height: 320px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgba(232, 236, 245, 0.88), rgba(211, 218, 230, 0.82));
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.16);
+  transform: rotate(-5.5deg);
+  opacity: 0.55;
 }
 
 .hero-pdf-page-back-head-ref {
@@ -622,11 +623,11 @@ summary:focus-visible {
   position: relative;
   z-index: 2;
   margin-left: auto;
-  width: min(78%, 470px);
-  border-radius: 20px;
+  width: min(85%, 520px);
+  border-radius: 22px;
   background: linear-gradient(180deg, rgba(18, 26, 45, 0.96), rgba(11, 18, 33, 0.98));
   border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 36px 90px rgba(0, 0, 0, 0.42);
+  box-shadow: 0 42px 100px rgba(0, 0, 0, 0.42);
   overflow: hidden;
 }
 
@@ -645,11 +646,11 @@ summary:focus-visible {
 }
 
 .hero-pdf-document-ref {
-  margin: 1rem;
-  border-radius: 10px;
+  margin: 0.85rem;
+  border-radius: 12px;
   background: linear-gradient(180deg, rgba(251, 248, 242, 0.99), rgba(242, 236, 228, 0.99));
   box-shadow: inset 0 0 0 1px rgba(91, 74, 46, 0.1), 0 10px 24px rgba(0, 0, 0, 0.14);
-  padding: 1.25rem 1.25rem 1.1rem;
+  padding: 1.3rem 1.35rem 1.18rem;
 }
 
 .hero-pdf-document-top-ref {
@@ -679,7 +680,7 @@ summary:focus-visible {
   margin-top: 1rem;
   color: #6b5430;
   font-family: var(--font-serif), "Times New Roman", serif;
-  font-size: clamp(1.5rem, 2.2vw, 2.05rem);
+  font-size: clamp(1.65rem, 2.35vw, 2.18rem);
   line-height: 1;
   text-align: center;
   letter-spacing: 0.08em;
@@ -697,8 +698,8 @@ summary:focus-visible {
 .hero-pdf-meta-grid-ref {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.65rem;
-  margin-top: 1.15rem;
+  gap: 0.72rem;
+  margin-top: 1.2rem;
 }
 
 .hero-pdf-meta-card-ref {
@@ -719,7 +720,7 @@ summary:focus-visible {
 .hero-pdf-meta-value-ref {
   margin-top: 0.32rem;
   color: #2b2e38;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 700;
   line-height: 1.35;
 }
@@ -727,7 +728,7 @@ summary:focus-visible {
 .hero-pdf-meta-copy-ref {
   margin-top: 0.18rem;
   color: #666252;
-  font-size: 0.72rem;
+  font-size: 0.73rem;
   line-height: 1.35;
 }
 
@@ -747,7 +748,7 @@ summary:focus-visible {
 
 .hero-pdf-section-title-ref {
   color: #5c4830;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 800;
   letter-spacing: 0.02em;
 }
@@ -755,7 +756,7 @@ summary:focus-visible {
 .hero-pdf-paragraph-ref {
   margin-top: 0.18rem;
   color: #534a3d;
-  font-size: 0.74rem;
+  font-size: 0.76rem;
   line-height: 1.45;
 }
 
@@ -781,39 +782,24 @@ summary:focus-visible {
 }
 
 .hero-pdf-caption-ref {
-  position: absolute;
-  left: 1.4rem;
-  bottom: 1.3rem;
+  position: relative;
   z-index: 3;
-  width: min(42%, 250px);
-  padding: 1rem 1rem 0.95rem;
-  border: 1px solid rgba(201, 169, 110, 0.24);
-  border-radius: 16px;
-  background: rgba(7, 13, 27, 0.82);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.34);
-  backdrop-filter: blur(10px);
-}
-
-.hero-pdf-caption-kicker-ref {
-  color: #d8bb85;
-  font-size: 0.66rem;
-  font-weight: 800;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
+  width: min(85%, 520px);
+  margin: 0.95rem 0 0 auto;
+  padding: 0 0.25rem 0.1rem;
 }
 
 .hero-pdf-caption-title-ref {
-  margin-top: 0.45rem;
-  color: #f7f0e2;
-  font-family: var(--font-serif), "Times New Roman", serif;
-  font-size: 1.18rem;
-  line-height: 1.05;
+  color: #f4ecdf;
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.3;
 }
 
 .hero-pdf-caption-ref p {
-  margin: 0.55rem 0 0;
-  color: #c2ccdc;
-  font-size: 0.8rem;
+  margin: 0.22rem 0 0;
+  color: #98a4bb;
+  font-size: 0.74rem;
   line-height: 1.45;
 }
 
@@ -1455,6 +1441,14 @@ summary:focus-visible {
     min-height: 500px;
   }
 
+  .hero-pdf-page-ref {
+    width: min(86%, 500px);
+  }
+
+  .hero-pdf-caption-ref {
+    width: min(86%, 500px);
+  }
+
   .hero-premium-sheet-ref {
     margin-right: 3.5rem;
     width: min(76%, 420px);
@@ -1526,7 +1520,37 @@ summary:focus-visible {
 
   .hero-premium-art-ref {
     min-height: 440px;
-    padding: 1rem;
+    padding: 0.85rem;
+  }
+
+  .hero-pdf-preview-stage-ref {
+    min-height: 430px;
+    padding: 0.85rem 0.85rem 0;
+  }
+
+  .hero-pdf-page-back-ref {
+    top: 3rem;
+    left: 0.55rem;
+    width: 54%;
+    min-height: 235px;
+  }
+
+  .hero-pdf-page-ref {
+    width: min(90%, 390px);
+  }
+
+  .hero-pdf-document-ref {
+    margin: 0.72rem;
+    padding: 0.95rem 0.92rem 0.88rem;
+  }
+
+  .hero-pdf-meta-grid-ref {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-pdf-caption-ref {
+    width: min(90%, 390px);
+    margin: 0.75rem 0 0 auto;
   }
 
   .contract-hero-shell-ref {

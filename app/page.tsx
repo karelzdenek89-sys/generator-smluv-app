@@ -374,9 +374,8 @@ export default function Home() {
                       </div>
 
                       <div className="hero-pdf-caption-ref">
-                        <div className="hero-pdf-caption-kicker-ref">Reálný výstup produktu</div>
                         <div className="hero-pdf-caption-title-ref">Ukázka výsledného PDF dokumentu</div>
-                        <p>Vzorové údaje, finální struktura připravená ke kontrole a podpisu.</p>
+                        <p>Vzorové údaje · finální struktura připravená ke kontrole a podpisu</p>
                       </div>
                     </div>
                   </div>
