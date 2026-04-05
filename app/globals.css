@@ -138,6 +138,214 @@ summary:focus-visible {
   backdrop-filter: blur(10px);
 }
 
+.hero-frame-monolith-ref {
+  padding: 1.55rem 1.55rem 1.35rem;
+}
+
+.hero-monolith-ref {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.hero-monolith-kicker-ref {
+  margin: 0;
+  color: #d7b97f;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.hero-dossier-stage-ref {
+  position: relative;
+  width: min(100%, 1080px);
+  min-height: 560px;
+  margin-top: 1.25rem;
+  padding: 2.1rem 1.2rem 1.4rem;
+}
+
+.hero-dossier-shadow-ref {
+  position: absolute;
+  inset: auto 10% 1.2rem 10%;
+  height: 5.5rem;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.48) 0%, rgba(0, 0, 0, 0.22) 38%, transparent 72%);
+  filter: blur(18px);
+}
+
+.hero-dossier-ref {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 940px);
+  min-height: 500px;
+  margin: 0 auto;
+  padding: 1.3rem 1.35rem 1.35rem 1.5rem;
+  border-radius: 32px;
+  background:
+    radial-gradient(circle at 22% 18%, rgba(218, 187, 124, 0.06), transparent 22%),
+    radial-gradient(circle at 78% 20%, rgba(255, 255, 255, 0.05), transparent 18%),
+    linear-gradient(145deg, #111a31 0%, #0b1327 58%, #08101f 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.4),
+    0 42px 110px rgba(0, 0, 0, 0.48);
+  overflow: hidden;
+}
+
+.hero-dossier-ref::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 32px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 18%, transparent 82%, rgba(0, 0, 0, 0.14)),
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.06), transparent 22%);
+  pointer-events: none;
+}
+
+.hero-dossier-ref::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 32px;
+  opacity: 0.22;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.22) 0.45px, transparent 0.45px);
+  background-size: 3px 3px;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+
+.hero-dossier-spine-ref {
+  position: absolute;
+  inset: 1.2rem auto 1.2rem 1.1rem;
+  width: 1.5rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.42), rgba(255, 255, 255, 0.05) 18%, rgba(0, 0, 0, 0.38) 100%);
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.06), inset 1px 0 0 rgba(0, 0, 0, 0.28);
+}
+
+.hero-dossier-surface-ref {
+  position: relative;
+  z-index: 1;
+  min-height: 470px;
+  border-radius: 26px;
+  padding: 2.5rem 2.8rem 2.2rem 4rem;
+  border: 1px solid rgba(201, 169, 110, 0.14);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 16%, transparent 84%, rgba(0, 0, 0, 0.12)),
+    linear-gradient(145deg, rgba(18, 27, 48, 0.96), rgba(9, 15, 29, 0.98));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
+.hero-dossier-corner-ref {
+  position: absolute;
+  right: 2rem;
+  top: 1.7rem;
+  width: 4.4rem;
+  height: 4.4rem;
+  border-top: 1px solid rgba(201, 169, 110, 0.22);
+  border-right: 1px solid rgba(201, 169, 110, 0.22);
+  border-radius: 0 1.4rem 0 0;
+  opacity: 0.7;
+}
+
+.hero-dossier-brand-ref {
+  color: rgba(217, 189, 131, 0.82);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.hero-dossier-title-ref {
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+  margin: 2.2rem auto 0;
+  max-width: 700px;
+  color: #d7b97f;
+  font-family: var(--font-serif), "Times New Roman", serif;
+  font-size: clamp(2.4rem, 5vw, 4.9rem);
+  line-height: 0.98;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  text-shadow:
+    0 1px 0 rgba(255, 246, 224, 0.08),
+    0 -1px 0 rgba(78, 56, 24, 0.56),
+    0 0 1px rgba(223, 194, 141, 0.3);
+}
+
+.hero-dossier-title-ref span {
+  position: relative;
+  background: linear-gradient(180deg, rgba(240, 218, 168, 0.94), rgba(186, 148, 79, 0.96));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 0.4px rgba(242, 219, 173, 0.35));
+}
+
+.hero-dossier-title-ref span::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 44%);
+  mix-blend-mode: screen;
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+.hero-dossier-subtitle-ref {
+  max-width: 540px;
+  margin: 1.7rem auto 0;
+  color: #b9c3d5;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.hero-dossier-foil-line-ref {
+  width: min(100%, 440px);
+  height: 1px;
+  margin: 2.2rem auto 0;
+  background: linear-gradient(90deg, transparent, rgba(211, 181, 124, 0.56), transparent);
+}
+
+.hero-dossier-foil-line-ref.short {
+  width: min(100%, 220px);
+  margin-top: 0.7rem;
+  opacity: 0.8;
+}
+
+.hero-dossier-back-ref {
+  position: absolute;
+  z-index: 1;
+  inset: 2.1rem 6.5% 1.8rem auto;
+  width: min(100%, 820px);
+  border-radius: 28px;
+  background: linear-gradient(145deg, rgba(8, 13, 25, 0.92), rgba(12, 19, 35, 0.84));
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transform: rotate(-2.5deg);
+  opacity: 0.42;
+}
+
+.hero-monolith-lead-ref {
+  max-width: 700px;
+  margin: 1rem auto 0;
+  color: #c4cedf;
+  font-size: clamp(1rem, 1.22vw, 1.08rem);
+  line-height: 1.7;
+}
+
+.hero-monolith-cta-row-ref {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.72rem;
+  margin-top: 1.55rem;
+}
+
 .hero-grid-ref {
   display: grid;
   grid-template-columns: minmax(0, 0.96fr) minmax(0, 1.04fr);
@@ -1483,6 +1691,29 @@ summary:focus-visible {
     gap: 1.1rem;
   }
 
+  .hero-frame-monolith-ref {
+    padding: 1.15rem 1.05rem 1rem;
+  }
+
+  .hero-dossier-stage-ref {
+    min-height: 500px;
+    padding: 1.6rem 0.6rem 1rem;
+  }
+
+  .hero-dossier-ref {
+    min-height: 450px;
+  }
+
+  .hero-dossier-surface-ref {
+    min-height: 420px;
+    padding: 2rem 1.6rem 1.8rem 2.8rem;
+  }
+
+  .hero-dossier-back-ref {
+    inset: 2rem 2.5% 1.5rem auto;
+    width: min(100%, 720px);
+  }
+
   .contract-hero-shell-ref {
     grid-template-columns: 1fr;
   }
@@ -1553,6 +1784,90 @@ summary:focus-visible {
   .hero-frame-ref {
     padding: 0.95rem;
     border-radius: 14px;
+  }
+
+  .hero-frame-monolith-ref {
+    padding: 0.85rem 0.82rem 0.85rem;
+  }
+
+  .hero-monolith-kicker-ref {
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
+  }
+
+  .hero-dossier-stage-ref {
+    min-height: 410px;
+    margin-top: 0.95rem;
+    padding: 0.9rem 0.1rem 0.65rem;
+  }
+
+  .hero-dossier-ref {
+    min-height: 365px;
+    border-radius: 22px;
+    padding: 0.8rem 0.82rem 0.82rem 0.92rem;
+  }
+
+  .hero-dossier-ref::before,
+  .hero-dossier-ref::after {
+    border-radius: 22px;
+  }
+
+  .hero-dossier-spine-ref {
+    inset: 0.8rem auto 0.8rem 0.7rem;
+    width: 1rem;
+  }
+
+  .hero-dossier-surface-ref {
+    min-height: 345px;
+    border-radius: 18px;
+    padding: 1.45rem 1.05rem 1.35rem 1.85rem;
+  }
+
+  .hero-dossier-corner-ref {
+    right: 1rem;
+    top: 1rem;
+    width: 2.9rem;
+    height: 2.9rem;
+  }
+
+  .hero-dossier-title-ref {
+    margin-top: 1.45rem;
+    font-size: clamp(1.95rem, 10vw, 3rem);
+    line-height: 1.02;
+  }
+
+  .hero-dossier-subtitle-ref {
+    margin-top: 1.1rem;
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+
+  .hero-dossier-foil-line-ref {
+    margin-top: 1.45rem;
+  }
+
+  .hero-dossier-back-ref {
+    inset: 1.2rem 0 1rem auto;
+    width: 88%;
+    border-radius: 18px;
+  }
+
+  .hero-monolith-lead-ref {
+    margin-top: 0.85rem;
+    font-size: 0.94rem;
+    line-height: 1.65;
+  }
+
+  .hero-monolith-cta-row-ref {
+    margin-top: 1.2rem;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .hero-monolith-cta-row-ref .btn-primary-ref,
+  .hero-monolith-cta-row-ref .btn-outline-ref {
+    justify-content: center;
+    width: 100%;
   }
 
   .hero-title-ref {

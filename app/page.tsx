@@ -145,12 +145,6 @@ const trustItems = [
   { icon: <CheckIcon />, text: 'Transparentní provozovatel, obchodní podmínky, GDPR a kontakt veřejně na webu' },
 ];
 
-const proofItems = [
-  { value: '14', label: 'typů dokumentů' },
-  { value: '3', label: 'varianty výstupu' },
-  { value: 'PDF', label: 'připravené po zaplacení' },
-];
-
 const contractCards = [
   { href: '/najem', title: 'Nájemní smlouva', subtitle: 'Byty, domy, nebytové prostory', icon: <HouseIcon /> },
   { href: '/auto', title: 'Kupní smlouva na vozidlo', subtitle: 'Osobní auta, motocykly, přívěsy', icon: <CarIcon /> },
@@ -249,149 +243,44 @@ export default function Home() {
 
       <main className="relative pb-16 pt-[94px] text-[#d5dbea] md:pt-[112px]">
         <section className="mx-auto max-w-[1220px] px-5 md:px-8">
-          <div className="hero-frame-ref">
-            <div className="hero-grid-ref">
-              <div className="hero-copy-ref">
-                <p className="hero-kicker-ref">Online nástroj pro standardizované smluvní dokumenty</p>
-                <h1 className="hero-title-ref">
-                  <span>Standardizovaný dokument</span>
-                  <span>sestavený podle</span>
-                  <span>vašich údajů</span>
-                </h1>
+          <div className="hero-frame-ref hero-frame-monolith-ref">
+            <div className="hero-monolith-ref">
+              <p className="hero-monolith-kicker-ref">Online nástroj pro standardizované smluvní dokumenty</p>
 
-                <p className="hero-lead-ref">
-                  Vyplníte přehledný formulář, zvolíte variantu a po zaplacení získáte dokument v PDF připravený ke kontrole a podpisu.
-                  Pro běžné životní a podnikatelské situace, ve kterých se strany shodly na obsahu.
-                </p>
-
-                <div className="hero-cta-row-ref">
-                  <Link href="#dokumenty" className="btn-primary-ref">
-                    Vybrat dokument <span aria-hidden>→</span>
-                  </Link>
-                  <Link href="#jak-to-funguje" className="btn-outline-ref">
-                    Jak služba funguje
-                  </Link>
-                </div>
-
-                <div className="proof-strip-ref">
-                  {proofItems.map(item => (
-                    <div key={item.label} className="proof-item-ref">
-                      <div className="proof-value-ref">{item.value}</div>
-                      <div className="proof-label-ref">{item.label}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="hero-visual-ref">
-                <div className="hero-visual-inner-ref">
-                  <div className="hero-premium-art-ref" aria-hidden>
-                    <div className="hero-premium-backdrop-ref" />
-
-                    <div className="hero-pdf-preview-stage-ref">
-                      <div className="hero-pdf-page-back-ref">
-                        <div className="hero-pdf-page-back-head-ref">
-                          <span>Příloha č. 1</span>
-                          <span>Předávací protokol</span>
-                        </div>
-                        <div className="hero-pdf-page-back-lines-ref">
-                          <span />
-                          <span />
-                          <span />
-                          <span />
-                          <span />
-                        </div>
-                      </div>
-
-                      <div className="hero-pdf-page-ref">
-                        <div className="hero-pdf-toolbar-ref">
-                          <span>PDF</span>
-                          <span>1 / 3</span>
-                        </div>
-
-                        <div className="hero-pdf-document-ref">
-                          <div className="hero-pdf-document-top-ref">
-                            <div className="hero-pdf-brand-ref">SmlouvaHned.cz</div>
-                            <div className="hero-pdf-status-ref">Připraveno ke kontrole a podpisu</div>
-                          </div>
-
-                          <div className="hero-pdf-title-ref">NÁJEMNÍ SMLOUVA</div>
-                          <div className="hero-pdf-subtitle-ref">sestaveno podle vyplněných údajů</div>
-
-                          <div className="hero-pdf-intro-ref">
-                            Níže uvedeného dne, měsíce a roku uzavřeli smluvní strany podle § 2201 a násl. občanského zákoníku tuto nájemní smlouvu.
-                          </div>
-
-                          <div className="hero-pdf-party-block-ref">
-                            <div className="hero-pdf-party-row-ref">
-                              <span className="hero-pdf-party-label-ref">Pronajímatel:</span>
-                              <span className="hero-pdf-party-value-ref">Jan Novák, nar. 12. 3. 1985, Vzorová 18, Praha 5</span>
-                            </div>
-                            <div className="hero-pdf-party-row-ref">
-                              <span className="hero-pdf-party-label-ref">Nájemce:</span>
-                              <span className="hero-pdf-party-value-ref">Petra Svobodová, nar. 8. 9. 1990, Ukázková 4, Brno</span>
-                            </div>
-                          </div>
-
-                          <div className="hero-pdf-article-ref">
-                            <div className="hero-pdf-article-head-ref">Článek I. Předmět nájmu</div>
-                            <p className="hero-pdf-paragraph-ref">
-                              Pronajímatel přenechává nájemci k dočasnému užívání bytovou jednotku č. 12 o dispozici 2+kk,
-                              nacházející se v domě na adrese U Lesa 123, Praha 5, včetně příslušenství a práva užívat společné části domu.
-                            </p>
-                          </div>
-
-                          <div className="hero-pdf-article-ref">
-                            <div className="hero-pdf-article-head-ref">Článek II. Nájemné a úhrada služeb</div>
-                            <p className="hero-pdf-paragraph-ref">
-                              Nájemné bylo sjednáno ve výši 18 500 Kč měsíčně. Zálohy na služby činí 3 200 Kč měsíčně.
-                              Nájemce se zavazuje hradit obě částky nejpozději do pátého dne příslušného kalendářního měsíce.
-                            </p>
-                          </div>
-
-                          <div className="hero-pdf-article-ref">
-                            <div className="hero-pdf-article-head-ref">Článek III. Doba nájmu</div>
-                            <p className="hero-pdf-paragraph-ref">
-                              Nájem se sjednává na dobu určitou od 1. 7. 2026 do 30. 6. 2027. Změna doby nájmu je možná pouze
-                              písemnou dohodou smluvních stran.
-                            </p>
-                          </div>
-
-                          <div className="hero-pdf-article-ref">
-                            <div className="hero-pdf-article-head-ref">Článek IV. Závěrečná ustanovení</div>
-                            <p className="hero-pdf-paragraph-ref">
-                              Tato smlouva byla vyhotovena ve dvou stejnopisech, z nichž každá smluvní strana obdrží po jednom.
-                              Smluvní strany prohlašují, že si smlouvu přečetly, jejímu obsahu rozumějí a na důkaz souhlasu připojují své podpisy.
-                            </p>
-                          </div>
-
-                          <div className="hero-pdf-signature-zone-ref">
-                            <div className="hero-pdf-signature-line-ref">
-                              <span />
-                              <p>Pronajímatel</p>
-                            </div>
-                            <div className="hero-pdf-signature-line-ref">
-                              <span />
-                              <p>Nájemce</p>
-                            </div>
-                          </div>
-
-                          <div className="hero-pdf-footer-ref">
-                            <span>Vzorové údaje</span>
-                            <span>Strana 1</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="hero-pdf-pen-ref" />
-
-                      <div className="hero-pdf-caption-ref">
-                        <div className="hero-pdf-caption-title-ref">Ukázka výsledného PDF dokumentu</div>
-                        <p>Vzorové údaje · finální struktura připravená ke kontrole a podpisu</p>
-                      </div>
-                    </div>
+              <div className="hero-dossier-stage-ref" aria-hidden>
+                <div className="hero-dossier-shadow-ref" />
+                <div className="hero-dossier-ref">
+                  <div className="hero-dossier-spine-ref" />
+                  <div className="hero-dossier-surface-ref">
+                    <div className="hero-dossier-corner-ref" />
+                    <div className="hero-dossier-brand-ref">SmlouvaHned.cz</div>
+                    <h1 className="hero-dossier-title-ref">
+                      <span>Standardizovaný dokument</span>
+                      <span>sestavený podle</span>
+                      <span>vašich údajů</span>
+                    </h1>
+                    <p className="hero-dossier-subtitle-ref">
+                      Dokument pro běžné životní a podnikatelské situace, připravený ke kontrole a podpisu.
+                    </p>
+                    <div className="hero-dossier-foil-line-ref" />
+                    <div className="hero-dossier-foil-line-ref short" />
                   </div>
                 </div>
+                <div className="hero-dossier-back-ref" />
+              </div>
+
+              <p className="hero-monolith-lead-ref">
+                Vyplníte přehledný formulář, zvolíte variantu a po zaplacení získáte finální dokument v PDF.
+                Služba je určena pro standardizované dokumenty, ne pro individuální právní poradenství.
+              </p>
+
+              <div className="hero-monolith-cta-row-ref">
+                <Link href="#dokumenty" className="btn-primary-ref">
+                  Vybrat dokument <span aria-hidden>→</span>
+                </Link>
+                <Link href="#jak-to-funguje" className="btn-outline-ref">
+                  Jak služba funguje
+                </Link>
               </div>
             </div>
 
