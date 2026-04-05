@@ -1,0 +1,150 @@
+<svg width="1600" height="980" viewBox="0 0 1600 980" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="backCover" x1="260" y1="180" x2="1330" y2="860" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#18253F"/>
+      <stop offset="0.45" stop-color="#0E172C"/>
+      <stop offset="1" stop-color="#0A101B"/>
+    </linearGradient>
+    <linearGradient id="frontCover" x1="220" y1="140" x2="1380" y2="840" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#202E4C"/>
+      <stop offset="0.36" stop-color="#10192F"/>
+      <stop offset="0.68" stop-color="#0B1324"/>
+      <stop offset="1" stop-color="#09101A"/>
+    </linearGradient>
+    <linearGradient id="innerPanel" x1="260" y1="182" x2="1328" y2="806" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#223150"/>
+      <stop offset="0.38" stop-color="#10192E"/>
+      <stop offset="1" stop-color="#0A121E"/>
+    </linearGradient>
+    <linearGradient id="spineGrad" x1="240" y1="178" x2="240" y2="806" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#09111F"/>
+      <stop offset="0.16" stop-color="#253352"/>
+      <stop offset="0.34" stop-color="#111C33"/>
+      <stop offset="1" stop-color="#070D16"/>
+    </linearGradient>
+    <linearGradient id="foilGold" x1="500" y1="280" x2="1040" y2="650" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFF5DA"/>
+      <stop offset="0.12" stop-color="#F4DEB1"/>
+      <stop offset="0.28" stop-color="#E2BF82"/>
+      <stop offset="0.5" stop-color="#C99754"/>
+      <stop offset="0.74" stop-color="#A87437"/>
+      <stop offset="1" stop-color="#6A431B"/>
+    </linearGradient>
+    <linearGradient id="foilHighlight" x1="480" y1="304" x2="1048" y2="510" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="rgba(255,255,255,0)"/>
+      <stop offset="0.4" stop-color="#FFF8E4"/>
+      <stop offset="0.52" stop-color="#FFF2CF"/>
+      <stop offset="0.65" stop-color="rgba(255,255,255,0)"/>
+    </linearGradient>
+    <linearGradient id="foilRule" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgba(255,255,255,0)"/>
+      <stop offset="0.28" stop-color="#F2D9A8"/>
+      <stop offset="0.5" stop-color="#B98242"/>
+      <stop offset="0.72" stop-color="#F0D4A2"/>
+      <stop offset="1" stop-color="rgba(255,255,255,0)"/>
+    </linearGradient>
+    <filter id="dropShadow" x="80" y="120" width="1450" height="780" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feOffset dy="26"/>
+      <feGaussianBlur stdDeviation="34"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.008 0 0 0 0 0.012 0 0 0 0 0.022 0 0 0 0.58 0"/>
+    </filter>
+    <filter id="backShadow" x="180" y="120" width="1360" height="780" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feOffset dy="14"/>
+      <feGaussianBlur stdDeviation="18"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.008 0 0 0 0 0.012 0 0 0 0 0.022 0 0 0 0.3 0"/>
+    </filter>
+    <filter id="coverTexture" x="0" y="0" width="1600" height="980" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.95" numOctaves="2" seed="9" result="noise"/>
+      <feColorMatrix in="noise" type="saturate" values="0" result="mono"/>
+      <feComponentTransfer in="mono" result="soft">
+        <feFuncA type="table" tableValues="0 0.08"/>
+      </feComponentTransfer>
+    </filter>
+    <filter id="foilEmboss" x="360" y="220" width="900" height="410" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feOffset in="SourceAlpha" dx="0" dy="3" result="shadow"/>
+      <feGaussianBlur in="shadow" stdDeviation="2.6" result="shadowBlur"/>
+      <feColorMatrix in="shadowBlur" type="matrix" values="0 0 0 0 0.17 0 0 0 0 0.1 0 0 0 0 0.04 0 0 0 0.55 0" result="shadowColor"/>
+      <feOffset in="SourceAlpha" dx="0" dy="-1.2" result="light"/>
+      <feGaussianBlur in="light" stdDeviation="1.2" result="lightBlur"/>
+      <feColorMatrix in="lightBlur" type="matrix" values="0 0 0 0 1 0 0 0 0 0.97 0 0 0 0 0.88 0 0 0 0.38 0" result="lightColor"/>
+      <feMerge>
+        <feMergeNode in="shadowColor"/>
+        <feMergeNode in="lightColor"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <mask id="titleMask">
+      <rect width="1600" height="980" fill="black"/>
+      <text x="800" y="430" text-anchor="middle" fill="white" font-family="Georgia, 'Times New Roman', serif" font-size="102" font-weight="500" letter-spacing="-2">
+        <tspan x="800" dy="0">Standardizovaný</tspan>
+        <tspan x="800" dy="110">dokument</tspan>
+        <tspan x="800" dy="110">sestavený podle</tspan>
+        <tspan x="800" dy="110">vašich údajů</tspan>
+      </text>
+    </mask>
+  </defs>
+
+  <ellipse cx="804" cy="808" rx="470" ry="72" fill="#00060F" opacity="0.5"/>
+
+  <g filter="url(#backShadow)" opacity="0.62">
+    <g transform="translate(260 150) rotate(-2 560 320)">
+      <rect x="0" y="0" width="1080" height="650" rx="42" fill="url(#backCover)"/>
+      <rect x="0" y="0" width="1080" height="650" rx="42" fill="white" fill-opacity="0.02"/>
+      <rect x="0" y="0" width="1080" height="650" rx="42" stroke="white" stroke-opacity="0.05"/>
+      <rect x="0" y="0" width="1080" height="650" rx="42" filter="url(#coverTexture)" fill="white"/>
+    </g>
+  </g>
+
+  <g filter="url(#dropShadow)">
+    <rect x="214" y="154" width="1168" height="664" rx="46" fill="url(#frontCover)"/>
+    <rect x="214" y="154" width="1168" height="664" rx="46" stroke="white" stroke-opacity="0.06"/>
+    <rect x="214" y="154" width="1168" height="664" rx="46" fill="white" fill-opacity="0.018"/>
+    <rect x="214" y="154" width="1168" height="664" rx="46" filter="url(#coverTexture)" fill="white"/>
+
+    <rect x="244" y="188" width="24" height="596" rx="12" fill="url(#spineGrad)"/>
+    <rect x="244" y="188" width="24" height="596" rx="12" fill="white" fill-opacity="0.02"/>
+
+    <rect x="274" y="182" width="1034" height="612" rx="34" fill="url(#innerPanel)"/>
+    <rect x="274" y="182" width="1034" height="612" rx="34" stroke="#A98955" stroke-opacity="0.18"/>
+    <rect x="274" y="182" width="1034" height="612" rx="34" fill="white" fill-opacity="0.012"/>
+    <rect x="274" y="182" width="1034" height="612" rx="34" filter="url(#coverTexture)" fill="white"/>
+
+    <path d="M1138 224H1232C1247.46 224 1260 236.54 1260 252V324" stroke="#BE9557" stroke-opacity="0.32" stroke-width="2"/>
+
+    <ellipse cx="794" cy="455" rx="360" ry="220" fill="white" fill-opacity="0.018"/>
+    <ellipse cx="794" cy="500" rx="410" ry="250" fill="#07101D" fill-opacity="0.12"/>
+  </g>
+
+  <text x="791" y="258" text-anchor="middle" fill="#E3C58C" fill-opacity="0.92" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" letter-spacing="8">SMLOUVAHNED.CZ</text>
+
+  <g filter="url(#foilEmboss)">
+    <text x="800" y="430" text-anchor="middle" fill="#5F3A16" fill-opacity="0.4" font-family="Georgia, 'Times New Roman', serif" font-size="102" font-weight="500" letter-spacing="-2">
+      <tspan x="800" dy="4">Standardizovaný</tspan>
+      <tspan x="800" dy="110">dokument</tspan>
+      <tspan x="800" dy="110">sestavený podle</tspan>
+      <tspan x="800" dy="110">vašich údajů</tspan>
+    </text>
+    <text x="800" y="426" text-anchor="middle" fill="#FFF5D9" fill-opacity="0.24" font-family="Georgia, 'Times New Roman', serif" font-size="102" font-weight="500" letter-spacing="-2">
+      <tspan x="800" dy="0">Standardizovaný</tspan>
+      <tspan x="800" dy="110">dokument</tspan>
+      <tspan x="800" dy="110">sestavený podle</tspan>
+      <tspan x="800" dy="110">vašich údajů</tspan>
+    </text>
+    <text x="800" y="428" text-anchor="middle" fill="url(#foilGold)" font-family="Georgia, 'Times New Roman', serif" font-size="102" font-weight="500" letter-spacing="-2">
+      <tspan x="800" dy="0">Standardizovaný</tspan>
+      <tspan x="800" dy="110">dokument</tspan>
+      <tspan x="800" dy="110">sestavený podle</tspan>
+      <tspan x="800" dy="110">vašich údajů</tspan>
+    </text>
+  </g>
+
+  <rect x="418" y="268" width="780" height="290" fill="url(#foilHighlight)" mask="url(#titleMask)" opacity="0.9"/>
+
+  <text x="800" y="678" text-anchor="middle" fill="#C9D2E0" font-family="Arial, Helvetica, sans-serif" font-size="33" font-weight="400">
+    <tspan x="800" dy="0">Dokument pro běžné životní a podnikatelské situace,</tspan>
+    <tspan x="800" dy="44">připravený ke kontrole a podpisu.</tspan>
+  </text>
+
+  <rect x="530" y="737" width="540" height="2" rx="1" fill="url(#foilRule)" opacity="0.9"/>
+  <rect x="662" y="760" width="276" height="2" rx="1" fill="url(#foilRule)" opacity="0.72"/>
+</svg>

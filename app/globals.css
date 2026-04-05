@@ -164,6 +164,25 @@ summary:focus-visible {
   min-height: 560px;
   margin-top: 1.25rem;
   padding: 2.1rem 1.2rem 1.4rem;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.hero-dossier-stage-ref::after {
+  content: "";
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: min(100%, 980px);
+  aspect-ratio: 1600 / 980;
+  margin: 0 auto;
+  background: url("/hero-dossier-premium.svg") center / contain no-repeat;
+}
+
+.hero-dossier-stage-ref > .hero-dossier-ref,
+.hero-dossier-stage-ref > .hero-dossier-back-ref {
+  display: none;
 }
 
 .hero-dossier-shadow-ref {
@@ -184,11 +203,14 @@ summary:focus-visible {
   margin: 0 auto;
   padding: 1.3rem 1.35rem 1.35rem 1.5rem;
   border-radius: 32px;
+  transform: perspective(1800px) rotateX(1.2deg);
+  transform-origin: center 22%;
   background:
-    radial-gradient(circle at 17% 15%, rgba(228, 198, 144, 0.11), transparent 19%),
-    radial-gradient(circle at 82% 16%, rgba(255, 255, 255, 0.085), transparent 15%),
-    radial-gradient(circle at 50% 56%, rgba(255, 255, 255, 0.032), transparent 28%),
-    radial-gradient(circle at 53% 74%, rgba(7, 12, 25, 0.72), transparent 38%),
+    radial-gradient(circle at 17% 15%, rgba(228, 198, 144, 0.09), transparent 19%),
+    radial-gradient(circle at 82% 16%, rgba(255, 255, 255, 0.075), transparent 15%),
+    radial-gradient(ellipse at 50% 42%, rgba(255, 255, 255, 0.024), transparent 24%),
+    radial-gradient(ellipse at 50% 66%, rgba(5, 10, 22, 0.44), transparent 42%),
+    radial-gradient(circle at 53% 74%, rgba(7, 12, 25, 0.66), transparent 38%),
     linear-gradient(146deg, #17233a 0%, #0d172c 32%, #091122 68%, #060c17 100%);
   border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow:
@@ -223,11 +245,11 @@ summary:focus-visible {
   border-radius: 32px;
   opacity: 0.14;
   background:
-    radial-gradient(rgba(255, 255, 255, 0.15) 0.45px, transparent 0.45px),
-    radial-gradient(rgba(0, 0, 0, 0.17) 0.5px, transparent 0.5px),
-    linear-gradient(135deg, transparent 0 48%, rgba(255, 255, 255, 0.018) 50%, transparent 52%);
+    radial-gradient(rgba(255, 255, 255, 0.12) 0.45px, transparent 0.45px),
+    radial-gradient(rgba(0, 0, 0, 0.15) 0.55px, transparent 0.55px),
+    radial-gradient(ellipse at 50% 24%, rgba(255, 255, 255, 0.024), transparent 32%);
   background-position: 0 0, 1px 1px, 0 0;
-  background-size: 3px 3px, 4px 4px, 100% 100%;
+  background-size: 4px 4px, 6px 6px, 100% 100%;
   mix-blend-mode: soft-light;
   pointer-events: none;
 }
@@ -253,10 +275,13 @@ summary:focus-visible {
   padding: 2.5rem 2.8rem 2.2rem 4rem;
   border: 1px solid rgba(201, 169, 110, 0.14);
   background:
-    radial-gradient(ellipse at 50% 41%, rgba(255, 255, 255, 0.045), transparent 22%),
-    radial-gradient(ellipse at 50% 56%, rgba(255, 255, 255, 0.022), transparent 38%),
-    radial-gradient(circle at 18% 12%, rgba(232, 206, 155, 0.035), transparent 18%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.028), transparent 13%, transparent 80%, rgba(0, 0, 0, 0.18)),
+    radial-gradient(ellipse at 50% 34%, rgba(255, 255, 255, 0.052), transparent 20%),
+    radial-gradient(ellipse at 50% 51%, rgba(255, 255, 255, 0.016), transparent 34%),
+    radial-gradient(ellipse at 50% 70%, rgba(5, 10, 21, 0.22), transparent 44%),
+    radial-gradient(ellipse at 14% 46%, rgba(255, 255, 255, 0.018), transparent 22%),
+    radial-gradient(ellipse at 84% 48%, rgba(0, 0, 0, 0.08), transparent 22%),
+    radial-gradient(circle at 18% 12%, rgba(232, 206, 155, 0.03), transparent 18%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), transparent 11%, transparent 76%, rgba(0, 0, 0, 0.22)),
     linear-gradient(145deg, rgba(22, 31, 52, 0.985), rgba(11, 18, 33, 0.985) 58%, rgba(8, 14, 25, 0.995));
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.03),
@@ -273,9 +298,10 @@ summary:focus-visible {
   inset: 0;
   border-radius: 26px;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent 16%, transparent 78%, rgba(0, 0, 0, 0.12)),
-    linear-gradient(124deg, transparent 0 34%, rgba(255, 255, 255, 0.02) 45%, transparent 56%),
-    radial-gradient(circle at 50% 46%, transparent 0 34%, rgba(0, 0, 0, 0.08) 62%, transparent 78%);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.016), transparent 16%, transparent 76%, rgba(0, 0, 0, 0.14)),
+    linear-gradient(124deg, transparent 0 34%, rgba(255, 255, 255, 0.016) 45%, transparent 56%),
+    radial-gradient(ellipse at 50% 48%, transparent 0 28%, rgba(0, 0, 0, 0.06) 60%, transparent 78%),
+    repeating-linear-gradient(102deg, transparent 0 11px, rgba(255, 255, 255, 0.012) 11px 12px, transparent 12px 24px);
   pointer-events: none;
 }
 
@@ -286,11 +312,11 @@ summary:focus-visible {
   border-radius: 26px;
   opacity: 0.13;
   background:
-    radial-gradient(rgba(255, 255, 255, 0.13) 0.4px, transparent 0.4px),
-    radial-gradient(rgba(0, 0, 0, 0.15) 0.45px, transparent 0.45px),
-    linear-gradient(90deg, transparent 0 2%, rgba(255, 255, 255, 0.018) 4%, transparent 6%, transparent 94%, rgba(0, 0, 0, 0.04) 98%, transparent 100%);
+    radial-gradient(rgba(255, 255, 255, 0.11) 0.4px, transparent 0.4px),
+    radial-gradient(rgba(0, 0, 0, 0.14) 0.45px, transparent 0.45px),
+    radial-gradient(ellipse at 50% 40%, rgba(255, 255, 255, 0.018), transparent 44%);
   background-position: 0 0, 1px 1px, 0 0;
-  background-size: 3px 3px, 4px 4px, 100% 100%;
+  background-size: 4px 4px, 6px 6px, 100% 100%;
   mix-blend-mode: soft-light;
   pointer-events: none;
 }
@@ -318,20 +344,23 @@ summary:focus-visible {
     0 -1px 0 rgba(72, 48, 18, 0.6),
     0 0 1px rgba(236, 214, 170, 0.32),
     0 0 10px rgba(201, 169, 110, 0.08);
+  opacity: 0.94;
 }
 
 .hero-dossier-title-ref {
+  position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
-  gap: 0.28rem;
-  margin: 2.2rem auto 0;
+  gap: 0.08rem;
+  margin: 2.35rem auto 0;
   max-width: 700px;
   color: #e0c189;
   font-family: var(--font-serif), "Times New Roman", serif;
   font-size: clamp(2.4rem, 5vw, 4.9rem);
-  line-height: 0.98;
+  line-height: 0.96;
   font-weight: 500;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.028em;
   text-shadow:
     0 1px 0 rgba(255, 246, 224, 0.2),
     0 -1px 0 rgba(84, 59, 24, 0.86),
@@ -340,45 +369,42 @@ summary:focus-visible {
 
 .hero-dossier-title-ref span {
   position: relative;
-  display: inline-block;
-  padding: 0.05em 0.08em 0.08em;
+  display: block;
+  padding: 0;
   background:
-    linear-gradient(180deg, rgba(255, 246, 222, 0.99) 0%, rgba(247, 226, 181, 0.98) 11%, rgba(230, 196, 126, 0.99) 27%, rgba(197, 157, 92, 0.99) 44%, rgba(149, 110, 50, 0.99) 66%, rgba(92, 62, 25, 0.99) 100%);
+    linear-gradient(180deg, rgba(255, 248, 228, 0.99) 0%, rgba(248, 228, 188, 0.98) 9%, rgba(233, 199, 128, 0.99) 28%, rgba(198, 156, 87, 0.99) 47%, rgba(143, 103, 46, 0.99) 70%, rgba(94, 64, 28, 0.99) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 0 0.8px rgba(244, 224, 183, 0.52));
+  -webkit-text-stroke: 0.012em rgba(125, 88, 39, 0.24);
+  filter: drop-shadow(0 0 0.65px rgba(245, 226, 187, 0.36));
   text-shadow:
     0 0 0 rgba(0, 0, 0, 0),
-    0.016em 0.014em 0 rgba(255, 247, 224, 0.28),
-    -0.02em -0.026em 0 rgba(82, 55, 24, 0.42);
+    0.01em 0.01em 0 rgba(255, 248, 228, 0.19),
+    -0.014em -0.018em 0 rgba(89, 60, 25, 0.38),
+    0 0.03em 0.05em rgba(0, 0, 0, 0.08);
 }
 
 .hero-dossier-title-ref span::after {
   content: "";
   position: absolute;
-  inset: 0.06em 0.02em 0.12em;
-  border-radius: 999px;
+  inset: 0;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.08) 24%, transparent 46%),
-    linear-gradient(94deg, transparent 0 20%, rgba(255, 244, 214, 0.16) 38%, rgba(255, 253, 244, 0.3) 48%, rgba(236, 210, 159, 0.14) 61%, transparent 76%),
-    repeating-linear-gradient(106deg, transparent 0 9px, rgba(255, 244, 222, 0.036) 9px 10px, transparent 10px 18px);
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.03) 22%, transparent 38%),
+    linear-gradient(96deg, transparent 0 32%, rgba(255, 252, 241, 0.12) 48%, rgba(229, 198, 139, 0.08) 55%, transparent 70%);
   mix-blend-mode: screen;
-  opacity: 0.7;
+  opacity: 0.48;
   pointer-events: none;
 }
 
 .hero-dossier-title-ref span::before {
   content: "";
   position: absolute;
-  inset: 0.02em -0.015em -0.035em;
-  border-radius: 999px;
+  inset: 0;
   box-shadow:
-    inset 0 1px 0 rgba(255, 246, 221, 0.24),
-    inset 0 -1px 0 rgba(95, 64, 24, 0.54),
-    inset 0 -0.05em 0.08em rgba(73, 49, 19, 0.18),
-    0 0.04em 0.08em rgba(0, 0, 0, 0.16);
-  opacity: 1;
+    inset 0 1px 0 rgba(255, 246, 221, 0.11),
+    inset 0 -1px 0 rgba(95, 64, 24, 0.3);
+  opacity: 0.78;
   pointer-events: none;
 }
 
