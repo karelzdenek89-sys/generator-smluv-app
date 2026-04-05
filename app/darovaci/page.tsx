@@ -198,12 +198,12 @@ export default function GiftContractPage() {
         badge="§ 2055 a násl. občanského zákoníku"
         h1Main="Darovací smlouva"
         h1Accent="online"
-        subtitle="Sestavte darovací smlouvu pro darování peněz, vozidla, movité věci nebo jiného majetku. Dokument přehledně zachycuje předmět daru, bezúplatnost převodu i podmínky předání."
+        subtitle="Vytvořte přehlednou darovací smlouvu pro darování peněz, vozidla, movité věci nebo jiného majetku. Dokument jasně vymezuje předmět daru, bezúplatnost převodu i podmínky předání."
         benefits={[
-          { icon: '🎁', text: 'Vhodné pro darování peněz, věcí, vozidel i vybraných majetkových hodnot' },
+          { icon: '🎁', text: 'Pokrývá darování peněz, věcí, vozidel i vybraných majetkových hodnot' },
           { icon: '⚖️', text: 'Vychází z pravidel občanského zákoníku pro bezúplatný převod vlastnického práva' },
           { icon: '📄', text: 'PDF dokument je zpřístupněn ihned po dokončení platby a je určen ke kontrole a podpisu' },
-          { icon: '🔒', text: 'Lze doplnit i podmínku vrácení daru nebo další zvláštní ujednání' },
+          { icon: '🔒', text: 'Umožňuje doplnit i podmínku vrácení daru nebo zvláštní ujednání' },
         ]}
         contents={[
           'Identifikaci dárce a obdarovaného',
