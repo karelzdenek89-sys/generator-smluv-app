@@ -244,6 +244,96 @@ export default function Home() {
       <main className="relative pb-16 pt-[94px] text-[#d5dbea] md:pt-[112px]">
         <section className="mx-auto max-w-[1220px] px-5 md:px-8">
           <div className="hero-frame-ref hero-frame-monolith-ref">
+            <section className="hero-refined-grid">
+              <div className="hero-refined-copy">
+                <p className="hero-refined-kicker">Online nĂˇstroj pro standardizovanĂ© smluvnĂ­ dokumenty</p>
+                <h1 className="hero-refined-title">
+                  <span>SmluvnĂ­ dokument</span>
+                  <span>pĹ™ipravenĂ˝ k podpisu</span>
+                </h1>
+                <p className="hero-refined-subtitle">
+                  VyplnĂ­te pĹ™ehlednĂ˝ formulĂˇĹ™, zvolĂ­te variantu a po zaplacenĂ­ zĂ­skĂˇte standardizovanĂ˝ dokument v PDF
+                  sestavenĂ˝ podle vaĹˇich ĂşdajĹŻ. Pro bÄ›ĹľnĂ© ĹľivotnĂ­ a podnikatelskĂ© situace.
+                </p>
+
+                <div className="hero-refined-actions">
+                  <Link href="#dokumenty" className="btn-primary-ref">
+                    Vybrat dokument <span aria-hidden>â†’</span>
+                  </Link>
+                  <Link href="#jak-to-funguje" className="btn-outline-ref">
+                    Jak sluĹľba funguje
+                  </Link>
+                </div>
+
+                <p className="hero-refined-trustline">PDF vĂ˝stup ihned po zaplacenĂ­ â€ˇ bezpeÄŤnĂˇ platba pĹ™es Stripe</p>
+              </div>
+
+              <div className="hero-refined-visual" aria-hidden>
+                <div className="hero-refined-preview-shell">
+                  <div className="hero-refined-preview-glow" />
+
+                  <div className="hero-refined-preview-back">
+                    <div className="hero-refined-preview-sheet">
+                      <div className="hero-refined-preview-mini-line w-28" />
+                      <div className="hero-refined-preview-mini-line w-36" />
+                      <div className="hero-refined-preview-mini-line w-24" />
+                      <div className="hero-refined-preview-mini-line w-40" />
+                    </div>
+                  </div>
+
+                  <div className="hero-refined-preview-main">
+                    <div className="hero-refined-preview-page">
+                      <div className="hero-refined-preview-page-top">
+                        <div className="hero-refined-preview-badge">PDF</div>
+                        <div className="hero-refined-preview-brand">SmlouvaHned.cz</div>
+                      </div>
+
+                      <div className="hero-refined-preview-title-wrap">
+                        <div className="hero-refined-preview-kicker">UkĂˇzka vĂ˝slednĂ©ho dokumentu</div>
+                        <div className="hero-refined-preview-title">NĂJEMNĂŤ SMLOUVA</div>
+                      </div>
+
+                      <div className="hero-refined-preview-section">
+                        <div className="hero-refined-preview-section-title">1. SmluvnĂ­ strany</div>
+                        <p>PronajĂ­matel: Jan NovĂˇk, nar. 12. 2. 1986, bytem U Lesa 123, 130 00 Praha 3.</p>
+                        <p>NĂˇjemce: Petra SvobodovĂˇ, nar. 8. 7. 1991, bytem DlouhĂˇ 18, 602 00 Brno.</p>
+                      </div>
+
+                      <div className="hero-refined-preview-section">
+                        <div className="hero-refined-preview-section-title">2. PĹ™edmÄ›t nĂˇjmu</div>
+                        <p>
+                          PĹ™edmÄ›tem nĂˇjmu je bytovĂˇ jednotka ÄŤ. 12 o dispozici 2+kk, nachĂˇzejĂ­cĂ­ se v domÄ› na adrese
+                          U Lesa 123, Praha 3.
+                        </p>
+                      </div>
+
+                      <div className="hero-refined-preview-section">
+                        <div className="hero-refined-preview-section-title">3. NĂˇjemnĂ© a splatnost</div>
+                        <p>
+                          NĂˇjemnĂ© ÄŤinĂ­ 18&nbsp;500 KÄŤ mÄ›sĂ­ÄŤnÄ›. Splatnost je stanovena do 5. dne pĹ™Ă­sluĹˇnĂ©ho kalendĂˇĹ™nĂ­ho
+                          mÄ›sĂ­ce.
+                        </p>
+                      </div>
+
+                      <div className="hero-refined-preview-signatures">
+                        <div>
+                          <span>PronajĂ­matel</span>
+                        </div>
+                        <div>
+                          <span>NĂˇjemce</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="hero-refined-caption">
+                  <div className="hero-refined-caption-title">UkĂˇzka vĂ˝slednĂ©ho PDF dokumentu</div>
+                  <div className="hero-refined-caption-meta">VzorovĂ© Ăşdaje â€ˇ finĂˇlnĂ­ struktura pĹ™ipravenĂˇ ke kontrole a podpisu</div>
+                </div>
+              </div>
+            </section>
+
             <div className="hero-monolith-ref">
               <p className="hero-monolith-kicker-ref">Online nástroj pro standardizované smluvní dokumenty</p>
 
