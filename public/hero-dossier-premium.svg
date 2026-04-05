@@ -75,11 +75,10 @@
     </filter>
     <mask id="titleMask">
       <rect width="1600" height="980" fill="black"/>
-      <text x="800" y="430" text-anchor="middle" fill="white" font-family="Georgia, 'Times New Roman', serif" font-size="102" font-weight="500" letter-spacing="-2">
+      <text x="800" y="388" text-anchor="middle" fill="white" font-family="Georgia, 'Times New Roman', serif" font-size="96" font-weight="500" letter-spacing="-2">
         <tspan x="800" dy="0">Standardizovaný</tspan>
-        <tspan x="800" dy="110">dokument</tspan>
-        <tspan x="800" dy="110">sestavený podle</tspan>
-        <tspan x="800" dy="110">vašich údajů</tspan>
+        <tspan x="800" dy="104">dokument sestavený</tspan>
+        <tspan x="800" dy="104">podle vašich údajů</tspan>
       </text>
     </mask>
   </defs>
@@ -118,31 +117,28 @@
   <text x="791" y="258" text-anchor="middle" fill="#E3C58C" fill-opacity="0.92" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700" letter-spacing="8">SMLOUVAHNED.CZ</text>
 
   <g filter="url(#foilEmboss)">
-    <text x="800" y="430" text-anchor="middle" fill="#5F3A16" fill-opacity="0.4" font-family="Georgia, 'Times New Roman', serif" font-size="102" font-weight="500" letter-spacing="-2">
+    <text x="800" y="392" text-anchor="middle" fill="#5F3A16" fill-opacity="0.4" font-family="Georgia, 'Times New Roman', serif" font-size="96" font-weight="500" letter-spacing="-2">
       <tspan x="800" dy="4">Standardizovaný</tspan>
-      <tspan x="800" dy="110">dokument</tspan>
-      <tspan x="800" dy="110">sestavený podle</tspan>
-      <tspan x="800" dy="110">vašich údajů</tspan>
+      <tspan x="800" dy="104">dokument sestavený</tspan>
+      <tspan x="800" dy="104">podle vašich údajů</tspan>
     </text>
-    <text x="800" y="426" text-anchor="middle" fill="#FFF5D9" fill-opacity="0.24" font-family="Georgia, 'Times New Roman', serif" font-size="102" font-weight="500" letter-spacing="-2">
+    <text x="800" y="388" text-anchor="middle" fill="#FFF5D9" fill-opacity="0.24" font-family="Georgia, 'Times New Roman', serif" font-size="96" font-weight="500" letter-spacing="-2">
       <tspan x="800" dy="0">Standardizovaný</tspan>
-      <tspan x="800" dy="110">dokument</tspan>
-      <tspan x="800" dy="110">sestavený podle</tspan>
-      <tspan x="800" dy="110">vašich údajů</tspan>
+      <tspan x="800" dy="104">dokument sestavený</tspan>
+      <tspan x="800" dy="104">podle vašich údajů</tspan>
     </text>
-    <text x="800" y="428" text-anchor="middle" fill="url(#foilGold)" font-family="Georgia, 'Times New Roman', serif" font-size="102" font-weight="500" letter-spacing="-2">
+    <text x="800" y="390" text-anchor="middle" fill="url(#foilGold)" font-family="Georgia, 'Times New Roman', serif" font-size="96" font-weight="500" letter-spacing="-2">
       <tspan x="800" dy="0">Standardizovaný</tspan>
-      <tspan x="800" dy="110">dokument</tspan>
-      <tspan x="800" dy="110">sestavený podle</tspan>
-      <tspan x="800" dy="110">vašich údajů</tspan>
+      <tspan x="800" dy="104">dokument sestavený</tspan>
+      <tspan x="800" dy="104">podle vašich údajů</tspan>
     </text>
   </g>
 
   <rect x="418" y="268" width="780" height="290" fill="url(#foilHighlight)" mask="url(#titleMask)" opacity="0.9"/>
 
-  <text x="800" y="678" text-anchor="middle" fill="#C9D2E0" font-family="Arial, Helvetica, sans-serif" font-size="33" font-weight="400">
+  <text x="800" y="666" text-anchor="middle" fill="#C9D2E0" font-family="Arial, Helvetica, sans-serif" font-size="31" font-weight="400">
     <tspan x="800" dy="0">Dokument pro běžné životní a podnikatelské situace,</tspan>
-    <tspan x="800" dy="44">připravený ke kontrole a podpisu.</tspan>
+    <tspan x="800" dy="42">připravený ke kontrole a podpisu.</tspan>
   </text>
 
   <rect x="530" y="737" width="540" height="2" rx="1" fill="url(#foilRule)" opacity="0.9"/>
