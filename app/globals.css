@@ -66,6 +66,19 @@ summary:focus-visible {
   mix-blend-mode: soft-light;
 }
 
+.home-reference-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.12;
+  background:
+    radial-gradient(780px 360px at 82% 20%, rgba(201, 169, 110, 0.08), transparent 70%),
+    linear-gradient(118deg, transparent 0 58%, rgba(255, 255, 255, 0.035) 58% 58.2%, transparent 58.2%),
+    linear-gradient(118deg, transparent 0 64%, rgba(255, 255, 255, 0.025) 64% 64.2%, transparent 64.2%),
+    linear-gradient(118deg, transparent 0 70%, rgba(255, 255, 255, 0.02) 70% 70.15%, transparent 70.15%);
+}
+
 .navbar-flat {
   background: transparent;
   border-bottom: 1px solid transparent;
@@ -695,62 +708,53 @@ summary:focus-visible {
   text-transform: uppercase;
 }
 
-.hero-pdf-meta-grid-ref {
+.hero-pdf-intro-ref {
+  margin-top: 1rem;
+  color: #544b3f;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  text-align: justify;
+}
+
+.hero-pdf-party-block-ref {
+  margin-top: 0.95rem;
+  border-top: 1px solid rgba(99, 83, 58, 0.18);
+  border-bottom: 1px solid rgba(99, 83, 58, 0.18);
+  padding: 0.75rem 0;
+}
+
+.hero-pdf-party-row-ref {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.72rem;
-  margin-top: 1.2rem;
+  grid-template-columns: 6.4rem minmax(0, 1fr);
+  gap: 0.5rem;
+  align-items: start;
 }
 
-.hero-pdf-meta-card-ref {
-  border: 1px solid rgba(122, 98, 63, 0.14);
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.38);
-  padding: 0.75rem 0.82rem;
+.hero-pdf-party-row-ref + .hero-pdf-party-row-ref {
+  margin-top: 0.38rem;
 }
 
-.hero-pdf-meta-label-ref {
-  color: #8f7244;
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.hero-pdf-meta-value-ref {
-  margin-top: 0.32rem;
-  color: #2b2e38;
-  font-size: 0.8rem;
+.hero-pdf-party-label-ref {
+  color: #725735;
+  font-size: 0.72rem;
   font-weight: 700;
-  line-height: 1.35;
 }
 
-.hero-pdf-meta-copy-ref {
-  margin-top: 0.18rem;
-  color: #666252;
-  font-size: 0.73rem;
-  line-height: 1.35;
+.hero-pdf-party-value-ref {
+  color: #35353a;
+  font-size: 0.72rem;
+  line-height: 1.45;
 }
 
-.hero-pdf-section-ref {
-  display: grid;
-  grid-template-columns: 1.2rem minmax(0, 1fr);
-  gap: 0.6rem;
-  margin-top: 0.9rem;
+.hero-pdf-article-ref {
+  margin-top: 0.86rem;
 }
 
-.hero-pdf-section-index-ref {
-  color: #8f7244;
-  font-size: 0.8rem;
+.hero-pdf-article-head-ref {
+  color: #5f492b;
+  font-size: 0.76rem;
   font-weight: 800;
-  line-height: 1.4;
-}
-
-.hero-pdf-section-title-ref {
-  color: #5c4830;
-  font-size: 0.8rem;
-  font-weight: 800;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
 }
 
 .hero-pdf-paragraph-ref {
@@ -758,6 +762,7 @@ summary:focus-visible {
   color: #534a3d;
   font-size: 0.76rem;
   line-height: 1.45;
+  text-align: justify;
 }
 
 .hero-pdf-signature-zone-ref {
@@ -779,6 +784,55 @@ summary:focus-visible {
   color: #76654d;
   font-size: 0.67rem;
   text-align: center;
+}
+
+.hero-pdf-footer-ref {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.85rem;
+  padding-top: 0.55rem;
+  border-top: 1px solid rgba(99, 83, 58, 0.14);
+  color: #8a7d69;
+  font-size: 0.64rem;
+}
+
+.hero-pdf-pen-ref {
+  position: absolute;
+  right: 0.7rem;
+  top: 4.7rem;
+  z-index: 1;
+  width: 0.9rem;
+  height: 16.2rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #101522 0%, #1e2740 45%, #0d121d 100%);
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.28);
+  transform: rotate(3deg);
+}
+
+.hero-pdf-pen-ref::before,
+.hero-pdf-pen-ref::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.hero-pdf-pen-ref::before {
+  top: 0.9rem;
+  width: 0.16rem;
+  height: 3.8rem;
+  border-radius: 999px;
+  background: rgba(201, 169, 110, 0.88);
+}
+
+.hero-pdf-pen-ref::after {
+  bottom: -0.72rem;
+  width: 0;
+  height: 0;
+  border-left: 0.42rem solid transparent;
+  border-right: 0.42rem solid transparent;
+  border-top: 1rem solid #c6a462;
 }
 
 .hero-pdf-caption-ref {
@@ -1449,6 +1503,11 @@ summary:focus-visible {
     width: min(86%, 500px);
   }
 
+  .hero-pdf-pen-ref {
+    right: 0.45rem;
+    height: 15rem;
+  }
+
   .hero-premium-sheet-ref {
     margin-right: 3.5rem;
     width: min(76%, 420px);
@@ -1544,13 +1603,20 @@ summary:focus-visible {
     padding: 0.95rem 0.92rem 0.88rem;
   }
 
-  .hero-pdf-meta-grid-ref {
+  .hero-pdf-party-row-ref {
     grid-template-columns: 1fr;
+    gap: 0.14rem;
   }
 
   .hero-pdf-caption-ref {
     width: min(90%, 390px);
     margin: 0.75rem 0 0 auto;
+  }
+
+  .hero-pdf-pen-ref {
+    top: 3.2rem;
+    right: 0.1rem;
+    height: 12.6rem;
   }
 
   .contract-hero-shell-ref {

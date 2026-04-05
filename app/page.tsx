@@ -291,10 +291,11 @@ export default function Home() {
                     <div className="hero-pdf-preview-stage-ref">
                       <div className="hero-pdf-page-back-ref">
                         <div className="hero-pdf-page-back-head-ref">
-                          <span>Příloha</span>
-                          <span>Souhrn údajů</span>
+                          <span>Příloha č. 1</span>
+                          <span>Předávací protokol</span>
                         </div>
                         <div className="hero-pdf-page-back-lines-ref">
+                          <span />
                           <span />
                           <span />
                           <span />
@@ -315,49 +316,53 @@ export default function Home() {
                           </div>
 
                           <div className="hero-pdf-title-ref">NÁJEMNÍ SMLOUVA</div>
-                          <div className="hero-pdf-subtitle-ref">ukázka výsledného PDF dokumentu</div>
+                          <div className="hero-pdf-subtitle-ref">sestaveno podle vyplněných údajů</div>
 
-                          <div className="hero-pdf-meta-grid-ref">
-                            <div className="hero-pdf-meta-card-ref">
-                              <div className="hero-pdf-meta-label-ref">Pronajímatel</div>
-                              <div className="hero-pdf-meta-value-ref">Jan Novák, nar. 12. 3. 1985</div>
-                              <div className="hero-pdf-meta-copy-ref">Vzorová adresa 18, 150 00 Praha</div>
+                          <div className="hero-pdf-intro-ref">
+                            Níže uvedeného dne, měsíce a roku uzavřeli smluvní strany podle § 2201 a násl. občanského zákoníku tuto nájemní smlouvu.
+                          </div>
+
+                          <div className="hero-pdf-party-block-ref">
+                            <div className="hero-pdf-party-row-ref">
+                              <span className="hero-pdf-party-label-ref">Pronajímatel:</span>
+                              <span className="hero-pdf-party-value-ref">Jan Novák, nar. 12. 3. 1985, Vzorová 18, Praha 5</span>
                             </div>
-                            <div className="hero-pdf-meta-card-ref">
-                              <div className="hero-pdf-meta-label-ref">Nájemce</div>
-                              <div className="hero-pdf-meta-value-ref">Petra Svobodová, nar. 8. 9. 1990</div>
-                              <div className="hero-pdf-meta-copy-ref">Ukázková 4, 602 00 Brno</div>
+                            <div className="hero-pdf-party-row-ref">
+                              <span className="hero-pdf-party-label-ref">Nájemce:</span>
+                              <span className="hero-pdf-party-value-ref">Petra Svobodová, nar. 8. 9. 1990, Ukázková 4, Brno</span>
                             </div>
                           </div>
 
-                          <div className="hero-pdf-section-ref">
-                            <div className="hero-pdf-section-index-ref">1.</div>
-                            <div>
-                              <div className="hero-pdf-section-title-ref">Předmět nájmu</div>
-                              <div className="hero-pdf-paragraph-ref">
-                                Bytová jednotka č. 12 o dispozici 2+kk, adresa U Lesa 123, Praha 5, včetně sklepa a společných prostor domu.
-                              </div>
-                            </div>
+                          <div className="hero-pdf-article-ref">
+                            <div className="hero-pdf-article-head-ref">Článek I. Předmět nájmu</div>
+                            <p className="hero-pdf-paragraph-ref">
+                              Pronajímatel přenechává nájemci k dočasnému užívání bytovou jednotku č. 12 o dispozici 2+kk,
+                              nacházející se v domě na adrese U Lesa 123, Praha 5, včetně příslušenství a práva užívat společné části domu.
+                            </p>
                           </div>
 
-                          <div className="hero-pdf-section-ref">
-                            <div className="hero-pdf-section-index-ref">2.</div>
-                            <div>
-                              <div className="hero-pdf-section-title-ref">Nájemné a platby</div>
-                              <div className="hero-pdf-paragraph-ref">
-                                Nájemné činí 18 500 Kč měsíčně. Zálohy na služby 3 200 Kč. Splatnost vždy do 5. dne příslušného měsíce převodem na účet pronajímatele.
-                              </div>
-                            </div>
+                          <div className="hero-pdf-article-ref">
+                            <div className="hero-pdf-article-head-ref">Článek II. Nájemné a úhrada služeb</div>
+                            <p className="hero-pdf-paragraph-ref">
+                              Nájemné bylo sjednáno ve výši 18 500 Kč měsíčně. Zálohy na služby činí 3 200 Kč měsíčně.
+                              Nájemce se zavazuje hradit obě částky nejpozději do pátého dne příslušného kalendářního měsíce.
+                            </p>
                           </div>
 
-                          <div className="hero-pdf-section-ref">
-                            <div className="hero-pdf-section-index-ref">3.</div>
-                            <div>
-                              <div className="hero-pdf-section-title-ref">Doba trvání</div>
-                              <div className="hero-pdf-paragraph-ref">
-                                Smlouva se uzavírá na dobu určitou od 1. 7. 2026 do 30. 6. 2027, s možností prodloužení písemnou dohodou stran.
-                              </div>
-                            </div>
+                          <div className="hero-pdf-article-ref">
+                            <div className="hero-pdf-article-head-ref">Článek III. Doba nájmu</div>
+                            <p className="hero-pdf-paragraph-ref">
+                              Nájem se sjednává na dobu určitou od 1. 7. 2026 do 30. 6. 2027. Změna doby nájmu je možná pouze
+                              písemnou dohodou smluvních stran.
+                            </p>
+                          </div>
+
+                          <div className="hero-pdf-article-ref">
+                            <div className="hero-pdf-article-head-ref">Článek IV. Závěrečná ustanovení</div>
+                            <p className="hero-pdf-paragraph-ref">
+                              Tato smlouva byla vyhotovena ve dvou stejnopisech, z nichž každá smluvní strana obdrží po jednom.
+                              Smluvní strany prohlašují, že si smlouvu přečetly, jejímu obsahu rozumějí a na důkaz souhlasu připojují své podpisy.
+                            </p>
                           </div>
 
                           <div className="hero-pdf-signature-zone-ref">
@@ -370,8 +375,15 @@ export default function Home() {
                               <p>Nájemce</p>
                             </div>
                           </div>
+
+                          <div className="hero-pdf-footer-ref">
+                            <span>Vzorové údaje</span>
+                            <span>Strana 1</span>
+                          </div>
                         </div>
                       </div>
+
+                      <div className="hero-pdf-pen-ref" />
 
                       <div className="hero-pdf-caption-ref">
                         <div className="hero-pdf-caption-title-ref">Ukázka výsledného PDF dokumentu</div>
