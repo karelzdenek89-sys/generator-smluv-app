@@ -96,10 +96,7 @@ export default function ContractLandingSection({
 
             <div className="mb-10 grid gap-4 sm:grid-cols-2">
               {benefits.map(item => (
-                <div
-                  key={item.text}
-                  className="flex items-start gap-3 rounded-2xl border border-slate-800/60 bg-[#0c1426] px-5 py-4"
-                >
+                <div key={item.text} className="premium-note-card-ref flex items-start gap-3 px-5 py-4">
                   <span className="mt-0.5 shrink-0 text-xl leading-none">{item.icon}</span>
                   <span className="text-sm leading-snug text-slate-300">{item.text}</span>
                 </div>
@@ -107,26 +104,20 @@ export default function ContractLandingSection({
             </div>
 
             <div className="flex flex-wrap items-center gap-4">
-              <button
-                onClick={() => scrollTo(formId)}
-                className="rounded-2xl bg-amber-500 px-8 py-4 text-base font-black text-slate-900 shadow-[0_0_30px_rgba(245,158,11,0.2)] transition hover:bg-amber-400 active:scale-95"
-              >
-                {ctaLabel} →
+              <button onClick={() => scrollTo(formId)} className="btn-primary-ref rounded-2xl px-8 py-4 text-base">
+                {ctaLabel} <span aria-hidden>→</span>
               </button>
               <button
                 onClick={() => scrollTo('obsah')}
-                className="text-sm font-semibold text-slate-400 underline decoration-slate-700 underline-offset-4 transition hover:text-white"
+                className="btn-outline-ref rounded-2xl px-6 py-4 text-sm font-semibold text-slate-200"
               >
-                Co dokument obsahuje ↓
+                Co dokument obsahuje
               </button>
             </div>
 
             {guideHref ? (
               <div className="mt-5 border-t border-slate-800/50 pt-5">
-                <Link
-                  href={guideHref}
-                  className="inline-flex items-center gap-2 text-sm text-slate-500 transition hover:text-amber-400"
-                >
+                <Link href={guideHref} className="inline-flex items-center gap-2 text-sm text-slate-400 transition hover:text-amber-400">
                   <svg className="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path
                       strokeLinecap="round"
@@ -177,7 +168,7 @@ export default function ContractLandingSection({
                 <div className="contract-hero-panel-ref">
                   <div className="contract-hero-panel-label-ref">Podpis</div>
                   <div className="contract-hero-panel-copy-ref">
-                    Výsledný PDF dokument je připravený k vytištění, podpisu a založení do evidence.
+                    Výsledné PDF je připravené ke kontrole, podpisu a založení do evidence.
                   </div>
                 </div>
               </div>
@@ -197,34 +188,36 @@ export default function ContractLandingSection({
       </section>
 
       <section id="obsah" className="mx-auto max-w-7xl border-t border-slate-800/50 px-4 py-14 lg:px-8">
-        <div className="mb-8">
-          <div className="mb-2 text-[11px] font-black uppercase tracking-[0.2em] text-amber-400">Obsah dokumentu</div>
-          <h2 className="text-2xl font-black text-white">Co dokument obsahuje</h2>
-          <p className="mt-2 text-sm text-slate-500">
+        <div className="section-heading-ref !text-left">
+          <p className="section-kicker-ref">Obsah dokumentu</p>
+          <h2 className="section-title-ref">Co dokument obsahuje</h2>
+          <p className="mt-3 max-w-2xl text-sm text-slate-400">
             Standardní obsah vygenerovaného dokumentu sestaveného podle vyplněných údajů.
           </p>
         </div>
 
-        <div className="grid gap-12 lg:grid-cols-2">
-          <ul className="space-y-3">
-            {contents.map(item => (
-              <li key={item} className="flex items-start gap-3 text-sm text-slate-300">
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500/15 text-[11px] font-black text-amber-400">
-                  ✓
-                </span>
-                {item}
-              </li>
-            ))}
-          </ul>
+        <div className="premium-page-grid-ref two mt-8 items-start">
+          <div className="premium-page-card-ref p-6">
+            <ul className="space-y-3">
+              {contents.map(item => (
+                <li key={item} className="flex items-start gap-3 text-sm text-slate-300">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500/15 text-[11px] font-black text-amber-400">
+                    ✓
+                  </span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
 
-          <div className="space-y-8">
-            <div>
+          <div className="space-y-6">
+            <div className="premium-page-card-ref p-6">
               <div className="mb-2 text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">Vhodné pro</div>
-              <h2 className="mb-6 text-2xl font-black text-white">Kdy je tento dokument vhodný</h2>
+              <h3 className="mb-5 text-xl font-black text-white">Kdy je tento dokument vhodný</h3>
               <ul className="space-y-3">
                 {whenSuitable.map(item => (
                   <li key={item} className="flex items-start gap-3 text-sm text-slate-300">
-                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-slate-700/60 text-[11px] font-black text-slate-400">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-slate-700/60 text-[11px] font-black text-slate-300">
                       →
                     </span>
                     {item}
@@ -234,8 +227,8 @@ export default function ContractLandingSection({
             </div>
 
             {whenOther && whenOther.length > 0 ? (
-              <div>
-                <div className="mb-3 text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">Jiný dokument?</div>
+              <div className="premium-page-card-soft-ref p-6">
+                <div className="mb-2 text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">Jiný dokument?</div>
                 <h3 className="mb-4 text-base font-black text-white">Kdy zvolit jiný typ</h3>
                 <div className="space-y-3">
                   {whenOther.map(item => (
@@ -261,9 +254,9 @@ export default function ContractLandingSection({
       </section>
 
       <section className="mx-auto max-w-7xl border-t border-slate-800/50 px-4 py-14 lg:px-8">
-        <div className="mb-8">
-          <div className="mb-2 text-[11px] font-black uppercase tracking-[0.2em] text-amber-400">Časté otázky</div>
-          <h2 className="text-2xl font-black text-white">Nejčastější dotazy</h2>
+        <div className="section-heading-ref !text-left">
+          <p className="section-kicker-ref">Časté otázky</p>
+          <h2 className="section-title-ref">Nejčastější dotazy</h2>
         </div>
         <div className="max-w-2xl space-y-3">
           {faq.map((item, idx) => (

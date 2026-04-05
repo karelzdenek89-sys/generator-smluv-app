@@ -20,7 +20,7 @@ export default function KontaktPage() {
     <main className="premium-page-bg-ref flex min-h-screen items-center justify-center px-6 py-20 text-slate-200">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(245,158,11,0.08),transparent_45%)]" />
 
-      <div className="premium-page-shell-ref max-w-2xl">
+      <div className="premium-page-shell-ref max-w-3xl">
         <div className="mb-6">
           <Link href="/" className="premium-back-link-ref">
             ← SmlouvaHned
@@ -28,41 +28,36 @@ export default function KontaktPage() {
         </div>
 
         <div className="premium-page-hero-ref mb-8">
-          <h1 className="mb-3 text-4xl font-black uppercase tracking-tight text-white md:text-5xl">Kontakt</h1>
-          <p className="max-w-lg text-sm text-slate-400">
-            Máte dotaz k objednávce, fakturaci, reklamaci nebo technickému zpřístupnění dokumentu? Napište nám a přidejte
-            co nejvíce informací, abychom vám mohli odpovědět co nejrychleji.
+          <div className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Podpora a kontakt</div>
+          <h1 className="font-heading-serif text-4xl text-white md:text-5xl">Kontakt</h1>
+          <p className="mt-4 max-w-xl text-sm leading-relaxed text-slate-400 md:text-base">
+            Máte dotaz k objednávce, fakturaci, reklamaci nebo technickému zpřístupnění dokumentu? Napište nám a
+            přidejte co nejvíce informací, abychom vám mohli odpovědět co nejrychleji.
           </p>
         </div>
 
-        <div className="premium-page-card-soft-ref mb-10 max-w-lg px-5 py-4 text-xs text-slate-400">
-          <span className="font-bold text-amber-400">Poznámka:</span>{' '}
-          SmlouvaHned neposkytuje individuální právní poradenství. Dotazy na právní výklad, posouzení konkrétní situace
-          nebo doporučení vhodného právního postupu proto nemůžeme řešit. V takovém případě doporučujeme obrátit se na
-          advokáta.
+        <div className="premium-page-card-soft-ref mb-10 max-w-2xl px-5 py-4 text-xs leading-relaxed text-slate-400">
+          <span className="font-bold text-amber-400">Poznámka:</span> SmlouvaHned neposkytuje individuální právní
+          poradenství. Dotazy na právní výklad, posouzení konkrétní situace nebo doporučení vhodného právního postupu
+          proto nemůžeme řešit. V takovém případě doporučujeme obrátit se na advokáta.
         </div>
 
         <div className="premium-page-grid-ref two mb-10">
-          <a
-            href="mailto:info@smlouvahned.cz"
-            className="premium-page-card-ref group p-7 transition hover:-translate-y-0.5 hover:border-amber-500/40"
-          >
-            <div className="mb-4 text-3xl">E-mail</div>
-            <div className="mb-1 text-xs font-black uppercase tracking-widest text-amber-400">Hlavní kontakt</div>
-            <div className="text-sm font-bold text-white transition group-hover:text-amber-400">info@smlouvahned.cz</div>
-            <p className="mt-2 text-xs text-slate-500">Objednávky, reklamace, technická podpora, fakturace</p>
+          <a href="mailto:info@smlouvahned.cz" className="premium-page-card-ref group p-7">
+            <div className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">Hlavní kontakt</div>
+            <div className="text-xl font-bold text-white transition group-hover:text-amber-400">info@smlouvahned.cz</div>
+            <p className="mt-3 text-sm leading-relaxed text-slate-400">Objednávky, reklamace, technická podpora a fakturace.</p>
           </a>
 
           <div className="premium-page-card-ref p-7">
-            <div className="mb-4 text-3xl">Čas odpovědi</div>
-            <div className="mb-1 text-xs font-black uppercase tracking-widest text-amber-400">Orientačně</div>
-            <div className="text-sm font-bold text-white">Obvykle do 2 pracovních dnů</div>
-            <p className="mt-2 text-xs text-slate-500">Po–Pá, podle vytížení podpory</p>
+            <div className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">Orientační odezva</div>
+            <div className="text-xl font-bold text-white">Obvykle do 2 pracovních dnů</div>
+            <p className="mt-3 text-sm leading-relaxed text-slate-400">Po–Pá, podle vytížení podpory a počtu dotazů.</p>
           </div>
         </div>
 
         <div className="premium-page-card-ref mb-8 p-7">
-          <h2 className="mb-4 text-sm font-black uppercase tracking-wider text-white">Co je dobré do zprávy uvést</h2>
+          <h2 className="mb-4 text-sm font-black uppercase tracking-[0.18em] text-white">Co je dobré do zprávy uvést</h2>
           <ul className="space-y-2">
             {supportTopics.map(item => (
               <li key={item} className="flex items-start gap-2 text-sm text-slate-400">
@@ -74,7 +69,7 @@ export default function KontaktPage() {
         </div>
 
         <div className="premium-page-card-ref mb-8 p-7">
-          <h2 className="mb-4 text-sm font-black uppercase tracking-wider text-white">Nejčastější dotazy</h2>
+          <h2 className="mb-4 text-sm font-black uppercase tracking-[0.18em] text-white">Nejčastější dotazy</h2>
           <div className="space-y-4">
             {[
               {
@@ -106,19 +101,14 @@ export default function KontaktPage() {
         </div>
 
         <div className="text-center">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-8 py-4 text-sm font-black uppercase text-black transition hover:bg-amber-400"
-          >
+          <Link href="/" className="btn-primary-ref inline-flex items-center gap-2 rounded-2xl px-8 py-4 text-sm">
             ← Zpět na výběr smluv
           </Link>
         </div>
 
         <div className="premium-footer-ref mt-10 text-center text-xs leading-relaxed text-slate-600">
           <p>Provozovatel: Karel Zdeněk · IČO: 23660295 · Plzeňská 189, 345 61 Staňkov</p>
-          <p className="mt-1">
-            SmlouvaHned je obchodní označení online služby provozované touto osobou. Neposkytujeme právní poradenství.
-          </p>
+          <p className="mt-1">SmlouvaHned je obchodní označení online služby provozované touto osobou. Neposkytujeme právní poradenství.</p>
         </div>
       </div>
     </main>

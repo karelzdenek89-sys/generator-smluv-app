@@ -8,37 +8,37 @@ export const metadata: Metadata = {
     template: '%s | SmlouvaHned',
   },
   description:
-    'Průvodce smlouvami a běžnými právními situacemi. Praktické informace k nájmu, práci, kupním smlouvám, dílu a dalším dokumentům.',
+    'Průvodce smlouvami a běžnými situacemi. Praktické informace k nájmu, práci, kupním smlouvám, dílu a dalším standardizovaným dokumentům.',
 };
 
 export default function BlogLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-[#05080f] text-slate-200">
-      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_at_top,rgba(245,158,11,0.07),transparent_50%)]" />
+    <div className="premium-page-bg-ref min-h-screen text-slate-200">
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(201,169,110,0.08),transparent_42%)]" />
 
       <header className="relative z-20 border-b border-white/6 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-4xl items-center justify-between px-6 py-4">
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
           <Link href="/" className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500 text-sm font-black text-black">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-amber-500/30 bg-amber-500/10 text-sm font-black text-amber-300">
               SH
             </div>
             <div>
-              <div className="font-black leading-tight tracking-tight text-white">SmlouvaHned</div>
-              <div className="text-[10px] uppercase tracking-widest text-slate-500">Online nástroj pro standardizované dokumenty</div>
+              <div className="font-heading-serif text-xl leading-tight text-white">SmlouvaHned</div>
+              <div className="text-[10px] uppercase tracking-[0.22em] text-slate-500">
+                Online nástroj pro standardizované dokumenty
+              </div>
             </div>
           </Link>
-          <nav className="hidden items-center gap-5 text-sm text-slate-400 md:flex">
-            <Link href="/" className="transition hover:text-white">
+
+          <nav className="hidden items-center gap-3 md:flex">
+            <Link href="/" className="nav-link-ref text-sm">
               Smlouvy
             </Link>
-            <Link href="/blog" className="transition hover:text-white">
+            <Link href="/blog" className="nav-link-ref text-sm">
               Blog
             </Link>
-            <Link
-              href="/najem"
-              className="rounded-xl bg-amber-500 px-4 py-2 text-xs font-black uppercase tracking-tight text-black transition hover:bg-amber-400"
-            >
-              Vytvořit smlouvu →
+            <Link href="/#dokumenty" className="nav-cta-ref text-sm">
+              Vybrat dokument <span aria-hidden>→</span>
             </Link>
           </nav>
         </div>
@@ -46,47 +46,41 @@ export default function BlogLayout({ children }: { children: ReactNode }) {
 
       <main className="relative z-10">{children}</main>
 
-      <section className="relative z-10 mx-auto mt-8 max-w-4xl px-6">
-        <div className="rounded-[2rem] border border-amber-500/20 bg-gradient-to-br from-amber-500/10 to-amber-500/3 p-8 text-center shadow-[0_20px_60px_rgba(0,0,0,0.22)]">
-          <div className="mb-2 text-[11px] font-black uppercase tracking-widest text-amber-400">Praktické pokračování</div>
-          <h2 className="mb-4 text-2xl font-black tracking-tight text-white">Potřebujete rovnou připravit dokument?</h2>
-          <p className="mx-auto mb-6 max-w-2xl text-sm leading-relaxed text-slate-300">
-            V článcích najdete vysvětlení a nejčastější chyby. Pokud už víte, co potřebujete, přejděte rovnou do generátoru
-            nebo si zobrazte přehled souvisejících dokumentů.
+      <section className="relative z-10 mx-auto mt-10 max-w-5xl px-6">
+        <div className="premium-page-card-soft-ref p-8 text-center md:p-10">
+          <div className="mb-2 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Praktické pokračování</div>
+          <h2 className="font-heading-serif text-3xl text-white md:text-4xl">Potřebujete rovnou připravit dokument?</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-slate-300 md:text-base">
+            V článcích najdete vysvětlení, souvislosti a časté chyby. Pokud už víte, jaký dokument potřebujete,
+            přejděte rovnou do přehledu typů nebo si zobrazte další související varianty.
           </p>
-          <div className="flex flex-col justify-center gap-3 sm:flex-row">
-            <Link
-              href="/#dokumenty"
-              className="inline-flex items-center justify-center rounded-xl bg-amber-500 px-6 py-3 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400"
-            >
-              Vybrat konkrétní generátor →
+          <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+            <Link href="/#dokumenty" className="btn-primary-ref justify-center rounded-xl px-6 py-3 text-sm">
+              Vybrat konkrétní generátor <span aria-hidden>→</span>
             </Link>
-            <Link
-              href="/#vsechny-dokumenty"
-              className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-6 py-3 text-sm font-bold text-slate-200 transition hover:border-amber-500/25 hover:text-white"
-            >
-              Zobrazit související dokumenty ↗
+            <Link href="/#vsechny-dokumenty" className="btn-outline-ref justify-center rounded-xl px-6 py-3 text-sm">
+              Zobrazit související dokumenty
             </Link>
           </div>
         </div>
       </section>
 
-      <footer className="relative z-10 mt-8 border-t border-white/6 py-8">
-        <div className="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-4 px-6">
-          <div className="text-xs text-slate-600">
-            © 2024-2026 Karel Zdeněk, IČO: 23660295 · SmlouvaHned · Informace na blogu nejsou náhradou za individuální právní poradenství.
+      <footer className="relative z-10 mt-10 border-t border-white/6 py-8">
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-6">
+          <div className="max-w-2xl text-xs leading-relaxed text-slate-500">
+            © 2024-2026 Karel Zdeněk, IČO 23660295 · SmlouvaHned · Informace na blogu nejsou náhradou za individuální právní poradenství.
           </div>
-          <div className="flex gap-4 text-xs text-slate-600">
-            <Link href="/o-projektu" className="transition hover:text-slate-400">
+          <div className="flex flex-wrap gap-4 text-xs text-slate-500">
+            <Link href="/o-projektu" className="transition hover:text-slate-300">
               O projektu
             </Link>
-            <Link href="/obchodni-podminky" className="transition hover:text-slate-400">
+            <Link href="/obchodni-podminky" className="transition hover:text-slate-300">
               Obchodní podmínky
             </Link>
-            <Link href="/gdpr" className="transition hover:text-slate-400">
+            <Link href="/gdpr" className="transition hover:text-slate-300">
               GDPR
             </Link>
-            <Link href="/kontakt" className="transition hover:text-slate-400">
+            <Link href="/kontakt" className="transition hover:text-slate-300">
               Kontakt
             </Link>
           </div>

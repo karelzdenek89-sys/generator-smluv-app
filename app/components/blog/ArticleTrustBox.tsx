@@ -9,7 +9,7 @@ export default function ArticleTrustBox({
 }: ArticleTrustBoxProps) {
   return (
     <div className="my-10 rounded-[1.75rem] border border-slate-700/40 bg-gradient-to-br from-slate-800/40 to-slate-900/40 px-6 py-6 shadow-[0_16px_40px_rgba(0,0,0,0.18)]">
-      <div className="mb-3 text-[10px] font-black uppercase tracking-widest text-slate-500">
+      <div className="mb-3 text-[10px] font-black uppercase tracking-[0.22em] text-slate-500">
         Kdy použít generátor a kdy advokáta
       </div>
       <div className="grid gap-4 text-sm sm:grid-cols-2">

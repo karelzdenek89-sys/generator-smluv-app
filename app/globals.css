@@ -576,6 +576,247 @@ summary:focus-visible {
   border-top: 1.1rem solid #c6a462;
 }
 
+.hero-pdf-preview-stage-ref {
+  position: relative;
+  min-height: 520px;
+  padding: 2.25rem 2rem 1.6rem;
+}
+
+.hero-pdf-page-back-ref {
+  position: absolute;
+  inset: 4.3rem auto auto 2rem;
+  width: min(60%, 320px);
+  min-height: 350px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(232, 236, 245, 0.94), rgba(211, 218, 230, 0.92));
+  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.22);
+  transform: rotate(-7deg);
+  opacity: 0.82;
+}
+
+.hero-pdf-page-back-head-ref {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 1rem 0.7rem;
+  color: #66728a;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hero-pdf-page-back-lines-ref {
+  display: grid;
+  gap: 0.7rem;
+  padding: 0 1rem 1rem;
+}
+
+.hero-pdf-page-back-lines-ref span {
+  display: block;
+  height: 7px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(139, 150, 168, 0.55), rgba(139, 150, 168, 0.18));
+}
+
+.hero-pdf-page-ref {
+  position: relative;
+  z-index: 2;
+  margin-left: auto;
+  width: min(78%, 470px);
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(18, 26, 45, 0.96), rgba(11, 18, 33, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 36px 90px rgba(0, 0, 0, 0.42);
+  overflow: hidden;
+}
+
+.hero-pdf-toolbar-ref {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: #96a3bb;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+}
+
+.hero-pdf-document-ref {
+  margin: 1rem;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgba(251, 248, 242, 0.99), rgba(242, 236, 228, 0.99));
+  box-shadow: inset 0 0 0 1px rgba(91, 74, 46, 0.1), 0 10px 24px rgba(0, 0, 0, 0.14);
+  padding: 1.25rem 1.25rem 1.1rem;
+}
+
+.hero-pdf-document-top-ref {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.hero-pdf-brand-ref {
+  color: #77613d;
+  font-size: 0.73rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hero-pdf-status-ref {
+  color: #6e798f;
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero-pdf-title-ref {
+  margin-top: 1rem;
+  color: #6b5430;
+  font-family: var(--font-serif), "Times New Roman", serif;
+  font-size: clamp(1.5rem, 2.2vw, 2.05rem);
+  line-height: 1;
+  text-align: center;
+  letter-spacing: 0.08em;
+}
+
+.hero-pdf-subtitle-ref {
+  margin-top: 0.42rem;
+  color: #8b7a60;
+  font-size: 0.74rem;
+  text-align: center;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hero-pdf-meta-grid-ref {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-top: 1.15rem;
+}
+
+.hero-pdf-meta-card-ref {
+  border: 1px solid rgba(122, 98, 63, 0.14);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.38);
+  padding: 0.75rem 0.82rem;
+}
+
+.hero-pdf-meta-label-ref {
+  color: #8f7244;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero-pdf-meta-value-ref {
+  margin-top: 0.32rem;
+  color: #2b2e38;
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.hero-pdf-meta-copy-ref {
+  margin-top: 0.18rem;
+  color: #666252;
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
+.hero-pdf-section-ref {
+  display: grid;
+  grid-template-columns: 1.2rem minmax(0, 1fr);
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+}
+
+.hero-pdf-section-index-ref {
+  color: #8f7244;
+  font-size: 0.8rem;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.hero-pdf-section-title-ref {
+  color: #5c4830;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.hero-pdf-paragraph-ref {
+  margin-top: 0.18rem;
+  color: #534a3d;
+  font-size: 0.74rem;
+  line-height: 1.45;
+}
+
+.hero-pdf-signature-zone-ref {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.2rem;
+  padding-top: 1rem;
+}
+
+.hero-pdf-signature-line-ref span {
+  display: block;
+  height: 1px;
+  background: rgba(84, 71, 49, 0.42);
+}
+
+.hero-pdf-signature-line-ref p {
+  margin: 0.28rem 0 0;
+  color: #76654d;
+  font-size: 0.67rem;
+  text-align: center;
+}
+
+.hero-pdf-caption-ref {
+  position: absolute;
+  left: 1.4rem;
+  bottom: 1.3rem;
+  z-index: 3;
+  width: min(42%, 250px);
+  padding: 1rem 1rem 0.95rem;
+  border: 1px solid rgba(201, 169, 110, 0.24);
+  border-radius: 16px;
+  background: rgba(7, 13, 27, 0.82);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(10px);
+}
+
+.hero-pdf-caption-kicker-ref {
+  color: #d8bb85;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.hero-pdf-caption-title-ref {
+  margin-top: 0.45rem;
+  color: #f7f0e2;
+  font-family: var(--font-serif), "Times New Roman", serif;
+  font-size: 1.18rem;
+  line-height: 1.05;
+}
+
+.hero-pdf-caption-ref p {
+  margin: 0.55rem 0 0;
+  color: #c2ccdc;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
 .contracts-panel-ref {
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 14px;
@@ -1881,6 +2122,16 @@ summary:focus-visible {
     justify-content: center;
   }
 
+  .hero-pdf-page-ref {
+    width: min(82%, 460px);
+  }
+
+  .hero-pdf-caption-ref {
+    left: 1rem;
+    bottom: 1rem;
+    width: min(48%, 240px);
+  }
+
   .trust-row-ref {
     grid-template-columns: 1fr;
     gap: .2rem;
@@ -1927,6 +2178,38 @@ summary:focus-visible {
 
   .contracts-grid-ref {
     grid-template-columns: 1fr;
+  }
+
+  .hero-pdf-preview-stage-ref {
+    min-height: 430px;
+    padding: 1rem;
+  }
+
+  .hero-pdf-page-back-ref {
+    inset: 3rem auto auto 0.7rem;
+    width: 58%;
+    min-height: 250px;
+  }
+
+  .hero-pdf-page-ref {
+    width: min(86%, 360px);
+  }
+
+  .hero-pdf-document-ref {
+    margin: 0.8rem;
+    padding: 1rem 0.95rem 0.9rem;
+  }
+
+  .hero-pdf-meta-grid-ref {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-pdf-caption-ref {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    width: auto;
+    margin: 0.8rem 2.8rem 0 0.2rem;
   }
 
   .nav-cta-ref {

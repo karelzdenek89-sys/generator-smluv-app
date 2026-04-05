@@ -44,7 +44,7 @@ export default function OProjektuPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_10%,rgba(245,158,11,0.06),transparent_40%)]" />
 
-      <div className="premium-page-shell-ref max-w-3xl">
+      <div className="premium-page-shell-ref max-w-4xl">
         <div className="mb-8">
           <Link href="/" className="premium-back-link-ref">
             ← SmlouvaHned
@@ -53,14 +53,14 @@ export default function OProjektuPage() {
 
         <div className="premium-page-hero-ref mb-12">
           <div className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Transparentnost</div>
-          <h1 className="mb-4 text-4xl font-black tracking-tight text-white md:text-5xl">
+          <h1 className="font-heading-serif text-4xl text-white md:text-5xl">
             Co SmlouvaHned je
             <br />
-            <span className="text-amber-500">a kde má své limity</span>
+            <span className="text-amber-400">a kde má své limity</span>
           </h1>
-          <p className="max-w-2xl text-base leading-relaxed text-slate-400">
-            SmlouvaHned je online nástroj pro sestavení standardizovaných smluvních dokumentů. Chceme mít jasně popsáno,
-            kdo službu provozuje, jak funguje a kdy je rozumnější obrátit se přímo na advokáta.
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-400">
+            SmlouvaHned je online nástroj pro sestavení standardizovaných smluvních dokumentů. Chceme mít jasně
+            popsáno, kdo službu provozuje, jak funguje a kdy je rozumnější obrátit se přímo na advokáta.
           </p>
         </div>
 
@@ -84,12 +84,12 @@ export default function OProjektuPage() {
         </section>
 
         <section className="space-y-6 text-sm leading-relaxed text-slate-300">
-          <div>
+          <div className="premium-page-card-ref p-7">
             <h2 className="mb-3 text-xl font-black text-white">Jak nástroj funguje</h2>
             <p>
               Uživatel vyplní formulář s konkrétními údaji a systém z nich sestaví dokument podle připravené šablony pro
-              daný typ smlouvy. Smyslem nástroje je zjednodušit běžné situace, ve kterých se strany na obsahu již shodly a
-              potřebují jej zachytit přehledně a písemně.
+              daný typ smlouvy. Smyslem nástroje je zjednodušit běžné situace, ve kterých se strany na obsahu již shodly
+              a potřebují jej zachytit přehledně a písemně.
             </p>
             <p className="mt-3">
               Obsah šablon vychází z obvyklých náležitostí daného typu dokumentu a z české legislativy platné v době
@@ -98,11 +98,11 @@ export default function OProjektuPage() {
             </p>
           </div>
 
-          <div>
+          <div className="premium-page-card-ref p-7">
             <h2 className="mb-3 text-xl font-black text-white">Co od služby čekat</h2>
             <p>
-              SmlouvaHned pomáhá se strukturovaným zapsáním dohodnutých podmínek. Soustředíme se na srozumitelný formulář,
-              jasné vysvětlení variant služby a transparentní obchodní informace.
+              SmlouvaHned pomáhá se strukturovaným zapsáním dohodnutých podmínek. Soustředíme se na srozumitelný
+              formulář, jasné vysvětlení variant služby a transparentní obchodní informace.
             </p>
           </div>
 
@@ -121,7 +121,7 @@ export default function OProjektuPage() {
             </div>
           </div>
 
-          <div>
+          <div className="premium-page-card-ref p-7">
             <h2 className="mb-3 text-xl font-black text-white">Kdy doporučujeme advokáta</h2>
             <ul className="space-y-2">
               {[
@@ -139,12 +139,7 @@ export default function OProjektuPage() {
             </ul>
             <p className="mt-4 text-slate-400">
               Seznam advokátů najdete na webu{' '}
-              <a
-                href="https://www.cak.cz"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-amber-400 underline underline-offset-2 transition hover:text-amber-300"
-              >
+              <a href="https://www.cak.cz" target="_blank" rel="noopener noreferrer" className="text-amber-400 underline underline-offset-2 transition hover:text-amber-300">
                 České advokátní komory
               </a>
               .
@@ -161,16 +156,10 @@ export default function OProjektuPage() {
         </section>
 
         <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-          <Link
-            href="/"
-            className="flex-1 rounded-2xl bg-amber-500 py-4 text-center text-sm font-black uppercase text-black transition hover:bg-amber-400"
-          >
-            Vybrat typ smlouvy →
+          <Link href="/" className="btn-primary-ref flex-1 justify-center rounded-2xl py-4 text-sm">
+            Vybrat typ smlouvy <span aria-hidden>→</span>
           </Link>
-          <Link
-            href="/kontakt"
-            className="flex-1 rounded-2xl border border-white/10 bg-white/5 py-4 text-center text-sm font-bold uppercase tracking-wider text-white transition hover:bg-white/10"
-          >
+          <Link href="/kontakt" className="btn-outline-ref flex-1 justify-center rounded-2xl py-4 text-sm">
             Kontakt
           </Link>
         </div>

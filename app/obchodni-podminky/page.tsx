@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 const priceList = [
   { label: 'Základní dokument', value: '249 Kč vč. DPH' },
-  { label: 'Rozšířená ochrana', value: '399 Kč vč. DPH' },
+  { label: 'Rozšířený dokument', value: '399 Kč vč. DPH' },
   { label: 'Kompletní balíček', value: '749 Kč vč. DPH' },
 ];
 
@@ -19,7 +19,7 @@ export default function TermsPage() {
     <main className="premium-page-bg-ref px-6 py-16 font-sans text-slate-300">
       <div className="pointer-events-none absolute left-1/2 top-0 h-64 w-full -translate-x-1/2 bg-amber-500/4 blur-[120px]" />
 
-      <div className="premium-page-shell-ref max-w-3xl">
+      <div className="premium-page-shell-ref max-w-4xl">
         <div className="mb-3">
           <Link href="/" className="premium-back-link-ref">
             ← SmlouvaHned
@@ -27,10 +27,11 @@ export default function TermsPage() {
         </div>
 
         <div className="premium-page-hero-ref mb-12">
-          <h1 className="mb-3 text-4xl font-black uppercase italic tracking-tighter text-white md:text-5xl">
-            Obchodní <span className="text-amber-500">podmínky</span>
+          <div className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Smluvní a obchodní informace</div>
+          <h1 className="font-heading-serif text-4xl text-white md:text-5xl">
+            Obchodní <span className="text-amber-400">podmínky</span>
           </h1>
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-slate-500">Platné od 4. 4. 2026 • SmlouvaHned.cz</p>
+          <p className="mt-4 text-xs font-bold uppercase tracking-[0.22em] text-slate-500">Platné od 4. 4. 2026 · SmlouvaHned.cz</p>
         </div>
 
         <div className="space-y-10 text-sm leading-relaxed">
@@ -41,15 +42,15 @@ export default function TermsPage() {
                 <div className="mb-1 text-sm font-black text-white">Důležité upozornění</div>
                 <p className="text-xs leading-relaxed text-rose-200">
                   SmlouvaHned.cz není advokátní kancelář a neposkytuje právní služby ve smyslu zákona č. 85/1996 Sb., o
-                  advokacii. Jde o online software pro sestavení standardizovaných smluvních dokumentů podle údajů zadaných
-                  uživatelem. U složitých, sporných nebo nestandardních situací doporučujeme konzultaci s advokátem.
+                  advokacii. Jde o online software pro sestavení standardizovaných smluvních dokumentů podle údajů
+                  zadaných uživatelem. U složitých, sporných nebo nestandardních situací doporučujeme konzultaci s advokátem.
                 </p>
               </div>
             </div>
           </section>
 
-          <section>
-            <h2 className="mb-4 text-xs font-black uppercase tracking-widest text-amber-500">01. Provozovatel a identifikační údaje</h2>
+          <section className="premium-page-card-ref p-8">
+            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">01. Provozovatel a identifikační údaje</h2>
             <p className="mb-3">
               Provozovatelem webu, prodávajícím a poskytovatelem služby je <strong className="text-white">Karel Zdeněk</strong>, IČO
               23660295, s místem podnikání Plzeňská 189, 345 61 Staňkov, kontaktní e-mail:{' '}
@@ -59,15 +60,9 @@ export default function TermsPage() {
               . Web SmlouvaHned.cz je obchodní označení online platformy provozované touto osobou.
             </p>
             <div className="space-y-1 rounded-2xl border border-white/5 bg-[#0c1426]/60 p-5 text-sm">
-              <p>
-                <strong className="text-white">Provozovatel:</strong> Karel Zdeněk
-              </p>
-              <p>
-                <strong className="text-white">IČO:</strong> 23660295
-              </p>
-              <p>
-                <strong className="text-white">Místo podnikání:</strong> Plzeňská 189, 345 61 Staňkov
-              </p>
+              <p><strong className="text-white">Provozovatel:</strong> Karel Zdeněk</p>
+              <p><strong className="text-white">IČO:</strong> 23660295</p>
+              <p><strong className="text-white">Místo podnikání:</strong> Plzeňská 189, 345 61 Staňkov</p>
               <p>
                 <strong className="text-white">Kontaktní e-mail:</strong>{' '}
                 <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">
@@ -81,21 +76,20 @@ export default function TermsPage() {
             </p>
           </section>
 
-          <section>
-            <h2 className="mb-4 text-xs font-black uppercase tracking-widest text-amber-500">02. Předmět služby</h2>
+          <section className="premium-page-card-ref p-8">
+            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">02. Předmět služby</h2>
             <p className="mb-3">
               Předmětem služby je umožnění zákazníkovi sestavit standardizovaný smluvní dokument na základě údajů vložených do
               online formuláře. Výstupem je soubor ve formátu PDF určený k závěrečné kontrole a podpisu.
             </p>
             <p>
               Služba je určena pro běžné a typizované situace, ve kterých se strany shodly na obsahu dokumentu.
-              Poskytovatel neprovádí individuální právní posouzení konkrétní situace zákazníka a neposkytuje právní
-              zastoupení.
+              Poskytovatel neprovádí individuální právní posouzení konkrétní situace zákazníka a neposkytuje právní zastoupení.
             </p>
           </section>
 
-          <section>
-            <h2 className="mb-4 text-xs font-black uppercase tracking-widest text-amber-500">03. Uzavření smlouvy a objednávka</h2>
+          <section className="premium-page-card-ref p-8">
+            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">03. Uzavření smlouvy a objednávka</h2>
             <p className="mb-3">
               Smlouva mezi poskytovatelem a zákazníkem vzniká odesláním objednávky a úspěšným provedením platby. Zákazník
               před dokončením objednávky vidí vybraný typ dokumentu, zvolenou variantu, cenu a související podmínky.
@@ -106,8 +100,8 @@ export default function TermsPage() {
             </p>
           </section>
 
-          <section>
-            <h2 className="mb-4 text-xs font-black uppercase tracking-widest text-amber-500">04. Ceny a platební podmínky</h2>
+          <section className="premium-page-card-ref p-8">
+            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">04. Ceny a platební podmínky</h2>
             <div className="mb-3 space-y-2 rounded-2xl border border-white/5 bg-[#0c1426]/60 p-5 text-sm">
               {priceList.map(item => (
                 <div key={item.label} className="flex justify-between gap-4">
@@ -124,8 +118,8 @@ export default function TermsPage() {
             <p>Všechny ceny uvedené na webu jsou konečné, včetně DPH, pokud se na dané plnění DPH vztahuje.</p>
           </section>
 
-          <section>
-            <h2 className="mb-4 text-xs font-black uppercase tracking-widest text-amber-500">05. Funkčnost digitálního obsahu, kompatibilita a doba dostupnosti</h2>
+          <section className="premium-page-card-ref p-8">
+            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">05. Funkčnost digitálního obsahu, kompatibilita a doba dostupnosti</h2>
             <p className="mb-3">
               Výstupem služby je digitální obsah ve formátu PDF. Dokument je zpřístupněn online po úspěšném dokončení
               platby bez nutnosti zakládání uživatelského účtu.
@@ -140,14 +134,14 @@ export default function TermsPage() {
                 počítači, tabletu nebo mobilním telefonu.
               </p>
               <p className="mt-2">
-                <strong className="text-white">Doba dostupnosti odkazu:</strong> 7 dní u Základního dokumentu, 14 dní u
-                Rozšířené ochrany a 30 dní u Kompletního balíčku.
+                <strong className="text-white">Doba dostupnosti odkazu:</strong> 7 dnů u Základního dokumentu, 14 dnů u
+                Rozšířeného dokumentu a 30 dnů u Kompletního balíčku.
               </p>
             </div>
           </section>
 
-          <section>
-            <h2 className="mb-4 text-xs font-black uppercase tracking-widest text-amber-500">06. Odstoupení od smlouvy</h2>
+          <section className="premium-page-card-ref p-8">
+            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">06. Odstoupení od smlouvy</h2>
             <p className="mb-3">
               Zákazník objednává digitální obsah, který je zpřístupněn bezprostředně po zaplacení. Před dokončením objednávky
               zákazník výslovně souhlasí s okamžitým zpřístupněním digitálního obsahu a bere na vědomí, že tím ztrácí právo
@@ -159,8 +153,8 @@ export default function TermsPage() {
             </p>
           </section>
 
-          <section>
-            <h2 className="mb-4 text-xs font-black uppercase tracking-widest text-amber-500">07. Práva z vadného plnění a reklamace</h2>
+          <section className="premium-page-card-ref p-8">
+            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">07. Práva z vadného plnění a reklamace</h2>
             <p className="mb-3">
               Poskytovatel odpovídá za to, že digitální obsah při zpřístupnění odpovídá smlouvě, zejména že je dostupný,
               čitelný, technicky funkční a odpovídá údajům zadaným zákazníkem v rozsahu, v jakém je výstup vytvářen systémem.
@@ -175,14 +169,14 @@ export default function TermsPage() {
               <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">
                 info@smlouvahned.cz
               </a>
-              . Uveďte prosím co nejpřesnější popis problému, identifikaci objednávky a případně screenshot nebo jiný
-              podklad. Přijetí reklamace bez zbytečného odkladu potvrdíme a vyřídíme ji v zákonné lhůtě.
+              . Uveďte co nejpřesnější popis problému, identifikaci objednávky a případně screenshot nebo jiný podklad.
+              Přijetí reklamace bez zbytečného odkladu potvrdíme a vyřídíme ji v zákonné lhůtě.
             </p>
             <p>Reklamace se nevztahuje na obsahové chyby způsobené nesprávnými nebo neúplnými údaji, které do formuláře zadal zákazník sám.</p>
           </section>
 
-          <section>
-            <h2 className="mb-4 text-xs font-black uppercase tracking-widest text-amber-500">08. Mimosoudní řešení spotřebitelských sporů</h2>
+          <section className="premium-page-card-ref p-8">
+            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">08. Mimosoudní řešení spotřebitelských sporů</h2>
             <p className="mb-3">
               V případě spotřebitelského sporu, který se nepodaří vyřešit dohodou přímo mezi zákazníkem a poskytovatelem,
               může spotřebitel podat návrh na mimosoudní řešení sporu k subjektu mimosoudního řešení spotřebitelských sporů,
@@ -201,8 +195,8 @@ export default function TermsPage() {
             </div>
           </section>
 
-          <section>
-            <h2 className="mb-4 text-xs font-black uppercase tracking-widest text-amber-500">09. Ochrana osobních údajů a duševní vlastnictví</h2>
+          <section className="premium-page-card-ref p-8">
+            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">09. Ochrana osobních údajů a duševní vlastnictví</h2>
             <p className="mb-3">
               Informace o zpracování osobních údajů jsou uvedeny samostatně na stránce{' '}
               <Link href="/gdpr" className="text-amber-400 hover:underline">
@@ -216,8 +210,8 @@ export default function TermsPage() {
             </p>
           </section>
 
-          <section>
-            <h2 className="mb-4 text-xs font-black uppercase tracking-widest text-amber-500">10. Závěrečná ustanovení</h2>
+          <section className="premium-page-card-ref p-8">
+            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">10. Závěrečná ustanovení</h2>
             <p className="mb-3">
               Tyto obchodní podmínky se řídí právním řádem České republiky. Změny obchodních podmínek nemají vliv na objednávky
               dokončené před jejich účinností.
@@ -228,11 +222,8 @@ export default function TermsPage() {
           </section>
 
           <section className="premium-footer-ref flex flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left">
-            <p className="text-[10px] uppercase tracking-widest text-slate-600">Karel Zdeněk · IČO 23660295 · SmlouvaHned.cz © 2026</p>
-            <Link
-              href="/"
-              className="rounded-full border border-white/10 bg-white/5 px-8 py-3 text-[10px] font-black uppercase text-white transition hover:bg-amber-500 hover:text-black"
-            >
+            <p className="text-[10px] uppercase tracking-[0.22em] text-slate-600">Karel Zdeněk · IČO 23660295 · SmlouvaHned.cz © 2026</p>
+            <Link href="/" className="btn-outline-ref rounded-full px-8 py-3 text-[10px] font-black uppercase">
               Zpět na úvodní stránku
             </Link>
           </section>

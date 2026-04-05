@@ -3,7 +3,7 @@ import localFont from 'next/font/local';
 import './globals.css';
 import CookiesBanner from '@/app/components/CookiesBanner';
 
-const inter = localFont({
+const sansFont = localFont({
   src: [
     { path: '../public/fonts/Roboto-Regular.ttf', weight: '400', style: 'normal' },
     { path: '../public/fonts/Roboto-Bold.ttf', weight: '700', style: 'normal' },
@@ -12,7 +12,7 @@ const inter = localFont({
   display: 'swap',
 });
 
-const playfair = localFont({
+const serifFont = localFont({
   src: [
     { path: '../public/fonts/Roboto-Regular.ttf', weight: '400', style: 'normal' },
     { path: '../public/fonts/Roboto-Bold.ttf', weight: '700', style: 'normal' },
@@ -26,11 +26,11 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: 'SmlouvaHned | Smluvní dokumenty online',
+    default: 'SmlouvaHned | Standardizované smluvní dokumenty online',
     template: '%s | SmlouvaHned',
   },
   description:
-    'Sestavte nájemní smlouvu, kupní smlouvu, darovací smlouvu, smlouvu o dílo, zápůjčku nebo NDA online. Přehledný formulář, bezpečná platba a PDF výstup připravený ke kontrole a podpisu.',
+    'Online nástroj pro tvorbu standardizovaných smluvních dokumentů pro běžné životní a podnikatelské situace. Přehledný formulář, bezpečná platba a PDF připravené ke kontrole a podpisu.',
   keywords: [
     'nájemní smlouva',
     'kupní smlouva',
@@ -42,8 +42,8 @@ export const metadata: Metadata = {
     'generátor smluv',
     'online smlouva',
     'šablona smlouvy',
-    'právní dokument',
-    'smlouva PDF',
+    'smluvní dokument',
+    'PDF dokument',
     '2026',
   ],
   authors: [{ name: 'SmlouvaHned', url: BASE_URL }],
@@ -53,21 +53,21 @@ export const metadata: Metadata = {
     locale: 'cs_CZ',
     url: BASE_URL,
     siteName: 'SmlouvaHned',
-    title: 'SmlouvaHned | Smluvní dokumenty online',
+    title: 'SmlouvaHned | Standardizované smluvní dokumenty online',
     description:
-      'Nájemní smlouva, kupní smlouva, NDA a další dokumenty online. Přehledný formulář a PDF výstup připravený ke kontrole a podpisu.',
+      'Nájemní smlouva, kupní smlouva, NDA a další standardizované dokumenty online. Přehledný formulář a PDF připravené ke kontrole a podpisu.',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'SmlouvaHned – smluvní dokumenty online',
+        alt: 'SmlouvaHned – standardizované smluvní dokumenty online',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SmlouvaHned | Smluvní dokumenty online',
+    title: 'SmlouvaHned | Standardizované smluvní dokumenty online',
     description: 'Typové smluvní dokumenty online. Přehledný formulář, bezpečná platba a PDF výstup.',
     images: ['/og-image.png'],
   },
@@ -153,7 +153,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${inter.variable} ${playfair.variable} bg-[#060912] text-[#d7dee8] antialiased`}
+        className={`${sansFont.variable} ${serifFont.variable} bg-[#060912] text-[#d7dee8] antialiased`}
         style={{ colorScheme: 'dark' }}
       >
         {children}

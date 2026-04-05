@@ -130,15 +130,6 @@ function DocumentIcon() {
   );
 }
 
-function HeroContractIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden>
-      <rect x="3.25" y="2.75" width="15.5" height="16.5" rx="2.25" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M7 8h8M7 11h8M7 14h4.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 const navLinks = [
   { href: '#jak-to-funguje', label: 'Jak to funguje' },
   { href: '#dokumenty', label: 'Typy dokumentů' },
@@ -161,36 +152,11 @@ const proofItems = [
 ];
 
 const contractCards = [
-  {
-    href: '/najem',
-    title: 'Nájemní smlouva',
-    subtitle: 'Byty, domy, nebytové prostory',
-    icon: <HouseIcon />,
-  },
-  {
-    href: '/auto',
-    title: 'Kupní smlouva na vozidlo',
-    subtitle: 'Osobní auta, motocykly, přívěsy',
-    icon: <CarIcon />,
-  },
-  {
-    href: '/darovaci',
-    title: 'Darovací smlouva',
-    subtitle: 'Majetek, peníze, movité věci',
-    icon: <GiftIcon />,
-  },
-  {
-    href: '/smlouva-o-dilo',
-    title: 'Smlouva o dílo',
-    subtitle: 'Práce, služby, projekty',
-    icon: <PenIcon />,
-  },
-  {
-    href: '#vsechny-dokumenty',
-    title: 'Další dokumenty',
-    subtitle: 'Plná moc, zápůjčka a další',
-    icon: <DocumentIcon />,
-  },
+  { href: '/najem', title: 'Nájemní smlouva', subtitle: 'Byty, domy, nebytové prostory', icon: <HouseIcon /> },
+  { href: '/auto', title: 'Kupní smlouva na vozidlo', subtitle: 'Osobní auta, motocykly, přívěsy', icon: <CarIcon /> },
+  { href: '/darovaci', title: 'Darovací smlouva', subtitle: 'Majetek, peníze, movité věci', icon: <GiftIcon /> },
+  { href: '/smlouva-o-dilo', title: 'Smlouva o dílo', subtitle: 'Práce, služby, projekty', icon: <PenIcon /> },
+  { href: '#vsechny-dokumenty', title: 'Další dokumenty', subtitle: 'Plná moc, zápůjčka a další', icon: <DocumentIcon /> },
 ];
 
 const pricingTiers = [
@@ -201,7 +167,7 @@ const pricingTiers = [
     points: [
       'Dokument sestavený podle vyplněných údajů',
       'Základní smluvní struktura pro standardní použití',
-      'Dostupnost odkazu ke stažení po dobu 7 dní',
+      'Dostupnost odkazu ke stažení po dobu 7 dnů',
     ],
   },
   {
@@ -211,7 +177,7 @@ const pricingTiers = [
     points: [
       'Vše ze Základního dokumentu',
       'Rozšířené klauzule podle typu dokumentu',
-      'Dostupnost odkazu ke stažení po dobu 14 dní',
+      'Dostupnost odkazu ke stažení po dobu 14 dnů',
     ],
   },
   {
@@ -221,7 +187,7 @@ const pricingTiers = [
     points: [
       'Vše z Rozšířeného dokumentu',
       'Checklist a doprovodné instrukce podle varianty',
-      'Dostupnost odkazu ke stažení po dobu 30 dní',
+      'Dostupnost odkazu ke stažení po dobu 30 dnů',
     ],
   },
 ];
@@ -294,8 +260,8 @@ export default function Home() {
                 </h1>
 
                 <p className="hero-lead-ref">
-                  Vyplníte přehledný formulář, zvolíte variantu a po zaplacení získáte dokument v PDF připravený ke kontrole
-                  a podpisu. Pro běžné životní a podnikatelské situace, ve kterých se strany shodly na obsahu.
+                  Vyplníte přehledný formulář, zvolíte variantu a po zaplacení získáte dokument v PDF připravený ke kontrole a podpisu.
+                  Pro běžné životní a podnikatelské situace, ve kterých se strany shodly na obsahu.
                 </p>
 
                 <div className="hero-cta-row-ref">
@@ -321,56 +287,97 @@ export default function Home() {
                 <div className="hero-visual-inner-ref">
                   <div className="hero-premium-art-ref" aria-hidden>
                     <div className="hero-premium-backdrop-ref" />
-                    <div className="hero-premium-folder-ref" />
-                    <div className="hero-premium-sheet-ref">
-                      <div className="hero-sheet-header-ref">
-                        <span className="hero-sheet-icon-ref">
-                          <HeroContractIcon />
-                        </span>
-                        <div>
-                          <div className="hero-sheet-kicker-ref">SmlouvaHned.cz</div>
-                          <div className="hero-sheet-title-ref">Připravený dokument</div>
-                        </div>
-                      </div>
 
-                      <div className="hero-sheet-lines-ref">
-                        <span />
-                        <span />
-                        <span />
-                      </div>
-
-                      <div className="hero-sheet-grid-ref">
-                        <div className="hero-sheet-section-ref">
-                          <div className="hero-sheet-label-ref">Strany</div>
-                          <div className="hero-sheet-copy-ref">Identifikace účastníků a základní údaje na jednom místě.</div>
+                    <div className="hero-pdf-preview-stage-ref">
+                      <div className="hero-pdf-page-back-ref">
+                        <div className="hero-pdf-page-back-head-ref">
+                          <span>Příloha</span>
+                          <span>Souhrn údajů</span>
                         </div>
-                        <div className="hero-sheet-section-ref">
-                          <div className="hero-sheet-label-ref">Podmínky</div>
-                          <div className="hero-sheet-copy-ref">Cena, termíny a klíčová ujednání ve čitelné struktuře.</div>
-                        </div>
-                        <div className="hero-sheet-section-ref">
-                          <div className="hero-sheet-label-ref">Podpis</div>
-                          <div className="hero-sheet-copy-ref">Finální PDF připravené ke kontrole, podpisu a archivaci.</div>
-                        </div>
-                      </div>
-
-                      <div className="hero-sheet-footer-ref">
-                        <div className="hero-seal-ref" />
-                        <div className="hero-signatures-ref">
+                        <div className="hero-pdf-page-back-lines-ref">
+                          <span />
+                          <span />
                           <span />
                           <span />
                         </div>
                       </div>
-                    </div>
 
-                    <div className="hero-premium-sidecard-ref">
-                      <div className="hero-sidecard-kicker-ref">Po zaplacení</div>
-                      <div className="hero-sidecard-title-ref">PDF připravené ke kontrole a podpisu</div>
-                      <ul className="hero-sidecard-points-ref">
-                        <li>Jasná struktura</li>
-                        <li>Přehledné sekce</li>
-                        <li>Dostupnost dle varianty</li>
-                      </ul>
+                      <div className="hero-pdf-page-ref">
+                        <div className="hero-pdf-toolbar-ref">
+                          <span>PDF</span>
+                          <span>1 / 3</span>
+                        </div>
+
+                        <div className="hero-pdf-document-ref">
+                          <div className="hero-pdf-document-top-ref">
+                            <div className="hero-pdf-brand-ref">SmlouvaHned.cz</div>
+                            <div className="hero-pdf-status-ref">Připraveno ke kontrole a podpisu</div>
+                          </div>
+
+                          <div className="hero-pdf-title-ref">NÁJEMNÍ SMLOUVA</div>
+                          <div className="hero-pdf-subtitle-ref">ukázka výsledného PDF dokumentu</div>
+
+                          <div className="hero-pdf-meta-grid-ref">
+                            <div className="hero-pdf-meta-card-ref">
+                              <div className="hero-pdf-meta-label-ref">Pronajímatel</div>
+                              <div className="hero-pdf-meta-value-ref">Jan Novák, nar. 12. 3. 1985</div>
+                              <div className="hero-pdf-meta-copy-ref">Vzorová adresa 18, 150 00 Praha</div>
+                            </div>
+                            <div className="hero-pdf-meta-card-ref">
+                              <div className="hero-pdf-meta-label-ref">Nájemce</div>
+                              <div className="hero-pdf-meta-value-ref">Petra Svobodová, nar. 8. 9. 1990</div>
+                              <div className="hero-pdf-meta-copy-ref">Ukázková 4, 602 00 Brno</div>
+                            </div>
+                          </div>
+
+                          <div className="hero-pdf-section-ref">
+                            <div className="hero-pdf-section-index-ref">1.</div>
+                            <div>
+                              <div className="hero-pdf-section-title-ref">Předmět nájmu</div>
+                              <div className="hero-pdf-paragraph-ref">
+                                Bytová jednotka č. 12 o dispozici 2+kk, adresa U Lesa 123, Praha 5, včetně sklepa a společných prostor domu.
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="hero-pdf-section-ref">
+                            <div className="hero-pdf-section-index-ref">2.</div>
+                            <div>
+                              <div className="hero-pdf-section-title-ref">Nájemné a platby</div>
+                              <div className="hero-pdf-paragraph-ref">
+                                Nájemné činí 18 500 Kč měsíčně. Zálohy na služby 3 200 Kč. Splatnost vždy do 5. dne příslušného měsíce převodem na účet pronajímatele.
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="hero-pdf-section-ref">
+                            <div className="hero-pdf-section-index-ref">3.</div>
+                            <div>
+                              <div className="hero-pdf-section-title-ref">Doba trvání</div>
+                              <div className="hero-pdf-paragraph-ref">
+                                Smlouva se uzavírá na dobu určitou od 1. 7. 2026 do 30. 6. 2027, s možností prodloužení písemnou dohodou stran.
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="hero-pdf-signature-zone-ref">
+                            <div className="hero-pdf-signature-line-ref">
+                              <span />
+                              <p>Pronajímatel</p>
+                            </div>
+                            <div className="hero-pdf-signature-line-ref">
+                              <span />
+                              <p>Nájemce</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="hero-pdf-caption-ref">
+                        <div className="hero-pdf-caption-kicker-ref">Reálný výstup produktu</div>
+                        <div className="hero-pdf-caption-title-ref">Ukázka výsledného PDF dokumentu</div>
+                        <p>Vzorové údaje, finální struktura připravená ke kontrole a podpisu.</p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -382,8 +389,8 @@ export default function Home() {
                 Jasně vymezená služba pro běžné situace
               </div>
               <p className="max-w-4xl text-sm leading-relaxed text-slate-300 md:text-base">
-                SmlouvaHned je online nástroj pro tvorbu standardizovaných smluvních dokumentů. Nejde o individuální právní
-                poradenství. Právě proto na webu otevřeně uvádíme, kdy je služba vhodná a kdy už doporučujeme obrátit se na advokáta.
+                SmlouvaHned je online nástroj pro tvorbu standardizovaných smluvních dokumentů. Nejde o individuální právní poradenství.
+                Právě proto na webu otevřeně uvádíme, kdy je služba vhodná a kdy už doporučujeme obrátit se na advokáta.
               </p>
             </section>
 
@@ -402,8 +409,8 @@ export default function Home() {
                 <h2 className="section-title-ref">Co přesně získáte po zaplacení</h2>
               </div>
               <p className="max-w-3xl text-sm leading-relaxed text-slate-300 md:text-base">
-                Hotový dokument v PDF připravený k podpisu, sestavený podle údajů, které zadáte ve formuláři. U vybraných typů
-                dokumentů také odpovídající přílohy a doprovodné podklady podle zvolené varianty.
+                Hotový dokument v PDF připravený k podpisu, sestavený podle údajů, které zadáte ve formuláři.
+                U vybraných typů dokumentů také odpovídající přílohy a doprovodné podklady podle zvolené varianty.
               </p>
               <div className="premium-page-grid-ref two mt-8">
                 <div className="premium-note-card-ref p-6">

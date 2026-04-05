@@ -40,7 +40,7 @@ export default function GdprPage() {
     <main className="premium-page-bg-ref px-6 py-16 text-slate-300">
       <div className="pointer-events-none absolute left-1/2 top-0 h-64 w-full -translate-x-1/2 bg-amber-500/4 blur-[120px]" />
 
-      <div className="premium-page-shell-ref max-w-3xl">
+      <div className="premium-page-shell-ref max-w-4xl">
         <div className="mb-3">
           <Link href="/" className="premium-back-link-ref">
             ← SmlouvaHned
@@ -48,20 +48,21 @@ export default function GdprPage() {
         </div>
 
         <div className="premium-page-hero-ref mb-12">
-          <h1 className="mb-3 text-4xl font-black uppercase italic tracking-tighter text-white md:text-5xl">
-            Ochrana osobních <span className="text-amber-500">údajů</span>
+          <div className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Ochrana osobních údajů</div>
+          <h1 className="font-heading-serif text-4xl text-white md:text-5xl">
+            Ochrana osobních <span className="text-amber-400">údajů</span>
           </h1>
-          <p className="text-xs font-bold uppercase tracking-[0.25em] text-slate-500">
-            Platné od 4. 4. 2026 • Dle GDPR a zákona č. 110/2019 Sb.
+          <p className="mt-4 text-xs font-bold uppercase tracking-[0.22em] text-slate-500">
+            Platné od 4. 4. 2026 · dle GDPR a zákona č. 110/2019 Sb.
           </p>
         </div>
 
         <div className="space-y-10 text-sm leading-relaxed">
           <section className="premium-page-card-ref p-8">
-            <h2 className="mb-4 text-xs font-black uppercase tracking-widest text-amber-500">1. Správce osobních údajů</h2>
+            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">1. Správce osobních údajů</h2>
             <p className="mb-3">
-              Správcem osobních údajů je <strong className="text-white">Karel Zdeněk</strong>, IČO 23660295, s místem
-              podnikání Plzeňská 189, 345 61 Staňkov, kontaktní e-mail:{' '}
+              Správcem osobních údajů je <strong className="text-white">Karel Zdeněk</strong>, IČO 23660295, s místem podnikání
+              Plzeňská 189, 345 61 Staňkov, kontaktní e-mail:{' '}
               <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">
                 info@smlouvahned.cz
               </a>
@@ -87,7 +88,7 @@ export default function GdprPage() {
           </section>
 
           <section>
-            <h2 className="mb-4 text-xs font-black uppercase tracking-widest text-amber-500">2. Jaké údaje zpracováváme a proč</h2>
+            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">2. Jaké údaje zpracováváme a proč</h2>
             <div className="space-y-4">
               {[
                 {
@@ -97,7 +98,7 @@ export default function GdprPage() {
                   meta: [
                     'Účel: sestavení požadovaného dokumentu a jeho zpřístupnění.',
                     'Právní základ: plnění smlouvy podle čl. 6 odst. 1 písm. b) GDPR.',
-                    'Doba uchování: po dobu dostupnosti odkazu ke stažení podle zakoupené varianty, nejdéle 30 dní, pokud právní předpis nevyžaduje delší uchování konkrétních souvisejících údajů.',
+                    'Doba uchování: po dobu dostupnosti odkazu ke stažení podle zakoupené varianty, nejdéle 30 dnů, pokud právní předpis nevyžaduje delší uchování konkrétních souvisejících údajů.',
                   ],
                 },
                 {
@@ -123,21 +124,24 @@ export default function GdprPage() {
                   meta: [],
                 },
               ].map(item => (
-                <div key={item.title} className="rounded-2xl border border-white/8 p-5">
+                <div key={item.title} className="premium-page-card-ref p-5">
                   <div className="mb-2 font-bold text-white">{item.title}</div>
                   <p className="mb-2 text-xs text-slate-400">{item.copy}</p>
-                  {item.meta.map(line => (
-                    <div key={line} className="text-xs text-slate-500">
-                      <span className="font-bold text-amber-400">{line.split(':')[0]}:</span> {line.split(':').slice(1).join(':').trim()}
-                    </div>
-                  ))}
+                  {item.meta.map(line => {
+                    const [label, ...rest] = line.split(':');
+                    return (
+                      <div key={line} className="text-xs text-slate-500">
+                        <span className="font-bold text-amber-400">{label}:</span> {rest.join(':').trim()}
+                      </div>
+                    );
+                  })}
                 </div>
               ))}
             </div>
           </section>
 
-          <section>
-            <h2 className="mb-4 text-xs font-black uppercase tracking-widest text-amber-500">3. Příjemci a zpracovatelé</h2>
+          <section className="premium-page-card-ref p-8">
+            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">3. Příjemci a zpracovatelé</h2>
             <ul className="space-y-2 text-slate-400">
               {[
                 'Stripe – zpracování plateb a souvisejících technických informací.',
@@ -154,8 +158,8 @@ export default function GdprPage() {
             <p className="mt-3 text-xs text-slate-500">Osobní údaje neprodáváme třetím stranám a nepoužíváme je pro marketingové profilování.</p>
           </section>
 
-          <section>
-            <h2 className="mb-4 text-xs font-black uppercase tracking-widest text-amber-500">4. Předávání údajů mimo EHP</h2>
+          <section className="premium-page-card-ref p-8">
+            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">4. Předávání údajů mimo EHP</h2>
             <p>
               Někteří zpracovatelé mohou sídlit mimo Evropský hospodářský prostor, zejména v USA. V takovém případě
               využíváme pouze poskytovatele, kteří deklarují odpovídající smluvní a organizační záruky, například
@@ -163,8 +167,8 @@ export default function GdprPage() {
             </p>
           </section>
 
-          <section>
-            <h2 className="mb-4 text-xs font-black uppercase tracking-widest text-amber-500">5. Cookies a technické údaje</h2>
+          <section className="premium-page-card-ref p-8">
+            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">5. Cookies a technické údaje</h2>
             <p className="mb-3">
               Web nepoužívá marketingové ani remarketingové cookies třetích stran. Mohou být používány pouze technické
               prostředky nezbytné pro fungování webu, platební proces nebo zapamatování souhlasu s cookies lištou.
@@ -172,8 +176,8 @@ export default function GdprPage() {
             <p className="text-xs text-slate-500">Pokud se technické nastavení webu změní, budou tyto informace průběžně aktualizovány.</p>
           </section>
 
-          <section>
-            <h2 className="mb-4 text-xs font-black uppercase tracking-widest text-amber-500">6. Zabezpečení údajů</h2>
+          <section className="premium-page-card-ref p-8">
+            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">6. Zabezpečení údajů</h2>
             <p>
               Přenos dat mezi zařízením uživatele a webem je zabezpečen šifrovaným připojením HTTPS. Přístup k údajům je
               omezen na technicky nezbytný rozsah a údaje určené pro generování dokumentu jsou uchovávány pouze dočasně po
@@ -181,11 +185,11 @@ export default function GdprPage() {
             </p>
           </section>
 
-          <section>
-            <h2 className="mb-4 text-xs font-black uppercase tracking-widest text-amber-500">7. Vaše práva</h2>
+          <section className="premium-page-card-ref p-8">
+            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">7. Vaše práva</h2>
             <div className="grid gap-3 sm:grid-cols-2">
               {rights.map(item => (
-                <div key={item.title} className="rounded-xl border border-white/8 p-4">
+                <div key={item.title} className="premium-note-card-ref p-4">
                   <div className="mb-1 text-xs font-bold text-white">{item.title}</div>
                   <div className="text-xs text-slate-400">{item.desc}</div>
                 </div>
@@ -200,8 +204,8 @@ export default function GdprPage() {
             </p>
           </section>
 
-          <section>
-            <h2 className="mb-4 text-xs font-black uppercase tracking-widest text-amber-500">8. Právo podat stížnost</h2>
+          <section className="premium-page-card-ref p-8">
+            <h2 className="mb-4 text-xs font-black uppercase tracking-[0.18em] text-amber-400">8. Právo podat stížnost</h2>
             <p>
               Máte právo podat stížnost u dozorového úřadu, kterým je <strong className="text-white">Úřad pro ochranu osobních údajů</strong>, Pplk. Sochora 27, 170 00 Praha 7,{' '}
               <a href="https://www.uoou.cz" target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:underline">
@@ -212,11 +216,8 @@ export default function GdprPage() {
           </section>
 
           <section className="premium-footer-ref flex flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left">
-            <p className="text-[10px] uppercase tracking-widest text-slate-600">Karel Zdeněk · IČO 23660295 · SmlouvaHned.cz © 2026</p>
-            <Link
-              href="/"
-              className="rounded-full border border-white/10 bg-white/5 px-8 py-3 text-[10px] font-black uppercase text-white transition hover:bg-amber-500 hover:text-black"
-            >
+            <p className="text-[10px] uppercase tracking-[0.22em] text-slate-600">Karel Zdeněk · IČO 23660295 · SmlouvaHned.cz © 2026</p>
+            <Link href="/" className="btn-outline-ref rounded-full px-8 py-3 text-[10px] font-black uppercase">
               Zpět na úvodní stránku
             </Link>
           </section>

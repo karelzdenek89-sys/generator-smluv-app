@@ -42,13 +42,13 @@ export default function ArticleInlineCta({
               : 'border border-slate-600 text-slate-300 hover:border-slate-400 hover:text-white'
           }`}
         >
-          {buttonLabel} →
+          {buttonLabel} <span aria-hidden>→</span>
         </Link>
         <Link
           href={relatedHref}
           className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-bold text-slate-200 transition hover:border-amber-500/25 hover:text-white"
         >
-          {relatedLabel} ↗
+          {relatedLabel} <span aria-hidden>↗</span>
         </Link>
       </div>
     </div>

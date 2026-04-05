@@ -19,9 +19,9 @@ const TIER_LABEL: Record<string, { label: string; color: string }> = {
 };
 
 const TTL_LABEL: Record<string, string> = {
-  basic: '7 dní',
-  professional: '14 dní',
-  complete: '30 dní',
+  basic: '7 dnů',
+  professional: '14 dnů',
+  complete: '30 dnů',
 };
 
 export default function CustomerZone() {
@@ -76,10 +76,10 @@ export default function CustomerZone() {
   const downloadUrl = (sessionId: string) => `/api/contracts/download?session_id=${encodeURIComponent(sessionId)}`;
 
   return (
-    <main className="premium-page-bg-ref py-16 px-6 text-slate-200">
+    <main className="premium-page-bg-ref px-6 py-16 text-slate-200">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_10%,rgba(245,158,11,0.06),transparent_35%)]" />
 
-      <div className="premium-page-shell-ref max-w-2xl">
+      <div className="premium-page-shell-ref max-w-3xl">
         <div className="mb-6">
           <Link href="/" className="premium-back-link-ref">
             ← SmlouvaHned
@@ -91,13 +91,15 @@ export default function CustomerZone() {
             📁
           </div>
           <div>
-            <h1 className="text-3xl font-black uppercase italic tracking-tighter text-white">Moje dokumenty</h1>
-            <p className="mt-0.5 text-xs text-slate-500">Zadejte e-mail z objednávky a zobrazte si dokumenty na jakémkoliv zařízení.</p>
+            <h1 className="font-heading-serif text-4xl text-white md:text-5xl">Moje dokumenty</h1>
+            <p className="mt-1 text-sm leading-relaxed text-slate-400">
+              Zadejte e-mail z objednávky a zobrazte si dokumenty na jakémkoliv zařízení.
+            </p>
           </div>
         </div>
 
         <form onSubmit={handleLookup} className="premium-page-card-ref mb-6 p-6">
-          <label className="mb-3 block text-xs font-black uppercase tracking-widest text-slate-400">E-mail z objednávky</label>
+          <label className="mb-3 block text-xs font-black uppercase tracking-[0.18em] text-slate-400">E-mail z objednávky</label>
           <div className="flex gap-3">
             <input
               type="email"
@@ -110,7 +112,7 @@ export default function CustomerZone() {
             <button
               type="submit"
               disabled={state === 'loading'}
-              className="flex-shrink-0 rounded-2xl bg-amber-500 px-6 py-3 text-sm font-black uppercase tracking-wide text-black transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-50"
+              className="btn-primary-ref flex-shrink-0 justify-center rounded-2xl px-6 py-3 text-sm disabled:cursor-not-allowed disabled:opacity-50"
             >
               {state === 'loading' ? (
                 <span className="flex items-center gap-2">
@@ -122,42 +124,37 @@ export default function CustomerZone() {
               )}
             </button>
           </div>
-          {errorMsg && <p className="mt-2 text-xs text-rose-400">{errorMsg}</p>}
+          {errorMsg ? <p className="mt-2 text-xs text-rose-400">{errorMsg}</p> : null}
           <p className="mt-3 text-xs text-slate-600">
             Po zadání e-mailu se zobrazí všechny dokumenty zakoupené na této adrese. Nikam nic neposíláme.
           </p>
         </form>
 
-        {state === 'done' &&
-          (orders.length === 0 ? (
+        {state === 'done' ? (
+          orders.length === 0 ? (
             <div className="premium-page-card-ref mb-6 p-10 text-center">
               <div className="mb-4 text-4xl">📭</div>
               <h2 className="mb-2 text-lg font-black text-white">Žádné dokumenty</h2>
               <p className="mx-auto mb-6 max-w-sm text-sm text-slate-400">
-                Na e-mailu <span className="font-bold text-white">{email}</span> nebyly nalezeny žádné objednávky. Zkontrolujte překlep nebo použijte e-mail ze Stripe potvrzení.
+                Na e-mailu <span className="font-bold text-white">{email}</span> nebyly nalezeny žádné objednávky.
+                Zkontrolujte překlep nebo použijte e-mail ze Stripe potvrzení.
               </p>
-              <Link
-                href="/"
-                className="inline-block rounded-2xl bg-amber-500 px-8 py-3 text-sm font-black uppercase text-black transition hover:bg-amber-400"
-              >
+              <Link href="/" className="btn-primary-ref inline-flex rounded-2xl px-8 py-3 text-sm">
                 Vytvořit novou smlouvu
               </Link>
             </div>
           ) : (
             <div className="mb-6 space-y-3">
-              <div className="mb-2 px-1 text-xs font-black uppercase tracking-widest text-slate-500">
+              <div className="mb-2 px-1 text-xs font-black uppercase tracking-[0.18em] text-slate-500">
                 Nalezeno {orders.length} {orders.length === 1 ? 'dokument' : orders.length < 5 ? 'dokumenty' : 'dokumentů'}
               </div>
               {orders.map(order => {
                 const tierInfo = TIER_LABEL[order.tier] ?? TIER_LABEL.basic;
-                const ttlLabel = TTL_LABEL[order.tier] ?? '7 dní';
+                const ttlLabel = TTL_LABEL[order.tier] ?? '7 dnů';
                 return (
-                  <div
-                    key={order.sessionId}
-                    className="premium-page-card-ref flex items-center justify-between gap-4 rounded-2xl p-5 transition hover:border-amber-500/30"
-                  >
+                  <div key={order.sessionId} className="premium-page-card-ref flex items-center justify-between gap-4 rounded-2xl p-5">
                     <div className="flex items-center gap-4">
-                      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-lg">📄</div>
+                      <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-lg">PDF</div>
                       <div>
                         <div className="text-sm font-bold text-white">{order.contractName}</div>
                         <div className="mt-0.5 flex items-center gap-2">
@@ -178,21 +175,22 @@ export default function CustomerZone() {
                 );
               })}
             </div>
-          ))}
+          )
+        ) : null}
 
         <div className="premium-note-card-ref p-5">
-          <div className="mb-2 text-xs font-black uppercase tracking-widest text-amber-400">Důležité</div>
+          <div className="mb-2 text-xs font-black uppercase tracking-[0.18em] text-amber-400">Důležité</div>
           <ul className="space-y-1.5 text-xs text-slate-400">
             <li className="flex items-start gap-2">
               <span className="text-amber-400/60">•</span>
               <span>
-                Platnost odkazu ke stažení: <strong className="text-slate-300">Základní 7 dní</strong>,{' '}
-                <strong className="text-slate-300">Rozšířená 14 dní</strong>, <strong className="text-slate-300">Kompletní 30 dní</strong>.
+                Platnost odkazu ke stažení: <strong className="text-slate-300">Základní 7 dnů</strong>,{' '}
+                <strong className="text-slate-300">Rozšířený 14 dnů</strong>, <strong className="text-slate-300">Kompletní 30 dnů</strong>.
               </span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-amber-400/60">•</span>
-              <span>Dokumenty jsou dostupné na libovolném zařízení — stačí zadat e-mail z objednávky.</span>
+              <span>Dokumenty jsou dostupné na libovolném zařízení, stačí zadat e-mail z objednávky.</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-amber-400/60">•</span>
