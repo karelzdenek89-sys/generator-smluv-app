@@ -37,7 +37,9 @@ export default function NavbarClient() {
 
   useEffect(() => {
     function handleResize() {
-      if (window.innerWidth >= 1024) setMenuOpen(false);
+      if (window.innerWidth >= 1024) {
+        setMenuOpen(false);
+      }
     }
 
     window.addEventListener('resize', handleResize);
@@ -46,6 +48,7 @@ export default function NavbarClient() {
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : '';
+
     return () => {
       document.body.style.overflow = '';
     };
@@ -77,7 +80,7 @@ export default function NavbarClient() {
             ))}
 
             <Link href="#dokumenty" onClick={closeMenu} className="mobile-nav-cta-ref">
-              Vybrat dokument <span aria-hidden>→</span>
+              Vybrat dokument <span aria-hidden>&rarr;</span>
             </Link>
           </nav>
         </div>

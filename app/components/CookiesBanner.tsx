@@ -26,8 +26,9 @@ export default function CookiesBanner() {
     try {
       localStorage.setItem(STORAGE_KEY, '1');
     } catch {
-      // Pokud localStorage není dostupné, banner jen skryjeme.
+      // Pokud localStorage není dostupné, banner pouze skryjeme.
     }
+
     setVisible(false);
   };
 

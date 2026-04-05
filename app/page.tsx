@@ -142,7 +142,7 @@ const navLinks = [
 const trustItems = [
   { icon: <ShieldIcon />, text: 'Šablony průběžně revidované pro českou legislativu 2026' },
   { icon: <LockIcon />, text: 'Bezpečná platba přes Stripe bez zpracování karty na našem webu' },
-  { icon: <FileIcon />, text: 'PDF ke stažení ihned po zaplacení a dostupné po omezenou dobu online' },
+  { icon: <FileIcon />, text: 'PDF dokument zpřístupněný ihned po zaplacení a dostupný po omezenou dobu online' },
   { icon: <CheckIcon />, text: 'Transparentní provozovatel, obchodní podmínky, GDPR a kontakt veřejně na webu' },
 ];
 
@@ -314,122 +314,6 @@ export default function Home() {
                 </div>
               </div>
             </section>
-
-            <section className="hero-refined-grid">
-              <div className="hero-refined-copy hero-refined-copy-hidden">
-                <p className="hero-refined-kicker">{"Online n\u00e1stroj pro standardizovan\u00e9 smluvn\u00ed dokumenty"}</p>
-                <h1 className="hero-refined-title">
-                  <span>{"Smluvn\u00ed dokument"}</span>
-                  <span>{"ur\u010den\u00fd ke kontrole a podpisu"}</span>
-                </h1>
-                <p className="hero-refined-subtitle">
-                  {"Vypln\u00edte p\u0159ehledn\u00fd formul\u00e1\u0159, zvol\u00edte variantu a po zaplacen\u00ed z\u00edsk\u00e1te standardizovan\u00fd dokument sestaven\u00fd podle va\u0161ich \u00fadaj\u016f. Pro b\u011b\u017en\u00e9 \u017eivotn\u00ed a podnikatelsk\u00e9 situace."}
-                </p>
-
-                <div className="hero-refined-actions">
-                  <Link href="#dokumenty" className="btn-primary-ref">
-                    {"Vybrat dokument"} <span aria-hidden>&rarr;</span>
-                  </Link>
-                  <Link href="#jak-to-funguje" className="btn-outline-ref">
-                    {"Jak slu\u017eba funguje"}
-                  </Link>
-                </div>
-
-                <p className="hero-refined-trustline">
-                  {"PDF dokument ur\u010den\u00fd ke kontrole a podpisu"} <span aria-hidden>&middot;</span> {"bezpe\u010dn\u00e1 platba p\u0159es Stripe"}
-                </p>
-              </div>
-
-              <div className="hero-refined-visual hero-refined-visual-main">
-                <div className="hero-refined-mark-shell">
-                  <div className="hero-refined-mark-glow" />
-                  <div className="hero-refined-mark-back" />
-
-                  <div className="hero-refined-mark-panel">
-                    <div className="hero-refined-mark-top">
-                      <span className="hero-refined-mark-label">{"SmlouvaHned.cz"}</span>
-                      <span className="hero-refined-mark-rule" />
-                    </div>
-
-                    <div className="hero-refined-mark-kicker">{"Standardizovan\u00e9 smluvn\u00ed dokumenty"}</div>
-
-                    <h1 className="hero-refined-mark-hero-title">
-                      <span>{"Smluvn\u00ed"}</span>
-                      <span>{"dokument"}</span>
-                      <span>{"ur\u010den\u00fd ke"}</span>
-                      <span>{"kontrole a podpisu"}</span>
-                    </h1>
-
-                    <p className="hero-refined-mark-description">
-                      {"Vypln\u00edte p\u0159ehledn\u00fd formul\u00e1\u0159, zvol\u00edte variantu a po zaplacen\u00ed z\u00edsk\u00e1te standardizovan\u00fd dokument sestaven\u00fd podle va\u0161ich \u00fadaj\u016f."}
-                    </p>
-
-                    <div className="hero-refined-mark-actions">
-                      <Link href="#dokumenty" className="btn-primary-ref">
-                        {"Vybrat dokument"} <span aria-hidden>&rarr;</span>
-                      </Link>
-                      <Link href="#jak-to-funguje" className="btn-outline-ref">
-                        {"Jak slu\u017eba funguje"}
-                      </Link>
-                    </div>
-
-                    <p className="hero-refined-mark-trustline">
-                      {"PDF dokument ur\u010den\u00fd ke kontrole a podpisu"} <span aria-hidden>&middot;</span> {"bezpe\u010dn\u00e1 platba p\u0159es Stripe"}
-                    </p>
-
-                    <div className="hero-refined-mark-title">
-                      <span>{"Smluvn\u00ed"}</span>
-                      <span>{"dokument"}</span>
-                      <span>{"ur\u010den\u00fd ke"}</span>
-                      <span>{"kontrole a podpisu"}</span>
-                    </div>
-
-                    <div className="hero-refined-mark-divider" />
-                    <div className="hero-refined-mark-meta">{"Pro b\u011b\u017en\u00e9 \u017eivotn\u00ed a podnikatelsk\u00e9 situace"}</div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            <div className="hero-monolith-ref">
-              <p className="hero-monolith-kicker-ref">Online nástroj pro standardizované smluvní dokumenty</p>
-
-              <div className="hero-dossier-stage-ref" aria-hidden>
-                <div className="hero-dossier-shadow-ref" />
-                <div className="hero-dossier-ref">
-                  <div className="hero-dossier-spine-ref" />
-                  <div className="hero-dossier-surface-ref">
-                    <div className="hero-dossier-corner-ref" />
-                    <div className="hero-dossier-brand-ref">SmlouvaHned.cz</div>
-                    <h1 className="hero-dossier-title-ref">
-                      <span>Standardizovaný dokument</span>
-                      <span>sestavený podle</span>
-                      <span>vašich údajů</span>
-                    </h1>
-                    <p className="hero-dossier-subtitle-ref">
-                      Dokument pro běžné životní a podnikatelské situace, určený ke kontrole a podpisu.
-                    </p>
-                    <div className="hero-dossier-foil-line-ref" />
-                    <div className="hero-dossier-foil-line-ref short" />
-                  </div>
-                </div>
-                <div className="hero-dossier-back-ref" />
-              </div>
-
-              <p className="hero-monolith-lead-ref">
-                Vyplníte přehledný formulář, zvolíte variantu a po zaplacení získáte finální dokument v PDF.
-                Služba je určena pro standardizované dokumenty podle údajů zadaných uživatelem, ne pro individuální právní poradenství nebo právní zastoupení.
-              </p>
-
-              <div className="hero-monolith-cta-row-ref">
-                <Link href="#dokumenty" className="btn-primary-ref">
-                  Vybrat dokument <span aria-hidden>→</span>
-                </Link>
-                <Link href="#jak-to-funguje" className="btn-outline-ref">
-                  Jak služba funguje
-                </Link>
-              </div>
-            </div>
 
             <section className="premium-page-card-soft-ref mt-6 p-6">
               <div className="mb-2 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">
