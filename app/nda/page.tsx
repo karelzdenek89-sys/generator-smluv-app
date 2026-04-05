@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { useState, useMemo } from 'react';
@@ -509,7 +509,7 @@ export default function NdaBuilderPage() {
               <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3">
                 <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Součástí výstupu je</div>
                 <ul className="space-y-1.5">
-                  {['Profesionálně strukturované PDF', 'Připraveno k okamžitému stažení', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
+                  {['Profesionálně strukturované PDF', 'PDF dokument určený ke kontrole a podpisu', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
                     <li key={item} className="flex items-start gap-2 text-xs text-slate-400">
                       <span className="text-amber-500 mt-0.5">✓</span>{item}
                     </li>
@@ -540,7 +540,7 @@ export default function NdaBuilderPage() {
                     className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
                   />
                   <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
-                    Beru na vědomí, že objednávám digitální obsah, který bude ihned zpřístupněn po zaplacení.
+                    Beru na vědomí, že objednávám standardizovaný digitální dokument vytvořený podle mnou zadaných údajů, nikoli individuální právní službu. Digitální obsah bude ihned zpřístupněn po zaplacení.
                     Výslovně souhlasím s tím, že ztrácím právo na odstoupení od smlouvy ve lhůtě 14 dní dle{' '}
                     <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">
                       § 1837 písm. l) zákona č. 89/2012 Sb.
@@ -577,3 +577,4 @@ export default function NdaBuilderPage() {
     </main>
   );
 }
+

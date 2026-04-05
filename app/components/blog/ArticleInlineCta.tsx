@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { BLOG_DISCLAIMER } from '@/lib/servicePositioning';
 
 interface ArticleInlineCtaProps {
   title: string;
@@ -31,7 +32,8 @@ export default function ArticleInlineCta({
     >
       <div className="mb-2 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Praktický krok dál</div>
       <p className="mb-2 text-lg font-black text-white">{title}</p>
-      <p className="mb-5 max-w-2xl text-sm leading-relaxed text-slate-300">{body}</p>
+      <p className="mb-3 max-w-2xl text-sm leading-relaxed text-slate-300">{body}</p>
+      <p className="mb-5 max-w-2xl text-xs leading-relaxed text-slate-500">{BLOG_DISCLAIMER}</p>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
         <Link
@@ -42,7 +44,7 @@ export default function ArticleInlineCta({
               : 'border border-slate-600 text-slate-300 hover:border-slate-400 hover:text-white'
           }`}
         >
-          {buttonLabel} <span aria-hidden>→</span>
+          {buttonLabel} <span aria-hidden>&rarr;</span>
         </Link>
         <Link
           href={relatedHref}

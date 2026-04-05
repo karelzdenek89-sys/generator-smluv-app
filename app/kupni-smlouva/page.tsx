@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
 const faq = [
   {
     q: 'Kdy je kupní smlouva povinná?',
-    a: 'Zákon písemnou formu kupní smlouvy u movitých věcí zpravidla nevyžaduje, avšak písemná smlouva chrání obě strany při sporech o vady, cenu nebo stav věci. U nemovitostí je písemná forma povinná.',
+    a: 'Zákon písemnou formu kupní smlouvy u movitých věcí zpravidla nevyžaduje, avšak písemná smlouva pomáhá přehledně zachytit vady, cenu i stav věci pro případ sporu. U nemovitostí je písemná forma povinná.',
   },
   {
     q: 'Co je prohlášení prodávajícího o vadách?',
@@ -84,7 +84,7 @@ export default function KupniSmlouvaPage() {
           </h1>
           <p className="text-lg text-slate-400 leading-relaxed max-w-2xl mb-8">
             Prodáváte nebo kupujete auto, elektroniku, nábytek nebo jinou věc?
-            Kupní smlouva ochrání obě strany — vady, záruka, prohlášení o stavu, bezpečné předání.
+            Kupní smlouva přehledně upraví vady, záruku, prohlášení o stavu i bezpečné předání.
           </p>
           <div className="flex flex-wrap gap-3 mb-8">
             <Link href="/kupni"
@@ -184,3 +184,4 @@ export default function KupniSmlouvaPage() {
     </main>
   );
 }
+

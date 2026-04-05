@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
@@ -79,7 +79,7 @@ export default function NajemniSmlouvaBytPage() {
             <span className="text-amber-500 italic">vzor 2026</span>
           </h1>
           <p className="text-lg text-slate-400 leading-relaxed max-w-2xl mb-8">
-            Pronajímáte nebo si pronajímáte byt nebo dům? Nájemní smlouva ochrání obě strany — kauce, pravidla, předání bytu a podmínky ukončení.
+            Pronajímáte nebo si pronajímáte byt nebo dům? Nájemní smlouva pomáhá přehledně upravit kauci, pravidla užívání, předání bytu a podmínky ukončení.
           </p>
           <div className="flex flex-wrap gap-3 mb-8">
             <Link href="/najem"
@@ -171,3 +171,4 @@ export default function NajemniSmlouvaBytPage() {
     </main>
   );
 }
+

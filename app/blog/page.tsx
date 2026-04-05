@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { BLOG_DISCLAIMER } from '@/lib/servicePositioning';
 
 export const metadata: Metadata = {
   title: 'Blog – Průvodce smlouvami 2026',
   description:
-    'Praktické průvodce ke smlouvám – co musí obsahovat, jak se chránit a jak se vyhnout nejčastějším chybám. Aktuální pro legislativu 2026.',
+    'Praktické průvodce ke smlouvám – co obvykle obsahují, na co si dát pozor a jak se vyhnout častým chybám. Aktuální pro legislativu 2026.',
   alternates: { canonical: 'https://smlouvahned.cz/blog' },
 };
 
@@ -13,16 +14,16 @@ const articles = [
     slug: 'uznani-dluhu-2026',
     title: 'Uznání dluhu 2026: Co to je, co musí obsahovat a proč je důležité',
     excerpt:
-      'Co je uznání dluhu (§ 2053 OZ), jak přerušuje promlčecí lhůtu, co musí obsahovat a jak ho použít při vymáhání nezaplacené půjčky nebo faktury.',
+      'Co je uznání dluhu (§ 2053 OZ), jak přerušuje promlčecí lhůtu, co obvykle obsahuje a jak ho použít při vymáhání nezaplacené půjčky nebo faktury.',
     category: 'Osobní a finanční',
     readTime: '7 min',
     date: '2026-04-02',
   },
   {
     slug: 'smlouva-o-sluzbach-2026',
-    title: 'Smlouva o poskytování služeb 2026: Vzor, náležitosti a jak se chránit',
+    title: 'Smlouva o poskytování služeb 2026: Vzor, náležitosti a praktické tipy',
     excerpt:
-      'Průvodce smlouvou o službách – rozdíl oproti smlouvě o dílo, co musí obsahovat, jak sjednat cenu, odpovědnost za vady a výpovědní podmínky.',
+      'Průvodce smlouvou o službách – rozdíl oproti smlouvě o dílo, co obvykle obsahuje, jak sjednat cenu, odpovědnost za vady a výpovědní podmínky.',
     category: 'Podnikání a OSVČ',
     readTime: '8 min',
     date: '2026-04-02',
@@ -31,16 +32,16 @@ const articles = [
     slug: 'plna-moc-2026',
     title: 'Plná moc 2026: Kdy ji potřebujete, co musí obsahovat a kdy je nutný notář',
     excerpt:
-      'Generální vs. speciální plná moc, kdy stačí prostá písemná forma, kdy je nutný ověřený podpis nebo notář, povinné náležitosti a časté chyby.',
+      'Generální vs. speciální plná moc, kdy stačí prostá písemná forma, kdy je nutný ověřený podpis nebo notář a jaké náležitosti je dobré zkontrolovat.',
     category: 'Osobní a právní',
     readTime: '7 min',
     date: '2026-04-02',
   },
   {
     slug: 'smlouva-o-spolupraci-2026',
-    title: 'Smlouva o spolupráci OSVČ 2026: Co musí obsahovat a jak se chránit',
+    title: 'Smlouva o spolupráci OSVČ 2026: Co obvykle obsahuje a na co si dát pozor',
     excerpt:
-      'Průvodce smlouvou o spolupráci pro OSVČ a freelancery – vymezení předmětu, honorář, autorská práva, mlčenlivost a jak se chránit před švarcsystémem.',
+      'Průvodce smlouvou o spolupráci pro OSVČ a freelancery – vymezení předmětu, honorář, autorská práva, mlčenlivost a rizika švarcsystému.',
     category: 'Podnikání a OSVČ',
     readTime: '9 min',
     date: '2026-04-02',
@@ -49,7 +50,7 @@ const articles = [
     slug: 'podnajemni-smlouva-2026',
     title: 'Podnájemní smlouva 2026: Co musí obsahovat a souhlas pronajímatele',
     excerpt:
-      'Kdy potřebujete souhlas pronajímatele, co musí podnájemní smlouva obsahovat, práva podnájemce a časté chyby při podnájmu bytu.',
+      'Kdy potřebujete souhlas pronajímatele, co má podnájemní smlouva obvykle obsahovat, práva podnájemce a časté chyby při podnájmu bytu.',
     category: 'Bydlení',
     readTime: '8 min',
     date: '2026-04-02',
@@ -65,18 +66,18 @@ const articles = [
   },
   {
     slug: 'nda-smlouva-mlcenlivost',
-    title: 'NDA smlouva o mlčenlivosti 2026: Co chrání, co ne a jak ji napsat správně',
+    title: 'NDA smlouva o mlčenlivosti 2026: Co upravuje, co ne a jak ji napsat',
     excerpt:
-      'Praktický průvodce dohodou o mlčenlivosti – co NDA chrání a co ne, jednostranná vs. vzájemná NDA, délka trvání, sankce za porušení a časté chyby.',
+      'Praktický průvodce dohodou o mlčenlivosti – jednostranná vs. vzájemná NDA, důvěrné informace, smluvní pokuta a časté chyby.',
     category: 'Podnikání',
     readTime: '8 min',
     date: '2026-04-01',
   },
   {
     slug: 'smlouva-o-zapujcce-2026',
-    title: 'Smlouva o zápůjčce (půjčce) 2026: Vzor, náležitosti a jak ji napsat správně',
+    title: 'Smlouva o zápůjčce 2026: Vzor, náležitosti a jak ji napsat',
     excerpt:
-      'Průvodce smlouvou o zápůjčce dle § 2390 OZ – povinné náležitosti, sjednání úroku, splátkový kalendář, zajištění a co dělat, když dlužník nesplácí.',
+      'Průvodce smlouvou o zápůjčce dle § 2390 OZ – povinné náležitosti, sjednání úroku, splátkový kalendář, zajištění a co řešit při prodlení.',
     category: 'Osobní a finanční',
     readTime: '8 min',
     date: '2026-03-28',
@@ -85,7 +86,7 @@ const articles = [
     slug: 'kupni-smlouva-movita-vec',
     title: 'Kupní smlouva na movitou věc 2026: Vzor a náležitosti',
     excerpt:
-      'Co musí obsahovat kupní smlouva na movitou věc dle § 2079 OZ – přesný popis předmětu, cena, předání, záruky a jak se chránit před vadami při prodeji mezi soukromými osobami.',
+      'Co má kupní smlouva na movitou věc obvykle obsahovat – popis předmětu, cena, předání, záruky a časté otázky při prodeji mezi soukromými osobami.',
     category: 'Osobní a finanční',
     readTime: '7 min',
     date: '2026-03-25',
@@ -94,7 +95,7 @@ const articles = [
     slug: 'pracovni-smlouva-2026',
     title: 'Pracovní smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
     excerpt:
-      'Tři povinné náležitosti dle zákoníku práce, zkušební doba, mlčenlivost, home office doložka a časté chyby zaměstnavatelů. Aktuální pro legislativu 2026.',
+      'Tři povinné náležitosti dle zákoníku práce, zkušební doba, mlčenlivost, home office doložka a časté chyby zaměstnavatelů.',
     category: 'Práce a zaměstnání',
     readTime: '9 min',
     date: '2026-03-20',
@@ -103,7 +104,7 @@ const articles = [
     slug: 'darovaci-smlouva-2026',
     title: 'Darovací smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
     excerpt:
-      'Zákonné náležitosti darovací smlouvy, kdy je povinná písemná forma, daňové dopady darování v rodině i mimo ni, výhrada dožití a kdy lze dar odvolat.',
+      'Zákonné náležitosti darovací smlouvy, kdy je povinná písemná forma, daňové dopady darování v rodině i mimo ni a kdy lze dar odvolat.',
     category: 'Osobní a finanční',
     readTime: '7 min',
     date: '2026-03-15',
@@ -112,16 +113,16 @@ const articles = [
     slug: 'smlouva-o-dilo-2026',
     title: 'Smlouva o dílo 2026: Co musí obsahovat a nejčastější chyby',
     excerpt:
-      'Průvodce smlouvou o dílo dle § 2586 OZ – specifikace díla, cena, termín, akceptační postup, smluvní pokuty a záruky. Jak se chránit jako objednatel i zhotovitel.',
+      'Průvodce smlouvou o dílo dle § 2586 OZ – specifikace díla, cena, termín, akceptační postup, smluvní pokuty a záruky.',
     category: 'Podnikání',
     readTime: '10 min',
     date: '2026-03-10',
   },
   {
     slug: 'kupni-smlouva-na-auto-2026',
-    title: 'Kupní smlouva na auto 2026: Co musí obsahovat a jak se chránit',
+    title: 'Kupní smlouva na auto 2026: Co musí obsahovat a co před podpisem zkontrolovat',
     excerpt:
-      'Zákonné náležitosti kupní smlouvy na auto – VIN, stav tachometru, STK, prohlášení o vadách. Jak ověřit vozidlo a časté chyby při prodeji ojetého vozu.',
+      'Zákonné náležitosti kupní smlouvy na auto – VIN, stav tachometru, STK, prohlášení o vadách a časté chyby při prodeji ojetého vozu.',
     category: 'Vozidla',
     readTime: '9 min',
     date: '2026-03-05',
@@ -130,7 +131,7 @@ const articles = [
     slug: 'najemni-smlouva-vzor-2026',
     title: 'Nájemní smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
     excerpt:
-      'Kompletní průvodce nájemní smlouvou – zákonné náležitosti, časté chyby pronajímatelů i nájemníků, jak se chránit a kdy nestačí vzor z internetu.',
+      'Kompletní průvodce nájemní smlouvou – zákonné náležitosti, časté chyby pronajímatelů i nájemníků a kdy už nestačí vzor z internetu.',
     category: 'Bydlení',
     readTime: '8 min',
     date: '2026-03-01',
@@ -144,9 +145,10 @@ export default function BlogIndexPage() {
         <div className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Blog</div>
         <h1 className="font-heading-serif text-4xl text-white md:text-5xl">Průvodce smlouvami a běžnými situacemi</h1>
         <p className="mt-4 max-w-2xl text-sm leading-relaxed text-slate-400 md:text-base">
-          Praktické informace ke smlouvám: co musí obsahovat, jak se chránit a jak se vyhnout častým chybám.
-          V každém článku najdete i rychlou cestu ke konkrétnímu generátoru a souvisejícím dokumentům.
+          Praktické informace ke smlouvám: co obvykle obsahují, na co si dát pozor a jak se vyhnout častým chybám.
+          V každém článku najdete i rychlou cestu ke konkrétnímu dokumentu a souvisejícím variantám.
         </p>
+        <p className="mt-3 max-w-2xl text-xs leading-relaxed text-slate-500">{BLOG_DISCLAIMER}</p>
       </div>
 
       <div className="grid gap-6">
@@ -159,12 +161,10 @@ export default function BlogIndexPage() {
               <span className="text-xs text-slate-500">{article.readTime} čtení</span>
               <span className="text-xs text-slate-600">{article.date}</span>
             </div>
-            <h2 className="mb-3 text-xl font-black leading-snug text-white transition group-hover:text-amber-100">
-              {article.title}
-            </h2>
+            <h2 className="mb-3 text-xl font-black leading-snug text-white transition group-hover:text-amber-100">{article.title}</h2>
             <p className="text-sm leading-relaxed text-slate-400">{article.excerpt}</p>
             <div className="mt-5 flex items-center gap-2 text-sm font-bold text-amber-400 transition group-hover:text-amber-300">
-              Číst článek <span aria-hidden>→</span>
+              Číst článek <span aria-hidden>&rarr;</span>
             </div>
           </Link>
         ))}

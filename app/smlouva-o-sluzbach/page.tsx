@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
@@ -79,7 +79,7 @@ export default function SmlouvaOSluzbach() {
             <span className="text-amber-500 italic">vzor 2026</span>
           </h1>
           <p className="text-lg text-slate-400 leading-relaxed max-w-2xl mb-8">
-            Freelancer, konzultant nebo agentura poskytuje opakované nebo projektové služby. Jasná smlouva zachytí cenu, SLA, IP práva a ochrání obě strany.
+            Freelancer, konzultant nebo agentura poskytuje opakované nebo projektové služby. Jasná smlouva pomáhá přehledně zachytit cenu, SLA a IP práva.
           </p>
           <div className="flex flex-wrap gap-3 mb-8">
             <Link href="/sluzby"
@@ -171,3 +171,4 @@ export default function SmlouvaOSluzbach() {
     </main>
   );
 }
+

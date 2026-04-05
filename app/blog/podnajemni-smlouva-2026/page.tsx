@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -85,7 +85,7 @@ export default function PodnajemniSmlouvaPage() {
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-400">
           Podnájem je situace, kdy nájemce přenechá byt nebo jeho část třetí osobě — podnájemci.
-          Bez správně sepsané smlouvy a (zpravidla) souhlasu pronajímatele riskujete výpověď z nájmu.
+          Bez pečlivě připravené smlouvy a (zpravidla) souhlasu pronajímatele riskujete výpověď z nájmu.
           Přečtěte si, na co si dát pozor, než podnájem uzavřete.
         </p>
 
@@ -208,7 +208,7 @@ export default function PodnajemniSmlouvaPage() {
             { t: 'Přesné označení předmětu', d: 'Adresa, číslo bytu, podlaží, velikost. Pokud se podnajímá jen část — přesný popis pokoje nebo místnosti.' },
             { t: 'Výše podnájemného', d: 'Měsíční částka podnájemného a způsob úhrady. Zálohy na energie — jejich výše a způsob vyúčtování.' },
             { t: 'Doba podnájmu', d: 'Na dobu určitou (datum začátku a konce) nebo neurčitou. Délka nesmí překročit dobu nájemní smlouvy nájemce.' },
-            { t: 'Stav předmětu podnájmu', d: 'Předávací protokol s popisem stavu bytu a vybavení. Fotodokumentace jako příloha chrání obě strany.' },
+            { t: 'Stav předmětu podnájmu', d: 'Předávací protokol s popisem stavu bytu a vybavení. Fotodokumentace jako příloha pomáhá přehledně upravit práva a povinnosti stran.' },
             { t: 'Výpovědní podmínky', d: 'Výpovědní doba, důvody výpovědi. Podnájemce nemá zákonnou ochranu před výpovědí jako nájemce.' },
           ].map(i => (
             <div key={i.t} className="rounded-xl border border-white/8 bg-[#0c1426] p-4">
@@ -377,3 +377,4 @@ export default function PodnajemniSmlouvaPage() {
     </article>
   );
 }
+

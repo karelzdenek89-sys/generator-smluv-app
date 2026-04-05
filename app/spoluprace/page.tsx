@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useMemo, useState } from 'react';
 import ContractPreview from '@/app/components/ContractPreview';
@@ -144,7 +144,7 @@ export default function SpolupraceePage() {
         faq={[
           { q: 'Čím se smlouva o spolupráci liší od smlouvy o dílo?', a: 'Smlouva o spolupráci pokrývá dlouhodobý vztah s průběžným plněním a sdílenými cíli. Smlouva o dílo je zaměřena na jednorázový výsledek — dílo, které se zhotovuje a předává.' },
           { q: 'Je smlouva vhodná pro dvě fyzické osoby podnikající jako OSVČ?', a: 'Ano, smlouva je navržena právě pro spolupráci OSVČ nebo firem. Není vhodná pro vznik pracovního poměru.' },
-          { q: 'Co jsou exit klauzule?', a: 'Ustanovení definující podmínky ukončení spolupráce — výpovědní doba, vypořádání pohledávek, přechod IP práv a případná kompenzace. Chrání obě strany při ukončení vztahu.' },
+          { q: 'Co jsou exit klauzule?', a: 'Ustanovení definující podmínky ukončení spolupráce — výpovědní doba, vypořádání pohledávek, přechod IP práv a případná kompenzace. Pomáhají přehledně upravit ukončení vztahu.' },
           { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
         ]}
         ctaLabel="Vytvořit smlouvu o spolupráci"
@@ -355,7 +355,7 @@ export default function SpolupraceePage() {
               <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3">
                 <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Součástí výstupu je</div>
                 <ul className="space-y-1.5">
-                  {['Profesionálně strukturované PDF', 'Připraveno k okamžitému stažení', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
+                  {['Profesionálně strukturované PDF', 'PDF dokument určený ke kontrole a podpisu', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
                     <li key={item} className="flex items-start gap-2 text-xs text-slate-400">
                       <span className="text-amber-500 mt-0.5">✓</span>{item}
                     </li>
@@ -384,7 +384,7 @@ export default function SpolupraceePage() {
                     className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
                   />
                   <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
-                    Beru na vědomí, že objednávám digitální obsah, který bude ihned zpřístupněn po zaplacení.
+                    Beru na vědomí, že objednávám standardizovaný digitální dokument vytvořený podle mnou zadaných údajů, nikoli individuální právní službu. Digitální obsah bude ihned zpřístupněn po zaplacení.
                     Výslovně souhlasím s tím, že ztrácím právo na odstoupení od smlouvy ve lhůtě 14 dní dle{' '}
                     <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">
                       § 1837 písm. l) zákona č. 89/2012 Sb.
@@ -408,3 +408,5 @@ export default function SpolupraceePage() {
     </main>
   );
 }
+
+

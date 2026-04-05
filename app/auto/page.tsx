@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useMemo, useState } from 'react';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
@@ -202,7 +202,7 @@ export default function CarSaleBuilderPage() {
     if (!formData.knownDefects.trim()) {
       score -= 14;
       warnings.push({
-        text: 'Doporučujeme doplnit popis známých vad. Detailní popis chrání obě strany.',
+        text: 'Doporučujeme doplnit popis známých vad. Detailní popis pomáhá přehledně zachytit stav vozidla pro obě strany.',
         level: 'high',
       });
     }
@@ -470,7 +470,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
           { icon: '🚗', text: 'Navrženo pro prodej osobních aut, motocyklů i přívěsů mezi soukromými osobami i firmami' },
           { icon: '🔍', text: 'Pokrývá VIN, SPZ, stav tachometru, STK, emise i historii a vybavení vozidla' },
           { icon: '⚖️', text: 'Řeší přechod vlastnictví, odpovědnost za vady a důležitá prohlášení prodávajícího' },
-          { icon: '📄', text: 'PDF dokument je připraven ke stažení ihned po dokončení platby' },
+          { icon: '📄', text: 'PDF dokument je zpřístupněn ihned po dokončení platby a je určen ke kontrole a podpisu' },
         ]}
         contents={[
           'Identifikaci prodávajícího a kupujícího',
@@ -495,7 +495,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
           { q: 'Proč je písemná kupní smlouva při prodeji auta důležitá?', a: 'Kupní smlouva přesně zachycuje, co bylo mezi prodávajícím a kupujícím dohodnuto. Je zásadní pro kupní cenu, identifikaci vozidla, popis jeho stavu i doložení okamžiku předání.' },
           { q: 'Je potřeba smlouvu ověřovat u notáře?', a: 'U běžného prodeje motorového vozidla se notářské ověření obvykle nevyžaduje. Standardně postačí podpis obou stran, pokud konkrétní situace nevyžaduje něco navíc.' },
           { q: 'Co je VIN a proč na něm záleží?', a: 'VIN je jedinečný sedmnáctimístný identifikátor vozidla. Díky němu lze bezpečně určit konkrétní auto a předejít sporům o to, jaké vozidlo bylo skutečně prodáno.' },
-          { q: 'Je dokument dostupný ihned po zaplacení?', a: 'Ano. Po úspěšném dokončení platby je PDF ihned připravené ke stažení.' },
+          { q: 'Je dokument dostupný ihned po zaplacení?', a: 'Ano. Po úspěšném dokončení platby je PDF ihned zpřístupněné a určené ke kontrole a podpisu.' },
           { q: 'Co je potřeba pro přepis vozidla na nového majitele?', a: 'Po podpisu smlouvy je potřeba vyřídit zápis změny vlastníka v registru vozidel na příslušném úřadu obce s rozšířenou působností. Typicky budete potřebovat kupní smlouvu, doklady k vozidlu a doklady totožnosti obou stran.' },
         ]}
         ctaLabel="Vytvořit kupní smlouvu na auto"
@@ -1165,7 +1165,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3">
                   <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Součástí výstupu je</div>
                   <ul className="space-y-1.5">
-                    {['Profesionálně strukturované PDF', 'Připraveno k okamžitému stažení', 'Vhodné pro standardní soukromé převody', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
+                    {['Profesionálně strukturované PDF', 'PDF dokument určený ke kontrole a podpisu', 'Vhodné pro standardní soukromé převody', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
                       <li key={item} className="flex items-start gap-2 text-xs text-slate-400">
                         <span className="text-amber-500 mt-0.5">✓</span>{item}
                       </li>
@@ -1186,7 +1186,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     <a href="/gdpr" target="_blank" className="text-amber-400 underline hover:text-amber-300">zpracováním osobních údajů</a>
                     {' '}a s{' '}
                     <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">obchodními podmínkami</a>.
-                    Beru na vědomí, že digitální obsah je doručen ihned a nelze od smlouvy odstoupit.
+                    Beru na vědomí, že objednávám standardizovaný digitální dokument vytvořený podle mnou zadaných údajů a že digitální obsah je zpřístupněn ihned po zaplacení, takže nelze od smlouvy odstoupit v obvyklé 14denní lhůtě.
                   </span>
                 </label>
 
@@ -1204,7 +1204,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
                   />
                   <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
-                    Beru na vědomí, že objednávám digitální obsah, který bude ihned zpřístupněn po zaplacení.
+                    Beru na vědomí, že objednávám standardizovaný digitální dokument vytvořený podle mnou zadaných údajů, nikoli individuální právní službu. Digitální obsah bude ihned zpřístupněn po zaplacení.
                     Výslovně souhlasím s tím, že ztrácím právo na odstoupení od smlouvy ve lhůtě 14 dní dle{' '}
                     <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">
                       § 1837 písm. l) zákona č. 89/2012 Sb.
@@ -1242,3 +1242,5 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
     </main>
   );
 }
+
+

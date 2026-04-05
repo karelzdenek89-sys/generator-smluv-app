@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { redis } from '@/lib/redis';
 import { stripe } from '@/lib/stripe';
@@ -152,7 +152,7 @@ async function sendDownloadEmail(
     cooperation: 'Smlouva o spolupráci',
   };
 
-  const contractName = contractNames[contractType] || 'Právní dokument';
+  const contractName = contractNames[contractType] || 'Smluvní dokument';
   const downloadUrl = `${baseUrl}/api/contracts/download?session_id=${sessionId}`;
   const validityText = tier === 'complete' ? '30 dní' : tier === 'professional' ? '14 dní' : '7 dní';
 
@@ -165,7 +165,7 @@ async function sendDownloadEmail(
     body: JSON.stringify({
       from: 'SmlouvaHned <dokumenty@smlouvahned.cz>',
       to: [to],
-      subject: `Váš dokument je připraven ke stažení – ${contractName}`,
+      subject: `Váš dokument je dostupný ke stažení – ${contractName}`,
       html: `
         <!DOCTYPE html>
         <html lang="cs">
@@ -178,13 +178,13 @@ async function sendDownloadEmail(
               </div>
             </div>
             <h1 style="color:#fff;font-size:26px;font-weight:900;margin:0 0 12px;text-align:center;">
-              Platba přijata – dokument je připraven
+              Platba přijata – dokument je dostupný
             </h1>
             <p style="color:#94a3b8;font-size:15px;text-align:center;margin-bottom:8px;">
-              ${contractName} je připraven ke stažení.
+              ${contractName} je dostupný ke stažení jako standardizovaný PDF dokument.
             </p>
             <p style="color:#64748b;font-size:13px;text-align:center;margin-bottom:32px;">
-              Před podpisem si prosím zkontrolujte všechny vyplněné údaje.
+              Před použitím dokumentu si prosím zkontrolujte všechny vyplněné údaje a vhodnost dokumentu pro vaši situaci.
             </p>
             <a href="${downloadUrl}"
                style="display:block;text-align:center;background:linear-gradient(135deg,#f59e0b,#eab308);color:#000;font-weight:900;font-size:18px;padding:18px 32px;border-radius:16px;text-decoration:none;margin-bottom:24px;letter-spacing:-0.3px;">
@@ -196,7 +196,7 @@ async function sendDownloadEmail(
             </p>
           </div>
           <p style="color:#334155;font-size:11px;text-align:center;margin-top:24px;">
-            © 2026 SmlouvaHned · IČO: 23660295 · SmlouvaHned není advokátní kancelář a neposkytuje právní poradenství.
+            © 2026 SmlouvaHned · IČO: 23660295 · SmlouvaHned je online nástroj pro sestavení standardizovaných smluvních dokumentů podle údajů zadaných uživatelem. Nejde o individuální právní poradenství ani o poskytování advokátních služeb.
           </p>
         </body>
         </html>
@@ -204,3 +204,4 @@ async function sendDownloadEmail(
     }),
   });
 }
+

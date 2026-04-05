@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -336,7 +336,7 @@ export default function SmlouvaOZapujcce2026Page() {
 
       {/* ── TRUST BOX ───────────────────────────── */}
       <ArticleTrustBox
-        generatorSuitable="Zápůjčka peněz mezi fyzickými osobami nebo podnikateli — bezúročná nebo úročená, jednorázová nebo splátkový kalendář. Generátor pokryje výši, splatnost, úrok a uznání závazku."
+        generatorSuitable="Zápůjčka peněz mezi fyzickými osobami nebo podnikateli — bezúročná nebo úročená, jednorázová nebo splátkový kalendář. Online nástroj obvykle pokrývá výši, splatnost, úrok a uznání závazku."
         lawyerSuitable="Zápůjčky nad 500 000 Kč, zajištění zástavním právem k nemovitosti, notářský zápis s doložkou vykonatelnosti, nebo situace, kdy dlužník odmítá platit a je třeba soudní vymáhání."
       />
 
@@ -374,3 +374,4 @@ export default function SmlouvaOZapujcce2026Page() {
     </article>
   );
 }
+

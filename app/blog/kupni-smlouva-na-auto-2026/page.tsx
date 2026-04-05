@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -85,7 +85,7 @@ export default function KupniSmlouvaAutoPage() {
           Kupní smlouva na auto 2026: Co musí obsahovat a jak se chránit
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-400">
-          Prodáváte nebo kupujete ojetý vůz? Správně sepsaná kupní smlouva na auto vás ochrání před
+          Prodáváte nebo kupujete ojetý vůz? Pečlivě připravená kupní smlouva na auto pomůže přehledně upravit práva a povinnosti stran před
           spory o stav vozidla, skryté vady i manipulovaný tachometr. Zjistěte, co nesmí chybět.
         </p>
 
@@ -383,7 +383,7 @@ export default function KupniSmlouvaAutoPage() {
       <section id="zaver" className="mb-12 scroll-mt-6">
         <h2 className="mb-4 text-2xl font-black tracking-tight text-white">7. Shrnutí a doporučení</h2>
         <p className="mb-4 text-slate-400 leading-relaxed">
-          Kupní smlouva na auto je při prodeji ojetého vozidla naprosto zásadní. Chrání obě strany —
+          Kupní smlouva na auto je při prodeji ojetého vozidla naprosto zásadní. Pomáhá přehledně upravit práva a povinnosti stran —
           prodávajícího před neoprávněnými reklamacemi, kupujícího před skrytými vadami.
         </p>
         <div className="mb-6 space-y-2">
@@ -405,7 +405,7 @@ export default function KupniSmlouvaAutoPage() {
 
       {/* ── TRUST BOX ───────────────────────────── */}
       <ArticleTrustBox
-        generatorSuitable="Standardní soukromý prodej osobního automobilu, motocyklu nebo jiného vozidla mezi fyzickými osobami. Generátor pokryje VIN, STK, stav tachometru, prohlášení o vadách i podmínky předání."
+        generatorSuitable="Standardní soukromý prodej osobního automobilu, motocyklu nebo jiného vozidla mezi fyzickými osobami. Online nástroj obvykle pokrývá VIN, STK, stav tachometru, prohlášení o vadách i podmínky předání."
         lawyerSuitable="Prodej vozidla zatíženého zástavním právem, spory o stav nebo cenu vozidla, fleetový nebo komerční prodej, nebo situace kde existuje riziko podvodu (podezřelá historie, nejasný vlastník)."
       />
 
@@ -451,3 +451,5 @@ export default function KupniSmlouvaAutoPage() {
     </article>
   );
 }
+
+

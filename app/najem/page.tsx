@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useMemo, useState } from 'react';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
@@ -559,7 +559,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
         subtitle="Vytvořte přehlednou nájemní smlouvu pro pronájem bytu nebo domu. Dokument pokrývá výši nájmu, zálohy, kauci, pravidla užívání, předání bytu i podmínky ukončení nájmu v běžných situacích."
         benefits={[
           { icon: '⚖️', text: 'Vychází z pravidel občanského zákoníku pro nájem bytu a domu' },
-          { icon: '📄', text: 'PDF dokument je připraven ke stažení ihned po dokončení platby' },
+          { icon: '📄', text: 'PDF dokument je zpřístupněn ihned po dokončení platby a je určen ke kontrole a podpisu' },
           { icon: '🏠', text: 'Pokrývá nájem na dobu určitou i neurčitou, kauci a zálohy na služby' },
           { icon: '🔒', text: 'Vhodné pro pronájem bytu, domu i samostatné části nemovitosti' },
         ]}
@@ -586,7 +586,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
           { q: 'Jaký je rozdíl mezi nájemní a podnájemní smlouvou?', a: 'Nájemní smlouva se uzavírá přímo s vlastníkem nemovitosti. Podnájemní smlouva se používá tehdy, když nájemce dále přenechává byt nebo jeho část třetí osobě.' },
           { q: 'Je písemná nájemní smlouva nutná?', a: 'Písemná forma je v praxi velmi důležitá, protože usnadňuje prokazování dohodnutých podmínek. U nájmu bytu nebo domu je to bezpečnější varianta pro obě strany.' },
           { q: 'Jak vysoká může být kauce?', a: 'Kauce by měla odpovídat zákonným limitům a smyslu nájemního vztahu. Na této stránce proto zároveň upozorňujeme i na riziko nepřiměřeně vysoké jistoty.' },
-          { q: 'Je dokument dostupný ihned po zaplacení?', a: 'Ano. Po úspěšném dokončení platby je PDF ihned připravené ke stažení.' },
+          { q: 'Je dokument dostupný ihned po zaplacení?', a: 'Ano. Po úspěšném dokončení platby je PDF ihned zpřístupněné a určené ke kontrole a podpisu.' },
           { q: 'Je potřeba nájemní smlouvu ověřovat u notáře?', a: 'Pro běžný nájem bytu nebo domu se notářské ověření standardně nevyžaduje. Obvykle postačí podpis pronajímatele a nájemce.' },
         ]}
         ctaLabel="Vytvořit nájemní smlouvu"
@@ -1072,7 +1072,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
               <SectionTitle
                 index="07"
                 title="Vyberte úroveň ochrany"
-                subtitle="Čím vyšší balíček, tím silnější smlouva a více doprovodných materiálů."
+                subtitle="Vyšší varianta doplňuje další ustanovení nebo doprovodné podklady podle typu dokumentu."
               />
               <div className="space-y-3">
                 {([
@@ -1265,7 +1265,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                     </li>
                     <li className="flex items-start gap-2 text-slate-300">
                       <span className="text-amber-400 mt-1">✓</span>
-                      <span>Připraveno k okamžitému stažení</span>
+                      <span>PDF dokument určený ke kontrole a podpisu</span>
                     </li>
                     <li className="flex items-start gap-2 text-slate-300">
                       <span className="text-amber-400 mt-1">✓</span>
@@ -1304,7 +1304,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                     <a href="/gdpr" target="_blank" className="text-amber-400 underline hover:text-amber-300">zpracováním osobních údajů</a>
                     {' '}a s{' '}
                     <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">obchodními podmínkami</a>.
-                    Beru na vědomí, že digitální obsah je doručen ihned a nelze od smlouvy odstoupit.
+                    Beru na vědomí, že objednávám standardizovaný digitální dokument vytvořený podle mnou zadaných údajů a že digitální obsah je zpřístupněn ihned po zaplacení, takže nelze od smlouvy odstoupit v obvyklé 14denní lhůtě.
                   </span>
                 </label>
 
@@ -1322,7 +1322,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                     className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
                   />
                   <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
-                    Beru na vědomí, že objednávám digitální obsah, který bude ihned zpřístupněn po zaplacení.
+                    Beru na vědomí, že objednávám standardizovaný digitální dokument vytvořený podle mnou zadaných údajů, nikoli individuální právní službu. Digitální obsah bude ihned zpřístupněn po zaplacení.
                     Výslovně souhlasím s tím, že ztrácím právo na odstoupení od smlouvy ve lhůtě 14 dní dle{' '}
                     <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">
                       § 1837 písm. l) zákona č. 89/2012 Sb.
@@ -1360,3 +1360,4 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
     </main>
   );
 }
+

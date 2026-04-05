@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -386,8 +386,8 @@ export default function NajemniSmlouvaVzor2026Page() {
         </div>
 
         <p className="text-sm text-slate-500 leading-relaxed">
-          Pro standardní pronájem bytu nebo domu je online generátor smluv
-          <strong className="text-slate-400"> plně dostačující</strong>. Doporučujeme advokáta v případě
+          Pro standardní pronájem bytu nebo domu je online nástroj smluv
+          <strong className="text-slate-400"> obvykle vhodný</strong>. Doporučujeme advokáta v případě
           nestandardních podmínek, sporů nebo transakcí s vysokou hodnotou.
         </p>
       </section>
@@ -396,7 +396,7 @@ export default function NajemniSmlouvaVzor2026Page() {
       <section id="zaver" className="mb-12 scroll-mt-6">
         <h2 className="mb-4 text-2xl font-black tracking-tight text-white">7. Shrnutí a doporučení</h2>
         <p className="mb-4 text-slate-400 leading-relaxed">
-          Nájemní smlouva je základní dokument každého pronájmu. Správně sestavená vás chrání,
+          Nájemní smlouva je základní dokument každého pronájmu. Pečlivě připravená vás chrání,
           špatná nebo neexistující vás může přijít draho.
         </p>
         <div className="mb-6 space-y-2">
@@ -418,7 +418,7 @@ export default function NajemniSmlouvaVzor2026Page() {
 
       {/* ── TRUST BOX ───────────────────────────── */}
       <ArticleTrustBox
-        generatorSuitable="Standardní pronájem bytu nebo domu, kdy potřebujete aktuální smlouvu s kaucí, pravidly užívání a smluvními pokutami. Online generátor vás provede formulářem a vydá hotové PDF."
+        generatorSuitable="Standardní pronájem bytu nebo domu, kdy potřebujete aktuální smlouvu s kaucí, pravidly užívání a smluvními pokutami. Online nástroj vás provede formulářem a sestaví standardizovaný dokument v PDF."
         lawyerSuitable="Komerční pronájem nebytových prostor, složité podmínky (opční právo, investice nájemce do nemovitosti), probíhající spory nebo velmi vysoká hodnota nájmu."
       />
 
@@ -464,3 +464,5 @@ export default function NajemniSmlouvaVzor2026Page() {
     </article>
   );
 }
+
+

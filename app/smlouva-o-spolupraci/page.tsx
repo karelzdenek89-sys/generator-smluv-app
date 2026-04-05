@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
@@ -36,7 +36,7 @@ const faq = [
   },
   {
     q: 'Musím smlouvu o spolupráci registrovat?',
-    a: 'Ne. Smlouva o spolupráci nevyžaduje žádnou registraci ani notářské ověření. Písemná forma je doporučena zejména při hodnotnějších spolupracích — chrání obě strany v případě sporu.',
+    a: 'Ne. Smlouva o spolupráci nevyžaduje žádnou registraci ani notářské ověření. Písemná forma je doporučena zejména při hodnotnějších spolupracích — pomáhá přehledně zachytit podmínky pro případ sporu.',
   },
 ];
 
@@ -171,3 +171,4 @@ export default function SmlouvaOSpolupraci() {
     </main>
   );
 }
+

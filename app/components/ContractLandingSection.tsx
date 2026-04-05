@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { PDF_OUTPUT_TEXT, SERVICE_DISCLAIMER_CZ, SERVICE_SHORT_SCOPE } from '@/lib/servicePositioning';
 
 export interface ContractLandingBenefit {
   icon: string;
@@ -61,7 +62,7 @@ export default function ContractLandingSection({
   whenSuitable,
   whenOther,
   faq,
-  ctaLabel = 'Pokračovat k vytvoření dokumentu',
+  ctaLabel = 'Pokračovat k sestavení dokumentu',
   formId = 'formular',
   guideHref,
   guideLabel = 'Průvodce k tomuto dokumentu',
@@ -105,7 +106,7 @@ export default function ContractLandingSection({
 
             <div className="flex flex-wrap items-center gap-4">
               <button onClick={() => scrollTo(formId)} className="btn-primary-ref rounded-2xl px-8 py-4 text-base">
-                {ctaLabel} <span aria-hidden>→</span>
+                {ctaLabel} <span aria-hidden>&rarr;</span>
               </button>
               <button
                 onClick={() => scrollTo('obsah')}
@@ -114,6 +115,8 @@ export default function ContractLandingSection({
                 Co dokument obsahuje
               </button>
             </div>
+
+            <p className="mt-5 max-w-2xl text-xs leading-relaxed text-slate-500">{SERVICE_SHORT_SCOPE}</p>
 
             {guideHref ? (
               <div className="mt-5 border-t border-slate-800/50 pt-5">
@@ -142,7 +145,7 @@ export default function ContractLandingSection({
                 </span>
                 <div>
                   <div className="contract-hero-sheet-kicker-ref">SmlouvaHned</div>
-                  <div className="contract-hero-sheet-title-ref">Připravený dokument</div>
+                  <div className="contract-hero-sheet-title-ref">Standardizovaný dokument</div>
                 </div>
               </div>
 
@@ -154,9 +157,9 @@ export default function ContractLandingSection({
 
               <div className="contract-hero-panels-ref">
                 <div className="contract-hero-panel-ref">
-                  <div className="contract-hero-panel-label-ref">Strany</div>
+                  <div className="contract-hero-panel-label-ref">Údaje stran</div>
                   <div className="contract-hero-panel-copy-ref">
-                    Údaje o účastnících, adrese a identifikaci se propíšou do přehledné finální podoby.
+                    Údaje o účastnících, adrese a identifikaci se promítnou do přehledné finální podoby dokumentu.
                   </div>
                 </div>
                 <div className="contract-hero-panel-ref">
@@ -166,10 +169,8 @@ export default function ContractLandingSection({
                   </div>
                 </div>
                 <div className="contract-hero-panel-ref">
-                  <div className="contract-hero-panel-label-ref">Podpis</div>
-                  <div className="contract-hero-panel-copy-ref">
-                    Výsledné PDF je připravené ke kontrole, podpisu a založení do evidence.
-                  </div>
+                  <div className="contract-hero-panel-label-ref">Výstup</div>
+                  <div className="contract-hero-panel-copy-ref">{PDF_OUTPUT_TEXT}</div>
                 </div>
               </div>
 
@@ -180,8 +181,8 @@ export default function ContractLandingSection({
             </div>
 
             <div className="contract-hero-note-ref">
-              <div className="contract-hero-note-kicker-ref">Prémiový výstup</div>
-              <div className="contract-hero-note-title-ref">Jasná struktura a čisté PDF bez rušivých prvků</div>
+              <div className="contract-hero-note-kicker-ref">Přehledný výstup</div>
+              <div className="contract-hero-note-title-ref">Jasná struktura a čisté PDF pro kontrolu a podpis</div>
             </div>
           </div>
         </div>
@@ -192,7 +193,7 @@ export default function ContractLandingSection({
           <p className="section-kicker-ref">Obsah dokumentu</p>
           <h2 className="section-title-ref">Co dokument obsahuje</h2>
           <p className="mt-3 max-w-2xl text-sm text-slate-400">
-            Standardní obsah vygenerovaného dokumentu sestaveného podle vyplněných údajů.
+            Standardní obsah dokumentu sestaveného podle vyplněných údajů.
           </p>
         </div>
 
@@ -249,6 +250,11 @@ export default function ContractLandingSection({
                 </div>
               </div>
             ) : null}
+
+            <div className="premium-page-card-soft-ref p-6">
+              <div className="mb-2 text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">Vymezení služby</div>
+              <p className="text-xs leading-relaxed text-slate-400">{SERVICE_DISCLAIMER_CZ}</p>
+            </div>
           </div>
         </div>
       </section>

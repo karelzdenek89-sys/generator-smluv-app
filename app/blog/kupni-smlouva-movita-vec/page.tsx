@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -84,7 +84,7 @@ export default function KupniSmlouvaMovitaVecPage() {
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-400">
           Prodáváte nebo kupujete věc — elektroniku, nábytek, stroj nebo jiný hodnotný předmět?
-          Správná kupní smlouva ochrání obě strany při sporech o stav věci, skrytých vadách nebo
+          Správná kupní smlouva pomáhá přehledně upravit práva a povinnosti stran při sporech o stav věci, skrytých vadách nebo
           odmítnutí zaplatit. Bez ní se spoléháte jen na dobrou vůli druhé strany.
         </p>
 
@@ -309,7 +309,7 @@ export default function KupniSmlouvaMovitaVecPage() {
 
       {/* ── TRUST BOX ───────────────────────────── */}
       <ArticleTrustBox
-        generatorSuitable="Prodej nebo koupě movité věci mezi fyzickými osobami nebo od podnikatele — elektronika, nábytek, nářadí, stroje nebo jiné hodnotné předměty. Generátor pokryje popis věci, prohlášení o stavu a způsob předání."
+        generatorSuitable="Prodej nebo koupě movité věci mezi fyzickými osobami nebo od podnikatele — elektronika, nábytek, nářadí, stroje nebo jiné hodnotné předměty. Online nástroj obvykle pokrývá popis věci, prohlášení o stavu a způsob předání."
         lawyerSuitable="Prodej věci vyšší hodnoty (nad 200 000 Kč), spory o vady nebo stav věci, koupě věci zatížené zástavním právem nebo probíhající exekucí, obchodní transakce mezi firmami."
       />
 
@@ -347,3 +347,5 @@ export default function KupniSmlouvaMovitaVecPage() {
     </article>
   );
 }
+
+

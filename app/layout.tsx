@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     template: '%s | SmlouvaHned',
   },
   description:
-    'Online nástroj pro tvorbu standardizovaných smluvních dokumentů pro běžné životní a podnikatelské situace. Přehledný formulář, bezpečná platba a PDF připravené ke kontrole a podpisu.',
+    'Online nástroj pro sestavení standardizovaných smluvních dokumentů pro běžné životní a podnikatelské situace. Přehledný formulář, bezpečná platba a PDF dokument určený ke kontrole a podpisu.',
   keywords: [
     'nájemní smlouva',
     'kupní smlouva',
@@ -39,7 +39,6 @@ export const metadata: Metadata = {
     'smlouva o zápůjčce',
     'NDA',
     'mlčenlivost',
-    'generátor smluv',
     'online smlouva',
     'šablona smlouvy',
     'smluvní dokument',
@@ -55,7 +54,7 @@ export const metadata: Metadata = {
     siteName: 'SmlouvaHned',
     title: 'SmlouvaHned | Standardizované smluvní dokumenty online',
     description:
-      'Nájemní smlouva, kupní smlouva, NDA a další standardizované dokumenty online. Přehledný formulář a PDF připravené ke kontrole a podpisu.',
+      'Nájemní smlouva, kupní smlouva, NDA a další standardizované dokumenty online. Přehledný formulář a PDF dokument určený ke kontrole a podpisu.',
     images: [
       {
         url: '/og-image.png',

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -241,7 +241,7 @@ export default function SmlouvaOSpolupraci2026Page() {
 
       {/* ── MID CTA ─────────────────────────────── */}
       <ArticleInlineCta
-        title="Potřebujete smlouvu, která vás ochrání?"
+        title="Potřebujete smlouvu, která pomůže přehledně upravit práva a povinnosti stran?"
         body="Smlouva o spolupráci na SmlouvaHned obsahuje vymezení předmětu, honorář, autorská práva a mlčenlivost. Připraveno pro OSVČ a freelancery dle OZ 2026."
         buttonLabel="Vytvořit smlouvu o spolupráci"
         href="/spoluprace"
@@ -363,3 +363,4 @@ export default function SmlouvaOSpolupraci2026Page() {
     </article>
   );
 }
+

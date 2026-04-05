@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
@@ -341,7 +341,7 @@ export default function PodnajemuPage() {
 
             {/* 08 Předávací protokol */}
             <section className={cardClass}>
-              <SectionTitle index="08" title="Předávací protokol" subtitle="Stav bytu a vybavení při předání. Chrání obě strany při vrácení kauce." />
+              <SectionTitle index="08" title="Předávací protokol" subtitle="Stav bytu a vybavení při předání. Pomáhá přehledně doložit stav bytu při vrácení kauce." />
               <div className="space-y-4">
                 <Field label="Vybavení bytu (výčet)"><textarea name="equipmentList" value={form.equipmentList} onChange={handleChange} placeholder="Sporák, lednice, pračka, stůl, 2× židle…" className={textareaClass} /></Field>
                 <Field label="Známé závady při předání"><textarea name="knownDefects" value={form.knownDefects} onChange={handleChange} placeholder="Poškrábaná podlaha v ložnici, chybějící klika u okna v kuchyni…" className={textareaClass} /></Field>
@@ -431,7 +431,7 @@ export default function PodnajemuPage() {
                 </li>
                 <li className="flex items-start gap-2 text-slate-300">
                   <span className="text-amber-400 mt-1">✓</span>
-                  <span>Připraveno k okamžitému stažení</span>
+                  <span>PDF dokument určený ke kontrole a podpisu</span>
                 </li>
                 <li className="flex items-start gap-2 text-slate-300">
                   <span className="text-amber-400 mt-1">✓</span>
@@ -478,7 +478,7 @@ export default function PodnajemuPage() {
                     className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
                   />
                   <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
-                    Beru na vědomí, že objednávám digitální obsah, který bude ihned zpřístupněn po zaplacení.
+                    Beru na vědomí, že objednávám standardizovaný digitální dokument vytvořený podle mnou zadaných údajů, nikoli individuální právní službu. Digitální obsah bude ihned zpřístupněn po zaplacení.
                     Výslovně souhlasím s tím, že ztrácím právo na odstoupení od smlouvy ve lhůtě 14 dní dle{' '}
                     <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">
                       § 1837 písm. l) zákona č. 89/2012 Sb.
@@ -517,3 +517,5 @@ export default function PodnajemuPage() {
     </main>
   );
 }
+
+

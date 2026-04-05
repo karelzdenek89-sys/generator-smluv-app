@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 const faq = [
   {
     q: 'Musí být darovací smlouva písemná?',
-    a: 'U darování movité věci předané okamžitě písemná forma povinná není — smlouva vzniká předáním. Písemná forma je ale doporučená pro finanční dary, auto a povinná pro nemovitosti. Písemný doklad ochrání obě strany při pozdějších sporech.',
+    a: 'U darování movité věci předané okamžitě písemná forma povinná není — smlouva vzniká předáním. Písemná forma je ale doporučená pro finanční dary, auto a povinná pro nemovitosti. Písemný doklad pomáhá přehledně zachytit darování pro případ pozdějších sporů.',
   },
   {
     q: 'Platí se z darování daň?',
@@ -176,3 +176,4 @@ export default function DarovacijSmlouvaPage() {
     </main>
   );
 }
+

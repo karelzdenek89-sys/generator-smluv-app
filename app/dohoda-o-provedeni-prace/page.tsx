@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
@@ -79,7 +79,7 @@ export default function DohodaOProvedeniPracePage() {
             <span className="text-amber-500 italic">vzor DPP 2026</span>
           </h1>
           <p className="text-lg text-slate-400 leading-relaxed max-w-2xl mb-8">
-            Pro brigády, jednorázové úkoly i kreativní práce. DPP správně sepsaná — max. 300 hod./rok,
+            Pro brigády, jednorázové úkoly i kreativní práce. Pečlivě připravená DPP — max. 300 hod./rok,
             bezodvodový rámec do 11 500 Kč/měs., IP doložka pro kreativní práce.
           </p>
           <Link href="/dpp"
@@ -165,3 +165,4 @@ export default function DohodaOProvedeniPracePage() {
     </main>
   );
 }
+

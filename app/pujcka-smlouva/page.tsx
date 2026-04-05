@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
@@ -83,7 +83,7 @@ export default function PujckaSmlouvaPage() {
             <span className="text-amber-500 italic">vzor 2026</span>
           </h1>
           <p className="text-lg text-slate-400 leading-relaxed max-w-2xl mb-8">
-            Půjčujete nebo přijímáte peníze? Písemná smlouva o zápůjčce jasně zachytí výši, termín splatnosti, úroky a podmínky — a ochrání obě strany při sporech.
+            Půjčujete nebo přijímáte peníze? Písemná smlouva o zápůjčce jasně zachytí výši, termín splatnosti, úroky a další podmínky pro případ budoucího sporu.
           </p>
           <div className="flex flex-wrap gap-3 mb-8">
             <Link href="/pujcka"
@@ -175,3 +175,4 @@ export default function PujckaSmlouvaPage() {
     </main>
   );
 }
+

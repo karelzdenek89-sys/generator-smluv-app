@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useMemo, useState } from 'react';
 import ContractPreview from '@/app/components/ContractPreview';
@@ -133,7 +133,7 @@ export default function KupniPage() {
           { icon: '⚖️', text: 'Vychází z pravidel občanského zákoníku pro kupní smlouvu na movitou věc' },
           { icon: '🛋️', text: 'Vhodné pro nábytek, elektroniku, kola, vybavení i běžné soukromé prodeje' },
           { icon: '📋', text: 'Řeší kupní cenu, stav věci, známé vady i podmínky předání v jednom dokumentu' },
-          { icon: '📄', text: 'PDF dokument je připraven ke stažení ihned po dokončení platby' },
+          { icon: '📄', text: 'PDF dokument je zpřístupněn ihned po dokončení platby a je určen ke kontrole a podpisu' },
         ]}
         contents={[
           'Identifikaci prodávajícího a kupujícího',
@@ -157,7 +157,7 @@ export default function KupniPage() {
           { q: 'Pro jaké situace je tato kupní smlouva vhodná?', a: 'Je určena pro soukromý prodej movité věci, například nábytku, elektroniky, kola, sportovního vybavení nebo jiných použitých věcí mezi fyzickými osobami.' },
           { q: 'Je tato varianta vhodná i pro prodej auta?', a: 'Ne — pro prodej motorového vozidla doporučujeme specializovanou kupní smlouvu na auto, která pokrývá VIN, STK, emise a historii vozidla.' },
           { q: 'Musím smlouvu uzavřít písemně?', a: 'Zákon písemnou formu kupní smlouvy u movité věci výslovně nevyžaduje, ale silně ji doporučujeme. Písemná smlouva je rozhodujícím důkazem v případě sporu o stav věci, cenu nebo podmínky předání.' },
-          { q: 'Je dokument dostupný ihned po zaplacení?', a: 'Ano. Po úspěšném dokončení platby je PDF ihned připravené ke stažení.' },
+          { q: 'Je dokument dostupný ihned po zaplacení?', a: 'Ano. Po úspěšném dokončení platby je PDF ihned zpřístupněné a určené ke kontrole a podpisu.' },
           { q: 'Co mám uvést do popisu předmětu?', a: 'Čím přesnější popis, tím silnější smlouva. Uveďte název, výrobce, model, rok výroby, barvu, rozměry nebo jiné identifikační znaky a doplňte stav věci i všechny známé vady.' },
         ]}
         ctaLabel="Vytvořit kupní smlouvu na movitou věc"
@@ -388,7 +388,7 @@ export default function KupniPage() {
                 <ul className="space-y-1.5">
                   {[
                     'Profesionálně strukturované PDF',
-                    'Připraveno k okamžitému stažení',
+                    'PDF dokument určený ke kontrole a podpisu',
                     'Vhodné pro standardní soukromé převody',
                     'Přehledné uspořádání smluvních ustanovení',
                   ].map(item => (
@@ -436,7 +436,7 @@ export default function KupniPage() {
                     className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
                   />
                   <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
-                    Beru na vědomí, že objednávám digitální obsah, který bude ihned zpřístupněn po zaplacení.
+                    Beru na vědomí, že objednávám standardizovaný digitální dokument vytvořený podle mnou zadaných údajů, nikoli individuální právní službu. Digitální obsah bude ihned zpřístupněn po zaplacení.
                     Výslovně souhlasím s tím, že ztrácím právo na odstoupení od smlouvy ve lhůtě 14 dní dle{' '}
                     <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">
                       § 1837 písm. l) zákona č. 89/2012 Sb.
@@ -455,7 +455,7 @@ export default function KupniPage() {
               >
                 {isProcessing ? 'Přesměrování…' : 'Zaplatit a stáhnout PDF →'}
               </button>
-              <p className="mt-3 text-center text-xs text-slate-500">Platba kartou přes Stripe · PDF ke stažení ihned</p>
+              <p className="mt-3 text-center text-xs text-slate-500">Platba kartou přes Stripe · PDF dokument zpřístupněný ihned po zaplacení</p>
             </div>
           </div>
         </div>
@@ -464,3 +464,4 @@ export default function KupniPage() {
     </main>
   );
 }
+

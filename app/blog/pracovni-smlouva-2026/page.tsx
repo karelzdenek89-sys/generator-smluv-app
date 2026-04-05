@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -404,7 +404,7 @@ export default function PracovniSmlouvaVzor2026Page() {
       <section id="zaver" className="mb-12 scroll-mt-6">
         <h2 className="mb-4 text-2xl font-black tracking-tight text-white">7. Shrnutí a doporučení</h2>
         <p className="mb-4 text-slate-400 leading-relaxed">
-          Pracovní smlouva je základ každého pracovního vztahu. Správně sestavená chrání zaměstnavatele i
+          Pracovní smlouva je základ každého pracovního vztahu. Pečlivě připravená chrání zaměstnavatele i
           zaměstnance — a předchází zbytečným sporům.
         </p>
         <div className="mb-6 space-y-2">
@@ -426,7 +426,7 @@ export default function PracovniSmlouvaVzor2026Page() {
 
       {/* ── TRUST BOX ───────────────────────────── */}
       <ArticleTrustBox
-        generatorSuitable="Standardní pracovní smlouva pro jednoho zaměstnance — na dobu určitou i neurčitou, se zkušební dobou, mlčenlivostí a home office doložkou. Generátor pokryje všechny zákonné náležitosti."
+        generatorSuitable="Standardní pracovní smlouva pro jednoho zaměstnance — na dobu určitou i neurčitou, se zkušební dobou, mlčenlivostí a home office doložkou. Online nástroj obvykle pokrývá všechny zákonné náležitosti."
         lawyerSuitable="Agenturní zaměstnávání, hromadné propouštění, převod podniku, zaměstnávání cizinců, složité konkurenční doložky nebo spory ze skončení pracovního poměru."
       />
 
@@ -472,3 +472,5 @@ export default function PracovniSmlouvaVzor2026Page() {
     </article>
   );
 }
+
+

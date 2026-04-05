@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { PDF_OUTPUT_TEXT, SERVICE_DISCLAIMER_CZ } from '@/lib/servicePositioning';
 
 const pageShell = 'premium-page-bg-ref px-6 py-16 text-slate-200';
 
@@ -135,7 +136,7 @@ function SuccessContent() {
             </div>
           ) : null}
 
-          {dlState === 'ready' ? <p className="mt-4 text-sm text-slate-400">Dokument je připraven ke stažení.</p> : null}
+          {dlState === 'ready' ? <p className="mt-4 text-sm text-slate-400">Dokument je dostupný ke stažení.</p> : null}
           {dlState === 'error' ? <p className="mt-4 text-sm text-slate-400">Platba se ještě zpracovává nebo se nepodařilo ověřit stav.</p> : null}
         </div>
 
@@ -144,7 +145,7 @@ function SuccessContent() {
             <div className="text-4xl">PDF</div>
             <div>
               <div className="text-base font-bold text-white">Váš smluvní dokument</div>
-              <div className="mt-0.5 text-xs uppercase tracking-[0.18em] text-slate-500">Generováno po ověřené platbě · Stripe</div>
+              <div className="mt-0.5 text-xs uppercase tracking-[0.18em] text-slate-500">Zpřístupněno po ověřené platbě · Stripe</div>
             </div>
           </div>
 
@@ -155,10 +156,7 @@ function SuccessContent() {
           ) : null}
 
           {dlState === 'ready' ? (
-            <a
-              href={downloadUrl ?? '#'}
-              className="btn-primary-ref flex w-full justify-center rounded-2xl py-5 text-xl font-black tracking-tight"
-            >
+            <a href={downloadUrl ?? '#'} className="btn-primary-ref flex w-full justify-center rounded-2xl py-5 text-xl font-black tracking-tight">
               Stáhnout PDF
             </a>
           ) : null}
@@ -166,9 +164,7 @@ function SuccessContent() {
           {dlState === 'error' ? (
             <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-5 text-center">
               <p className="mb-1 text-sm font-bold text-red-300">Platba se ještě zpracovává</p>
-              <p className="mb-3 text-xs text-slate-400">
-                Odkaz ke stažení obdržíte e-mailem, nebo zkuste stránku obnovit za chvíli.
-              </p>
+              <p className="mb-3 text-xs text-slate-400">Odkaz ke stažení obdržíte e-mailem, nebo zkuste stránku obnovit za chvíli.</p>
               <div className="flex flex-col justify-center gap-2 sm:flex-row">
                 <button
                   onClick={() => {
@@ -222,13 +218,8 @@ function SuccessContent() {
 
         <div className="premium-note-card-ref mb-6 px-5 py-4">
           <p className="text-xs leading-relaxed text-slate-500">
-            <span className="font-semibold text-slate-300">Připomínka:</span> SmlouvaHned.cz je softwarový nástroj pro
-            tvorbu standardizovaných dokumentů. Není advokátní kanceláří a neposkytuje právní poradenství. Pokud vaše
-            situace zahrnuje vyšší hodnotu, více stran nebo probíhající spor, doporučujeme konzultaci s advokátem (
-            <a href="https://www.cak.cz" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 transition hover:text-slate-300">
-              cak.cz
-            </a>
-            ).
+            <span className="font-semibold text-slate-300">Připomínka:</span> {SERVICE_DISCLAIMER_CZ}{' '}
+            <span className="block pt-2">{PDF_OUTPUT_TEXT}</span>
           </p>
         </div>
 
@@ -237,9 +228,9 @@ function SuccessContent() {
           <p className="mb-5 text-xs text-slate-500">Nejčastěji kombinované dokumenty k vaší smlouvě</p>
           <div className="grid grid-cols-1 gap-3">
             {[
-              { title: 'Předávací protokol', desc: 'Součást nájemní smlouvy – zdokumentuje stav bytu při předání.', href: '/najem', badge: 'Bydlení' },
-              { title: 'Smlouva o mlčenlivosti (NDA)', desc: 'Pro každý obchodní vztah, kde sdílíte citlivé informace.', href: '/nda', badge: 'Podnikání' },
-              { title: 'Uznání dluhu', desc: 'Obnoví promlčecí lhůtu a posílí vymahatelnost pohledávky.', href: '/uznani-dluhu', badge: 'Finance' },
+              { title: 'Předávací protokol', desc: 'Součást nájemní smlouvy – zachycuje stav bytu při předání.', href: '/najem', badge: 'Bydlení' },
+              { title: 'Smlouva o mlčenlivosti (NDA)', desc: 'Pro obchodní vztahy, ve kterých sdílíte citlivé informace.', href: '/nda', badge: 'Podnikání' },
+              { title: 'Uznání dluhu', desc: 'Potvrzení závazku a splátkových podmínek.', href: '/uznani-dluhu', badge: 'Finance' },
               { title: 'Smlouva o dílo', desc: 'Pro řemeslníky, freelancery i stavební práce – termíny a podmínky.', href: '/smlouva-o-dilo', badge: 'Práce' },
               { title: 'Plná moc', desc: 'Zastoupení na úřadě, v bance nebo při podpisu smlouvy.', href: '/plna-moc', badge: 'Obecné' },
             ].map(item => (

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import type { ReactNode } from 'react';
+import { BLOG_DISCLAIMER, SERVICE_DISCLAIMER_CZ } from '@/lib/servicePositioning';
 
 export const metadata: Metadata = {
   title: {
@@ -38,7 +39,7 @@ export default function BlogLayout({ children }: { children: ReactNode }) {
               Blog
             </Link>
             <Link href="/#dokumenty" className="nav-cta-ref text-sm">
-              Vybrat dokument <span aria-hidden>→</span>
+              Vybrat dokument <span aria-hidden>&rarr;</span>
             </Link>
           </nav>
         </div>
@@ -49,14 +50,15 @@ export default function BlogLayout({ children }: { children: ReactNode }) {
       <section className="relative z-10 mx-auto mt-10 max-w-5xl px-6">
         <div className="premium-page-card-soft-ref p-8 text-center md:p-10">
           <div className="mb-2 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Praktické pokračování</div>
-          <h2 className="font-heading-serif text-3xl text-white md:text-4xl">Potřebujete rovnou připravit dokument?</h2>
+          <h2 className="font-heading-serif text-3xl text-white md:text-4xl">Potřebujete sestavit konkrétní dokument?</h2>
           <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-slate-300 md:text-base">
-            V článcích najdete vysvětlení, souvislosti a časté chyby. Pokud už víte, jaký dokument potřebujete,
-            přejděte rovnou do přehledu typů nebo si zobrazte další související varianty.
+            V článcích najdete vysvětlení, souvislosti a časté chyby. Pokud už víte, jaký dokument potřebujete, přejděte do přehledu typů a
+            pokračujte ve vyplnění formuláře.
           </p>
+          <p className="mx-auto mt-3 max-w-2xl text-xs leading-relaxed text-slate-500">{BLOG_DISCLAIMER}</p>
           <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
             <Link href="/#dokumenty" className="btn-primary-ref justify-center rounded-xl px-6 py-3 text-sm">
-              Vybrat konkrétní generátor <span aria-hidden>→</span>
+              Vybrat dokument <span aria-hidden>&rarr;</span>
             </Link>
             <Link href="/#vsechny-dokumenty" className="btn-outline-ref justify-center rounded-xl px-6 py-3 text-sm">
               Zobrazit související dokumenty
@@ -68,7 +70,7 @@ export default function BlogLayout({ children }: { children: ReactNode }) {
       <footer className="relative z-10 mt-10 border-t border-white/6 py-8">
         <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-6">
           <div className="max-w-2xl text-xs leading-relaxed text-slate-500">
-            © 2024-2026 Karel Zdeněk, IČO 23660295 · SmlouvaHned · Informace na blogu nejsou náhradou za individuální právní poradenství.
+            © 2024-2026 Karel Zdeněk, IČO 23660295 · SmlouvaHned · {BLOG_DISCLAIMER}
           </div>
           <div className="flex flex-wrap gap-4 text-xs text-slate-500">
             <Link href="/o-projektu" className="transition hover:text-slate-300">
@@ -85,6 +87,7 @@ export default function BlogLayout({ children }: { children: ReactNode }) {
             </Link>
           </div>
         </div>
+        <div className="mx-auto mt-4 max-w-5xl px-6 text-[11px] leading-relaxed text-slate-600">{SERVICE_DISCLAIMER_CZ}</div>
       </footer>
     </div>
   );

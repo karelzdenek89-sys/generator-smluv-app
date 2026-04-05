@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import NavbarClient from '@/app/components/NavbarClient';
@@ -158,32 +158,62 @@ const pricingTiers = [
   {
     title: 'Základní dokument',
     price: '249 Kč',
-    intro: 'Pro běžné situace, kdy potřebujete přehledný finální dokument v PDF.',
+    intro: 'Pro běžné situace, kdy potřebujete rychlý finální dokument v PDF bez doprovodných podkladů.',
+    bestFor: 'Nejlépe pro rychlé standardní použití',
     points: [
       'Dokument sestavený podle vyplněných údajů',
       'Základní smluvní struktura pro standardní použití',
       'Dostupnost odkazu ke stažení po dobu 7 dnů',
     ],
+    compare: ['Bez checklistu a doprovodných instrukcí', 'Bez rozšířených ochranných klauzulí navíc'],
   },
   {
     title: 'Rozšířený dokument',
     price: '399 Kč',
-    intro: 'Pro případy, kdy chcete doplnit ochranná ustanovení a sankční klauzule.',
+    intro: 'Pro případy, kdy chcete doplnit ochranná ustanovení, sankční klauzule a jistější smluvní rámec.',
+    bestFor: 'Nejlépe pro vyšší smluvní jistotu',
     points: [
       'Vše ze Základního dokumentu',
       'Rozšířené klauzule podle typu dokumentu',
       'Dostupnost odkazu ke stažení po dobu 14 dnů',
     ],
+    compare: ['Navíc oproti základu: rozšířené sankce a ochranná ustanovení', 'Stále bez doprovodného checklistu'],
   },
   {
     title: 'Kompletní balíček',
     price: '749 Kč',
-    intro: 'Pro uživatele, kteří chtějí i doprovodné podklady a delší dostupnost.',
+    intro: 'Pro uživatele, kteří chtějí i doprovodné podklady, delší dostupnost a maximum orientace po nákupu.',
+    bestFor: 'Nejlépe pro důkladné dotažení a archivaci',
     points: [
       'Vše z Rozšířeného dokumentu',
       'Checklist a doprovodné instrukce podle varianty',
       'Dostupnost odkazu ke stažení po dobu 30 dnů',
     ],
+    compare: ['Navíc oproti rozšířené variantě: checklist a doprovodné podklady', 'Nejdelší dostupnost odkazu ke stažení'],
+  },
+];
+
+const resourceCards = [
+  {
+    eyebrow: 'Průvodce zdarma',
+    title: 'Jak poznat, kdy stačí standardizovaný dokument',
+    text: 'Stručné vysvětlení, pro které běžné situace je služba vhodná a kdy už dává smysl obrátit se na advokáta.',
+    href: '/o-projektu',
+    cta: 'Otevřít vysvětlení',
+  },
+  {
+    eyebrow: 'Praktický článek',
+    title: 'Smlouva o dílo 2026: co si před vyplněním připravit',
+    text: 'Přehled údajů, které je dobré mít po ruce, aby šlo vyplnění rychle a bez zbytečných chyb.',
+    href: '/blog/smlouva-o-dilo-2026',
+    cta: 'Přečíst průvodce',
+  },
+  {
+    eyebrow: 'Nejčtenější vzor',
+    title: 'Nájemní smlouva 2026: co zkontrolovat před podpisem',
+    text: 'Praktický checklist pro situace, kdy potřebujete rychle zkontrolovat základní náležitosti nájmu.',
+    href: '/blog/najemni-smlouva-vzor-2026',
+    cta: 'Zobrazit checklist',
   },
 ];
 
@@ -279,7 +309,7 @@ export default function Home() {
                   </div>
 
                   <p className="hero-image-trustline-ref">
-                    {"PDF v\u00fdstup ihned po zaplacen\u00ed"} <span aria-hidden>&middot;</span> {"bezpe\u010dn\u00e1 platba p\u0159es Stripe"}
+                    {"PDF dokument ur\u010den\u00fd ke kontrole a podpisu"} <span aria-hidden>&middot;</span> {"bezpe\u010dn\u00e1 platba p\u0159es Stripe"}
                   </p>
                 </div>
               </div>
@@ -290,7 +320,7 @@ export default function Home() {
                 <p className="hero-refined-kicker">{"Online n\u00e1stroj pro standardizovan\u00e9 smluvn\u00ed dokumenty"}</p>
                 <h1 className="hero-refined-title">
                   <span>{"Smluvn\u00ed dokument"}</span>
-                  <span>{"p\u0159ipraven\u00fd k podpisu"}</span>
+                  <span>{"ur\u010den\u00fd ke kontrole a podpisu"}</span>
                 </h1>
                 <p className="hero-refined-subtitle">
                   {"Vypln\u00edte p\u0159ehledn\u00fd formul\u00e1\u0159, zvol\u00edte variantu a po zaplacen\u00ed z\u00edsk\u00e1te standardizovan\u00fd dokument sestaven\u00fd podle va\u0161ich \u00fadaj\u016f. Pro b\u011b\u017en\u00e9 \u017eivotn\u00ed a podnikatelsk\u00e9 situace."}
@@ -306,7 +336,7 @@ export default function Home() {
                 </div>
 
                 <p className="hero-refined-trustline">
-                  {"Dokument ihned po zaplacen\u00ed"} <span aria-hidden>&middot;</span> {"bezpe\u010dn\u00e1 platba p\u0159es Stripe"}
+                  {"PDF dokument ur\u010den\u00fd ke kontrole a podpisu"} <span aria-hidden>&middot;</span> {"bezpe\u010dn\u00e1 platba p\u0159es Stripe"}
                 </p>
               </div>
 
@@ -326,8 +356,8 @@ export default function Home() {
                     <h1 className="hero-refined-mark-hero-title">
                       <span>{"Smluvn\u00ed"}</span>
                       <span>{"dokument"}</span>
-                      <span>{"p\u0159ipraven\u00fd"}</span>
-                      <span>{"k podpisu"}</span>
+                      <span>{"ur\u010den\u00fd ke"}</span>
+                      <span>{"kontrole a podpisu"}</span>
                     </h1>
 
                     <p className="hero-refined-mark-description">
@@ -344,14 +374,14 @@ export default function Home() {
                     </div>
 
                     <p className="hero-refined-mark-trustline">
-                      {"Dokument ihned po zaplacen\u00ed"} <span aria-hidden>&middot;</span> {"bezpe\u010dn\u00e1 platba p\u0159es Stripe"}
+                      {"PDF dokument ur\u010den\u00fd ke kontrole a podpisu"} <span aria-hidden>&middot;</span> {"bezpe\u010dn\u00e1 platba p\u0159es Stripe"}
                     </p>
 
                     <div className="hero-refined-mark-title">
                       <span>{"Smluvn\u00ed"}</span>
                       <span>{"dokument"}</span>
-                      <span>{"p\u0159ipraven\u00fd"}</span>
-                      <span>{"k podpisu"}</span>
+                      <span>{"ur\u010den\u00fd ke"}</span>
+                      <span>{"kontrole a podpisu"}</span>
                     </div>
 
                     <div className="hero-refined-mark-divider" />
@@ -377,7 +407,7 @@ export default function Home() {
                       <span>vašich údajů</span>
                     </h1>
                     <p className="hero-dossier-subtitle-ref">
-                      Dokument pro běžné životní a podnikatelské situace, připravený ke kontrole a podpisu.
+                      Dokument pro běžné životní a podnikatelské situace, určený ke kontrole a podpisu.
                     </p>
                     <div className="hero-dossier-foil-line-ref" />
                     <div className="hero-dossier-foil-line-ref short" />
@@ -388,7 +418,7 @@ export default function Home() {
 
               <p className="hero-monolith-lead-ref">
                 Vyplníte přehledný formulář, zvolíte variantu a po zaplacení získáte finální dokument v PDF.
-                Služba je určena pro standardizované dokumenty, ne pro individuální právní poradenství.
+                Služba je určena pro standardizované dokumenty podle údajů zadaných uživatelem, ne pro individuální právní poradenství nebo právní zastoupení.
               </p>
 
               <div className="hero-monolith-cta-row-ref">
@@ -406,8 +436,7 @@ export default function Home() {
                 Jasně vymezená služba pro běžné situace
               </div>
               <p className="max-w-4xl text-sm leading-relaxed text-slate-300 md:text-base">
-                SmlouvaHned je online nástroj pro tvorbu standardizovaných smluvních dokumentů. Nejde o individuální právní poradenství.
-                Právě proto na webu otevřeně uvádíme, kdy je služba vhodná a kdy už doporučujeme obrátit se na advokáta.
+                SmlouvaHned je online nástroj pro sestavení standardizovaných smluvních dokumentů podle údajů zadaných uživatelem. Nejde o individuální právní poradenství ani o poskytování advokátních služeb. U složitých, sporných nebo nestandardních situací doporučujeme konzultaci s advokátem.
               </p>
             </section>
 
@@ -426,7 +455,7 @@ export default function Home() {
                 <h2 className="section-title-ref">Co přesně získáte po zaplacení</h2>
               </div>
               <p className="max-w-3xl text-sm leading-relaxed text-slate-300 md:text-base">
-                Hotový dokument v PDF připravený k podpisu, sestavený podle údajů, které zadáte ve formuláři.
+                PDF dokument určený ke kontrole a podpisu, sestavený podle údajů, které zadáte ve formuláři.
                 U vybraných typů dokumentů také odpovídající přílohy a doprovodné podklady podle zvolené varianty.
               </p>
               <div className="premium-page-grid-ref two mt-8">
@@ -498,13 +527,23 @@ export default function Home() {
           </div>
           <div className="steps-shell-ref">
             {[
-              'Vyberete typ dokumentu a vyplníte formulář s konkrétními podmínkami.',
-              'Před platbou zkontrolujete souhrn údajů, vybranou variantu a cenu.',
-              'Po zaplacení si stáhnete PDF dokument a můžete jej zkontrolovat před podpisem.',
-            ].map((text, index) => (
-              <div key={text} className="step-item-ref">
+              {
+                title: 'Vyplníte formulář',
+                text: 'Vyberete typ dokumentu a doplníte konkrétní podmínky. U nejčastějších dokumentů je hotovo zpravidla během 3 minut.',
+              },
+              {
+                title: 'Zkontrolujete souhrn',
+                text: 'Před platbou vidíte souhrn údajů, vybranou variantu i konečnou cenu. To pomáhá zachytit chyby ještě před vytvořením PDF.',
+              },
+              {
+                title: 'Stáhnete hotový výstup',
+                text: 'Po zaplacení získáte PDF dokument určený ke kontrole a podpisu. U vyšších variant i doprovodné podklady podle typu dokumentu.',
+              },
+            ].map((item, index) => (
+              <div key={item.title} className="step-item-ref">
                 <div className="step-index-ref">0{index + 1}</div>
-                <p>{text}</p>
+                <h3 className="mb-2 text-base font-semibold text-white">{item.title}</h3>
+                <p>{item.text}</p>
               </div>
             ))}
           </div>
@@ -522,6 +561,7 @@ export default function Home() {
                 <h3>{item.title}</h3>
                 <p className="price-ref">{item.price}</p>
                 <p>{item.intro}</p>
+                <p className="mt-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#d8c092]">{item.bestFor}</p>
                 <ul className="mt-4 space-y-2 text-sm text-[#bdc7d9]">
                   {item.points.map(point => (
                     <li key={point} className="flex items-start gap-2">
@@ -530,8 +570,40 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
+                <div className="mt-5 rounded-2xl border border-white/6 bg-white/[0.02] px-4 py-3">
+                  <div className="mb-2 text-[11px] font-black uppercase tracking-[0.18em] text-slate-400">Co se mění</div>
+                  <ul className="space-y-2 text-sm text-[#bdc7d9]">
+                    {item.compare.map(point => (
+                      <li key={point} className="flex items-start gap-2">
+                        <span className="mt-[2px] text-[var(--teal-subtle)]">•</span>
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             ))}
+          </div>
+        </section>
+
+        <section className="mx-auto mt-8 max-w-[1220px] px-5 md:px-8">
+          <div className="premium-page-card-ref p-8">
+            <div className="section-heading-ref mb-6 text-left">
+              <p className="section-kicker-ref">Další krok před vyplněním</p>
+              <h2 className="section-title-ref">Praktické podklady a průvodce zdarma</h2>
+            </div>
+            <div className="premium-page-grid-ref three">
+              {resourceCards.map(item => (
+                <Link key={item.href} href={item.href} className="premium-note-card-ref p-6 transition hover:-translate-y-[2px]">
+                  <div className="mb-3 text-[11px] font-black uppercase tracking-[0.2em] text-amber-400">{item.eyebrow}</div>
+                  <h3 className="text-xl font-semibold text-white">{item.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-slate-300">{item.text}</p>
+                  <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#e7d5b0]">
+                    {item.cta} <span aria-hidden>→</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -569,3 +641,7 @@ export default function Home() {
     </>
   );
 }
+
+
+
+
