@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import NavbarClient from '@/app/components/NavbarClient';
 
@@ -244,6 +245,43 @@ export default function Home() {
       <main className="relative pb-16 pt-[94px] text-[#d5dbea] md:pt-[112px]">
         <section className="mx-auto max-w-[1220px] px-5 md:px-8">
           <div className="hero-frame-ref hero-frame-monolith-ref">
+            <section className="hero-image-stage-ref">
+              <div className="hero-image-shell-ref">
+                <div className="hero-image-vignette-ref" aria-hidden />
+                <Image
+                  src="/hero-premium-document.png"
+                  alt="Prémiový náhled dokumentových desek SmlouvaHned s listem připraveným ke kontrole a podpisu"
+                  width={1152}
+                  height={768}
+                  priority
+                  quality={100}
+                  sizes="(max-width: 820px) 100vw, (max-width: 1280px) 88vw, 1040px"
+                  className="hero-image-asset-ref"
+                />
+
+                <div className="hero-image-copy-ref">
+                  <p className="hero-image-kicker-ref">{"Online n\u00e1stroj pro standardizovan\u00e9 smluvn\u00ed dokumenty"}</p>
+                  <h1 className="hero-image-title-ref">{"Smluvn\u00ed dokument"}</h1>
+                  <p className="hero-image-subtitle-ref">
+                    {"Standardizovan\u00fd v\u00fdstup p\u0159ipraven\u00fd ke kontrole a podpisu. Pro b\u011b\u017en\u00e9 \u017eivotn\u00ed a podnikatelsk\u00e9 situace."}
+                  </p>
+
+                  <div className="hero-image-actions-ref">
+                    <Link href="#dokumenty" className="btn-primary-ref">
+                      {"Vybrat dokument"} <span aria-hidden>&rarr;</span>
+                    </Link>
+                    <Link href="#jak-to-funguje" className="btn-outline-ref">
+                      {"Jak slu\u017eba funguje"}
+                    </Link>
+                  </div>
+
+                  <p className="hero-image-trustline-ref">
+                    {"Dokument ihned po zaplacen\u00ed"} <span aria-hidden>&middot;</span> {"bezpe\u010dn\u00e1 platba p\u0159es Stripe"}
+                  </p>
+                </div>
+              </div>
+            </section>
+
             <section className="hero-refined-grid">
               <div className="hero-refined-copy hero-refined-copy-hidden">
                 <p className="hero-refined-kicker">{"Online n\u00e1stroj pro standardizovan\u00e9 smluvn\u00ed dokumenty"}</p>
