@@ -224,6 +224,7 @@ function buildGiftContractSections(d: StoredContractData): ContractSection[] {
         'b) jsou plně způsobilé k právnímu jednání a nejsou jim známy žádné skutečnosti, které by uzavření smlouvy bránily,',
         'c) jsou jim srozumitelné veškeré podmínky a důsledky této smlouvy,',
         'd) dar je poskytován a přijímán dobrovolně, bez nátlaku a bez skrytého závazku — není-li výslovně sjednána výminka dle čl. V této smlouvy.',
+        'Upozornění k dani z příjmů: Dar přijatý od osoby v přímé příbuzenské linii (rodiče, děti, prarodiče) nebo od manžela/manželky je zpravidla osvobozen od daně z příjmů (§ 4a zákona č. 586/1992 Sb., ZDP). Dar od jiných osob může být zdanitelným příjmem obdarovaného; při pochybnostech doporučujeme ověřit aktuální podmínky u daňového poradce nebo na webu Finanční správy (financnisprava.cz).',
       ],
     },
     ...premiumContent,
@@ -523,6 +524,7 @@ function buildCarContractSections(d: StoredContractData): ContractSection[] {
         'Smluvní strany jsou povinny neprodleně, nejpozději do 10 pracovních dnů od přechodu vlastnictví, oznámit změnu vlastníka vozidla příslušnému obecnímu úřadu obce s rozšířenou působností (§ 8 odst. 2 zákona č. 56/2001 Sb.).',
         'Prodávající je povinen kupujícímu předat veškeré doklady od vozidla, klíče a vybavení dle soupisu v této smlouvě.',
         'Povinná zákonná odpovědnost (POV/povinné ručení) a havarijní pojištění vozidla přecházejí ke dni přechodu vlastnictví na kupujícího; kupující je povinen zajistit nové pojistné smlouvy.',
+        'Kupující je povinen po převzetí vozidla provést jeho přiměřenou prohlídku a zjevné vady oznámit prodávajícímu písemně bez zbytečného odkladu, nejpozději do 5 pracovních dnů od převzetí (§ 2104 OZ). Práva z vad zjistitelných při přiměřené prohlídce, která nebyla řádně a včas oznámena, nemusí soud přiznat.',
       ],
     },
     ...premiumContent,
@@ -573,15 +575,6 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
   const monthlyTotal = (Number(d.rentAmount || 0) + Number(utilitiesAmount || 0)).toString();
 
   const premiumContent: ContractSection[] = hasPremiumClauses ? [
-    {
-      title: 'X. DORUČOVÁNÍ PÍSEMNOSTÍ',
-      body: [
-        `Písemnosti pronajímateli budou doručovány na adresu: ${asText(d.landlordAddress)}, případně na e-mail: ${asText(d.landlordEmail, 'neuvedeno')}.`,
-        `Písemnosti nájemci budou doručovány na adresu pronajatého bytu: ${propertyAddress}, případně na e-mail: ${asText(d.tenantEmail, 'neuvedeno')}.`,
-        'Písemnost se považuje za doručenou: (a) osobním předáním, (b) dnem doručení doporučenou zásilkou, nebo (c) 3. dnem po odeslání e-mailu, nevykazuje-li automatická zpráva o nedoručení.',
-        'V případě, že adresát odmítne zásilku převzít nebo si ji nevyzvedne, má se za doručenou 10. dnem uložení u doručovatele.',
-      ],
-    },
     {
       title: 'XI. SMLUVNÍ POKUTY A SANKCE',
       body: [
@@ -649,13 +642,14 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
     {
       title: 'II. PŘEDMĚT NÁJMU',
       body: [
-        `Pronajímatel přenechává nájemci za úplatu do dočasného užívání byt/nebytový prostor nacházející se na adrese: ${propertyAddress}.`,
+        `Pronajímatel přenechává nájemci za úplatu do dočasného užívání byt nacházející se na adrese: ${propertyAddress}.`,
         `Dispozice: ${propertyLayout}.`,
         d.flatUnitNumber ? `Číslo bytové jednotky: ${asText(d.flatUnitNumber)}.` : '',
         d.cadastralArea ? `Katastrální území: ${asText(d.cadastralArea)}, číslo parcely: ${asText(d.parcelNumber, 'neuvedeno')}.` : '',
         d.ownershipSheet ? `List vlastnictví č.: ${asText(d.ownershipSheet)}.` : '',
         d.floor ? `Podlaží: ${asText(d.floor)}.` : '',
         d.approxArea ? `Přibližná podlahová plocha: ${asText(d.approxArea)} m².` : '',
+        'Pronajímatel prohlašuje, že je oprávněn byt přenechat do nájmu, a že na bytě neváznou práva třetích osob ani jiné právní vady, které by bránily řádnému užívání nájemcem.',
         'Nájemce potvrzuje, že se před podpisem smlouvy seznámil se stavem předmětu nájmu a přebírá jej v tomto stavu, podrobně popsaném v přiloženém předávacím protokolu.',
       ].filter(Boolean) as string[],
     },
@@ -684,6 +678,8 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
           : 'Zálohy na služby zahrnují: vodné/stočné, teplo/TUV, společné prostory, odpad — dle skutečných nákladů správce/pronajímatele.',
         'Pronajímatel je povinen jedenkrát ročně provést vyúčtování skutečných nákladů na plnění spojená s užíváním a doručit je nájemci do 4 měsíců od skončení zúčtovacího období (§ 7 zákona č. 67/2013 Sb.).',
         `Pronajímatel je oprávněn jednostranně zvýšit nájemné vždy nejdříve po 12 měsících od posledního zvýšení, nejvýše však o ${asText(d.maxRentIncrease, '10')} %, a to písemným oznámením doručeným nájemci nejpozději 3 měsíce před navrhovaným zvýšením.`,
+        'Elektřina a plyn odebírané přímo nájemcem na základě vlastní smlouvy s dodavatelem nejsou součástí výše uvedených záloh na služby a hradí je nájemce samostatně.',
+        'V případě prodlení nájemce s úhradou nájemného nebo zálohy na služby je pronajímatel oprávněn požadovat zákonný úrok z prodlení ve výši stanovené nařízením vlády č. 351/2013 Sb., a to ode dne splatnosti do dne úhrady.',
       ].filter(Boolean) as string[],
     },
     {
@@ -711,6 +707,7 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
           : '',
         'Nájemce je povinen: řádně udržovat byt a zařízení v provozuschopném stavu, bez zbytečného odkladu hlásit pronajímateli závady a havárie, umožnit nezbytné opravy, hradit drobné opravy a náklady spojené s běžnou údržbou (§ 2257 OZ), neprovádět stavební úpravy bez souhlasu pronajímatele.',
         'Nájemce není oprávněn přenechat byt nebo jeho část do podnájmu třetí osobě bez předchozího písemného souhlasu pronajímatele.',
+        'Nájemci je doporučeno sjednat pojištění domácnosti zahrnující odpovědnost za škodu způsobenou třetím osobám při užívání bytu (min. limit 500 000 Kč). Doklad o pojištění předloží nájemce na výzvu pronajímatele do 7 dnů.',
       ].filter(Boolean) as string[],
     },
     {
@@ -746,9 +743,18 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
         'Větší opravy a rekonstrukce jsou povinností pronajímatele, pokud není dohodnuto jinak.',
       ],
     },
+    {
+      title: 'X. DORUČOVÁNÍ PÍSEMNOSTÍ',
+      body: [
+        `Písemnosti pronajímateli budou doručovány na adresu: ${asText(d.landlordAddress)}, případně na e-mail: ${asText(d.landlordEmail, 'neuvedeno')}.`,
+        `Písemnosti nájemci budou doručovány na adresu pronajatého bytu: ${propertyAddress}, případně na e-mail: ${asText(d.tenantEmail, 'neuvedeno')}.`,
+        'Písemnost se považuje za doručenou: (a) osobním předáním, (b) dnem doručení doporučenou zásilkou, nebo (c) 3. dnem po odeslání e-mailu, nevykazuje-li automatická zpráva o nedoručení.',
+        'V případě, že adresát odmítne zásilku převzít nebo si ji nevyzvedne, má se za doručenou 10. dnem uložení u doručovatele.',
+      ],
+    },
     ...premiumContent,
     {
-      title: `${hasPremiumClauses ? 'XV' : 'X'}. ZÁVĚREČNÁ USTANOVENÍ`,
+      title: `${hasPremiumClauses ? 'XV' : 'XI'}. ZÁVĚREČNÁ USTANOVENÍ`,
       body: [
         'Tato smlouva se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů, a zákonem č. 67/2013 Sb. (vyúčtování služeb).',
         disputeClause(d),
@@ -763,7 +769,7 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
   ];
 
   sections.push({
-    title: `${hasPremiumClauses ? 'XVI' : 'XI'}. PODPISY`,
+    title: `${hasPremiumClauses ? 'XVI' : 'XII'}. PODPISY`,
     body: [],
   });
 
@@ -787,10 +793,26 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
       '3. PŘEDÁVANÉ VYBAVENÍ A INVENTÁŘ:',
       `   ${asText(d.equipmentList, 'Bez vybavení / dle přiloženého soupisu')}`,
       '',
-      '4. ZJIŠTĚNÉ VADY, POŠKOZENÍ A POZNÁMKY:',
+      '4. STAV MÍSTNOSTÍ (zakroužkujte u každé místnosti: VÝBORNÝ / DOBRÝ / PŘIJATELNÝ / VYŽADUJE OPRAVY):',
+      '   Obývací pokoj:    VÝBORNÝ  /  DOBRÝ  /  PŘIJATELNÝ  /  VYŽADUJE OPRAVY',
+      '   Poznámky: _________________________________________________________________',
+      '   Ložnice:          VÝBORNÝ  /  DOBRÝ  /  PŘIJATELNÝ  /  VYŽADUJE OPRAVY',
+      '   Poznámky: _________________________________________________________________',
+      '   Kuchyně:          VÝBORNÝ  /  DOBRÝ  /  PŘIJATELNÝ  /  VYŽADUJE OPRAVY',
+      '   Poznámky: _________________________________________________________________',
+      '   Koupelna:         VÝBORNÝ  /  DOBRÝ  /  PŘIJATELNÝ  /  VYŽADUJE OPRAVY',
+      '   Poznámky: _________________________________________________________________',
+      '   WC:               VÝBORNÝ  /  DOBRÝ  /  PŘIJATELNÝ  /  VYŽADUJE OPRAVY',
+      '   Poznámky: _________________________________________________________________',
+      '   Chodba/předsíň:   VÝBORNÝ  /  DOBRÝ  /  PŘIJATELNÝ  /  VYŽADUJE OPRAVY',
+      '   Poznámky: _________________________________________________________________',
+      '   Sklep/komora/lodžie (je-li součástí): VÝBORNÝ  /  DOBRÝ  /  PŘIJATELNÝ  /  VYŽADUJE OPRAVY',
+      '   Poznámky: _________________________________________________________________',
+      '',
+      '5. ZJIŠTĚNÉ VADY, POŠKOZENÍ A POZNÁMKY (nad rámec jednotlivých místností):',
       `   ${asText(d.knownDefects, 'Bez zjevných vad a poškození nad rámec běžného opotřebení.')}`,
       '',
-      '5. STAV BYTU (zakroužkujte):    VÝBORNÝ  /  DOBRÝ  /  PŘIJATELNÝ  /  VYŽADUJE OPRAVY',
+      '6. CELKOVÝ STAV BYTU (zakroužkujte):    VÝBORNÝ  /  DOBRÝ  /  PŘIJATELNÝ  /  VYŽADUJE OPRAVY',
       '',
       'Smluvní strany potvrzují, že byt byl předán/převzat v souladu s touto smlouvou a v rozsahu uvedeném v tomto protokolu.',
       '',
@@ -1001,7 +1023,8 @@ function buildNdaContractSections(d: StoredContractData): ContractSection[] {
         'b) použít důvěrné informace výhradně pro účel stanovený touto smlouvou;',
         'c) omezit přístup k důvěrným informacím jen na ty zaměstnance a spolupracovníky, kteří je nezbytně potřebují pro plnění stanoveného účelu, a zajistit, aby byli vázáni stejnou povinností mlčenlivosti;',
         'd) chránit důvěrné informace přinejmenším se stejnou mírou péče, s jakou chrání vlastní citlivé informace, minimálně však s péčí řádného hospodáře;',
-        'e) nepořizovat kopie ani výpisy z důvěrných informací nad rozsah nezbytně nutný pro stanovený účel.',
+        'e) nepořizovat kopie ani výpisy z důvěrných informací nad rozsah nezbytně nutný pro stanovený účel;',
+        'f) neprovádět zpětnou analýzu (reverse engineering), dekompilaci ani jiné technické metody extrakce důvěrných informací z předaných produktů, softwaru nebo materiálů.',
       ],
     },
     {
@@ -1145,8 +1168,12 @@ function buildGeneralSaleContractSections(d: StoredContractData): ContractSectio
       ],
     },
     {
-      title: 'V. ODPOVĚDNOST ZA VADY',
+      title: 'V. PROHLÍDKA, PŘIJETÍ A ODPOVĚDNOST ZA VADY',
       body: [
+        d.itemType === 'car'
+          ? 'Kupující prohlašuje, že před podpisem smlouvy měl možnost vozidlo prohlédnout a případně nechat posoudit znalcem nebo autorizovaným servisem. Vady zjistitelné při přiměřené prohlídce nelze uplatnit jako vady skryté (§ 2104 OZ).'
+          : 'Kupující prohlašuje, že před podpisem smlouvy měl možnost předmět prodeje prohlédnout. Vady zjistitelné při přiměřené prohlídce nelze uplatnit jako vady skryté (§ 2104 OZ).',
+        'Kupující je povinen předmět při převzetí zkontrolovat a zjevné vady oznámit prodávajícímu bez zbytečného odkladu (§ 2104 OZ).',
         defectsClause,
         warrantyClause,
       ],
@@ -1265,7 +1292,7 @@ function buildEmploymentContractSections(d: StoredContractData): ContractSection
       body: [
         'Zaměstnanec je povinen:',
         'a) osobně vykonávat práce podle pracovní smlouvy a dodržovat pracovní dobu,',
-        'b) dodržovat předpisy BOZP a pracovní řád zaměstnavatele,',
+        'b) dodržovat předpisy BOZP, pracovní řád zaměstnavatele a absolvovat zákonem vyžadovaná školení BOZP (§ 103 ZP); zaměstnavatel je povinen tato školení zajistit na svůj náklad,',
         'c) oznamovat zaměstnavateli překážky v práci (nemoc, ošetřování) bez zbytečného odkladu,',
         'd) zachovávat mlčenlivost o informacích označených jako důvěrné,',
         'e) chránit majetek zaměstnavatele a nepožívat alkohol ani jiné návykové látky na pracovišti.',
@@ -1525,6 +1552,7 @@ function buildServiceContractSections(d: StoredContractData): ContractSection[] 
         `Za prodlení s předáním výstupu/poskytnutím služby je poskytovatel povinen zaplatit objednateli smluvní pokutu ve výši ${asText(d.penaltyRate, '0,05')} % z ceny za každý den prodlení.`,
         'Celková výše smluvní pokuty nepřesáhne 15 % z celkové ceny dle smlouvy.',
         'Zaplacení smluvní pokuty nezbavuje žádnou ze stran povinnosti nahradit způsobenou škodu.',
+        'Smluvní pokuta a náhrada škody za prodlení se neuplatní, bylo-li prodlení výhradně způsobeno okolností vyšší moci (§ 2913 odst. 2 OZ) nebo prodlením objednatele s poskytnutím nezbytné součinnosti.',
       ],
     },
     {
@@ -1882,6 +1910,7 @@ function buildDebtAcknowledgmentSections(d: StoredContractData): ContractSection
       body: [
         repaymentDesc,
         d.bankAccount ? `Platby budou zasílány na bankovní účet věřitele č. ${asText(d.bankAccount)}, VS: ${asText(d.variableSymbol, '—')}.` : '',
+        d.repaymentType === 'installments' ? 'Každá splátka se použije nejprve na úhradu splatných příslušenství (úroku z prodlení, smluvní pokuty) a teprve zbývající část na snížení jistiny (§ 1932 OZ).' : '',
         `Při prodlení s úhradou sjednané splátky nebo celkové dlužné částky je dlužník povinen zaplatit věřiteli smluvní pokutu ve výši ${asText(d.latePenalty, '0,05')} % z dlužné částky za každý den prodlení.`,
         'Věřitel je oprávněn prohlásit celý zbývající dluh za okamžitě splatný, prodlí-li dlužník s úhradou déle než 30 dnů.',
       ].filter(Boolean) as string[],
