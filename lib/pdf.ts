@@ -1131,12 +1131,12 @@ function drawSignatureSection(
   doc.setDrawColor(RULE_R, RULE_G, RULE_B);
   doc.setLineWidth(0.2);
   doc.line(MARGIN, y + 2, pageWidth - MARGIN, y + 2);
-  y += 12;
+  y += 15;
 
-  // Two equal signature columns
-  const colW    = (pageWidth - MARGIN * 2 - 10) / 2;
+  // Two equal signature columns — wider gutter for optical balance
+  const colW    = (pageWidth - MARGIN * 2 - 14) / 2;
   const leftX   = MARGIN;
-  const rightX  = MARGIN + colW + 10;
+  const rightX  = MARGIN + colW + 14;
 
   // "V ____ dne ____" — place and date line
   doc.setFont('Roboto', 'normal');
@@ -1195,7 +1195,13 @@ function drawSignatureSection(
   doc.setTextColor(INK_R, INK_G, INK_B);
   doc.text(labelLeft.toUpperCase(), leftX + colW / 2, y, { align: 'center' });
   doc.text(labelRight.toUpperCase(), rightX + colW / 2, y, { align: 'center' });
-  y += 10;
+  y += 13;
+
+  // Thin divider before closing note — visual breathing room
+  doc.setDrawColor(RULE_R, RULE_G, RULE_B);
+  doc.setLineWidth(0.15);
+  doc.line(MARGIN, y, pageWidth - MARGIN, y);
+  y += 5;
 
   // Closing note — plain, concise
   doc.setFont('Roboto', 'normal');
@@ -1207,7 +1213,7 @@ function drawSignatureSection(
   doc.text(noteLines, MARGIN, y);
   doc.setTextColor(0);
 
-  return y + noteLines.length * 4.5 + 6;
+  return y + noteLines.length * 4.5 + 8;
 }
 
 // ─────────────────────────────────────────────
@@ -1470,11 +1476,11 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
   let inProtocol   = false;
   let endOfTextDrawn = false;
 
-  // ── TOC (premium tiers) — merged onto cover page (page 1), content starts page 2 ──
+  // ── TOC (premium tiers) — page 2 standalone; content starts page 3 ──
   if (hasPremiumClauses) {
     const sectionPageMap = await measureSectionPages(data, sections, meta, labelLeft, labelRight);
-    // tocOffset=1: scratch page numbers start at 1; real content starts at page 2 → offset by 1
-    drawTableOfContents(doc, sections, meta.title, docId, sectionPageMap, 1, y);
+    // tocOffset=2: scratch content starts at scratch-page 1; real content starts at page 3 → offset by 2
+    drawTableOfContents(doc, sections, meta.title, docId, sectionPageMap, 2);
     doc.addPage();
     drawHeader(doc, meta.title, false, docId);
     y = 22;
