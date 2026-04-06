@@ -444,7 +444,7 @@ export default function PracovniSmlouvaVzor2026Page() {
         >
           Vytvořit pracovní smlouvu →
         </Link>
-        <div className="mt-3 text-xs text-slate-600">Od 249 Kč · Dle zákoníku práce · Platné pro 2026</div>
+        <div className="mt-3 text-xs text-slate-600">Od 99 Kč · Dle zákoníku práce · Platné pro 2026</div>
       </div>
 
       {/* ── RELATED ARTICLES ────────────────────── */}

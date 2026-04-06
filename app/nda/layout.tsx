@@ -4,12 +4,12 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
 export const metadata: Metadata = {
   title: 'Smlouva o mlčenlivosti (NDA) online 2026 | SmlouvaHned',
-  description: 'Sestavte NDA smlouvu o mlčenlivosti online. Jednostranná nebo oboustranná, s vymezením rozsahu. PDF ihned. Od 249 Kč.',
+  description: 'Sestavte NDA smlouvu o mlčenlivosti online. Jednostranná nebo oboustranná, s vymezením rozsahu. PDF ihned. Od 99 Kč.',
   keywords: ['smlouva o mlčenlivosti', 'NDA smlouva vzor 2026', 'NDA online česky', 'smlouva o mlčenlivosti formulář'],
   alternates: { canonical: `${BASE_URL}/nda` },
   openGraph: {
     title: 'Smlouva o mlčenlivosti (NDA) online 2026 | SmlouvaHned',
-    description: 'Sestavte NDA smlouvu o mlčenlivosti online. Jednostranná nebo oboustranná, s vymezením rozsahu. PDF ihned. Od 249 Kč.',
+    description: 'Sestavte NDA smlouvu o mlčenlivosti online. Jednostranná nebo oboustranná, s vymezením rozsahu. PDF ihned. Od 99 Kč.',
     url: `${BASE_URL}/nda`,
     type: 'website',
   },
@@ -25,8 +25,8 @@ const softwareSchema = {
   inLanguage: 'cs',
   offers: {
     '@type': 'AggregateOffer',
-    lowPrice: '249',
-    highPrice: '749',
+    lowPrice: '99',
+    highPrice: '199',
     priceCurrency: 'CZK',
   },
 };

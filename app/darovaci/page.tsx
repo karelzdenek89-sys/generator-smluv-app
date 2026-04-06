@@ -1,11 +1,12 @@
-'use client';
+﻿'use client';
 
 import { useState, useMemo } from 'react';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
+import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
+import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
-import { motion } from 'framer-motion';
 
 type GiftType = 'money' | 'car' | 'property' | 'thing';
 
@@ -32,7 +33,7 @@ type FormDataType = {
   withReservation: boolean;
   reservationDescription: string;
   notaryUpsell: boolean;
-  tier: 'basic' | 'professional' | 'complete';
+  tier: 'basic' | 'complete';
   disputeResolution: 'court' | 'mediation' | 'arbitration';
 };
 
@@ -66,6 +67,8 @@ export default function GiftContractPage() {
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [gdprConsent, setGdprConsent] = useState(false);
+  const [withdrawalConsent, setWithdrawalConsent] = useState(false);
+  const [withdrawalError, setWithdrawalError] = useState(false);
 
   const updateField = (field: keyof FormDataType, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -112,20 +115,6 @@ export default function GiftContractPage() {
     return { score, warnings };
   }, [formData]);
 
-  const scoreColor =
-    riskAnalysis.score >= 85
-      ? 'bg-emerald-500'
-      : riskAnalysis.score >= 65
-        ? 'bg-amber-500'
-        : 'bg-rose-500';
-
-  const scrollToPreview = () => {
-    document.getElementById('preview-section')?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
-  };
-
   const previewSections = useMemo(() => {
     try {
       if (!formData.donorName) return [];
@@ -150,6 +139,10 @@ export default function GiftContractPage() {
       return;
     }
 
+        if (!withdrawalConsent) {
+      setWithdrawalError(true);
+      return;
+    }
     if (!gdprConsent) {
       alert('Potvrďte prosím souhlas se zpracováním osobních údajů a obchodními podmínkami.');
       return;
@@ -211,7 +204,7 @@ export default function GiftContractPage() {
         benefits={[
           { icon: '🎁', text: 'Pokrývá darování peněz, věci, vozidla i nemovitosti' },
           { icon: '⚖️', text: 'Sestaveno dle § 2055 OZ — bezplatný převod vlastnického práva' },
-          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+          { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
           { icon: '🔒', text: 'Volitelná podmínka vrácení daru (odvolání daru)' },
         ]}
         contents={[
@@ -283,6 +276,7 @@ export default function GiftContractPage() {
                   <input
                     type="text"
                     placeholder="Celé jméno"
+                    aria-label="Celé jméno"
                     className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                     value={formData.donorName}
                     onChange={(e) => updateField('donorName', e.target.value)}
@@ -290,6 +284,7 @@ export default function GiftContractPage() {
                   <input
                     type="text"
                     placeholder="Rodné číslo / Datum narození"
+                    aria-label="Rodné číslo / Datum narození"
                     className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                     value={formData.donorId}
                     onChange={(e) => updateField('donorId', e.target.value)}
@@ -297,6 +292,7 @@ export default function GiftContractPage() {
                   <input
                     type="text"
                     placeholder="Trvalé bydliště"
+                    aria-label="Trvalé bydliště"
                     className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                     value={formData.donorAddress}
                     onChange={(e) => updateField('donorAddress', e.target.value)}
@@ -310,6 +306,7 @@ export default function GiftContractPage() {
                   <input
                     type="text"
                     placeholder="Celé jméno"
+                    aria-label="Celé jméno"
                     className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                     value={formData.doneeName}
                     onChange={(e) => updateField('doneeName', e.target.value)}
@@ -317,6 +314,7 @@ export default function GiftContractPage() {
                   <input
                     type="text"
                     placeholder="Rodné číslo / Datum narození"
+                    aria-label="Rodné číslo / Datum narození"
                     className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                     value={formData.doneeId}
                     onChange={(e) => updateField('doneeId', e.target.value)}
@@ -324,6 +322,7 @@ export default function GiftContractPage() {
                   <input
                     type="text"
                     placeholder="Trvalé bydliště"
+                    aria-label="Trvalé bydliště"
                     className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                     value={formData.doneeAddress}
                     onChange={(e) => updateField('doneeAddress', e.target.value)}
@@ -340,6 +339,7 @@ export default function GiftContractPage() {
                   <input
                     type="number"
                     placeholder="Darovaná částka"
+                    aria-label="Darovaná částka"
                     className="bg-[#05080f] border border-slate-700 p-4 rounded-2xl"
                     value={formData.amount}
                     onChange={(e) => updateField('amount', e.target.value)}
@@ -347,6 +347,7 @@ export default function GiftContractPage() {
                   <input
                     type="text"
                     placeholder="Měna"
+                    aria-label="Měna"
                     className="bg-[#05080f] border border-slate-700 p-4 rounded-2xl"
                     value={formData.currency}
                     onChange={(e) => updateField('currency', e.target.value)}
@@ -359,6 +360,7 @@ export default function GiftContractPage() {
                   <input
                     type="text"
                     placeholder="Značka"
+                    aria-label="Značka"
                     className="bg-[#05080f] border border-slate-700 p-4 rounded-2xl"
                     value={formData.carMake}
                     onChange={(e) => updateField('carMake', e.target.value)}
@@ -366,6 +368,7 @@ export default function GiftContractPage() {
                   <input
                     type="text"
                     placeholder="Model"
+                    aria-label="Model"
                     className="bg-[#05080f] border border-slate-700 p-4 rounded-2xl"
                     value={formData.carModel}
                     onChange={(e) => updateField('carModel', e.target.value)}
@@ -373,6 +376,7 @@ export default function GiftContractPage() {
                   <input
                     type="text"
                     placeholder="VIN kód"
+                    aria-label="VIN kód"
                     className="bg-[#05080f] border border-slate-700 p-4 rounded-2xl"
                     value={formData.carVIN}
                     onChange={(e) => updateField('carVIN', e.target.value)}
@@ -380,6 +384,7 @@ export default function GiftContractPage() {
                   <input
                     type="text"
                     placeholder="SPZ"
+                    aria-label="SPZ"
                     className="bg-[#05080f] border border-slate-700 p-4 rounded-2xl"
                     value={formData.carPlate}
                     onChange={(e) => updateField('carPlate', e.target.value)}
@@ -387,6 +392,7 @@ export default function GiftContractPage() {
                   <input
                     type="text"
                     placeholder="Rok výroby"
+                    aria-label="Rok výroby"
                     className="bg-[#05080f] border border-slate-700 p-4 rounded-2xl"
                     value={formData.carYear}
                     onChange={(e) => updateField('carYear', e.target.value)}
@@ -396,9 +402,24 @@ export default function GiftContractPage() {
 
               {formData.giftType === 'property' && (
                 <div className="space-y-4">
+                  {/* Alert — darování nemovitosti vyžaduje notáře + katastr */}
+                  <div className="flex items-start gap-3 rounded-2xl border border-amber-500/40 bg-amber-500/10 p-5">
+                    <span className="mt-0.5 flex-shrink-0 text-xl">⚠️</span>
+                    <div>
+                      <div className="mb-1 text-sm font-black text-amber-300">
+                        Důležité upozornění k darování nemovitosti
+                      </div>
+                      <p className="text-xs leading-relaxed text-amber-100/80">
+                        Převod nemovitosti vyžaduje <strong className="text-amber-200">úředně ověřené podpisy obou stran</strong> a podání návrhu na vklad do katastru nemovitostí.
+                        Vygenerovaný dokument slouží jako podklad — k dokončení převodu je nutné zajistit ověření podpisů (Czech POINT, notář) a podat návrh na vklad.
+                        SmlouvaHned.cz nezajišťuje notářské ani katastrální služby.
+                      </p>
+                    </div>
+                  </div>
                   <input
                     type="text"
                     placeholder="Adresa nemovitosti"
+                    aria-label="Adresa nemovitosti"
                     className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl"
                     value={formData.propertyAddress}
                     onChange={(e) => updateField('propertyAddress', e.target.value)}
@@ -407,6 +428,7 @@ export default function GiftContractPage() {
                     <input
                       type="text"
                       placeholder="List vlastnictví (LV)"
+                      aria-label="List vlastnictví (LV)"
                       className="bg-[#05080f] border border-slate-700 p-4 rounded-2xl"
                       value={formData.propertyLV}
                       onChange={(e) => updateField('propertyLV', e.target.value)}
@@ -414,6 +436,7 @@ export default function GiftContractPage() {
                     <input
                       type="text"
                       placeholder="Katastrální území"
+                      aria-label="Katastrální území"
                       className="bg-[#05080f] border border-slate-700 p-4 rounded-2xl"
                       value={formData.propertyCadastre}
                       onChange={(e) => updateField('propertyCadastre', e.target.value)}
@@ -425,6 +448,7 @@ export default function GiftContractPage() {
               {formData.giftType === 'thing' && (
                 <textarea
                   placeholder="Podrobný popis darované věci..."
+                  aria-label="Podrobný popis darované věci..."
                   className="w-full h-40 bg-[#05080f] border border-slate-700 p-4 rounded-2xl resize-y"
                   value={formData.thingDescription}
                   onChange={(e) => updateField('thingDescription', e.target.value)}
@@ -434,7 +458,7 @@ export default function GiftContractPage() {
 
             <section className="bg-[#0c1426] border border-slate-800 rounded-3xl p-8 space-y-6">
               <div>
-                <label className="block text-xs uppercase tracking-widest text-slate-500 mb-2">
+                <label className="block text-xs uppercase tracking-widest text-slate-400 mb-2">
                   Datum darování
                 </label>
                 <input
@@ -458,6 +482,7 @@ export default function GiftContractPage() {
               {formData.withReservation && (
                 <textarea
                   placeholder="Popis výminku..."
+                  aria-label="Popis výminku..."
                   className="w-full h-28 bg-[#05080f] border border-slate-700 p-4 rounded-2xl"
                   value={formData.reservationDescription}
                   onChange={(e) => updateField('reservationDescription', e.target.value)}
@@ -468,59 +493,25 @@ export default function GiftContractPage() {
 
             {/* Řešení sporů */}
             <section className="bg-[#0c1426] border border-slate-800 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
-              <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
-              <select className="w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none focus:border-amber-500/60 transition" name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
+              <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Řešení sporů</div>
+              <select aria-label="Obecný soud (výchozí)" className="w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none focus:border-amber-500/60 transition" name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
                 <option value="court">Obecný soud (výchozí)</option>
                 <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                 <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
               </select>
             </section>
 
-            {/* Výběr balíčku */}
+            {/* Vyberte úroveň zpracování dokumentu */}
             <section className="bg-[#0c1426] border border-slate-800 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
               <div className="mb-5">
                 <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90">Výběr úrovně ochrany</div>
                 <p className="mt-2 text-sm text-slate-400">Čím vyšší balíček, tím silnější smlouva a více příloh.</p>
               </div>
-              <div className="space-y-3">
-                {([
-                  { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Kompletní darovací smlouva dle OZ v PDF.' },
-                  { value: 'professional', label: 'Rozšířený dokument', price: '399 Kč', desc: 'Rozšířené klauzule, odpovědnostní ustanovení a sankce.', recommended: true },
-                  { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířeného dokumentu + instrukce k podpisu, checklist a 30denní archivace.' },
-                ] as const).map((opt) => (
-                  <label
-                    key={opt.value}
-                    className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${
-                      formData.tier === opt.value
-                        ? 'border-amber-500 bg-amber-500/10'
-                        : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'
-                    }`}
-                  >
-                    {('recommended' in opt) &&  formData.tier !== 'professional' && (
-                      <div className="absolute -top-2.5 left-4">
-                        <span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">Nejčastěji voleno</span>
-                      </div>
-                    )}
-                    <div className="flex items-start gap-3">
-                      <input
-                        type="radio"
-                        name="tier"
-                        value={opt.value}
-                        checked={formData.tier === opt.value}
-                        onChange={(e) => updateField('tier', e.target.value)}
-                        className="mt-1 h-5 w-5 accent-amber-500"
-                      />
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-black uppercase tracking-wide text-amber-400">{opt.label}</span>
-                          <span className="text-lg font-black text-white">{opt.price}</span>
-                        </div>
-                        <div className="mt-1 text-xs leading-relaxed text-slate-400">{opt.desc}</div>
-                      </div>
-                    </div>
-                  </label>
-                ))}
-              </div>
+              <BuilderTierSelector
+                contractType="gift"
+                tier={formData.tier}
+                onTierChange={(tier) => updateField('tier', tier)}
+              />
             </section>
           </div>
 
@@ -562,33 +553,12 @@ export default function GiftContractPage() {
 
               {/* Platba */}
               <div className="bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
-                <div className="mb-4 rounded-2xl border border-white/8 bg-white/3 p-4">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm text-slate-400">Základní dokument</span>
-                    <span className="text-sm font-bold text-white">249 Kč</span>
-                  </div>
-                  {formData.tier !== 'basic' && (
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm text-slate-400">{formData.tier === 'complete' ? 'Kompletní balíček' : 'Rozšířený dokument'}</span>
-                      <span className="text-sm font-bold text-amber-400">{formData.tier === 'complete' ? '+500 Kč' : '+200 Kč'}</span>
-                    </div>
-                  )}
-                  <div className="border-t border-white/8 mt-2 pt-2 flex items-center justify-between">
-                    <span className="text-sm font-black text-white">Celkem</span>
-                    <span className="text-xl font-black text-amber-400">{formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '399 Kč' : '249 Kč'}</span>
-                  </div>
-                </div>
-
-                <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3">
-                  <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Součástí výstupu je</div>
-                  <ul className="space-y-1.5">
-                    {['Profesionálně strukturované PDF', 'Připraveno k okamžitému stažení', 'Vhodné pro standardní soukromé převody', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
-                      <li key={item} className="flex items-start gap-2 text-xs text-slate-400">
-                        <span className="text-amber-500 mt-0.5">✓</span>{item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+              <BuilderCheckoutSummary
+                contractType="gift"
+                tier={formData.tier}
+                documentLabel="Darovací smlouva"
+                onUpgrade={() => updateField('tier', 'complete')}
+              />
 
                 <label className="flex items-start gap-3 mb-4 cursor-pointer group mt-4">
                   <input
@@ -605,6 +575,31 @@ export default function GiftContractPage() {
                     Beru na vědomí, že digitální obsah je doručen ihned a nelze od smlouvy odstoupit.
                   </span>
                 </label>
+                {/* § 1837 l) OZ — povinný souhlas s neodstoupením od smlouvy */}
+                <label className="flex items-start gap-3 mb-1 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={withdrawalConsent}
+                    onChange={(e) => {
+                      setWithdrawalConsent(e.target.checked);
+                      if (e.target.checked) setWithdrawalError(false);
+                    }}
+                    className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
+                  />
+                  <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
+                    Beru na vědomí, že objednávám digitální obsah, který bude ihned zpřístupněn po zaplacení.
+                    Výslovně souhlasím s tím, že ztrácím právo na odstoupení od smlouvy ve lhůtě 14 dní dle{' '}
+                    <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">
+                      § 1837 písm. l) zákona č. 89/2012 Sb.
+                    </a>
+                  </span>
+                </label>
+                {withdrawalError && (
+                  <p className="mb-3 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-2 text-xs text-rose-300">
+                    Pro pokračování musíte souhlasit s podmínkami digitálního obsahu.
+                  </p>
+                )}
+
 
                 <button
                   onClick={handlePayment}
@@ -617,7 +612,7 @@ export default function GiftContractPage() {
                       Přesměrování na platbu…
                     </span>
                   ) : (
-                    `Zaplatit ${formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '399 Kč' : '249 Kč'} a stáhnout PDF →`
+                    `Zaplatit ${formData.tier === 'complete' ? '199 Kč' : '99 Kč'} a stáhnout PDF →`
                   )}
                 </button>
 
@@ -633,3 +628,6 @@ export default function GiftContractPage() {
     </main>
   );
 }
+
+
+

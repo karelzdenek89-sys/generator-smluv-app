@@ -4,7 +4,7 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Podnájemní smlouva online 2026 — vzor ke stažení | SmlouvaHned',
   description:
-    'Podnájemní smlouva se souhlasem pronajímatele. Kauce, pravidla, předávací protokol. Dle § 2274 OZ 2026. PDF ihned ke stažení od 249 Kč.',
+    'Podnájemní smlouva se souhlasem pronajímatele. Kauce, pravidla, předávací protokol. Dle § 2274 OZ 2026. PDF ihned ke stažení od 99 Kč.',
   keywords: [
     'podnájemní smlouva',
     'podnájemní smlouva vzor 2026',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://smlouvahned.cz/podnajemni-smlouva' },
   openGraph: {
     title: 'Podnájemní smlouva online 2026 | SmlouvaHned',
-    description: 'Podnájemní smlouva se souhlasem pronajímatele. Kauce, pravidla, předávací protokol. § 2274 OZ. Od 249 Kč.',
+    description: 'Podnájemní smlouva se souhlasem pronajímatele. Kauce, pravidla, předávací protokol. § 2274 OZ. Od 99 Kč.',
     url: 'https://smlouvahned.cz/podnajemni-smlouva',
   },
 };
@@ -87,7 +87,7 @@ export default function PodnajemniSmlouvaPage() {
               Vytvořit podnájemní smlouvu →
             </Link>
           </div>
-          <div className="text-sm text-slate-500">Od 249 Kč · PDF ihned · Dle § 2274 OZ</div>
+          <div className="text-sm text-slate-500">Od 99 Kč · PDF ihned · Dle § 2274 OZ</div>
         </div>
 
         <section className="mb-12 rounded-3xl border border-white/8 bg-[#0c1426] p-8">
@@ -159,7 +159,7 @@ export default function PodnajemniSmlouvaPage() {
               Vytvořit podnájemní smlouvu →
             </Link>
           </div>
-          <div className="mt-3 text-xs text-slate-600">Od 249 Kč · § 2274 OZ · PDF ihned</div>
+          <div className="mt-3 text-xs text-slate-600">Od 99 Kč · § 2274 OZ · PDF ihned</div>
         </section>
 
         <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">

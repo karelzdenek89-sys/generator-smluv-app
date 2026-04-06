@@ -4,12 +4,12 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
 export const metadata: Metadata = {
   title: 'Smlouva o spolupráci online 2026 | SmlouvaHned',
-  description: 'Smlouva o spolupráci OSVČ nebo firem. Podíl na výnosech, IP práva, mlčenlivost, exit klauzule. Od 249 Kč.',
+  description: 'Smlouva o spolupráci OSVČ nebo firem. Podíl na výnosech, IP práva, mlčenlivost, exit klauzule. Od 99 Kč.',
   keywords: ['smlouva o spolupráci vzor 2026', 'smlouva o spolupráci OSVČ', 'smlouva o spolupráci online', 'smlouva o obchodní spolupráci'],
   alternates: { canonical: `${BASE_URL}/spoluprace` },
   openGraph: {
     title: 'Smlouva o spolupráci online 2026 | SmlouvaHned',
-    description: 'Smlouva o spolupráci OSVČ nebo firem. Podíl na výnosech, IP práva, mlčenlivost, exit klauzule. Od 249 Kč.',
+    description: 'Smlouva o spolupráci OSVČ nebo firem. Podíl na výnosech, IP práva, mlčenlivost, exit klauzule. Od 99 Kč.',
     url: `${BASE_URL}/spoluprace`,
     type: 'website',
   },
@@ -25,8 +25,8 @@ const softwareSchema = {
   inLanguage: 'cs',
   offers: {
     '@type': 'AggregateOffer',
-    lowPrice: '249',
-    highPrice: '749',
+    lowPrice: '99',
+    highPrice: '199',
     priceCurrency: 'CZK',
   },
 };

@@ -4,12 +4,12 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
 export const metadata: Metadata = {
   title: 'Vytvořit smlouvu o dílo — formulář online | SmlouvaHned',
-  description: 'Formulář pro smlouvu o dílo dle § 2586 OZ. Vyplníte dílo, cenu, termín a sankce — kompletní PDF připravené k podpisu ihned ke stažení. Od 249 Kč.',
+  description: 'Formulář pro smlouvu o dílo dle § 2586 OZ. Vyplníte dílo, cenu, termín a sankce — kompletní PDF připravené k podpisu ihned ke stažení. Od 99 Kč.',
   keywords: ['vytvořit smlouvu o dílo', 'smlouva o dílo formulář', 'smlouva o dílo generátor', 'smlouva o dílo PDF'],
   alternates: { canonical: `${BASE_URL}/smlouva-o-dilo` },
   openGraph: {
     title: 'Vytvořit smlouvu o dílo — formulář online | SmlouvaHned',
-    description: 'Formulář krok za krokem. Smlouva o dílo s termíny, cenou a sankcemi. PDF ihned. Od 249 Kč.',
+    description: 'Formulář krok za krokem. Smlouva o dílo s termíny, cenou a sankcemi. PDF ihned. Od 99 Kč.',
     url: `${BASE_URL}/smlouva-o-dilo`,
     type: 'website',
   },
@@ -25,8 +25,8 @@ const softwareSchema = {
   inLanguage: 'cs',
   offers: {
     '@type': 'AggregateOffer',
-    lowPrice: '249',
-    highPrice: '749',
+    lowPrice: '99',
+    highPrice: '199',
     priceCurrency: 'CZK',
   },
 };

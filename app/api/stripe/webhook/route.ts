@@ -6,8 +6,8 @@ import { stripe } from '@/lib/stripe';
 export const runtime = 'nodejs';
 
 const TTL_BASIC         = 60 * 60 * 24 * 7;   // 7 dní
-const TTL_PROFESSIONAL  = 60 * 60 * 24 * 14;  // 14 dní pro Profesionální balíček
-const TTL_COMPLETE      = 60 * 60 * 24 * 30;  // 30 dní pro Kompletní balíček
+const TTL_PROFESSIONAL  = 60 * 60 * 24 * 30;  // 30 dní
+const TTL_COMPLETE      = 60 * 60 * 24 * 30;  // 30 dní
 
 export async function POST(req: Request) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -189,7 +189,7 @@ async function sendDownloadEmail(
               STÁHNOUT PDF DOKUMENT
             </a>
             <p style="color:#64748b;font-size:12px;text-align:center;margin:0;">
-              Odkaz ke stažení je platný ${tier === 'complete' ? '30 dní' : tier === 'professional' ? '14 dní' : '7 dní'} od zaplacení.<br>
+              Odkaz ke stažení je platný ${tier === 'basic' ? '7 dní' : '30 dní'} od zaplacení.<br>
               V případě dotazů nás kontaktujte na <a href="mailto:info@smlouvahned.cz" style="color:#f59e0b;">info@smlouvahned.cz</a>
             </p>
           </div>

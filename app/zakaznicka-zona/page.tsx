@@ -14,13 +14,13 @@ type LookupState = 'idle' | 'loading' | 'done' | 'error';
 
 const TIER_LABEL: Record<string, { label: string; color: string }> = {
   basic:        { label: 'Základní',       color: 'text-slate-400' },
-  professional: { label: 'Rozšířená',  color: 'text-blue-400' },
-  complete:     { label: 'Kompletní',      color: 'text-amber-400' },
+  professional: { label: 'Rozšířený',  color: 'text-amber-400' },
+  complete:     { label: 'Rozšířený',  color: 'text-amber-400' },
 };
 
 const TTL_LABEL: Record<string, string> = {
   basic:        '7 dní',
-  professional: '14 dní',
+  professional: '30 dní',
   complete:     '30 dní',
 };
 
@@ -177,7 +177,7 @@ export default function CustomerZone() {
           <ul className="space-y-1.5 text-xs text-slate-400">
             <li className="flex items-start gap-2">
               <span className="text-amber-400/60">•</span>
-              <span>Platnost odkazu ke stažení: <strong className="text-slate-300">Základní 7 dní</strong>, <strong className="text-slate-300">Rozšířená 14 dní</strong>, <strong className="text-slate-300">Kompletní 30 dní</strong>.</span>
+              <span>Platnost odkazu ke stažení: <strong className="text-slate-300">Základní dokument 7 dní</strong>, <strong className="text-slate-300">Rozšířený dokument 30 dní</strong>, <strong className="text-slate-300">Tematický balíček 30 dní</strong>.</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-amber-400/60">•</span>

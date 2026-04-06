@@ -1,10 +1,15 @@
-'use client';
+﻿'use client';
 
-import { useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
+import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
+import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
+import { getThematicPackageConfig } from '@/lib/packages';
 
 type PaymentMethod = 'cash' | 'transfer';
 type RiskLevel = 'low' | 'medium' | 'high';
@@ -65,20 +70,21 @@ type CarSaleFormData = {
   buyerInspectedVehicle: boolean;
 
   notaryUpsell: boolean;
-  tier: 'basic' | 'professional' | 'complete';
+  tier: 'basic' | 'complete';
   disputeResolution: 'court' | 'mediation' | 'arbitration';
 };
 
-const inputClass =
-  'w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition';
+const inputClass = 'site-input';
 
-const textareaClass =
-  'w-full min-h-[110px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition';
+const textareaClass = 'site-textarea';
 
-const cardClass =
-  'bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]';
+const cardClass = 'builder-card p-6';
 
-export default function CarSaleBuilderPage() {
+function CarSaleBuilderContent() {
+  const searchParams = useSearchParams();
+  const packageConfig = getThematicPackageConfig(searchParams.get('package'));
+  const isVehiclePackage = packageConfig?.key === 'vehicle_sale';
+
   const [formData, setFormData] = useState<CarSaleFormData>({
     sellerName: '',
     sellerId: '',
@@ -135,13 +141,22 @@ export default function CarSaleBuilderPage() {
     odometerGuaranteed: true,
     buyerInspectedVehicle: true,
 
-    notaryUpsell: false,
-    tier: 'basic' as const,
+    notaryUpsell: isVehiclePackage,
+    tier: isVehiclePackage ? ('complete' as const) : ('basic' as const),
     disputeResolution: 'court' as const,
   });
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [gdprConsent, setGdprConsent] = useState(false);
+
+  useEffect(() => {
+    if (!isVehiclePackage) return;
+    setFormData((prev) => ({
+      ...prev,
+      tier: 'complete',
+      notaryUpsell: true,
+    }));
+  }, [isVehiclePackage]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -306,11 +321,15 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
   const previewSections = useMemo(() => {
     try {
       if (!formData.sellerName) return [];
-      return buildContractSections({ ...formData, contractType: 'car_sale' } as StoredContractData);
+      return buildContractSections({
+        ...formData,
+        contractType: 'car_sale',
+        packageKey: packageConfig?.key ?? null,
+      } as StoredContractData);
     } catch {
       return [];
     }
-  }, [formData]);
+  }, [formData, packageConfig?.key]);
 
   async function handlePayment() {
     if (riskAnalysis.checkoutBlocked) {
@@ -342,6 +361,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
       const payload = {
         ...formData,
         contractType: 'car_sale' as const,
+        packageKey: packageConfig?.key ?? null,
       };
 
       const res = await fetch('/api/checkout', {
@@ -349,8 +369,9 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contractType: 'car_sale',
-          tier: formData.tier,
-          notaryUpsell: formData.tier !== 'basic',
+          tier: packageConfig ? packageConfig.defaultTier : formData.tier,
+          packageKey: packageConfig?.key ?? null,
+          notaryUpsell: packageConfig ? true : formData.tier !== 'basic',
           payload,
         }),
       });
@@ -431,24 +452,24 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
   }
 
   return (
-    <main className="min-h-screen bg-[#05080f] text-slate-200 font-sans pb-24">
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#08101e]/90 backdrop-blur">
+    <main className="site-page contract-builder pb-24">
+      <header className="contract-builder-header">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500 text-slate-900 font-black text-[11px]">
               AUTO
             </div>
             <div>
-              <div className="font-bold tracking-tight text-white uppercase">SmlouvaHned Auto</div>
-              <div className="text-[11px] text-slate-500 uppercase tracking-widest">
-                Kupní smlouva vozidla
+              <div className="font-bold tracking-tight text-[#f2e7c8] uppercase">SmlouvaHned</div>
+              <div className="text-[11px] uppercase tracking-[0.18em] text-[#bba98c]">
+                Kupní smlouva na vozidlo
               </div>
             </div>
           </div>
 
           <button
             onClick={() => (window.location.href = '/')}
-            className="text-sm text-slate-400 hover:text-white transition"
+            className="text-sm text-[#d2c8b9] hover:text-[#f2e7c8] transition"
           >
             Zavřít
           </button>
@@ -497,6 +518,71 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
         guideHref="/blog/kupni-smlouva-na-auto-2026"
         guideLabel="Průvodce kupní smlouvou na auto — VIN, STK, vady a bezpečné předání"
       />
+
+      {packageConfig ? (
+        <div className="max-w-7xl mx-auto px-4 pt-8 lg:px-8">
+          <div className="rounded-[1.75rem] border border-amber-500/20 bg-[rgba(255,255,255,0.04)] p-6">
+            <div className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-400">
+              {packageConfig.badge}
+            </div>
+            <div className="mt-3 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div className="max-w-3xl">
+                <h2 className="text-2xl font-semibold tracking-tight text-white">
+                  {packageConfig.builderTitle}
+                </h2>
+                <p className="mt-3 text-sm leading-relaxed text-slate-300">
+                  {packageConfig.builderDescription}
+                </p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/4 px-5 py-4">
+                <div className="text-xs uppercase tracking-[0.18em] text-slate-500">
+                  Cena balíčku
+                </div>
+                <div className="mt-2 text-3xl font-black tracking-tight text-white">
+                  {packageConfig.priceLabel}
+                </div>
+                <Link
+                  href="/auto"
+                  className="mt-3 inline-block text-xs leading-relaxed text-[#cbbba0] transition hover:text-white"
+                >
+                  Řešíte jen samotnou kupní smlouvu? Vraťte se na samostatný dokument 99 / 199 Kč.
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="max-w-7xl mx-auto px-4 pt-8 lg:px-8">
+          <Link
+            href="/balicek-prodej-vozidla"
+            className="interactive-card block rounded-[1.75rem] border border-[rgba(197,160,89,0.18)] bg-[rgba(255,255,255,0.035)] p-6 no-underline"
+          >
+            <div className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-400">
+              Tematický balíček
+            </div>
+            <div className="mt-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+              <div className="max-w-3xl">
+                <h2 className="text-2xl font-semibold tracking-tight text-white">
+                  Balíček pro prodej vozidla
+                </h2>
+                <p className="mt-3 text-sm leading-relaxed text-slate-300">
+                  V tomto formuláři volíte mezi samostatným dokumentem za 99 Kč a širší variantou za 199 Kč. Pokud chcete řešit i předání vozidla, klíčů a dokladů, pokračujte tematickým balíčkem za 299 Kč.
+                </p>
+                <p className="mt-3 text-xs leading-6 text-[#bba98c]">
+                  Pokud si nejste jistí, kterou cestu zvolit, pomůže vám orientační stránka{' '}
+                  <Link href="/prodej-vozidla" className="link-gold-elegant">
+                    Podklady pro prodej vozidla
+                  </Link>
+                  .
+                </p>
+              </div>
+              <span className="link-gold-elegant text-sm font-semibold">
+                Zobrazit balíček →
+              </span>
+            </div>
+          </Link>
+        </div>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8" id="formular">
         <div className="mb-6 border-t border-slate-800/60 pt-8">
@@ -873,7 +959,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   name="strictWarranties"
                   checked={formData.strictWarranties}
                   label="Přísnější právní prohlášení"
-                  hint="Doporučeno. Posiluje text o vadách, právních omezeních a stavu vozidla."
+                  hint="Doporučená volba. Posiluje text o vadách, právních omezeních a stavu vozidla."
                 />
                 <ToggleCard
                   name="odometerGuaranteed"
@@ -885,7 +971,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   name="buyerInspectedVehicle"
                   checked={formData.buyerInspectedVehicle}
                   label="Kupující vozidlo prohlédl"
-                  hint="Doporučeno. Snižuje prostor pro pozdější námitky."
+                  hint="Doporučená volba. Snižuje prostor pro pozdější námitky."
                 />
                 <ToggleCard
                   name="isPledged"
@@ -956,7 +1042,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 <div className="flex justify-between items-start gap-4 mb-4">
                   <div>
                     <h3 className="font-black text-white text-sm uppercase tracking-[0.18em]">
-                      Bezpečnost prodeje
+                      Kontrola úplnosti
                     </h3>
                     <p className="text-sm text-slate-400 mt-1">{riskAnalysis.label}</p>
                   </div>
@@ -1001,7 +1087,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 <div className="absolute top-0 left-0 w-full h-1.5 bg-amber-500" />
                 <div className="mb-3">
                   <div className="text-[10px] font-black uppercase tracking-[0.24em] text-slate-400">
-                    Živý náhled smlouvy
+                    Náhled výstupu
                   </div>
                   <div className="mt-1 text-xs text-slate-500">
                     Každý klik i každé písmeno se okamžitě propíše sem.
@@ -1041,95 +1127,52 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
                   </select>
                 </div>
-                {/* === VÝBĚR BALÍČKU === */}
-                <div className="space-y-3 mb-4">
-                  <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2">Vyberte balíček</div>
-                  {([
-                    { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva dle občanského zákoníku v PDF.' },
-                    { value: 'professional', label: 'Rozšířený dokument', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
-                    { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířeného dokumentu + průvodní instrukce, checklist a 30denní archivace.' },
-                  ] as const).map((opt) => (
-                    <label
-                      key={opt.value}
-                      className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${
-                        formData.tier === opt.value
-                          ? 'border-amber-500 bg-amber-500/10'
-                          : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'
-                      }`}
-                    >
-                      {('recommended' in opt) &&  formData.tier !== 'professional' && (
-                        <div className="absolute -top-2.5 left-4">
-                          <span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">
-                            Doporučeno
-                          </span>
-                        </div>
-                      )}
-                      <div className="flex items-start gap-3">
-                        <input
-                          type="radio"
-                          name="tier"
-                          value={opt.value}
-                          checked={formData.tier === opt.value}
-                          onChange={(e) => setFormData((prev) => ({ ...prev, tier: e.target.value as 'basic' | 'professional' | 'complete', notaryUpsell: e.target.value !== 'basic' }))}
-                          className="mt-1 h-5 w-5 accent-amber-500"
-                        />
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-black uppercase tracking-wide text-amber-400">{opt.label}</span>
-                            <span className="text-sm font-black text-white">{opt.price}</span>
-                          </div>
-                          <div className="mt-1 text-xs leading-relaxed text-slate-400">{opt.desc}</div>
-                          {opt.value === 'professional' && (
-                            <div className="mt-2 flex flex-wrap gap-2">
-                              {['Smluvní pokuty', 'Sankce za prodlení', 'Odpovědnostní doložky'].map(t => (
-                                <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
-                              ))}
-                            </div>
-                          )}
-                          {opt.value === 'complete' && (
-                            <div className="mt-2 flex flex-wrap gap-2">
-                              {['Instrukce k podpisu', 'Checklist', '30denní archivace'].map(t => (
-                                <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </label>
-                  ))}
-                </div>
+                {packageConfig ? (
+                  <div className="rounded-2xl border border-amber-500/20 bg-amber-500/8 p-5">
+                    <div className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-400">
+                      Zvolený produkt
+                    </div>
+                    <div className="mt-2 text-lg font-semibold text-white">
+                      {packageConfig.title}
+                    </div>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-300">
+                      Součástí výstupu bude kupní smlouva na vozidlo v komplexní variantě, předávací protokol, potvrzení o převzetí vozidla, klíčů a dokladů a praktické podklady k převodu.
+                    </p>
+                  </div>
+                ) : (
+                  <BuilderTierSelector
+                    contractType="car_sale"
+                    tier={formData.tier}
+                    onTierChange={(tier) =>
+                      setFormData((prev) => ({ ...prev, tier, notaryUpsell: tier !== 'basic' }))
+                    }
+                  />
+                )}
+
+                {!packageConfig ? (
+                  <p className="mt-4 text-xs leading-relaxed text-[#b9c1d0]">
+                    Řešíte vedle samotné smlouvy i fyzické předání vozidla, klíčů a dokladů?{' '}
+                    <Link href="/balicek-prodej-vozidla" className="link-gold-elegant">
+                      Zobrazit Balíček pro prodej vozidla
+                    </Link>
+                    . Pokud si chcete nejprve ujasnit, která cesta je pro vás vhodná, otevřete{' '}
+                    <Link href="/prodej-vozidla" className="link-gold-elegant">
+                      podklady pro prodej vozidla
+                    </Link>
+                    .
+                  </p>
+                ) : null}
 
               </div>
 
               <div className={cardClass}>
-                {/* Price summary */}
-                <div className="mb-4 rounded-2xl border border-white/8 bg-white/3 p-4">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm text-slate-400">Základní dokument</span>
-                    <span className="text-sm font-bold text-white">249 Kč</span>
-                  </div>
-                  {formData.tier !== 'basic' && (
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm text-slate-400">{formData.tier === 'complete' ? 'Kompletní balíček' : 'Rozšířený dokument'}</span>
-                      <span className="text-sm font-bold text-amber-400">{formData.tier === 'complete' ? '+500 Kč' : '+200 Kč'}</span>
-                    </div>
-                  )}
-                  <div className="border-t border-white/8 mt-2 pt-2 flex items-center justify-between">
-                    <span className="text-sm font-black text-white">Celkem</span>
-                    <span className="text-xl font-black text-amber-400">{formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '399 Kč' : '249 Kč'}</span>
-                  </div>
-                </div>
-
-                <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3">
-                  <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Součástí výstupu je</div>
-                  <ul className="space-y-1.5">
-                    {['Profesionálně strukturované PDF', 'Připraveno k okamžitému stažení', 'Vhodné pro standardní soukromé převody', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
-                      <li key={item} className="flex items-start gap-2 text-xs text-slate-400">
-                        <span className="text-amber-500 mt-0.5">✓</span>{item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <BuilderCheckoutSummary
+                  contractType="car_sale"
+                  tier={formData.tier}
+                  packageKey={packageConfig?.key ?? null}
+                  documentLabel="Kupní smlouva na vozidlo"
+                  onUpgrade={() => setFormData((prev) => ({ ...prev, tier: 'complete', notaryUpsell: true }))}
+                />
 
                 {/* GDPR souhlas */}
                 <label className="flex items-start gap-3 mb-4 cursor-pointer group mt-4">
@@ -1160,7 +1203,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                       Přesměrování na platbu…
                     </span>
                   ) : (
-                    `Zaplatit ${formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '399 Kč' : '249 Kč'} a stáhnout PDF →`
+                    `Zaplatit ${packageConfig ? packageConfig.priceLabel : formData.tier === 'complete' ? '199 Kč' : '99 Kč'} a stáhnout PDF →`
                   )}
                 </button>
 
@@ -1175,3 +1218,12 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
     </main>
   );
 }
+
+export default function CarSaleBuilderPage() {
+  return (
+    <Suspense fallback={<main className="site-page contract-builder min-h-screen pb-24" />}>
+      <CarSaleBuilderContent />
+    </Suspense>
+  );
+}
+

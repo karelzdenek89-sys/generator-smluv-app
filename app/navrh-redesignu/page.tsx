@@ -1,10 +1,9 @@
-import App from '../../App';
+import { redirect } from 'next/navigation';
 
 export const metadata = {
-  title: 'Návrh redesignu | SmlouvaHned',
-  description: 'Interaktivní prototyp redesignu s intent-based hero, průvodcem a live preview.',
+  robots: { index: false, follow: false },
 };
 
 export default function RedesignPrototypePage() {
-  return <App />;
+  redirect('/');
 }

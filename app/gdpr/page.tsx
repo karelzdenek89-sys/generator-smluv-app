@@ -57,7 +57,7 @@ export default function GdprPage() {
                 <p className="text-slate-400 text-xs mb-2">Jména, adresy, data narození, čísla OP a IČO smluvních stran, které do formuláře zadáte vy sami.</p>
                 <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Účel:</span> Vygenerování právního dokumentu dle vašich zadaných dat.</div>
                 <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Právní základ:</span> Plnění smlouvy (čl. 6 odst. 1 písm. b) GDPR).</div>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> 7–30 dní od zaplacení podle zakoupeného balíčku (Základní 7 dní, Rozšířená 14 dní, Kompletní 30 dní), poté jsou automaticky smazána z dočasného úložiště.</div>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> 7–30 dní od zaplacení podle zakoupeného balíčku (Základní dokument 7 dní, Rozšířený dokument 30 dní, Tematický balíček 30 dní), poté jsou automaticky smazána z dočasného úložiště.</div>
               </div>
               <div className="border border-white/8 rounded-2xl p-5">
                 <div className="font-bold text-white mb-2">E-mailová adresa</div>

@@ -4,12 +4,12 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
 export const metadata: Metadata = {
   title: 'Smlouva o zápůjčce (půjčka) online 2026 | SmlouvaHned',
-  description: 'Sestavte smlouvu o zápůjčce peněz online. Splátky, úroky, zajištění — vše zachyceno v PDF. Od 249 Kč.',
+  description: 'Sestavte smlouvu o zápůjčce peněz online. Splátky, úroky, zajištění — vše zachyceno v PDF. Od 99 Kč.',
   keywords: ['smlouva o zápůjčce', 'půjčka smlouva vzor 2026', 'smlouva o půjčce peněz', 'zápůjčka smlouva online'],
   alternates: { canonical: `${BASE_URL}/pujcka` },
   openGraph: {
     title: 'Smlouva o zápůjčce (půjčka) online 2026 | SmlouvaHned',
-    description: 'Sestavte smlouvu o zápůjčce peněz online. Splátky, úroky, zajištění — vše zachyceno v PDF. Od 249 Kč.',
+    description: 'Sestavte smlouvu o zápůjčce peněz online. Splátky, úroky, zajištění — vše zachyceno v PDF. Od 99 Kč.',
     url: `${BASE_URL}/pujcka`,
     type: 'website',
   },
@@ -25,8 +25,8 @@ const softwareSchema = {
   inLanguage: 'cs',
   offers: {
     '@type': 'AggregateOffer',
-    lowPrice: '249',
-    highPrice: '749',
+    lowPrice: '99',
+    highPrice: '199',
     priceCurrency: 'CZK',
   },
 };

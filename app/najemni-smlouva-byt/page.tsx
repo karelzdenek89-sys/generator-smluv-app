@@ -4,7 +4,7 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Nájemní smlouva na byt 2026 — vzor | SmlouvaHned',
   description:
-    'Nájemní smlouva na byt nebo dům. Kauce, zvířata, předávací protokol, Airbnb doložka. Dle § 2235 OZ 2026. PDF ihned od 249 Kč.',
+    'Nájemní smlouva na byt nebo dům. Kauce, zvířata, předávací protokol, Airbnb doložka. Dle § 2235 OZ 2026. PDF ihned od 99 Kč.',
   keywords: [
     'nájemní smlouva byt 2026',
     'nájemní smlouva na byt vzor',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://smlouvahned.cz/najemni-smlouva-byt' },
   openGraph: {
     title: 'Nájemní smlouva na byt 2026 | SmlouvaHned',
-    description: 'Nájemní smlouva na byt nebo dům. Kauce, zvířata, předávací protokol. § 2235 OZ. Od 249 Kč.',
+    description: 'Nájemní smlouva na byt nebo dům. Kauce, zvířata, předávací protokol. § 2235 OZ. Od 99 Kč.',
     url: 'https://smlouvahned.cz/najemni-smlouva-byt',
   },
 };
@@ -87,7 +87,7 @@ export default function NajemniSmlouvaBytPage() {
               Vytvořit nájemní smlouvu →
             </Link>
           </div>
-          <div className="text-sm text-slate-500">Od 249 Kč · PDF ihned · Dle § 2235 OZ</div>
+          <div className="text-sm text-slate-500">Od 99 Kč · PDF ihned · Dle § 2235 OZ</div>
         </div>
 
         <section className="mb-12 rounded-3xl border border-white/8 bg-[#0c1426] p-8">
@@ -159,7 +159,7 @@ export default function NajemniSmlouvaBytPage() {
               Vytvořit nájemní smlouvu →
             </Link>
           </div>
-          <div className="mt-3 text-xs text-slate-600">Od 249 Kč · § 2235 OZ · PDF ihned</div>
+          <div className="mt-3 text-xs text-slate-600">Od 99 Kč · § 2235 OZ · PDF ihned</div>
         </section>
 
         <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">

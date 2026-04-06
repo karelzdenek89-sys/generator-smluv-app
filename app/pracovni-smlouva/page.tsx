@@ -4,7 +4,7 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Pracovní smlouva online 2026 — vzor zdarma ke stažení | SmlouvaHned',
   description:
-    'Vygenerujte pracovní smlouvu se všemi zákonnými náležitostmi dle zákoníku práce 2026. Druh práce, místo výkonu, mzda, zkušební doba. PDF ihned od 249 Kč.',
+    'Vygenerujte pracovní smlouvu se všemi zákonnými náležitostmi dle zákoníku práce 2026. Druh práce, místo výkonu, mzda, zkušební doba. PDF ihned od 99 Kč.',
   keywords: [
     'pracovní smlouva', 'pracovní smlouva vzor', 'pracovní smlouva online', 'pracovní smlouva 2026',
     'pracovní smlouva PDF', 'pracovní smlouva ke stažení', 'vzor pracovní smlouvy',
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://smlouvahned.cz/pracovni-smlouva' },
   openGraph: {
     title: 'Pracovní smlouva online 2026 | SmlouvaHned',
-    description: 'Pracovní smlouva dle zákoníku práce 2026. Mzda, zkušební doba, výpověď. Od 249 Kč.',
+    description: 'Pracovní smlouva dle zákoníku práce 2026. Mzda, zkušební doba, výpověď. Od 99 Kč.',
     url: 'https://smlouvahned.cz/pracovni-smlouva',
   },
 };
@@ -90,7 +90,7 @@ export default function PracovniSmlouvaPage() {
             className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-8 py-4 text-base font-black uppercase tracking-tight text-black shadow-[0_0_30px_rgba(245,158,11,0.25)] transition hover:bg-amber-400">
             Sestavit pracovní smlouvu →
           </Link>
-          <div className="mt-4 text-sm text-slate-500">Od 249 Kč · PDF ihned · Zákoník práce 2026</div>
+          <div className="mt-4 text-sm text-slate-500">Od 99 Kč · PDF ihned · Zákoník práce 2026</div>
         </div>
 
         <section className="mb-12 rounded-3xl border border-white/8 bg-[#0c1426] p-8">
@@ -160,7 +160,7 @@ export default function PracovniSmlouvaPage() {
             className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-8 py-4 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400">
             Sestavit pracovní smlouvu →
           </Link>
-          <div className="mt-3 text-xs text-slate-600">Od 249 Kč · Zákoník práce 2026 · PDF ihned</div>
+          <div className="mt-3 text-xs text-slate-600">Od 99 Kč · Zákoník práce 2026 · PDF ihned</div>
         </section>
 
         <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">

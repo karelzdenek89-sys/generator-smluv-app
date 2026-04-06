@@ -1,8 +1,10 @@
-'use client';
+﻿'use client';
 
 import { useMemo, useState } from 'react';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
+import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
+import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
 
@@ -15,17 +17,17 @@ type FormData = {
   customScope: string;
   validUntil: string; singleUse: boolean; allowSubstitution: boolean;
   contractDate: string; notaryUpsell: boolean;
-  tier: 'basic' | 'professional' | 'complete';
+  tier: 'basic' | 'complete';
 };
 
-const inputClass = 'w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition';
-const cardClass = 'bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]';
+const inputClass = 'site-input';
+const cardClass = 'builder-card p-6';
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (<div><label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</label>{children}</div>);
+  return (<div><label className="site-form-label">{label}</label>{children}</div>);
 }
 function SectionTitle({ index, title, subtitle }: { index: string; title: string; subtitle?: string }) {
-  return (<div className="mb-6"><div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90">{index}. {title}</div>{subtitle && <p className="mt-2 text-sm text-slate-400">{subtitle}</p>}</div>);
+  return (<div className="mb-6"><div className="builder-kicker">{index}. {title}</div>{subtitle && <p className="builder-help mt-2 text-sm">{subtitle}</p>}</div>);
 }
 
 export default function PlnaMocPage() {
@@ -134,12 +136,12 @@ export default function PlnaMocPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#05080f] text-slate-200 font-sans pb-24">
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#08101e]/90 backdrop-blur">
+    <main className="site-page contract-builder font-sans pb-24">
+      <header className="contract-builder-header">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500 text-slate-900 font-black text-sm">SH</div>
-            <div><div className="font-bold tracking-tight text-white">SmlouvaHned Builder</div><div className="text-[11px] text-slate-500">Plná moc — § 441 OZ</div></div>
+            <div><div className="font-bold tracking-tight text-white">SmlouvaHned</div><div className="text-[11px] text-slate-500">Plná moc</div></div>
           </div>
           <button onClick={() => window.location.href = '/'} className="text-sm text-slate-400 hover:text-white transition">Zavřít</button>
         </div>
@@ -247,32 +249,14 @@ export default function PlnaMocPage() {
             </section>
 
             <section className={cardClass}>
-              <SectionTitle index="06" title="Výběr balíčku" subtitle="Zvolte úroveň ochrany pro vaši plnou moc." />
-              <div className="space-y-3">
-                {([
-                  { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální plná moc dle § 441 OZ v PDF.' },
-                  { value: 'professional', label: 'Rozšířený dokument', price: '399 Kč', desc: 'Rozšířené klauzule, odpovědnostní doložky, ověřená verze.', recommended: true },
-                  { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířeného dokumentu + instrukce k podpisu, checklist a 30denní archivace.' },
-                ] as const).map((opt) => (
-                  <label key={opt.value} className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${form.tier === opt.value ? 'border-amber-500 bg-amber-500/10' : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'}`}>
-                    {('recommended' in opt) &&  form.tier !== 'professional' && (
-                      <div className="absolute -top-2.5 left-4"><span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">Doporučeno</span></div>
-                    )}
-                    <div className="flex items-start gap-3">
-                      <input type="radio" name="tier" value={opt.value} checked={form.tier === opt.value}
-                        onChange={(e) => setForm((prev) => ({ ...prev, tier: e.target.value as 'basic' | 'professional' | 'complete', notaryUpsell: e.target.value !== 'basic' }))}
-                        className="mt-1 h-5 w-5 accent-amber-500" />
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-black uppercase tracking-wide text-amber-400">{opt.label}</span>
-                          <span className="text-sm font-black text-white">{opt.price}</span>
-                        </div>
-                        <div className="mt-1 text-xs leading-relaxed text-slate-400">{opt.desc}</div>
-                      </div>
-                    </div>
-                  </label>
-                ))}
-              </div>
+              <SectionTitle index="06" title="Vyberte úroveň zpracování dokumentu" subtitle="Zvolte variantu, která odpovídá vaší situaci a požadovanému rozsahu dokumentu." />
+              <BuilderTierSelector
+                contractType="power_of_attorney"
+                tier={form.tier}
+                onTierChange={(tier) =>
+                  setForm((prev) => ({ ...prev, tier, notaryUpsell: tier !== 'basic' }))
+                }
+              />
             </section>
 
           </div>
@@ -283,7 +267,7 @@ export default function PlnaMocPage() {
               <ContractPreview sections={previewSections} title="Plná moc" />
             )}
             <div className={cardClass}>
-              <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90 mb-4">Analýza plné moci</div>
+              <div className="builder-kicker mb-4">Kontrola úplnosti</div>
               <div className="flex items-center gap-4 mb-4">
                 <div className={`text-5xl font-black ${scoreColor}`}>{risk.score}</div>
                 <div><div className={`font-bold ${scoreColor}`}>{risk.label}</div><div className="text-xs text-slate-500">ze 100 bodů</div></div>
@@ -292,12 +276,12 @@ export default function PlnaMocPage() {
                 : <ul className="space-y-2">{risk.warnings.map((w, i) => (<li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-amber-500/10 text-amber-300' : w.level === 'medium' ? 'bg-amber-500/10 text-amber-300' : 'bg-slate-700/40 text-slate-400'}`}>{w.level === 'high' ? '⚠ ' : w.level === 'medium' ? '▲ ' : '○ '}{w.text}</li>))}</ul>}
             </div>
             <div className={cardClass}>
-              <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90 mb-4">Shrnutí</div>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between"><span className="text-slate-400">Plná moc</span><span className="font-bold">249 Kč</span></div>
-                {form.notaryUpsell && <div className="flex justify-between"><span className="text-slate-400">Ověřená verze</span><span className="text-amber-400 font-bold">+200 Kč</span></div>}
-                <div className="border-t border-slate-700 pt-2 flex justify-between font-bold text-lg"><span>Celkem</span><span className="text-amber-400">{form.tier === 'complete' ? '749' : form.tier === 'professional' ? '399' : '249'} Kč</span></div>
-              </div>
+              <BuilderCheckoutSummary
+                contractType="power_of_attorney"
+                tier={form.tier}
+                documentLabel="Plná moc"
+                onUpgrade={() => setForm((prev) => ({ ...prev, tier: 'complete', notaryUpsell: true }))}
+              />
               {(!form.principalName || !form.agentName) && !isProcessing && (
                 <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3 text-xs text-slate-400 space-y-1">
                   <div className="font-semibold mb-1">Před platbou vyplňte:</div>
@@ -305,16 +289,6 @@ export default function PlnaMocPage() {
                   {!form.agentName && <div>• Jméno zmocněnce</div>}
                 </div>
               )}
-              <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3">
-                <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Součástí výstupu je</div>
-                <ul className="space-y-1.5">
-                  {['Profesionálně strukturované PDF', 'Připraveno k okamžitému stažení', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
-                    <li key={item} className="flex items-start gap-2 text-xs text-slate-400">
-                      <span className="text-amber-500 mt-0.5">✓</span>{item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
               <label className="flex items-start gap-3 mt-4 mb-4 cursor-pointer">
                 <input type="checkbox" checked={gdprConsent} onChange={(e) => setGdprConsent(e.target.checked)} className="mt-1 h-4 w-4 accent-amber-500 flex-shrink-0" />
                 <span className="text-xs text-slate-400 leading-relaxed">
@@ -332,7 +306,7 @@ export default function PlnaMocPage() {
                     Přesměrování…
                   </span>
                 ) : (
-                  `Zaplatit ${form.tier === 'complete' ? '749 Kč' : form.tier === 'professional' ? '399 Kč' : '249 Kč'} a stáhnout PDF →`
+                  `Zaplatit ${form.tier === 'complete' ? '199 Kč' : '99 Kč'} a stáhnout PDF →`
                 )}
               </button>
               <p className="mt-3 text-center text-[11px] text-slate-500">🔒 Zabezpečená platba přes Stripe · PDF ihned</p>
@@ -343,3 +317,5 @@ export default function PlnaMocPage() {
     </main>
   );
 }
+
+

@@ -1,8 +1,11 @@
-'use client';
+﻿'use client';
 
+import Link from 'next/link';
 import { useState, useMemo } from 'react';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
+import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
+import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
 
@@ -43,7 +46,7 @@ type LoanFormData = {
   pledgeDescription: string;
 
   notaryUpsell: boolean;
-  tier: 'basic' | 'professional' | 'complete';
+  tier: 'basic' | 'complete';
   disputeResolution: 'court' | 'mediation' | 'arbitration';
 };
 
@@ -102,6 +105,8 @@ export default function LoanBuilderPage() {
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [gdprConsent, setGdprConsent] = useState(false);
+  const [withdrawalConsent, setWithdrawalConsent] = useState(false);
+  const [withdrawalError, setWithdrawalError] = useState(false);
 
   const set = (field: keyof LoanFormData, value: string | boolean) =>
     setFormData((p) => ({ ...p, [field]: value }));
@@ -159,6 +164,10 @@ export default function LoanBuilderPage() {
       alert('Vyplňte prosím alespoň jména a výši zápůjčky.');
       return;
     }
+        if (!withdrawalConsent) {
+      setWithdrawalError(true);
+      return;
+    }
     if (!gdprConsent) {
       alert('Pro pokračování je nutný souhlas se zpracováním osobních údajů.');
       return;
@@ -192,20 +201,20 @@ export default function LoanBuilderPage() {
 
       <header className="relative z-10 border-b border-white/5 bg-[#05080f]/80 backdrop-blur-sm sticky top-0">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3">
             <div className="w-9 h-9 bg-amber-500 rounded-xl flex items-center justify-center text-xs font-black text-black">SH</div>
             <div>
               <div className="font-black text-white text-sm">SmlouvaHned</div>
               <div className="text-[10px] uppercase tracking-widest text-slate-500">Legal document builder</div>
             </div>
-          </a>
+          </Link>
           <div className="hidden md:flex items-center gap-4 text-xs text-slate-400">
             <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />Platba zabezpečena Stripe</span>
             <span>•</span>
             <span>§ 2390 a násl. OZ</span>
           </div>
           <span className="text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-full px-3 py-1">
-            {formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '399 Kč' : '249 Kč'}
+            {formData.tier === 'complete' ? '199 Kč' : '99 Kč'}
           </span>
         </div>
       </header>
@@ -217,7 +226,7 @@ export default function LoanBuilderPage() {
         subtitle="Vytvořte smlouvu o zápůjčce peněz nebo jiné věci. Dokument jasně stanoví výši půjčené částky, podmínky vrácení, úroky a sankce za prodlení — a chrání věřitele i dlužníka."
         benefits={[
           { icon: '⚖️', text: 'Sestaveno dle § 2390–2394 OZ — smlouva o zápůjčce' },
-          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+          { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
           { icon: '💰', text: 'Pokrývá jednorázové splacení i splátkový kalendář' },
           { icon: '🔒', text: 'Smluvní úroky, sankce za prodlení a způsob platby' },
         ]}
@@ -271,19 +280,19 @@ export default function LoanBuilderPage() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label className={labelClass}>Jméno / název *</label>
-                    <input value={formData.lenderName} onChange={e => set('lenderName', e.target.value)} placeholder="Jan Novák" className={inputClass} />
+                    <input value={formData.lenderName} onChange={e => set('lenderName', e.target.value)} placeholder="Jan Novák" aria-label="Jméno / název *" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>Rodné číslo / IČO</label>
-                    <input value={formData.lenderId} onChange={e => set('lenderId', e.target.value)} placeholder="760101/1234" className={inputClass} />
+                    <input value={formData.lenderId} onChange={e => set('lenderId', e.target.value)} placeholder="760101/1234" aria-label="Rodné číslo / IČO" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>Adresa / sídlo</label>
-                    <input value={formData.lenderAddress} onChange={e => set('lenderAddress', e.target.value)} placeholder="Ulice 1, Praha 1" className={inputClass} />
+                    <input value={formData.lenderAddress} onChange={e => set('lenderAddress', e.target.value)} placeholder="Ulice 1, Praha 1" aria-label="Adresa / sídlo" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>E-mail</label>
-                    <input type="email" value={formData.lenderEmail} onChange={e => set('lenderEmail', e.target.value)} placeholder="jan@email.cz" className={inputClass} />
+                    <input type="email" value={formData.lenderEmail} onChange={e => set('lenderEmail', e.target.value)} placeholder="jan@email.cz" aria-label="E-mail" className={inputClass} />
                   </div>
                 </div>
               </section>
@@ -294,23 +303,23 @@ export default function LoanBuilderPage() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label className={labelClass}>Jméno / název *</label>
-                    <input value={formData.borrowerName} onChange={e => set('borrowerName', e.target.value)} placeholder="Petra Svobodová" className={inputClass} />
+                    <input value={formData.borrowerName} onChange={e => set('borrowerName', e.target.value)} placeholder="Petra Svobodová" aria-label="Jméno / název *" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>Rodné číslo / IČO</label>
-                    <input value={formData.borrowerId} onChange={e => set('borrowerId', e.target.value)} placeholder="900315/5678" className={inputClass} />
+                    <input value={formData.borrowerId} onChange={e => set('borrowerId', e.target.value)} placeholder="900315/5678" aria-label="Rodné číslo / IČO" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>Adresa / sídlo</label>
-                    <input value={formData.borrowerAddress} onChange={e => set('borrowerAddress', e.target.value)} placeholder="Dlouhá 5, Brno" className={inputClass} />
+                    <input value={formData.borrowerAddress} onChange={e => set('borrowerAddress', e.target.value)} placeholder="Dlouhá 5, Brno" aria-label="Adresa / sídlo" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>E-mail</label>
-                    <input type="email" value={formData.borrowerEmail} onChange={e => set('borrowerEmail', e.target.value)} placeholder="petra@email.cz" className={inputClass} />
+                    <input type="email" value={formData.borrowerEmail} onChange={e => set('borrowerEmail', e.target.value)} placeholder="petra@email.cz" aria-label="E-mail" className={inputClass} />
                   </div>
                   <div className="sm:col-span-2">
                     <label className={labelClass}>Číslo účtu dlužníka (pro převod)</label>
-                    <input value={formData.borrowerBankAccount} onChange={e => set('borrowerBankAccount', e.target.value)} placeholder="CZ65 0800 0000 1920 0014 5399" className={inputClass} />
+                    <input value={formData.borrowerBankAccount} onChange={e => set('borrowerBankAccount', e.target.value)} placeholder="CZ65 0800 0000 1920 0014 5399" aria-label="Číslo účtu dlužníka (pro převod)" className={inputClass} />
                   </div>
                 </div>
               </section>
@@ -321,22 +330,22 @@ export default function LoanBuilderPage() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label className={labelClass}>Výše zápůjčky (Kč) *</label>
-                    <input type="number" value={formData.loanAmount} onChange={e => set('loanAmount', e.target.value)} placeholder="50 000" className={inputClass} />
+                    <input type="number" value={formData.loanAmount} onChange={e => set('loanAmount', e.target.value)} placeholder="50 000" aria-label="Výše zápůjčky (Kč) *" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>Slovně (pro smlouvu)</label>
-                    <input value={formData.loanAmountWords} onChange={e => set('loanAmountWords', e.target.value)} placeholder="padesát tisíc korun českých" className={inputClass} />
+                    <input value={formData.loanAmountWords} onChange={e => set('loanAmountWords', e.target.value)} placeholder="padesát tisíc korun českých" aria-label="Slovně (pro smlouvu)" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>Způsob předání</label>
-                    <select value={formData.transferMethod} onChange={e => set('transferMethod', e.target.value)} className={inputClass}>
+                    <select value={formData.transferMethod} onChange={e => set('transferMethod', e.target.value)} aria-label="Způsob předání" className={inputClass}>
                       <option value="transfer">Bankovním převodem</option>
                       <option value="cash">V hotovosti</option>
                     </select>
                   </div>
                   <div>
                     <label className={labelClass}>Úroková sazba (% p.a.)</label>
-                    <input type="number" step="0.1" value={formData.interestRate} onChange={e => set('interestRate', e.target.value)} placeholder="0" className={inputClass} />
+                    <input type="number" step="0.1" value={formData.interestRate} onChange={e => set('interestRate', e.target.value)} placeholder="0" aria-label="Úroková sazba (% p.a.)" className={inputClass} />
                     {Number(formData.interestRate) > 15
                       ? <p className="text-xs text-rose-400 font-medium mt-1">⚠ Nad 15 % p.a. hrozí neplatnost pro lichvu (§ 1796 OZ). Doporučujeme max. 15 %.</p>
                       : <p className="text-xs text-slate-500 mt-1">Bezúročná zápůjčka = 0 %</p>
@@ -344,7 +353,7 @@ export default function LoanBuilderPage() {
                   </div>
                   <div className="sm:col-span-2">
                     <label className={labelClass}>Účel zápůjčky (dobrovolné)</label>
-                    <input value={formData.loanPurpose} onChange={e => set('loanPurpose', e.target.value)} placeholder="Nákup vozidla, rekonstrukce bytu, provozní náklady…" className={inputClass} />
+                    <input value={formData.loanPurpose} onChange={e => set('loanPurpose', e.target.value)} placeholder="Nákup vozidla, rekonstrukce bytu, provozní náklady…" aria-label="Účel zápůjčky (dobrovolné)" className={inputClass} />
                   </div>
                 </div>
               </section>
@@ -367,37 +376,37 @@ export default function LoanBuilderPage() {
                   {formData.repaymentType === 'lump_sum' && (
                     <div>
                       <label className={labelClass}>Datum splatnosti *</label>
-                      <input type="date" value={formData.repaymentDate} onChange={e => set('repaymentDate', e.target.value)} className={inputClass} />
+                      <input type="date" value={formData.repaymentDate} onChange={e => set('repaymentDate', e.target.value)} aria-label="Datum splatnosti *" className={inputClass} />
                     </div>
                   )}
                   {formData.repaymentType === 'installments' && (
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div>
                         <label className={labelClass}>Počet splátek</label>
-                        <input type="number" value={formData.installmentCount} onChange={e => set('installmentCount', e.target.value)} placeholder="12" className={inputClass} />
+                        <input type="number" value={formData.installmentCount} onChange={e => set('installmentCount', e.target.value)} placeholder="12" aria-label="Počet splátek" className={inputClass} />
                       </div>
                       <div>
                         <label className={labelClass}>Výše splátky (Kč)</label>
-                        <input type="number" value={formData.installmentAmount} onChange={e => set('installmentAmount', e.target.value)} placeholder="4 500" className={inputClass} />
+                        <input type="number" value={formData.installmentAmount} onChange={e => set('installmentAmount', e.target.value)} placeholder="4 500" aria-label="Výše splátky (Kč)" className={inputClass} />
                       </div>
                       <div>
                         <label className={labelClass}>Den splatnosti splátky</label>
-                        <input type="number" min="1" max="31" value={formData.paymentDay} onChange={e => set('paymentDay', e.target.value)} placeholder="15" className={inputClass} />
+                        <input type="number" min="1" max="31" value={formData.paymentDay} onChange={e => set('paymentDay', e.target.value)} placeholder="15" aria-label="Den splatnosti splátky" className={inputClass} />
                       </div>
                       <div>
                         <label className={labelClass}>Datum 1. splátky</label>
-                        <input type="date" value={formData.firstPaymentDate} onChange={e => set('firstPaymentDate', e.target.value)} className={inputClass} />
+                        <input type="date" value={formData.firstPaymentDate} onChange={e => set('firstPaymentDate', e.target.value)} aria-label="Datum 1. splátky" className={inputClass} />
                       </div>
                     </div>
                   )}
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
                       <label className={labelClass}>Číslo účtu pro splácení</label>
-                      <input value={formData.bankAccount} onChange={e => set('bankAccount', e.target.value)} placeholder="CZ65 0800 0000 1920 0014 5399" className={inputClass} />
+                      <input value={formData.bankAccount} onChange={e => set('bankAccount', e.target.value)} placeholder="CZ65 0800 0000 1920 0014 5399" aria-label="Číslo účtu pro splácení" className={inputClass} />
                     </div>
                     <div>
                       <label className={labelClass}>Úrok z prodlení (% denně)</label>
-                      <input type="number" step="0.001" value={formData.latePenaltyRate} onChange={e => set('latePenaltyRate', e.target.value)} placeholder="0.05" className={inputClass} />
+                      <input type="number" step="0.001" value={formData.latePenaltyRate} onChange={e => set('latePenaltyRate', e.target.value)} placeholder="0.05" aria-label="Úrok z prodlení (% denně)" className={inputClass} />
                     </div>
                   </div>
                 </div>
@@ -421,22 +430,22 @@ export default function LoanBuilderPage() {
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
                       <label className={labelClass}>Jméno ručitele</label>
-                      <input value={formData.guarantorName} onChange={e => set('guarantorName', e.target.value)} placeholder="Tomáš Kovář" className={inputClass} />
+                      <input value={formData.guarantorName} onChange={e => set('guarantorName', e.target.value)} placeholder="Tomáš Kovář" aria-label="Jméno ručitele" className={inputClass} />
                     </div>
                     <div>
                       <label className={labelClass}>Rodné číslo / IČO ručitele</label>
-                      <input value={formData.guarantorId} onChange={e => set('guarantorId', e.target.value)} placeholder="850505/1234" className={inputClass} />
+                      <input value={formData.guarantorId} onChange={e => set('guarantorId', e.target.value)} placeholder="850505/1234" aria-label="Rodné číslo / IČO ručitele" className={inputClass} />
                     </div>
                     <div className="sm:col-span-2">
                       <label className={labelClass}>Adresa ručitele</label>
-                      <input value={formData.guarantorAddress} onChange={e => set('guarantorAddress', e.target.value)} placeholder="Náměstí 5, Ostrava" className={inputClass} />
+                      <input value={formData.guarantorAddress} onChange={e => set('guarantorAddress', e.target.value)} placeholder="Náměstí 5, Ostrava" aria-label="Adresa ručitele" className={inputClass} />
                     </div>
                   </div>
                 )}
                 {formData.securityType === 'pledge' && (
                   <div>
                     <label className={labelClass}>Popis zástavy</label>
-                    <textarea value={formData.pledgeDescription} onChange={e => set('pledgeDescription', e.target.value)} placeholder="Osobní automobil VW Golf, SPZ: 1AB 2345, VIN: WV1234…" className={textareaClass} />
+                    <textarea value={formData.pledgeDescription} onChange={e => set('pledgeDescription', e.target.value)} placeholder="Osobní automobil VW Golf, SPZ: 1AB 2345, VIN: WV1234…" aria-label="Popis zástavy" className={textareaClass} />
                   </div>
                 )}
               </section>
@@ -445,7 +454,7 @@ export default function LoanBuilderPage() {
               <section className={cardClass}>
                 <div className="mb-4">
                   <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
-                  <select className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
+                  <select aria-label="Obecný soud (výchozí)" className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
                     <option value="court">Obecný soud (výchozí)</option>
                     <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                     <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
@@ -453,48 +462,16 @@ export default function LoanBuilderPage() {
                 </div>
               </section>
 
-              {/* 06 Výběr balíčku */}
+              {/* 06 Vyberte úroveň zpracování dokumentu */}
               <section className={cardClass}>
-                <SectionTitle index="06" title="Výběr balíčku" subtitle="Zvolte úroveň ochrany dle výše zápůjčky." />
-                <div className="space-y-3">
-                  {([
-                    { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva o zápůjčce dle § 2390 OZ v PDF.' },
-                    { value: 'professional', label: 'Rozšířený dokument', price: '399 Kč', desc: 'Zajišťovací klauzule, pokuty, podmínky předčasného splacení.', recommended: true },
-                    { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířeného dokumentu + instrukce k podpisu, checklist a 30denní archivace.' },
-                  ] as const).map((opt) => (
-                    <label key={opt.value} className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${formData.tier === opt.value ? 'border-amber-500 bg-amber-500/10' : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'}`}>
-                      {('recommended' in opt) &&  formData.tier !== 'professional' && (
-                        <div className="absolute -top-2.5 left-4"><span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">Doporučeno</span></div>
-                      )}
-                      <div className="flex items-start gap-3">
-                        <input type="radio" name="tier" value={opt.value} checked={formData.tier === opt.value}
-                          onChange={(e) => setFormData((prev) => ({ ...prev, tier: e.target.value as 'basic' | 'professional' | 'complete', notaryUpsell: e.target.value !== 'basic' }))}
-                          className="mt-1 h-5 w-5 accent-amber-500" />
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-black uppercase tracking-wide text-amber-400">{opt.label}</span>
-                            <span className="text-sm font-black text-white">{opt.price}</span>
-                          </div>
-                          <div className="mt-1 text-xs leading-relaxed text-slate-400">{opt.desc}</div>
-                          {opt.value === 'professional' && (
-                            <div className="mt-2 flex flex-wrap gap-2">
-                              {['Smluvní pokuty', 'Sankce za prodlení', 'Notářský doporučení'].map(t => (
-                                <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
-                              ))}
-                            </div>
-                          )}
-                          {opt.value === 'complete' && (
-                            <div className="mt-2 flex flex-wrap gap-2">
-                              {['Instrukce k podpisu', 'Checklist', '30denní archivace'].map(t => (
-                                <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </label>
-                  ))}
-                </div>
+                <SectionTitle index="06" title="Vyberte úroveň zpracování dokumentu" subtitle="Zvolte úroveň ochrany dle výše zápůjčky." />
+                <BuilderTierSelector
+                  contractType="loan"
+                  tier={formData.tier}
+                  onTierChange={(tier) =>
+                    setFormData((prev) => ({ ...prev, tier, notaryUpsell: tier !== 'basic' }))
+                  }
+                />
               </section>
             </div>
 
@@ -529,35 +506,12 @@ export default function LoanBuilderPage() {
 
             {/* Payment card */}
             <div className={cardClass}>
-              <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Shrnutí objednávky</div>
-              <div className="space-y-2 text-sm mb-5">
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Smlouva o zápůjčce</span>
-                  <span className="font-bold text-white">249 Kč</span>
-                </div>
-                {formData.tier !== 'basic' && (
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">{formData.tier === 'complete' ? 'Kompletní balíček' : 'Rozšířený dokument'}</span>
-                    <span className="font-bold text-amber-400">{formData.tier === 'complete' ? '+500 Kč' : '+200 Kč'}</span>
-                  </div>
-                )}
-                <div className="border-t border-white/8 pt-2 flex justify-between font-black text-lg">
-                  <span>Celkem</span>
-                  <span className="text-white">{formData.tier === 'complete' ? '749' : formData.tier === 'professional' ? '399' : '249'} Kč</span>
-                </div>
-              </div>
-
-              {/* Trust block */}
-              <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3">
-                <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Součástí výstupu je</div>
-                <ul className="space-y-1.5">
-                  {['Profesionálně strukturované PDF', 'Připraveno k okamžitému stažení', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
-                    <li key={item} className="flex items-start gap-2 text-xs text-slate-400">
-                      <span className="text-amber-500 mt-0.5">✓</span>{item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <BuilderCheckoutSummary
+                contractType="loan"
+                tier={formData.tier}
+                documentLabel="Smlouva o zápůjčce"
+                onUpgrade={() => setFormData((prev) => ({ ...prev, tier: 'complete', notaryUpsell: true }))}
+              />
 
               {/* GDPR */}
               <label className="flex items-start gap-3 mb-5 cursor-pointer mt-5">
@@ -570,6 +524,31 @@ export default function LoanBuilderPage() {
                 </span>
               </label>
 
+                {/* § 1837 l) OZ — povinný souhlas s neodstoupením od smlouvy */}
+                <label className="flex items-start gap-3 mb-1 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={withdrawalConsent}
+                    onChange={(e) => {
+                      setWithdrawalConsent(e.target.checked);
+                      if (e.target.checked) setWithdrawalError(false);
+                    }}
+                    className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
+                  />
+                  <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
+                    Beru na vědomí, že objednávám digitální obsah, který bude ihned zpřístupněn po zaplacení.
+                    Výslovně souhlasím s tím, že ztrácím právo na odstoupení od smlouvy ve lhůtě 14 dní dle{' '}
+                    <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">
+                      § 1837 písm. l) zákona č. 89/2012 Sb.
+                    </a>
+                  </span>
+                </label>
+                {withdrawalError && (
+                  <p className="mb-3 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-2 text-xs text-rose-300">
+                    Pro pokračování musíte souhlasit s podmínkami digitálního obsahu.
+                  </p>
+                )}
+
               <button
                 onClick={handleSubmit}
                 disabled={isProcessing || !gdprConsent}
@@ -581,16 +560,19 @@ export default function LoanBuilderPage() {
                     Přesměrování…
                   </span>
                 ) : (
-                  `Zaplatit ${formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '399 Kč' : '249 Kč'} a stáhnout PDF →`
+                  `Zaplatit ${formData.tier === 'complete' ? '199 Kč' : '99 Kč'} a stáhnout PDF →`
                 )}
               </button>
               <p className="text-center text-xs text-slate-600 mt-3">🔒 Platba přes Stripe · PDF ke stažení ihned</p>
             </div>
 
-            <a href="/" className="block text-center text-xs text-slate-600 hover:text-slate-400 transition">← Zpět na výběr smluv</a>
+            <Link href="/" className="block text-center text-xs text-slate-600 hover:text-slate-400 transition">← Zpět na výběr smluv</Link>
           </div>
         </div>
       </div>
     </main>
   );
 }
+
+
+

@@ -1,7 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { getAnalyticsDefaultsForPathname, trackEvent } from '@/lib/analytics';
 
 export interface ContractLandingBenefit {
   icon: string;
@@ -20,33 +22,19 @@ export interface ContractLandingAlternative {
 }
 
 export interface ContractLandingSectionProps {
-  /** Právní základ — krátký text do badge, např. "§ 2079 občanského zákoníku" */
   badge: string;
-  /** Část H1 před akcentem */
   h1Main: string;
-  /** Akcentovaná (amber) část H1 — pokud není, celý H1 je bílý */
   h1Accent?: string;
-  /** Část H1 za akcentem (volitelná) */
   h1Suffix?: string;
-  /** Perex pod H1 */
   subtitle: string;
-  /** 3–5 benefit karet */
   benefits: ContractLandingBenefit[];
-  /** Výčet položek sekce "Co dokument obsahuje" */
   contents: string[];
-  /** Vhodné použití — 2–4 situace */
   whenSuitable: string[];
-  /** Odlišení od jiných dokumentů (volitelné) */
   whenOther?: ContractLandingAlternative[];
-  /** FAQ — 3–5 otázek */
   faq: ContractLandingFaq[];
-  /** Text hlavního CTA tlačítka */
   ctaLabel?: string;
-  /** ID formuláře pro smooth scroll */
   formId?: string;
-  /** URL průvodce / informační landing stránky pro daný typ smlouvy (volitelné) */
   guideHref?: string;
-  /** Text odkazu na průvodce — výchozí: "Průvodce k tomuto dokumentu" */
   guideLabel?: string;
 }
 
@@ -66,175 +54,166 @@ export default function ContractLandingSection({
   guideHref,
   guideLabel = 'Průvodce k tomuto dokumentu',
 }: ContractLandingSectionProps) {
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const pathname = usePathname();
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  useEffect(() => {
+    const currentPath = pathname ?? '/';
+    const packageKey =
+      typeof window !== 'undefined'
+        ? new URLSearchParams(window.location.search).get('package')
+        : null;
+    const defaults = getAnalyticsDefaultsForPathname(currentPath);
+
+    trackEvent('builder_view', {
+      ...defaults,
+      source: 'builder',
+      surface: 'builder',
+      entry_mode: packageKey ? 'package_flow' : 'single_document',
+      package_key:
+        packageKey === 'landlord' || packageKey === 'vehicle_sale'
+          ? packageKey
+          : undefined,
+    });
+
+    if (packageKey === 'landlord' || packageKey === 'vehicle_sale') {
+      trackEvent('package_flow_entered', {
+        ...defaults,
+        source: 'package_landing',
+        surface: 'builder',
+        package_key: packageKey,
+        entry_mode: 'package_flow',
+        price_band: '299',
+      });
+    }
+  }, [pathname]);
+
   return (
     <>
-      {/* ─── HERO ─────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 lg:px-8 pt-16 pb-14">
-        <div className="max-w-2xl">
-          {/* Legal badge */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/25 bg-amber-500/8 px-4 py-1.5 text-[11px] font-black uppercase tracking-[0.2em] text-amber-400 mb-6">
-            {badge}
-          </div>
-
-          <h1 className="text-4xl lg:text-5xl font-black text-white leading-[1.1] tracking-tight mb-5">
-            {h1Accent ? (
-              <>
-                {h1Main}{' '}
-                <span className="text-amber-400">{h1Accent}</span>
-                {h1Suffix ? <> {h1Suffix}</> : null}
-              </>
-            ) : (
-              h1Main
-            )}
+      <section className="mx-auto max-w-7xl px-4 pb-12 pt-12 lg:px-8 lg:pt-16">
+        <div className="max-w-3xl">
+          <div className="site-kicker">{badge}</div>
+          <h1 className="site-heading-xl mt-5 max-w-4xl text-[#f2e7c8]">
+            {h1Main} {h1Accent ? <span className="site-gold">{h1Accent}</span> : null}
+            {h1Suffix ? <> {h1Suffix}</> : null}
           </h1>
+          <p className="site-body-lg mt-6 max-w-3xl text-[#ddd5c7]">{subtitle}</p>
 
-          <p className="text-lg text-slate-400 leading-relaxed mb-10">{subtitle}</p>
-
-          {/* Benefits — more breathing room */}
-          <div className="grid sm:grid-cols-2 gap-4 mb-10">
-            {benefits.map((b) => (
-              <div
-                key={b.text}
-                className="flex items-start gap-3 rounded-2xl bg-[#0c1426] border border-slate-800/60 px-5 py-4"
-              >
-                <span className="text-xl leading-none mt-0.5 shrink-0">{b.icon}</span>
-                <span className="text-sm text-slate-300 leading-snug">{b.text}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* CTAs */}
-          <div className="flex flex-wrap items-center gap-4">
-            <button
-              onClick={() => scrollTo(formId)}
-              className="rounded-2xl bg-amber-500 px-8 py-4 font-black text-slate-900 text-base hover:bg-amber-400 active:scale-95 transition shadow-[0_0_30px_rgba(245,158,11,0.2)]"
-            >
-              {ctaLabel} →
+          <div className="mt-8 flex flex-wrap gap-4">
+            <button onClick={() => scrollTo(formId)} className="site-button-primary">
+              {ctaLabel}
             </button>
-            <button
-              onClick={() => scrollTo('obsah')}
-              className="text-sm font-semibold text-slate-400 hover:text-white transition underline underline-offset-4 decoration-slate-700"
-            >
-              Co dokument obsahuje ↓
+            <button onClick={() => scrollTo('obsah')} className="site-button-secondary">
+              Co dokument obsahuje
             </button>
           </div>
 
-          {/* Guide link */}
-          {guideHref && (
-            <div className="mt-5 pt-5 border-t border-slate-800/50">
-              <Link
-                href={guideHref}
-                className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-amber-400 transition"
-              >
-                <svg className="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
+          {guideHref ? (
+            <div className="mt-6">
+              <Link href={guideHref} className="text-sm font-medium text-[#d6ac60] hover:text-[#e0b870]">
                 {guideLabel}
               </Link>
             </div>
-          )}
+          ) : null}
+        </div>
+
+        <div className="mt-10 grid gap-4 sm:grid-cols-2">
+          {benefits.map((item) => (
+            <div key={item.text} className="site-content-card-soft rounded-[1.5rem] px-5 py-4">
+              <div className="flex items-start gap-3">
+                <span className="text-lg leading-none">{item.icon}</span>
+                <p className="text-sm leading-7 text-[#ddd5c7]">{item.text}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* ─── CO DOKUMENT OBSAHUJE ─────────────────────────────── */}
-      <section id="obsah" className="max-w-7xl mx-auto px-4 lg:px-8 py-14 border-t border-slate-800/50">
-        <div className="mb-8">
-          <div className="text-[11px] font-black uppercase tracking-[0.2em] text-amber-400 mb-2">Obsah dokumentu</div>
-          <h2 className="text-2xl font-black text-white">Co dokument obsahuje</h2>
-          <p className="mt-2 text-sm text-slate-500">Standardní obsah vygenerovaného dokumentu — sestaveno dle vašich podmínek.</p>
-        </div>
+      <section id="obsah" className="mx-auto max-w-7xl border-t border-[rgba(166,134,91,0.12)] px-4 py-14 lg:px-8">
+        <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="site-content-card rounded-[1.75rem] p-7">
+            <div className="site-kicker">Obsah dokumentu</div>
+            <h2 className="site-heading-lg mt-4 text-[#f2e7c8]">Co dokument obsahuje</h2>
+            <p className="site-body mt-4 text-[#d2c8b9]">
+              Strukturovaný obsah obvyklý pro tento typ dokumentu, sestavený podle vašich podmínek.
+            </p>
+            <ul className="mt-6 space-y-4">
+              {contents.map((item) => (
+                <li key={item} className="flex items-start gap-3 text-base leading-8 text-[#e3dbcf]">
+                  <span className="mt-2 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[rgba(214,172,96,0.14)] text-xs font-bold text-[#d6ac60]">
+                    ✓
+                  </span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* Obsah list */}
-          <ul className="space-y-3">
-            {contents.map((item) => (
-              <li key={item} className="flex items-start gap-3 text-sm text-slate-300">
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-500/15 text-amber-400 text-[11px] font-black">
-                  ✓
-                </span>
-                {item}
-              </li>
-            ))}
-          </ul>
-
-          {/* Kdy je vhodná + alternativy */}
-          <div className="space-y-8">
-            <div>
-              <div className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2">Vhodné pro</div>
-              <h2 className="text-2xl font-black text-white mb-6">Kdy je tento dokument vhodný</h2>
-              <ul className="space-y-3">
+          <div className="space-y-6">
+            <div className="site-content-card rounded-[1.75rem] p-7">
+              <div className="site-kicker">Vhodné použití</div>
+              <h2 className="site-heading-lg mt-4 text-[#f2e7c8]">Kdy je tento dokument vhodný</h2>
+              <ul className="mt-6 space-y-4">
                 {whenSuitable.map((item) => (
-                  <li key={item} className="flex items-start gap-3 text-sm text-slate-300">
-                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-slate-700/60 text-slate-400 text-[11px] font-black">
+                  <li key={item} className="flex items-start gap-3 text-base leading-8 text-[#ddd5c7]">
+                    <span className="mt-2 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[rgba(166,134,91,0.18)] text-xs text-[#d6ac60]">
                       →
                     </span>
-                    {item}
+                    <span>{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            {whenOther && whenOther.length > 0 && (
-              <div>
-                <div className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500 mb-3">Jiný dokument?</div>
-                <h3 className="text-base font-black text-white mb-4">Kdy zvolit jiný typ</h3>
-                <div className="space-y-3">
-                  {whenOther.map((alt) => (
-                    <a
-                      key={alt.href}
-                      href={alt.href}
-                      className="flex items-start gap-3 rounded-2xl border border-slate-700/50 bg-[#0c1426]/60 px-5 py-4 hover:border-amber-500/30 hover:bg-amber-500/4 transition group"
+            {whenOther?.length ? (
+              <div className="site-content-card rounded-[1.75rem] p-7">
+                <div className="site-kicker">Jiný typ dokumentu</div>
+                <h3 className="mt-4 text-2xl font-semibold tracking-[-0.03em] text-[#f2e7c8]">
+                  Kdy už je lepší zvolit jiný postup
+                </h3>
+                <div className="mt-6 space-y-3">
+                  {whenOther.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className="block rounded-[1.25rem] border border-[rgba(166,134,91,0.12)] bg-[rgba(20,15,12,0.3)] px-5 py-4 transition hover:border-[rgba(214,172,96,0.28)]"
                     >
-                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-slate-700 text-slate-400 text-[10px] group-hover:border-amber-500/50 group-hover:text-amber-400 transition">
-                        ↗
-                      </span>
-                      <div>
-                        <div className="text-xs font-bold text-amber-400/80 mb-0.5">{alt.label}</div>
-                        <div className="text-xs text-slate-400 leading-snug">{alt.text}</div>
-                      </div>
-                    </a>
+                      <div className="text-sm font-semibold text-[#d6ac60]">{item.label}</div>
+                      <p className="mt-1 text-sm leading-7 text-[#d2c8b9]">{item.text}</p>
+                    </Link>
                   ))}
                 </div>
               </div>
-            )}
+            ) : null}
           </div>
         </div>
       </section>
 
-      {/* ─── FAQ ──────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 lg:px-8 py-14 border-t border-slate-800/50">
-        <div className="mb-8">
-          <div className="text-[11px] font-black uppercase tracking-[0.2em] text-amber-400 mb-2">Časté otázky</div>
-          <h2 className="text-2xl font-black text-white">Nejčastější dotazy</h2>
+      <section className="mx-auto max-w-7xl border-t border-[rgba(166,134,91,0.12)] px-4 py-14 lg:px-8">
+        <div className="max-w-3xl">
+          <div className="site-kicker">Časté otázky</div>
+          <h2 className="site-heading-lg mt-4 text-[#f2e7c8]">Nejčastější dotazy</h2>
         </div>
-        <div className="max-w-2xl space-y-3">
-          {faq.map((item, idx) => (
-            <div key={idx} className="rounded-2xl border border-slate-800/60 bg-[#0c1426] overflow-hidden">
+        <div className="mt-8 max-w-3xl space-y-3">
+          {faq.map((item, index) => (
+            <div key={item.q} className="site-content-card-soft overflow-hidden rounded-[1.5rem]">
               <button
-                className="w-full flex items-center justify-between px-6 py-5 text-left"
-                onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                aria-expanded={openFaq === idx}
+                className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
+                onClick={() => setOpenFaq(openFaq === index ? null : index)}
+                aria-expanded={openFaq === index}
               >
-                <span className="text-sm font-semibold text-white pr-4 leading-snug">{item.q}</span>
-                <span
-                  className={`text-amber-400 text-lg transition-transform duration-200 shrink-0 ${
-                    openFaq === idx ? 'rotate-45' : ''
-                  }`}
-                >
-                  +
-                </span>
+                <span className="text-base font-semibold leading-7 text-[#f2e7c8]">{item.q}</span>
+                <span className="text-xl text-[#d6ac60]">{openFaq === index ? '−' : '+'}</span>
               </button>
-              {openFaq === idx && (
-                <div className="px-6 pb-5 text-sm text-slate-400 leading-relaxed border-t border-slate-800/50 pt-4">
+              {openFaq === index ? (
+                <div className="border-t border-[rgba(166,134,91,0.12)] px-6 pb-5 pt-4 text-base leading-8 text-[#d2c8b9]">
                   {item.a}
                 </div>
-              )}
+              ) : null}
             </div>
           ))}
         </div>

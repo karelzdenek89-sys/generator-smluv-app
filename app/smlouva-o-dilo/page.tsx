@@ -1,8 +1,10 @@
-'use client';
+﻿'use client';
 
 import { useState, useMemo } from 'react';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
+import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
+import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
 
@@ -40,7 +42,7 @@ type WorkContractData = {
   handoverProtocol: boolean;
   withdrawalRight: boolean;
   notaryUpsell: boolean;
-  tier: 'basic' | 'professional' | 'complete';
+  tier: 'basic' | 'complete';
   disputeResolution: 'court' | 'mediation' | 'arbitration';
 };
 
@@ -74,9 +76,10 @@ const defaultData: WorkContractData = {
 
 export default function WorkContractPage() {
   const [formData, setFormData] = useState<WorkContractData>(defaultData);
-  const [showMobilePreview, setShowMobilePreview] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [gdprConsent, setGdprConsent] = useState(false);
+  const [withdrawalConsent, setWithdrawalConsent] = useState(false);
+  const [withdrawalError, setWithdrawalError] = useState(false);
 
   const updateField = (field: keyof WorkContractData, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -148,6 +151,10 @@ export default function WorkContractPage() {
   const handleSubmit = async () => {
     if (!formData.clientName || !formData.contractorName) { alert('Vyplňte prosím jména objednatel a zhotovitele.'); return; }
     if (!formData.priceAmount) { alert('Vyplňte prosím cenu díla.'); return; }
+        if (!withdrawalConsent) {
+      setWithdrawalError(true);
+      return;
+    }
     if (!gdprConsent) { alert('Pro pokračování je nutný souhlas se zpracováním osobních údajů.'); return; }
     try {
       setIsProcessing(true);
@@ -204,7 +211,7 @@ export default function WorkContractPage() {
         subtitle="Vytvořte smlouvu o dílo pro zhotovení konkrétního výsledku — stavební práce, řemeslné dílo, webová stránka nebo jiný hmotný či nehmotný výstup. Dokument pokrývá cenu, termín, předání a záruční podmínky."
         benefits={[
           { icon: '⚖️', text: 'Sestaveno dle § 2586–2650 OZ — smlouva o zhotovení díla' },
-          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+          { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
           { icon: '🔨', text: 'Vhodné pro řemeslníky, stavitele, vývojáře i designéry' },
           { icon: '🔒', text: 'Jasně vymezená cena, termín dokončení a akceptační postup' },
         ]}
@@ -259,6 +266,7 @@ export default function WorkContractPage() {
                     <input
                       type="text"
                       placeholder="Jméno / Název firmy"
+                      aria-label="Jméno / Název firmy"
                       className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                       value={formData.clientName}
                       onChange={(e) => updateField('clientName', e.target.value)}
@@ -266,6 +274,7 @@ export default function WorkContractPage() {
                     <input
                       type="text"
                       placeholder="IČO"
+                      aria-label="IČO"
                       className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                       value={formData.clientRegNo}
                       onChange={(e) => updateField('clientRegNo', e.target.value)}
@@ -273,6 +282,7 @@ export default function WorkContractPage() {
                     <input
                       type="text"
                       placeholder="Adresa / Sídlo"
+                      aria-label="Adresa / Sídlo"
                       className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                       value={formData.clientAddress}
                       onChange={(e) => updateField('clientAddress', e.target.value)}
@@ -288,6 +298,7 @@ export default function WorkContractPage() {
                     <input
                       type="text"
                       placeholder="Jméno / Název firmy"
+                      aria-label="Jméno / Název firmy"
                       className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                       value={formData.contractorName}
                       onChange={(e) => updateField('contractorName', e.target.value)}
@@ -295,6 +306,7 @@ export default function WorkContractPage() {
                     <input
                       type="text"
                       placeholder="IČO (povinné)"
+                      aria-label="IČO (povinné)"
                       className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                       value={formData.contractorRegNo}
                       onChange={(e) => updateField('contractorRegNo', e.target.value)}
@@ -302,6 +314,7 @@ export default function WorkContractPage() {
                     <input
                       type="text"
                       placeholder="Adresa / Místo podnikání"
+                      aria-label="Adresa / Místo podnikání"
                       className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                       value={formData.contractorAddress}
                       onChange={(e) => updateField('contractorAddress', e.target.value)}
@@ -318,12 +331,14 @@ export default function WorkContractPage() {
                   <input
                     type="text"
                     placeholder="Název díla (např. Rekonstrukce kuchyně)"
+                    aria-label="Název díla (např. Rekonstrukce kuchyně)"
                     className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                     value={formData.workTitle}
                     onChange={(e) => updateField('workTitle', e.target.value)}
                   />
                   <textarea
                     placeholder="Detailní popis prací a rozsahu díla..."
+                    aria-label="Detailní popis prací a rozsahu díla..."
                     className="w-full h-40 bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 resize-y outline-none"
                     value={formData.workDescription}
                     onChange={(e) => updateField('workDescription', e.target.value)}
@@ -331,6 +346,7 @@ export default function WorkContractPage() {
                   <input
                     type="text"
                     placeholder="Místo realizace"
+                    aria-label="Místo realizace"
                     className="w-full bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                     value={formData.workLocation}
                     onChange={(e) => updateField('workLocation', e.target.value)}
@@ -371,12 +387,14 @@ export default function WorkContractPage() {
                       <input
                         type="number"
                         placeholder="0"
+                        aria-label="0"
                         className="flex-1 bg-[#05080f] border border-slate-700 p-4 rounded-l-2xl focus:border-amber-500 outline-none"
                         value={formData.priceAmount}
                         onChange={(e) => updateField('priceAmount', e.target.value)}
                       />
                       <input
                         type="text"
+                        aria-label="Měna"
                         className="w-20 bg-[#05080f] border border-l-0 border-slate-700 p-4 rounded-r-2xl text-center outline-none"
                         value={formData.currency}
                         onChange={(e) => updateField('currency', e.target.value)}
@@ -389,6 +407,7 @@ export default function WorkContractPage() {
                     <select
                       value={formData.paymentType}
                       onChange={(e) => updateField('paymentType', e.target.value as PaymentType)}
+                      aria-label="Způsob platby"
                       className="w-full mt-2 bg-[#05080f] border border-slate-700 p-4 rounded-2xl focus:border-amber-500 outline-none"
                     >
                       <option value="after_completion">Jednorázově po dokončení</option>
@@ -403,6 +422,7 @@ export default function WorkContractPage() {
                       <input
                         type="number"
                         placeholder="Záloha"
+                        aria-label="Záloha"
                         className="w-full mt-2 bg-[#05080f] border border-amber-500/30 p-4 rounded-2xl outline-none"
                         value={formData.depositAmount}
                         onChange={(e) => updateField('depositAmount', e.target.value)}
@@ -413,6 +433,7 @@ export default function WorkContractPage() {
                   <div>
                     <label className="text-xs text-slate-400">Zahájení prací</label>
                     <input
+                      aria-label="Zahájení prací"
                       type="date"
                       className="w-full mt-2 bg-[#05080f] border border-slate-700 p-4 rounded-2xl outline-none"
                       value={formData.startDate}
@@ -422,6 +443,7 @@ export default function WorkContractPage() {
                   <div>
                     <label className="text-xs text-slate-400">Dokončení díla</label>
                     <input
+                      aria-label="Dokončení díla"
                       type="date"
                       className="w-full mt-2 bg-[#05080f] border border-slate-700 p-4 rounded-2xl outline-none"
                       value={formData.endDate}
@@ -439,6 +461,7 @@ export default function WorkContractPage() {
                   <div>
                     <label className="text-xs text-slate-400">Záruka (měsíce)</label>
                     <input
+                      aria-label="Záruka (měsíce)"
                       type="number"
                       className="w-full mt-2 bg-[#05080f] border border-slate-700 p-4 rounded-2xl outline-none"
                       value={formData.warrantyMonths}
@@ -448,6 +471,7 @@ export default function WorkContractPage() {
                   <div>
                     <label className="text-xs text-slate-400">Pokuta za prodlení (%/den)</label>
                     <input
+                      aria-label="Pokuta za prodlení (%/den)"
                       type="number"
                       step="0.01"
                       className="w-full mt-2 bg-[#05080f] border border-slate-700 p-4 rounded-2xl outline-none"
@@ -494,8 +518,8 @@ export default function WorkContractPage() {
 
               {/* Řešení sporů */}
               <section className="bg-[#0c1426] border border-slate-800 rounded-3xl p-6">
-                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
-                <select className="w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none focus:border-amber-500/60 transition" name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
+                <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Řešení sporů</div>
+                <select aria-label="Obecný soud (výchozí)" className="w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none focus:border-amber-500/60 transition" name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
                   <option value="court">Obecný soud (výchozí)</option>
                   <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                   <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
@@ -504,32 +528,14 @@ export default function WorkContractPage() {
 
               {/* Tier selection */}
               <section className="bg-[#0c1426] border border-slate-800 rounded-3xl p-8">
-                <h3 className="text-amber-400 uppercase text-xs tracking-widest font-bold mb-6">6. Výběr balíčku</h3>
-                <div className="space-y-3">
-                  {([
-                    { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva o dílo dle § 2586 OZ v PDF.' },
-                    { value: 'professional', label: 'Rozšířený dokument', price: '399 Kč', desc: 'Rozšířené smluvní pokuty, záruční doložky, odpovědnost za vady.', recommended: true },
-                    { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířeného dokumentu + instrukce k podpisu, checklist a 30denní archivace.' },
-                  ] as const).map((opt) => (
-                    <label key={opt.value} className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${formData.tier === opt.value ? 'border-amber-500 bg-amber-500/10' : 'border-slate-700/60 bg-[#05080f]/60 hover:border-slate-600'}`}>
-                      {('recommended' in opt) &&  formData.tier !== 'professional' && (
-                        <div className="absolute -top-2.5 left-4"><span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">Doporučeno</span></div>
-                      )}
-                      <div className="flex items-start gap-3">
-                        <input type="radio" name="tier" value={opt.value} checked={formData.tier === opt.value}
-                          onChange={(e) => setFormData((prev) => ({ ...prev, tier: e.target.value as 'basic' | 'professional' | 'complete', notaryUpsell: e.target.value !== 'basic' }))}
-                          className="mt-1 h-5 w-5 accent-amber-500" />
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-black uppercase tracking-wide text-amber-400">{opt.label}</span>
-                            <span className="text-sm font-black text-white">{opt.price}</span>
-                          </div>
-                          <div className="mt-1 text-xs leading-relaxed text-slate-400">{opt.desc}</div>
-                        </div>
-                      </div>
-                    </label>
-                  ))}
-                </div>
+                <h3 className="text-amber-400 uppercase text-xs tracking-widest font-bold mb-6">6. Vyberte úroveň zpracování dokumentu</h3>
+                <BuilderTierSelector
+                  contractType="work_contract"
+                  tier={formData.tier}
+                  onTierChange={(tier) =>
+                    setFormData((prev) => ({ ...prev, tier, notaryUpsell: tier !== 'basic' }))
+                  }
+                />
               </section>
 
             </div>
@@ -564,34 +570,12 @@ export default function WorkContractPage() {
 
             {/* Payment card */}
             <div className="bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]">
-              <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Shrnutí objednávky</div>
-              <div className="space-y-2 text-sm mb-5">
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Smlouva o dílo</span>
-                  <span className="font-bold text-white">249 Kč</span>
-                </div>
-                {formData.tier !== 'basic' && (
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">{formData.tier === 'complete' ? 'Kompletní balíček' : 'Rozšířený dokument'}</span>
-                    <span className="font-bold text-amber-400">{formData.tier === 'complete' ? '+500 Kč' : '+200 Kč'}</span>
-                  </div>
-                )}
-                <div className="border-t border-white/8 pt-2 flex justify-between font-black text-lg">
-                  <span>Celkem</span>
-                  <span className="text-white">{formData.tier === 'complete' ? '749' : formData.tier === 'professional' ? '399' : '249'} Kč</span>
-                </div>
-              </div>
-
-              <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3">
-                <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Součástí výstupu je</div>
-                <ul className="space-y-1.5">
-                  {['Profesionálně strukturované PDF', 'Připraveno k okamžitému stažení', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
-                    <li key={item} className="flex items-start gap-2 text-xs text-slate-400">
-                      <span className="text-amber-500 mt-0.5">✓</span>{item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <BuilderCheckoutSummary
+                contractType="work_contract"
+                tier={formData.tier}
+                documentLabel="Smlouva o dílo"
+                onUpgrade={() => setFormData((prev) => ({ ...prev, tier: 'complete', notaryUpsell: true }))}
+              />
 
               {/* GDPR */}
               <label className="flex items-start gap-3 mb-5 cursor-pointer mt-4">
@@ -604,6 +588,31 @@ export default function WorkContractPage() {
                 </span>
               </label>
 
+                {/* § 1837 l) OZ — povinný souhlas s neodstoupením od smlouvy */}
+                <label className="flex items-start gap-3 mb-1 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={withdrawalConsent}
+                    onChange={(e) => {
+                      setWithdrawalConsent(e.target.checked);
+                      if (e.target.checked) setWithdrawalError(false);
+                    }}
+                    className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
+                  />
+                  <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
+                    Beru na vědomí, že objednávám digitální obsah, který bude ihned zpřístupněn po zaplacení.
+                    Výslovně souhlasím s tím, že ztrácím právo na odstoupení od smlouvy ve lhůtě 14 dní dle{' '}
+                    <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">
+                      § 1837 písm. l) zákona č. 89/2012 Sb.
+                    </a>
+                  </span>
+                </label>
+                {withdrawalError && (
+                  <p className="mb-3 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-2 text-xs text-rose-300">
+                    Pro pokračování musíte souhlasit s podmínkami digitálního obsahu.
+                  </p>
+                )}
+
               <button
                 onClick={handleSubmit}
                 disabled={isProcessing || !gdprConsent}
@@ -615,7 +624,7 @@ export default function WorkContractPage() {
                     Přesměrování…
                   </span>
                 ) : (
-                  `Zaplatit ${formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '399 Kč' : '249 Kč'} a stáhnout PDF →`
+                  `Zaplatit ${formData.tier === 'complete' ? '199 Kč' : '99 Kč'} a stáhnout PDF →`
                 )}
               </button>
               <p className="text-center text-xs text-slate-600 mt-3">🔒 Platba přes Stripe · PDF ke stažení ihned</p>
@@ -627,3 +636,6 @@ export default function WorkContractPage() {
     </main>
   );
 }
+
+
+

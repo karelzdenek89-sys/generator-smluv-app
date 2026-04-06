@@ -1,24 +1,13 @@
-import Link from 'next/link';
+import TrackedLink from '@/app/components/analytics/TrackedLink';
 
 interface ArticleInlineCtaProps {
-  /** Tučný titulek — krátká výzva */
   title: string;
-  /** Popisný text pod titulkem */
   body: string;
-  /** Text na tlačítku */
   buttonLabel: string;
-  /** URL produktové stránky */
   href: string;
-  /** Volitelná vizuální varianta: 'primary' (amber) nebo 'subtle' (slate) */
   variant?: 'primary' | 'subtle';
 }
 
-/**
- * Inline konverzní CTA blok pro použití uvnitř blogových článků.
- * Umísťuj ho na klíčová místa: po sekci s nejčastějšími chybami,
- * po sekci „co musí obsahovat" nebo kdekoliv je uživatel emocionálně
- * připraven hledat řešení.
- */
 export default function ArticleInlineCta({
   title,
   body,
@@ -26,27 +15,29 @@ export default function ArticleInlineCta({
   href,
   variant = 'primary',
 }: ArticleInlineCtaProps) {
-  const isPrimary = variant === 'primary';
+  const primary = variant === 'primary';
+
   return (
-    <div
-      className={`my-8 rounded-2xl border p-5 ${
-        isPrimary
-          ? 'border-amber-500/20 bg-amber-500/8'
-          : 'border-slate-700/60 bg-slate-800/30'
-      }`}
-    >
-      <p className="mb-1 text-sm font-bold text-white">{title}</p>
-      <p className="mb-4 text-sm text-slate-400">{body}</p>
-      <Link
-        href={href}
-        className={`inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-black uppercase tracking-tight transition ${
-          isPrimary
-            ? 'bg-amber-500 text-black hover:bg-amber-400'
-            : 'border border-slate-600 text-slate-300 hover:border-slate-400 hover:text-white'
-        }`}
-      >
-        {buttonLabel} →
-      </Link>
+    <div className="blog-callout my-10 rounded-[1.5rem] p-6">
+      <div className="site-kicker">{primary ? 'Související dokument' : 'Další krok'}</div>
+      <h3 className="mt-4 text-2xl font-semibold tracking-[-0.03em] text-[#f2e7c8]">
+        {title}
+      </h3>
+      <p className="mt-4 text-base leading-8 text-[#d2c8b9]">{body}</p>
+      <div className="mt-6">
+        <TrackedLink
+          href={href}
+          eventName="blog_cta_click"
+          eventParams={{
+            source: 'blog_article',
+            surface: 'blog_article',
+            cta_type: primary ? 'inline_primary' : 'inline_secondary',
+          }}
+          className={primary ? 'site-button-primary' : 'site-button-secondary'}
+        >
+          {buttonLabel}
+        </TrackedLink>
+      </div>
     </div>
   );
 }

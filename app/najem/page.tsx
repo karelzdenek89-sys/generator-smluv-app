@@ -1,10 +1,15 @@
-'use client';
+﻿'use client';
 
-import { useMemo, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
+import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
+import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
+import { getThematicPackageConfig } from '@/lib/packages';
 
 type LeaseFormData = {
   landlordName: string;
@@ -57,22 +62,23 @@ type LeaseFormData = {
   businessUseAllowed: boolean;
 
   notaryUpsell: boolean;
-  tier: 'basic' | 'professional' | 'complete';
+  tier: 'basic' | 'complete';
   disputeResolution: 'court' | 'mediation' | 'arbitration';
 };
 
 type RiskLevel = 'low' | 'medium' | 'high';
 
-const inputClass =
-  'w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition';
+const inputClass = 'site-input';
 
-const textareaClass =
-  'w-full min-h-[110px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition';
+const textareaClass = 'site-textarea';
 
-const cardClass =
-  'bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]';
+const cardClass = 'builder-card p-6';
 
-export default function LeaseBuilderPage() {
+function LeaseBuilderContent() {
+  const searchParams = useSearchParams();
+  const packageConfig = getThematicPackageConfig(searchParams.get('package'));
+  const isLandlordPackage = packageConfig?.key === 'landlord';
+
   const [formData, setFormData] = useState<LeaseFormData>({
     landlordName: '',
     landlordId: '',
@@ -123,13 +129,22 @@ export default function LeaseBuilderPage() {
     maxOccupants: '2',
     businessUseAllowed: false,
 
-    notaryUpsell: false,
-    tier: 'basic' as const,
+    notaryUpsell: isLandlordPackage,
+    tier: isLandlordPackage ? 'complete' : ('basic' as const),
     disputeResolution: 'court' as const,
   });
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [gdprConsent, setGdprConsent] = useState(false);
+
+  useEffect(() => {
+    if (!isLandlordPackage) return;
+    setFormData((prev) => ({
+      ...prev,
+      tier: 'complete',
+      notaryUpsell: true,
+    }));
+  }, [isLandlordPackage]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -403,11 +418,15 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
   const previewSections = useMemo(() => {
     try {
       if (!formData.landlordName && !formData.tenantName) return [];
-      return buildContractSections({ ...formData, contractType: 'lease' } as StoredContractData);
+      return buildContractSections({
+        ...formData,
+        contractType: 'lease',
+        packageKey: packageConfig?.key ?? null,
+      } as StoredContractData);
     } catch {
       return [];
     }
-  }, [formData]);
+  }, [formData, packageConfig?.key]);
 
   const handlePayment = async () => {
     // Validace povinných polí
@@ -443,7 +462,8 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
         body: JSON.stringify({
           contractType: 'lease',
           tier: formData.tier,
-          notaryUpsell: formData.tier !== 'basic',
+          packageKey: packageConfig?.key ?? null,
+          notaryUpsell: packageConfig ? true : formData.tier !== 'basic',
           payload,
         }),
       });
@@ -524,22 +544,22 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
   }
 
   return (
-    <main className="min-h-screen bg-[#05080f] text-slate-200 font-sans pb-24">
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#08101e]/90 backdrop-blur">
+    <main className="site-page contract-builder pb-24">
+      <header className="contract-builder-header">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500 text-slate-900 font-black text-sm">
               SH
             </div>
             <div>
-              <div className="font-bold tracking-tight text-white">SmlouvaHned Builder</div>
-              <div className="text-[11px] text-slate-500">Prémiový generátor nájemní smlouvy</div>
+              <div className="font-bold tracking-tight text-[#f2e7c8]">SmlouvaHned</div>
+              <div className="text-[11px] uppercase tracking-[0.18em] text-[#bba98c]">Nájemní smlouva</div>
             </div>
           </div>
 
           <button
             onClick={() => (window.location.href = '/')}
-            className="text-sm text-slate-400 hover:text-white transition"
+            className="text-sm text-[#d2c8b9] hover:text-[#f2e7c8] transition"
           >
             Zavřít
           </button>
@@ -588,6 +608,65 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
         guideHref="/najemni-smlouva"
         guideLabel="Průvodce nájemní smlouvou — co obsahuje, kdy ji použít a nejčastější chyby"
       />
+
+      {packageConfig ? (
+        <section className="mx-auto max-w-7xl px-4 pb-2 lg:px-8">
+          <div className="builder-card border-[rgba(214,172,96,0.22)] bg-[rgba(18,14,11,0.74)] p-6">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+              <div className="max-w-3xl">
+                <div className="site-kicker">{packageConfig.badge}</div>
+                <h2 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-[#f2e7c8]">
+                  {packageConfig.builderTitle}
+                </h2>
+                <p className="mt-3 text-sm leading-7 text-[#d7d0c3]">{packageConfig.builderDescription}</p>
+              </div>
+              <div className="min-w-[180px] rounded-2xl border border-[rgba(214,172,96,0.18)] bg-[rgba(255,255,255,0.03)] px-5 py-4 text-left">
+                <div className="text-[10px] font-black uppercase tracking-[0.18em] text-[#d6ac60]">Cena balíčku</div>
+                <div className="mt-2 text-3xl font-black text-white">{packageConfig.priceLabel}</div>
+                <div className="mt-2 text-xs leading-6 text-[#bba98c]">Nájemní smlouva v komplexní variantě a navazující podklady v jednom výstupu.</div>
+                <Link
+                  href="/najem"
+                  className="mt-3 inline-block text-xs leading-6 text-[#cbbba0] transition hover:text-white"
+                >
+                  Řešíte jen samotnou nájemní smlouvu? Vraťte se na samostatný dokument 99 / 199 Kč.
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+      ) : (
+        <section className="mx-auto max-w-7xl px-4 pb-2 lg:px-8">
+          <Link
+            href="/balicek-pronajimatel"
+            className="builder-card group block border-[rgba(214,172,96,0.16)] bg-[rgba(18,14,11,0.58)] p-6 transition hover:border-[rgba(214,172,96,0.28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(214,172,96,0.45)]"
+          >
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+              <div className="max-w-3xl">
+                <div className="site-kicker">Tematický balíček</div>
+                <h2 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-[#f2e7c8]">
+                  Balíček pro pronajímatele
+                </h2>
+                <p className="mt-3 text-sm leading-7 text-[#d7d0c3]">
+                  V tomto formuláři volíte mezi samostatným dokumentem za 99 Kč a širší variantou za 199 Kč. Pokud chcete řešit i předání bytu a potvrzení o převzetí kauce, pokračujte tematickým balíčkem za 299 Kč.
+                </p>
+                <p className="mt-3 text-xs leading-6 text-[#bba98c]">
+                  Pokud si nejste jistí, kterou cestu zvolit, pomůže vám orientační stránka{' '}
+                  <span className="link-gold-elegant underline">Dokumenty pro pronajímatele</span>.
+                </p>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="text-right">
+                  <div className="text-[10px] font-black uppercase tracking-[0.18em] text-[#d6ac60]">Balíček</div>
+                  <div className="mt-1 text-3xl font-black text-white">299 Kč</div>
+                </div>
+                <span className="link-gold-elegant text-sm font-semibold">
+                  Otevřít balíček →
+                </span>
+              </div>
+            </div>
+          </Link>
+        </section>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8">
         <div className="grid lg:grid-cols-12 gap-8 items-start">
@@ -983,7 +1062,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   name="strictPenalties"
                   checked={formData.strictPenalties}
                   label="Přísnější smluvní pokuty"
-                  hint="Doporučeno. Zvyšuje ochranu při neplacení a nevyklizení."
+                  hint="Doporučená volba. Zvyšuje ochranu při neplacení a nevyklizení."
                 />
                 <ToggleCard
                   name="inspectionAllowed"
@@ -1026,68 +1105,56 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
               </div>
             </section>
 
-            {/* === VÝBĚR BALÍČKU === */}
+            {/* === Vyberte úroveň zpracování dokumentu === */}
             <section className={cardClass}>
               <SectionTitle
                 index="07"
-                title="Vyberte úroveň ochrany"
-                subtitle="Čím vyšší balíček, tím silnější smlouva a více doprovodných materiálů."
+                title={packageConfig ? 'Zvolený produkt' : 'Vyberte úroveň zpracování'}
+                subtitle={
+                  packageConfig
+                    ? 'V balíčku pro pronajímatele je zahrnuta nájemní smlouva v komplexní variantě a navazující podklady.'
+                    : '99 Kč slouží pro samotný dokument. 199 Kč přidává širší rozsah a praktičtější podklady. Pokud řešíte i předání bytu a kauci, dává smysl tematický balíček za 299 Kč.'
+                }
               />
-              <div className="space-y-3">
-                {([
-                  { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální smlouva dle občanského zákoníku v PDF.' },
-                  { value: 'professional', label: 'Rozšířený dokument', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty a zajišťovací ustanovení.', recommended: true },
-                  { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířeného dokumentu + průvodní instrukce, checklist a 30denní archivace.' },
-                ] as const).map((opt) => (
-                  <label
-                    key={opt.value}
-                    className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${
-                      formData.tier === opt.value
-                        ? 'border-amber-500 bg-amber-500/10'
-                        : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'
-                    }`}
-                  >
-                    {('recommended' in opt) &&  formData.tier !== 'professional' && (
-                      <div className="absolute -top-2.5 left-4">
-                        <span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">
-                          Nejčastěji voleno
-                        </span>
+              {packageConfig ? (
+                <div className="rounded-2xl border border-[rgba(214,172,96,0.2)] bg-[rgba(214,172,96,0.06)] p-5">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <div className="text-sm font-black uppercase tracking-[0.16em] text-[#d6ac60]">
+                        {packageConfig.title}
                       </div>
-                    )}
-                    <div className="flex items-start gap-3">
-                      <input
-                        type="radio"
-                        name="tier"
-                        value={opt.value}
-                        checked={formData.tier === opt.value}
-                        onChange={(e) => setFormData((prev) => ({ ...prev, tier: e.target.value as 'basic' | 'professional' | 'complete', notaryUpsell: e.target.value !== 'basic' }))}
-                        className="mt-1 h-5 w-5 accent-amber-500"
-                      />
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-black uppercase tracking-wide text-amber-400">{opt.label}</span>
-                          <span className="text-lg font-black text-white">{opt.price}</span>
-                        </div>
-                        <div className="mt-1 text-xs leading-relaxed text-slate-400">{opt.desc}</div>
-                        {opt.value === 'professional' && (
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            {['Smluvní pokuty', 'Sankce za prodlení', 'Odpovědnostní doložky'].map(t => (
-                              <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
-                            ))}
-                          </div>
-                        )}
-                        {opt.value === 'complete' && (
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            {['Instrukce k podpisu', 'Checklist', '30denní archivace'].map(t => (
-                              <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
+                      <p className="mt-2 text-sm leading-7 text-[#d7d0c3]">
+                        {packageConfig.checkoutDescription}
+                      </p>
                     </div>
-                  </label>
-                ))}
-              </div>
+                    <div className="text-left sm:text-right">
+                      <div className="text-3xl font-black text-white">{packageConfig.priceLabel}</div>
+                      <div className="mt-1 text-xs leading-6 text-[#bba98c]">Komplexní nájemní smlouva a související podklady.</div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <BuilderTierSelector
+                  contractType="lease"
+                  tier={formData.tier}
+                  onTierChange={(tier) =>
+                    setFormData((prev) => ({ ...prev, tier, notaryUpsell: tier !== 'basic' }))
+                  }
+                />
+              )}
+              {!packageConfig ? (
+                <p className="mt-4 text-xs leading-relaxed text-[#b9c1d0]">
+                  Řešíte vedle samotné smlouvy i předání bytu, stavy měřidel a potvrzení o převzetí kauce?{' '}
+                  <Link href="/balicek-pronajimatel" className="link-gold-elegant">
+                    Zobrazit Balíček pro pronajímatele
+                  </Link>
+                  . Pokud si chcete nejprve ujasnit, která cesta je pro vás vhodná, otevřete{' '}
+                  <Link href="/pro-pronajimatele" className="link-gold-elegant">
+                    dokumenty pro pronajímatele
+                  </Link>
+                  .
+                </p>
+              ) : null}
             </section>
           </div>
 
@@ -1135,7 +1202,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                 <div className="flex justify-between items-start gap-4 mb-4">
                   <div>
                     <h3 className="font-black text-white text-sm uppercase tracking-[0.18em]">
-                      Risk score
+                      Kontrola úplnosti
                     </h3>
                     <p className="text-sm text-slate-400 mt-1">{riskAnalysis.label}</p>
                   </div>
@@ -1180,7 +1247,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                 <div className="absolute top-0 left-0 w-full h-1.5 bg-amber-500" />
                 <div className="mb-3">
                   <div className="text-[10px] font-black uppercase tracking-[0.24em] text-slate-400">
-                    Živý náhled smlouvy
+                    Náhled výstupu
                   </div>
                   <div className="mt-1 text-xs text-slate-500">
                     Tady se okamžitě propisují všechny změny z formuláře.
@@ -1211,43 +1278,13 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
               </div>
 
               <div className={cardClass}>
-                {/* Price summary */}
-                <div className="mb-4">
-                  <div className="text-[11px] font-black uppercase tracking-[0.22em] text-slate-400">
-                    Součástí výstupu je
-                  </div>
-                  <ul className="mt-2 space-y-1.5 text-xs">
-                    <li className="flex items-start gap-2 text-slate-300">
-                      <span className="text-amber-400 mt-1">✓</span>
-                      <span>Profesionálně strukturované PDF</span>
-                    </li>
-                    <li className="flex items-start gap-2 text-slate-300">
-                      <span className="text-amber-400 mt-1">✓</span>
-                      <span>Připraveno k okamžitému stažení</span>
-                    </li>
-                    <li className="flex items-start gap-2 text-slate-300">
-                      <span className="text-amber-400 mt-1">✓</span>
-                      <span>Přehledné uspořádání smluvních ustanovení</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="mb-4 rounded-2xl border border-white/8 bg-white/3 p-4">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm text-slate-400">Základní dokument</span>
-                    <span className="text-sm font-bold text-white">249 Kč</span>
-                  </div>
-                  {formData.tier !== 'basic' && (
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="text-sm text-slate-400">{formData.tier === 'complete' ? 'Kompletní balíček' : 'Rozšířený dokument'}</span>
-                      <span className="text-sm font-bold text-amber-400">{formData.tier === 'complete' ? '+500 Kč' : '+200 Kč'}</span>
-                    </div>
-                  )}
-                  <div className="border-t border-white/8 mt-2 pt-2 flex items-center justify-between">
-                    <span className="text-sm font-black text-white">Celkem</span>
-                    <span className="text-xl font-black text-amber-400">{formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '399 Kč' : '249 Kč'}</span>
-                  </div>
-                </div>
+                <BuilderCheckoutSummary
+                  contractType="lease"
+                  tier={formData.tier}
+                  packageKey={packageConfig?.key ?? null}
+                  documentLabel="Nájemní smlouva"
+                  onUpgrade={() => setFormData((prev) => ({ ...prev, tier: 'complete', notaryUpsell: true }))}
+                />
 
                 {/* GDPR souhlas */}
                 <label className="flex items-start gap-3 mb-4 cursor-pointer group">
@@ -1278,7 +1315,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                       Přesměrování na platbu…
                     </span>
                   ) : (
-                    `Zaplatit ${formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '399 Kč' : '249 Kč'} a stáhnout PDF →`
+                    `Zaplatit ${packageConfig ? packageConfig.priceLabel : formData.tier === 'complete' ? '199 Kč' : '99 Kč'} a stáhnout PDF →`
                   )}
                 </button>
 
@@ -1293,3 +1330,14 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
     </main>
   );
 }
+
+export default function LeaseBuilderPage() {
+  return (
+    <Suspense fallback={<main className="site-page contract-builder min-h-screen pb-24" />}>
+      <LeaseBuilderContent />
+    </Suspense>
+  );
+}
+
+
+

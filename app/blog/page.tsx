@@ -1,187 +1,119 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
+import TrackedLink from '@/app/components/analytics/TrackedLink';
+import { BLOG_ARTICLES, BLOG_CLUSTERS } from '@/lib/blog-articles';
 
 export const metadata: Metadata = {
-  title: 'Blog — Průvodce smlouvami 2026',
+  title: 'Blog | Právní průvodce 2026',
   description:
-    'Praktické průvodce k právním smlouvám — co musí obsahovat, jak se chránit, nejčastější chyby. Aktuální pro legislativu 2026.',
+    'Praktické průvodce ke smlouvám a běžným právním situacím. Obecně informační obsah aktuální pro legislativu 2026.',
   alternates: { canonical: 'https://smlouvahned.cz/blog' },
 };
 
-const articles = [
-  {
-    slug: 'uznani-dluhu-2026',
-    title: 'Uznání dluhu 2026: Co to je, co musí obsahovat a proč je důležité',
-    excerpt:
-      'Co je uznání dluhu (§ 2053 OZ), jak přerušuje promlčecí lhůtu, co musí obsahovat a jak ho použít při vymáhání nezaplacené půjčky nebo faktury.',
-    category: 'Osobní a finanční',
-    readTime: '7 min',
-    date: '2026-04-02',
-    tag: 'Uznání dluhu',
-  },
-  {
-    slug: 'smlouva-o-sluzbach-2026',
-    title: 'Smlouva o poskytování služeb 2026: Vzor, náležitosti a jak se chránit',
-    excerpt:
-      'Průvodce smlouvou o službách — rozdíl oproti smlouvě o dílo, co musí obsahovat, jak sjednat cenu, odpovědnost za vady a výpovědní podmínky.',
-    category: 'Podnikání a OSVČ',
-    readTime: '8 min',
-    date: '2026-04-02',
-    tag: 'Smlouva o službách',
-  },
-  {
-    slug: 'plna-moc-2026',
-    title: 'Plná moc 2026: Kdy ji potřebujete, co musí obsahovat a kdy je nutný notář',
-    excerpt:
-      'Generální vs. speciální plná moc, kdy stačí prostá písemná forma, kdy je nutný ověřený podpis nebo notář, povinné náležitosti a nejčastější chyby.',
-    category: 'Osobní a právní',
-    readTime: '7 min',
-    date: '2026-04-02',
-    tag: 'Plná moc',
-  },
-  {
-    slug: 'smlouva-o-spolupraci-2026',
-    title: 'Smlouva o spolupráci OSVČ 2026: Co musí obsahovat a jak se chránit',
-    excerpt:
-      'Průvodce smlouvou o spolupráci pro OSVČ a freelancery — vymezení předmětu, honorář, autorská práva, mlčenlivost a jak se chránit před švarcsystémem.',
-    category: 'Podnikání a OSVČ',
-    readTime: '9 min',
-    date: '2026-04-02',
-    tag: 'Smlouva o spolupráci',
-  },
-  {
-    slug: 'podnajemni-smlouva-2026',
-    title: 'Podnájemní smlouva 2026: Co musí obsahovat a souhlas pronajímatele',
-    excerpt:
-      'Kdy potřebujete souhlas pronajímatele, co musí podnájemní smlouva obsahovat, práva podnájemce a nejčastější chyby při podnájmu bytu.',
-    category: 'Bydlení',
-    readTime: '8 min',
-    date: '2026-04-02',
-    tag: 'Podnájemní smlouva',
-  },
-  {
-    slug: 'dpp-dohoda-provedeni-prace',
-    title: 'DPP dohoda o provedení práce 2026: Limity, odvody a jak ji správně napsat',
-    excerpt:
-      'Limit 300 hodin ročně, srážková daň do 11 500 Kč, nová oznamovací povinnost na ČSSZ od 2024, povinné náležitosti a nejčastější chyby zaměstnavatelů.',
-    category: 'Práce a zaměstnání',
-    readTime: '9 min',
-    date: '2026-04-02',
-    tag: 'DPP',
-  },
-  {
-    slug: 'nda-smlouva-mlcenlivost',
-    title: 'NDA smlouva o mlčenlivosti 2026: Co chrání, co ne a jak ji napsat správně',
-    excerpt:
-      'Praktický průvodce dohodou o mlčenlivosti — co NDA chrání a co ne, jednostranná vs. vzájemná NDA, délka trvání, sankce za porušení a nejčastější chyby při uzavírání.',
-    category: 'Podnikání',
-    readTime: '8 min',
-    date: '2026-04-01',
-    tag: 'NDA',
-  },
-  {
-    slug: 'smlouva-o-zapujcce-2026',
-    title: 'Smlouva o zápůjčce (půjčce) 2026: Vzor, náležitosti a jak ji napsat správně',
-    excerpt:
-      'Průvodce smlouvou o zápůjčce dle § 2390 OZ — povinné náležitosti, sjednání úroku, splátkový kalendář, zajištění a co dělat, když dlužník nesplácí.',
-    category: 'Osobní a finanční',
-    readTime: '8 min',
-    date: '2026-03-28',
-    tag: 'Smlouva o půjčce',
-  },
-  {
-    slug: 'kupni-smlouva-movita-vec',
-    title: 'Kupní smlouva na movitou věc 2026: Vzor a náležitosti',
-    excerpt:
-      'Co musí obsahovat kupní smlouva na movitou věc dle § 2079 OZ — přesný popis předmětu, cena, předání, záruky a jak se chránit před vadami při prodeji mezi soukromými osobami.',
-    category: 'Osobní a finanční',
-    readTime: '7 min',
-    date: '2026-03-25',
-    tag: 'Kupní smlouva',
-  },
-  {
-    slug: 'pracovni-smlouva-2026',
-    title: 'Pracovní smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
-    excerpt:
-      'Tři povinné náležitosti dle zákoníku práce, zkušební doba, mlčenlivost, home office doložka a nejčastější chyby zaměstnavatelů. Aktuální pro legislativu 2026.',
-    category: 'Práce a zaměstnání',
-    readTime: '9 min',
-    date: '2026-03-20',
-    tag: 'Pracovní smlouva',
-  },
-  {
-    slug: 'darovaci-smlouva-2026',
-    title: 'Darovací smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
-    excerpt:
-      'Zákonné náležitosti darovací smlouvy, kdy je povinná písemná forma, daňové dopady darování v rodině i mimo ni, výhrada dožití a kdy lze dar odvolat.',
-    category: 'Osobní a finanční',
-    readTime: '7 min',
-    date: '2026-03-15',
-    tag: 'Darovací smlouva',
-  },
-  {
-    slug: 'smlouva-o-dilo-2026',
-    title: 'Smlouva o dílo 2026: Co musí obsahovat a nejčastější chyby',
-    excerpt:
-      'Průvodce smlouvou o dílo dle § 2586 OZ — specifikace díla, cena, termín, akceptační postup, smluvní pokuty a záruky. Jak se chránit jako objednatel i zhotovitel.',
-    category: 'Podnikání',
-    readTime: '10 min',
-    date: '2026-03-10',
-    tag: 'Smlouva o dílo',
-  },
-  {
-    slug: 'kupni-smlouva-na-auto-2026',
-    title: 'Kupní smlouva na auto 2026: Co musí obsahovat a jak se chránit',
-    excerpt:
-      'Zákonné náležitosti kupní smlouvy na auto — VIN, stav tachometru, STK, prohlášení o vadách. Jak ověřit vozidlo a nejčastější chyby při prodeji ojetého vozu.',
-    category: 'Vozidla',
-    readTime: '9 min',
-    date: '2026-03-05',
-    tag: 'Kupní smlouva na auto',
-  },
-  {
-    slug: 'najemni-smlouva-vzor-2026',
-    title: 'Nájemní smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
-    excerpt:
-      'Kompletní průvodce nájemní smlouvou — zákonné náležitosti, nejčastější chyby pronajímatelů i nájemníků, jak se chránit a kdy nestačí vzor z internetu.',
-    category: 'Bydlení',
-    readTime: '8 min',
-    date: '2026-03-01',
-    tag: 'Nájemní smlouva',
-  },
-];
-
 export default function BlogIndexPage() {
   return (
-    <div className="mx-auto max-w-4xl px-6 py-12">
-      <div className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-amber-400">Blog</div>
-      <h1 className="mb-3 text-3xl font-black tracking-tight text-white md:text-4xl">Průvodce právními smlouvami</h1>
-      <p className="mb-12 max-w-xl text-slate-400">
-        Praktické informace k smlouvám — co musí obsahovat, jak se chránit a jak se vyhnout nejčastějším chybám.
-      </p>
+    <div className="blog-listing mx-auto max-w-5xl px-6 py-12">
+      <div className="max-w-3xl">
+        <div className="site-kicker">Právní průvodce</div>
+        <h1 className="site-heading-lg mt-4 text-[#f2e7c8]">
+          Praktické články k běžným smluvním situacím
+        </h1>
+        <p className="site-body-lg mt-5 text-[#d2c8b9]">
+          Obecně informační obsah, který pomáhá zorientovat se v běžných dokumentech a
+          situacích. Nejde o individuální právní poradenství. Články přirozeně navazují
+          na dokumenty, situační stránky a tematické balíčky v rámci SmlouvaHned.
+        </p>
+      </div>
 
-      <div className="grid gap-6">
-        {articles.map(a => (
-          <Link
-            key={a.slug}
-            href={`/blog/${a.slug}`}
-            className="group rounded-3xl border border-white/8 bg-[#0c1426] p-7 transition hover:border-white/15 hover:shadow-[0_10px_40px_rgba(0,0,0,0.3)]"
+      <div className="site-content-card mt-10 rounded-[1.75rem] p-7">
+        <div className="grid gap-4 md:grid-cols-3">
+          <div>
+            <div className="site-kicker">Obsah blogu</div>
+            <div className="mt-3 text-lg font-semibold text-[#f2e7c8]">
+              K čemu blog slouží
+            </div>
+          </div>
+          <p className="text-base leading-8 text-[#d2c8b9] md:col-span-2">
+            Články mají obecně informační charakter. Pomáhají pochopit, co v běžné
+            situaci řešit, jaké podklady bývají potřeba a kdy stačí samostatný
+            dokument nebo kdy je praktičtější širší řešení. U složitých nebo
+            sporných případů doporučujeme konzultaci s advokátem.
+          </p>
+        </div>
+      </div>
+
+      <section className="mt-10">
+        <div className="site-kicker">Obsah podle situace</div>
+        <h2 className="site-heading-md mt-4">Dva hlavní obsahové okruhy</h2>
+        <div className="mt-6 grid gap-6 lg:grid-cols-2">
+          {BLOG_CLUSTERS.map((cluster) => (
+            <div key={cluster.key} className="site-content-card rounded-[1.75rem] p-7">
+              <h3 className="text-2xl font-semibold tracking-[-0.03em] text-[#f2e7c8]">
+                {cluster.title}
+              </h3>
+              <p className="mt-4 text-base leading-8 text-[#d2c8b9]">
+                {cluster.description}
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <TrackedLink
+                  href={cluster.situationHref}
+                  eventName="blog_cta_click"
+                  eventParams={{
+                    source: 'blog_index',
+                    surface: 'blog_cluster',
+                    cta_type: 'cluster_situation',
+                    destination: cluster.situationHref,
+                  }}
+                  className="site-button-secondary"
+                >
+                  Zobrazit situační stránku
+                </TrackedLink>
+                <TrackedLink
+                  href={cluster.packageHref}
+                  eventName="blog_cta_click"
+                  eventParams={{
+                    source: 'blog_index',
+                    surface: 'blog_cluster',
+                    cta_type: 'cluster_package',
+                    destination: cluster.packageHref,
+                  }}
+                  className="site-button-primary"
+                >
+                  {cluster.packageLabel}
+                </TrackedLink>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <div className="mt-10 grid gap-6">
+        {BLOG_ARTICLES.map((article) => (
+          <TrackedLink
+            key={article.slug}
+            href={article.href}
+            eventName="blog_cta_click"
+            eventParams={{
+              source: 'blog_index',
+              surface: 'blog_listing',
+              cta_type: 'article_card',
+              article_slug: article.slug,
+              destination: article.href,
+            }}
+            className="blog-card block rounded-[1.75rem] p-7 transition duration-200 hover:-translate-y-0.5 hover:border-[rgba(214,172,96,0.28)]"
           >
-            <div className="mb-3 flex flex-wrap items-center gap-3">
-              <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-amber-400">
-                {a.category}
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="rounded-full border border-[rgba(166,134,91,0.18)] bg-[rgba(21,16,13,0.32)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[#d6ac60]">
+                {article.category}
               </span>
-              <span className="text-xs text-slate-600">{a.readTime} čtení</span>
-              <span className="text-xs text-slate-700">{a.date}</span>
+              <span className="text-xs text-[#bba98c]">{article.readTime}</span>
+              <span className="text-xs text-[#bba98c]">{article.date}</span>
             </div>
-            <h2 className="mb-3 text-xl font-black text-white leading-snug group-hover:text-amber-100 transition">
-              {a.title}
+            <h2 className="mt-5 text-2xl font-semibold tracking-[-0.03em] text-[#f2e7c8]">
+              {article.title}
             </h2>
-            <p className="text-sm leading-relaxed text-slate-400">{a.excerpt}</p>
-            <div className="mt-5 flex items-center gap-2 text-sm font-bold text-amber-400 group-hover:text-amber-300 transition">
-              Číst článek <span>→</span>
-            </div>
-          </Link>
+            <p className="mt-4 text-base leading-8 text-[#d2c8b9]">{article.excerpt}</p>
+            <div className="mt-6 text-sm font-semibold text-[#d6ac60]">Číst článek</div>
+          </TrackedLink>
         ))}
       </div>
     </div>

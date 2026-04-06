@@ -353,7 +353,7 @@ export default function SmlouvaOZapujcce2026Page() {
         >
           Vytvořit smlouvu o zápůjčce →
         </Link>
-        <div className="mt-3 text-xs text-slate-600">Od 249 Kč · Dle § 2390 OZ · Platné pro 2026</div>
+        <div className="mt-3 text-xs text-slate-600">Od 99 Kč · Dle § 2390 OZ · Platné pro 2026</div>
       </div>
 
       {/* ── RELATED ─────────────────────────────── */}

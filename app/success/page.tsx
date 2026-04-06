@@ -1,65 +1,82 @@
 'use client';
 
-import { Suspense, useEffect, useMemo, useState, useRef, useCallback } from 'react';
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
-const pageShell = 'min-h-screen bg-[#05080f] text-slate-200 py-16 px-6';
-
 type DownloadState = 'checking' | 'ready' | 'error';
+
+type SuccessStatusResponse = {
+  status: 'pending' | 'paid' | 'error';
+  tier?: 'basic' | 'complete';
+  tierLabel?: string;
+  packageKey?: string | null;
+  packageLabel?: string | null;
+  priceLabel?: string;
+  archiveDays?: number;
+  contractType?: string;
+  contractName?: string;
+  includedItems?: string[];
+};
+
+const pageShell = 'min-h-screen bg-[#05080f] px-6 py-16 text-slate-200';
 
 function SuccessContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
   const [dlState, setDlState] = useState<DownloadState>('checking');
+  const [progress, setProgress] = useState(0);
+  const [orderMeta, setOrderMeta] = useState<SuccessStatusResponse | null>(null);
   const attemptRef = useRef(0);
-  const [progress, setProgress] = useState(0); // 0–100 for progress bar
+  const encodedSessionId = sessionId ? encodeURIComponent(sessionId) : null;
 
   const downloadUrl = useMemo(() => {
-    if (!sessionId) return null;
-    return `/api/contracts/download?session_id=${encodeURIComponent(sessionId)}`;
-  }, [sessionId]);
+    if (!encodedSessionId) return null;
+    return `/api/contracts/download?session_id=${encodedSessionId}`;
+  }, [encodedSessionId]);
 
-  // Uložit session do localStorage pro zákaznickou zónu (re-download)
+  const purchaseTitle =
+    orderMeta?.packageLabel ?? orderMeta?.contractName ?? 'Váš smluvní dokument';
+
   useEffect(() => {
-    if (!sessionId) return;
+    if (!encodedSessionId || !sessionId) return;
+
     try {
-      const existing = JSON.parse(localStorage.getItem('sh_orders') || '[]') as Array<{ sessionId: string; date: string }>;
-      const alreadySaved = existing.some(o => o.sessionId === sessionId);
+      const existing = JSON.parse(localStorage.getItem('sh_orders') || '[]') as Array<{
+        sessionId: string;
+        date: string;
+      }>;
+      const alreadySaved = existing.some((order) => order.sessionId === sessionId);
       if (!alreadySaved) {
         const updated = [{ sessionId, date: new Date().toISOString() }, ...existing].slice(0, 10);
         localStorage.setItem('sh_orders', JSON.stringify(updated));
       }
     } catch {
-      // localStorage nemusí být dostupný
+      // localStorage nemusí být dostupné
     }
-  }, [sessionId]);
+  }, [encodedSessionId, sessionId]);
 
-  // Polling: ověřujeme stav platby přes Stripe před zobrazením tlačítka
   useEffect(() => {
-    if (!sessionId) {
-      setDlState('ready');
-      return;
-    }
+    if (!encodedSessionId) return;
 
-    const maxAttempts = 12; // 12 × 1500 ms = 18 s max
+    const maxAttempts = 12;
     let cancelled = false;
 
     async function checkStatus() {
       if (cancelled) return;
 
-      // Update progress bar: each attempt advances it toward 90%, final jump to 100% on success
       setProgress(Math.min(90, Math.round((attemptRef.current / maxAttempts) * 90)));
 
       try {
-        const res = await fetch(
-          `/api/contracts/status?session_id=${encodeURIComponent(sessionId!)}`,
-          { cache: 'no-store' },
-        );
-        const data = (await res.json()) as { status: string };
+        const res = await fetch(`/api/contracts/status?session_id=${encodedSessionId}`, {
+          cache: 'no-store',
+        });
+        const data = (await res.json()) as SuccessStatusResponse;
 
         if (cancelled) return;
 
         if (data.status === 'paid') {
+          setOrderMeta(data);
           setProgress(100);
           setDlState('ready');
         } else if (attemptRef.current < maxAttempts) {
@@ -81,22 +98,27 @@ function SuccessContent() {
 
     checkStatus();
 
-    return () => { cancelled = true; };
-  }, [sessionId]);
+    return () => {
+      cancelled = true;
+    };
+  }, [encodedSessionId]);
 
   if (!sessionId) {
     return (
       <main className={pageShell}>
-        <div className="max-w-xl mx-auto text-center pt-20">
-          <h1 className="text-3xl font-black mb-4 uppercase tracking-tight text-white">
+        <div className="mx-auto max-w-xl pt-20 text-center">
+          <h1 className="mb-4 text-3xl font-black uppercase tracking-tight text-white">
             Stránka není dostupná
           </h1>
-          <p className="text-slate-400 text-sm mb-8">
+          <p className="mb-8 text-sm text-slate-400">
             Tato stránka je přístupná pouze po přesměrování z platební brány.
           </p>
-          <a href="/" className="inline-block px-8 py-4 bg-amber-500 text-black font-black uppercase rounded-2xl hover:bg-amber-400 transition text-sm">
-            Vybrat smlouvu
-          </a>
+          <Link
+            href="/"
+            className="inline-block rounded-2xl bg-amber-500 px-8 py-4 text-sm font-black uppercase text-black transition hover:bg-amber-400"
+          >
+            Vybrat dokument
+          </Link>
         </div>
       </main>
     );
@@ -104,172 +126,184 @@ function SuccessContent() {
 
   return (
     <main className={pageShell}>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_10%,rgba(34,197,94,0.06),transparent_35%)] pointer-events-none" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_10%,rgba(34,197,94,0.06),transparent_35%)]" />
 
-      <div className="relative z-10 max-w-xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-10">
-          <div className={`w-20 h-20 rounded-full flex items-center justify-center text-4xl mx-auto mb-6 transition-all duration-500 ${
-            dlState === 'ready'
-              ? 'bg-emerald-500/10 border-2 border-emerald-500/30'
-              : dlState === 'error'
-              ? 'bg-red-500/10 border-2 border-red-500/30'
-              : 'bg-amber-500/10 border-2 border-amber-500/20'
-          }`}>
+      <div className="relative z-10 mx-auto max-w-xl">
+        <div className="mb-10 text-center">
+          <div
+            className={`mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full text-4xl transition-all duration-500 ${
+              dlState === 'ready'
+                ? 'border-2 border-emerald-500/30 bg-emerald-500/10'
+                : dlState === 'error'
+                  ? 'border-2 border-red-500/30 bg-red-500/10'
+                  : 'border-2 border-amber-500/20 bg-amber-500/10'
+            }`}
+          >
             {dlState === 'checking' ? (
-              <div className="w-9 h-9 border-[3px] border-amber-400 border-t-transparent rounded-full animate-spin" />
-            ) : dlState === 'ready' ? '✓' : '⚠'}
+              <div className="h-9 w-9 animate-spin rounded-full border-[3px] border-amber-400 border-t-transparent" />
+            ) : dlState === 'ready' ? (
+              '✓'
+            ) : (
+              '⚠'
+            )}
           </div>
-          <h1 className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter text-white mb-3">
-            {dlState === 'checking' ? 'Zpracováváme…' : 'Platba přijata'}
+          <h1 className="mb-3 text-4xl font-black uppercase tracking-tighter text-white md:text-5xl">
+            {dlState === 'checking' ? 'Zpracováváme platbu' : 'Platba přijata'}
           </h1>
           {dlState === 'checking' && (
             <div className="mb-4 px-4">
-              <div className="text-sm text-slate-400 mb-2">Ověřujeme platbu, obvykle to trvá 5–10 sekund&hellip;</div>
-              <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+              <div className="mb-2 text-sm text-slate-400">
+                Ověřujeme platbu, obvykle to trvá několik sekund.
+              </div>
+              <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/5">
                 <div
-                  className="h-full bg-gradient-to-r from-amber-500 to-yellow-400 rounded-full transition-all duration-700 ease-out"
+                  className="h-full rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 transition-all duration-700 ease-out"
                   style={{ width: `${Math.max(5, progress)}%` }}
                 />
               </div>
             </div>
           )}
           {dlState === 'ready' && (
-            <p className="text-slate-400 text-sm">
-              Dokument je připraven ke stažení.
-            </p>
+            <p className="text-sm text-slate-400">Dokument je připraven ke stažení.</p>
           )}
         </div>
 
-        {/* Download card */}
-        <div className="bg-[#0c1426] border border-emerald-500/20 rounded-3xl p-8 mb-6 shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
-          <div className="flex items-center gap-4 p-5 bg-white/3 rounded-2xl border border-white/5 mb-6">
-            <div className="text-4xl flex-shrink-0">📄</div>
+        <div className="mb-6 rounded-3xl border border-emerald-500/20 bg-[#0c1426] p-8 shadow-[0_20px_60px_rgba(0,0,0,0.3)]">
+          <div className="mb-6 flex items-center gap-4 rounded-2xl border border-white/5 bg-white/3 p-5">
+            <div className="flex-shrink-0 text-4xl">📄</div>
             <div>
-              <div className="font-bold text-white text-base">Váš právní dokument</div>
-              <div className="text-xs text-slate-500 mt-0.5 uppercase tracking-wider">Generováno po ověřené platbě • Stripe</div>
+              <div className="text-base font-bold text-white">{purchaseTitle}</div>
+              <div className="mt-0.5 text-xs uppercase tracking-wider text-slate-500">
+                Generováno po ověřené platbě • Stripe
+              </div>
             </div>
           </div>
 
-          {/* Stav tlačítka závisí na dlState */}
+          {orderMeta?.tierLabel && orderMeta?.priceLabel && (
+            <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+              <div className="rounded-2xl border border-white/5 bg-white/3 p-4">
+                <div className="mb-1 text-[10px] font-black uppercase tracking-widest text-slate-500">
+                  Zakoupená varianta
+                </div>
+                <div className="text-sm font-semibold text-white">
+                  {orderMeta.packageLabel ?? orderMeta.tierLabel}
+                </div>
+              </div>
+              <div className="rounded-2xl border border-white/5 bg-white/3 p-4">
+                <div className="mb-1 text-[10px] font-black uppercase tracking-widest text-slate-500">
+                  Zaplacená částka
+                </div>
+                <div className="text-sm font-semibold text-white">
+                  {orderMeta.priceLabel}
+                </div>
+              </div>
+              <div className="rounded-2xl border border-white/5 bg-white/3 p-4">
+                <div className="mb-1 text-[10px] font-black uppercase tracking-widest text-slate-500">
+                  Dostupnost odkazu
+                </div>
+                <div className="text-sm font-semibold text-white">
+                  {orderMeta.archiveDays} dní
+                </div>
+              </div>
+            </div>
+          )}
+
           {dlState === 'checking' && (
-            <div className="flex flex-col items-center justify-center py-5 gap-3">
-              <p className="text-sm text-slate-500 italic">Příprava dokumentu probíhá&hellip;</p>
+            <div className="flex flex-col items-center justify-center gap-3 py-5">
+              <p className="text-sm italic text-slate-500">
+                Příprava dokumentu probíhá…
+              </p>
             </div>
           )}
 
           {dlState === 'ready' && (
-            <a href={downloadUrl ?? '#'}
-              className="block w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-xl rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] text-center uppercase tracking-tight">
+            <a
+              href={downloadUrl ?? '#'}
+              className="block w-full rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-400 py-5 text-center text-xl font-black tracking-tight text-black shadow-[0_0_40px_rgba(245,158,11,0.25)] transition-all hover:brightness-110 active:scale-[0.98]"
+            >
               Stáhnout PDF
             </a>
           )}
 
           {dlState === 'error' && (
-            <div className="rounded-2xl bg-red-500/10 border border-red-500/20 p-5 text-center">
-              <p className="text-sm text-red-300 font-bold mb-1">Platba se ještě zpracovává</p>
-              <p className="text-xs text-slate-400 mb-3">Odkaz ke stažení obdržíte e-mailem, nebo zkuste stránku obnovit za chvíli.</p>
-              <div className="flex flex-col sm:flex-row gap-2 justify-center">
+            <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-5 text-center">
+              <p className="mb-1 text-sm font-bold text-red-300">
+                Platba se ještě zpracovává
+              </p>
+              <p className="mb-3 text-xs text-slate-400">
+                Odkaz ke stažení obdržíte e-mailem, nebo zkuste stránku obnovit za
+                chvíli.
+              </p>
+              <div className="flex flex-col justify-center gap-2 sm:flex-row">
                 <button
-                  onClick={() => { attemptRef.current = 0; setDlState('checking'); }}
-                  className="px-5 py-2 rounded-xl bg-amber-500 text-black font-bold text-sm hover:bg-amber-400 transition"
+                  onClick={() => {
+                    attemptRef.current = 0;
+                    setDlState('checking');
+                  }}
+                  className="rounded-xl bg-amber-500 px-5 py-2 text-sm font-bold text-black transition hover:bg-amber-400"
                 >
                   Zkusit znovu
                 </button>
-                <a href="mailto:info@smlouvahned.cz"
-                  className="px-5 py-2 rounded-xl bg-white/5 border border-white/10 text-slate-300 font-bold text-sm hover:bg-white/10 transition">
+                <a
+                  href="mailto:info@smlouvahned.cz"
+                  className="rounded-xl border border-white/10 bg-white/5 px-5 py-2 text-sm font-bold text-slate-300 transition hover:bg-white/10"
+                >
                   Kontaktovat podporu
                 </a>
               </div>
             </div>
           )}
 
-          <div className="mt-5 grid grid-cols-2 gap-3 text-center">
-            <div className="bg-white/3 rounded-xl p-3">
-              <div className="text-xs font-bold text-emerald-400 mb-0.5">✓ Platný 7–30 dní</div>
-              <div className="text-xs text-slate-500">dle zvoleného balíčku</div>
+          {orderMeta?.includedItems && orderMeta.includedItems.length > 0 && (
+            <div className="mt-5 rounded-2xl border border-white/5 bg-white/3 p-4">
+              <div className="mb-2 text-[10px] font-black uppercase tracking-widest text-amber-400">
+                Součást zakoupené varianty
+              </div>
+              <ul className="space-y-1.5 text-sm text-slate-300">
+                {orderMeta.includedItems.map((item) => (
+                  <li key={item} className="flex items-start gap-2">
+                    <span className="mt-0.5 text-amber-400">•</span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <div className="bg-white/3 rounded-xl p-3">
-              <div className="text-xs font-bold text-emerald-400 mb-0.5">✓ Opakované stažení</div>
+          )}
+
+          <div className="mt-5 grid grid-cols-2 gap-3 text-center">
+            <div className="rounded-xl bg-white/3 p-3">
+              <div className="mb-0.5 text-xs font-bold text-emerald-400">
+                ✓ Odkaz ke stažení
+              </div>
+              <div className="text-xs text-slate-500">
+                {orderMeta?.archiveDays
+                  ? `${orderMeta.archiveDays} dní od zaplacení`
+                  : 'dle zvolené varianty'}
+              </div>
+            </div>
+            <div className="rounded-xl bg-white/3 p-3">
+              <div className="mb-0.5 text-xs font-bold text-emerald-400">
+                ✓ Opakované stažení
+              </div>
               <div className="text-xs text-slate-500">do vypršení odkazu</div>
             </div>
           </div>
         </div>
 
-        {/* Tips */}
-        <div className="bg-[#0c1426] border border-slate-800 rounded-3xl p-6 mb-6">
-          <div className="text-xs font-black uppercase tracking-widest text-amber-400 mb-4">Co dál?</div>
-          <ul className="space-y-3 text-sm text-slate-300">
-            <li className="flex items-start gap-3">
-              <span className="text-amber-400 font-black">1.</span>
-              <span>Otevřete stažený PDF a zkontrolujte všechny vyplněné údaje — strany, předmět, ceny, termíny.</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="text-amber-400 font-black">2.</span>
-              <span>Vytiskněte 2 vyhotovení — každá strana si ponechá jedno podepsané.</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="text-amber-400 font-black">3.</span>
-              <span>Obě strany smlouvu podepíší — ideálně v přítomnosti druhé strany.</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="text-amber-400 font-black">4.</span>
-              <span>Podepsaný originál uložte na bezpečném místě. Naskenujte zálohu.</span>
-            </li>
-          </ul>
-        </div>
-
-        {/* Compliance note */}
-        <div className="rounded-2xl border border-white/5 bg-white/2 px-5 py-4 mb-6">
-          <p className="text-xs text-slate-600 leading-relaxed">
-            <span className="font-semibold text-slate-500">Připomínka:</span>{' '}
-            SmlouvaHned.cz je softwarový nástroj pro tvorbu standardizovaných dokumentů — není advokátní kanceláří a neposkytuje právní poradenství. Obsah dokumentu je určen vašimi vstupy. Pokud vaše situace zahrnuje vyšší hodnotu, více stran nebo probíhající spor, doporučujeme konzultaci s advokátem{' '}
-            (<a href="https://www.cak.cz" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-slate-500 transition">cak.cz</a>).
-          </p>
-        </div>
-
-        {/* Cross-sell sekce */}
-        <div className="bg-[#0c1426] border border-slate-800 rounded-3xl p-6 mb-6">
-          <div className="text-xs font-black uppercase tracking-widest text-amber-400 mb-1">Možná potřebujete také</div>
-          <p className="text-xs text-slate-500 mb-5">Nejčastěji kombinované dokumenty k vaší smlouvě</p>
-          <div className="grid grid-cols-1 gap-3">
-            {[
-              { title: 'Předávací protokol', desc: 'Součást nájemní smlouvy — zdokumentuje stav bytu při předání.', href: '/najem', badge: 'Bydlení' },
-              { title: 'Smlouva o mlčenlivosti (NDA)', desc: 'Pro každý obchodní vztah, kde sdílíte citlivé informace.', href: '/nda', badge: 'Podnikání' },
-              { title: 'Uznání dluhu', desc: 'Obnoví promlčecí lhůtu na 10 let. Klíčový dokument pro vymahatelnost pohledávky.', href: '/uznani-dluhu', badge: 'Finance' },
-              { title: 'Smlouva o dílo', desc: 'Pro řemeslníky, freelancery i stavební práce — termíny a sankce.', href: '/smlouva-o-dilo', badge: 'Práce' },
-              { title: 'Plná moc', desc: 'Zastoupení na úřadě, v bance nebo při podpisu smlouvy.', href: '/plna-moc', badge: 'Obecné' },
-            ].map(item => (
-              <a key={item.href} href={item.href}
-                className="flex items-center justify-between gap-3 rounded-2xl border border-white/8 bg-white/3 px-4 py-3 hover:bg-white/6 hover:border-white/15 transition group">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <span className="text-sm font-bold text-white">{item.title}</span>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 bg-white/5 px-2 py-0.5 rounded-full">{item.badge}</span>
-                  </div>
-                  <p className="text-xs text-slate-500 leading-snug">{item.desc}</p>
-                </div>
-                <span className="text-slate-600 group-hover:text-amber-400 transition flex-shrink-0">→</span>
-              </a>
-            ))}
-          </div>
-        </div>
-
-        {/* Links */}
-        <div className="flex flex-col sm:flex-row gap-3">
-          <a href="/"
-            className="flex-1 py-3 bg-white/5 border border-white/10 text-white font-bold text-sm text-center rounded-2xl hover:bg-white/10 transition uppercase tracking-wider">
-            Všechny smlouvy
-          </a>
-          <a href="/zakaznicka-zona"
-            className="flex-1 py-3 bg-white/5 border border-white/10 text-slate-400 font-bold text-sm text-center rounded-2xl hover:bg-white/10 transition uppercase tracking-wider">
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Link
+            href="/zakaznicka-zona"
+            className="rounded-2xl border border-white/8 bg-white/3 px-6 py-4 text-center text-sm font-semibold text-white transition hover:bg-white/6"
+          >
             Moje dokumenty
-          </a>
+          </Link>
+          <Link
+            href="/"
+            className="rounded-2xl border border-white/8 bg-white/3 px-6 py-4 text-center text-sm font-semibold text-white transition hover:bg-white/6"
+          >
+            Zpět na hlavní stránku
+          </Link>
         </div>
-
-        <p className="text-center text-xs text-slate-600 mt-6">
-          Máte dotaz? <a href="mailto:info@smlouvahned.cz" className="text-amber-500/70 hover:text-amber-400 transition">info@smlouvahned.cz</a>
-        </p>
       </div>
     </main>
   );
@@ -277,7 +311,7 @@ function SuccessContent() {
 
 export default function SuccessPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#05080f] flex items-center justify-center"><div className="w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" /></div>}>
+    <Suspense fallback={<main className={pageShell} />}>
       <SuccessContent />
     </Suspense>
   );

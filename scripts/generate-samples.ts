@@ -1,5 +1,5 @@
-// Skript pro generování vzorových PDF smluv
-// Spuštění: node --experimental-strip-types scripts/generate-samples.ts
+// Skript pro generovĂˇnĂ­ vzorovĂ˝ch PDF smluv
+// SpuĹˇtÄ›nĂ­: node --experimental-strip-types scripts/generate-samples.ts
 
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
@@ -10,32 +10,32 @@ import type { StoredContractData, ContractType, Tier } from '../lib/contracts.ts
 const projectDir = process.cwd();
 const outputDir = path.join(projectDir, 'vzory-smluv');
 
-// ── Vzorová data pro každý typ smlouvy ─────────────────────────────────────
+// â”€â”€ VzorovĂˇ data pro kaĹľdĂ˝ typ smlouvy â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const today = new Date().toISOString().split('T')[0];
 
 const SAMPLES: Array<{ data: StoredContractData; tier: Tier; label: string }> = [
-  // 1. NÁJEMNÍ SMLOUVA
+  // 1. NĂJEMNĂŤ SMLOUVA
   {
-    tier: 'professional',
+    tier: 'complete',
     label: '01_Najemni_smlouva',
     data: {
       contractType: 'lease',
       notaryUpsell: true,
-      tier: 'professional',
-      landlordName: 'Jan Novák',
+      tier: 'complete',
+      landlordName: 'Jan NovĂˇk',
       landlordId: '15. 3. 1975',
-      landlordAddress: 'Dlouhá 12, Praha 1, 110 00',
+      landlordAddress: 'DlouhĂˇ 12, Praha 1, 110 00',
       landlordEmail: 'jan.novak@email.cz',
       landlordPhone: '+420 777 123 456',
-      tenantName: 'Marie Horáková',
+      tenantName: 'Marie HorĂˇkovĂˇ',
       tenantId: '20. 7. 1990',
-      tenantAddress: 'Krátká 5, Brno, 602 00',
+      tenantAddress: 'KrĂˇtkĂˇ 5, Brno, 602 00',
       tenantEmail: 'marie.horakova@email.cz',
       tenantPhone: '+420 605 987 654',
-      propertyAddress: 'Veselá 8, Praha 2, 120 00',
+      propertyAddress: 'VeselĂˇ 8, Praha 2, 120 00',
       propertyLayout: '2+1',
-      flatUnitNumber: 'Byt č. 14, 3. patro',
+      flatUnitNumber: 'Byt ÄŤ. 14, 3. patro',
       rentAmount: '18000',
       utilitiesAmount: '3000',
       depositAmount: '54000',
@@ -45,81 +45,81 @@ const SAMPLES: Array<{ data: StoredContractData; tier: Tier; label: string }> = 
       petsAllowed: true,
       smokingAllowed: false,
       airbnbAllowed: false,
-      leaseDuration: 'určitou, a to do 31. 12. 2026',
+      leaseDuration: 'urÄŤitou, a to do 31. 12. 2026',
     },
   },
-  // 2. KUPNÍ SMLOUVA NA VOZIDLO
+  // 2. KUPNĂŤ SMLOUVA NA VOZIDLO
   {
-    tier: 'professional',
+    tier: 'complete',
     label: '02_Kupni_smlouva_auto',
     data: {
       contractType: 'car_sale',
       notaryUpsell: true,
-      tier: 'professional',
+      tier: 'complete',
       sellerName: 'Petr Svoboda',
       sellerId: '10. 1. 1980',
-      sellerAddress: 'Nová 3, Ostrava, 702 00',
-      buyerName: 'Tomáš Dvořák',
+      sellerAddress: 'NovĂˇ 3, Ostrava, 702 00',
+      buyerName: 'TomĂˇĹˇ DvoĹ™Ăˇk',
       buyerId: '5. 9. 1985',
-      buyerAddress: 'Stará 7, Plzeň, 301 00',
-      carMake: 'Škoda',
+      buyerAddress: 'StarĂˇ 7, PlzeĹ, 301 00',
+      carMake: 'Ĺ koda',
       carModel: 'Octavia',
       carYear: '2018',
       carVIN: 'TMBEG7NE9J0123456',
       carPlate: '1P2 3456',
       carMileage: '87500',
-      carColor: 'Stříbrná metalíza',
+      carColor: 'StĹ™Ă­brnĂˇ metalĂ­za',
       carEngineCC: '1598',
       carSTK: '2025-11-30',
       carPrice: '285000',
-      carPriceWords: 'dvěstě osmdesát pět tisíc',
+      carPriceWords: 'dvÄ›stÄ› osmdesĂˇt pÄ›t tisĂ­c',
       paymentMethod: 'transfer',
-      knownDefects: 'Drobná koroze na prazích, jinak bez vad.',
+      knownDefects: 'DrobnĂˇ koroze na prazĂ­ch, jinak bez vad.',
     },
   },
-  // 3. DAROVACÍ SMLOUVA
+  // 3. DAROVACĂŤ SMLOUVA
   {
-    tier: 'professional',
+    tier: 'complete',
     label: '03_Darovaci_smlouva',
     data: {
       contractType: 'gift',
       notaryUpsell: true,
-      tier: 'professional',
-      donorName: 'Alena Marková',
+      tier: 'complete',
+      donorName: 'Alena MarkovĂˇ',
       donorId: '3. 6. 1955',
-      donorAddress: 'Lipová 22, Olomouc, 772 00',
+      donorAddress: 'LipovĂˇ 22, Olomouc, 772 00',
       donorEmail: 'alena.markova@email.cz',
-      doneeName: 'Lukáš Marko',
+      doneeName: 'LukĂˇĹˇ Marko',
       doneeId: '18. 4. 1985',
-      doneeAddress: 'Polní 11, Hradec Králové, 500 02',
+      doneeAddress: 'PolnĂ­ 11, Hradec KrĂˇlovĂ©, 500 02',
       doneeEmail: 'lukas.marko@email.cz',
       giftType: 'money',
       amount: '250000',
-      amountWords: 'dvěstě padesát tisíc',
-      currency: 'Kč',
+      amountWords: 'dvÄ›stÄ› padesĂˇt tisĂ­c',
+      currency: 'KÄŤ',
       transferMethod: 'transfer',
       bankAccount: '1234567890/0800',
       giftDate: today,
       withReservation: false,
     },
   },
-  // 4. SMLOUVA O DÍLO
+  // 4. SMLOUVA O DĂŤLO
   {
-    tier: 'professional',
+    tier: 'complete',
     label: '04_Smlouva_o_dilo',
     data: {
       contractType: 'work_contract',
       notaryUpsell: true,
-      tier: 'professional',
+      tier: 'complete',
       clientName: 'Stavby s.r.o.',
       clientId: '12345678',
-      clientAddress: 'Průmyslová 4, Praha 9, 190 00',
-      contractorName: 'Josef Tesař',
+      clientAddress: 'PrĹŻmyslovĂˇ 4, Praha 9, 190 00',
+      contractorName: 'Josef TesaĹ™',
       contractorId: '87654321',
-      contractorAddress: 'Řemeslná 6, Kladno, 272 01',
-      workDescription: 'Rekonstrukce koupelny v bytě č. 5 na adrese Veselá 8, Praha 2 — bourací práce, obkládání, instalatérské práce, elektroinstalace, sádrokarton.',
+      contractorAddress: 'ĹemeslnĂˇ 6, Kladno, 272 01',
+      workDescription: 'Rekonstrukce koupelny v bytÄ› ÄŤ. 5 na adrese VeselĂˇ 8, Praha 2 â€” bouracĂ­ prĂˇce, obklĂˇdĂˇnĂ­, instalatĂ©rskĂ© prĂˇce, elektroinstalace, sĂˇdrokarton.',
       workPrice: '180000',
-      workPriceWords: 'sto osmdesát tisíc',
+      workPriceWords: 'sto osmdesĂˇt tisĂ­c',
       paymentTerms: 'payment_schedule',
       advancePercent: '30',
       deadlineDate: '2026-06-30',
@@ -130,96 +130,96 @@ const SAMPLES: Array<{ data: StoredContractData; tier: Tier; label: string }> = 
       defectPenaltyPercent: '10',
     },
   },
-  // 5. SMLOUVA O ZÁPŮJČCE
+  // 5. SMLOUVA O ZĂPĹ®JÄŚCE
   {
-    tier: 'professional',
+    tier: 'complete',
     label: '05_Smlouva_o_zapujcce',
     data: {
       contractType: 'loan',
       notaryUpsell: true,
-      tier: 'professional',
+      tier: 'complete',
       lenderName: 'Robert Fiala',
       lenderId: '22. 11. 1965',
-      lenderAddress: 'Lipová 3, Liberec, 460 01',
-      borrowerName: 'Simona Červenková',
+      lenderAddress: 'LipovĂˇ 3, Liberec, 460 01',
+      borrowerName: 'Simona ÄŚervenkovĂˇ',
       borrowerId: '30. 8. 1988',
-      borrowerAddress: 'Luční 9, Pardubice, 530 02',
+      borrowerAddress: 'LuÄŤnĂ­ 9, Pardubice, 530 02',
       loanAmount: '150000',
-      loanAmountWords: 'sto padesát tisíc',
+      loanAmountWords: 'sto padesĂˇt tisĂ­c',
       interestRate: '5',
       repaymentType: 'installments',
       installmentAmount: '5000',
       installmentDay: '15',
       repaymentDate: '2028-12-31',
       hasSecurity: true,
-      securityDescription: 'Zástavní právo k osobnímu automobilu Škoda Fabia, RZ: 1L2 3456, VIN: TMBEA6NE8G0000001',
+      securityDescription: 'ZĂˇstavnĂ­ prĂˇvo k osobnĂ­mu automobilu Ĺ koda Fabia, RZ: 1L2 3456, VIN: TMBEA6NE8G0000001',
       latePenaltyRate: '0,05',
       minLatePenalty: '100',
     },
   },
-  // 6. NDA — SMLOUVA O MLČENLIVOSTI
+  // 6. NDA â€” SMLOUVA O MLÄŚENLIVOSTI
   {
-    tier: 'professional',
+    tier: 'complete',
     label: '06_NDA_smlouva',
     data: {
       contractType: 'nda',
       notaryUpsell: true,
-      tier: 'professional',
+      tier: 'complete',
       disclosingPartyName: 'TechStart s.r.o.',
       disclosingPartyId: '09876543',
-      disclosingPartyAddress: 'Technologická 1, Praha 6, 160 00',
-      receivingPartyName: 'Martin Kubík',
+      disclosingPartyAddress: 'TechnologickĂˇ 1, Praha 6, 160 00',
+      receivingPartyName: 'Martin KubĂ­k',
       receivingPartyId: '12. 2. 1982',
-      receivingPartyAddress: 'Sadová 14, Brno, 612 00',
+      receivingPartyAddress: 'SadovĂˇ 14, Brno, 612 00',
       ndaType: 'unilateral',
-      purpose: 'Posouzení možnosti obchodní spolupráce při vývoji mobilní aplikace pro správu nemovitostí.',
-      confidentialInfo: 'Obchodní strategie, zdrojový kód, databáze klientů, finanční výkazy a veškeré technické dokumentace.',
+      purpose: 'PosouzenĂ­ moĹľnosti obchodnĂ­ spoluprĂˇce pĹ™i vĂ˝voji mobilnĂ­ aplikace pro sprĂˇvu nemovitostĂ­.',
+      confidentialInfo: 'ObchodnĂ­ strategie, zdrojovĂ˝ kĂłd, databĂˇze klientĹŻ, finanÄŤnĂ­ vĂ˝kazy a veĹˇkerĂ© technickĂ© dokumentace.',
       durationYears: '3',
       nonCompete: true,
       nonSolicitation: true,
       jurisdiction: 'Praha',
     },
   },
-  // 7. KUPNÍ SMLOUVA (obecná)
+  // 7. KUPNĂŤ SMLOUVA (obecnĂˇ)
   {
-    tier: 'professional',
+    tier: 'complete',
     label: '07_Kupni_smlouva_obecna',
     data: {
       contractType: 'general_sale',
       notaryUpsell: true,
-      tier: 'professional',
-      sellerName: 'Eva Procházková',
+      tier: 'complete',
+      sellerName: 'Eva ProchĂˇzkovĂˇ',
       sellerId: '7. 7. 1972',
-      sellerAddress: 'Nádražní 18, České Budějovice, 370 01',
+      sellerAddress: 'NĂˇdraĹľnĂ­ 18, ÄŚeskĂ© BudÄ›jovice, 370 01',
       buyerName: 'Karel Zeman',
       buyerId: '14. 3. 1990',
-      buyerAddress: 'Polní 33, Jihlava, 586 01',
-      itemDescription: 'Notebook Apple MacBook Pro 14" (2023), sériové číslo: C02XXXXXXX, v dobrém stavu.',
+      buyerAddress: 'PolnĂ­ 33, Jihlava, 586 01',
+      itemDescription: 'Notebook Apple MacBook Pro 14" (2023), sĂ©riovĂ© ÄŤĂ­slo: C02XXXXXXX, v dobrĂ©m stavu.',
       price: '45000',
-      priceWords: 'čtyřicet pět tisíc',
-      currency: 'Kč',
+      priceWords: 'ÄŤtyĹ™icet pÄ›t tisĂ­c',
+      currency: 'KÄŤ',
       paymentMethod: 'cash',
       handoverDate: today,
       warrantyMonths: '12',
-      knownDefects: 'Drobné škrábance na krytu, jinak plně funkční.',
+      knownDefects: 'DrobnĂ© ĹˇkrĂˇbance na krytu, jinak plnÄ› funkÄŤnĂ­.',
     },
   },
-  // 8. PRACOVNÍ SMLOUVA
+  // 8. PRACOVNĂŤ SMLOUVA
   {
-    tier: 'professional',
+    tier: 'complete',
     label: '08_Pracovni_smlouva',
     data: {
       contractType: 'employment',
       notaryUpsell: true,
-      tier: 'professional',
-      employerName: 'Digitální Média s.r.o.',
+      tier: 'complete',
+      employerName: 'DigitĂˇlnĂ­ MĂ©dia s.r.o.',
       employerIco: '11223344',
-      employerAddress: 'Václavské náměstí 1, Praha 1, 110 00',
-      employeeName: 'Ondřej Blaha',
+      employerAddress: 'VĂˇclavskĂ© nĂˇmÄ›stĂ­ 1, Praha 1, 110 00',
+      employeeName: 'OndĹ™ej Blaha',
       employeeId: '4. 12. 1995',
-      employeeAddress: 'Botanická 7, Praha 6, 160 00',
+      employeeAddress: 'BotanickĂˇ 7, Praha 6, 160 00',
       jobTitle: 'Senior Software Developer',
-      workLocation: 'Praha 1, Václavské náměstí 1 (možnost home office)',
+      workLocation: 'Praha 1, VĂˇclavskĂ© nĂˇmÄ›stĂ­ 1 (moĹľnost home office)',
       startDate: '2026-04-01',
       contractType2: 'indefinite',
       grossSalary: '85000',
@@ -229,21 +229,21 @@ const SAMPLES: Array<{ data: StoredContractData; tier: Tier; label: string }> = 
       noticePeriodMonths: '2',
     },
   },
-  // 9. DOHODA O PROVEDENÍ PRÁCE
+  // 9. DOHODA O PROVEDENĂŤ PRĂCE
   {
-    tier: 'professional',
+    tier: 'complete',
     label: '09_DPP',
     data: {
       contractType: 'dpp',
       notaryUpsell: true,
-      tier: 'professional',
-      employerName: 'Vydavatelství Knižní svět s.r.o.',
+      tier: 'complete',
+      employerName: 'VydavatelstvĂ­ KniĹľnĂ­ svÄ›t s.r.o.',
       employerIco: '55667788',
-      employerAddress: 'Korunní 23, Praha 2, 120 00',
-      employeeName: 'Petra Vlčková',
+      employerAddress: 'KorunnĂ­ 23, Praha 2, 120 00',
+      employeeName: 'Petra VlÄŤkovĂˇ',
       employeeId: '25. 5. 1998',
-      employeeAddress: 'Mánesova 5, Praha 2, 120 00',
-      workDescription: 'Překlad odborného textu z angličtiny do češtiny, redakční korektura — rozsah cca 80 normostran.',
+      employeeAddress: 'MĂˇnesova 5, Praha 2, 120 00',
+      workDescription: 'PĹ™eklad odbornĂ©ho textu z angliÄŤtiny do ÄŤeĹˇtiny, redakÄŤnĂ­ korektura â€” rozsah cca 80 normostran.',
       hourlyRate: '350',
       estimatedHours: '120',
       totalReward: '42000',
@@ -252,21 +252,21 @@ const SAMPLES: Array<{ data: StoredContractData; tier: Tier; label: string }> = 
       maxHoursPerYear: '300',
     },
   },
-  // 10. SMLOUVA O POSKYTOVÁNÍ SLUŽEB
+  // 10. SMLOUVA O POSKYTOVĂNĂŤ SLUĹ˝EB
   {
-    tier: 'professional',
+    tier: 'complete',
     label: '10_Smlouva_o_sluzbach',
     data: {
       contractType: 'service',
       notaryUpsell: true,
-      tier: 'professional',
+      tier: 'complete',
       providerName: 'WebStudio Praha s.r.o.',
       providerId: '98765432',
-      providerAddress: 'Korunní 15, Praha 2, 120 00',
+      providerAddress: 'KorunnĂ­ 15, Praha 2, 120 00',
       clientName: 'Restaurace U Karla',
       clientId: '11334455',
-      clientAddress: 'Náměstí Míru 8, Praha 2, 120 00',
-      serviceDescription: 'Správa a provoz webových stránek, SEO optimalizace, správa sociálních sítí (Facebook, Instagram) a pravidelný reporting.',
+      clientAddress: 'NĂˇmÄ›stĂ­ MĂ­ru 8, Praha 2, 120 00',
+      serviceDescription: 'SprĂˇva a provoz webovĂ˝ch strĂˇnek, SEO optimalizace, sprĂˇva sociĂˇlnĂ­ch sĂ­tĂ­ (Facebook, Instagram) a pravidelnĂ˝ reporting.',
       monthlyFee: '12000',
       contractDurationMonths: '12',
       startDate: '2026-04-01',
@@ -274,22 +274,22 @@ const SAMPLES: Array<{ data: StoredContractData; tier: Tier; label: string }> = 
       deliveryDeadlineDays: '14',
     },
   },
-  // 11. PODNÁJEMNÍ SMLOUVA
+  // 11. PODNĂJEMNĂŤ SMLOUVA
   {
-    tier: 'professional',
+    tier: 'complete',
     label: '11_Podnajem_smlouva',
     data: {
       contractType: 'sublease',
       notaryUpsell: true,
-      tier: 'professional',
-      tenantName: 'Barbora Součková',
+      tier: 'complete',
+      tenantName: 'Barbora SouÄŤkovĂˇ',
       tenantId: '19. 9. 1982',
-      tenantAddress: 'Mánesova 5, Praha 2, 120 00',
-      subtenantName: 'Radek Novotný',
+      tenantAddress: 'MĂˇnesova 5, Praha 2, 120 00',
+      subtenantName: 'Radek NovotnĂ˝',
       subtenantId: '28. 2. 1996',
-      subtenantAddress: 'Holečkova 3, Praha 5, 150 00',
-      propertyAddress: 'Mánesova 5, Praha 2, 120 00 — pokoj č. 2',
-      roomDescription: 'Pokoj o výměře 18 m², sdílení kuchyně a koupelny.',
+      subtenantAddress: 'HoleÄŤkova 3, Praha 5, 150 00',
+      propertyAddress: 'MĂˇnesova 5, Praha 2, 120 00 â€” pokoj ÄŤ. 2',
+      roomDescription: 'Pokoj o vĂ˝mÄ›Ĺ™e 18 mÂ˛, sdĂ­lenĂ­ kuchynÄ› a koupelny.',
       monthlyRent: '9500',
       utilitiesIncluded: true,
       depositAmount: '19000',
@@ -298,43 +298,43 @@ const SAMPLES: Array<{ data: StoredContractData; tier: Tier; label: string }> = 
       landlordConsent: true,
     },
   },
-  // 12. PLNÁ MOC
+  // 12. PLNĂ MOC
   {
-    tier: 'professional',
+    tier: 'complete',
     label: '12_Plna_moc',
     data: {
       contractType: 'power_of_attorney',
       notaryUpsell: true,
-      tier: 'professional',
-      principalName: 'Věra Horáčková',
+      tier: 'complete',
+      principalName: 'VÄ›ra HorĂˇÄŤkovĂˇ',
       principalId: '11. 11. 1960',
-      principalAddress: 'Táborská 22, Praha 4, 140 00',
+      principalAddress: 'TĂˇborskĂˇ 22, Praha 4, 140 00',
       agentName: 'JUDr. Michal Svoboda',
       agentId: '5. 3. 1975',
-      agentAddress: 'Právnická 3, Praha 1, 110 00',
+      agentAddress: 'PrĂˇvnickĂˇ 3, Praha 1, 110 00',
       poaType: 'property',
-      propertyAddress: 'Táborská 22, Praha 4, LV č. 1234, k. ú. Nusle',
+      propertyAddress: 'TĂˇborskĂˇ 22, Praha 4, LV ÄŤ. 1234, k. Ăş. Nusle',
       singleUse: false,
       allowSubstitution: false,
     },
   },
-  // 13. UZNÁNÍ DLUHU
+  // 13. UZNĂNĂŤ DLUHU
   {
-    tier: 'professional',
+    tier: 'complete',
     label: '13_Uznani_dluhu',
     data: {
       contractType: 'debt_acknowledgment',
       notaryUpsell: true,
-      tier: 'professional',
-      creditorName: 'Ing. Filip Starý',
+      tier: 'complete',
+      creditorName: 'Ing. Filip StarĂ˝',
       creditorId: '22. 4. 1968',
-      creditorAddress: 'Vinohradská 30, Praha 2, 120 00',
-      debtorName: 'Jakub Šimánek',
+      creditorAddress: 'VinohradskĂˇ 30, Praha 2, 120 00',
+      debtorName: 'Jakub Ĺ imĂˇnek',
       debtorId: '16. 6. 1990',
-      debtorAddress: 'Korunní 7, Praha 2, 120 00',
+      debtorAddress: 'KorunnĂ­ 7, Praha 2, 120 00',
       debtAmount: '85000',
-      debtAmountWords: 'osmdesát pět tisíc',
-      debtOrigin: 'Nezaplacená faktura č. 2025/0089 ze dne 15. 9. 2025 za provedené stavební práce.',
+      debtAmountWords: 'osmdesĂˇt pÄ›t tisĂ­c',
+      debtOrigin: 'NezaplacenĂˇ faktura ÄŤ. 2025/0089 ze dne 15. 9. 2025 za provedenĂ© stavebnĂ­ prĂˇce.',
       repaymentDate: '2026-09-30',
       interestRate: '5',
       installmentPlan: true,
@@ -342,23 +342,23 @@ const SAMPLES: Array<{ data: StoredContractData; tier: Tier; label: string }> = 
       installmentDay: '28',
     },
   },
-  // 14. SMLOUVA O SPOLUPRÁCI
+  // 14. SMLOUVA O SPOLUPRĂCI
   {
-    tier: 'professional',
+    tier: 'complete',
     label: '14_Smlouva_o_spolupraci',
     data: {
       contractType: 'cooperation',
       notaryUpsell: true,
-      tier: 'professional',
+      tier: 'complete',
       partyAName: 'CreativeLab s.r.o.',
       partyAId: '22334455',
-      partyAAddress: 'Jugoslávská 14, Praha 2, 120 00',
-      partyARepresentative: 'Jana Mrázková, jednatelka',
+      partyAAddress: 'JugoslĂˇvskĂˇ 14, Praha 2, 120 00',
+      partyARepresentative: 'Jana MrĂˇzkovĂˇ, jednatelka',
       partyBName: 'DataAnalytics s.r.o.',
       partyBId: '66778899',
-      partyBAddress: 'Americká 5, Praha 2, 120 00',
-      partyBRepresentative: 'Ing. Pavel Horník, jednatel',
-      cooperationScope: 'Společný vývoj a prodej analytického softwaru pro e-commerce segment. Strana A zajistí design a frontend, strana B zajistí backend a datové modely.',
+      partyBAddress: 'AmerickĂˇ 5, Praha 2, 120 00',
+      partyBRepresentative: 'Ing. Pavel HornĂ­k, jednatel',
+      cooperationScope: 'SpoleÄŤnĂ˝ vĂ˝voj a prodej analytickĂ©ho softwaru pro e-commerce segment. Strana A zajistĂ­ design a frontend, strana B zajistĂ­ backend a datovĂ© modely.',
       profitSplitA: '50',
       profitSplitB: '50',
       durationMonths: '24',
@@ -369,7 +369,7 @@ const SAMPLES: Array<{ data: StoredContractData; tier: Tier; label: string }> = 
   },
 ];
 
-// ── Font loading ────────────────────────────────────────────────────────────
+// â”€â”€ Font loading â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 async function loadFontBase64(fileName: string): Promise<string> {
   const filePath = path.join(projectDir, 'public', 'fonts', fileName);
@@ -378,7 +378,8 @@ async function loadFontBase64(fileName: string): Promise<string> {
 }
 
 async function setupFonts(doc: jsPDF): Promise<void> {
-  const pdfDoc = doc as any;
+  type PdfWithVfs = jsPDF & { internal: { vFS?: Record<string, string> } };
+  const pdfDoc = doc as PdfWithVfs;
   if (!pdfDoc.internal.vFS) pdfDoc.internal.vFS = {};
   const [regular, bold] = await Promise.all([
     loadFontBase64('Roboto-Regular.ttf'),
@@ -391,7 +392,7 @@ async function setupFonts(doc: jsPDF): Promise<void> {
   doc.setFont('Roboto', 'normal');
 }
 
-// ── Minimal PDF renderer (same logic as lib/pdf.ts) ────────────────────────
+// â”€â”€ Minimal PDF renderer (same logic as lib/pdf.ts) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function drawHeader(doc: jsPDF, title: string): void {
   const pageWidth = doc.internal.pageSize.getWidth();
@@ -417,29 +418,29 @@ function drawFooter(doc: jsPDF): void {
     doc.setTextColor(150);
     doc.text(`Strana ${i} z ${pageCount}`, pageWidth / 2, pageHeight - 8, { align: 'center' });
     doc.text('SmlouvaHned.cz', 20, pageHeight - 8);
-    doc.text('Generováno ' + new Date().toLocaleDateString('cs-CZ'), pageWidth - 20, pageHeight - 8, { align: 'right' });
+    doc.text('GenerovĂˇno ' + new Date().toLocaleDateString('cs-CZ'), pageWidth - 20, pageHeight - 8, { align: 'right' });
     doc.setTextColor(0);
   }
 }
 
 function getSignatureLabels(contractType: ContractType): [string, string] {
   const labels: Record<ContractType, [string, string]> = {
-    lease: ['Pronajímatel', 'Nájemce'],
-    car_sale: ['Prodávající', 'Kupující'],
-    gift: ['Dárce', 'Obdarovaný'],
+    lease: ['PronajĂ­matel', 'NĂˇjemce'],
+    car_sale: ['ProdĂˇvajĂ­cĂ­', 'KupujĂ­cĂ­'],
+    gift: ['DĂˇrce', 'ObdarovanĂ˝'],
     work_contract: ['Objednatel', 'Zhotovitel'],
-    loan: ['Věřitel (půjčující)', 'Dlužník (příjemce)'],
-    nda: ['Strana poskytující informace', 'Strana přijímající informace'],
-    general_sale: ['Prodávající', 'Kupující'],
-    employment: ['Zaměstnavatel', 'Zaměstnanec'],
-    dpp: ['Zaměstnavatel', 'Zaměstnanec'],
+    loan: ['VÄ›Ĺ™itel (pĹŻjÄŤujĂ­cĂ­)', 'DluĹľnĂ­k (pĹ™Ă­jemce)'],
+    nda: ['Strana poskytujĂ­cĂ­ informace', 'Strana pĹ™ijĂ­majĂ­cĂ­ informace'],
+    general_sale: ['ProdĂˇvajĂ­cĂ­', 'KupujĂ­cĂ­'],
+    employment: ['ZamÄ›stnavatel', 'ZamÄ›stnanec'],
+    dpp: ['ZamÄ›stnavatel', 'ZamÄ›stnanec'],
     service: ['Poskytovatel', 'Objednatel'],
-    sublease: ['Nájemce (podnajímatel)', 'Podnájemce'],
-    power_of_attorney: ['Zmocnitel', 'Zmocněnec'],
-    debt_acknowledgment: ['Věřitel', 'Dlužník'],
+    sublease: ['NĂˇjemce (podnajĂ­matel)', 'PodnĂˇjemce'],
+    power_of_attorney: ['Zmocnitel', 'ZmocnÄ›nec'],
+    debt_acknowledgment: ['VÄ›Ĺ™itel', 'DluĹľnĂ­k'],
     cooperation: ['Strana A', 'Strana B'],
   };
-  return labels[contractType] ?? ['Smluvní strana I.', 'Smluvní strana II.'];
+  return labels[contractType] ?? ['SmluvnĂ­ strana I.', 'SmluvnĂ­ strana II.'];
 }
 
 async function renderSamplePdf(data: StoredContractData): Promise<Buffer> {
@@ -459,7 +460,7 @@ async function renderSamplePdf(data: StoredContractData): Promise<Buffer> {
 
   for (const section of sections) {
     const isSignature = section.title.toUpperCase().includes('PODPISY');
-    const isProtocol = section.title.toUpperCase().includes('PŘEDÁVACÍ PROTOKOL') || section.title.toUpperCase().includes('PŘÍLOHA');
+    const isProtocol = section.title.toUpperCase().includes('PĹEDĂVACĂŤ PROTOKOL') || section.title.toUpperCase().includes('PĹĂŤLOHA');
 
     if (isProtocol && y > 40) {
       doc.addPage();
@@ -539,40 +540,4 @@ async function renderSamplePdf(data: StoredContractData): Promise<Buffer> {
       const splitLines = doc.splitTextToSize(safeLine, contentWidth);
       if (y + splitLines.length * 5.5 > 275) {
         doc.addPage();
-        drawHeader(doc, meta.title);
-        y = 35;
-        doc.setFont('Roboto', 'normal');
-        doc.setFontSize(10);
-        doc.setTextColor(30, 30, 30);
-      }
-      doc.text(splitLines, margin, y, { align: 'justify', maxWidth: contentWidth });
-      y += splitLines.length * 5.5 + 3;
-    }
-    y += 7;
-  }
-
-  drawFooter(doc);
-  return Buffer.from(doc.output('arraybuffer'));
-}
-
-// ── Main ────────────────────────────────────────────────────────────────────
-
-await mkdir(outputDir, { recursive: true });
-
-let ok = 0, fail = 0;
-for (const sample of SAMPLES) {
-  try {
-    process.stdout.write(`  Generuji ${sample.label}...`);
-    const pdf = await renderSamplePdf(sample.data);
-    const filePath = path.join(outputDir, `${sample.label}.pdf`);
-    await writeFile(filePath, pdf);
-    process.stdout.write(` ✓ (${pdf.length} B)\n`);
-    ok++;
-  } catch (err) {
-    process.stdout.write(` ✗ ERROR: ${(err as Error).message}\n`);
-    fail++;
-  }
-}
-
-console.log(`\nHotovo: ${ok} OK, ${fail} chyb`);
-console.log(`Výstupní složka: ${outputDir}`);
+        drawHeader(doc

@@ -1,8 +1,11 @@
-'use client';
+﻿'use client';
 
+import Link from 'next/link';
 import { useState, useMemo } from 'react';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
+import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
+import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
 
@@ -28,7 +31,7 @@ type NdaFormData = {
   nonCompeteScope: string;
   specialInfoCategories: string;
   notaryUpsell: boolean;
-  tier: 'basic' | 'professional' | 'complete';
+  tier: 'basic' | 'complete';
   disputeResolution: 'court' | 'mediation' | 'arbitration';
 };
 
@@ -94,6 +97,8 @@ export default function NdaBuilderPage() {
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [gdprConsent, setGdprConsent] = useState(false);
+  const [withdrawalConsent, setWithdrawalConsent] = useState(false);
+  const [withdrawalError, setWithdrawalError] = useState(false);
 
   const set = (field: keyof NdaFormData, value: string | boolean) =>
     setFormData((p) => ({ ...p, [field]: value }));
@@ -149,6 +154,10 @@ export default function NdaBuilderPage() {
       alert('Vyplňte prosím popis důvěrných informací.');
       return;
     }
+        if (!withdrawalConsent) {
+      setWithdrawalError(true);
+      return;
+    }
     if (!gdprConsent) {
       alert('Pro pokračování je nutný souhlas se zpracováním osobních údajů.');
       return;
@@ -182,20 +191,20 @@ export default function NdaBuilderPage() {
 
       <header className="relative z-10 border-b border-white/5 bg-[#05080f]/80 backdrop-blur-sm sticky top-0">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <a href="/" className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3">
             <div className="w-9 h-9 bg-amber-500 rounded-xl flex items-center justify-center text-xs font-black text-black">SH</div>
             <div>
               <div className="font-black text-white text-sm">SmlouvaHned</div>
               <div className="text-[10px] uppercase tracking-widest text-slate-500">Legal document builder</div>
             </div>
-          </a>
+          </Link>
           <div className="hidden md:flex items-center gap-4 text-xs text-slate-400">
             <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />Platba zabezpečena Stripe</span>
             <span>•</span>
             <span>§ 1746 odst. 2 občanského zákoníku</span>
           </div>
           <span className="text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-full px-3 py-1">
-            {formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '399 Kč' : '249 Kč'}
+            {formData.tier === 'complete' ? '199 Kč' : '99 Kč'}
           </span>
         </div>
       </header>
@@ -208,7 +217,7 @@ export default function NdaBuilderPage() {
         benefits={[
           { icon: '🔐', text: 'Chrání obchodní tajemství, technická řešení i klientská data' },
           { icon: '⚖️', text: 'Sestaveno dle § 1746 OZ a § 504 OZ (obchodní tajemství)' },
-          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
+          { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
           { icon: '🔒', text: 'Pokrývá jednostranné i vzájemné NDA, zákaz konkurence' },
         ]}
         contents={[
@@ -278,19 +287,19 @@ export default function NdaBuilderPage() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label className={labelClass}>Jméno / název *</label>
-                    <input value={formData.disclosingName} onChange={e => set('disclosingName', e.target.value)} placeholder="Acme s.r.o." className={inputClass} />
+                    <input value={formData.disclosingName} onChange={e => set('disclosingName', e.target.value)} placeholder="Acme s.r.o." aria-label="Jméno / název *" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>IČO / rodné číslo</label>
-                    <input value={formData.disclosingId} onChange={e => set('disclosingId', e.target.value)} placeholder="12345678" className={inputClass} />
+                    <input value={formData.disclosingId} onChange={e => set('disclosingId', e.target.value)} placeholder="12345678" aria-label="IČO / rodné číslo" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>Sídlo / adresa</label>
-                    <input value={formData.disclosingAddress} onChange={e => set('disclosingAddress', e.target.value)} placeholder="Václavské nám. 1, Praha 1" className={inputClass} />
+                    <input value={formData.disclosingAddress} onChange={e => set('disclosingAddress', e.target.value)} placeholder="Václavské nám. 1, Praha 1" aria-label="Sídlo / adresa" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>E-mail</label>
-                    <input type="email" value={formData.disclosingEmail} onChange={e => set('disclosingEmail', e.target.value)} placeholder="kontakt@acme.cz" className={inputClass} />
+                    <input type="email" value={formData.disclosingEmail} onChange={e => set('disclosingEmail', e.target.value)} placeholder="kontakt@acme.cz" aria-label="E-mail" className={inputClass} />
                   </div>
                 </div>
               </section>
@@ -301,19 +310,19 @@ export default function NdaBuilderPage() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label className={labelClass}>Jméno / název *</label>
-                    <input value={formData.receivingName} onChange={e => set('receivingName', e.target.value)} placeholder="Jan Novák" className={inputClass} />
+                    <input value={formData.receivingName} onChange={e => set('receivingName', e.target.value)} placeholder="Jan Novák" aria-label="Jméno / název *" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>IČO / rodné číslo</label>
-                    <input value={formData.receivingId} onChange={e => set('receivingId', e.target.value)} placeholder="850101/1234" className={inputClass} />
+                    <input value={formData.receivingId} onChange={e => set('receivingId', e.target.value)} placeholder="850101/1234" aria-label="IČO / rodné číslo" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>Sídlo / adresa</label>
-                    <input value={formData.receivingAddress} onChange={e => set('receivingAddress', e.target.value)} placeholder="Dlouhá 5, Brno" className={inputClass} />
+                    <input value={formData.receivingAddress} onChange={e => set('receivingAddress', e.target.value)} placeholder="Dlouhá 5, Brno" aria-label="Sídlo / adresa" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>E-mail</label>
-                    <input type="email" value={formData.receivingEmail} onChange={e => set('receivingEmail', e.target.value)} placeholder="jan.novak@email.cz" className={inputClass} />
+                    <input type="email" value={formData.receivingEmail} onChange={e => set('receivingEmail', e.target.value)} placeholder="jan.novak@email.cz" aria-label="E-mail" className={inputClass} />
                   </div>
                 </div>
               </section>
@@ -326,6 +335,7 @@ export default function NdaBuilderPage() {
                     <label className={labelClass}>Popis důvěrných informací *</label>
                     <textarea value={formData.confidentialInfoDesc} onChange={e => set('confidentialInfoDesc', e.target.value)}
                       placeholder="Obchodní strategie, cenové kalkulace, zdrojové kódy, databáze zákazníků, výrobní postupy…"
+                      aria-label="Obchodní strategie, cenové kalkulace, zdrojové kódy, databáze zákazníků, výrobní postupy…"
                       className={textareaClass} />
                     <p className="text-xs text-slate-500 mt-1">Čím přesnější popis, tím silnější ochrana v případě sporu.</p>
                   </div>
@@ -333,6 +343,7 @@ export default function NdaBuilderPage() {
                     <label className={labelClass}>Účel sdílení informací</label>
                     <textarea value={formData.purposeOfDisclosure} onChange={e => set('purposeOfDisclosure', e.target.value)}
                       placeholder="Hodnocení potenciální obchodní spolupráce / vývoj softwarového produktu / due diligence…"
+                      aria-label="Hodnocení potenciální obchodní spolupráce / vývoj softwarového produktu / due diligence…"
                       className={textareaClass} />
                   </div>
                   <div>
@@ -349,15 +360,15 @@ export default function NdaBuilderPage() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label className={labelClass}>Doba trvání NDA</label>
-                    <input value={formData.ndaDuration} onChange={e => set('ndaDuration', e.target.value)} placeholder="3 let" className={inputClass} />
+                    <input value={formData.ndaDuration} onChange={e => set('ndaDuration', e.target.value)} placeholder="3 let" aria-label="Doba trvání NDA" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>Důvěrnost po ukončení</label>
-                    <input value={formData.confidentialityAfterTermination} onChange={e => set('confidentialityAfterTermination', e.target.value)} placeholder="5 let" className={inputClass} />
+                    <input value={formData.confidentialityAfterTermination} onChange={e => set('confidentialityAfterTermination', e.target.value)} placeholder="5 let" aria-label="Důvěrnost po ukončení" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>Smluvní pokuta (Kč)</label>
-                    <input type="number" value={formData.penaltyAmount} onChange={e => set('penaltyAmount', e.target.value)} placeholder="100 000" className={inputClass} />
+                    <input type="number" value={formData.penaltyAmount} onChange={e => set('penaltyAmount', e.target.value)} placeholder="100 000" aria-label="Smluvní pokuta (Kč)" className={inputClass} />
                     <p className="text-xs text-slate-500 mt-1">Min. 50 000 Kč pro reálnou odstrašující hodnotu.</p>
                   </div>
                 </div>
@@ -371,7 +382,7 @@ export default function NdaBuilderPage() {
                   {formData.nonSolicitation && (
                     <div className="ml-7">
                       <label className={labelClass}>Délka zákazu přetahování</label>
-                      <input value={formData.nonSolicitationPeriod} onChange={e => set('nonSolicitationPeriod', e.target.value)} placeholder="12 měsíců" className={inputClass} />
+                      <input value={formData.nonSolicitationPeriod} onChange={e => set('nonSolicitationPeriod', e.target.value)} placeholder="12 měsíců" aria-label="Délka zákazu přetahování" className={inputClass} />
                     </div>
                   )}
                   <Toggle checked={formData.nonCompete} onChange={v => set('nonCompete', v)} label="Zákaz konkurence" />
@@ -379,11 +390,11 @@ export default function NdaBuilderPage() {
                     <div className="ml-7 space-y-3">
                       <div>
                         <label className={labelClass}>Délka zákazu konkurence</label>
-                        <input value={formData.nonCompetePeriod} onChange={e => set('nonCompetePeriod', e.target.value)} placeholder="24 měsíců" className={inputClass} />
+                        <input value={formData.nonCompetePeriod} onChange={e => set('nonCompetePeriod', e.target.value)} placeholder="24 měsíců" aria-label="Délka zákazu konkurence" className={inputClass} />
                       </div>
                       <div>
                         <label className={labelClass}>Rozsah / odvětví</label>
-                        <input value={formData.nonCompeteScope} onChange={e => set('nonCompeteScope', e.target.value)} placeholder="Vývoj CRM softwaru pro pojišťovny v ČR" className={inputClass} />
+                        <input value={formData.nonCompeteScope} onChange={e => set('nonCompeteScope', e.target.value)} placeholder="Vývoj CRM softwaru pro pojišťovny v ČR" aria-label="Rozsah / odvětví" className={inputClass} />
                       </div>
                     </div>
                   )}
@@ -394,7 +405,7 @@ export default function NdaBuilderPage() {
               <section className={cardClass}>
                 <div className="mb-4">
                   <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
-                  <select className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
+                  <select aria-label="Obecný soud (výchozí)" className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
                     <option value="court">Obecný soud (výchozí)</option>
                     <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                     <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
@@ -402,48 +413,16 @@ export default function NdaBuilderPage() {
                 </div>
               </section>
 
-              {/* 07 Výběr balíčku */}
+              {/* 07 Vyberte úroveň zpracování dokumentu */}
               <section className={cardClass}>
-                <SectionTitle index="07" title="Výběr balíčku" subtitle="Zvolte úroveň ochrany odpovídající hodnotě sdílených informací." />
-                <div className="space-y-3">
-                  {([
-                    { value: 'basic', label: 'Základní dokument', price: '249 Kč', desc: 'Profesionální NDA dle OZ + obchodní tajemství v PDF.' },
-                    { value: 'professional', label: 'Rozšířený dokument', price: '399 Kč', desc: 'Rozšířené klauzule, smluvní pokuty, odpovědnostní doložky.', recommended: true },
-                    { value: 'complete', label: 'Kompletní balíček', price: '749 Kč', desc: 'Vše z Rozšířeného dokumentu + instrukce k podpisu, checklist a 30denní archivace.' },
-                  ] as const).map((opt) => (
-                    <label key={opt.value} className={`block rounded-2xl border-2 p-4 cursor-pointer transition relative ${formData.tier === opt.value ? 'border-amber-500 bg-amber-500/10' : 'border-slate-700/60 bg-[#0c1426]/60 hover:border-slate-600'}`}>
-                      {('recommended' in opt) &&  formData.tier !== 'professional' && (
-                        <div className="absolute -top-2.5 left-4"><span className="rounded-full bg-amber-500 px-3 py-0.5 text-[10px] font-black uppercase tracking-widest text-black">Doporučeno</span></div>
-                      )}
-                      <div className="flex items-start gap-3">
-                        <input type="radio" name="tier" value={opt.value} checked={formData.tier === opt.value}
-                          onChange={(e) => setFormData((prev) => ({ ...prev, tier: e.target.value as 'basic' | 'professional' | 'complete', notaryUpsell: e.target.value !== 'basic' }))}
-                          className="mt-1 h-5 w-5 accent-amber-500" />
-                        <div className="flex-1">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-black uppercase tracking-wide text-amber-400">{opt.label}</span>
-                            <span className="text-sm font-black text-white">{opt.price}</span>
-                          </div>
-                          <div className="mt-1 text-xs leading-relaxed text-slate-400">{opt.desc}</div>
-                          {opt.value === 'professional' && (
-                            <div className="mt-2 flex flex-wrap gap-2">
-                              {['Smluvní pokuty', 'Sankce za prodlení', 'Odpovědnostní doložky'].map(t => (
-                                <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
-                              ))}
-                            </div>
-                          )}
-                          {opt.value === 'complete' && (
-                            <div className="mt-2 flex flex-wrap gap-2">
-                              {['Instrukce k podpisu', 'Checklist', '30denní archivace'].map(t => (
-                                <span key={t} className="text-[10px] font-bold text-amber-500/80 bg-amber-500/10 px-2 py-0.5 rounded-full">{t}</span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </label>
-                  ))}
-                </div>
+                <SectionTitle index="07" title="Vyberte úroveň zpracování dokumentu" subtitle="Zvolte úroveň ochrany odpovídající hodnotě sdílených informací." />
+                <BuilderTierSelector
+                  contractType="nda"
+                  tier={formData.tier}
+                  onTierChange={(tier) =>
+                    setFormData((prev) => ({ ...prev, tier, notaryUpsell: tier !== 'basic' }))
+                  }
+                />
               </section>
             </div>
 
@@ -478,35 +457,12 @@ export default function NdaBuilderPage() {
 
             {/* Payment card */}
             <div className={cardClass}>
-              <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">Shrnutí objednávky</div>
-              <div className="space-y-2 text-sm mb-5">
-                <div className="flex justify-between">
-                  <span className="text-slate-400">NDA smlouva</span>
-                  <span className="font-bold text-white">249 Kč</span>
-                </div>
-                {formData.tier !== 'basic' && (
-                  <div className="flex justify-between">
-                    <span className="text-slate-400">{formData.tier === 'complete' ? 'Kompletní balíček' : 'Rozšířený dokument'}</span>
-                    <span className="font-bold text-amber-400">{formData.tier === 'complete' ? '+500 Kč' : '+200 Kč'}</span>
-                  </div>
-                )}
-                <div className="border-t border-white/8 pt-2 flex justify-between font-black text-lg">
-                  <span>Celkem</span>
-                  <span className="text-white">{formData.tier === 'complete' ? '749' : formData.tier === 'professional' ? '399' : '249'} Kč</span>
-                </div>
-              </div>
-
-              {/* Trust block */}
-              <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3">
-                <div className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">Součástí výstupu je</div>
-                <ul className="space-y-1.5">
-                  {['Profesionálně strukturované PDF', 'Připraveno k okamžitému stažení', 'Přehledné uspořádání smluvních ustanovení'].map(item => (
-                    <li key={item} className="flex items-start gap-2 text-xs text-slate-400">
-                      <span className="text-amber-500 mt-0.5">✓</span>{item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <BuilderCheckoutSummary
+                contractType="nda"
+                tier={formData.tier}
+                documentLabel="NDA smlouva"
+                onUpgrade={() => setFormData((prev) => ({ ...prev, tier: 'complete', notaryUpsell: true }))}
+              />
 
               {/* GDPR */}
               <label className="flex items-start gap-3 mb-5 cursor-pointer mt-5">
@@ -519,6 +475,31 @@ export default function NdaBuilderPage() {
                 </span>
               </label>
 
+                {/* § 1837 l) OZ — povinný souhlas s neodstoupením od smlouvy */}
+                <label className="flex items-start gap-3 mb-1 cursor-pointer group">
+                  <input
+                    type="checkbox"
+                    checked={withdrawalConsent}
+                    onChange={(e) => {
+                      setWithdrawalConsent(e.target.checked);
+                      if (e.target.checked) setWithdrawalError(false);
+                    }}
+                    className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
+                  />
+                  <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
+                    Beru na vědomí, že objednávám digitální obsah, který bude ihned zpřístupněn po zaplacení.
+                    Výslovně souhlasím s tím, že ztrácím právo na odstoupení od smlouvy ve lhůtě 14 dní dle{' '}
+                    <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">
+                      § 1837 písm. l) zákona č. 89/2012 Sb.
+                    </a>
+                  </span>
+                </label>
+                {withdrawalError && (
+                  <p className="mb-3 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-2 text-xs text-rose-300">
+                    Pro pokračování musíte souhlasit s podmínkami digitálního obsahu.
+                  </p>
+                )}
+
               <button
                 onClick={handleSubmit}
                 disabled={isProcessing || !gdprConsent}
@@ -530,16 +511,19 @@ export default function NdaBuilderPage() {
                     Přesměrování…
                   </span>
                 ) : (
-                  `Zaplatit ${formData.tier === 'complete' ? '749 Kč' : formData.tier === 'professional' ? '399 Kč' : '249 Kč'} a stáhnout PDF →`
+                  `Zaplatit ${formData.tier === 'complete' ? '199 Kč' : '99 Kč'} a stáhnout PDF →`
                 )}
               </button>
               <p className="text-center text-xs text-slate-600 mt-3">🔒 Platba přes Stripe · PDF ke stažení ihned</p>
             </div>
 
-            <a href="/" className="block text-center text-xs text-slate-600 hover:text-slate-400 transition">← Zpět na výběr smluv</a>
+            <Link href="/" className="block text-center text-xs text-slate-600 hover:text-slate-400 transition">← Zpět na výběr smluv</Link>
           </div>
         </div>
       </div>
     </main>
   );
 }
+
+
+

@@ -326,7 +326,7 @@ export default function KupniSmlouvaMovitaVecPage() {
         >
           Vytvořit kupní smlouvu →
         </Link>
-        <div className="mt-3 text-xs text-slate-600">Od 249 Kč · Dle § 2079 OZ · Platné pro 2026</div>
+        <div className="mt-3 text-xs text-slate-600">Od 99 Kč · Dle § 2079 OZ · Platné pro 2026</div>
       </div>
 
       {/* ── RELATED ─────────────────────────────── */}

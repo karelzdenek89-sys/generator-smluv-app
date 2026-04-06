@@ -1,4 +1,4 @@
-export const SERVICE_DISCLAIMER =
+﻿export const SERVICE_DISCLAIMER =
   'SmlouvaHned je online nastroj pro sestaveni standardizovanych smluvnich dokumentu podle udaju zadanych uzivatelem. Nejde o individualni pravni poradenstvi ani o poskytovani advokatnich sluzeb. U slozitych, spornych nebo nestandardnich situaci doporucujeme konzultaci s advokatem.';
 
 export const SERVICE_DISCLAIMER_CZ =

@@ -4,7 +4,7 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Smlouva o poskytování služeb online 2026 | SmlouvaHned',
   description:
-    'Smlouva o poskytování služeb pro freelancery a agentury. SLA, IP práva, mlčenlivost, smluvní pokuty. Dle § 1746 OZ 2026. Od 249 Kč.',
+    'Smlouva o poskytování služeb pro freelancery a agentury. SLA, IP práva, mlčenlivost, smluvní pokuty. Dle § 1746 OZ 2026. Od 99 Kč.',
   keywords: [
     'smlouva o poskytování služeb',
     'smlouva o službách vzor 2026',
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://smlouvahned.cz/smlouva-o-sluzbach' },
   openGraph: {
     title: 'Smlouva o poskytování služeb online 2026 | SmlouvaHned',
-    description: 'Smlouva o poskytování služeb pro freelancery a agentury. SLA, IP práva, mlčenlivost. § 1746 OZ. Od 249 Kč.',
+    description: 'Smlouva o poskytování služeb pro freelancery a agentury. SLA, IP práva, mlčenlivost. § 1746 OZ. Od 99 Kč.',
     url: 'https://smlouvahned.cz/smlouva-o-sluzbach',
   },
 };
@@ -87,7 +87,7 @@ export default function SmlouvaOSluzbach() {
               Vytvořit smlouvu →
             </Link>
           </div>
-          <div className="text-sm text-slate-500">Od 249 Kč · PDF ihned · Dle § 1746 OZ</div>
+          <div className="text-sm text-slate-500">Od 99 Kč · PDF ihned · Dle § 1746 OZ</div>
         </div>
 
         <section className="mb-12 rounded-3xl border border-white/8 bg-[#0c1426] p-8">
@@ -159,7 +159,7 @@ export default function SmlouvaOSluzbach() {
               Vytvořit smlouvu →
             </Link>
           </div>
-          <div className="mt-3 text-xs text-slate-600">Od 249 Kč · § 1746 OZ · PDF ihned</div>
+          <div className="mt-3 text-xs text-slate-600">Od 99 Kč · § 1746 OZ · PDF ihned</div>
         </section>
 
         <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">
