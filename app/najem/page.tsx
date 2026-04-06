@@ -849,7 +849,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
               />
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label className="mb-2 block text-xs uppercase tracking-widest text-slate-500">
+                  <label className="block text-xs font-bold uppercase tracking-[0.12em] text-slate-400 mb-1.5">
                     Začátek nájmu
                   </label>
                   <input
@@ -861,7 +861,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   />
                 </div>
                 <div>
-                  <label className="mb-2 block text-xs uppercase tracking-widest text-slate-500">
+                  <label className="block text-xs font-bold uppercase tracking-[0.12em] text-slate-400 mb-1.5">
                     Předání bytu
                   </label>
                   <input
@@ -1106,7 +1106,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
             <section className={cardClass}>
               <div className="mb-2">
                 <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
-                <select className="w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none focus:border-amber-500/60 transition" name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
+                <select className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
                   <option value="court">Obecný soud (výchozí)</option>
                   <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                   <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
