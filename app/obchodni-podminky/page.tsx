@@ -8,7 +8,7 @@ import {
 
 export const metadata: Metadata = {
   title: 'Obchodní podmínky | SmlouvaHned',
-  description: 'Obchodní podmínky platné pro využívání automatizované platformy SmlouvaHned.cz pro generování právních dokumentů.',
+  description: 'Obchodní podmínky platné pro využívání automatizované platformy SmlouvaHned.cz pro tvorbu standardizovaných smluvních dokumentů.',
 };
 
 export default function TermsPage() {
@@ -32,16 +32,11 @@ export default function TermsPage() {
 
         <div className="space-y-10 text-sm leading-relaxed">
 
-          <section className="bg-[#0c1426]/60 border border-rose-500/20 p-6 rounded-[24px]">
-            <div className="flex items-start gap-3">
-              <span className="text-2xl">⚖️</span>
-              <div>
-                <div className="font-black text-white text-sm mb-1">Důležité upozornění</div>
-                <p className="text-rose-200 text-xs leading-relaxed">
-                  Platforma SmlouvaHned.cz <strong>není advokátní kanceláří</strong> a neposkytuje právní služby ve smyslu zákona č. 85/1996 Sb., o advokacii. Provozovatelem je fyzická osoba — podnikatel Karel Zdeněk (IČO 23660295); platforma je automatizovaný software (SaaS) pro tvorbu standardizovaných smluvních dokumentů. U složitých, sporných nebo nestandardních případů doporučujeme konzultaci s advokátem.
-                </p>
-              </div>
-            </div>
+          <section className="bg-[#0c1426]/60 border border-white/8 p-6 rounded-[24px]">
+            <div className="text-[10px] font-black uppercase tracking-widest text-amber-400/80 mb-3">Charakter služby</div>
+            <p className="text-slate-300 text-sm leading-relaxed">
+              SmlouvaHned.cz je <strong className="text-white">automatizovaný softwarový nástroj</strong> (SaaS) pro tvorbu standardizovaných smluvních dokumentů. Provozovatelem je fyzická osoba — podnikatel Karel Zdeněk (IČO 23660295). Platforma není advokátní kanceláří a neposkytuje právní služby ve smyslu zákona č. 85/1996 Sb., o advokacii. Pro složité, sporné nebo nestandardní situace doporučujeme konzultaci s advokátem (seznam na <a href="https://www.cak.cz" target="_blank" rel="noopener" className="text-amber-400 hover:underline">cak.cz</a>).
+            </p>
           </section>
 
           <section>
@@ -98,8 +93,8 @@ export default function TermsPage() {
             <p className="mb-3">
               Platba probíhá prostřednictvím zabezpečené platební brány <strong className="text-white">Stripe</strong> (kartou). Ihned po potvrzení platby je Zákazníkovi zpřístupněn odkaz ke stažení dokumentu na stránce a zasílán na e-mail (pokud byl zadán).
             </p>
-            <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 text-amber-200 text-xs">
-              <strong>Odstoupení od smlouvy:</strong> Vzhledem k povaze digitálního obsahu doručovaného ihned po zaplacení zákazník výslovně souhlasí s tím, že <strong>nemá právo na odstoupení od smlouvy v 14denní lhůtě</strong> dle § 1837 písm. l) OZ, neboť plnění bylo na jeho žádost zahájeno a dokončeno před uplynutím lhůty.
+            <div className="bg-[#0c1426]/60 border border-white/8 rounded-xl p-4 text-slate-300 text-xs leading-relaxed">
+              <strong className="text-white">Digitální obsah a právo na odstoupení:</strong> Předmětem plnění je digitální obsah (vygenerovaný PDF dokument) doručovaný ihned po potvrzení platby. V souladu s § 1837 písm. l) OZ zákazník před dokončením objednávky výslovně potvrzuje, že souhlasí s okamžitým zahájením plnění, a bere na vědomí, že tím ztrácí právo na odstoupení od smlouvy ve lhůtě 14 dnů dle § 1829 OZ. Toto potvrzení je součástí souhlasu udělovaného při dokončení objednávky.
             </div>
           </section>
 

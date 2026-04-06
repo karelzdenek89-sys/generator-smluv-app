@@ -68,6 +68,8 @@ type CarSaleFormData = {
   hasThirdPartyRights: boolean;
   odometerGuaranteed: boolean;
   buyerInspectedVehicle: boolean;
+  testDriveCompleted: boolean;
+  mechanicInspectionOffered: boolean;
 
   notaryUpsell: boolean;
   tier: 'basic' | 'complete';
@@ -140,6 +142,8 @@ function CarSaleBuilderContent() {
     hasThirdPartyRights: false,
     odometerGuaranteed: true,
     buyerInspectedVehicle: true,
+    testDriveCompleted: false,
+    mechanicInspectionOffered: false,
 
     notaryUpsell: isVehiclePackage,
     tier: isVehiclePackage ? ('complete' as const) : ('basic' as const),
@@ -972,6 +976,18 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   checked={formData.buyerInspectedVehicle}
                   label="Kupující vozidlo prohlédl"
                   hint="Doporučená volba. Snižuje prostor pro pozdější námitky."
+                />
+                <ToggleCard
+                  name="testDriveCompleted"
+                  checked={formData.testDriveCompleted}
+                  label="Proběhla zkušební jízda"
+                  hint="Zkušební jízda proběhla před podpisem smlouvy. Uvede se v sekci prohlídky."
+                />
+                <ToggleCard
+                  name="mechanicInspectionOffered"
+                  checked={formData.mechanicInspectionOffered}
+                  label="Kupující měl možnost prověřit vozidlo mechanikem"
+                  hint="Prodávající umožnil nezávislou technickou prohlídku. Posiluje postavení při případném sporu o vady."
                 />
                 <ToggleCard
                   name="isPledged"

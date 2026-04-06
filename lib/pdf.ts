@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
 import { jsPDF } from 'jspdf';
 import { getContractMeta, buildContractSections, resolveTierFeatures, type StoredContractData, type ContractType } from './contracts';
 
@@ -72,6 +73,26 @@ const TIER_COLORS: Record<string, [number, number, number]> = {
 // ─────────────────────────────────────────────
 //  HELPERS
 // ─────────────────────────────────────────────
+
+function stableSerialize(value: unknown): string {
+  if (value === null || value === undefined) return '';
+  if (Array.isArray(value)) return `[${value.map(stableSerialize).join(',')}]`;
+  if (typeof value === 'object') {
+    const entries = Object.entries(value as Record<string, unknown>).sort(([a], [b]) => a.localeCompare(b));
+    return `{${entries.map(([k, v]) => `${k}:${stableSerialize(v)}`).join(',')}}`;
+  }
+  return String(value);
+}
+
+function buildDocumentTrace(data: StoredContractData): { docId: string; hash: string } {
+  const hash = createHash('sha256').update(stableSerialize(data)).digest('hex').toUpperCase();
+  const year = new Date().getFullYear();
+  const shortHash = hash.slice(0, 12);
+  return {
+    docId: `SH-${year}-${shortHash.slice(0, 8)}`,
+    hash: shortHash,
+  };
+}
 
 function getSignatureLabels(contractType: ContractType, data?: StoredContractData): [string, string] {
   switch (contractType) {
@@ -155,7 +176,7 @@ function drawHeader(doc: jsPDF, title: string, isFirstPage = false): void {
 //  FOOTER  (all pages, added in post-processing)
 // ─────────────────────────────────────────────
 
-function drawFooter(doc: jsPDF): void {
+function drawFooter(doc: jsPDF, docId?: string, hash?: string): void {
   const pageCount = doc.getNumberOfPages();
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
@@ -170,16 +191,22 @@ function drawFooter(doc: jsPDF): void {
     // thin separator line above footer
     doc.setDrawColor(RULE_R, RULE_G, RULE_B);
     doc.setLineWidth(0.2);
-    doc.line(margin, pageHeight - 13, pageWidth - margin, pageHeight - 13);
+    doc.line(margin, pageHeight - 16, pageWidth - margin, pageHeight - 16);
 
-    doc.text(`Strana ${i} z ${pageCount}`, pageWidth / 2, pageHeight - 7, { align: 'center' });
-    doc.text('SmlouvaHned.cz', margin, pageHeight - 7);
+    doc.text(docId ? `ID: ${docId}` : 'SmlouvaHned.cz', margin, pageHeight - 10);
+    doc.text(`Strana ${i} z ${pageCount}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
     doc.text(
       'Generováno ' + new Date().toLocaleDateString('cs-CZ'),
       pageWidth - margin,
-      pageHeight - 7,
+      pageHeight - 10,
       { align: 'right' },
     );
+
+    if (hash) {
+      doc.setFontSize(6.5);
+      doc.text(`Otisk dokumentu: ${hash}`, margin, pageHeight - 5);
+      doc.setFontSize(7.5);
+    }
     doc.setTextColor(0);
   }
 }
@@ -593,6 +620,37 @@ function drawSectionTitle(
   return y;
 }
 
+function drawEndOfTextMarker(doc: jsPDF, margin: number, y: number, contractTitle = ''): number {
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const contentWidth = pageWidth - margin * 2;
+
+  if (y > 245) {
+    doc.addPage();
+    drawHeader(doc, contractTitle, false);
+    y = 22;
+  }
+
+  y += 2;
+  doc.setDrawColor(RULE_R, RULE_G, RULE_B);
+  doc.setLineWidth(0.25);
+  doc.line(margin, y, pageWidth - margin, y);
+  y += 6;
+
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(8.5);
+  doc.setTextColor(MUTED_R, MUTED_G, MUTED_B);
+  doc.text('### KONEC TEXTU SMLOUVY ###', margin + contentWidth / 2, y, { align: 'center' });
+  y += 4;
+
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(7);
+  doc.setTextColor(MUTED_R, MUTED_G, MUTED_B);
+  doc.text('Za tímto označením již následuje pouze podpisová část a případné přílohy.', margin + contentWidth / 2, y, { align: 'center' });
+  doc.setTextColor(0);
+
+  return y + 6;
+}
+
 // ─────────────────────────────────────────────
 //  SIGNATURE SECTION RENDERER
 // ─────────────────────────────────────────────
@@ -683,10 +741,17 @@ function drawSignatureSection(
   doc.setTextColor(40, 40, 40);
   doc.text(labelLeft, leftX + lineWidth / 2, y, { align: 'center' });
   doc.text(labelRight, rightX + lineWidth / 2, y, { align: 'center' });
+  y += 7;
+
   doc.setFont('Roboto', 'normal');
+  doc.setFontSize(7.5);
+  doc.setTextColor(MUTED_R, MUTED_G, MUTED_B);
+  const digitalNote = 'Tento dokument byl vytvořen digitálně a je určen k vlastnoručnímu podpisu nebo k podpisu s využitím uznávaného elektronického podpisu.';
+  const noteLines = doc.splitTextToSize(digitalNote, pageWidth - margin * 2);
+  doc.text(noteLines, margin, y);
   doc.setTextColor(0);
 
-  return y + 12;
+  return y + noteLines.length * 4 + 6;
 }
 
 // ─────────────────────────────────────────────
@@ -794,7 +859,7 @@ function getPreSignChecklist(contractType: ContractType): string[] {
       'SPECIFICKY PRO NÁJEMNÍ SMLOUVU:',
       '☐  Přesná adresa a dispozice bytu odpovídají skutečnosti',
       '☐  Výše nájemného a záloh na služby je správná',
-      '☐  Výše jistoty (kauce) nepřesahuje šestinásobek měsíčního nájemného (zákonný max. dle § 2254 OZ)',
+      '☐  Výše jistoty a případných smluvních pokut nepřesahuje trojnásobek měsíčního nájemného (zákonný limit dle § 2254 OZ)',
       '☐  Je uveden způsob vyúčtování služeb',
       '☐  Předávací protokol je připraven k podpisu',
     ],
@@ -934,6 +999,7 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
   const [labelLeft, labelRight] = getSignatureLabels(data.contractType, data);
   const { hasPremiumClauses, hasCompletePages } = resolveTierFeatures(data);
   const tier = (data.tier as string) ?? (data.notaryUpsell ? 'professional' : 'basic');
+  const { docId, hash } = buildDocumentTrace(data);
 
   const doc = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
   await ensurePdfFonts(doc);
@@ -942,7 +1008,7 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
   const generatedDate = new Date().toLocaleDateString('cs-CZ');
   (doc as any).setProperties({
     title: meta.title,
-    subject: `Smlouva vygenerovaná na SmlouvaHned.cz – ${generatedDate}`,
+    subject: `Smlouva vygenerovaná na SmlouvaHned.cz – ${generatedDate} – ${docId}`, 
     author: 'SmlouvaHned.cz',
     keywords: `smlouva, ${data.contractType}, česká republika, ${tier}`,
     creator: 'SmlouvaHned.cz – online generátor smluv',
@@ -960,6 +1026,7 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
   y = drawSummaryBox(doc, data, data.contractType, y);
 
   let inProtocol = false;
+  let endOfTextDrawn = false;
 
   // ── TOC for professional / complete — two-pass for real page numbers ──
   if (hasPremiumClauses) {
@@ -997,6 +1064,10 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
 
     // PODPISY section
     if (isSignatureSection(section.title)) {
+      if (!endOfTextDrawn) {
+        y = drawEndOfTextMarker(doc, margin, y, meta.title);
+        endOfTextDrawn = true;
+      }
       y = drawSignatureSection(doc, section.title, labelLeft, labelRight, margin, y, meta.title);
       continue;
     }
@@ -1055,7 +1126,7 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
   }
 
   // ── Footer on all pages (post-processing) ──
-  drawFooter(doc);
+  drawFooter(doc, docId, hash);
 
   return Buffer.from(doc.output('arraybuffer'));
 }

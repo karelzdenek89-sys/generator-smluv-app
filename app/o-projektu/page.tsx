@@ -91,7 +91,7 @@ export default function OProjektuPage() {
               SmlouvaHned.cz je <strong className="text-white">softwarový nástroj kategorie „document automation"</strong> — interaktivní generátor smluvních dokumentů. Funguje tak, že uživatel vyplní formulář s konkrétními podmínkami a systém na základě těchto vstupů sestaví strukturovaný PDF dokument.
             </p>
             <p className="mt-3">
-              Šablony jsou postaveny na analýze textu příslušných zákonů — zejména zákona č. 89/2012 Sb. (občanský zákoník) a dalších relevantních předpisů. Každé pole v šabloně odpovídá konkrétní smluvní náležitosti. Povinné náležitosti jsou obsaženy vždy; nepovinná ujednání jsou ve formuláři označena.
+              Šablony jsou postaveny na analýze textu příslušných zákonů — zejména zákona č. 89/2012 Sb. (občanský zákoník) a dalších relevantních předpisů. Jsou sestaveny tak, aby zachytily standardní náležitosti pro daný typ dokumentu. Nepovinná nebo volitelná ujednání jsou ve formuláři odlišena.
             </p>
           </div>
 
@@ -101,13 +101,13 @@ export default function OProjektuPage() {
               Každý typ dokumentu prošel při tvorbě strukturální analýzou: jaké náležitosti zákon pro daný typ smlouvy vyžaduje, jaká ujednání jsou obvyklá v praxi a kde jsou nejčastější mezery v ručně přepisovaných vzorech. Výsledkem je modulární šablona — algoritmus sestavuje konkrétní dokument na základě toho, co uživatel do formuláře zadá.
             </p>
             <p className="mt-3">
-              Šablony jsou průběžně aktualizovány při legislativních změnách. Datum poslední revize je u každého generátoru zobrazeno.
+              Šablony jsou průběžně aktualizovány při legislativních změnách.
             </p>
           </div>
 
           <div>
             <h2 className="text-xl font-black text-white mb-3">Co SmlouvaHned.cz není</h2>
-            <div className="rounded-2xl border border-rose-500/20 bg-rose-500/5 p-6 space-y-3">
+            <div className="rounded-2xl border border-white/8 bg-[#0c1426]/60 p-6 space-y-3">
               {[
                 {
                   title: 'Není advokátní kanceláří',
@@ -123,7 +123,7 @@ export default function OProjektuPage() {
                 },
               ].map(item => (
                 <div key={item.title} className="flex items-start gap-3">
-                  <span className="text-rose-400 font-black mt-0.5 flex-shrink-0">✕</span>
+                  <span className="text-slate-500 font-black mt-0.5 flex-shrink-0">—</span>
                   <div>
                     <div className="font-bold text-white text-sm mb-1">{item.title}</div>
                     <p className="text-xs text-slate-400 leading-relaxed">{item.desc}</p>
@@ -184,7 +184,7 @@ export default function OProjektuPage() {
               <div>
                 <div className="font-black text-white text-sm mb-2">Sledujeme legislativní vývoj</div>
                 <p className="text-xs text-slate-400 leading-relaxed">
-                  Při relevantní změně zákona aktualizujeme dotčené šablony. Datum poslední revize každé šablony je zobrazeno v generátoru. Tento nástroj byl spuštěn pro českou legislativu platnou v roce 2026 a bude průběžně udržován.
+                  Při relevantní změně zákona aktualizujeme dotčené šablony. Tento nástroj byl připraven pro českou legislativu platnou v roce 2026 a je průběžně udržován.
                 </p>
               </div>
             </div>

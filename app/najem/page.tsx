@@ -60,6 +60,7 @@ type LeaseFormData = {
   inspectionAllowed: boolean;
   maxOccupants: string;
   businessUseAllowed: boolean;
+  includeInflationIndexation: boolean;
 
   notaryUpsell: boolean;
   tier: 'basic' | 'complete';
@@ -128,6 +129,7 @@ function LeaseBuilderContent() {
     inspectionAllowed: true,
     maxOccupants: '2',
     businessUseAllowed: false,
+    includeInflationIndexation: false,
 
     notaryUpsell: isLandlordPackage,
     tier: isLandlordPackage ? 'complete' : ('basic' as const),
@@ -365,6 +367,7 @@ Airbnb / krátkodobý podnájem: ${formData.allowAirbnb ? 'povoleno' : 'zakázá
 Přísnější pokuty: ${formData.strictPenalties ? 'ano' : 'ne'}
 Kontrola bytu: ${formData.inspectionAllowed ? 'ano' : 'ne'}
 Podnikání v bytě: ${formData.businessUseAllowed ? 'povoleno' : 'zakázáno'}
+Inflační doložka: ${formData.includeInflationIndexation ? 'ano (indexace dle ČSÚ)' : 'ne'}
 
 VI. PŘEDÁNÍ A VYBAVENÍ
 
@@ -1076,6 +1079,12 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   label="Povolit podnikání v bytě"
                   hint="Obvykle je lepší nechat byt pouze k bydlení."
                   danger={formData.businessUseAllowed}
+                />
+                <ToggleCard
+                  name="includeInflationIndexation"
+                  checked={formData.includeInflationIndexation}
+                  label="Inflační doložka (indexace nájemného)"
+                  hint="Nájemné se každoročně upraví podle indexu spotřebitelských cen ČSÚ. Alternativa k jednostrannému zvýšení dle § 2249 OZ."
                 />
               </div>
 

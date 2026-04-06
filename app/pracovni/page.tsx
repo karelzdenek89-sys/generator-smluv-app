@@ -17,6 +17,7 @@ type FormData = {
   workHours: string; workSchedule: string; breakMinutes: string; vacationWeeks: string;
   salary: string; salaryType: 'monthly' | 'hourly'; hourlyRate: string; payDay: string; bonusDesc: string;
   nonCompete: boolean; nonCompetePeriod: string; breachPenalty: string;
+  isManager: boolean;
   contractDate: string;
   notaryUpsell: boolean;
   tier: 'basic' | 'complete';
@@ -53,6 +54,7 @@ export default function PracovniPage() {
     workHours: '40', workSchedule: 'pondělí–pátek, 8:00–17:00', breakMinutes: '30', vacationWeeks: '4',
     salary: '', salaryType: 'monthly', hourlyRate: '', payDay: '15', bonusDesc: '',
     nonCompete: false, nonCompetePeriod: '12', breachPenalty: '50000',
+    isManager: false,
     contractDate: '', notaryUpsell: false,
     tier: 'basic' as const,
   });
@@ -75,7 +77,8 @@ export default function PracovniPage() {
     if (!form.startDate) { score -= 15; warnings.push({ text: 'Den nástupu je povinná náležitost § 34 ZP.', level: 'high' }); }
     if (!form.salary && !form.hourlyRate) { score -= 10; warnings.push({ text: 'Doporučujeme doplnit mzdu — zaměstnanec ji musí znát.', level: 'medium' }); }
     if (form.employmentType === 'fixed' && !form.endDate) { score -= 10; warnings.push({ text: 'Doplňte datum konce pro smlouvu na dobu určitou.', level: 'high' }); }
-    if (Number(form.trialPeriodMonths) > 3) { warnings.push({ text: 'Zákonné maximum zkušební doby je 3 měsíce (§ 35 ZP). U vedoucích zaměstnanců max. 6 měsíců.', level: 'high' }); }
+    const maxTrial = form.isManager ? 8 : 4;
+    if (Number(form.trialPeriodMonths) > maxTrial) { warnings.push({ text: `Zákonné maximum zkušební doby je ${maxTrial} měsíce (§ 35 ZP).${form.isManager ? '' : ' U vedoucích zaměstnanců max. 8 měsíců.'}`, level: 'high' }); }
     return { score: Math.max(0, score), warnings, label: score >= 85 ? 'Dobré nastavení' : score >= 65 ? 'Průměrná ochrana' : 'Doporučená doplnění' };
   }, [form]);
 
@@ -157,7 +160,7 @@ export default function PracovniPage() {
         ]}
         faq={[
           { q: 'Jaké jsou povinné náležitosti pracovní smlouvy?', a: 'Zákoník práce vyžaduje tři povinné náležitosti: druh práce, místo výkonu práce a den nástupu. Chybí-li některá z nich, smlouva není platná. Ostatní ujednání (mzda, pracovní doba, zkušební doba) jsou vhodná, ale zákon je přímo nevyžaduje v samotné smlouvě.' },
-          { q: 'Jak dlouhá může být zkušební doba?', a: 'U řadových zaměstnanců maximálně 3 měsíce, u vedoucích pracovníků maximálně 6 měsíců. Zkušební dobu lze sjednat nejpozději v den nástupu do práce.' },
+          { q: 'Jak dlouhá může být zkušební doba?', a: 'U řadových zaměstnanců maximálně 4 měsíce, u vedoucích zaměstnanců maximálně 8 měsíců (dle aktuálního znění § 35 zákoníku práce). Zkušební dobu lze sjednat nejpozději v den nástupu do práce.' },
           { q: 'Lze uzavřít pracovní smlouvu na dobu určitou?', a: 'Ano, ale zákon ji omezuje — maximálně 3 roky, přičemž smlouvu na dobu určitou lze opakovat nejvýše dvakrát. Poté musí být uzavřena smlouva na dobu neurčitou.' },
           { q: 'Musí být pracovní smlouva podepsána před nástupem?', a: 'Zákoník práce vyžaduje uzavření pracovní smlouvy před začátkem výkonu práce. Podpis smlouvy v den nástupu je přípustný.' },
           { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
@@ -231,12 +234,19 @@ export default function PracovniPage() {
                   <Field label="Datum nástupu *"><input className={inputClass} name="startDate" value={form.startDate} onChange={set} type="date" /></Field>
                   {form.employmentType === 'fixed' && <Field label="Datum konce *"><input className={inputClass} name="endDate" value={form.endDate} onChange={set} type="date" /></Field>}
                   <Field label="Zkušební doba (měsíce, 0 = bez)">
-                    <input className={inputClass} name="trialPeriodMonths" value={form.trialPeriodMonths} onChange={set} type="number" min="0" max="6" />
-                    {Number(form.trialPeriodMonths) > 3 && (
-                      <p className="mt-1.5 text-xs text-rose-400 font-medium">⚠ Zákonné maximum je 3 měsíce (§ 35 ZP); u vedoucích max. 6 měsíců.</p>
+                    <input className={inputClass} name="trialPeriodMonths" value={form.trialPeriodMonths} onChange={set} type="number" min="0" max="8" />
+                    {Number(form.trialPeriodMonths) > (form.isManager ? 8 : 4) && (
+                      <p className="mt-1.5 text-xs text-rose-400 font-medium">⚠ Zákonné maximum je {form.isManager ? '8' : '4'} měsíce (§ 35 ZP).</p>
                     )}
                   </Field>
                   <Field label="Výpovědní doba (měsíce)"><input className={inputClass} name="noticePeriod" value={form.noticePeriod} onChange={set} type="number" min="1" max="6" /></Field>
+                  <label className={`col-span-2 flex items-start gap-3 rounded-2xl border p-4 cursor-pointer transition ${form.isManager ? 'border-amber-500/70 bg-amber-500/10' : 'border-slate-700/80 bg-[#111c31]'}`}>
+                    <input type="checkbox" name="isManager" checked={form.isManager} onChange={set} className="mt-1 h-5 w-5 accent-amber-500" />
+                    <div>
+                      <div className="text-sm font-semibold text-white">Vedoucí zaměstnanec</div>
+                      <div className="mt-1 text-xs leading-relaxed text-slate-400">Vedoucí pracovní místo dle § 11 ZP. Zkušební doba může být až 8 měsíců (dle aktuálního znění § 35 ZP). Smlouva bude upravena pro vedoucího zaměstnance.</div>
+                    </div>
+                  </label>
                 </div>
               </section>
 

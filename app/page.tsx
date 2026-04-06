@@ -107,7 +107,7 @@ const pricingTiers = [
     price: '99 Kč',
     description: 'Standardní dokument pro přímočaré situace',
     features: [
-      'Všechna zákonná povinná ustanovení dle OZ',
+      'Struktura dle OZ č. 89/2012 Sb. a zákoníku práce',
       'Dokument sestaven dynamicky dle zadaných údajů',
       'PDF ke stažení ihned po platbě',
       'Aktualizováno pro českou legislativu 2026',
@@ -219,13 +219,13 @@ export default function Home() {
               <br />
               <span className="text-[#c9a852]">sestavené přesně</span>
               <br />
-              pro vaši situaci.
+              podle vašich údajů.
             </h1>
 
             <p className="mt-7 max-w-lg text-lg leading-relaxed text-slate-300">
               Vyplníte přehledný formulář — systém sestaví dokument podle vašich podmínek
-              a výsledkem je kompletní PDF připravené k podpisu, strukturované dle platného
-              občanského zákoníku.
+              a výsledkem je standardizované PDF připravené k podpisu, strukturované dle
+              občanského zákoníku č. 89/2012 Sb.
             </p>
 
             <div className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 text-base text-slate-400">
@@ -405,7 +405,7 @@ export default function Home() {
               <p className="text-sm leading-relaxed text-slate-400">
                 Šablony vycházejí z aktuálního znění{' '}
                 <span className="font-semibold text-slate-300">OZ č. 89/2012 Sb.</span>{' '}
-                a zákoníku práce ve znění k 1. 1. 2026. Každé ustanovení odpovídá konkrétnímu paragrafu.
+                a zákoníku práce ve znění k 1. 1. 2026. Šablony jsou strukturovány dle platné české legislativy.
               </p>
             </div>
           </div>
@@ -479,8 +479,8 @@ export default function Home() {
                 Váš dokument je na pár kliknutí
               </h2>
               <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-slate-400">
-                Formulář vyplníte za přibližně 5 minut. Výsledkem je právní dokument sestavený podle
-                vašich podmínek, připravený k podpisu — strukturovaný dle platné české legislativy.
+                Formulář vyplníte za přibližně 5 minut. Výsledkem je standardizovaný smluvní dokument sestavený
+                podle vašich podmínek, připravený k podpisu — strukturovaný dle platné české legislativy.
               </p>
               <a
                 href="#smlouvy"

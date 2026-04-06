@@ -238,7 +238,7 @@ export default function PracovniSmlouvaVzor2026Page() {
 
         <div className="mb-5 grid gap-3 sm:grid-cols-2">
           {[
-            { t: 'Délka zkušební doby', d: 'Max. 3 měsíce (zaměstnanec), max. 6 měsíců (vedoucí zaměstnanec). Kratší zkušební dobu lze sjednat — delší ne.' },
+            { t: 'Délka zkušební doby', d: 'Max. 4 měsíce (zaměstnanec), max. 8 měsíců (vedoucí zaměstnanec) — dle aktuálního znění § 35 zákoníku práce. Kratší zkušební dobu lze sjednat — delší ne.' },
             { t: 'Kdy musí být sjednána', d: 'Nejpozději v den nástupu do práce. Po nástupu ji nelze dodatečně sjednat ani prodloužit.' },
             { t: 'Nesmí přesáhnout polovinu doby', d: 'U pracovního poměru na dobu určitou nesmí zkušební doba přesáhnout polovinu sjednané doby trvání.' },
             { t: 'Prodloužení pro nemoc a překážky', d: 'Zkušební doba se prodlužuje o dny, kdy zaměstnanec nepracoval pro překážky v práci nebo čerpal dovolenou.' },
@@ -252,7 +252,7 @@ export default function PracovniSmlouvaVzor2026Page() {
 
         <div className="rounded-2xl border border-amber-500/15 bg-amber-500/5 p-5 text-sm text-slate-400 leading-relaxed">
           <strong className="text-amber-400">⚠ Časté pochybení:</strong> Zaměstnavatel omylem sjedná zkušební dobu
-          delší než 3 měsíce (nebo 6 pro vedoucí). Taková ujednání jsou neplatná — zkušební doba se automaticky
+          delší než 4 měsíce (nebo 8 pro vedoucí). Taková ujednání jsou neplatná — zkušební doba se automaticky
           zkrátí na zákonné maximum. Přitom zaměstnavatel počítá s delší dobou a může být překvapen, že
           zaměstnance nelze ve zkušební době propustit bez udání důvodu o týden déle.
         </div>

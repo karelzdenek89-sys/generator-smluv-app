@@ -275,8 +275,8 @@ function buildWorkContractSections(d: StoredContractData): ContractSection[] {
         : `Celková cena je splatná jednorázově do ${asText(d.finalPaymentDays, '14')} dnů od řádného předání díla bez vad a nedodělků, na základě faktury vystavené zhotovitelem.`;
 
   const ipClause = d.ipAssignment === 'full'
-    ? 'Veškerá práva duševního vlastnictví k vytvořenému dílu (včetně konceptů, návrhů, zdrojových kódů, dokumentace a všech ostatních výstupů) přecházejí na objednatele okamžikem vytvoření a úplného zaplacení ceny. Zhotovitel se vzdává všech autorských a průmyslových práv k dílu.'
-    : 'Zhotovitel si zachovává práva duševního vlastnictví k vytvorenému dílu a uděluje objednateli nevýhradní, časově neomezenou a teritoriálně neomezenou licenci k jeho užívání pro vlastní potřebu (§ 2358 OZ).';
+    ? 'Není-li povaha výsledku vylučující, poskytuje zhotovitel objednateli k vytvořenému dílu výhradní, časově, územně a množstevně neomezené oprávnění k jeho užití v plném rozsahu, a to okamžikem úplného zaplacení ceny. Je-li to vzhledem k povaze výstupu možné, zavazuje se zhotovitel převést na objednatele i převoditelná majetková práva k výsledku v rozsahu připouštěném právními předpisy.'
+    : 'Zhotovitel si zachovává práva duševního vlastnictví k vytvořenému dílu a uděluje objednateli nevýhradní, časově neomezenou a teritoriálně neomezenou licenci k jeho užívání pro vlastní potřebu (§ 2358 OZ).';
 
   const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
@@ -385,11 +385,12 @@ function buildWorkContractSections(d: StoredContractData): ContractSection[] {
       body: [
         'Tato smlouva se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů.',
         disputeClause(d),
+        'Tato smlouva představuje úplné ujednání o provedení díla a nahrazuje veškerá předchozí ujednání a přísliby týkající se rozsahu díla, ceny a harmonogramu.',
         'Smlouva je vyhotovena ve dvou stejnopisech; každá smluvní strana obdrží jedno.',
         'Změny smlouvy jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků.',
         'Neplatnost jednotlivého ustanovení smlouvy nemá vliv na platnost ostatních ustanovení.',
         'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. Osobní údaje jsou zpracovávány výhradně za účelem uzavření a plnění tohoto smluvního vztahu.',
-        'Žádná ze smluvních stran neodpovídá za nesplnění nepeněžitých povinností způsobené vyšší mocí (vis maior), tj. událostí mimořádnou, nepředvídatelnou a nepřekonatelnou (§ 2913 odst. 2 OZ). Vyšší moc se nevztahuje na povinnost zaplatit peněžitou částku. Strana postižená vyšší mocí je povinna neprodleně písemně informovat druhou stranu a po odpadnutí překážky neprodleně pokračovat v plnění.',
+        'Za vyšší moc se považuje i plošný výpadek kritické internetové infrastruktury nebo kybernetický útok vedený proti systémům smluvní strany, která prokáže, že měla přijata přiměřená organizační a technická bezpečnostní opatření. Vyšší moc se nevztahuje na povinnost zaplatit peněžitou částku. Strana postižená vyšší mocí je povinna neprodleně písemně informovat druhou stranu a po odpadnutí překážky neprodleně pokračovat v plnění.',
       ],
     },
   ];
@@ -435,7 +436,7 @@ function buildCarContractSections(d: StoredContractData): ContractSection[] {
     {
       title: 'VII. SMLUVNÍ POKUTY A ODPOVĚDNOST ZA ZATAJENÉ VADY',
       body: [
-        'Prodávající odpovídá kupujícímu za vady, které existovaly v době přechodu nebezpečí škody na kupujícího, i když se vada projeví až poté (§ 2161 a násl. OZ).',
+        'Prodávající odpovídá kupujícímu za vady, které měla věc při přechodu nebezpečí škody na kupujícího, i když se projeví až později; u spotřebitelských vztahů se použije i zvláštní právní úprava ochrany spotřebitele.',
         `Zatají-li prodávající vědomě vadu, na niž neupozornil, je povinen zaplatit kupujícímu smluvní pokutu ve výši ${formatAmount(d.hiddenDefectPenalty || 30000)} Kč. Zaplacením pokuty není dotčen nárok na náhradu škody ani právo z vad.`,
         `Smluvní pokuta za prodlení kupujícího s úhradou kupní ceny: ${asText(d.buyerLatePenalty, '0,05')} % z dlužné částky za každý den prodlení.`,
         `Smluvní pokuta za prodlení prodávajícího s předáním vozidla po sjednané lhůtě: ${formatAmount(d.sellerLatePenalty || 500)} Kč za každý den prodlení.`,
@@ -497,9 +498,15 @@ function buildCarContractSections(d: StoredContractData): ContractSection[] {
     {
       title: 'IV. TECHNICKÝ STAV, PROHLÁŠENÍ PRODÁVAJÍCÍHO A ZÁRUKY',
       body: [
-        d.buyerInspectedVehicle === false
-          ? 'Kupující bere na vědomí, že se neměl možnost v plném rozsahu seznámit s technickým stavem vozidla.'
-          : 'Kupující potvrzuje, že se před podpisem smlouvy řádně seznámil s technickým stavem vozidla, a vozidlo v tomto stavu přijímá.',
+        (() => {
+          if (d.buyerInspectedVehicle === false) {
+            return 'Kupující bere na vědomí, že se neměl možnost v plném rozsahu seznámit s technickým stavem vozidla před podpisem smlouvy; tato skutečnost byla při sjednání kupní ceny zohledněna.';
+          }
+          const details: string[] = ['Kupující potvrzuje, že se před podpisem smlouvy řádně seznámil s technickým stavem vozidla'];
+          if (d.testDriveCompleted) details.push('absolvoval zkušební jízdu');
+          if (d.mechanicInspectionOffered) details.push('měl možnost nechat vozidlo prověřit vlastním mechanikem nebo diagnostikou');
+          return details.join(', ') + '; vozidlo v tomto stavu přijímá (§ 2104 OZ).';
+        })(),
         `Prodávající prohlašuje, že mu jsou známy tyto vady a omezení vozidla: ${asText(d.knownDefects, 'Žádné zjevné vady nad rámec běžného opotřebení odpovídajícího stáří a najetým km')}.`,
         d.odometerGuaranteed === false
           ? 'Prodávající výslovně negarantuje správnost stavu tachometru.'
@@ -515,7 +522,7 @@ function buildCarContractSections(d: StoredContractData): ContractSection[] {
           : 'Prodávající prohlašuje, že na vozidlo NEVÁŽÍ žádná práva třetích osob.',
         d.strictWarranties
           ? 'Prodávající poskytuje smluvní záruku za jakost v délce 6 měsíců od předání. V záruční době odpovídá prodávající za vady, které existovaly v době přechodu nebezpečí škody.'
-          : 'Vozidlo je prodáváno ve stavu „jak stojí a leží" odpovídajícím jeho stáří a najetým km. Prodávající neposkytuje záruku za jakost nad zákonný rámec.',
+          : 'Vozidlo je prodáváno jako ojeté, ve stavu odpovídajícím jeho stáří, dosavadnímu užívání a najetým kilometrům. Prodávající neposkytuje smluvní záruku za jakost nad zákonný rámec a odpovídá pouze za vady v rozsahu stanoveném právními předpisy a touto smlouvou.',
       ],
     },
     {
@@ -573,47 +580,24 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
           : 'určitou do ____________';
 
   const monthlyTotal = (Number(d.rentAmount || 0) + Number(utilitiesAmount || 0)).toString();
+  const useInflationIndexation = hasPremiumClauses && (d.includeInflationIndexation === true || d.rentIndexationMode === 'cpi' || d.rentIndexationMode === 'inflation');
 
   const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
-      title: 'XI. SMLUVNÍ POKUTY A SANKCE',
+      title: 'XI. ROZŠÍŘENÁ PROVOZNÍ A DOKUMENTAČNÍ UJEDNÁNÍ',
       body: [
-        'Smluvní strany sjednávají následující smluvní pokuty (§ 2048 a násl. OZ):',
-        `a) Prodlení s platbou nájemného nebo záloh na služby: úrok z prodlení ve výši 0,1 % z dlužné částky za každý den prodlení, a to ode dne splatnosti do dne úhrady.`,
-        `b) Neoprávněný podnájem nebo přenechání bytu třetí osobě bez souhlasu pronajímatele: jednorázová smluvní pokuta ve výši 25 000 Kč splatná do 7 dnů od výzvy pronajímatele.`,
-        `c) Neoprávněné stavební úpravy nebo zásahy do bytu bez písemného souhlasu pronajímatele: smluvní pokuta ve výši 50 000 Kč a povinnost uvést byt do původního stavu na náklady nájemce.`,
-        `d) Prodlení s vyklizením bytu po skončení nájmu: smluvní pokuta ve výši dvojnásobku denního nájemného za každý den prodlení, a to nad rámec náhrady škody.`,
-        `e) Porušení zákazu kouření nebo chovu zvířat (bylo-li sjednáno): smluvní pokuta 5 000 Kč za každý prokázaný případ.`,
-        'Zaplacením smluvní pokuty nezaniká povinnost uhradit dlužné plnění ani právo na náhradu škody přesahující smluvní pokutu (§ 2050 OZ).',
+        'Smluvní strany se dohodly, že veškeré důležité provozní skutečnosti související s nájmem (závady, havárie, předání klíčů, změny počtu osob v domácnosti, plánované kontroly bytu, předávací termíny) budou primárně potvrzovány písemně, zejména e-mailem.',
+        'Při skončení nájmu bude o předání bytu vždy sepsán podrobný předávací protokol obsahující alespoň stav měřidel, počet předaných klíčů, soupis vybavení, zjevné vady a fotodokumentaci, pokud ji některá ze stran pořídí.',
+        'Vznikne-li mezi stranami spor o rozsah poškození bytu přesahujícího obvyklé opotřebení, zavazují se strany nejprve pokusit o smírné určení rozsahu škody, případně využít odborné posouzení přiměřeného rozsahu poškození.',
+        'Nájemce odpovídá za škodu způsobenou na bytě nebo společných částech domu osobami, kterým umožnil do bytu přístup, v rozsahu stanoveném právními předpisy.',
       ],
     },
     {
-      title: 'XII. EXEKUČNÍ OCHRANA PRONAJÍMATELE',
+      title: 'XII. ROZŠÍŘENÁ PRAVIDLA PŘI SKONČENÍ NÁJMU',
       body: [
-        'Nájemce výslovně souhlasí s tím, aby pohledávky pronajímatele vzniklé z tohoto nájemního vztahu — zejména dlužné nájemné, zálohy na služby, smluvní pokuty a náhrada škody — byly zajištěny notářským zápisem se svolením k přímé vykonatelnosti podle § 71b zákona č. 358/1992 Sb., notářský řád.',
-        'Nájemce se zavazuje uzavřít takový notářský zápis nejpozději do 30 dnů od podpisu této smlouvy, a to na výzvu pronajímatele. Odmítnutí uzavřít notářský zápis se považuje za podstatné porušení smlouvy opravňující pronajímatele k výpovědi bez výpovědní doby dle § 2291 OZ.',
-        'Pro případ prodlení nájemce s úhradou nájemného nebo zálohy na služby po dobu delší než 30 dnů se nájemce zavazuje, že pronajímatel je oprávněn přistoupit k zajištění pohledávky ze složené jistoty (kauce) bez předchozí soudní výzvy, a nájemce je povinen jistotu do 15 dnů doplnit na původní výši.',
-        `Pro případ, že nájemce nevyklidí byt po skončení nájmu ve lhůtě stanovené zákonem nebo dohodou, výslovně souhlasí s tím, že pronajímatel je oprávněn obrátit se s návrhem na nařízení exekuce přímo na soudního exekutora na základě notářského zápisu se svolením k vykonatelnosti, a to bez nutnosti předchozího soudního řízení (§ 40 odst. 1 písm. d) exekučního řádu, zákon č. 120/2001 Sb.).`,
-        'Nájemce prohlašuje, že si je vědom důsledků tohoto ustanovení, byl poučen o svých právech a podepisuje tuto smlouvu svobodně, vážně a bez nátlaku.',
-      ],
-    },
-    {
-      title: 'XIII. ZAJIŠŤOVACÍ MECHANISMY A ODPOVĚDNOST ZA ŠKODU',
-      body: [
-        'Nájemce odpovídá pronajímateli za škodu způsobenou na předmětu nájmu, na zařízení bytu, na společných částech domu i na majetku třetích osob, a to v souladu s § 2913 a násl. OZ. Způsobili-li škodu osoby, které nájemce vpustil do bytu (návštěvy, podnájemci, zhotovitelé nájemce), odpovídá za tuto škodu nájemce jako by ji způsobil sám.',
-        'Nad rámec zákonné odpovědnosti se nájemce zavazuje, že na vlastní náklady sjedná a po celou dobu trvání nájmu udržuje pojištění domácnosti zahrnující: (a) odpovědnost za škodu způsobenou třetím osobám při užívání bytu, a to s pojistným limitem min. 500 000 Kč, (b) pojištění věcí v bytě. Doklad o pojištění předloží nájemce na výzvu pronajímatele do 7 dnů.',
-        'Smluvní strany se dohodly, že při ukončení nájmu pronajímatel provede soupis škod přesahujících obvyklé opotřebení a předloží nájemci písemný přehled s vyčíslenou náhradou. Nájemce je povinen tuto náhradu uhradit do 14 dnů od doručení přehledu, jinak je pronajímatel oprávněn provést zápočet vůči složené jistotě.',
-        'Je-li výše škody sporná a přesahuje-li odhadovaná škoda 10 000 Kč, může pronajímatel navrhnout posouzení škody soudním znalcem. Náklady znalce nese ta strana, jejíž odhad výše škody se od znaleckého posudku odchýlil o více než 30 %. Nedohodnou-li se strany jinak, zálohu na znalce hradí pronajímatel jako navrhovatel.',
-      ],
-    },
-    {
-      title: 'XIV. NOTÁŘSKÝ ZÁPIS SE SVOLENÍM K VYKONATELNOSTI — POSTUP',
-      body: [
-        'Smluvní strany se výslovně dohodly, že bezprostředně po podpisu této smlouvy (nejpozději do 30 dnů) společně navštíví notáře za účelem sepsání notářského zápisu se svolením nájemce k přímé vykonatelnosti (§ 71b notářského řádu).',
-        'Notářský zápis bude obsahovat zejména: (a) identifikaci smluvních stran a předmětu nájmu, (b) výši nájemného a zálohy, (c) závazek nájemce vyklidit byt ke dni skončení nájmu, (d) souhlas nájemce s přímou vykonatelností pro případ nesplnění výše uvedených povinností.',
-        'Náklady notářského zápisu se svolením k vykonatelnosti nese pronajímatel.',
-        'Odmítne-li nájemce notářský zápis podepsat, je pronajímatel oprávněn od této smlouvy odstoupit nebo podat výpověď z nájmu dle § 2291 OZ bez výpovědní doby, a to písemným oznámením doručeným nájemci.',
-        'Notářský zápis se svolením k vykonatelnosti je nejsilnějším nástrojem ochrany pronajímatele v ČR — umožňuje vymáhat pohledávky a zajistit vyklizení bytu bez zdlouhavého soudního řízení (průměrně 3–6 měsíců oproti standardním 1–3 letům).',
+        'Nejméně 5 pracovních dnů před plánovaným skončením nájmu si smluvní strany potvrdí termín a orientační čas předání bytu, pokud tomu nebrání okolnosti hodné zvláštního zřetele.',
+        'Pronajímatel je povinen při vypořádání jistoty předložit nájemci srozumitelný písemný přehled započítávaných pohledávek, včetně jejich důvodu a výše, a je-li to možné i doložení podkladů.',
+        'Má-li být po skončení nájmu prováděna oprava nebo úklid na náklady nájemce, pronajímatel o tom nájemce bez zbytečného odkladu vyrozumí a umožní mu se k věci vyjádřit.',
       ],
     },
   ] : [];
@@ -677,7 +661,9 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
           ? `Specifikace zahrnutých služeb a záloh: ${asText(d.utilitiesIncludedText)}.`
           : 'Zálohy na služby zahrnují: vodné/stočné, teplo/TUV, společné prostory, odpad — dle skutečných nákladů správce/pronajímatele.',
         'Pronajímatel je povinen jedenkrát ročně provést vyúčtování skutečných nákladů na plnění spojená s užíváním a doručit je nájemci do 4 měsíců od skončení zúčtovacího období (§ 7 zákona č. 67/2013 Sb.).',
-        `Pronajímatel je oprávněn navrhnout zvýšení nájemného, a to nejdříve po uplynutí 12 měsíců od posledního zvýšení, nejvýše o ${asText(d.maxRentIncrease, '10')} % ročně. Návrh musí být nájemci doručen písemně. Nesouhlasí-li nájemce se zvýšením do 2 měsíců od doručení návrhu, je pronajímatel oprávněn se do 3 měsíců od uplynutí této lhůty domáhat určení výše nájemného u soudu (§ 2249 OZ).`,
+        useInflationIndexation
+          ? 'Smluvní strany sjednávají, že pronajímatel je oprávněn vždy k 1. dubnu kalendářního roku jednostranně zvýšit nájemné o míru inflace vyjádřenou přírůstkem průměrného ročního indexu spotřebitelských cen za předchozí kalendářní rok, vyhlášenou Českým statistickým úřadem. Oznámení o zvýšení nájemného musí být nájemci doručeno písemně nejpozději 30 dnů před první splatností takto zvýšeného nájemného.'
+          : 'Pronajímatel může nájemci písemně navrhnout zvýšení nájemného v souladu se zákonem, zejména s ohledem na obvyklé nájemné v místě a na omezení vyplývající z § 2249 OZ. Nedohodnou-li se strany na zvýšení nájemného, postupuje se podle příslušných ustanovení občanského zákoníku.',
         'Elektřina a plyn odebírané přímo nájemcem na základě vlastní smlouvy s dodavatelem nejsou součástí výše uvedených záloh na služby a hradí je nájemce samostatně.',
         'V případě prodlení nájemce s úhradou nájemného nebo zálohy na služby je pronajímatel oprávněn požadovat zákonný úrok z prodlení ve výši stanovené nařízením vlády č. 351/2013 Sb., a to ode dne splatnosti do dne úhrady.',
       ].filter(Boolean) as string[],
@@ -688,14 +674,14 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
         `Nájemce je povinen před převzetím bytu (nejpozději při podpisu smlouvy) složit pronajímateli peněžitou jistotu ve výši ${formatAmount(d.depositAmount)} Kč${(d.depositAmount && d.rentAmount && Number(d.rentAmount) > 0) ? ` (tj. ${Math.round(Number(d.depositAmount) / Number(d.rentAmount))}× měsíční nájemné)` : ''}.`,
         'Jistota slouží k zajištění pohledávek pronajímatele vzniklých z nájmu (dlužné nájemné a zálohy, náhrada škody, náklady nezbytné opravy či uvedení bytu do původního stavu, smluvní pokuty).',
         'Pronajímatel je povinen vrátit jistotu nebo její nevyčerpanou část nájemci nejpozději do 1 měsíce od skončení nájmu a vyklizení bytu, a to s úroky ve výši zákonné sazby (§ 2254 odst. 2 OZ), po odečtení prokázaných pohledávek pronajímatele.',
-        'Pronajímatel je oprávněn z jistoty odečíst pouze pohledávky, o nichž nájemce přijal nebo o nichž bylo pravomocně rozhodnuto. O provedeném zápočtu je pronajímatel povinen nájemce písemně informovat.',
+        'Pronajímatel je oprávněn z jistoty započíst své splatné a řádně specifikované pohledávky vzniklé z nájmu. O provedeném zápočtu je povinen nájemce bez zbytečného odkladu písemně vyrozumět a připojit přehled započtených položek.',
       ],
     },
     {
       title: 'VI. PRAVIDLA UŽÍVÁNÍ BYTU',
       body: [
-        d.maxOccupants ? `Maximální počet osob trvale užívajících byt je ${asText(d.maxOccupants)} (vč. nájemce). Nájemce je oprávněn přijmout do bytu dalšího člena své domácnosti; je povinen tuto skutečnost bez zbytečného odkladu písemně oznámit pronajímateli spolu se jménem a trvalým bydlištěm nové osoby (§ 2272 OZ). Souhlas pronajímatele se nevyžaduje pro osoby blízké ve smyslu § 22 OZ.` : '',
-        `Domácí zvířata: ${d.allowPets ? 'povolena, nájemce odpovídá za veškeré škody jimi způsobené' : 'zakázána bez předchozího písemného souhlasu pronajímatele'}.`,
+        d.maxOccupants ? `Maximální počet osob trvale užívajících byt je ${asText(d.maxOccupants)} (vč. nájemce). Nájemce je povinen bez zbytečného odkladu oznámit pronajímateli zvýšení počtu osob žijících v bytě; pronajímatel může požadovat pouze takový počet osob, který je přiměřený velikosti bytu a obvyklým hygienickým podmínkám.` : '',
+        `Domácí zvířata: ${d.allowPets ? 'chov zvířat je mezi stranami výslovně vzat na vědomí; nájemce odpovídá za veškeré škody a zvýšené náklady způsobené chovem' : 'nájemce je oprávněn chovat v bytě zvíře, pokud tím nepůsobí pronajímateli nebo ostatním obyvatelům domu obtíže nepřiměřené poměrům v domě; o chovu zvířete je povinen pronajímatele předem informovat'}.`,
         `Kouření v bytě a společných prostorách: ${d.allowSmoking ? 'povoleno' : 'zakázáno'}.`,
         `Krátkodobé ubytování třetích osob za úplatu prostřednictvím platforem (Airbnb, Booking.com apod.) se považuje za podnájem a je ${d.allowAirbnb ? 'sjednáno jako povolené; nájemce odpovídá za veškeré škody a je povinen splnit zákonné povinnosti provozovatele ubytování' : 'zakázáno bez předchozího písemného souhlasu pronajímatele'}.`,
         `Podnikatelská a pracovní činnost v bytě: ${d.businessUseAllowed ? 'povolena za podmínky, že nezvyšuje opotřebení bytu ani domu nad obvyklou míru a neobtěžuje ostatní obyvatele domu' : 'dovolena pouze tehdy, nezvyšuje-li opotřebení bytu ani domu nad obvyklou míru a neobtěžuje-li ostatní obyvatele; činnosti, které tato kritéria nesplňují, vyžadují předchozí písemný souhlas pronajímatele (§ 2255 OZ)'}.`,
@@ -706,7 +692,7 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
           ? 'Pronajímatel je oprávněn nájemci písemně vytknout závažné nebo opakované porušování povinností (zejm. narušování klidu, znečišťování společných prostor, poškozování nemovitosti) a vyzvat ho k nápravě. Neodstraní-li nájemce závadný stav, může pronajímatel dát výpověď z nájmu z důvodu hrubého porušování povinností (§ 2288 odst. 1 písm. a) OZ) nebo — dosahuje-li porušení zvlášť závažné intenzity poškozující pronajímatele nebo jiné obyvatele domu — výpověď bez výpovědní doby (§ 2291 OZ).'
           : '',
         'Nájemce je povinen: řádně udržovat byt a zařízení v provozuschopném stavu, bez zbytečného odkladu hlásit pronajímateli závady a havárie, umožnit nezbytné opravy, hradit drobné opravy a náklady spojené s běžnou údržbou (§ 2257 OZ), neprovádět stavební úpravy bez souhlasu pronajímatele.',
-        'Nájemce je oprávněn přenechat část bytu do podnájmu jiné osobě za podmínky, že v bytě sám trvale bydlí, a to po předchozím písemném souhlasu pronajímatele (§ 2274 OZ). Přenechat byt v celku do podnájmu bez souhlasu pronajímatele je zakázáno. Nájemce, který v bytě sám netrvale bydlí, nesmí přenechat žádnou jeho část třetí osobě bez souhlasu pronajímatele.',
+        'Nájemce je oprávněn přenechat část bytu do podnájmu jiné osobě, pokud v bytě sám trvale bydlí; o takovém podnájmu je povinen pronajímatele bez zbytečného odkladu informovat. Přenechat byt v celku nebo jeho část do podnájmu v případě, kdy nájemce v bytě sám trvale nebydlí, může jen s předchozím písemným souhlasem pronajímatele.',
         'Nájemci je doporučeno sjednat pojištění domácnosti zahrnující odpovědnost za škodu způsobenou třetím osobám při užívání bytu (min. limit 500 000 Kč). Doklad o pojištění předloží nájemce na výzvu pronajímatele do 7 dnů.',
       ].filter(Boolean) as string[],
     },
@@ -740,7 +726,7 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
       body: [
         'Nájemce je povinen neprodleně, nejpozději do 24 hodin, oznámit pronajímateli havárii nebo závadu, která by mohla způsobit škodu (únik vody, porucha topení, elektroinstalace apod.).',
         'Havárie je nájemce povinen zabezpečit v nezbytném rozsahu i bez předchozího souhlasu pronajímatele a neprodleně pronajímatele informovat.',
-        'Drobné opravy a náklady spojené s běžnou údržbou nese nájemce v rozsahu stanoveném nařízením vlády č. 308/2015 Sb. (jednotlivá oprava do 1 000 Kč, celkově max. 100 Kč/m²/rok).',
+        'Drobné opravy a náklady spojené s běžnou údržbou nese nájemce v rozsahu stanoveném aktuálním nařízením vlády; pro rok 2026 jde o jednotlivou opravu do 1 500 Kč a roční limit 150 Kč/m² podlahové plochy bytu.',
         'Větší opravy a rekonstrukce jsou povinností pronajímatele, pokud není dohodnuto jinak.',
       ],
     },
@@ -749,13 +735,13 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
       body: [
         `Písemnosti pronajímateli budou doručovány na adresu: ${asText(d.landlordAddress)}, případně na e-mail: ${asText(d.landlordEmail, 'neuvedeno')}.`,
         `Písemnosti nájemci budou doručovány na adresu pronajatého bytu: ${propertyAddress}, případně na e-mail: ${asText(d.tenantEmail, 'neuvedeno')}.`,
-        'Písemnost se považuje za doručenou: (a) osobním předáním, (b) dnem doručení doporučenou zásilkou, nebo (c) 3. dnem po odeslání e-mailu, nevykazuje-li automatická zpráva o nedoručení.',
-        'V případě, že adresát odmítne zásilku převzít nebo si ji nevyzvedne, má se za doručenou 10. dnem uložení u doručovatele.',
+        'Právní jednání směřující ke změně nebo ukončení nájmu se doručují osobně, doporučenou zásilkou, datovou schránkou nebo jiným prokazatelným způsobem. E-mail lze použít zejména pro běžnou provozní komunikaci a pro zasílání oznámení, pokud druhá strana takovou adresu sdělila a komunikaci tímto způsobem dlouhodobě používá.',
+        'Odmítne-li adresát zásilku převzít, považuje se za doručenou dnem odmítnutí. Nevyzvedne-li si uloženou zásilku ve lhůtě stanovené doručovatelem, považuje se za doručenou posledním dnem úložní doby, připouští-li to právní předpis a povaha doručované písemnosti.',
       ],
     },
     ...premiumContent,
     {
-      title: `${hasPremiumClauses ? 'XV' : 'XI'}. ZÁVĚREČNÁ USTANOVENÍ`,
+      title: `${hasPremiumClauses ? 'XIII' : 'XI'}. ZÁVĚREČNÁ USTANOVENÍ`,
       body: [
         'Tato smlouva se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů, a zákonem č. 67/2013 Sb. (vyúčtování služeb).',
         disputeClause(d),
@@ -771,7 +757,7 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
   ];
 
   sections.push({
-    title: `${hasPremiumClauses ? 'XVI' : 'XII'}. PODPISY`,
+    title: `${hasPremiumClauses ? 'XIV' : 'XII'}. PODPISY`,
     body: [],
   });
 
@@ -1057,6 +1043,7 @@ function buildNdaContractSections(d: StoredContractData): ContractSection[] {
       body: [
         'Smlouva se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů.',
         disputeClause(d),
+        'Tato smlouva představuje úplné ujednání o jejím předmětu a nahrazuje veškerá předchozí ujednání, prohlášení a přísliby týkající se důvěrných informací a jejich ochrany.',
         'Smlouva je vyhotovena ve dvou stejnopisech; každá strana obdrží jedno.',
         'Změny jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků.',
         'Je-li jakékoli ustanovení smlouvy neplatné nebo nevymahatelné, ostatní ustanovení zůstávají v plné platnosti a účinnosti.',
@@ -1100,8 +1087,8 @@ function buildGeneralSaleContractSections(d: StoredContractData): ContractSectio
   const warrantyClause = d.warrantyMonths && Number(d.warrantyMonths) > 0
     ? `Prodávající poskytuje kupujícímu smluvní záruku za jakost v délce ${asText(d.warrantyMonths)} měsíců ode dne předání, přesahující zákonný rámec. V záruční době odpovídá prodávající za to, že předmět prodeje bude mít vlastnosti sjednané touto smlouvou.`
     : d.buyerType === 'business'
-    ? 'Na předmět prodeje se vztahuje zákonná odpovědnost za vady dle § 2099 a násl. OZ. Právo z vadného plnění musí být uplatněno bez zbytečného odkladu po zjištění vady, nejpozději do 6 měsíců od převzetí (§ 2165 odst. 1 OZ — vztah B2B mezi podnikateli).'
-    : 'Na předmět prodeje se vztahuje zákonná odpovědnost za vady dle § 2161 a násl. OZ. Kupující — spotřebitel — je oprávněn uplatnit právo z vady do 24 měsíců od převzetí (§ 2165 odst. 1 OZ). Právo z vadného plnění musí být uplatněno bez zbytečného odkladu po zjištění vady.';
+    ? 'Na předmět prodeje se ve vztazích mezi podnikateli uplatní obecná úprava práv z vadného plnění podle § 2099 a násl. OZ; kupující je povinen věc prohlédnout co nejdříve po přechodu nebezpečí škody a zjištěné vady vytknout bez zbytečného odkladu.'
+    : 'Je-li kupující spotřebitelem, použije se vedle obecné úpravy i zvláštní právní úprava spotřebitelské koupě; kupující je oprávněn vytknout vadu, která se projeví do 24 měsíců od převzetí věci, bez dotčení povinnosti oznámit zjištěnou vadu bez zbytečného odkladu.';
 
   const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
@@ -1208,8 +1195,15 @@ function buildGeneralSaleContractSections(d: StoredContractData): ContractSectio
 // ─────────────────────────────────────────────
 function buildEmploymentContractSections(d: StoredContractData): ContractSection[] {
   const { hasPremiumClauses } = resolveTierFeatures(d);
-  const trialPeriodClause = d.trialPeriodMonths && Number(d.trialPeriodMonths) > 0
-    ? `Sjednává se zkušební doba v délce ${asText(d.trialPeriodMonths)} měsíce/měsíců ode dne vzniku pracovního poměru (§ 35 ZP). V průběhu zkušební doby může pracovní poměr zrušit kterákoliv ze stran kdykoli, a to i bez udání důvodu.`
+  const leadershipRole = /vedouc|ředitel|manager|director/i.test(String(d.jobTitle ?? '')) || Boolean(d.isManager || d.isExecutive || d.isLeader);
+  const requestedTrialMonths = Number(d.trialPeriodMonths || 0);
+  const maxTrialMonths = leadershipRole ? 8 : 4;
+  const effectiveTrialMonths = Number.isFinite(requestedTrialMonths) && requestedTrialMonths > 0
+    ? Math.min(requestedTrialMonths, maxTrialMonths)
+    : 0;
+
+  const trialPeriodClause = effectiveTrialMonths > 0
+    ? `Sjednává se zkušební doba v délce ${effectiveTrialMonths} měsíce/měsíců ode dne vzniku pracovního poměru (§ 35 ZP). U pracovního poměru na dobu určitou nesmí zkušební doba přesáhnout polovinu sjednané doby jeho trvání. V průběhu zkušební doby může pracovní poměr zrušit kterákoliv ze stran kdykoli, a to i bez udání důvodu.`
     : 'Zkušební doba se nesjednává.';
 
   const durationClause = d.employmentType === 'fixed'
@@ -1343,7 +1337,7 @@ function buildDppContractSections(d: StoredContractData): ContractSection[] {
     ? `Sjednaná odměna za provedení celého úkolu/práce činí ${formatAmount(d.totalRemuneration)} Kč. Odměna bude vyplacena po splnění sjednaného úkolu.`
     : 'Výše odměny bude stanovena dohodou smluvních stran před zahájením práce a bude uvedena v písemném dodatku k této dohodě.';
 
-  const taxNote = 'Odměna z dohody o provedení práce u jednoho zaměstnavatele nepodléhá odvodům na sociální a zdravotní pojištění, nepřesahuje-li v daném kalendářním měsíci 10 000 Kč (§ 75 ZP). Upozornění: má-li zaměstnanec souběžně dohody u více zaměstnavatelů a jeho celková odměna ze všech dohod v měsíci překročí 17 500 Kč (tj. 1/4 průměrné mzdy), mohou vzniknout odvody u všech zaměstnavatelů (zákon č. 349/2023 Sb., účinný od 1. 7. 2024). Zaměstnanec je povinen tuto skutečnost zaměstnavateli bez odkladu oznámit. Doporučujeme ověřit aktuální podmínky na webu ČSSZ (cssz.cz).';
+  const taxNote = 'Odměna z dohody o provedení práce nepodléhá odvodům na sociální a zdravotní pojištění, pokud u jednoho zaměstnavatele v kalendářním měsíci nepřesáhne zákonem stanovenou rozhodnou částku pro účast na pojištění. Při dosažení nebo překročení této částky vzniká účast na pojištění a související odvodové povinnosti. Zaměstnavatel současně vykazuje zaměstnance na DPP v pravidelném měsíčním hlášení; doporučujeme ověřit aktuální metodiku ČSSZ pro konkrétní období a způsob zúčtování příjmu.';
 
   const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
@@ -1463,7 +1457,7 @@ function buildServiceContractSections(d: StoredContractData): ContractSection[] 
     : 'Poskytovatel není plátcem DPH. Cena je konečná.';
 
   const basicIpClause = d.ipOwnership === 'client'
-    ? 'Veškerá práva duševního vlastnictví vzniklá v rámci poskytování služeb (foreground IP) přecházejí na objednatele okamžikem jejich vzniku a úplného zaplacení ceny. Poskytovatel se tímto vzdává práva dílo kdykoli odvolat. Objednatel je oprávněn dílo upravovat, šířit a používat bez omezení.'
+    ? 'Poskytovatel poskytuje objednateli k výstupům vytvořeným v rámci plnění této smlouvy výhradní, časově, územně a množstevně neomezené oprávnění k jejich užití, a to okamžikem úplného zaplacení ceny. Je-li to vzhledem k povaze výstupu možné, zavazuje se poskytovatel převést na objednatele i převoditelná majetková práva k výsledku v rozsahu připouštěném právními předpisy.'
     : 'Poskytovatel si zachovává veškerá práva duševního vlastnictví k vytvořeným výstupům; objednateli uděluje nevýhradní, časově neomezenou a teritoriálně neomezenou licenci k jejich využití pro vlastní potřebu (§ 2358 OZ).';
 
   const premiumContent: ContractSection[] = hasPremiumClauses ? [
@@ -1572,11 +1566,12 @@ function buildServiceContractSections(d: StoredContractData): ContractSection[] 
       body: [
         'Smlouva se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů.',
         disputeClause(d),
+        'Tato smlouva představuje úplné ujednání o poskytování služeb, ceně, výstupech a IP režimu a nahrazuje veškerá předchozí ujednání a přísliby stran v tomto rozsahu.',
         'Smlouva je vyhotovena ve dvou stejnopisech; každá strana obdrží jedno.',
         'Změny jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků.',
         'Neplatnost jednotlivého ustanovení smlouvy nemá vliv na platnost ostatních ustanovení.',
         'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. Osobní údaje jsou zpracovávány výhradně za účelem uzavření a plnění tohoto smluvního vztahu.',
-        'Žádná ze smluvních stran neodpovídá za nesplnění nepeněžitých povinností způsobené vyšší mocí (vis maior), tj. událostí mimořádnou, nepředvídatelnou a nepřekonatelnou (§ 2913 odst. 2 OZ). Vyšší moc se nevztahuje na povinnost zaplatit peněžitou částku. Strana postižená vyšší mocí je povinna neprodleně písemně informovat druhou stranu a po odpadnutí překážky neprodleně pokračovat v plnění.',
+        'Za vyšší moc se považuje i plošný výpadek kritické internetové infrastruktury nebo kybernetický útok vedený proti systémům smluvní strany, která prokáže, že měla přijata přiměřená organizační a technická bezpečnostní opatření. Vyšší moc se nevztahuje na povinnost zaplatit peněžitou částku. Strana postižená vyšší mocí je povinna neprodleně písemně informovat druhou stranu a po odpadnutí překážky neprodleně pokračovat v plnění.',
       ],
     },
   ];
@@ -1591,8 +1586,8 @@ function buildServiceContractSections(d: StoredContractData): ContractSection[] 
 function buildSubleaseContractSections(d: StoredContractData): ContractSection[] {
   const { hasPremiumClauses } = resolveTierFeatures(d);
   const consentNote = d.landlordConsent === 'yes'
-    ? `Souhlas pronajímatele (vlastníka) se subpronajatou věcí byl udělen písemně dne ${asText(d.consentDate, 'neuvedeno')} (§ 2274 OZ).`
-    : 'Upozornění: Podnájem bez souhlasu pronajímatele je v případě bytu zakázán (§ 2274 OZ). Nájemce prohlašuje, že souhlas si zajistí nebo jej již má.';
+    ? `Souhlas pronajímatele s podnájmem byl udělen písemně dne ${asText(d.consentDate, 'neuvedeno')}.`
+    : 'Upozornění: Vyžaduje-li konkrétní situace souhlas pronajímatele s podnájmem, je nájemce povinen si jej zajistit před uzavřením této smlouvy. U podnájmu části bytu se postup řídí zejména § 2274 a § 2275 OZ podle toho, zda nájemce v bytě sám trvale bydlí.';
 
   const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
@@ -1668,7 +1663,7 @@ function buildSubleaseContractSections(d: StoredContractData): ContractSection[]
         `Měsíční podnájemné je sjednáno ve výši ${formatAmount(d.rentAmount)} Kč.`,
         d.utilityAmount ? `Záloha na služby/energie: ${formatAmount(d.utilityAmount)} Kč/měsíc.` : '',
         `Celková měsíční platba: ${formatAmount((Number(d.rentAmount) || 0) + (Number(d.utilityAmount) || 0))} Kč.`,
-        d.depositAmount ? `Jistota (kauce): ${formatAmount(d.depositAmount)} Kč (max. trojnásobek měsíčního podnájemného dle § 2274 OZ). Nájemce je povinen jistotu vrátit do 30 dnů od skončení podnájmu a předání prostor, po odečtení prokázaných pohledávek.` : '',
+        d.depositAmount ? `Jistota (kauce): ${formatAmount(d.depositAmount)} Kč. Nájemce je povinen jistotu vrátit do 30 dnů od skončení podnájmu a předání prostor, po odečtení řádně specifikovaných a prokázaných pohledávek.` : '',
         `Podnájemné je splatné vždy do ${asText(d.paymentDay, '15')}. dne příslušného měsíce ${d.bankAccount ? `na bankovní účet nájemce č. ${asText(d.bankAccount)}` : 'v hotovosti nebo bankovním převodem'}.`,
         'V případě prodlení podnájemce s úhradou podnájemného nebo zálohy na služby je nájemce oprávněn požadovat zákonný úrok z prodlení ode dne splatnosti.',
       ].filter(Boolean) as string[],
@@ -1678,7 +1673,7 @@ function buildSubleaseContractSections(d: StoredContractData): ContractSection[]
       body: [
         'Podnájemce je povinen: užívat prostory pouze ke sjednanému účelu, udržovat pořádek, nečinit úpravy bez souhlasu nájemce, nepoškozovat majetek a řídit se domovním řádem.',
         `Maximální počet osob v bytě: ${asText(d.maxOccupants, '2')}`,
-        `Domácí zvířata: ${yesNo(d.allowPets, 'povolena', 'zakázána')}`,
+        `Domácí zvířata: ${d.allowPets ? 'jejich chov je mezi stranami vzat na vědomí; podnájemce odpovídá za škody a zvýšené náklady jimi způsobené' : 'podnájemce je oprávněn chovat zvíře jen tehdy, pokud tím nepůsobí nájemci, pronajímateli nebo ostatním obyvatelům domu nepřiměřené obtíže; o chovu zvířete je povinen nájemce předem informovat'}`,
         `Kouření: ${yesNo(d.allowSmoking, 'povoleno', 'zakázáno')}`,
         `Airbnb / krátkodobý přepodnájem: ${yesNo(d.allowAirbnb, 'povolen', 'zakázán')}`,
         'Podnájemce bere na vědomí podmínky hlavní nájemní smlouvy a zavazuje se je respektovat.',
@@ -1811,7 +1806,7 @@ function buildPowerOfAttorneyContractSections(d: StoredContractData): ContractSe
         'a) uděluje tuto plnou moc svobodně, vážně a bez donucení,',
         'b) je plně způsobilý k právnímu jednání,',
         'c) si je vědom rozsahu udělených oprávnění a jejich právních důsledků.',
-        hasPremiumClauses ? 'Pravost podpisu zmocnitele je ověřena notářem/Czech Pointem dle § 74 odst. 1 zákona č. 358/1992 Sb., notářský řád. Ověřená plná moc je uznávána všemi orgány veřejné moci, finančními institucemi a třetími stranami.' : '',
+        hasPremiumClauses ? 'Pravost podpisu zmocnitele je ověřena notářem nebo v systému Czech POINT. Úřední ověření podpisu významně zvyšuje použitelnost plné moci vůči třetím osobám; některé instituce však mohou i přesto vyžadovat vlastní formulář nebo splnění dalších podmínek podle zvláštních předpisů či interních pravidel.' : '',
         'd) zmocněnec je povinen jednat s péčí řádného hospodáře a v nejlepším zájmu zmocnitele; o každém právním jednání učiněném v rámci zmocnění je zmocněnec povinen zmocnitele bez zbytečného odkladu informovat.',
         'e) zmocnitel může tuto plnou moc kdykoli písemně odvolat; odvolání je účinné okamžikem, kdy se o něm zmocněnec dozví (§ 448 odst. 1 OZ). Zmocněnec je povinen po odvolání neprodleně vrátit originál plné moci zmocniteli.',
       ].filter(Boolean) as string[],
@@ -1823,7 +1818,7 @@ function buildPowerOfAttorneyContractSections(d: StoredContractData): ContractSe
       title: 'VI. ÚŘEDNÍ OVĚŘENÍ PODPISU A PRÁVNÍ ÚČINKY VŮČI TŘETÍM STRANÁM',
       body: [
         'Tato plná moc je opatřena úředně ověřeným podpisem zmocnitele (notářem nebo Czech Point / matrikou). Ověření podpisu je povinné zejména pro: právní jednání týkající se nemovitostí zapisovaných do katastru nemovitostí, zastupování v řízení před soudy a orgány státní správy, nakládání s bankovními účty a finanční aktiva třetích stran.',
-        'Ověřená plná moc je platná i vůči osobám a institucím, které nebyly přítomny jejímu udělení, a nelze ji odmítnout jako nedostatečnou, pokud splňuje zákonem stanovené náležitosti.',
+        'Úředně ověřená plná moc zpravidla zvyšuje její přijatelnost vůči třetím osobám; tím však nejsou dotčeny zvláštní požadavky konkrétních úřadů, soudů, bank nebo jiných institucí na formu zastoupení.',
         'Zmocnitel nese plnou odpovědnost za jednání zmocněnce učiněná v mezích udělené plné moci. Překročí-li zmocněnec rozsah zmocnění, je tento přesah závazný pouze tehdy, pokud jej zmocnitel dodatečně schválí (§ 440 OZ).',
         'Plná moc je sepsána ve dvou vyhotoveních: jedno obdrží zmocněnec jako průkazní listinu, druhé si ponechá zmocnitel.',
       ],
@@ -2053,11 +2048,12 @@ function buildCooperationContractSections(d: StoredContractData): ContractSectio
       body: [
         'Smlouva se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů.',
         disputeClause(d),
+        'Tato smlouva představuje úplné ujednání o spolupráci, rozdělení výnosů, rozhodování a IP režimu a nahrazuje veškerá předchozí ujednání stran v tomto rozsahu.',
         'Smlouva je vyhotovena ve dvou stejnopisech; každá strana obdrží jedno.',
         'Veškeré změny jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků.',
         'Je-li jakékoli ustanovení smlouvy neplatné nebo nevymahatelné, ostatní ustanovení zůstávají v plné platnosti a účinnosti.',
         'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. Osobní údaje jsou zpracovávány výhradně za účelem uzavření a plnění tohoto smluvního vztahu.',
-        'Žádná ze smluvních stran neodpovídá za nesplnění nepeněžitých povinností způsobené vyšší mocí (vis maior), tj. událostí mimořádnou, nepředvídatelnou a nepřekonatelnou (§ 2913 odst. 2 OZ). Vyšší moc se nevztahuje na povinnost zaplatit peněžitou částku. Strana postižená vyšší mocí je povinna neprodleně písemně informovat druhou stranu a po odpadnutí překážky neprodleně pokračovat v plnění.',
+        'Za vyšší moc se považuje i plošný výpadek kritické internetové infrastruktury nebo kybernetický útok vedený proti systémům smluvní strany, která prokáže, že měla přijata přiměřená organizační a technická bezpečnostní opatření. Vyšší moc se nevztahuje na povinnost zaplatit peněžitou částku. Strana postižená vyšší mocí je povinna neprodleně písemně informovat druhou stranu a po odpadnutí překážky neprodleně pokračovat v plnění.',
       ],
     },
   ];

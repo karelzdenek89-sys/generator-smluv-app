@@ -37,8 +37,7 @@ export default function GdprPage() {
             <div className="bg-white/3 border border-white/8 rounded-xl p-4 text-slate-300 space-y-1 text-sm">
               <p><strong className="text-white">SmlouvaHned</strong></p>
               <p>IČO: 23660295</p>
-              {/* PŘED SPUŠTĚNÍM: doplňte adresu sídla/místa podnikání */}
-              <p>Sídlo: <span className="text-amber-400">Plzeňská 189, 345 61 Staňkov</span></p>
+              <p>Místo podnikání: Plzeňská 189, 345 61 Staňkov</p>
               <p>Kontaktní e-mail: <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">info@smlouvahned.cz</a></p>
               <p>Web: smlouvahned.cz</p>
             </div>
@@ -55,7 +54,7 @@ export default function GdprPage() {
               <div className="border border-white/8 rounded-2xl p-5">
                 <div className="font-bold text-white mb-2">Údaje zadané do formuláře smlouvy</div>
                 <p className="text-slate-400 text-xs mb-2">Jména, adresy, data narození, čísla OP a IČO smluvních stran, které do formuláře zadáte vy sami.</p>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Účel:</span> Vygenerování právního dokumentu dle vašich zadaných dat.</div>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Účel:</span> Vygenerování standardizovaného smluvního dokumentu dle vašich zadaných dat.</div>
                 <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Právní základ:</span> Plnění smlouvy (čl. 6 odst. 1 písm. b) GDPR).</div>
                 <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> 7–30 dní od zaplacení podle zakoupeného balíčku (Základní dokument 7 dní, Rozšířený dokument 30 dní, Tematický balíček 30 dní), poté jsou automaticky smazána z dočasného úložiště.</div>
               </div>
