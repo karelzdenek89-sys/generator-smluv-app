@@ -488,13 +488,23 @@ function drawTableOfContents(
   docId: string,
   pageMap?: Map<string, number>,
   tocOffset = 0,
-): void {
-  doc.addPage();
+  startY?: number,
+): number {
   const pageWidth = doc.internal.pageSize.getWidth();
   const contentWidth = pageWidth - MARGIN * 2;
 
-  drawHeader(doc, title, false, docId);
-  let y = 22;
+  let y: number;
+  if (startY !== undefined) {
+    // Inline mode — continue on current page (cover page), no addPage
+    y = startY + 6;
+    doc.setDrawColor(RULE_R, RULE_G, RULE_B);
+    doc.setLineWidth(0.2);
+    doc.line(MARGIN, y - 3, MARGIN + contentWidth, y - 3);
+  } else {
+    doc.addPage();
+    drawHeader(doc, title, false, docId);
+    y = 22;
+  }
 
   doc.setFont('Roboto', 'bold');
   doc.setFontSize(11);
@@ -552,6 +562,7 @@ function drawTableOfContents(
   });
 
   doc.setTextColor(0);
+  return y;
 }
 
 // ─────────────────────────────────────────────
@@ -1466,11 +1477,11 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
   let inProtocol   = false;
   let endOfTextDrawn = false;
 
-  // ── TOC (premium tiers) — two-pass for accurate page numbers ──
+  // ── TOC (premium tiers) — merged onto cover page (page 1), content starts page 2 ──
   if (hasPremiumClauses) {
     const sectionPageMap = await measureSectionPages(data, sections, meta, labelLeft, labelRight);
-    const tocPageCount   = estimateTocPageCount(sections);
-    drawTableOfContents(doc, sections, meta.title, docId, sectionPageMap, tocPageCount);
+    // tocOffset=1: scratch page numbers start at 1; real content starts at page 2 → offset by 1
+    drawTableOfContents(doc, sections, meta.title, docId, sectionPageMap, 1, y);
     doc.addPage();
     drawHeader(doc, meta.title, false, docId);
     y = 22;
