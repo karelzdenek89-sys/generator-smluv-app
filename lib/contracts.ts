@@ -237,9 +237,9 @@ function buildGiftContractSections(d: StoredContractData): ContractSection[] {
         'Jakékoli změny nebo doplnění smlouvy jsou platné pouze ve formě písemného, číslovaného a podepsaného dodatku.',
         'Neplatnost jednotlivého ustanovení smlouvy nemá vliv na platnost ostatních ustanovení.',
         d.giftType === 'property'
-          ? 'Vlastnické právo k nemovité věci přechází na obdarovaného vkladem do katastru nemovitostí na základě pravomocného rozhodnutí katastrálního úřadu.'
+          ? 'Vlastnické právo k nemovité věci přechází na obdarovaného vkladem do katastru nemovitostí na základě pravomocného rozhodnutí katastrálního úřadu. Upozornění: podpisy obou smluvních stran na darovací smlouvě týkající se nemovitostí musí být úředně ověřeny (notář nebo Czech POINT); bez ověření katastrální úřad návrh na vklad zamítne.'
           : d.giftType === 'car'
-          ? 'Vlastnické právo k vozidlu přechází na obdarovaného okamžikem podpisu této smlouvy. Smluvní strany jsou povinny neprodleně oznámit změnu vlastníka příslušnému obecnímu úřadu obce s rozšířenou působností.'
+          ? 'Vlastnické právo k vozidlu přechází na obdarovaného okamžikem podpisu této smlouvy. Smluvní strany jsou povinny do 10 pracovních dnů od podpisu oznámit změnu vlastníka příslušnému obecnímu úřadu obce s rozšířenou působností a zajistit přepis vozidla v registru silničních vozidel.'
           : 'Vlastnické právo k předmětu daru přechází na obdarovaného okamžikem předání.',
         'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. Osobní údaje jsou zpracovávány výhradně za účelem uzavření a plnění tohoto smluvního vztahu.',
         'Žádná ze smluvních stran neodpovídá za nesplnění nepeněžitých povinností způsobené vyšší mocí (vis maior), tj. událostí mimořádnou, nepředvídatelnou a nepřekonatelnou (§ 2913 odst. 2 OZ). Vyšší moc se nevztahuje na povinnost zaplatit peněžitou částku. Strana postižená vyšší mocí je povinna neprodleně písemně informovat druhou stranu a po odpadnutí překážky neprodleně pokračovat v plnění.',
@@ -350,8 +350,8 @@ function buildWorkContractSections(d: StoredContractData): ContractSection[] {
     {
       title: 'V. ODPOVĚDNOST ZA VADY, ZÁRUKA A SMLUVNÍ SANKCE',
       body: [
-        `Záruka za jakost díla: ${asText(d.warrantyMonths, '24')} měsíců od řádného předání díla (§ 2619 OZ). Upozornění: u stavebního díla (stavba, přístavba, nástavba, rekonstrukce) platí zákonná minimální záruční lhůta 5 let — tj. 60 měsíců (§ 2629 OZ).`,
-        `Smluvní pokuta za prodlení zhotovitele s předáním díla: ${asText(d.delayPenaltyPerDay, '0,05')} % z celkové ceny díla za každý den prodlení, max. ${asText(d.maxPenaltyPercent, '15')} % z ceny díla.`,
+        `Záruka za jakost díla: ${asText(d.warrantyMonths, '24')} měsíců od řádného předání a akceptace díla (§ 2619 OZ). Záruční lhůta počíná běžet ode dne podpisu předávacího protokolu. Upozornění: u stavebního díla (stavba, přístavba, nástavba, rekonstrukce) platí zákonná minimální záruční lhůta 5 let — tj. 60 měsíců (§ 2629 OZ); smluvní záruční lhůta nesmí být kratší.`,
+        `Smluvní pokuta za prodlení zhotovitele s předáním díla: ${asText(d.delayPenaltyPerDay, '0,05')} % z celkové ceny díla za každý den prodlení, max. ${asText(d.maxPenaltyPercent, '15')} % z ceny díla. Smluvní pokuta se neuplatní, bylo-li prodlení způsobeno výlučně okolností vyšší moci nebo prodlením objednatele s poskytnutím součinnosti.`,
         `Smluvní pokuta za prodlení objednatele s úhradou: ${asText(d.clientPenaltyPerDay, '0,05')} % z dlužné částky za každý den prodlení.`,
         `Smluvní pokuta za neodstranění vad v přiměřené lhůtě: ${asText(d.defectPenaltyPercent, '10')} % z ceny díla.`,
         'Zaplacením smluvní pokuty není dotčen nárok na náhradu škody.',
@@ -677,7 +677,7 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
           ? `Specifikace zahrnutých služeb a záloh: ${asText(d.utilitiesIncludedText)}.`
           : 'Zálohy na služby zahrnují: vodné/stočné, teplo/TUV, společné prostory, odpad — dle skutečných nákladů správce/pronajímatele.',
         'Pronajímatel je povinen jedenkrát ročně provést vyúčtování skutečných nákladů na plnění spojená s užíváním a doručit je nájemci do 4 měsíců od skončení zúčtovacího období (§ 7 zákona č. 67/2013 Sb.).',
-        `Pronajímatel je oprávněn jednostranně zvýšit nájemné vždy nejdříve po 12 měsících od posledního zvýšení, nejvýše však o ${asText(d.maxRentIncrease, '10')} %, a to písemným oznámením doručeným nájemci nejpozději 3 měsíce před navrhovaným zvýšením.`,
+        `Pronajímatel je oprávněn navrhnout zvýšení nájemného, a to nejdříve po uplynutí 12 měsíců od posledního zvýšení, nejvýše o ${asText(d.maxRentIncrease, '10')} % ročně. Návrh musí být nájemci doručen písemně. Nesouhlasí-li nájemce se zvýšením do 2 měsíců od doručení návrhu, je pronajímatel oprávněn se do 3 měsíců od uplynutí této lhůty domáhat určení výše nájemného u soudu (§ 2249 OZ).`,
         'Elektřina a plyn odebírané přímo nájemcem na základě vlastní smlouvy s dodavatelem nejsou součástí výše uvedených záloh na služby a hradí je nájemce samostatně.',
         'V případě prodlení nájemce s úhradou nájemného nebo zálohy na služby je pronajímatel oprávněn požadovat zákonný úrok z prodlení ve výši stanovené nařízením vlády č. 351/2013 Sb., a to ode dne splatnosti do dne úhrady.',
       ].filter(Boolean) as string[],
@@ -687,33 +687,34 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
       body: [
         `Nájemce je povinen před převzetím bytu (nejpozději při podpisu smlouvy) složit pronajímateli peněžitou jistotu ve výši ${formatAmount(d.depositAmount)} Kč${(d.depositAmount && d.rentAmount && Number(d.rentAmount) > 0) ? ` (tj. ${Math.round(Number(d.depositAmount) / Number(d.rentAmount))}× měsíční nájemné)` : ''}.`,
         'Jistota slouží k zajištění pohledávek pronajímatele vzniklých z nájmu (dlužné nájemné a zálohy, náhrada škody, náklady nezbytné opravy či uvedení bytu do původního stavu, smluvní pokuty).',
-        'Pronajímatel je povinen vrátit nevyčerpanou část jistoty nejpozději do 1 měsíce od ukončení nájmu a předání bytu, po odečtení prokázaných pohledávek.',
-        'Jistota je uložena na samostatném bankovním účtu pronajímatele a nepřináší nájemci úroky.',
+        'Pronajímatel je povinen vrátit jistotu nebo její nevyčerpanou část nájemci nejpozději do 1 měsíce od skončení nájmu a vyklizení bytu, a to s úroky ve výši zákonné sazby (§ 2254 odst. 2 OZ), po odečtení prokázaných pohledávek pronajímatele.',
+        'Pronajímatel je oprávněn z jistoty odečíst pouze pohledávky, o nichž nájemce přijal nebo o nichž bylo pravomocně rozhodnuto. O provedeném zápočtu je pronajímatel povinen nájemce písemně informovat.',
       ],
     },
     {
       title: 'VI. PRAVIDLA UŽÍVÁNÍ BYTU',
       body: [
-        d.maxOccupants ? `Maximální počet osob trvale užívajících byt: ${asText(d.maxOccupants)} (vč. nájemce). Přihlášení dalších osob je podmíněno písemným souhlasem pronajímatele.` : '',
+        d.maxOccupants ? `Maximální počet osob trvale užívajících byt je ${asText(d.maxOccupants)} (vč. nájemce). Nájemce je oprávněn přijmout do bytu dalšího člena své domácnosti; je povinen tuto skutečnost bez zbytečného odkladu písemně oznámit pronajímateli spolu se jménem a trvalým bydlištěm nové osoby (§ 2272 OZ). Souhlas pronajímatele se nevyžaduje pro osoby blízké ve smyslu § 22 OZ.` : '',
         `Domácí zvířata: ${d.allowPets ? 'povolena, nájemce odpovídá za veškeré škody jimi způsobené' : 'zakázána bez předchozího písemného souhlasu pronajímatele'}.`,
         `Kouření v bytě a společných prostorách: ${d.allowSmoking ? 'povoleno' : 'zakázáno'}.`,
-        `Krátkodobý podnájem (Airbnb, Booking.com apod.): ${d.allowAirbnb ? 'povolen, nájemce odpovídá za případné škody a zajistí splnění všech zákonných povinností' : 'zakázán bez předchozího písemného souhlasu pronajímatele'}.`,
-        `Podnikání v bytě: ${d.businessUseAllowed ? 'povoleno' : 'zakázáno bez předchozího písemného souhlasu pronajímatele'}.`,
+        `Krátkodobé ubytování třetích osob za úplatu prostřednictvím platforem (Airbnb, Booking.com apod.) se považuje za podnájem a je ${d.allowAirbnb ? 'sjednáno jako povolené; nájemce odpovídá za veškeré škody a je povinen splnit zákonné povinnosti provozovatele ubytování' : 'zakázáno bez předchozího písemného souhlasu pronajímatele'}.`,
+        `Podnikatelská a pracovní činnost v bytě: ${d.businessUseAllowed ? 'povolena za podmínky, že nezvyšuje opotřebení bytu ani domu nad obvyklou míru a neobtěžuje ostatní obyvatele domu' : 'dovolena pouze tehdy, nezvyšuje-li opotřebení bytu ani domu nad obvyklou míru a neobtěžuje-li ostatní obyvatele; činnosti, které tato kritéria nesplňují, vyžadují předchozí písemný souhlas pronajímatele (§ 2255 OZ)'}.`,
         d.inspectionAllowed
           ? 'Pronajímatel je oprávněn po předchozím písemném (e-mailovém) oznámení s předstihem min. 24 hodin zkontrolovat stav bytu; kontrola nesmí být prováděna nevhodným způsobem (§ 2219 OZ).'
           : 'Právo pronajímatele vstoupit do bytu se řídí zákonnou úpravou (§ 2219 OZ).',
         d.strictPenalties
-          ? 'Za opakované porušení klidu, čistoty nebo pořádku v domě je pronajímatel oprávněn požadovat smluvní pokutu ve výši 1 000 Kč za každý prokázaný případ a po třetím porušení podat výpověď z nájmu bez výpovědní doby (§ 2291 OZ).'
+          ? 'Pronajímatel je oprávněn nájemci písemně vytknout závažné nebo opakované porušování povinností (zejm. narušování klidu, znečišťování společných prostor, poškozování nemovitosti) a vyzvat ho k nápravě. Neodstraní-li nájemce závadný stav, může pronajímatel dát výpověď z nájmu z důvodu hrubého porušování povinností (§ 2288 odst. 1 písm. a) OZ) nebo — dosahuje-li porušení zvlášť závažné intenzity poškozující pronajímatele nebo jiné obyvatele domu — výpověď bez výpovědní doby (§ 2291 OZ).'
           : '',
         'Nájemce je povinen: řádně udržovat byt a zařízení v provozuschopném stavu, bez zbytečného odkladu hlásit pronajímateli závady a havárie, umožnit nezbytné opravy, hradit drobné opravy a náklady spojené s běžnou údržbou (§ 2257 OZ), neprovádět stavební úpravy bez souhlasu pronajímatele.',
-        'Nájemce není oprávněn přenechat byt nebo jeho část do podnájmu třetí osobě bez předchozího písemného souhlasu pronajímatele.',
+        'Nájemce je oprávněn přenechat část bytu do podnájmu jiné osobě za podmínky, že v bytě sám trvale bydlí, a to po předchozím písemném souhlasu pronajímatele (§ 2274 OZ). Přenechat byt v celku do podnájmu bez souhlasu pronajímatele je zakázáno. Nájemce, který v bytě sám netrvale bydlí, nesmí přenechat žádnou jeho část třetí osobě bez souhlasu pronajímatele.',
         'Nájemci je doporučeno sjednat pojištění domácnosti zahrnující odpovědnost za škodu způsobenou třetím osobám při užívání bytu (min. limit 500 000 Kč). Doklad o pojištění předloží nájemce na výzvu pronajímatele do 7 dnů.',
       ].filter(Boolean) as string[],
     },
     {
       title: 'VII. PŘEDÁNÍ BYTU A PŘEDÁVACÍ PROTOKOL',
       body: [
-        d.keysCount ? `Pronajímatel předá nájemci klíče v počtu ${asText(d.keysCount)} ks.` : '',
+        d.keysCount ? `Pronajímatel předá nájemci klíče v počtu ${asText(d.keysCount)} ks (včetně klíčů od vchodových dveří, schránky a dalšího příslušenství dle předávacího protokolu).` : '',
+        'Nájemce není oprávněn zhotovovat kopie klíčů bez předchozího souhlasu pronajímatele. V případě ztráty nebo odcizení klíčů je nájemce povinen tuto skutečnost bez zbytečného odkladu písemně oznámit pronajímateli. Náklady na výměnu cylindrické vložky nebo zámku hradí v takovém případě nájemce.',
         d.electricityMeter ? `Stav elektroměru při předání: ${asText(d.electricityMeter)} kWh.` : '',
         d.gasMeter ? `Stav plynoměru při předání: ${asText(d.gasMeter)} m³.` : '',
         d.waterMeter ? `Stav vodoměru při předání: ${asText(d.waterMeter)} m³.` : '',
@@ -762,6 +763,7 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
         'Změny jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků.',
         'Neplatnost jednotlivého ustanovení smlouvy nemá vliv na platnost ostatních ustanovení.',
         'Přílohou č. 1 smlouvy je předávací protokol, který tvoří nedílnou součást smlouvy.',
+        'Změna vlastníka pronajaté věci sama o sobě nájemní vztah neruší; nabyvatel vstupuje do práv a povinností pronajímatele ode dne nabytí vlastnictví (§ 2221 OZ).',
         'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. Osobní údaje jsou zpracovávány výhradně za účelem uzavření a plnění tohoto smluvního vztahu.',
         'Žádná ze smluvních stran neodpovídá za nesplnění nepeněžitých povinností způsobené vyšší mocí (vis maior), tj. událostí mimořádnou, nepředvídatelnou a nepřekonatelnou (§ 2913 odst. 2 OZ). Vyšší moc se nevztahuje na povinnost zaplatit peněžitou částku. Strana postižená vyšší mocí je povinna neprodleně písemně informovat druhou stranu a po odpadnutí překážky neprodleně pokračovat v plnění.',
       ],
@@ -913,6 +915,8 @@ function buildLoanContractSections(d: StoredContractData): ContractSection[] {
           ? 'Každá splátka se použije nejprve na úhradu splatných úroků a teprve zbývající část na snížení jistiny (§ 1932 OZ).'
           : '',
         `Smluvní pokuta za prodlení se splátkou: ${asText(d.latePenaltyRate, '0,05')} % z dlužné částky za každý den prodlení, min. ${asText(d.minLatePenalty, '100')} Kč.`,
+        'Věřitel je oprávněn prohlásit celou zbývající jistinu za okamžitě splatnou (ztráta výhody splátek dle § 1977 OZ), prodlí-li vydlužitel se splátkou déle než 30 dnů nebo poruší-li jinou podstatnou povinnost z této smlouvy.',
+        'Předčasné splacení části nebo celé jistiny je bez sankcí povoleno, není-li dohodnuto jinak.',
       ].filter(Boolean) as string[],
     },
     {
@@ -1024,7 +1028,8 @@ function buildNdaContractSections(d: StoredContractData): ContractSection[] {
         'c) omezit přístup k důvěrným informacím jen na ty zaměstnance a spolupracovníky, kteří je nezbytně potřebují pro plnění stanoveného účelu, a zajistit, aby byli vázáni stejnou povinností mlčenlivosti;',
         'd) chránit důvěrné informace přinejmenším se stejnou mírou péče, s jakou chrání vlastní citlivé informace, minimálně však s péčí řádného hospodáře;',
         'e) nepořizovat kopie ani výpisy z důvěrných informací nad rozsah nezbytně nutný pro stanovený účel;',
-        'f) neprovádět zpětnou analýzu (reverse engineering), dekompilaci ani jiné technické metody extrakce důvěrných informací z předaných produktů, softwaru nebo materiálů.',
+        'f) neprovádět zpětnou analýzu (reverse engineering), dekompilaci ani jiné technické metody extrakce důvěrných informací z předaných produktů, softwaru nebo materiálů;',
+        'g) nevkládat důvěrné informace do systémů umělé inteligence, jazykových modelů ani jiných automatizovaných systémů třetích stran, u nichž nelze zaručit ochranu zpracovávaných dat.',
       ],
     },
     {
@@ -1143,7 +1148,8 @@ function buildGeneralSaleContractSections(d: StoredContractData): ContractSectio
       title: 'II. PŘEDMĚT KUPNÍ SMLOUVY',
       body: [
         `Prodávající se touto smlouvou zavazuje převést na kupujícího vlastnické právo k: ${subjectDesc}.`,
-        d.itemCondition ? `Stav předmětu prodeje: ${asText(d.itemCondition)}` : '',
+        d.itemCondition ? `Stav předmětu prodeje: ${asText(d.itemCondition)}.` : '',
+        'Prodávající prohlašuje, že je oprávněn předmět prodeje převést a že na něm neváznou práva třetích osob, zástavní právo, věcné břemeno ani jiné omezení dispozice, o němž by prodávající věděl.',
         `Kupující se zavazuje předmět koupit a zaplatit za něj kupní cenu.`,
       ].filter(Boolean) as string[],
     },
@@ -1311,6 +1317,7 @@ function buildEmploymentContractSections(d: StoredContractData): ContractSection
       title: `${hasPremiumClauses ? 'X' : 'VIII'}. ZÁVĚREČNÁ USTANOVENÍ`,
       body: [
         'Pracovní smlouva se řídí zákonem č. 262/2006 Sb., zákoník práce, ve znění pozdějších předpisů, a subsidiárně zákonem č. 89/2012 Sb., občanský zákoník.',
+        'Zaměstnavatel je povinen uzavřít pracovní smlouvu před nástupem zaměstnance do práce (§ 34 odst. 3 ZP). Zaměstnanec nesmí nastoupit do práce, dokud nebyla smlouva podepsána.',
         disputeClause(d, true),
         'Smlouva je vyhotovena ve dvou stejnopisech; zaměstnavatel i zaměstnanec obdrží po jednom vyhotovení (§ 37 ZP).',
         'Změny pracovní smlouvy jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků (§ 564 OZ).',
@@ -1412,7 +1419,7 @@ function buildDppContractSections(d: StoredContractData): ContractSection[] {
       title: 'V. PODMÍNKY VÝKONU PRÁCE',
       body: [
         'Zaměstnanec je povinen vykonávat sjednané práce osobně, řádně a v souladu s pokyny zaměstnavatele.',
-        'Na dohodu o provedení práce se nevztahují ustanovení zákoníku práce o pracovní době, dovolené, odstupném a dalších nárocích zaměstnanců v hlavním pracovním poměru.',
+        'Na dohodu o provedení práce se nevztahují ustanovení zákoníku práce o pracovní době, dovolené, odstupném a dalších nárocích typických pro hlavní pracovní poměr (§ 77 odst. 2 ZP). Zaměstnanec pracující na základě DPP má nárok na dovolenou, pokud pracovní poměr trvá nepřetržitě alespoň 4 týdny a zaměstnanec odpracoval alespoň 4násobek stanovené týdenní pracovní doby (§ 77a ZP, účinné od 1. 1. 2024).',
         d.toolsProvided === 'employer'
           ? 'Pracovní pomůcky, nástroje a vybavení nutné pro výkon práce zajišťuje zaměstnavatel.'
           : d.toolsProvided === 'employee'
@@ -1661,8 +1668,9 @@ function buildSubleaseContractSections(d: StoredContractData): ContractSection[]
         `Měsíční podnájemné je sjednáno ve výši ${formatAmount(d.rentAmount)} Kč.`,
         d.utilityAmount ? `Záloha na služby/energie: ${formatAmount(d.utilityAmount)} Kč/měsíc.` : '',
         `Celková měsíční platba: ${formatAmount((Number(d.rentAmount) || 0) + (Number(d.utilityAmount) || 0))} Kč.`,
-        d.depositAmount ? `Kauce: ${formatAmount(d.depositAmount)} Kč (max. trojnásobek měsíčního podnájemného).` : '',
+        d.depositAmount ? `Jistota (kauce): ${formatAmount(d.depositAmount)} Kč (max. trojnásobek měsíčního podnájemného dle § 2274 OZ). Nájemce je povinen jistotu vrátit do 30 dnů od skončení podnájmu a předání prostor, po odečtení prokázaných pohledávek.` : '',
         `Podnájemné je splatné vždy do ${asText(d.paymentDay, '15')}. dne příslušného měsíce ${d.bankAccount ? `na bankovní účet nájemce č. ${asText(d.bankAccount)}` : 'v hotovosti nebo bankovním převodem'}.`,
+        'V případě prodlení podnájemce s úhradou podnájemného nebo zálohy na služby je nájemce oprávněn požadovat zákonný úrok z prodlení ode dne splatnosti.',
       ].filter(Boolean) as string[],
     },
     {
@@ -1804,6 +1812,8 @@ function buildPowerOfAttorneyContractSections(d: StoredContractData): ContractSe
         'b) je plně způsobilý k právnímu jednání,',
         'c) si je vědom rozsahu udělených oprávnění a jejich právních důsledků.',
         hasPremiumClauses ? 'Pravost podpisu zmocnitele je ověřena notářem/Czech Pointem dle § 74 odst. 1 zákona č. 358/1992 Sb., notářský řád. Ověřená plná moc je uznávána všemi orgány veřejné moci, finančními institucemi a třetími stranami.' : '',
+        'd) zmocněnec je povinen jednat s péčí řádného hospodáře a v nejlepším zájmu zmocnitele; o každém právním jednání učiněném v rámci zmocnění je zmocněnec povinen zmocnitele bez zbytečného odkladu informovat.',
+        'e) zmocnitel může tuto plnou moc kdykoli písemně odvolat; odvolání je účinné okamžikem, kdy se o něm zmocněnec dozví (§ 448 odst. 1 OZ). Zmocněnec je povinen po odvolání neprodleně vrátit originál plné moci zmocniteli.',
       ].filter(Boolean) as string[],
     },
   ];
@@ -1922,7 +1932,7 @@ function buildDebtAcknowledgmentSections(d: StoredContractData): ContractSection
         'Tato listina se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů.',
         disputeClause(d),
         'Listina je vyhotovena ve dvou stejnopisech; každá strana obdrží jedno.',
-        'Tato listina je sama o sobě závazná a není podmíněna splněním žádné jiné podmínky.',
+        'Tato listina je sama o sobě závazná a není podmíněna splněním žádné jiné podmínky. Dílčí plnění dluhu tuto listinu neruší a nemá vliv na platnost uznání zbývající části dluhu.',
         'Neplatnost jednotlivého ustanovení nemá vliv na platnost ostatních ustanovení listiny.',
         'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. Osobní údaje jsou zpracovávány výhradně za účelem uzavření a plnění tohoto smluvního vztahu.',
         'Platební neschopnost ani finanční obtíže dlužníka nepředstavují okolnost vyšší moci a nezbavují dlužníka povinnosti uhradit uznaný dluh.',
@@ -2026,7 +2036,7 @@ function buildCooperationContractSections(d: StoredContractData): ContractSectio
           ? `Smlouva se uzavírá na dobu určitou do ${formatDate(d.endDate, 'neuvedeno')}.`
           : `Smlouva se uzavírá na dobu neurčitou. Každá strana ji může vypovědět s výpovědní dobou ${asText(d.noticePeriod, '3')} měsíce.`,
         'Smlouva může být ukončena okamžitě vzájemnou dohodou nebo při podstatném porušení povinností jednou ze stran.',
-        'V případě ukončení spolupráce se strany vypořádají vzájemné pohledávky a dluhy do 60 dnů od zániku smlouvy.',
+        'V případě ukončení spolupráce se strany vypořádají vzájemné pohledávky, dluhy a nedokončené výstupy do 60 dnů od zániku smlouvy. Každá strana je oprávněna ze vzájemného vypořádání odečíst prokázané pohledávky vůči druhé straně (§ 1982 OZ).',
       ],
     },
     {

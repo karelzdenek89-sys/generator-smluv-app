@@ -237,7 +237,7 @@ function drawSummaryBox(
       case 'car_sale':
         return [[data.sellerName as string, 'Prodávající'], [data.buyerName as string, 'Kupující']];
       case 'gift':
-        return [[data.donorName as string, 'Dárce'], [data.recipientName as string, 'Obdarovaný']];
+        return [[data.donorName as string, 'Dárce'], [(data.doneeName ?? data.recipientName) as string, 'Obdarovaný']];
       case 'work_contract':
         return [[data.clientName as string, 'Objednatel'], [data.contractorName as string, 'Zhotovitel']];
       case 'loan':
@@ -253,7 +253,7 @@ function drawSummaryBox(
       case 'service':
         return [[data.providerName as string, 'Poskytovatel'], [data.clientName as string, 'Objednatel']];
       case 'sublease':
-        return [[data.tenantName as string, 'Nájemce (podnajímatel)'], [data.subtenantName as string, 'Podnájemce']];
+        return [[(data.landlordName ?? data.tenantName) as string, 'Nájemce (podnajímatel)'], [data.tenantName as string, 'Podnájemce']];
       case 'power_of_attorney':
         return [[data.principalName as string, 'Zmocnitel'], [data.agentName as string, 'Zmocněnec']];
       case 'debt_acknowledgment':
@@ -278,8 +278,42 @@ function drawSummaryBox(
   // Key amount — covers all 14 contract types
   const amount = (data.price ?? data.loanAmount ?? data.rentAmount ?? data.debtAmount ?? data.totalPrice ?? data.monthlyFee ?? data.salary ?? data.totalRemuneration ?? data.hourlyRate) as number | undefined;
   if (amount && !isNaN(Number(amount)) && Number(amount) > 0) {
-    const amountLabel = data.monthlyFee ? 'Měsíční paušál' : data.salary ? 'Měsíční mzda' : data.hourlyRate && !data.price && !data.totalPrice ? 'Hodinová sazba' : 'Sjednaná částka';
+    const amountLabel = data.monthlyFee ? 'Měsíční paušál' : data.salary ? 'Měsíční mzda (hrubá)' : data.hourlyRate && !data.price && !data.totalPrice ? 'Hodinová sazba' : data.rentAmount && contractType === 'lease' ? 'Měsíční nájemné' : data.rentAmount && contractType === 'sublease' ? 'Měsíční podnájemné' : data.loanAmount ? 'Výše zápůjčky' : data.debtAmount ? 'Výše uznaného dluhu' : 'Sjednaná částka';
     lines.push(`${amountLabel}: ${Number(amount).toLocaleString('cs-CZ')} Kč`);
+  }
+
+  // Contract-specific key identifiers
+  switch (contractType) {
+    case 'lease':
+    case 'sublease': {
+      const addr = (data.propertyAddress ?? data.flatAddress) as string | undefined;
+      if (addr) lines.push(`Adresa bytu: ${addr}`);
+      break;
+    }
+    case 'car_sale': {
+      const vin = data.carVIN as string | undefined;
+      const spz = data.carPlate as string | undefined;
+      if (vin || spz) lines.push(`Vozidlo: VIN ${vin ?? '—'}, SPZ ${spz ?? '—'}`);
+      break;
+    }
+    case 'employment':
+    case 'dpp': {
+      const job = data.jobTitle as string | undefined;
+      if (job) lines.push(`Pozice: ${job}`);
+      break;
+    }
+    case 'loan': {
+      const repDate = data.repaymentDate as string | undefined;
+      if (repDate) lines.push(`Splatnost: ${new Date(repDate).toLocaleDateString('cs-CZ')}`);
+      break;
+    }
+    case 'nda': {
+      const dur = data.ndaDuration as string | undefined;
+      if (dur) lines.push(`Doba mlčenlivosti: ${dur}`);
+      break;
+    }
+    default:
+      break;
   }
 
   if (lines.length === 0) return startY;
@@ -364,18 +398,20 @@ async function measureSectionPages(
       y += 8;
     }
 
-    if (y > 255) {
+    if (isSignatureSection(section.title)) {
+      y = drawSignatureSection(scratch, section.title, labelLeft, labelRight, margin, y, meta.title);
+      continue;
+    }
+
+    // Mirror same orphan guard as main render
+    const orphanBuffer = section.body.length > 0 ? 30 : 18;
+    if (y + orphanBuffer > 275) {
       scratch.addPage();
       drawHeader(scratch, meta.title, false);
       y = 22;
       scratch.setFont('Roboto', 'normal');
       scratch.setFontSize(10);
       scratch.setTextColor(BODY_R, BODY_G, BODY_B);
-    }
-
-    if (isSignatureSection(section.title)) {
-      y = drawSignatureSection(scratch, section.title, labelLeft, labelRight, margin, y, meta.title);
-      continue;
     }
 
     y += 3;
@@ -385,12 +421,17 @@ async function measureSectionPages(
     y = drawSectionTitle(scratch, section.title, margin, y, contentWidth, inProtocol);
 
     const bodyLines = section.body.slice(0, 80);
-    for (const line of bodyLines) {
+    for (let lineIdx = 0; lineIdx < bodyLines.length; lineIdx++) {
+      const line = bodyLines[lineIdx];
       const rawLine = line != null ? String(line) : '';
       const safeLine = rawLine.length > 800 ? rawLine.substring(0, 800) + '…' : (rawLine.trim() || ' ');
       const splitLines = scratch.splitTextToSize(safeLine, contentWidth);
 
-      if (y + splitLines.length * 5.5 > 275) {
+      const lineH = splitLines.length * 5.5 + 2.5;
+      const isLast = lineIdx === bodyLines.length - 1;
+      const needsBreak = isLast ? y + lineH > 275 : y + lineH + 8 > 275;
+
+      if (needsBreak) {
         scratch.addPage();
         drawHeader(scratch, meta.title, false);
         y = 22;
@@ -400,7 +441,7 @@ async function measureSectionPages(
       }
 
       scratch.text(splitLines, margin, y, { align: 'justify', maxWidth: contentWidth });
-      y += splitLines.length * 5.5 + 2.5;
+      y += lineH;
     }
 
     y += 5;
@@ -567,51 +608,85 @@ function drawSignatureSection(
 ): number {
   const pageWidth = doc.internal.pageSize.getWidth();
 
-  if (y > 230) {
+  // Signature block needs ~55mm — break early if insufficient space
+  if (y > 220) {
     doc.addPage();
     drawHeader(doc, contractTitle, false);
     y = 22;
   }
 
+  // Section heading
   doc.setFont('Roboto', 'bold');
   doc.setFontSize(11);
   doc.setTextColor(DARK_R, DARK_G, DARK_B);
   doc.text(sectionTitle, margin, y);
+
+  // Gold underline under heading
+  doc.setDrawColor(GOLD_R, GOLD_G, GOLD_B);
+  doc.setLineWidth(0.35);
+  doc.line(margin, y + 2, margin + 45, y + 2);
+  doc.setLineWidth(0.2);
+  doc.setDrawColor(RULE_R, RULE_G, RULE_B);
   y += 10;
 
+  // Date/location line
   doc.setFont('Roboto', 'normal');
   doc.setFontSize(10);
   doc.setTextColor(BODY_R, BODY_G, BODY_B);
-  const dateLine = 'V ________________________ dne __________________';
-  doc.text(dateLine, margin, y);
-  y += 18;
+  doc.text('Místo a datum podpisu:', margin, y);
+  y += 5;
+  doc.setDrawColor(160, 160, 160);
+  doc.setLineWidth(0.3);
+  doc.line(margin, y, margin + 100, y);
+  doc.setLineWidth(0.2);
+  doc.setDrawColor(RULE_R, RULE_G, RULE_B);
+  y += 10;
 
-  const lineWidth = 70;
+  const lineWidth = 72;
   const leftX = margin;
   const rightX = pageWidth - margin - lineWidth;
 
-  doc.setDrawColor(80, 80, 80);
-  doc.setLineWidth(0.4);
-  doc.line(leftX, y, leftX + lineWidth, y);
-  doc.line(rightX, y, rightX + lineWidth, y);
-  y += 5;
-
+  // Printed name label + line
   doc.setFont('Roboto', 'normal');
   doc.setFontSize(8);
   doc.setTextColor(MUTED_R, MUTED_G, MUTED_B);
-  doc.text('(podpis)', leftX + lineWidth / 2, y, { align: 'center' });
-  doc.text('(podpis)', rightX + lineWidth / 2, y, { align: 'center' });
+  doc.text('Jméno a příjmení (hůlkovým písmem):', leftX, y);
+  doc.text('Jméno a příjmení (hůlkovým písmem):', rightX, y);
+  y += 4;
+
+  doc.setDrawColor(160, 160, 160);
+  doc.setLineWidth(0.3);
+  doc.line(leftX, y, leftX + lineWidth, y);
+  doc.line(rightX, y, rightX + lineWidth, y);
+  doc.setLineWidth(0.2);
+  doc.setDrawColor(RULE_R, RULE_G, RULE_B);
+  y += 10;
+
+  // Signature lines
+  doc.setDrawColor(60, 60, 60);
+  doc.setLineWidth(0.45);
+  doc.line(leftX, y, leftX + lineWidth, y);
+  doc.line(rightX, y, rightX + lineWidth, y);
+  y += 4;
+
+  // "(podpis)" labels
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(MUTED_R, MUTED_G, MUTED_B);
+  doc.text('(vlastnoruční podpis)', leftX + lineWidth / 2, y, { align: 'center' });
+  doc.text('(vlastnoruční podpis)', rightX + lineWidth / 2, y, { align: 'center' });
   y += 6;
 
+  // Role labels in bold
   doc.setFont('Roboto', 'bold');
   doc.setFontSize(9);
-  doc.setTextColor(60, 60, 60);
+  doc.setTextColor(40, 40, 40);
   doc.text(labelLeft, leftX + lineWidth / 2, y, { align: 'center' });
   doc.text(labelRight, rightX + lineWidth / 2, y, { align: 'center' });
   doc.setFont('Roboto', 'normal');
   doc.setTextColor(0);
 
-  return y + 14;
+  return y + 12;
 }
 
 // ─────────────────────────────────────────────
@@ -863,6 +938,16 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
   const doc = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
   await ensurePdfFonts(doc);
 
+  // Document metadata
+  const generatedDate = new Date().toLocaleDateString('cs-CZ');
+  (doc as any).setProperties({
+    title: meta.title,
+    subject: `Smlouva vygenerovaná na SmlouvaHned.cz – ${generatedDate}`,
+    author: 'SmlouvaHned.cz',
+    keywords: `smlouva, ${data.contractType}, česká republika, ${tier}`,
+    creator: 'SmlouvaHned.cz – online generátor smluv',
+  });
+
   const margin = 20;
   const pageWidth = doc.internal.pageSize.getWidth();
   const contentWidth = pageWidth - margin * 2;
@@ -910,20 +995,22 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
       y += 8;
     }
 
-    // Overflow guard — leave 20 mm for the section heading
-    if (y > 255) {
+    // PODPISY section
+    if (isSignatureSection(section.title)) {
+      y = drawSignatureSection(doc, section.title, labelLeft, labelRight, margin, y, meta.title);
+      continue;
+    }
+
+    // Orphan guard — ensure heading + at least first body line fits before starting section
+    // Heading block: 3mm pre-space + ~11mm title + 3mm underline gap + first body line ~8mm = ~25mm
+    const orphanBuffer = section.body.length > 0 ? 30 : 18;
+    if (y + orphanBuffer > 275) {
       doc.addPage();
       drawHeader(doc, meta.title, false);
       y = 22;
       doc.setFont('Roboto', 'normal');
       doc.setFontSize(10);
       doc.setTextColor(BODY_R, BODY_G, BODY_B);
-    }
-
-    // PODPISY section
-    if (isSignatureSection(section.title)) {
-      y = drawSignatureSection(doc, section.title, labelLeft, labelRight, margin, y, meta.title);
-      continue;
     }
 
     // Extra spacing before heading
@@ -933,12 +1020,20 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
 
     // Body lines
     const bodyLines = section.body.slice(0, 80);
-    for (const line of bodyLines) {
+    for (let lineIdx = 0; lineIdx < bodyLines.length; lineIdx++) {
+      const line = bodyLines[lineIdx];
       const rawLine = line != null ? String(line) : '';
       const safeLine = rawLine.length > 800 ? rawLine.substring(0, 800) + '…' : (rawLine.trim() || ' ');
       const splitLines = doc.splitTextToSize(safeLine, contentWidth);
 
-      if (y + splitLines.length * 5.5 > 275) {
+      // Widow guard: if this paragraph doesn't fully fit and it's not the last, leave ≥8mm
+      const lineH = splitLines.length * 5.5 + 2.5;
+      const isLast = lineIdx === bodyLines.length - 1;
+      const needsBreak = isLast
+        ? y + lineH > 275
+        : y + lineH + 8 > 275; // ensure at least one more line fits after this paragraph
+
+      if (needsBreak) {
         doc.addPage();
         drawHeader(doc, meta.title, false);
         y = 22;
@@ -948,7 +1043,7 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
       }
 
       doc.text(splitLines, margin, y, { align: 'justify', maxWidth: contentWidth });
-      y += splitLines.length * 5.5 + 2.5;
+      y += lineH;
     }
 
     y += 5;
