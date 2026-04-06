@@ -28,9 +28,11 @@ type LeaseFormData = {
 
   flatAddress: string;
   flatLayout: string;
+  flatArea: string;
   flatUnitNumber: string;
   ownershipSheet: string;
   cadastralArea: string;
+  parcelNumber: string;
   floor: string;
 
   startDate: string;
@@ -48,8 +50,13 @@ type LeaseFormData = {
 
   keysCount: string;
   electricityMeter: string;
+  electricityMeterSerial: string;
   gasMeter: string;
+  gasMeterSerial: string;
   waterMeter: string;
+  waterMeterSerial: string;
+  hotWaterMeter: string;
+  hotWaterMeterSerial: string;
   equipmentList: string;
   knownDefects: string;
 
@@ -97,9 +104,11 @@ function LeaseBuilderContent() {
 
     flatAddress: '',
     flatLayout: '',
+    flatArea: '',
     flatUnitNumber: '',
     ownershipSheet: '',
     cadastralArea: '',
+    parcelNumber: '',
     floor: '',
 
     startDate: '',
@@ -117,8 +126,13 @@ function LeaseBuilderContent() {
 
     keysCount: '2',
     electricityMeter: '',
+    electricityMeterSerial: '',
     gasMeter: '',
+    gasMeterSerial: '',
     waterMeter: '',
+    waterMeterSerial: '',
+    hotWaterMeter: '',
+    hotWaterMeterSerial: '',
     equipmentList: '',
     knownDefects: '',
 
@@ -333,10 +347,12 @@ II. PŘEDMĚT NÁJMU
 
 Adresa bytu: ${formData.flatAddress || '................'}
 Dispozice: ${formData.flatLayout || '................'}
+Výměra: ${formData.flatArea ? formData.flatArea + ' m²' : '................'}
 Číslo jednotky: ${formData.flatUnitNumber || '................'}
-Katastrální území: ${formData.cadastralArea || '................'}
-List vlastnictví: ${formData.ownershipSheet || '................'}
 Podlaží: ${formData.floor || '................'}
+Katastrální území: ${formData.cadastralArea || '................'}
+Číslo parcely: ${formData.parcelNumber || 'neuvedeno'}
+List vlastnictví: ${formData.ownershipSheet || '................'}
 
 III. DOBA NÁJMU
 
@@ -372,9 +388,10 @@ Inflační doložka: ${formData.includeInflationIndexation ? 'ano (indexace dle 
 VI. PŘEDÁNÍ A VYBAVENÍ
 
 Počet klíčů: ${formData.keysCount || '...'}
-Elektroměr: ${formData.electricityMeter || '................'}
-Plynoměr: ${formData.gasMeter || '................'}
-Vodoměr: ${formData.waterMeter || '................'}
+Elektroměr: ${formData.electricityMeter || '................'} kWh (č. měřiče: ${formData.electricityMeterSerial || '................'})
+Plynoměr: ${formData.gasMeter || '................'} m³ (č. měřiče: ${formData.gasMeterSerial || '................'})
+Vodoměr studená voda: ${formData.waterMeter || '................'} m³ (č. měřiče: ${formData.waterMeterSerial || '................'})
+Vodoměr teplá voda: ${formData.hotWaterMeter || '................'} m³ (č. měřiče: ${formData.hotWaterMeterSerial || '................'})
 
 Vybavení:
 ${formData.equipmentList || '................'}
@@ -402,10 +419,11 @@ Pronajímatel: ${formData.landlordName || '................'}
 Nájemce: ${formData.tenantName || '................'}
 Datum předání: ${formData.handoverDate || '................'}
 
-1. Stav měřidel
-- Elektroměr: ${formData.electricityMeter || '................'}
-- Plynoměr: ${formData.gasMeter || '................'}
-- Vodoměr: ${formData.waterMeter || '................'}
+1. Stav měřidel při předání
+- Elektroměr (č. ${formData.electricityMeterSerial || '................'}): ${formData.electricityMeter || '................'} kWh
+- Plynoměr (č. ${formData.gasMeterSerial || '................'}): ${formData.gasMeter || '................'} m³
+- Vodoměr studená voda (č. ${formData.waterMeterSerial || '................'}): ${formData.waterMeter || '................'} m³
+- Vodoměr teplá voda (č. ${formData.hotWaterMeterSerial || '................'}): ${formData.hotWaterMeter || '................'} m³
 
 2. Předané klíče
 - Celkový počet klíčů: ${formData.keysCount || '................'}
@@ -818,27 +836,43 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   className={inputClass}
                 />
                 <input
+                  value={formData.flatArea}
+                  onChange={handleChange}
+                  name="flatArea"
+                  placeholder="Výměra bytu (m²)"
+                  className={inputClass}
+                />
+                <input
+                  value={formData.floor}
+                  onChange={handleChange}
+                  name="floor"
+                  placeholder="Podlaží / patro"
+                  className={inputClass}
+                />
+              </div>
+              <div className="grid sm:grid-cols-3 gap-4 mb-4">
+                <input
                   value={formData.ownershipSheet}
                   onChange={handleChange}
                   name="ownershipSheet"
-                  placeholder="List vlastnictví"
+                  placeholder="List vlastnictví č."
                   className={inputClass}
                 />
                 <input
                   value={formData.cadastralArea}
                   onChange={handleChange}
                   name="cadastralArea"
-                  placeholder="Katastrální území"
+                  placeholder="Katastrální území (název)"
+                  className={inputClass}
+                />
+                <input
+                  value={formData.parcelNumber}
+                  onChange={handleChange}
+                  name="parcelNumber"
+                  placeholder="Číslo parcely (volitelné)"
                   className={inputClass}
                 />
               </div>
-              <input
-                value={formData.floor}
-                onChange={handleChange}
-                name="floor"
-                placeholder="Podlaží / patro"
-                className={inputClass}
-              />
             </section>
 
             <section className={cardClass}>
@@ -983,34 +1017,78 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                 title="Předávací protokol"
                 subtitle="Tohle je přesně ta část, která při sporu rozhoduje o škodě a vrácení kauce."
               />
-              <div className="grid sm:grid-cols-4 gap-4 mb-4">
+              <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <input
                   value={formData.keysCount}
                   onChange={handleChange}
                   type="number"
                   name="keysCount"
-                  placeholder="Počet klíčů"
+                  placeholder="Počet klíčů (ks)"
                   className={inputClass}
                 />
+              </div>
+              <p className="text-xs font-bold uppercase tracking-[0.10em] text-slate-400 mb-2">Stav měřičů při předání</p>
+              <div className="grid sm:grid-cols-2 gap-3 mb-2">
                 <input
                   value={formData.electricityMeter}
                   onChange={handleChange}
                   name="electricityMeter"
-                  placeholder="Elektroměr"
+                  placeholder="Elektroměr — stav (kWh)"
                   className={inputClass}
                 />
+                <input
+                  value={formData.electricityMeterSerial}
+                  onChange={handleChange}
+                  name="electricityMeterSerial"
+                  placeholder="Elektroměr — číslo měřiče"
+                  className={inputClass}
+                />
+              </div>
+              <div className="grid sm:grid-cols-2 gap-3 mb-2">
                 <input
                   value={formData.gasMeter}
                   onChange={handleChange}
                   name="gasMeter"
-                  placeholder="Plynoměr"
+                  placeholder="Plynoměr — stav (m³)"
                   className={inputClass}
                 />
+                <input
+                  value={formData.gasMeterSerial}
+                  onChange={handleChange}
+                  name="gasMeterSerial"
+                  placeholder="Plynoměr — číslo měřiče"
+                  className={inputClass}
+                />
+              </div>
+              <div className="grid sm:grid-cols-2 gap-3 mb-2">
                 <input
                   value={formData.waterMeter}
                   onChange={handleChange}
                   name="waterMeter"
-                  placeholder="Vodoměr"
+                  placeholder="Vodoměr studená voda — stav (m³)"
+                  className={inputClass}
+                />
+                <input
+                  value={formData.waterMeterSerial}
+                  onChange={handleChange}
+                  name="waterMeterSerial"
+                  placeholder="Vodoměr studená — číslo měřiče"
+                  className={inputClass}
+                />
+              </div>
+              <div className="grid sm:grid-cols-2 gap-3 mb-4">
+                <input
+                  value={formData.hotWaterMeter}
+                  onChange={handleChange}
+                  name="hotWaterMeter"
+                  placeholder="Vodoměr teplá voda — stav (m³)"
+                  className={inputClass}
+                />
+                <input
+                  value={formData.hotWaterMeterSerial}
+                  onChange={handleChange}
+                  name="hotWaterMeterSerial"
+                  placeholder="Vodoměr teplá — číslo měřiče"
                   className={inputClass}
                 />
               </div>

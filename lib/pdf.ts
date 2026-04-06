@@ -48,27 +48,24 @@ async function ensurePdfFonts(doc: jsPDF): Promise<void> {
 //  DESIGN TOKENS
 // ─────────────────────────────────────────────
 
-// Gold accent  — primary brand colour
-const GOLD_R = 200, GOLD_G = 160, GOLD_B = 40;
-// Dark text
-const DARK_R = 20,  DARK_G = 20,  DARK_B = 20;
-// Body text
-const BODY_R = 35,  BODY_G = 35,  BODY_B = 35;
-// Muted / caption text
-const MUTED_R = 120, MUTED_G = 120, MUTED_B = 120;
-// Light rule
-const RULE_R = 200, RULE_G = 200, RULE_B = 200;
-// Summary box background
-const BOX_R = 248, BOX_G = 246, BOX_B = 240;
-// TOC stripe
-const TOC_R = 252, TOC_G = 251, TOC_B = 247;
+// Typography
+const INK_R  = 15,  INK_G  = 15,  INK_B  = 15;   // near-black headings
+const BODY_R = 30,  BODY_G = 30,  BODY_B = 30;   // body text
+const META_R = 105, META_G = 105, META_B = 105;   // running headers, captions
+const RULE_R = 190, RULE_G = 190, RULE_B = 190;   // light neutral rules
+const SIGN_R = 100, SIGN_G = 100, SIGN_B = 100;   // signature lines
 
-// Tier badge colours
-const TIER_COLORS: Record<string, [number, number, number]> = {
-  basic:        [120, 120, 120],
-  professional: [50,  110, 180],
-  complete:     [170, 120,  20],
-};
+// Summary box — neutral warm white, no gold accent bar
+const BOX_BG_R = 246, BOX_BG_G = 246, BOX_BG_B = 244;
+const BOX_BD_R = 210, BOX_BD_G = 210, BOX_BD_B = 208;
+
+// TOC alternating row — very subtle
+const TOC_R = 250, TOC_G = 250, TOC_B = 249;
+
+// Page layout
+const MARGIN    = 25;           // professional legal margin (was 20)
+const BODY_LEAD = 6.0;          // body line height mm (was 5.5)
+const SECTION_GAP = 7;          // space between sections (was 5)
 
 // ─────────────────────────────────────────────
 //  HELPERS
@@ -125,123 +122,111 @@ function isProtocolSection(title: string): boolean {
   return title.toUpperCase().includes('PŘEDÁVACÍ PROTOKOL') || title.toUpperCase().includes('PŘÍLOHA');
 }
 
+function isLeaseProtocol(title: string): boolean {
+  return title.toUpperCase().includes('PŘEDÁVACÍ PROTOKOL K NÁJEMNÍ SMLOUVĚ');
+}
+
 function tierLabel(tier?: string): string {
-  if (tier === 'complete')     return 'KOMPLETNÍ';
-  if (tier === 'professional') return 'ROZŠÍŘENÁ';
-  return 'ZÁKLADNÍ';
+  if (tier === 'complete')     return 'Kompletní';
+  if (tier === 'professional') return 'Rozšířená';
+  return 'Základní';
 }
 
 // ─────────────────────────────────────────────
-//  PAGE HEADER  (every page)
+//  PAGE HEADER
 // ─────────────────────────────────────────────
 
 /**
- * First-page header: large centred title + thick gold rule.
- * Subsequent-page header: compact running title (10pt) + thin rule.
+ * First-page header: centred title with generous top margin and a clean double rule.
+ * Subsequent pages: small running title (left) + docId (right), thin rule below.
  */
-function drawHeader(doc: jsPDF, title: string, isFirstPage = false): void {
+function drawHeader(doc: jsPDF, title: string, isFirstPage: boolean, docId?: string): void {
   const pageWidth = doc.internal.pageSize.getWidth();
-  const margin = 20;
 
   if (isFirstPage) {
+    // Generous top breathing room
+    const titleY = 28;
+
     doc.setFont('Roboto', 'bold');
-    doc.setFontSize(19);
-    doc.setTextColor(DARK_R, DARK_G, DARK_B);
-    doc.text(title.toUpperCase(), pageWidth / 2, 21, { align: 'center' });
+    doc.setFontSize(20);
+    doc.setTextColor(INK_R, INK_G, INK_B);
+    doc.text(title.toUpperCase(), pageWidth / 2, titleY, { align: 'center' });
 
-    // thick gold accent line
-    doc.setDrawColor(GOLD_R, GOLD_G, GOLD_B);
-    doc.setLineWidth(0.9);
-    doc.line(margin, 27, pageWidth - margin, 27);
+    // Double thin rule beneath title — professional legal look
+    const ruleY1 = titleY + 5;
+    const ruleY2 = ruleY1 + 1.5;
+    doc.setDrawColor(INK_R, INK_G, INK_B);
+    doc.setLineWidth(0.5);
+    doc.line(MARGIN, ruleY1, pageWidth - MARGIN, ruleY1);
     doc.setLineWidth(0.2);
+    doc.line(MARGIN, ruleY2, pageWidth - MARGIN, ruleY2);
+
+    // Reset
     doc.setDrawColor(RULE_R, RULE_G, RULE_B);
+    doc.setLineWidth(0.2);
   } else {
-    // Running header — compact
+    // Running header — left: abbreviated title, right: docId
     doc.setFont('Roboto', 'normal');
-    doc.setFontSize(8);
-    doc.setTextColor(MUTED_R, MUTED_G, MUTED_B);
-    doc.text(title.toUpperCase(), margin, 10);
-    doc.text('SmlouvaHned.cz', pageWidth - margin, 10, { align: 'right' });
+    doc.setFontSize(7.5);
+    doc.setTextColor(META_R, META_G, META_B);
+    doc.text(title.toUpperCase(), MARGIN, 10);
+    if (docId) {
+      doc.text(docId, pageWidth - MARGIN, 10, { align: 'right' });
+    }
 
-    // thin gold separator
-    doc.setDrawColor(GOLD_R, GOLD_G, GOLD_B);
-    doc.setLineWidth(0.35);
-    doc.line(margin, 13, pageWidth - margin, 13);
-    doc.setLineWidth(0.2);
+    // Single thin neutral rule
     doc.setDrawColor(RULE_R, RULE_G, RULE_B);
+    doc.setLineWidth(0.2);
+    doc.line(MARGIN, 13, pageWidth - MARGIN, 13);
   }
 }
 
 // ─────────────────────────────────────────────
-//  FOOTER  (all pages, added in post-processing)
+//  FOOTER
 // ─────────────────────────────────────────────
 
-function drawFooter(doc: jsPDF, docId?: string, hash?: string): void {
+function drawFooter(doc: jsPDF, docId?: string, hash?: string, tier?: string): void {
   const pageCount = doc.getNumberOfPages();
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
-  const margin = 20;
+
+  const tierText = tier ? `  ·  ${tierLabel(tier)}` : '';
+  const footerLine2 = hash ? `Otisk: ${hash}${tierText}` : '';
 
   for (let i = 1; i <= pageCount; i += 1) {
     doc.setPage(i);
     doc.setFont('Roboto', 'normal');
-    doc.setFontSize(7.5);
-    doc.setTextColor(MUTED_R, MUTED_G, MUTED_B);
+    doc.setFontSize(7);
+    doc.setTextColor(META_R, META_G, META_B);
 
-    // thin separator line above footer
+    // Thin rule above footer
     doc.setDrawColor(RULE_R, RULE_G, RULE_B);
-    doc.setLineWidth(0.2);
-    doc.line(margin, pageHeight - 16, pageWidth - margin, pageHeight - 16);
+    doc.setLineWidth(0.15);
+    doc.line(MARGIN, pageHeight - 15, pageWidth - MARGIN, pageHeight - 15);
 
-    doc.text(docId ? `ID: ${docId}` : 'SmlouvaHned.cz', margin, pageHeight - 10);
-    doc.text(`Strana ${i} z ${pageCount}`, pageWidth / 2, pageHeight - 10, { align: 'center' });
-    doc.text(
-      'Generováno ' + new Date().toLocaleDateString('cs-CZ'),
-      pageWidth - margin,
-      pageHeight - 10,
-      { align: 'right' },
-    );
+    // Line 1: ID (left) · page (centre) · date (right)
+    const dateStr = new Date().toLocaleDateString('cs-CZ');
+    doc.text(docId ? `ID: ${docId}` : '', MARGIN, pageHeight - 10);
+    doc.text(`— ${i} / ${pageCount} —`, pageWidth / 2, pageHeight - 10, { align: 'center' });
+    doc.text(`Generováno ${dateStr}`, pageWidth - MARGIN, pageHeight - 10, { align: 'right' });
 
-    if (hash) {
-      doc.setFontSize(6.5);
-      doc.text(`Otisk dokumentu: ${hash}`, margin, pageHeight - 5);
-      doc.setFontSize(7.5);
+    // Line 2: hash + tier — very small, muted
+    if (footerLine2) {
+      doc.setFontSize(6);
+      doc.text(footerLine2, MARGIN, pageHeight - 5.5);
     }
+
     doc.setTextColor(0);
   }
 }
 
 // ─────────────────────────────────────────────
-//  TIER BADGE  (top-right of first page)
-// ─────────────────────────────────────────────
-
-function drawTierBadge(doc: jsPDF, tier: string): void {
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const label = tierLabel(tier);
-  const [r, g, b] = TIER_COLORS[tier] ?? TIER_COLORS.basic;
-
-  const badgeX = pageWidth - 20;
-  const badgeY = 8;
-
-  // Filled pill
-  const textWidth = 26;
-  doc.setFillColor(r, g, b);
-  doc.roundedRect(badgeX - textWidth, badgeY - 4, textWidth, 6, 1.5, 1.5, 'F');
-
-  doc.setFont('Roboto', 'bold');
-  doc.setFontSize(6.5);
-  doc.setTextColor(255, 255, 255);
-  doc.text(label, badgeX - textWidth / 2, badgeY + 0.3, { align: 'center' });
-  doc.setTextColor(0);
-}
-
-// ─────────────────────────────────────────────
-//  SUMMARY BOX  (first page, below header)
+//  SUMMARY BOX  (metadata section, first page)
 // ─────────────────────────────────────────────
 
 /**
- * Draws a lightly shaded info box summarising the contract parties,
- * date and tier.  Returns the Y-position directly after the box.
+ * Two-column metadata block: parties (left column) + key identifiers (right column).
+ * Neutral light background, no gold accent bar — looks like a document header, not a widget.
  */
 function drawSummaryBox(
   doc: jsPDF,
@@ -249,14 +234,10 @@ function drawSummaryBox(
   contractType: ContractType,
   startY: number,
 ): number {
-  const margin = 20;
   const pageWidth = doc.internal.pageSize.getWidth();
-  const contentWidth = pageWidth - margin * 2;
+  const contentWidth = pageWidth - MARGIN * 2;
 
-  // Collect key info lines
-  const lines: string[] = [];
-
-  // Parties — pick the right fields per contract type
+  // Collect party lines
   const partyPairs: [string | undefined, string | undefined][] = (() => {
     switch (contractType) {
       case 'lease':
@@ -292,101 +273,135 @@ function drawSummaryBox(
     }
   })();
 
-  for (const [name, role] of partyPairs) {
-    if (name) lines.push(`${role}: ${name}`);
-  }
+  // Right-column identifiers
+  const identLines: string[] = [];
 
-  // Date
   const dateStr = data.contractDate
     ? new Date(data.contractDate as string).toLocaleDateString('cs-CZ')
     : new Date().toLocaleDateString('cs-CZ');
-  lines.push(`Datum uzavření: ${dateStr}`);
+  identLines.push(`Datum uzavření: ${dateStr}`);
 
-  // Key amount — covers all 14 contract types
   const amount = (data.price ?? data.loanAmount ?? data.rentAmount ?? data.debtAmount ?? data.totalPrice ?? data.monthlyFee ?? data.salary ?? data.totalRemuneration ?? data.hourlyRate) as number | undefined;
   if (amount && !isNaN(Number(amount)) && Number(amount) > 0) {
-    const amountLabel = data.monthlyFee ? 'Měsíční paušál' : data.salary ? 'Měsíční mzda (hrubá)' : data.hourlyRate && !data.price && !data.totalPrice ? 'Hodinová sazba' : data.rentAmount && contractType === 'lease' ? 'Měsíční nájemné' : data.rentAmount && contractType === 'sublease' ? 'Měsíční podnájemné' : data.loanAmount ? 'Výše zápůjčky' : data.debtAmount ? 'Výše uznaného dluhu' : 'Sjednaná částka';
-    lines.push(`${amountLabel}: ${Number(amount).toLocaleString('cs-CZ')} Kč`);
+    const amountLabel =
+      data.monthlyFee ? 'Měsíční paušál' :
+      data.salary ? 'Mzda (hrubá/měs.)' :
+      data.rentAmount && contractType === 'lease' ? 'Nájemné' :
+      data.rentAmount && contractType === 'sublease' ? 'Podnájemné' :
+      data.loanAmount ? 'Výše zápůjčky' :
+      data.debtAmount ? 'Výše dluhu' :
+      'Sjednaná částka';
+    identLines.push(`${amountLabel}: ${Number(amount).toLocaleString('cs-CZ')} Kč`);
   }
 
-  // Contract-specific key identifiers
   switch (contractType) {
     case 'lease':
     case 'sublease': {
       const addr = (data.propertyAddress ?? data.flatAddress) as string | undefined;
-      if (addr) lines.push(`Adresa bytu: ${addr}`);
+      if (addr) identLines.push(`Nemovitost: ${addr}`);
       break;
     }
     case 'car_sale': {
       const vin = data.carVIN as string | undefined;
       const spz = data.carPlate as string | undefined;
-      if (vin || spz) lines.push(`Vozidlo: VIN ${vin ?? '—'}, SPZ ${spz ?? '—'}`);
+      if (vin || spz) identLines.push(`Vozidlo: VIN ${vin ?? '—'}  SPZ ${spz ?? '—'}`);
       break;
     }
     case 'employment':
     case 'dpp': {
       const job = data.jobTitle as string | undefined;
-      if (job) lines.push(`Pozice: ${job}`);
+      if (job) identLines.push(`Pracovní pozice: ${job}`);
       break;
     }
     case 'loan': {
       const repDate = data.repaymentDate as string | undefined;
-      if (repDate) lines.push(`Splatnost: ${new Date(repDate).toLocaleDateString('cs-CZ')}`);
+      if (repDate) identLines.push(`Splatnost: ${new Date(repDate).toLocaleDateString('cs-CZ')}`);
       break;
     }
     case 'nda': {
       const dur = data.ndaDuration as string | undefined;
-      if (dur) lines.push(`Doba mlčenlivosti: ${dur}`);
+      if (dur) identLines.push(`Doba mlčenlivosti: ${dur}`);
       break;
     }
     default:
       break;
   }
 
-  if (lines.length === 0) return startY;
+  const partyLines = partyPairs.filter(([name]) => !!name);
+  if (partyLines.length === 0 && identLines.length === 0) return startY;
 
-  const lineHeight = 5.5;
-  const paddingV = 5;
-  const paddingH = 7;
-  const boxHeight = lines.length * lineHeight + paddingV * 2;
+  const rowH    = 5.5;
+  const padV    = 5;
+  const padH    = 6;
+  const rowCount = Math.max(partyLines.length, identLines.length);
+  const boxH    = rowCount * rowH + padV * 2 + 2;  // +2 for label row
 
-  // Box background
-  doc.setFillColor(BOX_R, BOX_G, BOX_B);
-  doc.setDrawColor(GOLD_R, GOLD_G, GOLD_B);
-  doc.setLineWidth(0.4);
-  doc.roundedRect(margin, startY, contentWidth, boxHeight, 2, 2, 'FD');
+  const colW = (contentWidth - 1) / 2;  // 1 mm gap between columns
 
-  // Left accent bar
-  doc.setFillColor(GOLD_R, GOLD_G, GOLD_B);
-  doc.rect(margin, startY, 2.5, boxHeight, 'F');
+  // Background
+  doc.setFillColor(BOX_BG_R, BOX_BG_G, BOX_BG_B);
+  doc.setDrawColor(BOX_BD_R, BOX_BD_G, BOX_BD_B);
+  doc.setLineWidth(0.25);
+  doc.roundedRect(MARGIN, startY, contentWidth, boxH, 1.5, 1.5, 'FD');
 
+  // Column divider
+  doc.setDrawColor(BOX_BD_R, BOX_BD_G, BOX_BD_B);
+  doc.setLineWidth(0.2);
+  doc.line(MARGIN + colW + 0.5, startY + 2, MARGIN + colW + 0.5, startY + boxH - 2);
+
+  // Column headers
+  const labelY = startY + padV + 1.5;
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(7);
+  doc.setTextColor(META_R, META_G, META_B);
+  doc.text('SMLUVNÍ STRANY', MARGIN + padH, labelY);
+  doc.text('IDENTIFIKACE DOKUMENTU', MARGIN + colW + padH + 1, labelY);
+
+  let rowY = labelY + rowH;
   doc.setFont('Roboto', 'normal');
   doc.setFontSize(9);
   doc.setTextColor(BODY_R, BODY_G, BODY_B);
 
-  let y = startY + paddingV + 3.5;
-  for (const line of lines) {
-    doc.text(line, margin + paddingH, y);
-    y += lineHeight;
+  for (let i = 0; i < rowCount; i++) {
+    const [name, role] = partyLines[i] ?? [undefined, undefined];
+    if (name && role) {
+      // Role label in muted
+      doc.setFont('Roboto', 'bold');
+      doc.setFontSize(7.5);
+      doc.setTextColor(META_R, META_G, META_B);
+      doc.text(`${role}:`, MARGIN + padH, rowY);
+      doc.setFont('Roboto', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(BODY_R, BODY_G, BODY_B);
+      const nameMaxW = colW - padH - 4;
+      const nameTrimmed = doc.splitTextToSize(name, nameMaxW)[0] as string;
+      doc.text(nameTrimmed, MARGIN + padH + doc.getTextWidth(`${role}: `), rowY);
+    }
+
+    const identLine = identLines[i];
+    if (identLine) {
+      doc.setFont('Roboto', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(BODY_R, BODY_G, BODY_B);
+      const identMaxW = colW - padH - 4;
+      const identTrimmed = doc.splitTextToSize(identLine, identMaxW)[0] as string;
+      doc.text(identTrimmed, MARGIN + colW + padH + 1, rowY);
+    }
+
+    rowY += rowH;
   }
 
   doc.setTextColor(0);
   doc.setDrawColor(RULE_R, RULE_G, RULE_B);
   doc.setLineWidth(0.2);
 
-  return startY + boxHeight + 6;
+  return startY + boxH + 7;
 }
 
 // ─────────────────────────────────────────────
-//  TABLE OF CONTENTS  (professional / complete)
+//  TABLE OF CONTENTS
 // ─────────────────────────────────────────────
 
-/**
- * Two-pass helper: renders contract body on a scratch doc (no TOC) to
- * measure the actual starting page for each section. Returns a Map of
- * sectionTitle → 1-based page number in the scratch document.
- * Call before rendering the final PDF; add the TOC-page offset when displaying.
- */
 async function measureSectionPages(
   data: StoredContractData,
   sections: ReturnType<typeof buildContractSections>,
@@ -397,14 +412,12 @@ async function measureSectionPages(
   const scratch = new jsPDF({ unit: 'mm', format: 'a4', compress: false });
   await ensurePdfFonts(scratch);
 
-  const margin = 20;
   const pageWidth = scratch.internal.pageSize.getWidth();
-  const contentWidth = pageWidth - margin * 2;
+  const contentWidth = pageWidth - MARGIN * 2;
   const pageMap = new Map<string, number>();
 
-  // Mirror the first-page setup (same as renderContractPdf, no TOC)
   drawHeader(scratch, meta.title, true);
-  let y = 32;
+  let y = 40;
   y = drawSummaryBox(scratch, data, data.contractType, y);
   let inProtocol = false;
 
@@ -414,77 +427,54 @@ async function measureSectionPages(
       scratch.addPage();
       drawHeader(scratch, meta.title, false);
       y = 22;
-      scratch.setFont('Roboto', 'normal');
-      scratch.setFontSize(10);
-      scratch.setTextColor(BODY_R, BODY_G, BODY_B);
-      scratch.setDrawColor(GOLD_R, GOLD_G, GOLD_B);
-      scratch.setLineWidth(0.5);
-      scratch.line(margin, y, pageWidth - margin, y);
-      scratch.setLineWidth(0.2);
-      scratch.setDrawColor(RULE_R, RULE_G, RULE_B);
-      y += 8;
     }
 
     if (isSignatureSection(section.title)) {
-      y = drawSignatureSection(scratch, section.title, labelLeft, labelRight, margin, y, meta.title);
+      y = drawSignatureSection(scratch, section.title, labelLeft, labelRight, y, meta.title);
       continue;
     }
 
-    // Mirror same orphan guard as main render
-    const orphanBuffer = section.body.length > 0 ? 30 : 18;
-    if (y + orphanBuffer > 275) {
+    const orphanBuffer = section.body.length > 0 ? 32 : 20;
+    if (y + orphanBuffer > 272) {
       scratch.addPage();
       drawHeader(scratch, meta.title, false);
       y = 22;
-      scratch.setFont('Roboto', 'normal');
-      scratch.setFontSize(10);
-      scratch.setTextColor(BODY_R, BODY_G, BODY_B);
     }
 
-    y += 3;
-    // Record which page this section starts on
-    pageMap.set(section.title, (scratch.internal as unknown as { getCurrentPageInfo: () => { pageNumber: number } }).getCurrentPageInfo().pageNumber);
+    y += 4;
+    pageMap.set(
+      section.title,
+      (scratch.internal as unknown as { getCurrentPageInfo: () => { pageNumber: number } }).getCurrentPageInfo().pageNumber,
+    );
 
-    y = drawSectionTitle(scratch, section.title, margin, y, contentWidth, inProtocol);
+    y = drawSectionTitle(scratch, section.title, y, contentWidth, inProtocol);
 
     const bodyLines = section.body.slice(0, 80);
-    for (let lineIdx = 0; lineIdx < bodyLines.length; lineIdx++) {
-      const line = bodyLines[lineIdx];
-      const rawLine = line != null ? String(line) : '';
-      const safeLine = rawLine.length > 800 ? rawLine.substring(0, 800) + '…' : (rawLine.trim() || ' ');
-      const splitLines = scratch.splitTextToSize(safeLine, contentWidth);
-
-      const lineH = splitLines.length * 5.5 + 2.5;
-      const isLast = lineIdx === bodyLines.length - 1;
-      const needsBreak = isLast ? y + lineH > 275 : y + lineH + 8 > 275;
-
-      if (needsBreak) {
+    for (let i = 0; i < bodyLines.length; i++) {
+      const raw = bodyLines[i] != null ? String(bodyLines[i]) : '';
+      const safe = raw.length > 800 ? raw.substring(0, 800) + '…' : (raw.trim() || ' ');
+      const split = scratch.splitTextToSize(safe, contentWidth);
+      const lh = split.length * BODY_LEAD + 2;
+      const isLast = i === bodyLines.length - 1;
+      if (isLast ? y + lh > 272 : y + lh + 8 > 272) {
         scratch.addPage();
         drawHeader(scratch, meta.title, false);
         y = 22;
-        scratch.setFont('Roboto', 'normal');
-        scratch.setFontSize(10);
-        scratch.setTextColor(BODY_R, BODY_G, BODY_B);
       }
-
-      scratch.text(splitLines, margin, y, { align: 'justify', maxWidth: contentWidth });
-      y += lineH;
+      scratch.text(split, MARGIN, y, { align: 'justify', maxWidth: contentWidth });
+      y += lh;
     }
-
-    y += 5;
+    y += SECTION_GAP;
   }
 
   return pageMap;
 }
 
-/**
- * Estimates the number of pages the TOC will occupy (usually 1).
- */
 function estimateTocPageCount(sections: { title: string }[]): number {
-  const visibleSections = sections.filter(s => !isSignatureSection(s.title));
-  let y = 32 + 7; // header 22 + heading block ~10 + first row offset
+  const visible = sections.filter(s => !isSignatureSection(s.title));
+  let y = 40;
   let pages = 1;
-  for (const _ of visibleSections) {
+  for (const _ of visible) {
     y += 7;
     if (y > 270) { pages++; y = 29; }
   }
@@ -495,123 +485,105 @@ function drawTableOfContents(
   doc: jsPDF,
   sections: { title: string }[],
   title: string,
+  docId: string,
   pageMap?: Map<string, number>,
   tocOffset = 0,
 ): void {
   doc.addPage();
-  const margin = 20;
   const pageWidth = doc.internal.pageSize.getWidth();
-  const contentWidth = pageWidth - margin * 2;
+  const contentWidth = pageWidth - MARGIN * 2;
 
-  drawHeader(doc, title, false);
+  drawHeader(doc, title, false, docId);
   let y = 22;
 
-  // Section heading
   doc.setFont('Roboto', 'bold');
-  doc.setFontSize(12);
-  doc.setTextColor(DARK_R, DARK_G, DARK_B);
-  doc.text('OBSAH SMLOUVY', margin, y);
-  y += 3;
+  doc.setFontSize(11);
+  doc.setTextColor(INK_R, INK_G, INK_B);
+  doc.text('OBSAH', MARGIN, y);
+  y += 2;
 
-  // Underline
-  doc.setDrawColor(GOLD_R, GOLD_G, GOLD_B);
-  doc.setLineWidth(0.6);
-  doc.line(margin, y, margin + 60, y);
+  doc.setDrawColor(INK_R, INK_G, INK_B);
+  doc.setLineWidth(0.35);
+  doc.line(MARGIN, y, MARGIN + contentWidth, y);
   doc.setLineWidth(0.2);
   doc.setDrawColor(RULE_R, RULE_G, RULE_B);
   y += 7;
 
-  // Filter visible sections (exclude PODPISY)
   const visibleSections = sections.filter(s => !isSignatureSection(s.title));
-  const totalSections = visibleSections.length;
+  const total = visibleSections.length;
 
-  let rowIndex = 0;
-  for (const section of visibleSections) {
-    const sectionNum = rowIndex + 1;
-
-    // Alternating row background
-    if (rowIndex % 2 === 0) {
+  visibleSections.forEach((section, idx) => {
+    if (idx % 2 === 0) {
       doc.setFillColor(TOC_R, TOC_G, TOC_B);
-      doc.rect(margin, y - 4, contentWidth, 7, 'F');
+      doc.rect(MARGIN, y - 4, contentWidth, 7, 'F');
     }
 
-    // Section title
     doc.setFont('Roboto', 'normal');
     doc.setFontSize(9.5);
     doc.setTextColor(BODY_R, BODY_G, BODY_B);
-    doc.text(section.title, margin + 3, y);
+    doc.text(section.title, MARGIN + 3, y);
 
-    // Dotted leader + right-side page/section info
-    doc.setFont('Roboto', 'normal');
     doc.setFontSize(8);
-    doc.setTextColor(MUTED_R, MUTED_G, MUTED_B);
-    const dots = ' · · · · · · · · · · · · · · · · · ·';
+    doc.setTextColor(META_R, META_G, META_B);
 
     let numText: string;
     if (pageMap && pageMap.has(section.title)) {
-      // Real page number from two-pass measurement
-      const actualPage = (pageMap.get(section.title) ?? 0) + tocOffset;
-      numText = `str. ${actualPage}`;
+      numText = `str. ${(pageMap.get(section.title) ?? 0) + tocOffset}`;
     } else {
-      // Fallback: section index
-      numText = `${sectionNum} / ${totalSections}`;
+      numText = `${idx + 1} / ${total}`;
     }
 
-    const numWidth = doc.getTextWidth(numText);
-    const titleWidth = doc.getTextWidth(section.title) + margin + 3;
-    const dotsX = Math.min(titleWidth + 4, pageWidth - margin - numWidth - 10);
-    const availDotsWidth = pageWidth - margin - numWidth - 4 - dotsX;
-    if (availDotsWidth > 10) {
-      const truncDots = dots.substring(0, Math.floor(availDotsWidth / 2));
-      doc.text(truncDots, dotsX, y);
+    const numW  = doc.getTextWidth(numText);
+    const titW  = doc.getTextWidth(section.title) + MARGIN + 3;
+    const dotsX = Math.min(titW + 4, pageWidth - MARGIN - numW - 10);
+    const avail = pageWidth - MARGIN - numW - 4 - dotsX;
+    if (avail > 10) {
+      const dots = ' · · · · · · · · · · · · · · · · · ·';
+      doc.text(dots.substring(0, Math.floor(avail / 2)), dotsX, y);
     }
-    doc.text(numText, pageWidth - margin - numWidth, y);
+    doc.text(numText, pageWidth - MARGIN - numW, y);
 
     y += 7;
-    rowIndex++;
-
     if (y > 270) {
       doc.addPage();
-      drawHeader(doc, title, false);
+      drawHeader(doc, title, false, docId);
       y = 22;
     }
-  }
+  });
 
   doc.setTextColor(0);
 }
 
 // ─────────────────────────────────────────────
-//  SECTION HEADING RENDERER
+//  SECTION HEADING
 // ─────────────────────────────────────────────
 
 /**
- * Draws a section title with a thin gold underline accent.
- * Returns new Y after the heading.
+ * Full-width neutral thin rule beneath heading — replaces the short gold underline.
+ * Returns new Y after heading.
  */
 function drawSectionTitle(
   doc: jsPDF,
   title: string,
-  x: number,
   y: number,
   contentWidth: number,
   isProtocol = false,
 ): number {
+  const pageWidth = doc.internal.pageSize.getWidth();
+
   doc.setFont('Roboto', 'bold');
-  doc.setFontSize(11);
-  doc.setTextColor(isProtocol ? 40 : DARK_R, isProtocol ? 40 : DARK_G, isProtocol ? 40 : DARK_B);
+  doc.setFontSize(isProtocol ? 10.5 : 11);
+  doc.setTextColor(INK_R, INK_G, INK_B);
 
   const titleLines = doc.splitTextToSize(title, contentWidth);
-  doc.text(titleLines, x, y);
-  const titleBlockH = titleLines.length * 6;
-  y += titleBlockH;
+  doc.text(titleLines, MARGIN, y);
+  y += titleLines.length * 6;
 
-  // Thin gold underline under heading
-  doc.setDrawColor(GOLD_R, GOLD_G, GOLD_B);
-  doc.setLineWidth(0.35);
-  doc.line(x, y, x + Math.min(contentWidth * 0.45, 80), y);
-  doc.setLineWidth(0.2);
+  // Full-width thin rule — clean, no decorative accent
   doc.setDrawColor(RULE_R, RULE_G, RULE_B);
-  y += 3;
+  doc.setLineWidth(0.2);
+  doc.line(MARGIN, y, pageWidth - MARGIN, y);
+  y += 4;
 
   doc.setFont('Roboto', 'normal');
   doc.setFontSize(10);
@@ -620,9 +592,8 @@ function drawSectionTitle(
   return y;
 }
 
-function drawEndOfTextMarker(doc: jsPDF, margin: number, y: number, contractTitle = ''): number {
+function drawEndOfTextMarker(doc: jsPDF, y: number, contractTitle = ''): number {
   const pageWidth = doc.internal.pageSize.getWidth();
-  const contentWidth = pageWidth - margin * 2;
 
   if (y > 245) {
     doc.addPage();
@@ -630,29 +601,503 @@ function drawEndOfTextMarker(doc: jsPDF, margin: number, y: number, contractTitl
     y = 22;
   }
 
-  y += 2;
+  y += 3;
   doc.setDrawColor(RULE_R, RULE_G, RULE_B);
-  doc.setLineWidth(0.25);
-  doc.line(margin, y, pageWidth - margin, y);
-  y += 6;
+  doc.setLineWidth(0.2);
+  doc.line(MARGIN, y, pageWidth - MARGIN, y);
+  y += 8;
 
-  doc.setFont('Roboto', 'bold');
-  doc.setFontSize(8.5);
-  doc.setTextColor(MUTED_R, MUTED_G, MUTED_B);
-  doc.text('### KONEC TEXTU SMLOUVY ###', margin + contentWidth / 2, y, { align: 'center' });
-  y += 4;
-
-  doc.setFont('Roboto', 'normal');
-  doc.setFontSize(7);
-  doc.setTextColor(MUTED_R, MUTED_G, MUTED_B);
-  doc.text('Za tímto označením již následuje pouze podpisová část a případné přílohy.', margin + contentWidth / 2, y, { align: 'center' });
   doc.setTextColor(0);
-
-  return y + 6;
+  return y;
 }
 
 // ─────────────────────────────────────────────
-//  SIGNATURE SECTION RENDERER
+//  LEASE HANDOVER PROTOCOL FORM
+// ─────────────────────────────────────────────
+
+/**
+ * Renders the handover protocol as a structured form with grid sections,
+ * checkbox rows for room conditions, and a formal signature block.
+ * Called instead of the generic body renderer when the section title
+ * matches the lease protocol sentinel.
+ */
+function drawLeaseProtocolForm(
+  doc: jsPDF,
+  data: StoredContractData,
+  contractTitle: string,
+  docId: string,
+): void {
+  const pageWidth    = doc.internal.pageSize.getWidth();
+  const contentWidth = pageWidth - MARGIN * 2;
+
+  // ── New page, protocol header ──────────────────────────────────────────
+  doc.addPage();
+  drawHeader(doc, contractTitle, false, docId);
+  let y = 20;
+
+  // Protocol title block
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(13);
+  doc.setTextColor(INK_R, INK_G, INK_B);
+  doc.text('PŘÍLOHA Č. 1', MARGIN, y);
+  y += 6;
+  doc.setFontSize(11);
+  doc.text('PROTOKOL O PŘEDÁNÍ A PŘEVZETÍ BYTU', MARGIN, y);
+  y += 3;
+  doc.setDrawColor(INK_R, INK_G, INK_B);
+  doc.setLineWidth(0.4);
+  doc.line(MARGIN, y, pageWidth - MARGIN, y);
+  doc.setLineWidth(0.2);
+  doc.setDrawColor(RULE_R, RULE_G, RULE_B);
+  y += 7;
+
+  // Subtitle
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(8.5);
+  doc.setTextColor(META_R, META_G, META_B);
+  doc.text('Nedílná součást nájemní smlouvy — vyplní se při fyzickém předání bytu', MARGIN, y);
+  y += 8;
+
+  // ── Helper: draw a labelled field box ───────────────────────────────────
+  const asT = (v: unknown, fb = '') => {
+    if (v === null || v === undefined) return fb;
+    const s = String(v).trim();
+    return s || fb;
+  };
+
+  const drawField = (label: string, value: string, x: number, fw: number, fy: number, fh = 7): number => {
+    doc.setFont('Roboto', 'bold');
+    doc.setFontSize(7);
+    doc.setTextColor(META_R, META_G, META_B);
+    doc.text(label.toUpperCase(), x, fy);
+    fy += 2.5;
+    // Box
+    doc.setDrawColor(BOX_BD_R, BOX_BD_G, BOX_BD_B);
+    doc.setLineWidth(0.2);
+    doc.rect(x, fy, fw, fh);
+    if (value) {
+      doc.setFont('Roboto', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(BODY_R, BODY_G, BODY_B);
+      const trimmed = doc.splitTextToSize(value, fw - 4)[0] as string;
+      doc.text(trimmed, x + 2.5, fy + fh - 2.5);
+    }
+    return fy + fh + 4;
+  };
+
+  // ── Section A: Identifikace ──────────────────────────────────────────────
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(8.5);
+  doc.setTextColor(INK_R, INK_G, INK_B);
+  doc.text('A  IDENTIFIKACE', MARGIN, y);
+  y += 1.5;
+  doc.setDrawColor(RULE_R, RULE_G, RULE_B);
+  doc.setLineWidth(0.15);
+  doc.line(MARGIN, y, pageWidth - MARGIN, y);
+  y += 4;
+
+  const halfW = (contentWidth - 4) / 2;
+  const addrMaxW = contentWidth;
+  const propertyAddr = asT(data.propertyAddress || data.flatAddress, '');
+
+  // Address full width
+  drawField('Adresa bytu', propertyAddr, MARGIN, addrMaxW, y, 8);
+  y += 15;
+
+  // Landlord / Tenant side by side
+  const landlordName = asT(data.landlordName, '');
+  const tenantName   = asT(data.tenantName, '');
+  drawField('Pronajímatel', landlordName, MARGIN, halfW, y, 8);
+  drawField('Nájemce', tenantName, MARGIN + halfW + 4, halfW, y, 8);
+  y += 15;
+
+  // Handover date / contract ref
+  const handoverDate = asT(data.handoverDate, '');
+  const handoverDateDisplay = (() => {
+    if (!handoverDate) return '';
+    const m = handoverDate.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    return m ? `${parseInt(m[3], 10)}. ${parseInt(m[2], 10)}. ${m[1]}` : handoverDate;
+  })();
+  drawField('Datum předání a převzetí', handoverDateDisplay, MARGIN, halfW, y, 8);
+  drawField('Čas předání (vyplní se ručně)', '', MARGIN + halfW + 4, halfW, y, 8);
+  y += 15;
+
+  // ── Section B: Klíče ──────────────────────────────────────────────────────
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(8.5);
+  doc.setTextColor(INK_R, INK_G, INK_B);
+  doc.text('B  PŘEDANÉ KLÍČE A PŘÍSTUPOVÉ PROSTŘEDKY', MARGIN, y);
+  y += 1.5;
+  doc.setDrawColor(RULE_R, RULE_G, RULE_B);
+  doc.setLineWidth(0.15);
+  doc.line(MARGIN, y, pageWidth - MARGIN, y);
+  y += 5;
+
+  const keyTypes = [
+    { label: 'Klíče od bytu', field: 'keysCount' },
+    { label: 'Klíče od vchodu / domovní', field: '' },
+    { label: 'Klíče od schránky', field: '' },
+    { label: 'Klíče od sklepa / garážového stání', field: '' },
+    { label: 'Přístupový čip / karta', field: '' },
+  ];
+  const keyColW = contentWidth / keyTypes.length;
+
+  keyTypes.forEach((kt, idx) => {
+    const kx = MARGIN + idx * keyColW;
+    doc.setFont('Roboto', 'bold');
+    doc.setFontSize(6.5);
+    doc.setTextColor(META_R, META_G, META_B);
+    const labelLines = doc.splitTextToSize(kt.label, keyColW - 2);
+    doc.text(labelLines, kx, y);
+    const labelH = labelLines.length * 4;
+    // Small count box
+    doc.setDrawColor(BOX_BD_R, BOX_BD_G, BOX_BD_B);
+    doc.setLineWidth(0.2);
+    doc.rect(kx, y + labelH, keyColW - 3, 8);
+    const prefilled = kt.field ? asT((data as any)[kt.field], '') : '';
+    if (prefilled) {
+      doc.setFont('Roboto', 'normal');
+      doc.setFontSize(9);
+      doc.setTextColor(BODY_R, BODY_G, BODY_B);
+      doc.text(`${prefilled} ks`, kx + 2, y + labelH + 5.5);
+    } else {
+      doc.setFont('Roboto', 'normal');
+      doc.setFontSize(7.5);
+      doc.setTextColor(META_R, META_G, META_B);
+      doc.text('_____ ks', kx + 2, y + labelH + 5.5);
+    }
+  });
+  y += 22;
+
+  // ── Section C: Stav měřidel ───────────────────────────────────────────────
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(8.5);
+  doc.setTextColor(INK_R, INK_G, INK_B);
+  doc.text('C  STAV MĚŘIDEL KE DNI PŘEDÁNÍ', MARGIN, y);
+  y += 1.5;
+  doc.setDrawColor(RULE_R, RULE_G, RULE_B);
+  doc.setLineWidth(0.15);
+  doc.line(MARGIN, y, pageWidth - MARGIN, y);
+  y += 5;
+
+  const meters = [
+    {
+      label: 'Elektroměr',
+      serial: asT(data.electricityMeterSerial, ''),
+      value: asT(data.electricityMeter, ''),
+      unit: 'kWh',
+    },
+    {
+      label: 'Plynoměr',
+      serial: asT(data.gasMeterSerial, ''),
+      value: asT(data.gasMeter, ''),
+      unit: 'm³',
+    },
+    {
+      label: 'Vodoměr — studená',
+      serial: asT(data.waterMeterSerial, ''),
+      value: asT(data.waterMeter, ''),
+      unit: 'm³',
+    },
+    {
+      label: 'Vodoměr — teplá',
+      serial: asT(data.hotWaterMeterSerial, ''),
+      value: asT(data.hotWaterMeter, ''),
+      unit: 'm³',
+    },
+  ];
+
+  const mColW  = contentWidth / meters.length;
+  const mBoxH  = 22;
+
+  meters.forEach((m, idx) => {
+    const mx = MARGIN + idx * mColW;
+    // Outer box
+    doc.setFillColor(BOX_BG_R, BOX_BG_G, BOX_BG_B);
+    doc.setDrawColor(BOX_BD_R, BOX_BD_G, BOX_BD_B);
+    doc.setLineWidth(0.2);
+    doc.rect(mx, y, mColW - 2, mBoxH, 'FD');
+    // Label
+    doc.setFont('Roboto', 'bold');
+    doc.setFontSize(7);
+    doc.setTextColor(META_R, META_G, META_B);
+    doc.text(m.label.toUpperCase(), mx + 2.5, y + 4.5);
+    // Serial
+    doc.setFont('Roboto', 'normal');
+    doc.setFontSize(7);
+    doc.setTextColor(META_R, META_G, META_B);
+    doc.text(`č. ${m.serial || '_______________'}`, mx + 2.5, y + 9);
+    // Value — large
+    doc.setFont('Roboto', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(m.value ? BODY_R : META_R, m.value ? BODY_G : META_G, m.value ? BODY_B : META_B);
+    doc.text(m.value || '_____________', mx + 2.5, y + 16.5);
+    // Unit
+    doc.setFont('Roboto', 'normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(META_R, META_G, META_B);
+    doc.text(m.unit, mx + mColW - 6, y + mBoxH - 3);
+  });
+  y += mBoxH + 6;
+
+  // ── Section D: Vybavení a inventář ────────────────────────────────────────
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(8.5);
+  doc.setTextColor(INK_R, INK_G, INK_B);
+  doc.text('D  PŘEDÁVANÉ VYBAVENÍ A INVENTÁŘ', MARGIN, y);
+  y += 1.5;
+  doc.setDrawColor(RULE_R, RULE_G, RULE_B);
+  doc.setLineWidth(0.15);
+  doc.line(MARGIN, y, pageWidth - MARGIN, y);
+  y += 4;
+
+  const equipText = asT(data.equipmentList, 'Bez předávaného vybavení / dle samostatného soupisu připojeného k tomuto protokolu.');
+  const equipLines = doc.splitTextToSize(equipText, contentWidth - 5);
+  const equipBoxH  = Math.max(equipLines.length * 5.5 + 6, 16);
+  doc.setFillColor(BOX_BG_R, BOX_BG_G, BOX_BG_B);
+  doc.setDrawColor(BOX_BD_R, BOX_BD_G, BOX_BD_B);
+  doc.setLineWidth(0.2);
+  doc.rect(MARGIN, y, contentWidth, equipBoxH, 'FD');
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(BODY_R, BODY_G, BODY_B);
+  doc.text(equipLines, MARGIN + 2.5, y + 5);
+  y += equipBoxH + 6;
+
+  // ── Section E: Stav místností ─────────────────────────────────────────────
+  // Check if enough space; if not, new page
+  const roomsNeeded = 80;
+  if (y + roomsNeeded > 272) {
+    doc.addPage();
+    drawHeader(doc, contractTitle, false, docId);
+    y = 20;
+  }
+
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(8.5);
+  doc.setTextColor(INK_R, INK_G, INK_B);
+  doc.text('E  STAV MÍSTNOSTÍ', MARGIN, y);
+  y += 1.5;
+  doc.setDrawColor(RULE_R, RULE_G, RULE_B);
+  doc.setLineWidth(0.15);
+  doc.line(MARGIN, y, pageWidth - MARGIN, y);
+  y += 4;
+
+  // Column headers
+  const roomLabelW  = 52;
+  const ratingW     = (contentWidth - roomLabelW - 2) / 4;
+  const ratings     = ['VÝBORNÝ', 'DOBRÝ', 'PŘIJATELNÝ', 'OPRAVY'];
+
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(7);
+  doc.setTextColor(META_R, META_G, META_B);
+  doc.text('MÍSTNOST', MARGIN, y + 4);
+  ratings.forEach((r, i) => {
+    doc.text(r, MARGIN + roomLabelW + 2 + i * ratingW + ratingW / 2, y + 4, { align: 'center' });
+  });
+
+  // Thin header rule
+  doc.setDrawColor(RULE_R, RULE_G, RULE_B);
+  doc.setLineWidth(0.15);
+  doc.line(MARGIN, y + 6, pageWidth - MARGIN, y + 6);
+  y += 8;
+
+  const rooms = [
+    'Obývací pokoj', 'Ložnice', 'Kuchyně', 'Koupelna',
+    'WC / koupelna s WC', 'Chodba / předsíň',
+    'Sklep / komora / lodžie',
+  ];
+
+  rooms.forEach((room, ridx) => {
+    const rowY = y + ridx * 10;
+    // Alternating stripe
+    if (ridx % 2 === 0) {
+      doc.setFillColor(TOC_R, TOC_G, TOC_B);
+      doc.rect(MARGIN, rowY - 3, contentWidth, 10, 'F');
+    }
+    // Room name
+    doc.setFont('Roboto', 'normal');
+    doc.setFontSize(8.5);
+    doc.setTextColor(BODY_R, BODY_G, BODY_B);
+    doc.text(room, MARGIN, rowY + 3.5);
+    // Checkbox squares
+    ratings.forEach((_, ci) => {
+      const cx = MARGIN + roomLabelW + 2 + ci * ratingW + ratingW / 2 - 3.5;
+      doc.setDrawColor(SIGN_R, SIGN_G, SIGN_B);
+      doc.setLineWidth(0.2);
+      doc.rect(cx, rowY, 7, 7);
+    });
+  });
+  y += rooms.length * 10 + 6;
+
+  // Poznámky ke stavu místností
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(7.5);
+  doc.setTextColor(META_R, META_G, META_B);
+  doc.text('POZNÁMKY KE STAVU MÍSTNOSTÍ', MARGIN, y);
+  y += 3;
+  doc.setDrawColor(BOX_BD_R, BOX_BD_G, BOX_BD_B);
+  doc.setLineWidth(0.2);
+  doc.rect(MARGIN, y, contentWidth, 20, 'D');
+  y += 24;
+
+  // ── Section F: Vady a poškození ───────────────────────────────────────────
+  if (y + 50 > 272) {
+    doc.addPage();
+    drawHeader(doc, contractTitle, false, docId);
+    y = 20;
+  }
+
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(8.5);
+  doc.setTextColor(INK_R, INK_G, INK_B);
+  doc.text('F  ZJIŠTĚNÉ VADY A POŠKOZENÍ', MARGIN, y);
+  y += 1.5;
+  doc.setDrawColor(RULE_R, RULE_G, RULE_B);
+  doc.setLineWidth(0.15);
+  doc.line(MARGIN, y, pageWidth - MARGIN, y);
+  y += 4;
+
+  const defects = asT(data.knownDefects, 'Byt se předává bez zjevných vad přesahujících obvyklé opotřebení.');
+  const defectLines = doc.splitTextToSize(defects, contentWidth - 5);
+  const defectBoxH  = Math.max(defectLines.length * 5.5 + 6, 20);
+  doc.setFillColor(BOX_BG_R, BOX_BG_G, BOX_BG_B);
+  doc.setDrawColor(BOX_BD_R, BOX_BD_G, BOX_BD_B);
+  doc.setLineWidth(0.2);
+  doc.rect(MARGIN, y, contentWidth, defectBoxH, 'FD');
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(BODY_R, BODY_G, BODY_B);
+  doc.text(defectLines, MARGIN + 2.5, y + 5);
+  y += defectBoxH + 5;
+
+  // Extra blank notes space
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(7.5);
+  doc.setTextColor(META_R, META_G, META_B);
+  doc.text('DOPLŇUJÍCÍ POZNÁMKY (vyplní strany ručně)', MARGIN, y);
+  y += 3;
+  doc.setDrawColor(BOX_BD_R, BOX_BD_G, BOX_BD_B);
+  doc.setLineWidth(0.2);
+  doc.rect(MARGIN, y, contentWidth, 18, 'D');
+  y += 22;
+
+  // ── Section G: Celkový stav ────────────────────────────────────────────────
+  if (y + 40 > 272) {
+    doc.addPage();
+    drawHeader(doc, contractTitle, false, docId);
+    y = 20;
+  }
+
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(8.5);
+  doc.setTextColor(INK_R, INK_G, INK_B);
+  doc.text('G  CELKOVÉ HODNOCENÍ BYTU', MARGIN, y);
+  y += 1.5;
+  doc.setDrawColor(RULE_R, RULE_G, RULE_B);
+  doc.setLineWidth(0.15);
+  doc.line(MARGIN, y, pageWidth - MARGIN, y);
+  y += 5;
+
+  const overallRatings = ['VÝBORNÝ', 'DOBRÝ', 'PŘIJATELNÝ', 'VYŽADUJE OPRAVY'];
+  const orW = contentWidth / overallRatings.length;
+  overallRatings.forEach((r, i) => {
+    const ox = MARGIN + i * orW;
+    doc.setDrawColor(SIGN_R, SIGN_G, SIGN_B);
+    doc.setLineWidth(0.25);
+    doc.rect(ox, y, 9, 9);
+    doc.setFont('Roboto', 'normal');
+    doc.setFontSize(8.5);
+    doc.setTextColor(BODY_R, BODY_G, BODY_B);
+    doc.text(r, ox + 12, y + 6.5);
+  });
+  y += 16;
+
+  // ── Section H: Potvrzení a podpisy ────────────────────────────────────────
+  if (y + 65 > 272) {
+    doc.addPage();
+    drawHeader(doc, contractTitle, false, docId);
+    y = 20;
+  }
+
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(8.5);
+  doc.setTextColor(INK_R, INK_G, INK_B);
+  doc.text('H  POTVRZENÍ A PODPISY', MARGIN, y);
+  y += 1.5;
+  doc.setDrawColor(RULE_R, RULE_G, RULE_B);
+  doc.setLineWidth(0.15);
+  doc.line(MARGIN, y, pageWidth - MARGIN, y);
+  y += 6;
+
+  // Confirmation text
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(8.5);
+  doc.setTextColor(BODY_R, BODY_G, BODY_B);
+  const confirmText =
+    'Smluvní strany potvrzují, že byt byl předán a převzat v souladu s nájemní smlouvou ' +
+    'a v rozsahu uvedeném v tomto protokolu. Podepsáním tohoto protokolu berou strany na vědomí ' +
+    'jeho obsah a souhlasí s ním.';
+  const confirmLines = doc.splitTextToSize(confirmText, contentWidth);
+  doc.text(confirmLines, MARGIN, y);
+  y += confirmLines.length * 5 + 8;
+
+  // Place / date line + signature columns
+  const colW   = (contentWidth - 10) / 2;
+  const rightX = MARGIN + colW + 10;
+
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(BODY_R, BODY_G, BODY_B);
+  doc.text('V', MARGIN, y);
+  doc.setDrawColor(SIGN_R, SIGN_G, SIGN_B);
+  doc.setLineWidth(0.25);
+  doc.line(MARGIN + 5, y, MARGIN + colW * 0.52, y);
+  doc.text('dne', MARGIN + colW * 0.55, y);
+  doc.line(MARGIN + colW * 0.64, y, MARGIN + colW, y);
+  doc.text('V', rightX, y);
+  doc.line(rightX + 5, y, rightX + colW * 0.52, y);
+  doc.text('dne', rightX + colW * 0.55, y);
+  doc.line(rightX + colW * 0.64, y, rightX + colW, y);
+  doc.setLineWidth(0.2);
+  doc.setDrawColor(RULE_R, RULE_G, RULE_B);
+  y += 14;
+
+  // Signature lines
+  doc.setDrawColor(50, 50, 50);
+  doc.setLineWidth(0.5);
+  doc.line(MARGIN, y, MARGIN + colW, y);
+  doc.line(rightX, y, rightX + colW, y);
+  y += 4;
+
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(7.5);
+  doc.setTextColor(META_R, META_G, META_B);
+  doc.text('(vlastnoruční podpis)', MARGIN + colW / 2, y, { align: 'center' });
+  doc.text('(vlastnoruční podpis)', rightX + colW / 2, y, { align: 'center' });
+  y += 6;
+
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(INK_R, INK_G, INK_B);
+  doc.text('PRONAJÍMATEL', MARGIN + colW / 2, y, { align: 'center' });
+  doc.text('NÁJEMCE', rightX + colW / 2, y, { align: 'center' });
+
+  // Names below role labels
+  y += 5;
+  const lName = asT(data.landlordName, '');
+  const tName = asT(data.tenantName, '');
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(META_R, META_G, META_B);
+  if (lName) doc.text(lName, MARGIN + colW / 2, y, { align: 'center' });
+  if (tName) doc.text(tName, rightX + colW / 2, y, { align: 'center' });
+
+  doc.setTextColor(0);
+}
+
+// ─────────────────────────────────────────────
+//  SIGNATURE SECTION
 // ─────────────────────────────────────────────
 
 function drawSignatureSection(
@@ -660,14 +1105,13 @@ function drawSignatureSection(
   sectionTitle: string,
   labelLeft: string,
   labelRight: string,
-  margin: number,
   y: number,
   contractTitle = '',
 ): number {
   const pageWidth = doc.internal.pageSize.getWidth();
 
-  // Signature block needs ~55mm — break early if insufficient space
-  if (y > 220) {
+  // Needs ~65 mm — break early if not enough space
+  if (y > 215) {
     doc.addPage();
     drawHeader(doc, contractTitle, false);
     y = 22;
@@ -676,155 +1120,159 @@ function drawSignatureSection(
   // Section heading
   doc.setFont('Roboto', 'bold');
   doc.setFontSize(11);
-  doc.setTextColor(DARK_R, DARK_G, DARK_B);
-  doc.text(sectionTitle, margin, y);
+  doc.setTextColor(INK_R, INK_G, INK_B);
+  doc.text(sectionTitle, MARGIN, y);
 
-  // Gold underline under heading
-  doc.setDrawColor(GOLD_R, GOLD_G, GOLD_B);
-  doc.setLineWidth(0.35);
-  doc.line(margin, y + 2, margin + 45, y + 2);
-  doc.setLineWidth(0.2);
   doc.setDrawColor(RULE_R, RULE_G, RULE_B);
-  y += 10;
+  doc.setLineWidth(0.2);
+  doc.line(MARGIN, y + 2, pageWidth - MARGIN, y + 2);
+  y += 12;
 
-  // Date/location line
+  // Two equal signature columns
+  const colW    = (pageWidth - MARGIN * 2 - 10) / 2;
+  const leftX   = MARGIN;
+  const rightX  = MARGIN + colW + 10;
+
+  // "V ____ dne ____" — place and date line
   doc.setFont('Roboto', 'normal');
-  doc.setFontSize(10);
+  doc.setFontSize(9);
   doc.setTextColor(BODY_R, BODY_G, BODY_B);
-  doc.text('Místo a datum podpisu:', margin, y);
-  y += 5;
-  doc.setDrawColor(160, 160, 160);
-  doc.setLineWidth(0.3);
-  doc.line(margin, y, margin + 100, y);
+
+  doc.text('V', leftX, y);
+  doc.setDrawColor(SIGN_R, SIGN_G, SIGN_B);
+  doc.setLineWidth(0.25);
+  doc.line(leftX + 5, y, leftX + colW * 0.52, y);
+  doc.text('dne', leftX + colW * 0.55, y);
+  doc.line(leftX + colW * 0.64, y, leftX + colW, y);
+
+  doc.text('V', rightX, y);
+  doc.line(rightX + 5, y, rightX + colW * 0.52, y);
+  doc.text('dne', rightX + colW * 0.55, y);
+  doc.line(rightX + colW * 0.64, y, rightX + colW, y);
   doc.setLineWidth(0.2);
   doc.setDrawColor(RULE_R, RULE_G, RULE_B);
-  y += 10;
+  y += 13;
 
-  const lineWidth = 72;
-  const leftX = margin;
-  const rightX = pageWidth - margin - lineWidth;
-
-  // Printed name label + line
+  // "Jméno hůlkovým písmem" label + line
   doc.setFont('Roboto', 'normal');
-  doc.setFontSize(8);
-  doc.setTextColor(MUTED_R, MUTED_G, MUTED_B);
+  doc.setFontSize(7.5);
+  doc.setTextColor(META_R, META_G, META_B);
   doc.text('Jméno a příjmení (hůlkovým písmem):', leftX, y);
   doc.text('Jméno a příjmení (hůlkovým písmem):', rightX, y);
   y += 4;
 
-  doc.setDrawColor(160, 160, 160);
-  doc.setLineWidth(0.3);
-  doc.line(leftX, y, leftX + lineWidth, y);
-  doc.line(rightX, y, rightX + lineWidth, y);
+  doc.setDrawColor(SIGN_R, SIGN_G, SIGN_B);
+  doc.setLineWidth(0.25);
+  doc.line(leftX, y, leftX + colW, y);
+  doc.line(rightX, y, rightX + colW, y);
   doc.setLineWidth(0.2);
   doc.setDrawColor(RULE_R, RULE_G, RULE_B);
-  y += 10;
+  y += 14;
 
-  // Signature lines
-  doc.setDrawColor(60, 60, 60);
-  doc.setLineWidth(0.45);
-  doc.line(leftX, y, leftX + lineWidth, y);
-  doc.line(rightX, y, rightX + lineWidth, y);
+  // Main signature line — slightly heavier, prominent
+  doc.setDrawColor(50, 50, 50);
+  doc.setLineWidth(0.5);
+  doc.line(leftX, y, leftX + colW, y);
+  doc.line(rightX, y, rightX + colW, y);
   y += 4;
 
-  // "(podpis)" labels
-  doc.setFont('Roboto', 'normal');
-  doc.setFontSize(8);
-  doc.setTextColor(MUTED_R, MUTED_G, MUTED_B);
-  doc.text('(vlastnoruční podpis)', leftX + lineWidth / 2, y, { align: 'center' });
-  doc.text('(vlastnoruční podpis)', rightX + lineWidth / 2, y, { align: 'center' });
-  y += 6;
-
-  // Role labels in bold
-  doc.setFont('Roboto', 'bold');
-  doc.setFontSize(9);
-  doc.setTextColor(40, 40, 40);
-  doc.text(labelLeft, leftX + lineWidth / 2, y, { align: 'center' });
-  doc.text(labelRight, rightX + lineWidth / 2, y, { align: 'center' });
-  y += 7;
-
+  // "(vlastnoruční podpis)"
   doc.setFont('Roboto', 'normal');
   doc.setFontSize(7.5);
-  doc.setTextColor(MUTED_R, MUTED_G, MUTED_B);
-  const digitalNote = 'Tento dokument byl vytvořen digitálně a je určen k vlastnoručnímu podpisu nebo k podpisu s využitím uznávaného elektronického podpisu.';
-  const noteLines = doc.splitTextToSize(digitalNote, pageWidth - margin * 2);
-  doc.text(noteLines, margin, y);
+  doc.setTextColor(META_R, META_G, META_B);
+  doc.text('(vlastnoruční podpis)', leftX + colW / 2, y, { align: 'center' });
+  doc.text('(vlastnoruční podpis)', rightX + colW / 2, y, { align: 'center' });
+  y += 7;
+
+  // Role labels
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(INK_R, INK_G, INK_B);
+  doc.text(labelLeft.toUpperCase(), leftX + colW / 2, y, { align: 'center' });
+  doc.text(labelRight.toUpperCase(), rightX + colW / 2, y, { align: 'center' });
+  y += 10;
+
+  // Closing note — plain, concise
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(7.5);
+  doc.setTextColor(META_R, META_G, META_B);
+  const note =
+    'Smlouva nabývá platnosti podpisem obou smluvních stran. Je-li podepisována elektronicky, platí přiměřeně nařízení EU č. 910/2014 (eIDAS).';
+  const noteLines = doc.splitTextToSize(note, pageWidth - MARGIN * 2);
+  doc.text(noteLines, MARGIN, y);
   doc.setTextColor(0);
 
-  return y + noteLines.length * 4 + 6;
+  return y + noteLines.length * 4.5 + 6;
 }
 
 // ─────────────────────────────────────────────
-//  COMPLETE-TIER PAGES (instrukce + checklist)
+//  COMPLETE-TIER APPENDIX PAGES
 // ─────────────────────────────────────────────
 
 function getSigningInstructions(contractType: ContractType): string[] {
   const common = [
-    'PRŮVODNÍ INSTRUKCE K PODPISU A ARCHIVACI',
+    'PRŮVODNÍ POKYNY K PODPISU A ARCHIVACI',
     '',
     'Tento dokument obsahuje doporučený postup pro správné podepsání, ověření a archivaci vaší smlouvy.',
     '',
     '1. PŘÍPRAVA PŘED PODPISEM',
-    '• Pečlivě si přečtěte celý text smlouvy včetně všech příloh.',
-    '• Ověřte, že všechny údaje (jména, adresy, částky, data) jsou správné.',
-    '• Pokud smlouva obsahuje přílohy (předávací protokol apod.), připravte si je k podpisu současně.',
-    '• Zajistěte, aby obě smluvní strany měly dostatek času na prostudování dokumentu.',
+    '• Pečlivě přečtěte celý text smlouvy včetně příloh.',
+    '• Ověřte správnost všech údajů: jména, adresy, částky, data.',
+    '• Přílohy (předávací protokol apod.) připravte k podpisu současně se smlouvou.',
+    '• Zajistěte, aby obě strany měly dostatek času na prostudování dokumentu.',
     '',
-    '2. PODPIS SMLOUVY',
-    '• Smlouvu podepisujte v minimálně 2 vyhotoveních — jedno pro každou smluvní stranu.',
+    '2. PODPIS',
+    '• Smlouvu podepisujte v minimálně dvou vyhotoveních — po jednom pro každou stranu.',
     '• Podpis umístěte na vyhrazené podpisové řádky na konci smlouvy.',
-    '• K podpisu použijte trvanlivý inkoust (kuličkové pero, ne fixu).',
-    '• Pokud je smlouva vícestránková, doporučujeme parafovat (podepsat zkratkou) každou stranu.',
+    '• Použijte trvanlivý inkoust (kuličkové pero).',
+    '• U vícestránkových smluv doporučujeme parafovat každou stranu.',
     '• Datum a místo podpisu vyplňte v den skutečného podpisu.',
     '',
-    '3. OVĚŘENÍ PODPISŮ (VOLITELNÉ)',
-    '• U smluv s vyšší hodnotou (nad 50 000 Kč) zvažte úřední ověření podpisů na Czech POINTu nebo u notáře.',
-    '• Ověření podpisů zvyšuje důkazní hodnotu smlouvy v případném sporu.',
-    '• Cena ověření: cca 30 Kč za jeden podpis na Czech POINTu.',
+    '3. ÚŘEDNÍ OVĚŘENÍ (VOLITELNÉ)',
+    '• U smluv s vyšší hodnotou (nad 50 000 Kč) zvažte ověření podpisů na Czech POINTu nebo u notáře.',
+    '• Ověření zvyšuje důkazní hodnotu dokumentu. Cena: přibližně 30 Kč za podpis na Czech POINTu.',
     '',
     '4. ARCHIVACE',
-    '• Originál smlouvy uchovejte na bezpečném místě (ideálně v uzamykatelné skříni).',
-    '• Vytvořte si digitální kopii (sken/foto) jako zálohu.',
-    '• Smlouvu archivujte minimálně po celou dobu její platnosti + 3 roky po jejím skončení (obecná promlčecí lhůta dle § 629 OZ).',
+    '• Originál uchovejte po celou dobu platnosti smlouvy a nejméně 3 roky po jejím skončení (§ 629 OZ).',
+    '• Pořiďte si digitální zálohu (scan nebo fotografie).',
     '',
-    '5. ELEKTRONICKÝ PODPIS (ALTERNATIVA)',
-    '• Smlouvu je možné podepsat i elektronicky v souladu s nařízením EU č. 910/2014 (eIDAS) a zákonem č. 297/2016 Sb., o službách vytvářejících důvěru.',
-    '• Kvalifikovaný elektronický podpis (QES) má právní účinky vlastnoručního podpisu a je plně uznáván soudy i orgány veřejné moci v celé EU.',
-    '• Zaručený elektronický podpis (AES) je rovněž platný; důkazní síla v případě sporu je však nižší než u QES.',
-    '• Služby: Signi.cz, iSmlouva.cz, DocuSign, Adobe Sign — ověřte, zda poskytovatel splňuje požadavky eIDAS.',
-    '• Pro smlouvy vyžadující úředně ověřený podpis (nemovitosti, plné moci pro katastr) je elektronická forma využitelná pouze s kvalifikovaným elektronickým podpisem.',
+    '5. ELEKTRONICKÝ PODPIS',
+    '• Smlouvu lze podepsat elektronicky dle nařízení EU č. 910/2014 (eIDAS) a zák. č. 297/2016 Sb.',
+    '• Kvalifikovaný elektronický podpis (QES) má účinky vlastnoručního podpisu; je plně uznáván soudy i orgány EU.',
+    '• Zaručený elektronický podpis (AES) je platný, avšak jeho důkazní síla v případě sporu je nižší než u QES.',
+    '• Poskytovatelé: Signi.cz, iSmlouva.cz, DocuSign, Adobe Sign — ověřte soulad s eIDAS.',
+    '• Smlouvy vyžadující notářsky ověřený podpis (nemovitosti, katastrální vklad) je elektronicky možné uzavřít pouze s QES.',
   ];
 
   const specific: Record<string, string[]> = {
     lease: [
       '',
-      '6. SPECIFICKÉ POKYNY PRO NÁJEMNÍ SMLOUVU',
+      '6. ZVLÁŠTNÍ POKYNY PRO NÁJEMNÍ SMLOUVU',
       '• Současně s podpisem smlouvy proveďte předání bytu a sepište předávací protokol.',
-      '• Zdokumentujte stav bytu fotografiemi (vodoměry, elektroměr, stav zdí, podlah, spotřebičů).',
-      '• Ověřte, že nájemce obdržel všechny klíče a zapsal stavy měřidel.',
-      '• Pokud je jistota (kauce), převeďte ji dohodnutým způsobem a uchovejte doklad.',
+      '• Zdokumentujte stav nemovitosti fotografiemi (měřidla, stěny, podlahy, spotřebiče).',
+      '• Nájemce obdrží veškeré klíče; jejich počet zapište do předávacího protokolu.',
+      '• Jistota (kauce) musí být převedena dohodnutým způsobem; uchovejte doklad o úhradě.',
     ],
     car_sale: [
       '',
-      '6. SPECIFICKÉ POKYNY PRO KUPNÍ SMLOUVU NA VOZIDLO',
-      '• Současně s podpisem předejte velký a malý technický průkaz.',
-      '• Zapište změnu vlastníka na příslušném úřadě do 10 pracovních dnů.',
-      '• Zdokumentujte stav tachometru a stav vozidla fotografiemi.',
-      '• Ověřte, že vozidlo nemá zákaz převodu (registr vozidel).',
+      '6. ZVLÁŠTNÍ POKYNY PRO KUPNÍ SMLOUVU NA VOZIDLO',
+      '• Současně s podpisem předejte velký i malý technický průkaz.',
+      '• Změnu vlastníka oznamte příslušnému úřadu do 10 pracovních dnů.',
+      '• Zdokumentujte stav tachometru a celkový stav vozidla fotografiemi.',
+      '• Ověřte, zda na vozidle nevázne zákaz převodu (registr vozidel).',
     ],
     employment: [
       '',
-      '6. SPECIFICKÉ POKYNY PRO PRACOVNÍ SMLOUVU',
-      '• Zaměstnanec musí obdržet jedno vyhotovení smlouvy.',
-      '• Pracovní smlouvu je nutné uzavřít nejpozději v den nástupu do práce.',
-      '• Zaměstnavatel je povinen přihlásit zaměstnance na ČSSZ a zdravotní pojišťovnu.',
+      '6. ZVLÁŠTNÍ POKYNY PRO PRACOVNÍ SMLOUVU',
+      '• Zaměstnanec musí obdržet jedno vyhotovení smlouvy nejpozději v den nástupu do práce.',
+      '• Zaměstnavatel je povinen přihlásit zaměstnance na ČSSZ a příslušnou zdravotní pojišťovnu.',
     ],
     gift: [
       '',
-      '6. SPECIFICKÉ POKYNY PRO DAROVACÍ SMLOUVU',
-      '• NEMOVITOST (POVINNÉ): Obě smluvní strany musí podepsat smlouvu s úředně ověřenými podpisy (notář nebo Czech POINT). Bez ověření katastr nemovitostí vklad zamítne.',
-      '• U movitých věcí a peněz dochází k převodu vlastnictví předáním daru nebo převodem na bankovní účet.',
-      '• Obdarovaný je povinen přiznat dar v daňovém přiznání, pokud nepodléhá daňovému osvobození.',
+      '6. ZVLÁŠTNÍ POKYNY PRO DAROVACÍ SMLOUVU',
+      '• NEMOVITOST: Podpisy obou stran musí být úředně ověřeny (notář nebo Czech POINT). Bez ověření katastr vklad zamítne.',
+      '• U movitých věcí a peněz dochází k převodu vlastnictví předáním nebo převodem na účet.',
+      '• Obdarovaný může být povinen uvést dar v daňovém přiznání; ověřte podmínky osvobození.',
     ],
   };
 
@@ -833,50 +1281,50 @@ function getSigningInstructions(contractType: ContractType): string[] {
 
 function getPreSignChecklist(contractType: ContractType): string[] {
   const common = [
-    'CHECKLIST: CO ZKONTROLOVAT PŘED PODPISEM',
+    'KONTROLNÍ SEZNAM PŘED PODPISEM',
     '',
-    'Projděte si následující body a ujistěte se, že je vše v pořádku:',
+    'Před podpisem smlouvy ověřte každý z níže uvedených bodů:',
     '',
     '☐  Jména a příjmení všech smluvních stran jsou správně uvedena',
     '☐  Adresy trvalého bydliště / sídla jsou aktuální',
     '☐  Data narození / IČO jsou bez překlepů',
-    '☐  Předmět smlouvy je jasně a jednoznačně definován',
-    '☐  Finanční částky (cena, nájem, mzda) odpovídají dohodě',
+    '☐  Předmět smlouvy je jasně a jednoznačně vymezen',
+    '☐  Finanční podmínky (cena, nájem, mzda) odpovídají dohodě stran',
     '☐  Datum účinnosti smlouvy je správné',
-    '☐  Doba trvání / výpovědní lhůta odpovídá dohodě',
-    '☐  Platební podmínky (termín, způsob) jsou jasné',
-    '☐  Práva a povinnosti obou stran jsou vyvážené',
-    '☐  Sankce a smluvní pokuty jsou přiměřené',
+    '☐  Doba trvání a výpovědní podmínky odpovídají dohodě',
+    '☐  Platební podmínky jsou jasné a úplné',
+    '☐  Práva a povinnosti obou stran jsou vyvážená',
+    '☐  Smluvní pokuty jsou přiměřené a nepřekračují zákonné limity',
     '☐  Způsob řešení sporů je uveden',
-    '☐  Smlouva neobsahuje prázdná / nevyplněná pole',
+    '☐  Smlouva neobsahuje nevyplněná pole',
     '☐  Počet vyhotovení odpovídá počtu smluvních stran',
-    '☐  Všechny přílohy jsou připojeny a kompletní',
+    '☐  Veškeré přílohy jsou přiloženy a kompletní',
   ];
 
   const specific: Record<string, string[]> = {
     lease: [
       '',
       'SPECIFICKY PRO NÁJEMNÍ SMLOUVU:',
-      '☐  Přesná adresa a dispozice bytu odpovídají skutečnosti',
+      '☐  Adresa a dispozice bytu odpovídají skutečnosti',
       '☐  Výše nájemného a záloh na služby je správná',
-      '☐  Výše jistoty a případných smluvních pokut nepřesahuje trojnásobek měsíčního nájemného (zákonný limit dle § 2254 OZ)',
-      '☐  Je uveden způsob vyúčtování služeb',
+      '☐  Výše jistoty nepřekračuje trojnásobek měsíčního nájemného (§ 2254 OZ)',
+      '☐  Způsob vyúčtování služeb je upraven',
       '☐  Předávací protokol je připraven k podpisu',
     ],
     car_sale: [
       '',
       'SPECIFICKY PRO KUPNÍ SMLOUVU NA VOZIDLO:',
       '☐  VIN kód odpovídá údajům v technickém průkazu',
-      '☐  Stav tachometru je zapsán',
-      '☐  Jsou uvedeny známé vady vozidla',
-      '☐  Je sjednán způsob předání technického průkazu',
+      '☐  Stav tachometru je zaznamenán',
+      '☐  Jsou uvedeny veškeré známé vady vozidla',
+      '☐  Způsob předání technického průkazu je sjednán',
     ],
     employment: [
       '',
       'SPECIFICKY PRO PRACOVNÍ SMLOUVU:',
-      '☐  Druh práce odpovídá skutečné pozici',
-      '☐  Místo výkonu práce je správné',
-      '☐  Den nástupu do práce je reálný',
+      '☐  Druh práce odpovídá skutečně zastávané pozici',
+      '☐  Místo výkonu práce je správně uvedeno',
+      '☐  Den nástupu je reálný',
       '☐  Mzdové podmínky odpovídají dohodě',
       '☐  Zkušební doba nepřesahuje zákonné maximum',
     ],
@@ -884,9 +1332,9 @@ function getPreSignChecklist(contractType: ContractType): string[] {
       '',
       'SPECIFICKY PRO SMLOUVU O ZÁPŮJČCE:',
       '☐  Výše zápůjčky odpovídá skutečně předávané částce',
-      '☐  Úrok (pokud je sjednán) nepřekračuje zákonný limit',
-      '☐  Termín splatnosti je reálný a jasný',
-      '☐  Je uveden způsob vrácení (jednorázově / ve splátkách)',
+      '☐  Ujednané úroky jsou v souladu se zákonem',
+      '☐  Termín splatnosti je reálný a jednoznačný',
+      '☐  Způsob vrácení (jednorázově / splátky) je jasný',
     ],
   };
 
@@ -896,70 +1344,65 @@ function getPreSignChecklist(contractType: ContractType): string[] {
 function drawCompleteTierPages(
   doc: jsPDF,
   contractType: ContractType,
-  margin: number,
   contentWidth: number,
   title: string,
+  docId: string,
 ): void {
-  // --- Instrukce ---
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  // --- Průvodní pokyny ---
   doc.addPage();
-  drawHeader(doc, title, false);
+  drawHeader(doc, title, false, docId);
   let y = 22;
 
-  doc.setDrawColor(GOLD_R, GOLD_G, GOLD_B);
-  doc.setLineWidth(0.5);
-  doc.line(margin, y, margin + contentWidth, y);
-  doc.setLineWidth(0.2);
   doc.setDrawColor(RULE_R, RULE_G, RULE_B);
-  y += 5;
+  doc.setLineWidth(0.2);
+  doc.line(MARGIN, y, pageWidth - MARGIN, y);
+  y += 6;
 
   doc.setFont('Roboto', 'bold');
-  doc.setFontSize(9);
-  doc.setTextColor(MUTED_R, MUTED_G, MUTED_B);
-  doc.text('PŘÍLOHA — KOMPLETNÍ BALÍČEK SMLOUVAHNED', margin, y);
+  doc.setFontSize(8.5);
+  doc.setTextColor(META_R, META_G, META_B);
+  doc.text('PŘÍLOHA K DOKUMENTU — PRŮVODNÍ POKYNY', MARGIN, y);
   y += 8;
 
   const instructions = getSigningInstructions(contractType);
   for (const line of instructions) {
     if (!line) { y += 3; continue; }
-    const isHeading = /^\d+\.\s/.test(line) || line === line.toUpperCase();
+    const isHeading = /^\d+\.\s/.test(line) || (line === line.toUpperCase() && line.length > 4);
     if (isHeading) {
       doc.setFont('Roboto', 'bold');
-      doc.setFontSize(10);
-      doc.setTextColor(DARK_R, DARK_G, DARK_B);
+      doc.setFontSize(9.5);
+      doc.setTextColor(INK_R, INK_G, INK_B);
     } else {
       doc.setFont('Roboto', 'normal');
-      doc.setFontSize(9.5);
+      doc.setFontSize(9);
       doc.setTextColor(BODY_R, BODY_G, BODY_B);
     }
-    const splitLines = doc.splitTextToSize(line, contentWidth);
-    if (y + splitLines.length * 5 > 275) {
+    const split = doc.splitTextToSize(line, contentWidth);
+    if (y + split.length * 5 > 272) {
       doc.addPage();
-      drawHeader(doc, title, false);
+      drawHeader(doc, title, false, docId);
       y = 22;
-      doc.setFont('Roboto', 'normal');
-      doc.setFontSize(9.5);
-      doc.setTextColor(BODY_R, BODY_G, BODY_B);
     }
-    doc.text(splitLines, margin, y);
-    y += splitLines.length * 5 + 1;
+    doc.text(split, MARGIN, y);
+    y += split.length * 5 + 1;
   }
 
-  // --- Checklist ---
+  // --- Kontrolní seznam ---
   doc.addPage();
-  drawHeader(doc, title, false);
+  drawHeader(doc, title, false, docId);
   y = 22;
 
-  doc.setDrawColor(GOLD_R, GOLD_G, GOLD_B);
-  doc.setLineWidth(0.5);
-  doc.line(margin, y, margin + contentWidth, y);
-  doc.setLineWidth(0.2);
   doc.setDrawColor(RULE_R, RULE_G, RULE_B);
-  y += 5;
+  doc.setLineWidth(0.2);
+  doc.line(MARGIN, y, pageWidth - MARGIN, y);
+  y += 6;
 
   doc.setFont('Roboto', 'bold');
-  doc.setFontSize(9);
-  doc.setTextColor(MUTED_R, MUTED_G, MUTED_B);
-  doc.text('PŘÍLOHA — CHECKLIST PŘED PODPISEM', margin, y);
+  doc.setFontSize(8.5);
+  doc.setTextColor(META_R, META_G, META_B);
+  doc.text('PŘÍLOHA K DOKUMENTU — KONTROLNÍ SEZNAM', MARGIN, y);
   y += 8;
 
   const checklist = getPreSignChecklist(contractType);
@@ -968,24 +1411,21 @@ function drawCompleteTierPages(
     const isHeading = !line.startsWith('☐') && (line === line.toUpperCase() || line.includes('SPECIFICKY'));
     if (isHeading) {
       doc.setFont('Roboto', 'bold');
-      doc.setFontSize(10);
-      doc.setTextColor(DARK_R, DARK_G, DARK_B);
+      doc.setFontSize(9.5);
+      doc.setTextColor(INK_R, INK_G, INK_B);
     } else {
       doc.setFont('Roboto', 'normal');
-      doc.setFontSize(9.5);
+      doc.setFontSize(9);
       doc.setTextColor(BODY_R, BODY_G, BODY_B);
     }
-    const splitLines = doc.splitTextToSize(line, contentWidth);
-    if (y + splitLines.length * 5 > 275) {
+    const split = doc.splitTextToSize(line, contentWidth);
+    if (y + split.length * 5 > 272) {
       doc.addPage();
-      drawHeader(doc, title, false);
+      drawHeader(doc, title, false, docId);
       y = 22;
-      doc.setFont('Roboto', 'normal');
-      doc.setFontSize(9.5);
-      doc.setTextColor(BODY_R, BODY_G, BODY_B);
     }
-    doc.text(splitLines, margin, y);
-    y += splitLines.length * 5 + 1.5;
+    doc.text(split, MARGIN, y);
+    y += split.length * 5 + 1.5;
   }
 }
 
@@ -994,139 +1434,126 @@ function drawCompleteTierPages(
 // ─────────────────────────────────────────────
 
 export async function renderContractPdf(data: StoredContractData): Promise<Buffer> {
-  const meta = getContractMeta(data.contractType);
-  const sections = buildContractSections(data);
+  const meta      = getContractMeta(data.contractType);
+  const sections  = buildContractSections(data);
   const [labelLeft, labelRight] = getSignatureLabels(data.contractType, data);
   const { hasPremiumClauses, hasCompletePages } = resolveTierFeatures(data);
-  const tier = (data.tier as string) ?? (data.notaryUpsell ? 'professional' : 'basic');
+  const tier      = (data.tier as string) ?? (data.notaryUpsell ? 'professional' : 'basic');
   const { docId, hash } = buildDocumentTrace(data);
 
   const doc = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
   await ensurePdfFonts(doc);
 
-  // Document metadata
   const generatedDate = new Date().toLocaleDateString('cs-CZ');
   (doc as any).setProperties({
-    title: meta.title,
-    subject: `Smlouva vygenerovaná na SmlouvaHned.cz – ${generatedDate} – ${docId}`, 
-    author: 'SmlouvaHned.cz',
-    keywords: `smlouva, ${data.contractType}, česká republika, ${tier}`,
-    creator: 'SmlouvaHned.cz – online generátor smluv',
+    title:    meta.title,
+    subject:  `Smlouva vygenerovaná na SmlouvaHned.cz – ${generatedDate} – ${docId}`,
+    author:   'SmlouvaHned.cz',
+    keywords: `smlouva, ${data.contractType}, česká republika`,
+    creator:  'SmlouvaHned.cz',
   });
 
-  const margin = 20;
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const contentWidth = pageWidth - margin * 2;
+  const pageWidth    = doc.internal.pageSize.getWidth();
+  const contentWidth = pageWidth - MARGIN * 2;
 
   // ── First page ──
-  drawHeader(doc, meta.title, true);
-  drawTierBadge(doc, tier);
+  drawHeader(doc, meta.title, true, docId);
 
-  let y = 32;
+  // First-page body starts with generous breathing room below header
+  let y = 40;
   y = drawSummaryBox(doc, data, data.contractType, y);
 
-  let inProtocol = false;
+  let inProtocol   = false;
   let endOfTextDrawn = false;
 
-  // ── TOC for professional / complete — two-pass for real page numbers ──
+  // ── TOC (premium tiers) — two-pass for accurate page numbers ──
   if (hasPremiumClauses) {
-    // Pass 1: measure section pages on a scratch doc (body without TOC)
     const sectionPageMap = await measureSectionPages(data, sections, meta, labelLeft, labelRight);
-    // The TOC occupies N pages; body starts after those pages
-    const tocPageCount = estimateTocPageCount(sections);
-    // tocOffset: sections in pass-1 start on page X; in final doc, page X + tocPageCount
-    drawTableOfContents(doc, sections, meta.title, sectionPageMap, tocPageCount);
-    // Continue contract body on a new page after TOC
+    const tocPageCount   = estimateTocPageCount(sections);
+    drawTableOfContents(doc, sections, meta.title, docId, sectionPageMap, tocPageCount);
     doc.addPage();
-    drawHeader(doc, meta.title, false);
+    drawHeader(doc, meta.title, false, docId);
     y = 22;
   }
 
   // ── Contract body ──
   for (const section of sections) {
-    // Protocol / annex → new page
-    if (isProtocolSection(section.title) && !inProtocol) {
+    // Lease handover protocol → custom form renderer (replaces generic body)
+    if (isLeaseProtocol(section.title)) {
+      drawLeaseProtocolForm(doc, data, meta.title, docId);
       inProtocol = true;
-      doc.addPage();
-      drawHeader(doc, meta.title, false);
-      y = 22;
-      doc.setFont('Roboto', 'normal');
-      doc.setFontSize(10);
-      doc.setTextColor(BODY_R, BODY_G, BODY_B);
-
-      doc.setDrawColor(GOLD_R, GOLD_G, GOLD_B);
-      doc.setLineWidth(0.5);
-      doc.line(margin, y, pageWidth - margin, y);
-      doc.setLineWidth(0.2);
-      doc.setDrawColor(RULE_R, RULE_G, RULE_B);
-      y += 8;
-    }
-
-    // PODPISY section
-    if (isSignatureSection(section.title)) {
-      if (!endOfTextDrawn) {
-        y = drawEndOfTextMarker(doc, margin, y, meta.title);
-        endOfTextDrawn = true;
-      }
-      y = drawSignatureSection(doc, section.title, labelLeft, labelRight, margin, y, meta.title);
       continue;
     }
 
-    // Orphan guard — ensure heading + at least first body line fits before starting section
-    // Heading block: 3mm pre-space + ~11mm title + 3mm underline gap + first body line ~8mm = ~25mm
-    const orphanBuffer = section.body.length > 0 ? 30 : 18;
-    if (y + orphanBuffer > 275) {
+    // Other protocol / annex sections → forced new page + thin rule header
+    if (isProtocolSection(section.title) && !inProtocol) {
+      inProtocol = true;
       doc.addPage();
-      drawHeader(doc, meta.title, false);
+      drawHeader(doc, meta.title, false, docId);
+      y = 22;
+      doc.setDrawColor(RULE_R, RULE_G, RULE_B);
+      doc.setLineWidth(0.2);
+      doc.line(MARGIN, y, pageWidth - MARGIN, y);
+      doc.setLineWidth(0.2);
+      y += 8;
+    }
+
+    if (isSignatureSection(section.title)) {
+      if (!endOfTextDrawn) {
+        y = drawEndOfTextMarker(doc, y, meta.title);
+        endOfTextDrawn = true;
+      }
+      y = drawSignatureSection(doc, section.title, labelLeft, labelRight, y, meta.title);
+      continue;
+    }
+
+    // Orphan guard
+    const orphanBuffer = section.body.length > 0 ? 32 : 20;
+    if (y + orphanBuffer > 272) {
+      doc.addPage();
+      drawHeader(doc, meta.title, false, docId);
       y = 22;
       doc.setFont('Roboto', 'normal');
       doc.setFontSize(10);
       doc.setTextColor(BODY_R, BODY_G, BODY_B);
     }
 
-    // Extra spacing before heading
-    y += 3;
+    y += 4;
+    y = drawSectionTitle(doc, section.title, y, contentWidth, inProtocol);
 
-    y = drawSectionTitle(doc, section.title, margin, y, contentWidth, inProtocol);
-
-    // Body lines
     const bodyLines = section.body.slice(0, 80);
-    for (let lineIdx = 0; lineIdx < bodyLines.length; lineIdx++) {
-      const line = bodyLines[lineIdx];
-      const rawLine = line != null ? String(line) : '';
-      const safeLine = rawLine.length > 800 ? rawLine.substring(0, 800) + '…' : (rawLine.trim() || ' ');
-      const splitLines = doc.splitTextToSize(safeLine, contentWidth);
+    for (let i = 0; i < bodyLines.length; i++) {
+      const raw  = bodyLines[i] != null ? String(bodyLines[i]) : '';
+      const safe = raw.length > 800 ? raw.substring(0, 800) + '…' : (raw.trim() || ' ');
+      const split = doc.splitTextToSize(safe, contentWidth);
 
-      // Widow guard: if this paragraph doesn't fully fit and it's not the last, leave ≥8mm
-      const lineH = splitLines.length * 5.5 + 2.5;
-      const isLast = lineIdx === bodyLines.length - 1;
-      const needsBreak = isLast
-        ? y + lineH > 275
-        : y + lineH + 8 > 275; // ensure at least one more line fits after this paragraph
+      const lh     = split.length * BODY_LEAD + 2;
+      const isLast = i === bodyLines.length - 1;
+      const needsBreak = isLast ? y + lh > 272 : y + lh + 8 > 272;
 
       if (needsBreak) {
         doc.addPage();
-        drawHeader(doc, meta.title, false);
+        drawHeader(doc, meta.title, false, docId);
         y = 22;
         doc.setFont('Roboto', 'normal');
         doc.setFontSize(10);
         doc.setTextColor(BODY_R, BODY_G, BODY_B);
       }
 
-      doc.text(splitLines, margin, y, { align: 'justify', maxWidth: contentWidth });
-      y += lineH;
+      doc.text(split, MARGIN, y, { align: 'justify', maxWidth: contentWidth });
+      y += lh;
     }
 
-    y += 5;
+    y += SECTION_GAP;
   }
 
   // ── Complete-tier appendix pages ──
   if (hasCompletePages) {
-    drawCompleteTierPages(doc, data.contractType, margin, contentWidth, meta.title);
+    drawCompleteTierPages(doc, data.contractType, contentWidth, meta.title, docId);
   }
 
-  // ── Footer on all pages (post-processing) ──
-  drawFooter(doc, docId, hash);
+  // ── Footers (post-processing pass) ──
+  drawFooter(doc, docId, hash, tier);
 
   return Buffer.from(doc.output('arraybuffer'));
 }

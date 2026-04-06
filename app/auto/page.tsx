@@ -807,6 +807,28 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   className={inputClass}
                 />
               </div>
+              <div className="grid sm:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-[0.10em] text-slate-400 mb-1.5">STK platná do</label>
+                  <input
+                    type="date"
+                    name="stkValidUntil"
+                    value={formData.stkValidUntil}
+                    onChange={handleChange}
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-[0.10em] text-slate-400 mb-1.5">Emise platné do</label>
+                  <input
+                    type="date"
+                    name="emissionsValidUntil"
+                    value={formData.emissionsValidUntil}
+                    onChange={handleChange}
+                    className={inputClass}
+                  />
+                </div>
+              </div>
             </section>
 
             <section className={cardClass}>
