@@ -126,11 +126,6 @@ function isLeaseProtocol(title: string): boolean {
   return title.toUpperCase().includes('PŘEDÁVACÍ PROTOKOL K NÁJEMNÍ SMLOUVĚ');
 }
 
-function tierLabel(tier?: string): string {
-  if (tier === 'complete')     return 'Kompletní';
-  if (tier === 'professional') return 'Rozšířená';
-  return 'Základní';
-}
 
 // ─────────────────────────────────────────────
 //  PAGE HEADER
@@ -185,13 +180,12 @@ function drawHeader(doc: jsPDF, title: string, isFirstPage: boolean, docId?: str
 //  FOOTER
 // ─────────────────────────────────────────────
 
-function drawFooter(doc: jsPDF, docId?: string, hash?: string, tier?: string): void {
+function drawFooter(doc: jsPDF, docId?: string, hash?: string): void {
   const pageCount = doc.getNumberOfPages();
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
 
-  const tierText = tier ? `  ·  ${tierLabel(tier)}` : '';
-  const footerLine2 = hash ? `Otisk: ${hash}${tierText}` : '';
+  const footerLine2 = hash ? `Otisk: ${hash}` : '';
 
   for (let i = 1; i <= pageCount; i += 1) {
     doc.setPage(i);
@@ -1121,8 +1115,8 @@ function drawSignatureSection(
 ): number {
   const pageWidth = doc.internal.pageSize.getWidth();
 
-  // Needs ~65 mm — break early if not enough space
-  if (y > 215) {
+  // Needs ~70 mm — break early if not enough space
+  if (y > 210) {
     doc.addPage();
     drawHeader(doc, contractTitle, false);
     y = 22;
@@ -1162,7 +1156,7 @@ function drawSignatureSection(
   doc.line(rightX + colW * 0.64, y, rightX + colW, y);
   doc.setLineWidth(0.2);
   doc.setDrawColor(RULE_R, RULE_G, RULE_B);
-  y += 13;
+  y += 17;
 
   // "Jméno hůlkovým písmem" label + line
   doc.setFont('Roboto', 'normal');
@@ -1170,7 +1164,7 @@ function drawSignatureSection(
   doc.setTextColor(META_R, META_G, META_B);
   doc.text('Jméno a příjmení (hůlkovým písmem):', leftX, y);
   doc.text('Jméno a příjmení (hůlkovým písmem):', rightX, y);
-  y += 4;
+  y += 4.5;
 
   doc.setDrawColor(SIGN_R, SIGN_G, SIGN_B);
   doc.setLineWidth(0.25);
@@ -1178,7 +1172,7 @@ function drawSignatureSection(
   doc.line(rightX, y, rightX + colW, y);
   doc.setLineWidth(0.2);
   doc.setDrawColor(RULE_R, RULE_G, RULE_B);
-  y += 14;
+  y += 18;
 
   // Main signature line — slightly heavier, prominent
   doc.setDrawColor(50, 50, 50);
@@ -1193,7 +1187,7 @@ function drawSignatureSection(
   doc.setTextColor(META_R, META_G, META_B);
   doc.text('(vlastnoruční podpis)', leftX + colW / 2, y, { align: 'center' });
   doc.text('(vlastnoruční podpis)', rightX + colW / 2, y, { align: 'center' });
-  y += 7;
+  y += 9;
 
   // Role labels
   doc.setFont('Roboto', 'bold');
@@ -1449,7 +1443,6 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
   const sections  = buildContractSections(data);
   const [labelLeft, labelRight] = getSignatureLabels(data.contractType, data);
   const { hasPremiumClauses, hasCompletePages } = resolveTierFeatures(data);
-  const tier      = (data.tier as string) ?? (data.notaryUpsell ? 'professional' : 'basic');
   const { docId, hash } = buildDocumentTrace(data);
 
   const doc = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
@@ -1564,7 +1557,7 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
   }
 
   // ── Footers (post-processing pass) ──
-  drawFooter(doc, docId, hash, tier);
+  drawFooter(doc, docId, hash);
 
   return Buffer.from(doc.output('arraybuffer'));
 }
