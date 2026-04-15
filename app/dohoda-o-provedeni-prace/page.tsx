@@ -2,17 +2,17 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'DPP — Dohoda o provedení práce 2026 — vzor online | SmlouvaHned',
+  title: 'Dohoda o provedení práce 2026 — DPP vzor online',
   description:
-    'Dohoda o provedení práce (DPP) pro brigády a jednorázové úkoly. Max. 300 hod./rok. Dle zákoníku práce 2026. IP doložka, bezodvodový rámec. PDF ihned od 99 Kč.',
+    'Dohoda o provedení práce (DPP) 2026 — aktuální vzor dle zákoníku práce. Max. 300 hod./rok, limit odvodů, IP doložka. PDF ke stažení od 99 Kč.',
   keywords: [
     'DPP', 'dohoda o provedení práce', 'dohoda o provedení práce vzor', 'DPP 2026',
-    'dohoda o provedení práce online', 'DPP ke stažení', 'brigáda smlouva',
+    'dohoda o provedení práce 2026', 'dohoda o provedení práce online', 'DPP ke stažení', 'brigáda smlouva',
   ],
   alternates: { canonical: 'https://smlouvahned.cz/dohoda-o-provedeni-prace' },
   openGraph: {
-    title: 'DPP — Dohoda o provedení práce 2026 | SmlouvaHned',
-    description: 'DPP pro brigády a jednorázové úkoly. Max. 300 hod./rok. Od 99 Kč.',
+    title: 'Dohoda o provedení práce 2026 — DPP vzor online',
+    description: 'DPP 2026 — aktuální vzor dle zákoníku práce. Max. 300 hod./rok, limit odvodů, IP doložka. Od 99 Kč.',
     url: 'https://smlouvahned.cz/dohoda-o-provedeni-prace',
   },
 };
@@ -40,9 +40,23 @@ const faq = [
   },
 ];
 
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: { '@type': 'Answer', text: item.a },
+  })),
+};
+
 export default function DohodaOProvedeniPracePage() {
   return (
     <main className="min-h-screen bg-[#05080f] text-slate-200">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c') }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify({
@@ -79,14 +93,14 @@ export default function DohodaOProvedeniPracePage() {
             <span className="text-amber-500 italic">vzor DPP 2026</span>
           </h1>
           <p className="text-lg text-slate-400 leading-relaxed max-w-2xl mb-8">
-            Pro brigády, jednorázové úkoly i kreativní práce. DPP správně sepsaná — max. 300 hod./rok,
-            bezodvodový rámec do 11 500 Kč/měs., IP doložka pro kreativní práce.
+            Pro brigády, jednorázové úkoly i kreativní práce. Sestavena dle zákoníku práce 2026 —
+            max. 300 hod./rok, limit odvodů do 11 500 Kč/měs., volitelná IP doložka pro kreativní práce.
           </p>
           <Link href="/dpp"
             className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-8 py-4 text-base font-black uppercase tracking-tight text-black shadow-[0_0_30px_rgba(245,158,11,0.25)] transition hover:bg-amber-400">
             Sestavit DPP →
           </Link>
-          <div className="mt-4 text-sm text-slate-500">Od 99 Kč · PDF ihned · Zákoník práce 2026</div>
+          <div className="mt-4 text-sm text-slate-500">Od 99 Kč · PDF ke stažení · Zákoník práce 2026</div>
         </div>
 
         <section className="mb-12 rounded-3xl border border-white/8 bg-[#0c1426] p-8">
@@ -153,12 +167,12 @@ export default function DohodaOProvedeniPracePage() {
             className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-8 py-4 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400">
             Sestavit DPP →
           </Link>
-          <div className="mt-3 text-xs text-slate-600">Od 99 Kč · § 75 ZP · PDF ihned</div>
+          <div className="mt-3 text-xs text-slate-600">Od 99 Kč · § 75 ZP · PDF ke stažení</div>
         </section>
 
         <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">
           <Link href="/" className="hover:text-slate-300 transition">← Všechny smlouvy</Link>
-          <Link href="/pracovni-smlouva" className="hover:text-slate-300 transition">Pracovní smlouva</Link>
+          <Link href="/pracovni-smlouva" className="hover:text-slate-300 transition">Pracovní smlouva →</Link>
           <Link href="/sluzby" className="hover:text-slate-300 transition">Smlouva o poskytování služeb</Link>
         </div>
       </div>

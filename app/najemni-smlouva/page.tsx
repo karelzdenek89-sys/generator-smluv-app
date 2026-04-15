@@ -2,21 +2,23 @@
 import GuideLandingPage from '@/app/components/GuideLandingPage';
 
 export const metadata: Metadata = {
-  title: 'Nájemní smlouva vzor 2026 | SmlouvaHned',
+  title: 'Nájemní smlouva 2026 — vzor a online generátor',
   description:
-    'Průvodce nájemní smlouvou pro rok 2026. Co dokument obvykle obsahuje, pro jaké situace je vhodný a kdy už je lepší obrátit se na advokáta.',
+    'Nájemní smlouva 2026 — aktuální vzor a online generátor. Co dokument obsahuje, pro jaké situace je vhodný a jak ji správně sestavit.',
   keywords: [
     'nájemní smlouva',
     'nájemní smlouva vzor',
     'nájemní smlouva 2026',
+    'vzor nájemní smlouvy 2026',
     'nájemní smlouva online',
     'smlouva o nájmu bytu',
+    'nájemní smlouva na byt 2026',
   ],
   alternates: { canonical: 'https://smlouvahned.cz/najemni-smlouva' },
   openGraph: {
-    title: 'Nájemní smlouva vzor 2026 | SmlouvaHned',
+    title: 'Nájemní smlouva 2026 — vzor a online generátor',
     description:
-      'Co obvykle obsahuje nájemní smlouva, kdy se hodí a kdy už je vhodné řešit situaci individuálně.',
+      'Aktuální vzor nájemní smlouvy pro rok 2026. Co dokument obsahuje, kdy se hodí a jak ho sestavit online.',
     url: 'https://smlouvahned.cz/najemni-smlouva',
     type: 'website',
   },
@@ -86,7 +88,7 @@ export default function NajemniSmlouvaPage() {
       <GuideLandingPage
         breadcrumbLabel="Nájemní smlouva"
         kicker="Průvodce dokumentem"
-        title="Nájemní smlouva"
+        title="Nájemní smlouva 2026"
         accent="pro běžný pronájem bytu nebo domu"
         description="Průvodcová stránka k nájemní smlouvě pro typické situace. Pomůže vám zorientovat se v tom, co dokument obvykle obsahuje, kdy je vhodný a kdy už je potřeba řešit věc individuálně."
         primaryCta={{ href: '/najem', label: 'Vytvořit nájemní smlouvu' }}

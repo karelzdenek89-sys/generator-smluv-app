@@ -4,11 +4,11 @@ import Image from 'next/image';
 import ContractGridPremium from '@/app/components/ContractGridPremium';
 
 export const metadata: Metadata = {
-  title: 'SmlouvaHned | Automatizovaný generátor smluv online — od 99 Kč',
-  description: 'Vyplňte formulář, zkontrolujte výstup a stáhněte PDF připravené k podpisu. Softwarový nástroj pro tvorbu standardizovaných smluvních dokumentů — nájemní, kupní, darovací smlouva, DPP, NDA a další. Od 99 Kč.',
+  title: { absolute: 'Generátor smluv online — smluvní dokumenty ihned | SmlouvaHned' },
+  description: 'Sestavte nájemní smlouvu, kupní smlouvu, DPP, NDA a další dokumenty online. Vyplníte formulář, systém sestaví standardizovaný dokument — PDF ke stažení ihned. Od 99 Kč.',
   openGraph: {
-    title: 'SmlouvaHned | Automatizovaný generátor smluv online',
-    description: 'Softwarový nástroj pro tvorbu smluv. Formulář → strukturovaný dokument → PDF ke stažení. Od 99 Kč.',
+    title: 'Generátor smluv online — smluvní dokumenty ihned | SmlouvaHned',
+    description: 'Softwarový nástroj pro tvorbu smluvních dokumentů. Formulář → strukturovaný dokument → PDF ke stažení. Od 99 Kč.',
     url: 'https://smlouvahned.cz',
     siteName: 'SmlouvaHned',
     type: 'website',
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 const faqItems = [
   {
     question: 'Jsou dokumenty připraveny k podpisu?',
-    answer: 'Ano — výstupem je kompletně vyplněný PDF dokument strukturovaný dle příslušných ustanovení občanského zákoníku č. 89/2012 Sb. Písemná smlouva nevyžaduje účast notáře ani advokáta, pokud zákon pro daný typ nestanoví jinak. Obsah dokumentu závisí na vašich vstupech — před podpisem doporučujeme všechna data zkontrolovat.',
+    answer: 'Výstupem je kompletně vyplněný PDF dokument strukturovaný dle příslušných ustanovení občanského zákoníku č. 89/2012 Sb. Obsah dokumentu závisí na vašich vstupech — před podpisem doporučujeme všechna data zkontrolovat.',
   },
   {
     question: 'Čím se liší Základní dokument od Rozšířeného dokumentu?',
@@ -50,24 +50,6 @@ const faqSchema = {
     name: item.question,
     acceptedAnswer: { '@type': 'Answer', text: item.answer },
   })),
-};
-
-const organizationSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: 'SmlouvaHned',
-  legalName: 'Karel Zdeněk',
-  url: 'https://smlouvahned.cz',
-  logo: 'https://smlouvahned.cz/og-image.png',
-  foundingDate: '2024',
-  areaServed: { '@type': 'Country', name: 'CZ' },
-  contactPoint: {
-    '@type': 'ContactPoint',
-    email: 'info@smlouvahned.cz',
-    contactType: 'customer service',
-    availableLanguage: 'Czech',
-  },
-  identifier: { '@type': 'PropertyValue', propertyID: 'ICO', value: '23660295' },
 };
 
 const softwareSchema = {
@@ -157,9 +139,8 @@ const pricingTiers = [
 export default function Home() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#040c1a] text-slate-200">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c') }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema).replace(/</g, '\\u003c') }} />
 
       {/* ─── HERO ─────────────────────────────────────────────────────────────── */}
       <section className="relative flex min-h-[100svh] flex-col">
@@ -187,7 +168,7 @@ export default function Home() {
             </div>
             <div>
               <div className="font-serif italic text-sm font-semibold tracking-tight text-white">SmlouvaHned</div>
-              <div className="text-[10px] uppercase tracking-[0.2em] text-slate-500">Právní dokumenty online</div>
+              <div className="text-[10px] uppercase tracking-[0.2em] text-slate-500">Smluvní dokumenty online</div>
             </div>
           </Link>
 
@@ -479,8 +460,8 @@ export default function Home() {
                 Váš dokument je na pár kliknutí
               </h2>
               <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-slate-400">
-                Formulář vyplníte za přibližně 5 minut. Výsledkem je standardizovaný smluvní dokument sestavený
-                podle vašich podmínek, připravený k podpisu — strukturovaný dle platné české legislativy.
+                Vyplníte přehledný formulář, systém sestaví dokument podle vašich podmínek. Výstupem je
+                standardizovaný smluvní dokument připravený k podpisu — strukturovaný dle platné české legislativy.
               </p>
               <a
                 href="#smlouvy"
@@ -531,8 +512,8 @@ export default function Home() {
                 <div className="mb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600">Bydlení & Majetek</div>
                 <div className="flex flex-col gap-2 text-slate-500">
                   {[
-                    ['Nájemní smlouva', '/najem'], ['Podnájemní smlouva', '/podnajem'],
-                    ['Kupní smlouva (auto)', '/auto'], ['Kupní smlouva', '/kupni'], ['Darovací smlouva', '/darovaci'],
+                    ['Nájemní smlouva', '/najemni-smlouva'], ['Podnájemní smlouva', '/podnajemni-smlouva'],
+                    ['Kupní smlouva (auto)', '/prodej-vozidla'], ['Kupní smlouva', '/kupni-smlouva'], ['Darovací smlouva', '/darovaci-smlouva'],
                   ].map(([label, href]) => (
                     <Link key={href} href={href} className="hover:text-white transition-colors">{label}</Link>
                   ))}
@@ -542,8 +523,8 @@ export default function Home() {
                 <div className="mb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600">Práce & Podnikání</div>
                 <div className="flex flex-col gap-2 text-slate-500">
                   {[
-                    ['Pracovní smlouva', '/pracovni'], ['DPP', '/dpp'], ['Smlouva o službách', '/sluzby'],
-                    ['Smlouva o dílo', '/smlouva-o-dilo'], ['Smlouva o spolupráci', '/spoluprace'],
+                    ['Pracovní smlouva', '/pracovni-smlouva'], ['DPP', '/dohoda-o-provedeni-prace'], ['Smlouva o službách', '/smlouva-o-sluzbach'],
+                    ['Smlouva o dílo', '/smlouva-o-dilo-online'], ['Smlouva o spolupráci', '/smlouva-o-spolupraci'],
                   ].map(([label, href]) => (
                     <Link key={href} href={href} className="hover:text-white transition-colors">{label}</Link>
                   ))}

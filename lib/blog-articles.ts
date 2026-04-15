@@ -22,6 +22,39 @@ export type BlogClusterMeta = {
 
 export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   {
+    slug: 'vypoved-z-najmu-bytu-2026',
+    title: 'Výpověď z nájmu bytu: výpovědní lhůty, důvody a forma',
+    excerpt:
+      'Kdy a jak může pronajímatel nebo nájemce ukončit nájem výpovědí. Zákonné důvody, tříměsíční lhůta a co mít v nájemní smlouvě předem ošetřeno.',
+    category: 'Bydlení',
+    readTime: '7 min',
+    date: '15. dubna 2026',
+    cluster: 'landlord',
+    href: '/blog/vypoved-z-najmu-bytu-2026',
+  },
+  {
+    slug: 'dpp-dpc-porovnani-2026',
+    title: 'DPP nebo DPČ: přehled rozdílů, limitů a kdy co použít',
+    excerpt:
+      'Srovnání dohody o provedení práce a dohody o pracovní činnosti — hodinové limity, limity pro odvody a kdy která dohoda dává smysl.',
+    category: 'Práce a zaměstnání',
+    readTime: '6 min',
+    date: '15. dubna 2026',
+    cluster: 'general',
+    href: '/blog/dpp-dpc-porovnani-2026',
+  },
+  {
+    slug: 'smlouva-o-dilo-cena-a-platby',
+    title: 'Smlouva o dílo: jak zachytit cenu, zálohy a platební podmínky',
+    excerpt:
+      'Pevná cena nebo položkový rozpočet, zálohy, platební milníky a vícepráce. Co ve smlouvě o dílo písemně sjednat, aby platby fungovaly v praxi.',
+    category: 'Podnikání a zakázky',
+    readTime: '7 min',
+    date: '15. dubna 2026',
+    cluster: 'general',
+    href: '/blog/smlouva-o-dilo-cena-a-platby',
+  },
+  {
     slug: 'predani-bytu-najemci-2026',
     title: 'Jak správně předat byt nájemci: Co zachytit v protokolu a na co nezapomenout',
     excerpt:
