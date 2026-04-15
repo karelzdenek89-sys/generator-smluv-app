@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Nájemní smlouva na byt 2026 — vzor | SmlouvaHned',
+  title: 'Nájemní smlouva na byt 2026 — vzor',
   description:
-    'Nájemní smlouva na byt nebo dům. Kauce, zvířata, předávací protokol, Airbnb doložka. Dle § 2235 OZ 2026. PDF ihned od 99 Kč.',
+    'Nájemní smlouva na byt nebo dům. Kauce, zvířata, předávací protokol, Airbnb doložka. Dle § 2235 OZ 2026. PDF ke stažení od 99 Kč.',
   keywords: [
     'nájemní smlouva byt 2026',
     'nájemní smlouva na byt vzor',
@@ -40,9 +40,23 @@ const faq = [
   },
 ];
 
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: { '@type': 'Answer', text: item.a },
+  })),
+};
+
 export default function NajemniSmlouvaBytPage() {
   return (
     <main className="min-h-screen bg-[#05080f] text-slate-200">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c') }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify({
@@ -87,7 +101,7 @@ export default function NajemniSmlouvaBytPage() {
               Vytvořit nájemní smlouvu →
             </Link>
           </div>
-          <div className="text-sm text-slate-500">Od 99 Kč · PDF ihned · Dle § 2235 OZ</div>
+          <div className="text-sm text-slate-500">Od 99 Kč · PDF ke stažení · Dle § 2235 OZ</div>
         </div>
 
         <section className="mb-12 rounded-3xl border border-white/8 bg-[#0c1426] p-8">
@@ -151,7 +165,7 @@ export default function NajemniSmlouvaBytPage() {
         <section className="rounded-3xl border border-teal-500/20 bg-gradient-to-br from-teal-500/10 to-transparent p-8 text-center">
           <h2 className="text-2xl font-black text-white mb-3">Sestavte nájemní smlouvu</h2>
           <p className="text-slate-400 text-sm mb-6 max-w-md mx-auto">
-            Formulář pro pronájem bytu či domu — kauce, zvířata, pravidla, PDF ihned.
+            Formulář pro pronájem bytu či domu — kauce, zvířata, pravidla, PDF ke stažení.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link href="/najem"
@@ -159,7 +173,7 @@ export default function NajemniSmlouvaBytPage() {
               Vytvořit nájemní smlouvu →
             </Link>
           </div>
-          <div className="mt-3 text-xs text-slate-600">Od 99 Kč · § 2235 OZ · PDF ihned</div>
+          <div className="mt-3 text-xs text-slate-600">Od 99 Kč · § 2235 OZ · PDF ke stažení</div>
         </section>
 
         <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">
