@@ -40,10 +40,10 @@ export default function ProductPathGuide({
 }: ProductPathGuideProps) {
   return (
     <section className={className}>
-      <div className={compact ? 'site-content-card p-7 md:p-8' : ''}>
+      <div className={compact ? 'site-content-card p-6 md:p-7' : ''}>
         <div className={compact ? 'mb-6' : 'mb-8'}>
           <span className="section-label">{label}</span>
-          <h2 className="font-heading-serif text-[clamp(1.55rem,2.8vw,2.15rem)] font-semibold tracking-tight text-[var(--gold-light)]">
+          <h2 className="font-heading-serif text-[clamp(1.5rem,2.7vw,2.05rem)] font-semibold tracking-tight text-[var(--gold-light)]">
             {title}
           </h2>
           {intro ? (

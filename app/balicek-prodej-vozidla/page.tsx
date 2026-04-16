@@ -52,7 +52,7 @@ export default function BalicekProdejVozidlaPage() {
         kicker="Tematický balíček"
         title="Balíček pro prodej vozidla"
         accent="pro standardní převod a předání vozidla"
-        description="Praktická cesta pro situaci, kdy vedle samotné kupní smlouvy potřebujete i podklady k předání vozidla, klíčů, dokladů a navazujícímu převodu."
+        description="Praktické řešení pro situaci, kdy vedle samotné kupní smlouvy potřebujete i podklady k předání vozidla, klíčů, dokladů a navazujícímu převodu."
         primaryCta={{
           href: '/auto?package=vehicle_sale',
           label: 'Pokračovat k balíčku pro prodej vozidla',
@@ -150,7 +150,7 @@ export default function BalicekProdejVozidlaPage() {
         ]}
         faq={faq}
         finalCtaTitle="Pokračujte do balíčku podle údajů o převodu vozidla"
-        finalCtaBody="Formulář vás provede hlavními údaji k převodu. Po dokončení objednávky získáte balíček připravený k závěrečné kontrole, podpisu a běžnému předání vozidla."
+        finalCtaBody="Formulář vás provede hlavními údaji k převodu. Po dokončení objednávky získáte balíček připravený k závěrečné kontrole, podpisu a standardnímu předání vozidla."
         bottomLinks={[
           { href: '/auto?package=vehicle_sale', label: 'Otevřít formulář balíčku' },
           { href: '/prodej-vozidla', label: 'Podklady pro prodej vozidla' },

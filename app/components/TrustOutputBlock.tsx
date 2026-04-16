@@ -19,12 +19,12 @@ export default function TrustOutputBlock({
 }: TrustOutputBlockProps) {
   return (
     <section className={className}>
-      <div className={`site-content-card ${compact ? 'p-6 md:p-7' : 'p-7 md:p-8'}`}>
+      <div className={`site-content-card ${compact ? 'p-5 md:p-6' : 'p-7 md:p-8'}`}>
         <div className="site-kicker">{label}</div>
         <h2 className="site-heading-lg mt-4">{title}</h2>
         {intro ? <p className="mt-4 max-w-3xl text-sm leading-7 text-[#d7d0c3]">{intro}</p> : null}
 
-        <div className={`mt-7 grid gap-4 ${compact ? 'lg:grid-cols-2' : 'md:grid-cols-2'}`}>
+        <div className={`mt-6 grid gap-4 ${compact ? 'lg:grid-cols-2' : 'md:grid-cols-2'}`}>
           {items.map((item) => (
             <div
               key={item}

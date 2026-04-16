@@ -70,6 +70,8 @@ export default function ProPronajimatelePage() {
           'Pokud je situace nestandardní nebo mezi stranami už vznikl spor.',
         ]}
         faq={[...situation.faq]}
+        finalCtaTitle="Vyberte cestu podle rozsahu pronájmu"
+        finalCtaBody="Pokud řešíte jen samotnou smlouvu, pokračujte do builderu nájemní smlouvy. Pokud potřebujete i podklady k předání bytu a ke kauci, bývá vhodnější tematický balíček."
         bottomLinks={[...situation.bottomLinks]}
       />
     </>

@@ -128,7 +128,7 @@ export default function GuideLandingPage({
           <p className="site-body-lg mt-6 max-w-3xl">{description}</p>
 
           {summary.length ? (
-            <div className="mt-8 grid gap-3 md:grid-cols-2">
+            <div className="mt-7 grid gap-3 md:grid-cols-2">
               {summary.slice(0, 4).map((item) => (
                 <div
                   key={item}
@@ -202,7 +202,7 @@ export default function GuideLandingPage({
 
         {trustBlock ? (
           <TrustOutputBlock
-            className="mt-10"
+            className="mt-9"
             label={trustBlock.label}
             title={trustBlock.title}
             intro={trustBlock.intro}

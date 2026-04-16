@@ -52,7 +52,7 @@ export default function BalicekPronajimatelPage() {
         kicker="Tematický balíček"
         title="Balíček pro pronajímatele"
         accent="pro standardní pronájem bytu nebo domu"
-        description="Praktická cesta pro situaci, kdy vedle samotné nájemní smlouvy potřebujete i navazující podklady k předání bytu a k převzetí kauce."
+        description="Praktické řešení pro situaci, kdy vedle samotné nájemní smlouvy potřebujete i navazující podklady k předání bytu a k převzetí kauce."
         primaryCta={{ href: '/najem?package=landlord', label: 'Pokračovat k balíčku pro pronajímatele' }}
         secondaryCta={{
           href: '/pro-pronajimatele',
@@ -147,7 +147,7 @@ export default function BalicekPronajimatelPage() {
         ]}
         faq={faq}
         finalCtaTitle="Pokračujte do balíčku podle údajů z vaší situace"
-        finalCtaBody="Formulář vás provede hlavními údaji k pronájmu. Po dokončení objednávky získáte balíček připravený k závěrečné kontrole, podpisu a běžnému předání bytu."
+        finalCtaBody="Formulář vás provede hlavními údaji k pronájmu. Po dokončení objednávky získáte balíček připravený k závěrečné kontrole, podpisu a standardnímu předání bytu."
         bottomLinks={[
           { href: '/najem?package=landlord', label: 'Otevřít formulář balíčku' },
           { href: '/pro-pronajimatele', label: 'Dokumenty pro pronajímatele' },
