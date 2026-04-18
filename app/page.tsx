@@ -320,12 +320,8 @@ export default function Home() {
               </div>
             ))}
           </div>
-          <div className="mt-4 rounded-xl border border-[#c9a852]/10 bg-[#07111e]/60 px-5 py-4 text-sm text-slate-500">
-            <span className="font-semibold text-slate-400">Upozornění:</span>{' '}
-            SmlouvaHned je softwarový nástroj pro standardní situace, kde se strany dohodly na podmínkách.{' '}
-            <span className="text-slate-400">Není náhradou za individuální právní poradenství</span>{' '}
-            — pro složitější případy nebo spory doporučujeme advokáta{' '}
-            (seznam na <a href="https://www.cak.cz" target="_blank" rel="noopener noreferrer" className="text-[#c9a852]/70 hover:text-[#c9a852] transition-colors underline underline-offset-2">cak.cz</a>).
+          <div className="mt-4 px-2 py-1 text-sm text-slate-500 text-center">
+            Používají pronajímatelé, OSVČ i HR oddělení malých firem po celé ČR.
           </div>
         </section>
 
