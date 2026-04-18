@@ -20,20 +20,20 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: 'SmlouvaHned | Smluvní dokumenty online — Od 99 Kč',
+    default: 'Generování smluv online 2026 — hotový PDF dokument za 5 minut | SmlouvaHned',
     template: '%s | SmlouvaHned',
   },
   description:
-    'Sestavte nájemní smlouvu, kupní smlouvu, darovací smlouvu, smlouvu o dílo, zápůjčce nebo NDA — strukturovaně, s odkazem na aktuální legislativu. Výstup ve formátu PDF. Od 99 Kč.',
+    'Generování smluv online bez právníka. Nájemní smlouva, kupní smlouva, smlouva o dílo, NDA a další — vyplníte formulář, dostanete PDF připravené k podpisu. Dle legislativy 2026.',
   keywords: [
+    'generování smluv online',
+    'generátor smluv',
     'nájemní smlouva',
     'kupní smlouva',
     'darovací smlouva',
     'smlouva o dílo',
     'smlouva o zápůjčce',
     'NDA',
-    'mlčenlivost',
-    'generátor smluv',
     'online smlouva',
     'šablona smlouvy',
     'právní dokument',
@@ -47,9 +47,9 @@ export const metadata: Metadata = {
     locale: 'cs_CZ',
     url: BASE_URL,
     siteName: 'SmlouvaHned',
-    title: 'SmlouvaHned | Smluvní dokumenty online — Od 99 Kč',
+    title: 'Generování smluv online 2026 — hotový PDF dokument za 5 minut | SmlouvaHned',
     description:
-      'Nájemní smlouva, kupní smlouva, NDA a další — sestaveno dle platné legislativy, výstup ve formátu PDF.',
+      'Generování smluv online bez právníka. Nájemní smlouva, kupní smlouva, NDA a další — formulář, PDF ihned ke stažení. Dle legislativy 2026.',
     images: [
       {
         url: '/og-image.png',

@@ -3,13 +3,22 @@
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
 export const metadata: Metadata = {
-  title: 'Vytvořit nájemní smlouvu — formulář online | SmlouvaHned',
-  description: 'Formulář pro nájemní smlouvu krok za krokem. Vyplníte strany, nájemné, kausi a pravidla — výsledkem je kompletní PDF připravené k podpisu. Od 99 Kč.',
-  keywords: ['vytvořit nájemní smlouvu', 'nájemní smlouva formulář', 'nájemní smlouva generátor', 'nájemní smlouva PDF ke stažení'],
+  title: 'Nájemní smlouva online 2026 — vzor, formulář, PDF ihned | SmlouvaHned',
+  description: 'Nájemní smlouva na byt 2026 — vyplníte strany, nájemné, kauci a pravidla, dostanete kompletní PDF připravené k podpisu. Vzor dle aktuálního občanského zákoníku.',
+  keywords: [
+    'nájemní smlouva 2026',
+    'vzor nájemní smlouvy 2026',
+    'nájemní smlouva na byt 2026',
+    'vzor nájemní smlouvy na byt 2026',
+    'nájemní smlouva online',
+    'nájemní smlouva vzor 2026',
+    'nájemní smlouva formulář',
+    'nájemní smlouva PDF ke stažení',
+  ],
   alternates: { canonical: `${BASE_URL}/najem` },
   openGraph: {
-    title: 'Vytvořit nájemní smlouvu — formulář online | SmlouvaHned',
-    description: 'Formulář krok za krokem. Kompletní nájemní smlouva v PDF — ihned ke stažení. Od 99 Kč.',
+    title: 'Nájemní smlouva online 2026 — vzor, formulář, PDF ihned | SmlouvaHned',
+    description: 'Nájemní smlouva na byt 2026 dle občanského zákoníku. Vyplníte formulář, dostanete PDF připravené k podpisu.',
     url: `${BASE_URL}/najem`,
     type: 'website',
   },

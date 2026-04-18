@@ -186,6 +186,60 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly' as const,
       priority: 0.92,
     },
+    {
+      url: `${BASE_URL}/blog/chyby-pri-pronajmu-bytu-2026`,
+      lastModified: new Date('2026-04-05'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.88,
+    },
+    {
+      url: `${BASE_URL}/blog/doklady-pri-prodeji-auta-2026`,
+      lastModified: new Date('2026-04-05'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.88,
+    },
+    {
+      url: `${BASE_URL}/blog/kauce-pronajem-bytu-2026`,
+      lastModified: new Date('2026-04-05'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.88,
+    },
+    {
+      url: `${BASE_URL}/blog/predani-bytu-najemci-2026`,
+      lastModified: new Date('2026-04-05'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.88,
+    },
+    {
+      url: `${BASE_URL}/blog/predani-vozidla-kupujicimu-2026`,
+      lastModified: new Date('2026-04-05'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.88,
+    },
+    {
+      url: `${BASE_URL}/blog/prepis-vozidla-2026`,
+      lastModified: new Date('2026-04-05'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.88,
+    },
+    {
+      url: `${BASE_URL}/blog/dpp-dpc-porovnani-2026`,
+      lastModified: new Date('2026-04-10'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.88,
+    },
+    {
+      url: `${BASE_URL}/blog/smlouva-o-dilo-cena-a-platby`,
+      lastModified: new Date('2026-04-10'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.88,
+    },
+    {
+      url: `${BASE_URL}/blog/vypoved-z-najmu-bytu-2026`,
+      lastModified: new Date('2026-04-10'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.88,
+    },
     // SEO landing pages
     {
       url: `${BASE_URL}/najemni-smlouva`,

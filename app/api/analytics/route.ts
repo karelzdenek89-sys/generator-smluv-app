@@ -38,8 +38,8 @@ const eventSchema = z.object({
           'cooperation',
         ])
         .optional(),
-      tier: z.enum(['basic', 'complete']).optional(),
-      previous_tier: z.enum(['basic', 'complete']).optional(),
+      tier: z.enum(['basic', 'professional', 'complete', 'premium']).optional(),
+      previous_tier: z.enum(['basic', 'professional', 'complete', 'premium']).optional(),
       cta_type: z.string().optional(),
       price_band: z.enum(['99', '199', '299']).optional(),
       entry_mode: z.enum(['single_document', 'package_flow']).optional(),
