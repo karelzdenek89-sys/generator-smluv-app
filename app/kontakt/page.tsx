@@ -1,5 +1,6 @@
 ﻿import type { Metadata } from 'next';
 import Link from 'next/link';
+import ContactForm from '@/app/components/ContactForm';
 
 export const metadata: Metadata = {
   title: 'Kontakt | SmlouvaHned',
@@ -35,6 +36,14 @@ export default function KontaktPage() {
           SmlouvaHned neposkytuje individuální právní poradenství. Nemůžeme proto posuzovat vhodnost dokumentu pro vaši
           konkrétní situaci ani doporučovat právní postup. U složitých nebo sporných případů doporučujeme obrátit se na
           advokáta.
+        </div>
+
+        <ContactForm />
+
+        <div className="my-8 flex items-center gap-4">
+          <div className="h-px flex-1 bg-slate-800" />
+          <span className="text-xs text-slate-600 uppercase tracking-widest">nebo kontaktujte přímo</span>
+          <div className="h-px flex-1 bg-slate-800" />
         </div>
 
         <div className="mb-10 grid gap-5 sm:grid-cols-2">

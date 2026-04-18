@@ -87,9 +87,12 @@ export default function TermsPage() {
               04. Ceny a platební podmínky
             </h2>
             <div className="bg-[#0c1426]/60 border border-white/5 rounded-2xl p-5 space-y-2 text-sm mb-3">
-              <div className="flex justify-between"><span className="text-slate-400">{PRICING_TIER_CONFIG.basic.title}</span><span className="font-bold text-white">{PRICING_TIER_CONFIG.basic.priceLabel} vč. DPH</span></div>
-              <div className="flex justify-between"><span className="text-slate-400">{PRICING_TIER_CONFIG.complete.title}</span><span className="font-bold text-white">{PRICING_TIER_CONFIG.complete.priceLabel} vč. DPH</span></div>
+              <div className="flex justify-between"><span className="text-slate-400">{PRICING_TIER_CONFIG.basic.title}</span><span className="font-bold text-white">{PRICING_TIER_CONFIG.basic.priceLabel}</span></div>
+              <div className="flex justify-between"><span className="text-slate-400">{PRICING_TIER_CONFIG.complete.title}</span><span className="font-bold text-white">{PRICING_TIER_CONFIG.complete.priceLabel}</span></div>
             </div>
+            <p className="mb-3 text-xs text-slate-500">
+              Poskytovatel není plátcem DPH. Uvedené ceny jsou konečné.
+            </p>
             <p className="mb-3">
               Platba probíhá prostřednictvím zabezpečené platební brány <strong className="text-white">Stripe</strong> (kartou). Ihned po potvrzení platby je Zákazníkovi zpřístupněn odkaz ke stažení dokumentu na stránce a zasílán na e-mail (pokud byl zadán).
             </p>
@@ -132,6 +135,10 @@ export default function TermsPage() {
             <p className="mb-3">
               Zákazník je oprávněn obrátit se na <strong className="text-white">Českou obchodní inspekci (ČOI)</strong> jako subjekt mimosoudního řešení spotřebitelských sporů. Návrh na mimosoudní řešení sporu lze podat na adrese:{' '}
               <a href="https://adr.coi.cz" target="_blank" rel="noopener" className="text-amber-400 hover:underline">adr.coi.cz</a>.
+            </p>
+            <p className="mb-3">
+              V souladu s nařízením EU č. 524/2013 je Zákazník oprávněn využít platformu pro online řešení sporů provozovanou Evropskou komisí:{' '}
+              <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener" className="text-amber-400 hover:underline">ec.europa.eu/consumers/odr</a>.
             </p>
           </section>
 

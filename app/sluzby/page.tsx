@@ -7,6 +7,7 @@ import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
+import PaymentModal from '@/app/components/PaymentModal';
 
 type FormData = {
   providerName: string; providerIco: string; providerAddress: string; providerEmail: string; providerPhone: string;
@@ -56,7 +57,7 @@ export default function SluzbyPage() {
     disputeResolution: 'court' as const,
   });
   const [isProcessing, setIsProcessing] = useState(false);
-  const [gdprConsent, setGdprConsent] = useState(false);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
 
   const set = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -84,7 +85,6 @@ export default function SluzbyPage() {
 
   const handlePayment = async () => {
     try {
-      if (!gdprConsent) { alert('Pro pokračování je nutný souhlas se zpracováním osobních údajů.'); return; }
     setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -99,6 +99,7 @@ export default function SluzbyPage() {
   const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-rose-400';
 
   return (
+    <>
     <main className="site-page contract-builder min-h-screen pb-24">
       <header className="contract-builder-header sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
@@ -316,25 +317,35 @@ export default function SluzbyPage() {
                   {!form.serviceDescription && <div className="text-slate-400 text-sm">• Popis služeb</div>}
                 </div>
               )}
-              <label className="flex items-start gap-3 mb-4 cursor-pointer mt-4">
-                <input type="checkbox" checked={gdprConsent} onChange={(e) => setGdprConsent(e.target.checked)} className="mt-1 h-4 w-4 accent-amber-500 flex-shrink-0" />
-                <span className="text-xs text-slate-400 leading-relaxed">
-                  Souhlasím se{' '}
-                  <a href="/gdpr" className="text-amber-400 underline hover:text-amber-300" target="_blank" rel="noopener noreferrer">zpracováním osobních údajů</a>
-                  {' '}a{' '}
-                  <a href="/obchodni-podminky" className="text-amber-400 underline hover:text-amber-300" target="_blank" rel="noopener noreferrer">obchodními podmínkami</a>.
-                </span>
-              </label>
-              <button onClick={handlePayment} disabled={isProcessing || !gdprConsent || !form.providerName || !form.clientName || !form.serviceDescription}
-                className="mt-4 w-full rounded-2xl bg-amber-500 px-6 py-4 font-bold text-slate-900 text-lg hover:bg-amber-400 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed">
-                {isProcessing ? 'Přesměrování…' : 'Zaplatit a stáhnout PDF →'}
-              </button>
-              <p className="mt-3 text-center text-xs text-slate-500">Platba kartou přes Stripe · PDF ihned</p>
+                              {/* Tlačítko generování */}
+                <button
+                  onClick={() => setShowPreviewModal(true)}
+                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
+                >
+                  Vygenerovat smlouvu →
+                </button>
+
+                <p className="mt-3 text-center text-[11px] text-slate-500">
+                  Zobrazí se náhled dokumentu připraveného k odemčení
+                </p>
             </div>
           </div>
         </div>
       </div>
     </main>
+    {showPreviewModal && (
+      <PaymentModal
+        sections={previewSections}
+        title="Smlouva o poskytování služeb"
+        tier={form.tier}
+        onTierChange={(t) => setForm((prev) => ({ ...prev, tier: t }))}
+        contractType="service"
+        onPay={handlePayment}
+        isProcessing={isProcessing}
+        onClose={() => setShowPreviewModal(false)}
+      />
+    )}
+    </>
   );
 }
 

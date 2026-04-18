@@ -241,10 +241,7 @@ function ContractCard({ contract }: { contract: ContractItem }) {
           {contract.description}
         </p>
 
-        <div className="mt-auto border-t border-white/8 pt-3 flex items-center justify-between">
-          <span className="text-xs font-black text-slate-500">
-            {contract.price}
-          </span>
+        <div className="mt-auto border-t border-white/8 pt-3 flex items-center justify-end">
           <span className="text-xs font-bold uppercase tracking-[0.12em] text-amber-400 transition group-hover:text-amber-300 flex items-center gap-1">
             Vytvořit
             <span className="transition group-hover:translate-x-0.5">→</span>

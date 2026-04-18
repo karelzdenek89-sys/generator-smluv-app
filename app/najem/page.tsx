@@ -639,14 +639,12 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                 <p className="mt-3 text-sm leading-7 text-[#d7d0c3]">{packageConfig.builderDescription}</p>
               </div>
               <div className="min-w-[180px] rounded-2xl border border-[rgba(214,172,96,0.18)] bg-[rgba(255,255,255,0.03)] px-5 py-4 text-left">
-                <div className="text-[10px] font-black uppercase tracking-[0.18em] text-[#d6ac60]">Cena balíčku</div>
-                <div className="mt-2 text-3xl font-black text-white">{packageConfig.priceLabel}</div>
                 <div className="mt-2 text-xs leading-6 text-[#bba98c]">Nájemní smlouva v komplexní variantě a navazující podklady v jednom výstupu.</div>
                 <Link
                   href="/najem"
                   className="mt-3 inline-block text-xs leading-6 text-[#cbbba0] transition hover:text-white"
                 >
-                  Řešíte jen samotnou nájemní smlouvu? Vraťte se na samostatný dokument 99 / 199 Kč.
+                  Řešíte jen samotnou nájemní smlouvu? Vraťte se na samostatný dokument →
                 </Link>
               </div>
             </div>
@@ -665,7 +663,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   Balíček pro pronajímatele
                 </h2>
                 <p className="mt-3 text-sm leading-7 text-[#d7d0c3]">
-                  V tomto formuláři volíte mezi samostatným dokumentem za 99 Kč a širší variantou za 199 Kč. Pokud chcete řešit i předání bytu a potvrzení o převzetí kauce, pokračujte tematickým balíčkem za 299 Kč.
+                  Pokud chcete řešit i předání bytu a potvrzení o převzetí kauce, pokračujte tematickým balíčkem pro pronajímatele.
                 </p>
                 <p className="mt-3 text-xs leading-6 text-[#bba98c]">
                   Pokud si nejste jistí, kterou cestu zvolit, pomůže vám orientační stránka{' '}
@@ -673,10 +671,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                 </p>
               </div>
               <div className="flex items-center gap-4">
-                <div className="text-right">
-                  <div className="text-[10px] font-black uppercase tracking-[0.18em] text-[#d6ac60]">Balíček</div>
-                  <div className="mt-1 text-3xl font-black text-white">299 Kč</div>
-                </div>
                 <span className="link-gold-elegant text-sm font-semibold">
                   Otevřít balíček →
                 </span>
@@ -1197,7 +1191,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                 subtitle={
                   packageConfig
                     ? 'V balíčku pro pronajímatele je zahrnuta nájemní smlouva v komplexní variantě a navazující podklady.'
-                    : '99 Kč slouží pro samotný dokument. 199 Kč přidává širší rozsah a praktičtější podklady. Pokud řešíte i předání bytu a kauci, dává smysl tematický balíček za 299 Kč.'
+                    : 'Základní varianta obsahuje standardní dokument. Rozšířená varianta přidává širší rozsah klauzulí a praktičtější podklady.'
                 }
               />
               {packageConfig ? (
@@ -1212,7 +1206,6 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                       </p>
                     </div>
                     <div className="text-left sm:text-right">
-                      <div className="text-3xl font-black text-white">{packageConfig.priceLabel}</div>
                       <div className="mt-1 text-xs leading-6 text-[#bba98c]">Komplexní nájemní smlouva a související podklady.</div>
                     </div>
                   </div>

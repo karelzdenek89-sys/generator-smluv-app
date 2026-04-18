@@ -2,10 +2,8 @@
 
 import { usePathname } from 'next/navigation';
 import {
-  COMPLETE_UPSELL_DELTA_CZK,
   PRICING_TIER_CONFIG,
   PRICING_UPSELL_COPY,
-  getTierPriceLabel,
   type PricingTier,
 } from '@/lib/pricing';
 import { getAnalyticsDefaultsForPathname, trackEvent } from '@/lib/analytics';
@@ -45,17 +43,9 @@ export default function BuilderCheckoutSummary({
         </div>
 
         <div className="mb-4 rounded-2xl border border-white/8 bg-white/3 p-4">
-          <div className="mb-1 flex items-center justify-between gap-4">
-            <span className="text-sm text-slate-400">Vybraný produkt</span>
-            <span className="text-sm font-bold text-white">{packageConfig.priceLabel}</span>
-          </div>
           <div className="text-base font-semibold text-white">{packageConfig.title}</div>
           <div className="mt-2 text-sm leading-relaxed text-slate-400">
             {packageConfig.checkoutDescription}
-          </div>
-          <div className="mt-3 flex items-center justify-between border-t border-white/8 pt-2">
-            <span className="text-sm font-black text-white">Celkem</span>
-            <span className="text-xl font-black text-amber-400">{packageConfig.priceLabel}</span>
           </div>
         </div>
 
@@ -88,24 +78,10 @@ export default function BuilderCheckoutSummary({
       </div>
 
       <div className="mb-4 rounded-2xl border border-white/8 bg-white/3 p-4">
-        <div className="mb-1 flex items-center justify-between">
-          <span className="text-sm text-slate-400">{documentLabel}</span>
-          <span className="text-sm font-bold text-white">
-            {PRICING_TIER_CONFIG.basic.priceLabel}
-          </span>
-        </div>
+        <div className="text-sm font-semibold text-white">{documentLabel}</div>
         {isComplete ? (
-          <div className="mb-1 flex items-center justify-between">
-            <span className="text-sm text-slate-400">{PRICING_TIER_CONFIG.complete.title}</span>
-            <span className="text-sm font-bold text-amber-400">
-              +{COMPLETE_UPSELL_DELTA_CZK} Kč
-            </span>
-          </div>
+          <div className="mt-1 text-xs text-slate-400">{PRICING_TIER_CONFIG.complete.title}</div>
         ) : null}
-        <div className="mt-2 flex items-center justify-between border-t border-white/8 pt-2">
-          <span className="text-sm font-black text-white">Celkem</span>
-          <span className="text-xl font-black text-amber-400">{getTierPriceLabel(tier)}</span>
-        </div>
       </div>
 
       {!isComplete && onUpgrade ? (

@@ -10,6 +10,7 @@ import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
 import { getThematicPackageConfig } from '@/lib/packages';
+import PaymentModal from '@/app/components/PaymentModal';
 
 type PaymentMethod = 'cash' | 'transfer';
 type RiskLevel = 'low' | 'medium' | 'high';
@@ -151,7 +152,7 @@ function CarSaleBuilderContent() {
   });
 
   const [isProcessing, setIsProcessing] = useState(false);
-  const [gdprConsent, setGdprConsent] = useState(false);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
 
   useEffect(() => {
     if (!isVehiclePackage) return;
@@ -354,11 +355,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
       return;
     }
 
-    if (!gdprConsent) {
-      alert('Potvrďte prosím souhlas se zpracováním osobních údajů a obchodními podmínkami.');
-      return;
-    }
-
     try {
       setIsProcessing(true);
 
@@ -456,6 +452,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
   }
 
   return (
+    <>
     <main className="site-page contract-builder pb-24">
       <header className="contract-builder-header">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
@@ -1213,40 +1210,16 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 />
 
                 {/* GDPR souhlas */}
-                <label className="flex items-start gap-3 mb-4 cursor-pointer group mt-4">
-                  <input
-                    type="checkbox"
-                    checked={gdprConsent}
-                    onChange={(e) => setGdprConsent(e.target.checked)}
-                    className="mt-0.5 h-4 w-4 accent-amber-500 flex-shrink-0"
-                  />
-                  <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
-                    Souhlasím se{' '}
-                    <a href="/gdpr" target="_blank" className="text-amber-400 underline hover:text-amber-300">zpracováním osobních údajů</a>
-                    {' '}a s{' '}
-                    <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">obchodními podmínkami</a>.
-                    Beru na vědomí, že digitální obsah je doručen ihned a nelze od smlouvy odstoupit.
-                  </span>
-                </label>
-
-                {/* Platební tlačítko */}
+                                {/* Tlačítko generování */}
                 <button
-                  onClick={handlePayment}
-                  disabled={isProcessing || !gdprConsent}
-                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
+                  onClick={() => setShowPreviewModal(true)}
+                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >
-                  {isProcessing ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <span className="w-5 h-5 border-2 border-black/40 border-t-black rounded-full animate-spin" />
-                      Přesměrování na platbu…
-                    </span>
-                  ) : (
-                    `Zaplatit ${packageConfig ? packageConfig.priceLabel : formData.tier === 'complete' ? '199 Kč' : '99 Kč'} a stáhnout PDF →`
-                  )}
+                  Vygenerovat smlouvu →
                 </button>
 
                 <p className="mt-3 text-center text-[11px] text-slate-500">
-                  🔒 Zabezpečená platba přes Stripe · PDF ke stažení ihned po zaplacení
+                  Zobrazí se náhled dokumentu připraveného k odemčení
                 </p>
               </div>
             </div>
@@ -1254,6 +1227,20 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
         </div>
       </div>
     </main>
+    {showPreviewModal && (
+      <PaymentModal
+        sections={previewSections}
+        title="Kupní smlouva na vozidlo"
+        tier={formData.tier}
+        onTierChange={(t) => setFormData((prev) => ({ ...prev, tier: t }))}
+        contractType="car_sale"
+        packageKey={packageConfig?.key ?? null}
+        onPay={handlePayment}
+        isProcessing={isProcessing}
+        onClose={() => setShowPreviewModal(false)}
+      />
+    )}
+    </>
   );
 }
 

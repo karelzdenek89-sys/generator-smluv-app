@@ -117,7 +117,7 @@ export const PRICING_UPSELL_COPY = {
   title: 'Rozšířit na Rozšířený dokument',
   description:
     'Vyšší varianta přidává širší rozsah ustanovení a doplňující podklady pro citlivější situace.',
-  cta: `Rozšířit na Rozšířený dokument za doplatek ${COMPLETE_UPSELL_DELTA_CZK} Kč`,
+  cta: 'Rozšířit na Rozšířený dokument',
 } as const;
 
 export function normalizePricingTier(tier?: string | null): PricingTier {

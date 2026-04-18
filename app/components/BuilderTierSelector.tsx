@@ -84,11 +84,10 @@ export default function BuilderTierSelector({
               className="mt-1 h-5 w-5 accent-amber-500"
             />
             <div className="flex-1">
-              <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
                 <span className="text-sm font-black uppercase tracking-wide text-amber-400">
                   {opt.label}
                 </span>
-                <span className="text-sm font-black text-white">{opt.price}</span>
               </div>
               <div className="mt-1 text-xs leading-relaxed text-slate-400">
                 {getTierSelectorDescription(contractType, opt.value)}

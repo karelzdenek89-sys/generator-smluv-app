@@ -7,6 +7,7 @@ import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
+import PaymentModal from '@/app/components/PaymentModal';
 
 type FormData = {
   employerName: string; employerIco: string; employerAddress: string; employerEmail: string;
@@ -59,7 +60,7 @@ export default function PracovniPage() {
     tier: 'basic' as const,
   });
   const [isProcessing, setIsProcessing] = useState(false);
-  const [gdprConsent, setGdprConsent] = useState(false);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [withdrawalConsent, setWithdrawalConsent] = useState(false);
   const [withdrawalError, setWithdrawalError] = useState(false);
 
@@ -93,11 +94,6 @@ export default function PracovniPage() {
 
   const handlePayment = async () => {
     try {
-          if (!withdrawalConsent) {
-      setWithdrawalError(true);
-      return;
-    }
-    if (!gdprConsent) { alert('Pro pokračování je nutný souhlas se zpracováním osobních údajů.'); return; }
     setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -112,6 +108,7 @@ export default function PracovniPage() {
   const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-rose-400';
 
   return (
+    <>
     <main className="min-h-screen bg-[#05080f] text-slate-200 font-sans pb-24">
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[#08101e]/90 backdrop-blur">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
@@ -359,53 +356,35 @@ export default function PracovniPage() {
                   {!form.jobTitle && <div>• Pracovní pozice</div>}
                 </div>
               )}
-              <label className="flex items-start gap-3 mb-4 mt-4 cursor-pointer">
-                <input type="checkbox" checked={gdprConsent} onChange={(e) => setGdprConsent(e.target.checked)} className="mt-1 h-4 w-4 accent-amber-500 flex-shrink-0" />
-                <span className="text-xs text-slate-400 leading-relaxed">
-                  Souhlasím se{' '}
-                  <a href="/gdpr" className="text-amber-400 underline hover:text-amber-300" target="_blank" rel="noopener noreferrer">zpracováním osobních údajů</a>
-                  {' '}a{' '}
-                  <a href="/obchodni-podminky" className="text-amber-400 underline hover:text-amber-300" target="_blank" rel="noopener noreferrer">obchodními podmínkami</a>.
-                </span>
-              </label>
+                              {/* Tlačítko generování */}
+                <button
+                  onClick={() => setShowPreviewModal(true)}
+                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
+                >
+                  Vygenerovat smlouvu →
+                </button>
 
-                {/* § 1837 l) OZ — povinný souhlas s neodstoupením od smlouvy */}
-                <label className="flex items-start gap-3 mb-1 cursor-pointer group">
-                  <input
-                    type="checkbox"
-                    checked={withdrawalConsent}
-                    onChange={(e) => {
-                      setWithdrawalConsent(e.target.checked);
-                      if (e.target.checked) setWithdrawalError(false);
-                    }}
-                    className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
-                  />
-                  <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
-                    Beru na vědomí, že objednávám digitální obsah, který bude ihned zpřístupněn po zaplacení.
-                    Výslovně souhlasím s tím, že ztrácím právo na odstoupení od smlouvy ve lhůtě 14 dní dle{' '}
-                    <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">
-                      § 1837 písm. l) zákona č. 89/2012 Sb.
-                    </a>
-                  </span>
-                </label>
-                {withdrawalError && (
-                  <p className="mb-3 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-2 text-xs text-rose-300">
-                    Pro pokračování musíte souhlasit s podmínkami digitálního obsahu.
-                  </p>
-                )}
-              <button onClick={handlePayment} disabled={isProcessing || !gdprConsent || !form.employerName || !form.employeeName || !form.jobTitle}
-                className="mt-4 w-full rounded-2xl bg-amber-500 px-6 py-4 font-bold text-slate-900 text-lg hover:bg-amber-400 active:scale-95 transition disabled:opacity-40 disabled:cursor-not-allowed">
-                {isProcessing ? 'Přesměrování…' : 'Zaplatit a stáhnout PDF →'}
-              </button>
-              <p className="mt-3 text-center text-xs text-slate-500">Platba kartou přes Stripe · PDF ke stažení ihned</p>
-              <div className="mt-4 rounded-xl bg-amber-500/10 border border-amber-500/20 p-3 text-xs text-amber-300">
-                <strong>Důležité:</strong> Pracovní smlouva musí být uzavřena před nástupem do práce a zaměstnanec musí obdržet jedno vyhotovení (§ 37 ZP).
-              </div>
+                <p className="mt-3 text-center text-[11px] text-slate-500">
+                  Zobrazí se náhled dokumentu připraveného k odemčení
+                </p>
             </div>
           </div>
         </div>
       </div>
     </main>
+    {showPreviewModal && (
+      <PaymentModal
+        sections={previewSections}
+        title="Pracovní smlouva"
+        tier={form.tier}
+        onTierChange={(t) => setForm((prev) => ({ ...prev, tier: t }))}
+        contractType="employment"
+        onPay={handlePayment}
+        isProcessing={isProcessing}
+        onClose={() => setShowPreviewModal(false)}
+      />
+    )}
+    </>
   );
 }
 

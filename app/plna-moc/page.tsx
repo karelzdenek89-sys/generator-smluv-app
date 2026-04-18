@@ -7,6 +7,7 @@ import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
+import PaymentModal from '@/app/components/PaymentModal';
 
 type FormData = {
   principalName: string; principalId: string; principalAddress: string; principalEmail: string;
@@ -43,7 +44,7 @@ export default function PlnaMocPage() {
     tier: 'basic' as const,
   });
   const [isProcessing, setIsProcessing] = useState(false);
-  const [gdprConsent, setGdprConsent] = useState(false);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
 
   const set = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -74,7 +75,6 @@ export default function PlnaMocPage() {
 
   const handlePayment = async () => {
     if (!form.principalName || !form.agentName) { alert('Vyplňte prosím jména zmocnitele a zmocněnce.'); return; }
-    if (!gdprConsent) { alert('Pro pokračování je nutný souhlas se zpracováním osobních údajů.'); return; }
     try {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {
@@ -136,6 +136,7 @@ export default function PlnaMocPage() {
   };
 
   return (
+    <>
     <main className="site-page contract-builder font-sans pb-24">
       <header className="contract-builder-header">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
@@ -289,32 +290,35 @@ export default function PlnaMocPage() {
                   {!form.agentName && <div>• Jméno zmocněnce</div>}
                 </div>
               )}
-              <label className="flex items-start gap-3 mt-4 mb-4 cursor-pointer">
-                <input type="checkbox" checked={gdprConsent} onChange={(e) => setGdprConsent(e.target.checked)} className="mt-1 h-4 w-4 accent-amber-500 flex-shrink-0" />
-                <span className="text-xs text-slate-400 leading-relaxed">
-                  Souhlasím se{' '}
-                  <a href="/gdpr" className="text-amber-400 underline hover:text-amber-300" target="_blank" rel="noopener noreferrer">zpracováním osobních údajů</a>
-                  {' '}a{' '}
-                  <a href="/obchodni-podminky" className="text-amber-400 underline hover:text-amber-300" target="_blank" rel="noopener noreferrer">obchodními podmínkami</a>.
-                </span>
-              </label>
-              <button onClick={handlePayment} disabled={isProcessing || !form.principalName || !form.agentName || !gdprConsent}
-                className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none">
-                {isProcessing ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <span className="w-5 h-5 border-2 border-black/40 border-t-black rounded-full animate-spin" />
-                    Přesměrování…
-                  </span>
-                ) : (
-                  `Zaplatit ${form.tier === 'complete' ? '199 Kč' : '99 Kč'} a stáhnout PDF →`
-                )}
-              </button>
-              <p className="mt-3 text-center text-[11px] text-slate-500">🔒 Zabezpečená platba přes Stripe · PDF ihned</p>
+                              {/* Tlačítko generování */}
+                <button
+                  onClick={() => setShowPreviewModal(true)}
+                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
+                >
+                  Vygenerovat smlouvu →
+                </button>
+
+                <p className="mt-3 text-center text-[11px] text-slate-500">
+                  Zobrazí se náhled dokumentu připraveného k odemčení
+                </p>
             </div>
           </div>
         </div>
       </div>
     </main>
+    {showPreviewModal && (
+      <PaymentModal
+        sections={previewSections}
+        title="Plná moc"
+        tier={form.tier}
+        onTierChange={(t) => setForm((prev) => ({ ...prev, tier: t }))}
+        contractType="power_of_attorney"
+        onPay={handlePayment}
+        isProcessing={isProcessing}
+        onClose={() => setShowPreviewModal(false)}
+      />
+    )}
+    </>
   );
 }
 

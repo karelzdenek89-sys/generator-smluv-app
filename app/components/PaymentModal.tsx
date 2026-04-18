@@ -221,7 +221,7 @@ export default function PaymentModal({
             </div>
 
             <div className="mt-auto space-y-4">
-              {/* GDPR */}
+              {/* Souhlas s OP + vzdání se odstoupení */}
               <label className="flex cursor-pointer items-start gap-3 group">
                 <input
                   type="checkbox"
@@ -230,11 +230,11 @@ export default function PaymentModal({
                   className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
                 />
                 <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
-                  Souhlasím se{' '}
-                  <a href="/gdpr" target="_blank" className="text-amber-400 underline hover:text-amber-300">zpracováním osobních údajů</a>
-                  {' '}a s{' '}
-                  <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">obchodními podmínkami</a>.
-                  Digitální obsah je doručen ihned po platbě.
+                  Přijímám{' '}
+                  <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">obchodní podmínky</a>
+                  {' '}a beru na vědomí{' '}
+                  <a href="/gdpr" target="_blank" className="text-amber-400 underline hover:text-amber-300">zásady ochrany osobních údajů</a>.
+                  Výslovně souhlasím s okamžitým zahájením plnění a beru na vědomí, že tím <strong className="text-slate-300">ztrácím právo na odstoupení od smlouvy</strong> dle § 1837 písm. l) OZ.
                 </span>
               </label>
 

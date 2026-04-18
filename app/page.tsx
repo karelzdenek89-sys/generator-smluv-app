@@ -5,10 +5,10 @@ import ContractGridPremium from '@/app/components/ContractGridPremium';
 
 export const metadata: Metadata = {
   title: { absolute: 'Generátor smluv online — smluvní dokumenty ihned | SmlouvaHned' },
-  description: 'Sestavte nájemní smlouvu, kupní smlouvu, DPP, NDA a další dokumenty online. Vyplníte formulář, systém sestaví standardizovaný dokument — PDF ke stažení ihned. Od 99 Kč.',
+  description: 'Sestavte nájemní smlouvu, kupní smlouvu, DPP, NDA a další dokumenty online. Vyplníte formulář, systém sestaví standardizovaný dokument — PDF ke stažení ihned.',
   openGraph: {
     title: 'Generátor smluv online — smluvní dokumenty ihned | SmlouvaHned',
-    description: 'Softwarový nástroj pro tvorbu smluvních dokumentů. Formulář → strukturovaný dokument → PDF ke stažení. Od 99 Kč.',
+    description: 'Softwarový nástroj pro tvorbu smluvních dokumentů. Formulář → strukturovaný dokument → PDF ke stažení.',
     url: 'https://smlouvahned.cz',
     siteName: 'SmlouvaHned',
     type: 'website',
@@ -26,7 +26,7 @@ const faqItems = [
   },
   {
     question: 'Jak celý proces funguje?',
-    answer: 'Vyberete typ smlouvy, vyplníte formulář krok za krokem, zvolíte úroveň ochrany a po zaplacení obdržíte hotové PDF ke stažení. U tematického balíčku také průvodní instrukce a checklist.',
+    answer: 'Vyberete typ smlouvy, vyplníte formulář krok za krokem a vygenerujete dokument. Po odemčení obdržíte hotové PDF ke stažení. U tematického balíčku také průvodní instrukce a checklist.',
   },
   {
     question: 'Co obdržím po zaplacení?',
@@ -83,58 +83,6 @@ const softwareSchema = {
   },
 };
 
-const pricingTiers = [
-  {
-    name: 'Základní dokument',
-    price: '99 Kč',
-    description: 'Standardní dokument pro přímočaré situace',
-    features: [
-      'Struktura dle OZ č. 89/2012 Sb. a zákoníku práce',
-      'Dokument sestaven dynamicky dle zadaných údajů',
-      'PDF ke stažení ihned po platbě',
-      'Aktualizováno pro českou legislativu 2026',
-      'Odkaz ke stažení platný 7 dní',
-    ],
-    note: 'Vhodné tam, kde jsou podmínky jasné, obě strany se dohodly a nepředpokládají komplikace.',
-    cta: 'Vybrat smlouvu',
-    href: '#smlouvy',
-    highlighted: false,
-    badge: null as string | null,
-  },
-  {
-    name: 'Rozšířený dokument',
-    price: '199 Kč',
-    description: 'Širší rozsah ustanovení a vyšší míra jistoty',
-    features: [
-      'Vše ze Základního dokumentu',
-      'Rozšířené klauzule dle typu smlouvy',
-      'Smluvní pokuty a odpovědnostní ustanovení',
-      'Praktické podklady k podpisu a archivaci',
-      'Odkaz ke stažení platný 30 dní',
-    ],
-    note: 'Doporučujeme pro nájmy, prodeje vozidel, smlouvy o dílo a obchodní vztahy.',
-    cta: 'Vybrat smlouvu',
-    href: '#smlouvy',
-    highlighted: true,
-    badge: 'Nejčastěji voleno' as string | null,
-  },
-  {
-    name: 'Tematický balíček',
-    price: '299 Kč',
-    description: 'Kompletní dokumentace pro celou situaci',
-    features: [
-      'Hlavní smlouva v rozšířené variantě',
-      'Předávací protokol a navazující podklady',
-      'Checklist: co ověřit před podpisem',
-      'Odkaz ke stažení platný 30 dní',
-    ],
-    note: 'Pro pronajímatele a prodej vozidla — kompletní dokumentační sada.',
-    cta: 'Zobrazit balíčky',
-    href: '/balicek-pronajimatel',
-    highlighted: false,
-    badge: null as string | null,
-  },
-];
 
 export default function Home() {
   return (
@@ -175,7 +123,6 @@ export default function Home() {
           <div className="hidden items-center gap-7 text-[13px] text-slate-400 md:flex">
             <Link href="#smlouvy" className="hover:text-white transition-colors duration-150">Smlouvy</Link>
             <Link href="#jak-to-funguje" className="hover:text-white transition-colors duration-150">Postup</Link>
-            <Link href="#cenik" className="hover:text-white transition-colors duration-150">Ceník</Link>
             <Link href="/blog" className="hover:text-white transition-colors duration-150">Blog</Link>
             <Link href="/zakaznicka-zona"
               className="rounded-lg border border-[#c9a852]/30 px-4 py-1.5 text-[#c9a852] transition-all duration-200 hover:border-[#c9a852]/60 hover:text-[#d4b86a]">
@@ -210,7 +157,7 @@ export default function Home() {
             </p>
 
             <div className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 text-base text-slate-400">
-              <span>Dokument ihned ke stažení od <strong className="font-bold text-[#c9a852]">99 Kč</strong></span>
+              <span>Hotový PDF dokument ihned ke stažení</span>
             </div>
 
             <div className="mt-9 flex flex-wrap items-center gap-4">
@@ -226,7 +173,7 @@ export default function Home() {
             </div>
 
             <div className="mt-9 flex flex-wrap items-center gap-x-5 gap-y-2">
-              {['✓ Zákonná struktura OZ/ZP', '✓ PDF ihned po zaplacení', '✓ Bezpečná platba Stripe', '✓ Data smazána po 7–30 dnech'].map(t => (
+              {['✓ Zákonná struktura OZ/ZP', '✓ PDF ihned ke stažení', '✓ Bezpečná platba Stripe', '✓ Data smazána po 7–30 dnech'].map(t => (
                 <span key={t} className="text-sm text-slate-400">{t}</span>
               ))}
             </div>
@@ -269,8 +216,8 @@ export default function Home() {
             {[
               { step: '01', title: 'Vyplníte údaje', desc: 'Zadáte strany, podmínky a hodnoty dohody. Formulář vás provede každou důležitou částí bez právního žargonu.' },
               { step: '02', title: 'Zkontrolujete souhrn', desc: 'Před platbou vidíte přehled všech podmínek. Ověříte, co dokument bude obsahovat, ještě než cokoli zaplatíte.' },
-              { step: '03', title: 'Zvolíte úroveň', desc: 'Základní (99 Kč) nebo Rozšířený dokument se smluvními pokutami (199 Kč). Volíte podle situace a potřeby jistoty.' },
-              { step: '04', title: 'Stáhnete PDF', desc: 'Po zaplacení obdržíte kompletní PDF sestavené podle vašich dat, připravené k tisku a podpisu. Ihned, bez čekání.' },
+              { step: '03', title: 'Vygenerujete dokument', desc: 'Zobrazí se náhled sestavený podle vašich dat. Zvolíte variantu — Základní nebo Rozšířený se smluvními pokutami.' },
+              { step: '04', title: 'Stáhnete PDF', desc: 'Po odemčení dokumentu obdržíte kompletní PDF připravené k tisku a podpisu. Ihned, bez čekání.' },
             ].map(s => (
               <div key={s.step} className="site-content-card rounded-[1.5rem] p-6">
                 <div className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#c9a852]/30 text-sm font-bold text-[#c9a852]">
@@ -310,85 +257,6 @@ export default function Home() {
             <span className="text-slate-400">Není náhradou za individuální právní poradenství</span>{' '}
             — pro složitější případy nebo spory doporučujeme advokáta{' '}
             (seznam na <a href="https://www.cak.cz" target="_blank" rel="noopener noreferrer" className="text-[#c9a852]/70 hover:text-[#c9a852] transition-colors underline underline-offset-2">cak.cz</a>).
-          </div>
-        </section>
-
-        <div className="my-20 h-px bg-gradient-to-r from-transparent via-[#c9a852]/20 to-transparent md:my-24" />
-
-        {/* ── PRICING ──────────────────────────────────────────────────────────── */}
-        <section id="cenik">
-          <div className="mb-10 text-center">
-            <p className="site-kicker mb-2">Ceník</p>
-            <h2 className="font-serif italic text-4xl font-bold text-white md:text-5xl">Vyberte úroveň zpracování</h2>
-            <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-slate-400">
-              Zákonný základ mají všechny varianty společný. Liší se rozsahem klauzulí, doprovodným materiálem a délkou archivace.
-            </p>
-          </div>
-
-          <div className="grid gap-5 md:grid-cols-3">
-            {pricingTiers.map(tier => (
-              <div
-                key={tier.name}
-                className={`site-content-card relative flex flex-col rounded-[1.75rem] p-7 transition-all duration-200 ${
-                  tier.highlighted
-                    ? '!border-[rgba(201,168,82,0.45)] !shadow-[0_0_60px_rgba(201,168,82,0.09),0_12px_40px_rgba(0,0,0,0.3)]'
-                    : ''
-                }`}
-              >
-                {tier.badge && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border border-[#c9a852]/50 bg-[#0a1628] px-4 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-[#c9a852]">
-                    {tier.badge}
-                  </div>
-                )}
-                <div className="mb-5">
-                  <div className="mb-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">{tier.name}</div>
-                  <div className="font-serif italic text-4xl font-bold text-white">{tier.price}</div>
-                  <div className="mt-1 text-sm text-slate-400">{tier.description}</div>
-                </div>
-                <ul className="mb-5 flex-grow space-y-2.5">
-                  {tier.features.map(f => (
-                    <li key={f} className="flex items-start gap-2 text-sm text-slate-300">
-                      <span className="mt-0.5 flex-shrink-0 text-[#c9a852] text-xs">✓</span>
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-                <p className="mb-5 border-t border-[#c9a852]/10 pt-4 text-xs leading-relaxed text-slate-500">
-                  {tier.note}
-                </p>
-                <Link
-                  href={tier.href}
-                  className={tier.highlighted ? 'site-button-primary w-full justify-center' : 'site-button-secondary w-full justify-center'}
-                >
-                  {tier.cta}
-                </Link>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-5 grid gap-4 md:grid-cols-2">
-            <div className="site-content-card rounded-[1.5rem] px-6 py-5 !border-emerald-500/20">
-              <div className="mb-2 flex items-center gap-2">
-                <span>🛡️</span>
-                <span className="text-sm font-bold text-white">Garance technické správnosti</span>
-              </div>
-              <p className="text-sm leading-relaxed text-slate-400">
-                Pokud váš dokument nebude obsahovat všechna povinná pole nebo narazíte na technickou chybu,{' '}
-                <span className="font-semibold text-white">vrátíme 100 % a smlouvu opravíme zdarma</span>.
-                Garance se vztahuje na technické chyby systému.
-              </p>
-            </div>
-            <div className="site-content-card rounded-[1.5rem] px-6 py-5">
-              <div className="mb-2 flex items-center gap-2">
-                <span>📜</span>
-                <span className="text-sm font-bold text-white">Legislativa 2026</span>
-              </div>
-              <p className="text-sm leading-relaxed text-slate-400">
-                Šablony vycházejí z aktuálního znění{' '}
-                <span className="font-semibold text-slate-300">OZ č. 89/2012 Sb.</span>{' '}
-                a zákoníku práce ve znění k 1. 1. 2026. Šablony jsou strukturovány dle platné české legislativy.
-              </p>
-            </div>
           </div>
         </section>
 
@@ -500,7 +368,7 @@ export default function Home() {
                 <div className="mb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600">Navigace</div>
                 <div className="flex flex-col gap-2 text-slate-500">
                   {[
-                    ['Smlouvy', '#smlouvy'], ['Postup', '#jak-to-funguje'], ['Ceník', '#cenik'],
+                    ['Smlouvy', '#smlouvy'], ['Postup', '#jak-to-funguje'],
                     ['Blog', '/blog'], ['FAQ', '#faq'], ['O projektu', '/o-projektu'],
                     ['Moje dokumenty', '/zakaznicka-zona'], ['Kontakt', '/kontakt'],
                   ].map(([label, href]) => (
