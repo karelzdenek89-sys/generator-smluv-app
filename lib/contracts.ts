@@ -32,9 +32,9 @@ export type ContractSection = {
 // TIER FEATURE MAP — jediný autoritativní zdroj pro obsah balíčků
 // ═══════════════════════════════════════════════════════════════════════
 //
-//  basic        (249 Kč)  → základní smlouva dle OZ
-//  professional (399 Kč)  → + rozšířené klauzule, smluvní pokuty, zajišťovací ujednání
-//  complete     (749 Kč)  → vše výše + instrukce, checklist, 30denní archivace
+//  basic        (99 Kč)   → základní smlouva dle OZ
+//  professional (199 Kč)  → + rozšířené klauzule, smluvní pokuty, zajišťovací ujednání
+//  complete              → vše výše + instrukce, checklist, 30denní archivace
 //
 // PRAVIDLO: Obsah smlouvy (premium sekce) se řídí VÝHRADNĚ touto funkcí.
 // Nikdy nespoléhej jen na `d.notaryUpsell` — tier je primární zdroj pravdy.

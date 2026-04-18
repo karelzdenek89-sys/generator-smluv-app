@@ -268,6 +268,14 @@ export default function LoanBuilderPage() {
                 <p className="text-sm text-slate-500 mt-1">Všechna povinná pole jsou označena *</p>
               </div>
 
+              <div className="mb-6 rounded-2xl border border-amber-500/20 bg-amber-500/5 px-5 py-4 text-xs leading-relaxed text-slate-400">
+                <span className="font-bold text-amber-400">Upozornění:</span>{' '}
+                Tato šablona je určena pro soukromé zápůjčky mezi fyzickými nebo právnickými osobami (§ 2390 OZ).
+                Pokud půjčujete peníze podnikatelsky nebo opakovaně za odměnu, může se na vás vztahovat zákon č. 257/2016 Sb.
+                o spotřebitelském úvěru, který vyžaduje licenci ČNB a splnění přísných informačních povinností.
+                V takovém případě doporučujeme konzultaci s právníkem.
+              </div>
+
               {/* 01 Věřitel */}
               <section className={cardClass}>
                 <SectionTitle index="01" title="Věřitel (půjčující)" subtitle="Osoba nebo firma, která peníze poskytuje." />
@@ -452,6 +460,9 @@ export default function LoanBuilderPage() {
                     <option value="court">Obecný soud (výchozí)</option>
                     <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                     <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
+                  {formData.disputeResolution === 'arbitration' && (
+                    <p className="mt-2 text-xs text-amber-400 leading-relaxed">⚠ Rozhodčí doložka není platná ve smlouvách se spotřebiteli (zákon č. 216/1994 Sb.). Použijte ji pouze pro vztahy B2B.</p>
+                  )}
                   </select>
                 </div>
               </section>

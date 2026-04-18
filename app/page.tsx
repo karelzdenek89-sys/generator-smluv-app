@@ -4,11 +4,11 @@ import Image from 'next/image';
 import ContractGridPremium from '@/app/components/ContractGridPremium';
 
 export const metadata: Metadata = {
-  title: { absolute: 'Generátor smluv online — smluvní dokumenty ihned | SmlouvaHned' },
-  description: 'Sestavte nájemní smlouvu, kupní smlouvu, DPP, NDA a další dokumenty online. Vyplníte formulář, systém sestaví standardizovaný dokument — PDF ke stažení ihned.',
+  title: { absolute: 'Generátor smluv s citacemi zákonů — PDF ihned | SmlouvaHned' },
+  description: 'Jediný generátor smluv, který cituje konkrétní § OZ a zákoníku práce přímo v dokumentu. Nájemní, pracovní, kupní smlouvy a 11 dalších — PDF ke stažení ihned po platbě.',
   openGraph: {
-    title: 'Generátor smluv online — smluvní dokumenty ihned | SmlouvaHned',
-    description: 'Softwarový nástroj pro tvorbu smluvních dokumentů. Formulář → strukturovaný dokument → PDF ke stažení.',
+    title: 'Generátor smluv s citacemi zákonů — PDF ihned | SmlouvaHned',
+    description: 'Jediný generátor smluv, který cituje konkrétní § OZ a zákoníku práce přímo v dokumentu. 14 typů smluv — PDF ihned.',
     url: 'https://smlouvahned.cz',
     siteName: 'SmlouvaHned',
     type: 'website',
@@ -65,8 +65,11 @@ const softwareSchema = {
     'Interaktivní formulář pro tvorbu smluvních dokumentů',
     'Okamžitý export do PDF',
     '14 typů standardizovaných dokumentů',
-    'Šablony strukturované dle platné legislativy ČR',
-    'Šifrované dočasné úložiště dat',
+    'Citace konkrétních paragrafů OZ a zákoníku práce přímo v dokumentu',
+    'Upozornění na právní rizika při vyplnění formuláře',
+    'Ochranné klauzule a smluvní sankce v základní variantě',
+    'Šablony aktualizované dle české legislativy k 1. 1. 2026',
+    'Šifrované dočasné úložiště dat — automatické smazání po 7–30 dnech',
   ],
   provider: { '@type': 'Organization', name: 'SmlouvaHned', url: 'https://smlouvahned.cz' },
   offers: {
@@ -190,8 +193,74 @@ export default function Home() {
       {/* ─── MAIN CONTENT ─────────────────────────────────────────────────────── */}
       <div className="relative z-10 mx-auto max-w-7xl px-6 pb-20 md:px-10">
 
+        {/* ── DIFFERENTIATOR ───────────────────────────────────────────────────── */}
+        <section className="pt-20 md:pt-24">
+          <div className="mb-10 text-center">
+            <p className="site-kicker mb-2">Proč SmlouvaHned</p>
+            <h2 className="font-serif italic text-4xl font-bold text-white md:text-5xl">
+              Smlouvy s paragrafy,<br />
+              <span className="text-[#c9a852]">ne bez nich.</span>
+            </h2>
+            <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-slate-400">
+              Každý dokument cituje konkrétní ustanovení zákona, obsahuje ochranné klauzule
+              a upozorňuje na rizika — to, co jiné generátory vynechávají.
+            </p>
+          </div>
+
+          <div className="grid gap-5 sm:grid-cols-3">
+            {[
+              {
+                icon: '§',
+                title: 'Citace zákonů přímo v dokumentu',
+                desc: 'Každá klauzule odkazuje na konkrétní paragraf OZ nebo zákoníku práce. Víte, co podepisujete a proč to tam je.',
+              },
+              {
+                icon: '⚠',
+                title: 'Upozornění na rizika při vyplnění',
+                desc: 'Formulář varuje u nebezpečných voleb — příliš vysoký úrok, neplatná rozhodčí doložka v B2C, chybějící souhlas pronajímatele.',
+              },
+              {
+                icon: '✓',
+                title: 'Klauzule, na které se zapomíná',
+                desc: 'Záruky u stavebního díla, smluvní pokuty v pracovní smlouvě, daňové dopady darování. V základu, ne jako drahý doplněk.',
+              },
+            ].map(item => (
+              <div key={item.title} className="site-content-card rounded-[1.5rem] p-7">
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl border border-[#c9a852]/30 bg-[#c9a852]/8 font-bold text-[#c9a852]">
+                  {item.icon}
+                </div>
+                <h3 className="mb-2 font-serif italic text-base font-semibold text-white">{item.title}</h3>
+                <p className="text-sm leading-relaxed text-slate-400">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-3 text-sm">
+            {[
+              ['Typický generátor smluv', 'Blanketní text bez zákonného základu', 'Zapomíná na sankce a záruky', 'Žádná varování při vyplnění'],
+              null,
+              ['SmlouvaHned', 'Citace § OZ a ZP přímo v dokumentu', 'Ochranné klauzule v základní variantě', 'Upozornění u každé rizikové volby'],
+            ].map((col, i) =>
+              col === null ? (
+                <div key={i} className="hidden sm:flex items-center justify-center text-2xl text-slate-700">vs.</div>
+              ) : (
+                <div key={i} className={`rounded-2xl border px-5 py-4 ${i === 0 ? 'border-slate-800 bg-slate-900/40' : 'border-[#c9a852]/20 bg-[#c9a852]/5'}`}>
+                  <p className={`mb-3 text-xs font-black uppercase tracking-widest ${i === 0 ? 'text-slate-500' : 'text-[#c9a852]'}`}>{col[0]}</p>
+                  {col.slice(1).map(line => (
+                    <p key={line} className={`mb-1.5 text-xs ${i === 0 ? 'text-slate-500 line-through decoration-slate-700' : 'text-slate-300'}`}>
+                      {i === 2 ? '✓ ' : '✗ '}{line}
+                    </p>
+                  ))}
+                </div>
+              )
+            )}
+          </div>
+        </section>
+
+        <div className="my-20 h-px bg-gradient-to-r from-transparent via-[#c9a852]/20 to-transparent md:my-24" />
+
         {/* ── CONTRACT SELECTION ─────────────────────────────────────────────── */}
-        <section id="smlouvy" className="pt-20 md:pt-24">
+        <section id="smlouvy" className="pt-0 md:pt-0">
           <div className="mb-10 max-w-xl">
             <p className="site-kicker mb-2">Katalog dokumentů</p>
             <h2 className="font-serif italic text-4xl font-bold text-white md:text-5xl">Vyberte typ dokumentu</h2>
