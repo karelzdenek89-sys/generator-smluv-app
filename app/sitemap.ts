@@ -109,6 +109,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.92,
     },
     {
+      url: `${BASE_URL}/blog/valorizace-najemneho-2026`,
+      lastModified: new Date('2026-05-02'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.92,
+    },
+    {
       url: `${BASE_URL}/blog/kupni-smlouva-na-auto-2026`,
       lastModified: new Date('2026-03-15'),
       changeFrequency: 'monthly' as const,

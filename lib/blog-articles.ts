@@ -22,6 +22,17 @@ export type BlogClusterMeta = {
 
 export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   {
+    slug: 'valorizace-najemneho-2026',
+    title: 'Valorizace nájemného 2026: Jak ji správně sjednat ve smlouvě',
+    excerpt:
+      'Inflační doložka, valorizace nájemného a roční zvyšování nájmu v roce 2026. Co zákon umožňuje, jak klauzuli formulovat a jakým chybám se vyhnout.',
+    category: 'Bydlení',
+    readTime: '8 min',
+    date: '2. května 2026',
+    cluster: 'landlord',
+    href: '/blog/valorizace-najemneho-2026',
+  },
+  {
     slug: 'vypoved-z-najmu-bytu-2026',
     title: 'Výpověď z nájmu bytu: výpovědní lhůty, důvody a forma',
     excerpt:

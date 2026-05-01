@@ -4,11 +4,11 @@ import Image from 'next/image';
 import ContractGridPremium from '@/app/components/ContractGridPremium';
 
 export const metadata: Metadata = {
-  title: { absolute: 'Generátor smluv s citacemi zákonů — PDF ihned | SmlouvaHned' },
-  description: 'Jediný generátor smluv, který cituje konkrétní § OZ a zákoníku práce přímo v dokumentu. Nájemní, pracovní, kupní smlouvy a 11 dalších — PDF ke stažení ihned po platbě.',
+  title: { absolute: 'Generování smluv online 2026 — PDF ihned ke stažení | SmlouvaHned' },
+  description: 'Generování smluv online s citacemi § OZ a zákoníku práce přímo v dokumentu. Nájemní, pracovní, kupní a 11 dalších typů smluv — vyplníte formulář, PDF stahujete ihned.',
   openGraph: {
-    title: 'Generátor smluv s citacemi zákonů — PDF ihned | SmlouvaHned',
-    description: 'Jediný generátor smluv, který cituje konkrétní § OZ a zákoníku práce přímo v dokumentu. 14 typů smluv — PDF ihned.',
+    title: 'Generování smluv online 2026 — PDF ihned ke stažení | SmlouvaHned',
+    description: 'Generování smluv online s citacemi konkrétních § OZ. 14 typů smluv — vyplníte formulář a PDF stahujete ihned.',
     url: 'https://smlouvahned.cz',
     siteName: 'SmlouvaHned',
     type: 'website',

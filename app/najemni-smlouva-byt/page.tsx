@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Nájemní smlouva na byt 2026 — vzor',
+  title: 'Nájemní smlouva na byt 2026 — vzor online, PDF ihned',
   description:
-    'Nájemní smlouva na byt nebo dům. Kauce, zvířata, předávací protokol, Airbnb doložka. Dle § 2235 OZ 2026. PDF ke stažení od 99 Kč.',
+    'Vzor nájemní smlouvy na byt nebo dům 2026 — vyplníte online a stáhnete PDF. Kauce, zvířata, předávací protokol, Airbnb doložka. Dle § 2235 OZ. Od 99 Kč.',
   keywords: [
     'nájemní smlouva byt 2026',
     'nájemní smlouva na byt vzor',

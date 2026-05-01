@@ -2,9 +2,9 @@
 import GuideLandingPage from '@/app/components/GuideLandingPage';
 
 export const metadata: Metadata = {
-  title: 'Nájemní smlouva 2026 — vzor a online generátor',
+  title: 'Nájemní smlouva 2026 online — vzor a generátor, PDF ihned',
   description:
-    'Nájemní smlouva 2026 — aktuální vzor a online generátor. Co dokument obsahuje, pro jaké situace je vhodný a jak ji správně sestavit.',
+    'Nájemní smlouva 2026 online — vyplníte formulář a stáhnete hotové PDF. Aktuální vzor dle OZ, kauce, výpovědní doba, předávací protokol. Od 99 Kč.',
   keywords: [
     'nájemní smlouva',
     'nájemní smlouva vzor',
@@ -16,9 +16,9 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: 'https://smlouvahned.cz/najemni-smlouva' },
   openGraph: {
-    title: 'Nájemní smlouva 2026 — vzor a online generátor',
+    title: 'Nájemní smlouva 2026 online — vzor a generátor, PDF ihned',
     description:
-      'Aktuální vzor nájemní smlouvy pro rok 2026. Co dokument obsahuje, kdy se hodí a jak ho sestavit online.',
+      'Vyplníte formulář a stáhnete hotové PDF. Aktuální vzor dle OZ — kauce, výpovědní doba, předávací protokol. Od 99 Kč.',
     url: 'https://smlouvahned.cz/najemni-smlouva',
     type: 'website',
   },
@@ -52,6 +52,26 @@ const faq = [
   {
     q: 'Co po dokončení objednávky získám?',
     a: 'Digitální výstup podle zadaných údajů. U vyšší varianty nebo balíčku mohou být součástí i navazující podklady podle zvolené cesty.',
+  },
+  {
+    q: 'Co se v nájemní smlouvě v roce 2026 změnilo?',
+    a: 'Strukturálně občanský zákoník zachovává dosavadní rámec (§ 2235 a násl.). V praxi se v roce 2026 více řeší inflační doložky, valorizace nájemného a způsob, jak ve smlouvě promítnout rostoucí ceny energií. Vzor SmlouvaHned vychází z aktuálního znění OZ a doporučených klauzulí pro běžné situace.',
+  },
+  {
+    q: 'Jak vysoká může být kauce a do kdy se vrací?',
+    a: 'Kauce nesmí přesáhnout trojnásobek měsíčního nájemného (bez záloh na služby). Pronajímatel ji musí vrátit do jednoho měsíce od ukončení nájmu, po odečtení případných oprávněných pohledávek. Vyšší kauce je v části nad limit neplatná.',
+  },
+  {
+    q: 'Jaká je výpovědní doba u nájemní smlouvy?',
+    a: 'U nájmu bytu na dobu neurčitou činí výpovědní doba zpravidla tři měsíce. Pronajímatel může vypovědět jen ze zákonných důvodů (§ 2288 OZ), nájemce může vypovědět bez udání důvodu. U smlouvy na dobu určitou platí jiná pravidla — výpovědní důvody jsou užší.',
+  },
+  {
+    q: 'Musím v nájemní smlouvě 2026 řešit zálohy na energie?',
+    a: 'Není to povinné v užším slova smyslu, ale prakticky velmi doporučené. Smlouva by měla rozlišovat vlastní nájemné a zálohy na služby (voda, teplo, elektřina ve společných prostorách), uvádět výši záloh a způsob ročního vyúčtování. Tím se předchází sporům o nedoplatky a přeplatky.',
+  },
+  {
+    q: 'Funguje nájemní smlouva uzavřená online?',
+    a: 'Ano. Ústní nájemní smlouva sice platná je, ale písemná forma je standardem. Smlouvu uzavřete tak, že obě strany podepíší stejné znění — buď fyzicky, nebo elektronicky uznávaným podpisem. Vygenerované PDF si vytisknete, podepíšete a založíte spolu s předávacím protokolem.',
   },
 ];
 
@@ -195,6 +215,7 @@ export default function NajemniSmlouvaPage() {
           { href: '/balicek-pronajimatel', label: 'Balíček pro pronajímatele' },
           { href: '/podnajem', label: 'Podnájemní smlouva' },
           { href: '/blog/najemni-smlouva-vzor-2026', label: 'Detailní článek k nájemní smlouvě' },
+          { href: '/blog/valorizace-najemneho-2026', label: 'Valorizace nájemného 2026' },
         ]}
       />
     </>

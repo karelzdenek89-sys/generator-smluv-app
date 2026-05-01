@@ -4,7 +4,7 @@
     {
       "name": "Next.js Dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "--no-turbopack"],
+      "runtimeArgs": ["run", "dev"],
       "port": 3000
     }
   ]
