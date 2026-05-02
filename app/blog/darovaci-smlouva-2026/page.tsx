@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
+import RelatedContracts from '@/app/components/RelatedContracts';
 
 export const metadata: Metadata = {
   title: 'Darovací smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
@@ -456,6 +457,7 @@ export default function DarovaciSmlouvaVzor2026Page() {
         </div>
       </div>
 
+      <RelatedContracts currentHref="/blog/darovaci-smlouva-2026" cluster="darovani" />
     </article>
   );
 }

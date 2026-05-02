@@ -119,6 +119,8 @@ export default function DarovaciSmlouvaPage() {
           { href: '/blog/darovaci-smlouva-2026', label: 'Detailní článek k darovací smlouvě' },
           { href: '/kupni-smlouva', label: 'Kupní smlouva' },
         ]}
+        relatedCluster="darovani"
+        currentHref="/darovaci-smlouva"
       />
     </>
   );

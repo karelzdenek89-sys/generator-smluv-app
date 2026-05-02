@@ -73,6 +73,8 @@ export default function ProdejVozidlaPage() {
         finalCtaTitle="Vyberte cestu podle rozsahu převodu vozidla"
         finalCtaBody="Pokud řešíte jen samotnou kupní smlouvu, pokračujte do builderu pro převod vozidla. Pokud potřebujete i podklady k předání vozidla, klíčů a dokladů, bývá vhodnější tematický balíček."
         bottomLinks={[...situation.bottomLinks]}
+        relatedCluster="auto"
+        currentHref="/prodej-vozidla"
       />
     </>
   );

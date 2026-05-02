@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
+import RelatedContracts from '@/app/components/RelatedContracts';
 
 export const metadata: Metadata = {
   title: 'NDA smlouva o mlčenlivosti 2026: Co musí obsahovat a nejčastější chyby',
@@ -359,6 +360,7 @@ export default function NdaSmlouvaPage() {
           ))}
         </div>
       </div>
+      <RelatedContracts currentHref="/blog/nda-smlouva-mlcenlivost" cluster="b2b" />
     </article>
   );
 }

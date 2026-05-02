@@ -2,6 +2,7 @@
 import { Inter, Playfair_Display } from 'next/font/google';
 import './globals.css';
 import CookiesBanner from '@/app/components/CookiesBanner';
+import Footer from '@/app/components/Footer';
 
 const inter = Inter({
   subsets: ['latin', 'latin-ext'],
@@ -153,6 +154,7 @@ export default function RootLayout({
         style={{ colorScheme: 'dark' }}
       >
         {children}
+        <Footer />
         <CookiesBanner />
       </body>
     </html>

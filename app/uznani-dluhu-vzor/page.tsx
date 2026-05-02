@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import RelatedContracts from '@/app/components/RelatedContracts';
 
 export const metadata: Metadata = {
   title: 'Uznání dluhu online 2026 — vzor ke stažení | SmlouvaHned',
@@ -168,6 +169,7 @@ export default function UznaniDluhuVzorPage() {
           <Link href="/kupni-smlouva" className="hover:text-slate-300 transition">Kupní smlouva</Link>
         </div>
       </div>
+      <RelatedContracts currentHref="/uznani-dluhu-vzor" cluster="finance" />
     </main>
   );
 }

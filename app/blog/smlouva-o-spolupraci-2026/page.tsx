@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
+import RelatedContracts from '@/app/components/RelatedContracts';
 
 export const metadata: Metadata = {
   title: 'Smlouva o spolupráci OSVČ 2026: Co musí obsahovat a jak se chránit',
@@ -360,6 +361,7 @@ export default function SmlouvaOSpolupraci2026Page() {
           ))}
         </div>
       </div>
+      <RelatedContracts currentHref="/blog/smlouva-o-spolupraci-2026" cluster="b2b" />
     </article>
   );
 }

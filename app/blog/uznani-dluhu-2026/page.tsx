@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
+import RelatedContracts from '@/app/components/RelatedContracts';
 
 export const metadata: Metadata = {
   title: 'Uznání dluhu 2026: Co to je, co musí obsahovat a proč je důležité',
@@ -349,6 +350,7 @@ export default function UznaniDluhu2026Page() {
           ))}
         </div>
       </div>
+      <RelatedContracts currentHref="/blog/uznani-dluhu-2026" cluster="finance" />
     </article>
   );
 }

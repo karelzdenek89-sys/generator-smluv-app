@@ -4,9 +4,9 @@ import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 
 const navLinks = [
-  { href: '#jak-to-funguje', label: 'Jak to funguje' },
-  { href: '#dokumenty', label: 'Typy dokumentů' },
-  { href: '#cenik', label: 'Ceník' },
+  { href: '/najemni-smlouva', label: 'Nájemní smlouva' },
+  { href: '/kupni-smlouva', label: 'Kupní smlouva' },
+  { href: '/pracovni-smlouva', label: 'Pracovní smlouva' },
   { href: '/blog', label: 'Právní průvodce' },
   { href: '/o-projektu', label: 'O projektu' },
 ];

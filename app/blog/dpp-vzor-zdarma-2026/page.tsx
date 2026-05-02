@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
+import RelatedContracts from '@/app/components/RelatedContracts';
 
 export const metadata: Metadata = {
   title: 'DPP vzor zdarma 2026 — co v něm chybí a proč na tom záleží',
@@ -322,6 +323,7 @@ export default function DppVzorZdarmaPage() {
           ))}
         </div>
       </nav>
+      <RelatedContracts currentHref="/blog/dpp-vzor-zdarma-2026" cluster="prace" />
     </article>
   );
 }

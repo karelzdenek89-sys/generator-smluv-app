@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
+import RelatedContracts from '@/app/components/RelatedContracts';
 
 export const metadata: Metadata = {
   title: 'DPP dohoda o provedení práce 2026: Limity, odvody a jak ji správně napsat',
@@ -370,6 +371,7 @@ export default function DppPage() {
           ))}
         </div>
       </div>
+      <RelatedContracts currentHref="/blog/dpp-dohoda-provedeni-prace" cluster="prace" />
     </article>
   );
 }

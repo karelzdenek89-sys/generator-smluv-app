@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
+import RelatedContracts from '@/app/components/RelatedContracts';
 
 export const metadata: Metadata = {
   title: 'Kupní smlouva na auto 2026: Co musí obsahovat a jak se chránit',
@@ -448,6 +449,7 @@ export default function KupniSmlouvaAutoPage() {
         </div>
       </div>
 
+      <RelatedContracts currentHref="/blog/kupni-smlouva-na-auto-2026" cluster="auto" />
     </article>
   );
 }
