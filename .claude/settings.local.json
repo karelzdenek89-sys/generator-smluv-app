@@ -12,7 +12,14 @@
       "Bash(cmd.exe /c \"mklink /J node_modules ..\\\\..\\\\..\\\\..\\\\node_modules\")",
       "Bash(powershell -Command \"New-Item -ItemType Junction -Path 'C:\\\\Users\\\\novej\\\\Desktop\\\\generator-smluv-app\\\\.claude\\\\worktrees\\\\jolly-haibt\\\\node_modules' -Target 'C:\\\\Users\\\\novej\\\\Desktop\\\\generator-smluv-app\\\\node_modules'\")",
       "Bash(node_modules/.bin/tsc --noEmit)",
-      "Bash(node node_modules/typescript/bin/tsc --noEmit)"
+      "Bash(node node_modules/typescript/bin/tsc --noEmit)",
+      "WebFetch(domain:generator-smluv-app-git-claude-suspicio-6a425a-karelzdenek89-1176s-projects.vercel.app)",
+      "WebFetch(domain:generator-smluv-app-claude-suspicious-euclid-6a425a.vercel.app)",
+      "Bash(git checkout *)",
+      "Bash(git pull *)",
+      "Bash(git fetch *)",
+      "Bash(awk 'NR==448{print; print \"\"; next} NR>=450 && NR<=573 {next} {print}' app/page.tsx)",
+      "Bash(mv /tmp/page.tsx app/page.tsx)"
     ]
   }
 }
