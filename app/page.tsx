@@ -6,13 +6,22 @@ import { SEO_LANDINGS, CLUSTER_LABELS, type ClusterKey } from '@/lib/internal-li
 
 export const metadata: Metadata = {
   title: { absolute: 'Generování smluv online 2026 — PDF ihned ke stažení | SmlouvaHned' },
-  description: 'Generování smluv online s citacemi § OZ a zákoníku práce přímo v dokumentu. Nájemní, pracovní, kupní a 11 dalších typů smluv — vyplníte formulář, PDF stahujete ihned.',
+  description:
+    '14 typů smluv online dle OZ 2026 — nájemní, kupní, pracovní, NDA a další. Vyplníte formulář, PDF s citacemi § stahujete ihned. Od 99 Kč.',
+  alternates: { canonical: 'https://smlouvahned.cz' },
   openGraph: {
     title: 'Generování smluv online 2026 — PDF ihned ke stažení | SmlouvaHned',
-    description: 'Generování smluv online s citacemi konkrétních § OZ. 14 typů smluv — vyplníte formulář a PDF stahujete ihned.',
+    description:
+      '14 typů smluv online dle OZ 2026 — nájemní, kupní, pracovní, NDA a další. Formulář → PDF s citacemi § ihned. Od 99 Kč.',
     url: 'https://smlouvahned.cz',
     siteName: 'SmlouvaHned',
     type: 'website',
+    locale: 'cs_CZ',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Generování smluv online 2026 | SmlouvaHned',
+    description: '14 typů smluv dle OZ 2026 — formulář → PDF ihned. Od 99 Kč.',
   },
 };
 

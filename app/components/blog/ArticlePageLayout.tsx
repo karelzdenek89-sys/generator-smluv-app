@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import TrackedLink from '@/app/components/analytics/TrackedLink';
 import ArticleInlineCta from './ArticleInlineCta';
 import ArticleTrustBox from './ArticleTrustBox';
+import { articleSchema, breadcrumbSchema, jsonLdScript } from '@/lib/schemas';
 
 type TocItem = {
   href: string;
@@ -38,6 +39,7 @@ type ArticlePageLayoutProps = {
   };
   relatedLinks: readonly RelatedLink[];
   children: ReactNode;
+  slug?: string;
 };
 
 export default function ArticlePageLayout({
@@ -54,9 +56,30 @@ export default function ArticlePageLayout({
   trustBox,
   relatedLinks,
   children,
+  slug,
 }: ArticlePageLayoutProps) {
+  const articleUrl = slug ? `/blog/${slug}` : '/blog';
+  const article = articleSchema({
+    title,
+    description: intro,
+    url: articleUrl,
+    datePublished: dateTime,
+  });
+  const crumbs = breadcrumbSchema([
+    { label: 'SmlouvaHned', href: '/' },
+    { label: 'Blog', href: '/blog' },
+    { label: breadcrumbLabel, href: articleUrl },
+  ]);
   return (
     <article className="blog-shell mx-auto max-w-3xl px-6 py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(article) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbs) }}
+      />
       <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">
         <Link href="/" className="transition hover:text-slate-300">
           SmlouvaHned

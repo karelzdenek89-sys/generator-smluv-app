@@ -19,7 +19,10 @@
       "Bash(git pull *)",
       "Bash(git fetch *)",
       "Bash(awk 'NR==448{print; print \"\"; next} NR>=450 && NR<=573 {next} {print}' app/page.tsx)",
-      "Bash(mv /tmp/page.tsx app/page.tsx)"
+      "Bash(mv /tmp/page.tsx app/page.tsx)",
+      "Bash(git push *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }
