@@ -4,6 +4,7 @@ import SiteFaqSection from './SiteFaqSection';
 import TrustOutputBlock from './TrustOutputBlock';
 import RelatedContracts from './RelatedContracts';
 import type { ClusterKey } from '@/lib/internal-links';
+import { breadcrumbSchema, jsonLdScript } from '@/lib/schemas';
 
 type GuideFaq = {
   q: string;
@@ -105,8 +106,21 @@ export default function GuideLandingPage({
         }
     : undefined;
 
+  const breadcrumbs = currentHref
+    ? breadcrumbSchema([
+        { label: 'SmlouvaHned', href: '/' },
+        { label: breadcrumbLabel, href: currentHref },
+      ])
+    : null;
+
   return (
     <main className="site-page">
+      {breadcrumbs ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbs) }}
+        />
+      ) : null}
       <div className="site-page-shell py-8 md:py-12">
         <nav className="mb-8 text-xs text-[#9b8f7f]" aria-label="Breadcrumb">
           <TrackedLink
