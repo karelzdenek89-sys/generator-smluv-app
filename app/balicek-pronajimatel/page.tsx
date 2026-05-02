@@ -153,6 +153,8 @@ export default function BalicekPronajimatelPage() {
           { href: '/pro-pronajimatele', label: 'Dokumenty pro pronajímatele' },
           { href: '/najem', label: 'Samostatná nájemní smlouva' },
         ]}
+        relatedCluster="bydleni"
+        currentHref="/balicek-pronajimatel"
       />
     </>
   );

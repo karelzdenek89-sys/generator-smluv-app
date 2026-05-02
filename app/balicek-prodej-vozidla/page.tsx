@@ -156,6 +156,8 @@ export default function BalicekProdejVozidlaPage() {
           { href: '/prodej-vozidla', label: 'Podklady pro prodej vozidla' },
           { href: '/auto', label: 'Samostatná kupní smlouva na vozidlo' },
         ]}
+        relatedCluster="auto"
+        currentHref="/balicek-prodej-vozidla"
       />
     </>
   );

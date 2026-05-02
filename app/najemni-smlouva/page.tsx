@@ -217,6 +217,8 @@ export default function NajemniSmlouvaPage() {
           { href: '/blog/najemni-smlouva-vzor-2026', label: 'Detailní článek k nájemní smlouvě' },
           { href: '/blog/valorizace-najemneho-2026', label: 'Valorizace nájemného 2026' },
         ]}
+        relatedCluster="bydleni"
+        currentHref="/najemni-smlouva"
       />
     </>
   );

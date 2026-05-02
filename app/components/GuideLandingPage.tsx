@@ -2,6 +2,8 @@ import TrackedLink from '@/app/components/analytics/TrackedLink';
 import ProductPathGuide, { type ProductPathGuideItem } from './ProductPathGuide';
 import SiteFaqSection from './SiteFaqSection';
 import TrustOutputBlock from './TrustOutputBlock';
+import RelatedContracts from './RelatedContracts';
+import type { ClusterKey } from '@/lib/internal-links';
 
 type GuideFaq = {
   q: string;
@@ -54,6 +56,8 @@ type GuideLandingPageProps = {
   trackingContext?: GuideLandingTrackingContext;
   finalCtaTitle?: string;
   finalCtaBody?: string;
+  relatedCluster?: ClusterKey;
+  currentHref?: string;
 };
 
 export default function GuideLandingPage({
@@ -80,6 +84,8 @@ export default function GuideLandingPage({
   trackingContext,
   finalCtaTitle = 'Pokračujte do formuláře podle své situace',
   finalCtaBody = 'Ve formuláři doplníte hlavní údaje a po dokončení objednávky získáte standardizovaný výstup připravený k závěrečné kontrole a podpisu.',
+  relatedCluster,
+  currentHref,
 }: GuideLandingPageProps) {
   const eventName =
     trackingContext?.pageType === 'package' ? 'package_cta_click' : 'situation_cta_click';
@@ -334,6 +340,9 @@ export default function GuideLandingPage({
           </div>
         </section>
       </div>
+      {relatedCluster && currentHref ? (
+        <RelatedContracts currentHref={currentHref} cluster={relatedCluster} />
+      ) : null}
     </main>
   );
 }

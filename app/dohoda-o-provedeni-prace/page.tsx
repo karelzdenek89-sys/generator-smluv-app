@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import RelatedContracts from '@/app/components/RelatedContracts';
 
 export const metadata: Metadata = {
   title: 'Dohoda o provedení práce 2026 — DPP vzor online',
@@ -176,6 +177,7 @@ export default function DohodaOProvedeniPracePage() {
           <Link href="/sluzby" className="hover:text-slate-300 transition">Smlouva o poskytování služeb</Link>
         </div>
       </div>
+      <RelatedContracts currentHref="/dohoda-o-provedeni-prace" cluster="prace" />
     </main>
   );
 }

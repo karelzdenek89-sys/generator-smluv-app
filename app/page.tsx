@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import ContractGridPremium from '@/app/components/ContractGridPremium';
+import { SEO_LANDINGS, CLUSTER_LABELS, type ClusterKey } from '@/lib/internal-links';
 
 export const metadata: Metadata = {
   title: { absolute: 'Generování smluv online 2026 — PDF ihned ke stažení | SmlouvaHned' },
@@ -270,6 +271,46 @@ export default function Home() {
             </p>
           </div>
           <ContractGridPremium />
+        </section>
+
+        <div className="my-20 h-px bg-gradient-to-r from-transparent via-[#c9a852]/20 to-transparent md:my-24" />
+
+        {/* ── GUIDES INDEX (interní linkbuilding) ───────────────────────────── */}
+        <section id="pruvodci" aria-labelledby="pruvodci-title">
+          <div className="mb-10 max-w-2xl">
+            <p className="site-kicker mb-2">Průvodci a vzory smluv</p>
+            <h2 id="pruvodci-title" className="font-serif italic text-4xl font-bold text-white md:text-5xl">
+              Vyberte si průvodce ke své smlouvě
+            </h2>
+            <p className="mt-3 text-base leading-relaxed text-slate-400">
+              Každý dokument má vlastního průvodce s vysvětlením, co řeší, jak se připravit a jaké jsou nejčastější chyby.
+            </p>
+          </div>
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {(Object.keys(CLUSTER_LABELS) as ClusterKey[]).map((cluster) => {
+              const items = SEO_LANDINGS.filter((l) => l.cluster === cluster);
+              if (items.length === 0) return null;
+              return (
+                <div key={cluster}>
+                  <h3 className="mb-3 text-xs font-black uppercase tracking-widest text-[#c9a852]">
+                    {CLUSTER_LABELS[cluster]}
+                  </h3>
+                  <ul className="space-y-2">
+                    {items.map((link) => (
+                      <li key={link.href}>
+                        <Link
+                          href={link.href}
+                          className="text-sm text-slate-300 hover:text-white transition-colors"
+                        >
+                          {link.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
         </section>
 
         <div className="my-20 h-px bg-gradient-to-r from-transparent via-[#c9a852]/20 to-transparent md:my-24" />

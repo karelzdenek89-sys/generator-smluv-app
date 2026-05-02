@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import RelatedContracts from '@/app/components/RelatedContracts';
 
 export const metadata: Metadata = {
   title: 'Podnájemní smlouva online 2026 — vzor ke stažení | SmlouvaHned',
@@ -168,6 +169,7 @@ export default function PodnajemniSmlouvaPage() {
           <Link href="/darovaci" className="hover:text-slate-300 transition">Darovací smlouva</Link>
         </div>
       </div>
+      <RelatedContracts currentHref="/podnajemni-smlouva" cluster="bydleni" />
     </main>
   );
 }

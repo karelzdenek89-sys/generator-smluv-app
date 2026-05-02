@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
+import RelatedContracts from '@/app/components/RelatedContracts';
 
 export const metadata: Metadata = {
   title: 'Smlouva o zápůjčce 2026: Vzor + nejčastější chyby při půjčce peněz',
@@ -371,6 +372,7 @@ export default function SmlouvaOZapujcce2026Page() {
           ))}
         </div>
       </div>
+      <RelatedContracts currentHref="/blog/smlouva-o-zapujcce-2026" cluster="finance" />
     </article>
   );
 }
