@@ -161,10 +161,14 @@ export default function LoanBuilderPage() {
   const scoreColor = riskScore.score >= 80 ? 'text-emerald-400' : riskScore.score >= 50 ? 'text-amber-400' : 'text-rose-400';
 
   const handleSubmit = async () => {
-    if (!formData.lenderName || !formData.borrowerName || !formData.loanAmount) {
-      alert('Vyplňte prosím alespoň jména a výši zápůjčky.');
-      return;
-    }
+    const missing: string[] = [];
+    if (!formData.lenderName?.trim()) missing.push('jméno věřitele');
+    if (!formData.borrowerName?.trim()) missing.push('jméno vydlužitele');
+    if (!formData.loanAmount || Number(formData.loanAmount) <= 0) missing.push('výši zápůjčky');
+    if (formData.repaymentType === 'lump_sum' && !formData.repaymentDate) missing.push('datum splatnosti');
+    if (formData.repaymentType === 'installments' && (!formData.installmentCount || !formData.installmentAmount)) missing.push('počet a výši splátek');
+    if (formData.securityType === 'guarantee' && !formData.guarantorName?.trim()) missing.push('jméno ručitele');
+    if (missing.length > 0) { alert(`Smlouva o zápůjčce vyžaduje: ${missing.join(', ')}.`); return; }
     setIsProcessing(true);
     try {
       const res = await fetch('/api/checkout', {
@@ -465,10 +469,10 @@ export default function LoanBuilderPage() {
                     <option value="court">Obecný soud (výchozí)</option>
                     <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                     <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
-                  {formData.disputeResolution === 'arbitration' && (
-                    <p className="mt-2 text-xs text-amber-400 leading-relaxed">⚠ Rozhodčí doložka není platná ve smlouvách se spotřebiteli (zákon č. 216/1994 Sb.). Použijte ji pouze pro vztahy B2B.</p>
-                  )}
-                  </select>
+                </select>
+                {formData.disputeResolution === 'arbitration' && (
+                  <p className="mt-2 text-xs text-amber-400 leading-relaxed">⚠ U spotřebitelských smluv (B2C) bývá rozhodčí doložka neúčinná dle zák. č. 216/1994 Sb. Doporučujeme ji použít pouze ve vztazích mezi podnikateli (B2B).</p>
+                )}
                 </div>
               </section>
 

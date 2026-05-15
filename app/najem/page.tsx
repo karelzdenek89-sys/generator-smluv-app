@@ -1179,10 +1179,10 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   <option value="court">Obecný soud (výchozí)</option>
                   <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                   <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
-                  {formData.disputeResolution === 'arbitration' && (
-                    <p className="mt-2 text-xs text-amber-400 leading-relaxed">⚠ Rozhodčí doložka není platná ve smlouvách se spotřebiteli (zákon č. 216/1994 Sb.). Použijte ji pouze pro vztahy B2B.</p>
-                  )}
                 </select>
+                {formData.disputeResolution === 'arbitration' && (
+                  <p className="mt-2 text-xs text-amber-400 leading-relaxed">⚠ U spotřebitelských smluv (B2C) bývá rozhodčí doložka neúčinná dle zák. č. 216/1994 Sb. Doporučujeme ji použít pouze ve vztazích mezi podnikateli (B2B).</p>
+                )}
               </div>
             </section>
 

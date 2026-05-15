@@ -182,8 +182,13 @@ export default function WorkContractPage() {
   }, [formData]);
 
   const handleSubmit = async () => {
-    if (!formData.clientName || !formData.contractorName) { alert('Vyplňte prosím jména objednatel a zhotovitele.'); return; }
-    if (!formData.priceAmount) { alert('Vyplňte prosím cenu díla.'); return; }
+    const missing: string[] = [];
+    if (!formData.clientName?.trim()) missing.push('jméno objednatele');
+    if (!formData.contractorName?.trim()) missing.push('jméno zhotovitele');
+    if (!formData.workTitle?.trim()) missing.push('název díla');
+    if (!formData.workDescription?.trim()) missing.push('popis díla');
+    if (!formData.priceAmount) missing.push('cenu díla');
+    if (missing.length > 0) { alert(`Smlouva o dílo vyžaduje: ${missing.join(', ')}.`); return; }
     try {
       setIsProcessing(true);
 
@@ -723,10 +728,10 @@ export default function WorkContractPage() {
                   <option value="court">Obecný soud (výchozí)</option>
                   <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                   <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
-                  {formData.disputeResolution === 'arbitration' && (
-                    <p className="mt-2 text-xs text-amber-400 leading-relaxed">⚠ Rozhodčí doložka není platná ve smlouvách se spotřebiteli (zákon č. 216/1994 Sb.). Použijte ji pouze pro vztahy B2B.</p>
-                  )}
                 </select>
+                {formData.disputeResolution === 'arbitration' && (
+                  <p className="mt-2 text-xs text-amber-400 leading-relaxed">⚠ U spotřebitelských smluv (B2C) bývá rozhodčí doložka neúčinná dle zák. č. 216/1994 Sb. Doporučujeme ji použít pouze ve vztazích mezi podnikateli (B2B).</p>
+                )}
               </section>
 
               {/* Tier selection */}

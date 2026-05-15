@@ -123,9 +123,11 @@ export default function DppDpcPorovnani2026Page() {
           </p>
           <p className="leading-relaxed text-slate-400">
             Z hlediska odvodů platí, že pokud odměna z DPP u jednoho zaměstnavatele nepřesáhne
-            11 500 Kč v kalendářním měsíci, nevzniká účast na nemocenském pojištění a z odměny
-            se neodvádí sociální a zdravotní pojištění. Při překročení tohoto limitu se odvody
-            počítají z celé měsíční odměny. Tento limit byl zaveden od roku 2024.
+            rozhodný příjem 12 000 Kč hrubého měsíčně (pro rok 2026), nevzniká účast
+            na nemocenském a důchodovém pojištění a z odměny se neodvádí sociální a zdravotní
+            pojistné. Při dosažení nebo překročení této částky vzniká účast na pojištění
+            a související odvodové povinnosti zaměstnavatele. Limit se každoročně mění
+            podle průměrné mzdy.
           </p>
         </section>
 
@@ -188,9 +190,9 @@ export default function DppDpcPorovnani2026Page() {
                   <td className="px-4 py-3">Povinná</td>
                 </tr>
                 <tr className="border-b border-white/5">
-                  <td className="px-4 py-3">Limit bez odvodů SP/ZP</td>
-                  <td className="px-4 py-3">Do 11 500 Kč/měs.</td>
-                  <td className="px-4 py-3">Ověřit aktuální limit pro 2026</td>
+                  <td className="px-4 py-3">Limit bez odvodů SP/ZP (2026)</td>
+                  <td className="px-4 py-3">Do 12 000 Kč/měs. (rozhodný příjem)</td>
+                  <td className="px-4 py-3">Do 4 500 Kč/měs. (rozhodný příjem)</td>
                 </tr>
                 <tr>
                   <td className="px-4 py-3">Typické použití</td>

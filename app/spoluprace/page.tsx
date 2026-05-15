@@ -79,8 +79,13 @@ export default function SpolupraceePage() {
   }, [form]);
 
   const handlePayment = async () => {
+    const missing: string[] = [];
+    if (!form.partyAName?.trim()) missing.push('Stranu A');
+    if (!form.partyBName?.trim()) missing.push('Stranu B');
+    if (!form.cooperationScope?.trim()) missing.push('popis spolupráce');
+    if (missing.length > 0) { alert(`Smlouva o spolupráci vyžaduje: ${missing.join(', ')}.`); return; }
     try {
-    setIsProcessing(true);
+      setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contractType: 'cooperation', tier: form.tier, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'cooperation' }, email: form.partyAEmail }),
@@ -257,10 +262,10 @@ export default function SpolupraceePage() {
                     <option value="court">Obecný soud (výchozí)</option>
                     <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                     <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
-                  {form.disputeResolution === 'arbitration' && (
-                    <p className="mt-2 text-xs text-amber-400 leading-relaxed">⚠ Rozhodčí doložka není platná ve smlouvách se spotřebiteli (zákon č. 216/1994 Sb.). Použijte ji pouze pro vztahy B2B.</p>
-                  )}
-                  </select>
+                </select>
+                {form.disputeResolution === 'arbitration' && (
+                  <p className="mt-2 text-xs text-amber-400 leading-relaxed">⚠ U spotřebitelských smluv (B2C) bývá rozhodčí doložka neúčinná dle zák. č. 216/1994 Sb. Doporučujeme ji použít pouze ve vztazích mezi podnikateli (B2B).</p>
+                )}
                 </div>
                 <div className="mt-6">
                   <BuilderTierSelector
