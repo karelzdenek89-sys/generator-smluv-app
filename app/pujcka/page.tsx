@@ -429,20 +429,25 @@ export default function LoanBuilderPage() {
                   })}
                 </div>
                 {formData.securityType === 'guarantee' && (
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className={labelClass}>Jméno ručitele</label>
-                      <input value={formData.guarantorName} onChange={e => set('guarantorName', e.target.value)} placeholder="Tomáš Kovář" aria-label="Jméno ručitele" className={inputClass} />
+                  <>
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className={labelClass}>Jméno ručitele</label>
+                        <input value={formData.guarantorName} onChange={e => set('guarantorName', e.target.value)} placeholder="Tomáš Kovář" aria-label="Jméno ručitele" className={inputClass} />
+                      </div>
+                      <div>
+                        <label className={labelClass}>Rodné číslo / IČO ručitele</label>
+                        <input value={formData.guarantorId} onChange={e => set('guarantorId', e.target.value)} placeholder="850505/1234" aria-label="Rodné číslo / IČO ručitele" className={inputClass} />
+                      </div>
+                      <div className="sm:col-span-2">
+                        <label className={labelClass}>Adresa ručitele</label>
+                        <input value={formData.guarantorAddress} onChange={e => set('guarantorAddress', e.target.value)} placeholder="Náměstí 5, Ostrava" aria-label="Adresa ručitele" className={inputClass} />
+                      </div>
                     </div>
-                    <div>
-                      <label className={labelClass}>Rodné číslo / IČO ručitele</label>
-                      <input value={formData.guarantorId} onChange={e => set('guarantorId', e.target.value)} placeholder="850505/1234" aria-label="Rodné číslo / IČO ručitele" className={inputClass} />
+                    <div className="mt-4 rounded-xl bg-amber-500/5 border border-amber-500/20 px-4 py-3 text-xs text-amber-300 leading-relaxed">
+                      ℹ Ručitel přijímá ručení samostatným podpisem. Smlouva bude vyhotovena ve <strong>třech stejnopisech</strong> — věřitel, vydlužitel i ručitel obdrží po jednom. Ručitel musí být s obsahem smlouvy seznámen před podpisem.
                     </div>
-                    <div className="sm:col-span-2">
-                      <label className={labelClass}>Adresa ručitele</label>
-                      <input value={formData.guarantorAddress} onChange={e => set('guarantorAddress', e.target.value)} placeholder="Náměstí 5, Ostrava" aria-label="Adresa ručitele" className={inputClass} />
-                    </div>
-                  </div>
+                  </>
                 )}
                 {formData.securityType === 'pledge' && (
                   <div>
