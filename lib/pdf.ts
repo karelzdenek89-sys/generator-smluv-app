@@ -3,6 +3,7 @@ import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { jsPDF } from 'jspdf';
 import { getContractMeta, buildContractSections, resolveTierFeatures, type StoredContractData, type ContractType } from './contracts';
+import { LEGAL_STATE_DISCLAIMER } from './legal-constants-2026';
 
 // ─────────────────────────────────────────────
 //  FONT LOADER & CACHE
@@ -122,6 +123,14 @@ function isProtocolSection(title: string): boolean {
   return title.toUpperCase().includes('PŘEDÁVACÍ PROTOKOL') || title.toUpperCase().includes('PŘÍLOHA');
 }
 
+function isLoanCashReceipt(title: string): boolean {
+  return title.toUpperCase().includes('POTVRZENÍ O PŘEDÁNÍ PENĚŽNÍCH');
+}
+
+function isLoanSchedule(title: string): boolean {
+  return title.toUpperCase().includes('SPLÁTKOVÝ KALENDÁŘ');
+}
+
 function isLeaseProtocol(title: string): boolean {
   return title.toUpperCase().includes('PŘEDÁVACÍ PROTOKOL K NÁJEMNÍ SMLOUVĚ');
 }
@@ -184,8 +193,10 @@ function drawFooter(doc: jsPDF, docId?: string, hash?: string): void {
   const pageCount = doc.getNumberOfPages();
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
+  const textWidth = pageWidth - MARGIN * 2;
 
   const footerLine2 = hash ? `Otisk: ${hash}` : '';
+  const dateStr = new Date().toLocaleDateString('cs-CZ');
 
   for (let i = 1; i <= pageCount; i += 1) {
     doc.setPage(i);
@@ -193,22 +204,30 @@ function drawFooter(doc: jsPDF, docId?: string, hash?: string): void {
     doc.setFontSize(7);
     doc.setTextColor(META_R, META_G, META_B);
 
-    // Thin rule above footer
+    // Thin rule above footer (raised to make room for legal disclaimer line)
     doc.setDrawColor(RULE_R, RULE_G, RULE_B);
     doc.setLineWidth(0.15);
-    doc.line(MARGIN, pageHeight - 15, pageWidth - MARGIN, pageHeight - 15);
+    doc.line(MARGIN, pageHeight - 18, pageWidth - MARGIN, pageHeight - 18);
 
     // Line 1: ID (left) · page (centre) · date (right)
-    const dateStr = new Date().toLocaleDateString('cs-CZ');
-    doc.text(docId ? `ID: ${docId}` : '', MARGIN, pageHeight - 10);
-    doc.text(`— ${i} / ${pageCount} —`, pageWidth / 2, pageHeight - 10, { align: 'center' });
-    doc.text(`Generováno ${dateStr}`, pageWidth - MARGIN, pageHeight - 10, { align: 'right' });
+    doc.text(docId ? `ID: ${docId}` : '', MARGIN, pageHeight - 13);
+    doc.text(`— ${i} / ${pageCount} —`, pageWidth / 2, pageHeight - 13, { align: 'center' });
+    doc.text(`Generováno ${dateStr}`, pageWidth - MARGIN, pageHeight - 13, { align: 'right' });
 
-    // Line 2: hash + tier — very small, muted
+    // Line 2: hash — very small, muted
     if (footerLine2) {
       doc.setFontSize(6);
-      doc.text(footerLine2, MARGIN, pageHeight - 5.5);
+      doc.text(footerLine2, MARGIN, pageHeight - 8.5);
     }
+
+    // Line 3: legal-state disclaimer — italic, smallest, centered, consistent on every page.
+    // Italic font is fallback-rendered by jsPDF when no italic face is registered; the
+    // muted color keeps it decent and non-intrusive.
+    doc.setFont('Roboto', 'normal');
+    doc.setFontSize(5.5);
+    const disclaimerLines = doc.splitTextToSize(LEGAL_STATE_DISCLAIMER, textWidth);
+    const firstLine = Array.isArray(disclaimerLines) ? disclaimerLines[0] : String(disclaimerLines);
+    doc.text(firstLine, pageWidth / 2, pageHeight - 4, { align: 'center' });
 
     doc.setTextColor(0);
   }
@@ -402,6 +421,8 @@ async function measureSectionPages(
   meta: ReturnType<typeof getContractMeta>,
   labelLeft: string,
   labelRight: string,
+  extraSigLabel?: string,
+  extraSigName?: string,
 ): Promise<Map<string, number>> {
   const scratch = new jsPDF({ unit: 'mm', format: 'a4', compress: false });
   await ensurePdfFonts(scratch);
@@ -424,7 +445,7 @@ async function measureSectionPages(
     }
 
     if (isSignatureSection(section.title)) {
-      y = drawSignatureSection(scratch, section.title, labelLeft, labelRight, y, meta.title);
+      y = drawSignatureSection(scratch, section.title, labelLeft, labelRight, y, meta.title, extraSigLabel, extraSigName);
       continue;
     }
 
@@ -626,6 +647,302 @@ function drawEndOfTextMarker(doc: jsPDF, y: number, contractTitle = ''): number 
  * Called instead of the generic body renderer when the section title
  * matches the lease protocol sentinel.
  */
+/**
+ * Příloha k loan smlouvě (Complete + úročená + splátky): splátkový kalendář.
+ * Vychází z parametrů smlouvy a počítá rozpad splátek na úrok/jistinu/zůstatek
+ * podle § 1932 OZ (splátka se započítává nejprve na úroky).
+ * Poslední splátka je dopočítaná, aby přesně vyrovnala zůstatek + úroky.
+ */
+function drawLoanSchedule(
+  doc: jsPDF,
+  data: StoredContractData,
+  contractTitle: string,
+  docId: string,
+  annexNumber: number,
+): void {
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const contentWidth = pageWidth - MARGIN * 2;
+
+  const principal = Number(data.loanAmount);
+  const installmentAmount = Number(data.installmentAmount);
+  const installmentCount = Math.min(Math.max(Math.trunc(Number(data.installmentCount)), 1), 360);
+  const annualRate = Number(data.interestRate ?? 0);
+  const monthlyRate = annualRate / 12 / 100;
+  const firstDate = String(data.firstPaymentDate ?? '');
+
+  // Spočítej rozpad
+  type Row = { n: number; date: string; interest: number; principalPart: number; payment: number; balance: number };
+  const rows: Row[] = [];
+  let balance = principal;
+  let startDate: Date | null = null;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(firstDate)) {
+    const [y, m, d] = firstDate.split('-').map(Number);
+    startDate = new Date(y, m - 1, d);
+  }
+  for (let i = 1; i <= installmentCount; i += 1) {
+    const interest = Math.max(0, Math.round(balance * monthlyRate));
+    let principalPart: number;
+    let payment: number;
+    if (i === installmentCount) {
+      // Poslední splátka — vyrovná zůstatek + úrok
+      principalPart = balance;
+      payment = principalPart + interest;
+    } else {
+      payment = installmentAmount;
+      principalPart = Math.max(0, payment - interest);
+      if (principalPart > balance) principalPart = balance;
+    }
+    balance = Math.max(0, balance - principalPart);
+    const date = startDate
+      ? new Date(startDate.getFullYear(), startDate.getMonth() + (i - 1), startDate.getDate()).toLocaleDateString('cs-CZ')
+      : `splátka ${i}`;
+    rows.push({ n: i, date, interest, principalPart, payment, balance });
+    if (balance <= 0 && i < installmentCount) {
+      // Předčasně doplaceno
+      break;
+    }
+  }
+
+  const totalPaid = rows.reduce((a, r) => a + r.payment, 0);
+  const totalInterest = rows.reduce((a, r) => a + r.interest, 0);
+
+  doc.addPage();
+  drawHeader(doc, contractTitle, false, docId);
+  let y = 22;
+
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(13);
+  doc.setTextColor(INK_R, INK_G, INK_B);
+  doc.text(`PŘÍLOHA Č. ${annexNumber}`, MARGIN, y);
+  y += 6;
+  doc.setFontSize(11);
+  doc.text('SPLÁTKOVÝ KALENDÁŘ', MARGIN, y);
+  y += 5;
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(META_R, META_G, META_B);
+  doc.text('Orientační rozpad pravidelných splátek dle čl. IV smlouvy o zápůjčce', MARGIN, y);
+  y += 8;
+
+  // Souhrn
+  doc.setDrawColor(RULE_R, RULE_G, RULE_B);
+  doc.setLineWidth(0.3);
+  doc.line(MARGIN, y, pageWidth - MARGIN, y);
+  y += 6;
+
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(8.5);
+  doc.setTextColor(BODY_R, BODY_G, BODY_B);
+  const summaryParts = [
+    `Jistina: ${principal.toLocaleString('cs-CZ')} Kč`,
+    `Úroková sazba: ${annualRate.toLocaleString('cs-CZ', { maximumFractionDigits: 2 })} % p. a.`,
+    `Počet splátek: ${rows.length}`,
+    `Pravidelná splátka: ${installmentAmount.toLocaleString('cs-CZ')} Kč`,
+  ];
+  const summaryText = summaryParts.join('   ·   ');
+  doc.text(summaryText, MARGIN, y);
+  y += 8;
+
+  // Tabulka hlavička
+  const colX = [MARGIN, MARGIN + 14, MARGIN + 50, MARGIN + 85, MARGIN + 120, MARGIN + 150];
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(8);
+  doc.setTextColor(INK_R, INK_G, INK_B);
+  doc.text('č.', colX[0], y);
+  doc.text('Datum', colX[1], y);
+  doc.text('Úrok (Kč)', colX[2] + 25, y, { align: 'right' });
+  doc.text('Jistina (Kč)', colX[3] + 25, y, { align: 'right' });
+  doc.text('Splátka (Kč)', colX[4] + 25, y, { align: 'right' });
+  doc.text('Zůstatek (Kč)', pageWidth - MARGIN, y, { align: 'right' });
+  y += 1.5;
+  doc.setDrawColor(RULE_R, RULE_G, RULE_B);
+  doc.setLineWidth(0.2);
+  doc.line(MARGIN, y, pageWidth - MARGIN, y);
+  y += 4;
+
+  // Řádky
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(BODY_R, BODY_G, BODY_B);
+  for (const row of rows) {
+    if (y > 270) {
+      // Stránkování
+      doc.addPage();
+      drawHeader(doc, contractTitle, false, docId);
+      y = 25;
+      doc.setFont('Roboto', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(INK_R, INK_G, INK_B);
+      doc.text('č.', colX[0], y);
+      doc.text('Datum', colX[1], y);
+      doc.text('Úrok (Kč)', colX[2] + 25, y, { align: 'right' });
+      doc.text('Jistina (Kč)', colX[3] + 25, y, { align: 'right' });
+      doc.text('Splátka (Kč)', colX[4] + 25, y, { align: 'right' });
+      doc.text('Zůstatek (Kč)', pageWidth - MARGIN, y, { align: 'right' });
+      y += 1.5;
+      doc.line(MARGIN, y, pageWidth - MARGIN, y);
+      y += 4;
+      doc.setFont('Roboto', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(BODY_R, BODY_G, BODY_B);
+    }
+    doc.text(String(row.n), colX[0], y);
+    doc.text(row.date, colX[1], y);
+    doc.text(row.interest.toLocaleString('cs-CZ'), colX[2] + 25, y, { align: 'right' });
+    doc.text(row.principalPart.toLocaleString('cs-CZ'), colX[3] + 25, y, { align: 'right' });
+    doc.text(row.payment.toLocaleString('cs-CZ'), colX[4] + 25, y, { align: 'right' });
+    doc.text(row.balance.toLocaleString('cs-CZ'), pageWidth - MARGIN, y, { align: 'right' });
+    y += 5;
+  }
+
+  // Souhrnný řádek
+  doc.setDrawColor(RULE_R, RULE_G, RULE_B);
+  doc.line(MARGIN, y, pageWidth - MARGIN, y);
+  y += 4;
+  doc.setFont('Roboto', 'bold');
+  doc.setTextColor(INK_R, INK_G, INK_B);
+  doc.text('Celkem', colX[1], y);
+  doc.text(totalInterest.toLocaleString('cs-CZ'), colX[2] + 25, y, { align: 'right' });
+  doc.text(principal.toLocaleString('cs-CZ'), colX[3] + 25, y, { align: 'right' });
+  doc.text(totalPaid.toLocaleString('cs-CZ'), colX[4] + 25, y, { align: 'right' });
+  y += 8;
+
+  // Poznámka pod tabulkou
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(7.5);
+  doc.setTextColor(META_R, META_G, META_B);
+  const note = 'Poznámka: kalendář je orientační. Úrok je počítán z nesplaceného zůstatku jistiny měsíční sazbou (roční sazba / 12). Každá splátka se započítává nejprve na úroky (§ 1932 OZ). Výše poslední splátky je upravena tak, aby přesně odpovídala skutečně nesplacené jistině a úroku ke dni její splatnosti. Skutečný úrok závisí na datu úhrady; je-li úhrada provedena před řádným termínem splatnosti, snižuje se přirostlý úrok.';
+  const noteLines = doc.splitTextToSize(note, contentWidth);
+  doc.text(noteLines, MARGIN, y);
+
+  doc.setTextColor(0);
+}
+
+/**
+ * Příloha k loan smlouvě (Complete + hotovost): formulář pro stvrzenku o předání peněz.
+ * Smlouva v čl. II uvádí „o čemž bude sepsána stvrzenka"; tato příloha je ona stvrzenka.
+ */
+function drawLoanCashReceipt(
+  doc: jsPDF,
+  data: StoredContractData,
+  contractTitle: string,
+  docId: string,
+): void {
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const contentWidth = pageWidth - MARGIN * 2;
+  const fmt = (n: unknown) => {
+    if (n === null || n === undefined || n === '') return '__________________';
+    const num = Number(n);
+    return Number.isFinite(num) ? num.toLocaleString('cs-CZ') : String(n);
+  };
+
+  doc.addPage();
+  drawHeader(doc, contractTitle, false, docId);
+  let y = 22;
+
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(13);
+  doc.setTextColor(INK_R, INK_G, INK_B);
+  doc.text('PŘÍLOHA Č. 1', MARGIN, y);
+  y += 6;
+  doc.setFontSize(11);
+  doc.text('POTVRZENÍ O PŘEDÁNÍ PENĚŽNÍCH PROSTŘEDKŮ', MARGIN, y);
+  y += 5;
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(META_R, META_G, META_B);
+  doc.text('Nedílná součást smlouvy o zápůjčce — vyplní se při fyzickém předání peněz', MARGIN, y);
+  y += 8;
+
+  doc.setDrawColor(RULE_R, RULE_G, RULE_B);
+  doc.setLineWidth(0.3);
+  doc.line(MARGIN, y, pageWidth - MARGIN, y);
+  y += 10;
+
+  // Identifikace
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(INK_R, INK_G, INK_B);
+  doc.text('A  IDENTIFIKACE', MARGIN, y);
+  y += 6;
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(BODY_R, BODY_G, BODY_B);
+  const lender = String(data.lenderName ?? '');
+  const borrower = String(data.borrowerName ?? '');
+  doc.text(`Věřitel: ${lender || '__________________________'}`, MARGIN, y);
+  y += 6;
+  doc.text(`Vydlužitel: ${borrower || '__________________________'}`, MARGIN, y);
+  y += 6;
+  doc.text(`Smlouva o zápůjčce ID: ${docId}`, MARGIN, y);
+  y += 12;
+
+  // Předaná částka
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(INK_R, INK_G, INK_B);
+  doc.text('B  PŘEDANÁ ČÁSTKA', MARGIN, y);
+  y += 6;
+  doc.setFont('Roboto', 'normal');
+  doc.setTextColor(BODY_R, BODY_G, BODY_B);
+  doc.text(`Částka: ${fmt(data.loanAmount)} Kč`, MARGIN, y);
+  y += 6;
+  if (data.loanAmountWords) {
+    doc.text(`Slovy: ${String(data.loanAmountWords)}`, MARGIN, y);
+    y += 6;
+  }
+  doc.text('Datum předání: __________________', MARGIN, y);
+  doc.text('Místo předání: __________________', MARGIN + 90, y);
+  y += 12;
+
+  // Prohlášení
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(INK_R, INK_G, INK_B);
+  doc.text('C  PROHLÁŠENÍ', MARGIN, y);
+  y += 6;
+  doc.setFont('Roboto', 'normal');
+  doc.setTextColor(BODY_R, BODY_G, BODY_B);
+  const declarations = [
+    'Věřitel potvrzuje, že ke dni a v místě uvedeném výše předal vydlužiteli uvedenou částku v hotovosti.',
+    'Vydlužitel potvrzuje, že uvedenou částku v hotovosti převzal a počítáním ověřil její správnost.',
+    'Smluvní strany shodně prohlašují, že tímto okamžikem došlo k předání peněžních prostředků ve smyslu čl. II smlouvy o zápůjčce.',
+  ];
+  for (const decl of declarations) {
+    const lines = doc.splitTextToSize(decl, contentWidth);
+    doc.text(lines, MARGIN, y);
+    y += lines.length * 5 + 2;
+  }
+  y += 8;
+
+  // Podpisy
+  const colW = (contentWidth - 14) / 2;
+  const rightX = MARGIN + colW + 14;
+  doc.setDrawColor(SIGN_R, SIGN_G, SIGN_B);
+  doc.setLineWidth(0.25);
+  doc.line(MARGIN, y, MARGIN + colW * 0.7, y);
+  doc.line(rightX, y, rightX + colW * 0.7, y);
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(META_R, META_G, META_B);
+  doc.text('Datum a podpis', MARGIN, y + 4);
+  doc.text('Datum a podpis', rightX, y + 4);
+  y += 18;
+
+  doc.setDrawColor(50, 50, 50);
+  doc.setLineWidth(0.5);
+  doc.line(MARGIN, y, MARGIN + colW, y);
+  doc.line(rightX, y, rightX + colW, y);
+  y += 5;
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(INK_R, INK_G, INK_B);
+  doc.text('VĚŘITEL', MARGIN + colW / 2, y, { align: 'center' });
+  doc.text('VYDLUŽITEL', rightX + colW / 2, y, { align: 'center' });
+
+  doc.setTextColor(0);
+}
+
 function drawLeaseProtocolForm(
   doc: jsPDF,
   data: StoredContractData,
@@ -1112,11 +1429,14 @@ function drawSignatureSection(
   labelRight: string,
   y: number,
   contractTitle = '',
+  extraLabel?: string,
+  extraName?: string,
 ): number {
   const pageWidth = doc.internal.pageSize.getWidth();
 
-  // Needs ~70 mm — break early if not enough space
-  if (y > 210) {
+  // Needs ~70 mm (90 mm s extra blokem) — break early if not enough space
+  const neededTop = extraLabel ? 190 : 210;
+  if (y > neededTop) {
     doc.addPage();
     drawHeader(doc, contractTitle, false);
     y = 22;
@@ -1197,6 +1517,58 @@ function drawSignatureSection(
   doc.text(labelRight.toUpperCase(), rightX + colW / 2, y, { align: 'center' });
   y += 13;
 
+  // Třetí podpisový blok (typicky ručitel) — vykreslen centrovaně full-width,
+  // aby nestlačoval hlavní dva podpisy do úzkých sloupců.
+  if (extraLabel) {
+    const fullW = pageWidth - MARGIN * 2;
+    const extraColW = (fullW - 14) / 2;
+    const extraX = MARGIN + extraColW / 2 + 7;
+
+    doc.setFont('Roboto', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(BODY_R, BODY_G, BODY_B);
+    doc.text('V', extraX, y);
+    doc.setDrawColor(SIGN_R, SIGN_G, SIGN_B);
+    doc.setLineWidth(0.25);
+    doc.line(extraX + 5, y, extraX + extraColW * 0.52, y);
+    doc.text('dne', extraX + extraColW * 0.55, y);
+    doc.line(extraX + extraColW * 0.64, y, extraX + extraColW, y);
+    y += 17;
+
+    doc.setFontSize(7.5);
+    doc.setTextColor(META_R, META_G, META_B);
+    doc.text('Jméno a příjmení (hůlkovým písmem):', extraX, y);
+    y += 4.5;
+    doc.setDrawColor(SIGN_R, SIGN_G, SIGN_B);
+    doc.setLineWidth(0.25);
+    doc.line(extraX, y, extraX + extraColW, y);
+    y += 18;
+
+    doc.setDrawColor(50, 50, 50);
+    doc.setLineWidth(0.5);
+    doc.line(extraX, y, extraX + extraColW, y);
+    y += 4;
+
+    doc.setFont('Roboto', 'normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(META_R, META_G, META_B);
+    doc.text('(vlastnoruční podpis)', extraX + extraColW / 2, y, { align: 'center' });
+    y += 6;
+
+    doc.setFont('Roboto', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(INK_R, INK_G, INK_B);
+    doc.text(extraLabel.toUpperCase(), extraX + extraColW / 2, y, { align: 'center' });
+    if (extraName) {
+      y += 5;
+      doc.setFont('Roboto', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(META_R, META_G, META_B);
+      doc.text(extraName, extraX + extraColW / 2, y, { align: 'center' });
+    }
+    y += 13;
+  }
+
   // Thin divider before closing note — visual breathing room
   doc.setDrawColor(RULE_R, RULE_G, RULE_B);
   doc.setLineWidth(0.15);
@@ -1268,9 +1640,82 @@ function getSigningInstructions(contractType: ContractType): string[] {
       '',
       '6. ZVLÁŠTNÍ POKYNY PRO KUPNÍ SMLOUVU NA VOZIDLO',
       '• Současně s podpisem předejte velký i malý technický průkaz.',
-      '• Změnu vlastníka oznamte příslušnému úřadu do 10 pracovních dnů.',
+      '• Změnu vlastníka oznamte příslušnému úřadu do 15 dnů (§ 8 odst. 2 zák. č. 56/2001 Sb.).',
       '• Zdokumentujte stav tachometru a celkový stav vozidla fotografiemi.',
       '• Ověřte, zda na vozidle nevázne zákaz převodu (registr vozidel).',
+      '• Kupující sjedná nové povinné ručení nejpozději ke dni převodu vlastnictví.',
+    ],
+    loan: [
+      '',
+      '6. ZVLÁŠTNÍ POKYNY PRO SMLOUVU O ZÁPŮJČCE',
+      '• U hotovostního předání sepište potvrzení (stvrzenku) — vzor je přílohou.',
+      '• U úročené zápůjčky se splátkami uchovávejte všechny doklady o úhradách.',
+      '• U částek nad 270 000 Kč nelze předat hotovost (zák. č. 254/2004 Sb.); použijte převod.',
+      '• Pokud je sjednán ručitel, musí samostatně podepsat prohlášení (čl. VI + 3. podpisový blok).',
+      '• Zápůjčka NENÍ určena pro podnikatelské poskytování úvěrů (režim § 257/2016 Sb.).',
+    ],
+    dpp: [
+      '',
+      '6. ZVLÁŠTNÍ POKYNY PRO DOHODU O PROVEDENÍ PRÁCE',
+      '• Zaměstnavatel ohlásí DPP ČSSZ (oznámená dohoda) dle aktuální metodiky.',
+      '• Sledujte limit 300 hodin u jednoho zaměstnavatele za kalendářní rok.',
+      '• Sledujte měsíční rozhodný příjem (pro rok 2026: 12 000 Kč) — překročení = účast na pojištění.',
+      '• Výsledky práce předejte zaměstnavateli způsobem dohodnutým ve smlouvě.',
+    ],
+    nda: [
+      '',
+      '6. ZVLÁŠTNÍ POKYNY PRO NDA',
+      '• Před prvním sdílením důvěrných informací ověřte, že obě strany smlouvu podepsaly.',
+      '• Označujte důvěrné informace viditelně („DŮVĚRNÉ" / „CONFIDENTIAL") — usnadní pozdější vymáhání.',
+      '• Vedete-li audit přístupů, uchovávejte log po dobu sjednanou ve smlouvě.',
+    ],
+    general_sale: [
+      '',
+      '6. ZVLÁŠTNÍ POKYNY PRO KUPNÍ SMLOUVU',
+      '• Při předání věci sepište zápis o stavu (zejména u použitého zboží).',
+      '• Uschovejte doklady o úhradě kupní ceny (potvrzení o platbě, výpis z účtu).',
+      '• U spotřebitelské koupě informujte kupujícího o reklamačním postupu.',
+    ],
+    service: [
+      '',
+      '6. ZVLÁŠTNÍ POKYNY PRO SMLOUVU O POSKYTOVÁNÍ SLUŽEB',
+      '• Veďte zápisy o předaných výstupech a jejich akceptaci (zejména u milníků).',
+      '• Faktury vystavujte se splatností dle smlouvy; uschovávejte je 10 let (zákon o DPH).',
+    ],
+    sublease: [
+      '',
+      '6. ZVLÁŠTNÍ POKYNY PRO PODNÁJEMNÍ SMLOUVU',
+      '• Podnájemce by měl obdržet kopii (nebo výňatek) hlavní nájemní smlouvy.',
+      '• Při skončení hlavního nájmu zaniká i podnájem — informujte podnájemce s předstihem.',
+      '• Sepište předávací protokol prostor obdobně jako u nájemní smlouvy.',
+    ],
+    power_of_attorney: [
+      '',
+      '6. ZVLÁŠTNÍ POKYNY PRO PLNOU MOC',
+      '• U nemovitostí, soudních řízení a bank musí být podpis zmocnitele úředně ověřen.',
+      '• Originál si ponechá zmocnitel; zmocněnec předkládá ověřenou kopii.',
+      '• Odvolání plné moci oznamte písemně zmocněnci i třetím osobám, kde byla použita.',
+    ],
+    debt_acknowledgment: [
+      '',
+      '6. ZVLÁŠTNÍ POKYNY PRO UZNÁNÍ DLUHU',
+      '• Notářský zápis se svolením k vykonatelnosti pořiďte včas — bez něj nemá listina exekuční titul.',
+      '• Uschovejte podklady prokazující existenci a výši dluhu (faktury, smlouvy, korespondenci).',
+      '• Splátky dokladujte (výpisy, příjmové doklady) — slouží jako důkaz plnění.',
+    ],
+    cooperation: [
+      '',
+      '6. ZVLÁŠTNÍ POKYNY PRO SMLOUVU O SPOLUPRÁCI',
+      '• Vedete-li koordinační schůzky, pořizujte zápis (závazky a termíny).',
+      '• Společně vytvořené IP písemně specifikujte (kdo, kdy, jaký podíl).',
+      '• Při ukončení spolupráce dohodněte písemně vypořádání podle čl. VI.',
+    ],
+    work_contract: [
+      '',
+      '6. ZVLÁŠTNÍ POKYNY PRO SMLOUVU O DÍLO',
+      '• Předání díla potvrďte písemně (předávací protokol + soupis případných vad).',
+      '• Vícepráce řešte písemným změnovým listem s odsouhlasenou cenou.',
+      '• U stavebních děl běží zákonná záruka 5 let (§ 2629 OZ); ujasněte si reklamační postup.',
     ],
     employment: [
       '',
@@ -1343,9 +1788,98 @@ function getPreSignChecklist(contractType: ContractType): string[] {
       '',
       'SPECIFICKY PRO SMLOUVU O ZÁPŮJČCE:',
       '☐  Výše zápůjčky odpovídá skutečně předávané částce',
-      '☐  Ujednané úroky jsou v souladu se zákonem',
-      '☐  Termín splatnosti je reálný a jednoznačný',
-      '☐  Způsob vrácení (jednorázově / splátky) je jasný',
+      '☐  Slovní vyjádření částky („slovy") je shodné s číslem',
+      '☐  Úroková sazba a způsob splácení úroku jsou jednoznačné',
+      '☐  U úročené zápůjčky je přiložen splátkový kalendář',
+      '☐  U hotovostního předání je připravena stvrzenka (příloha č. 1)',
+      '☐  U hotovosti nad 270 000 Kč zvažte bezhotovostní převod (zákon č. 254/2004 Sb.)',
+      '☐  Pokud je sjednán ručitel, je uveden v čl. VI a podepisuje samostatný blok',
+      '☐  Datum splatnosti a první splátky odpovídá dohodě',
+      '☐  Sankce za prodlení (% za den + minimum) jsou přiměřené',
+      '☐  Pravidla zesplatnění (§ 1931 OZ) a předčasného splacení jsou jednoznačná',
+      '☐  Zápůjčka NENÍ poskytována podnikatelsky (jinak režim § 257/2016 Sb.)',
+    ],
+    gift: [
+      '',
+      'SPECIFICKY PRO DAROVACÍ SMLOUVU:',
+      '☐  Předmět daru je jednoznačně specifikován',
+      '☐  U vozidla: VIN, SPZ, rok výroby, stav tachometru jsou uvedeny',
+      '☐  U nemovitosti: jsou uvedeny údaje pro katastr (LV, parcela, k. ú.)',
+      '☐  U nemovitosti: podpisy budou úředně ověřeny',
+      '☐  Je-li dar součástí SJM, je doložen souhlas druhého manžela',
+      '☐  Obdarovaný bere na vědomí možnost vrácení daru pro nevděk (§ 2068 OZ)',
+    ],
+    dpp: [
+      '',
+      'SPECIFICKY PRO DOHODU O PROVEDENÍ PRÁCE:',
+      '☐  Rozsah práce nepřesáhne 300 h/rok u jednoho zaměstnavatele',
+      '☐  Měsíční odměna pod limitem pro účast na pojištění (12 000 Kč pro rok 2026)',
+      '☐  Pracovní úkol je jednoznačně vymezen',
+      '☐  Termín splnění a způsob výplaty jsou jasné',
+    ],
+    nda: [
+      '',
+      'SPECIFICKY PRO NDA:',
+      '☐  Definice důvěrných informací je věcně i časově vymezena',
+      '☐  Doba mlčenlivosti po skončení smlouvy je přiměřená a vymahatelná',
+      '☐  Smluvní pokuta (je-li sjednána) je přiměřená rizikům',
+      '☐  Výjimky z mlčenlivosti (veřejně známé info, soudní příkaz) jsou uvedeny',
+    ],
+    general_sale: [
+      '',
+      'SPECIFICKY PRO KUPNÍ SMLOUVU:',
+      '☐  Předmět prodeje je přesně identifikován',
+      '☐  Stav věci je popsán (známé vady, opotřebení)',
+      '☐  Kupní cena a způsob úhrady jsou jednoznačné',
+      '☐  Záruka a reklamační podmínky jsou ujasněny',
+    ],
+    service: [
+      '',
+      'SPECIFICKY PRO SMLOUVU O POSKYTOVÁNÍ SLUŽEB:',
+      '☐  Rozsah služeb je věcně i kvalitativně vymezen',
+      '☐  Cena a platební podmínky (fakturace, splatnost) jsou jasné',
+      '☐  SLA / dostupnost služby je definována, je-li relevantní',
+      '☐  Práva k duševnímu vlastnictví jsou upravena',
+    ],
+    sublease: [
+      '',
+      'SPECIFICKY PRO PODNÁJEMNÍ SMLOUVU:',
+      '☐  Souhlas pronajímatele s podnájmem je doložen',
+      '☐  Hlavní nájemní smlouva (nebo její výňatek) je k dispozici podnájemci',
+      '☐  Doba podnájmu nepřesahuje dobu hlavního nájmu',
+      '☐  Předávací protokol prostor je připraven',
+    ],
+    power_of_attorney: [
+      '',
+      'SPECIFICKY PRO PLNOU MOC:',
+      '☐  Rozsah zmocnění je věcně vymezen (žádné „ve všech věcech")',
+      '☐  Podpis zmocnitele je úředně ověřen (nemovitosti, soudy, banky)',
+      '☐  Doba platnosti plné moci je uvedena, je-li omezená',
+      '☐  Zmocněnec přijal plnou moc (vlastnoručním podpisem nebo akceptací)',
+    ],
+    debt_acknowledgment: [
+      '',
+      'SPECIFICKY PRO UZNÁNÍ DLUHU:',
+      '☐  Výše dluhu, jeho právní důvod a datum vzniku jsou jednoznačné',
+      '☐  Splatnost / splátkový režim je dohodnut',
+      '☐  Pokud má být sepsán notářský zápis, je termín určen',
+      '☐  Dlužník potvrdil, že nemá známé pohledávky k započtení',
+    ],
+    cooperation: [
+      '',
+      'SPECIFICKY PRO SMLOUVU O SPOLUPRÁCI:',
+      '☐  Předmět a cíl spolupráce jsou věcně vymezeny',
+      '☐  Rozdělení odměny / výnosů a způsob fakturace je jasný',
+      '☐  Práva k společně vzniklému duševnímu vlastnictví jsou upravena',
+      '☐  Eskalační postup řešení sporů je jednoznačný',
+    ],
+    work_contract: [
+      '',
+      'SPECIFICKY PRO SMLOUVU O DÍLO:',
+      '☐  Rozsah díla, materiál a technické specifikace jsou určeny',
+      '☐  Cena díla (vč. nebo bez DPH) je jednoznačná',
+      '☐  Harmonogram a milníky předání jsou stanoveny',
+      '☐  Záruční doba a podmínky reklamace jsou ujasněny',
     ],
   };
 
@@ -1449,6 +1983,9 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
   const sections  = buildContractSections(data);
   const [labelLeft, labelRight] = getSignatureLabels(data.contractType, data);
   const { hasPremiumClauses, hasCompletePages } = resolveTierFeatures(data);
+  // Třetí podpisový blok (zatím pouze loan + zvolený ručitel).
+  const extraSigLabel = data.contractType === 'loan' && data.securityType === 'guarantee' && data.guarantorName ? 'Ručitel' : undefined;
+  const extraSigName = extraSigLabel ? String(data.guarantorName) : undefined;
   const { docId, hash } = buildDocumentTrace(data);
 
   const doc = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
@@ -1478,7 +2015,7 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
 
   // ── TOC (premium tiers) — page 2 standalone; content starts page 3 ──
   if (hasPremiumClauses) {
-    const sectionPageMap = await measureSectionPages(data, sections, meta, labelLeft, labelRight);
+    const sectionPageMap = await measureSectionPages(data, sections, meta, labelLeft, labelRight, extraSigLabel, extraSigName);
     // tocOffset=2: scratch content starts at scratch-page 1; real content starts at page 3 → offset by 2
     drawTableOfContents(doc, sections, meta.title, docId, sectionPageMap, 2);
     doc.addPage();
@@ -1491,6 +2028,21 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
     // Lease handover protocol → custom form renderer (replaces generic body)
     if (isLeaseProtocol(section.title)) {
       drawLeaseProtocolForm(doc, data, meta.title, docId);
+      inProtocol = true;
+      continue;
+    }
+
+    // Loan cash-handover receipt → custom form renderer (Complete + hotovost)
+    if (isLoanCashReceipt(section.title)) {
+      drawLoanCashReceipt(doc, data, meta.title, docId);
+      inProtocol = true;
+      continue;
+    }
+
+    // Loan amortization schedule → custom table renderer (Complete + úročené splátky)
+    if (isLoanSchedule(section.title)) {
+      const annexNumber = data.transferMethod !== 'transfer' ? 2 : 1;
+      drawLoanSchedule(doc, data, meta.title, docId, annexNumber);
       inProtocol = true;
       continue;
     }
@@ -1513,7 +2065,7 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
         y = drawEndOfTextMarker(doc, y, meta.title);
         endOfTextDrawn = true;
       }
-      y = drawSignatureSection(doc, section.title, labelLeft, labelRight, y, meta.title);
+      y = drawSignatureSection(doc, section.title, labelLeft, labelRight, y, meta.title, extraSigLabel, extraSigName);
       continue;
     }
 
