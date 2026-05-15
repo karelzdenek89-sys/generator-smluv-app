@@ -19,6 +19,7 @@ type FormData = {
   invoicePeriod: string; invoiceDueDays: string; lateInterest: string;
   vatPayer: 'yes' | 'no'; penaltyRate: string;
   ipOwnership: 'client' | 'provider';
+  uptime: string; responseTime: string; acceptanceDays: string; slaDiscount: string; maxDiscount: string;
   contractDate: string; notaryUpsell: boolean;
   tier: 'basic' | 'complete';
   disputeResolution: 'court' | 'mediation' | 'arbitration';
@@ -52,6 +53,7 @@ export default function SluzbyPage() {
     invoicePeriod: 'měsíčně', invoiceDueDays: '14', lateInterest: '0,05',
     vatPayer: 'no', penaltyRate: '0,05',
     ipOwnership: 'client',
+    uptime: '99', responseTime: '4', acceptanceDays: '10', slaDiscount: '5', maxDiscount: '15',
     contractDate: '', notaryUpsell: false,
     tier: 'basic' as const,
     disputeResolution: 'court' as const,
@@ -255,6 +257,19 @@ export default function SluzbyPage() {
                   </Field>
                 </div>
               </section>
+
+              {form.tier === 'complete' && (
+                <section className={cardClass}>
+                  <SectionTitle index="07" title="SLA — úroveň služby (Rozšířený dokument)" subtitle="Volitelné parametry pro Service Level Agreement." />
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <Field label="Dostupnost služby (%, např. 99)"><input className={inputClass} name="uptime" type="number" min="0" max="100" value={form.uptime} onChange={set} placeholder="99" /></Field>
+                    <Field label="Reakční doba na incident (hodiny)"><input className={inputClass} name="responseTime" type="number" value={form.responseTime} onChange={set} placeholder="4" /></Field>
+                    <Field label="Akceptační lhůta (prac. dnů)"><input className={inputClass} name="acceptanceDays" type="number" value={form.acceptanceDays} onChange={set} placeholder="10" /></Field>
+                    <Field label="Sleva při porušení SLA (% z měs. ceny)"><input className={inputClass} name="slaDiscount" type="number" value={form.slaDiscount} onChange={set} placeholder="5" /></Field>
+                    <Field label="Maximální sleva (% z měs. ceny)"><input className={inputClass} name="maxDiscount" type="number" value={form.maxDiscount} onChange={set} placeholder="15" /></Field>
+                  </div>
+                </section>
+              )}
 
               <section className={cardClass}>
 

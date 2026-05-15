@@ -17,6 +17,7 @@ type FormData = {
   landlordConsent: 'yes' | 'no'; consentDate: string; mainLeaseDate: string;
   startDate: string; duration: 'fixed' | 'indefinite'; endDate: string; noticePeriod: string;
   rentAmount: string; utilityAmount: string; depositAmount: string; paymentDay: string; bankAccount: string;
+  minLatePenalty: string; breachPenalty: string; damagePenalty: string;
   maxOccupants: string; allowPets: boolean; allowSmoking: boolean; allowAirbnb: boolean;
   handoverDate: string; keysCount: string; equipmentList: string; knownDefects: string;
   contractDate: string; notaryUpsell: boolean;
@@ -56,6 +57,7 @@ export default function PodnajemuPage() {
     landlordConsent: 'yes', consentDate: '', mainLeaseDate: '',
     startDate: '', duration: 'fixed', endDate: '', noticePeriod: '3',
     rentAmount: '', utilityAmount: '', depositAmount: '', paymentDay: '15', bankAccount: '',
+    minLatePenalty: '', breachPenalty: '', damagePenalty: '',
     maxOccupants: '2', allowPets: false, allowSmoking: false, allowAirbnb: false,
     handoverDate: '', keysCount: '2', equipmentList: '', knownDefects: '',
     contractDate: '', notaryUpsell: false,
@@ -317,6 +319,16 @@ export default function PodnajemuPage() {
                 <Field label="Den splatnosti (1–31)"><input name="paymentDay" type="number" min="1" max="31" value={form.paymentDay} onChange={handleChange} placeholder="15" className={inputClass} /></Field>
                 <Field label="Číslo účtu pronajímatele (IBAN/CZ)"><input name="bankAccount" value={form.bankAccount} onChange={handleChange} placeholder="CZ65 0800 0000 1920 0014 5399" className={inputClass} /></Field>
               </div>
+              {form.tier === 'complete' && (
+                <div className="mt-4 pt-4 border-t border-slate-800/60">
+                  <div className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">Smluvní pokuty (Rozšířený dokument)</div>
+                  <div className="grid sm:grid-cols-3 gap-4">
+                    <Field label="Min. pokuta za den prodlení (Kč)"><input name="minLatePenalty" type="number" value={form.minLatePenalty} onChange={handleChange} placeholder="200" className={inputClass} /></Field>
+                    <Field label="Pokuta za porušení podmínek (Kč)"><input name="breachPenalty" type="number" value={form.breachPenalty} onChange={handleChange} placeholder="20 000" className={inputClass} /></Field>
+                    <Field label="Pokuta za poškození prostor (Kč)"><input name="damagePenalty" type="number" value={form.damagePenalty} onChange={handleChange} placeholder="10 000" className={inputClass} /></Field>
+                  </div>
+                </div>
+              )}
               {form.rentAmount && (
                 <div className="mt-4 rounded-2xl bg-amber-500/5 border border-amber-500/20 px-4 py-3 text-sm text-amber-300">
                   Celkem měsíčně: <strong>{(Number(form.rentAmount) + Number(form.utilityAmount || 0)).toLocaleString('cs-CZ')} Kč</strong>

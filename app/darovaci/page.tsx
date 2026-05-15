@@ -10,17 +10,23 @@ import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/PaymentModal';
 
 type GiftType = 'money' | 'car' | 'property' | 'thing';
+type TransferMethod = 'cash' | 'transfer';
 
 type FormDataType = {
   giftType: GiftType;
   donorName: string;
   donorId: string;
   donorAddress: string;
+  donorEmail: string;
   doneeName: string;
   doneeId: string;
   doneeAddress: string;
+  doneeEmail: string;
   amount: string;
+  amountWords: string;
   currency: string;
+  transferMethod: TransferMethod;
+  bankAccount: string;
   carMake: string;
   carModel: string;
   carVIN: string;
@@ -33,6 +39,7 @@ type FormDataType = {
   giftDate: string;
   withReservation: boolean;
   reservationDescription: string;
+  conditionDeadline: string;
   notaryUpsell: boolean;
   tier: 'basic' | 'complete';
   disputeResolution: 'court' | 'mediation' | 'arbitration';
@@ -44,11 +51,16 @@ export default function GiftContractPage() {
     donorName: '',
     donorId: '',
     donorAddress: '',
+    donorEmail: '',
     doneeName: '',
     doneeId: '',
     doneeAddress: '',
+    doneeEmail: '',
     amount: '',
+    amountWords: '',
     currency: 'Kč',
+    transferMethod: 'cash' as const,
+    bankAccount: '',
     carMake: '',
     carModel: '',
     carVIN: '',
@@ -61,6 +73,7 @@ export default function GiftContractPage() {
     giftDate: new Date().toISOString().split('T')[0],
     withReservation: false,
     reservationDescription: '',
+    conditionDeadline: '',
     notaryUpsell: false,
     tier: 'basic' as const,
     disputeResolution: 'court' as const,
@@ -295,6 +308,14 @@ export default function GiftContractPage() {
                     value={formData.donorAddress}
                     onChange={(e) => updateField('donorAddress', e.target.value)}
                   />
+                  <input
+                    type="email"
+                    placeholder="E-mail dárce (volitelné)"
+                    aria-label="E-mail dárce"
+                    className={inputClass}
+                    value={formData.donorEmail}
+                    onChange={(e) => updateField('donorEmail', e.target.value)}
+                  />
                 </div>
               </section>
 
@@ -325,6 +346,14 @@ export default function GiftContractPage() {
                     value={formData.doneeAddress}
                     onChange={(e) => updateField('doneeAddress', e.target.value)}
                   />
+                  <input
+                    type="email"
+                    placeholder="E-mail obdarovaného (volitelné)"
+                    aria-label="E-mail obdarovaného"
+                    className={inputClass}
+                    value={formData.doneeEmail}
+                    onChange={(e) => updateField('doneeEmail', e.target.value)}
+                  />
                 </div>
               </section>
             </div>
@@ -333,24 +362,63 @@ export default function GiftContractPage() {
               <h3 className="uppercase text-xs tracking-widest font-bold mb-6">4. Specifikace daru</h3>
 
               {formData.giftType === 'money' && (
-                <div className="grid md:grid-cols-2 gap-4">
-                  <input
-                    type="number"
-                    placeholder="Darovaná částka"
-                    aria-label="Darovaná částka"
-                    className={inputClass}
-                    value={formData.amount}
-                    onChange={(e) => updateField('amount', e.target.value)}
-                  />
+                <>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <input
+                      type="number"
+                      placeholder="Darovaná částka"
+                      aria-label="Darovaná částka"
+                      className={inputClass}
+                      value={formData.amount}
+                      onChange={(e) => updateField('amount', e.target.value)}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Měna"
+                      aria-label="Měna"
+                      className={inputClass}
+                      value={formData.currency}
+                      onChange={(e) => updateField('currency', e.target.value)}
+                    />
+                  </div>
                   <input
                     type="text"
-                    placeholder="Měna"
-                    aria-label="Měna"
+                    placeholder='Částka slovy (volitelné, např. „padesát tisíc korun českých")'
+                    aria-label="Částka slovy"
                     className={inputClass}
-                    value={formData.currency}
-                    onChange={(e) => updateField('currency', e.target.value)}
+                    value={formData.amountWords}
+                    onChange={(e) => updateField('amountWords', e.target.value)}
                   />
-                </div>
+                  <div>
+                    <div className="text-xs text-slate-400 mb-2">Způsob předání peněz</div>
+                    <div className="grid md:grid-cols-2 gap-3">
+                      {(['cash', 'transfer'] as const).map((m) => (
+                        <button
+                          key={m}
+                          type="button"
+                          onClick={() => updateField('transferMethod', m)}
+                          className={`rounded-xl border px-4 py-3 text-sm text-left transition ${
+                            formData.transferMethod === m
+                              ? 'border-amber-500/70 bg-amber-500/10 text-white'
+                              : 'border-slate-700/80 bg-[#111c31] text-slate-300 hover:border-slate-500'
+                          }`}
+                        >
+                          {m === 'cash' ? 'V hotovosti při podpisu' : 'Bankovním převodem'}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  {formData.transferMethod === 'transfer' && (
+                    <input
+                      type="text"
+                      placeholder="Číslo účtu obdarovaného (volitelné — lze doplnit při podpisu)"
+                      aria-label="Číslo účtu obdarovaného"
+                      className={inputClass}
+                      value={formData.bankAccount}
+                      onChange={(e) => updateField('bankAccount', e.target.value)}
+                    />
+                  )}
+                </>
               )}
 
               {formData.giftType === 'car' && (
@@ -478,13 +546,23 @@ export default function GiftContractPage() {
               </label>
 
               {formData.withReservation && (
-                <textarea
-                  placeholder="Popis výminku..."
-                  aria-label="Popis výminku..."
-                  className={textareaClass}
-                  value={formData.reservationDescription}
-                  onChange={(e) => updateField('reservationDescription', e.target.value)}
-                />
+                <div className="space-y-3">
+                  <textarea
+                    placeholder="Popis výminku..."
+                    aria-label="Popis výminku..."
+                    className={textareaClass}
+                    value={formData.reservationDescription}
+                    onChange={(e) => updateField('reservationDescription', e.target.value)}
+                  />
+                  <input
+                    type="date"
+                    placeholder="Lhůta pro splnění podmínky"
+                    aria-label="Lhůta pro splnění podmínky"
+                    className={inputClass}
+                    value={formData.conditionDeadline}
+                    onChange={(e) => updateField('conditionDeadline', e.target.value)}
+                  />
+                </div>
               )}
 
             </section>

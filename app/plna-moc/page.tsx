@@ -17,6 +17,7 @@ type FormData = {
   companyName: string; companyIco: string; companyScope: string; bankAccount: string; bankName: string;
   customScope: string;
   validUntil: string; singleUse: boolean; allowSubstitution: boolean;
+  agentPenalty: string;
   contractDate: string; notaryUpsell: boolean;
   tier: 'basic' | 'complete';
 };
@@ -40,6 +41,7 @@ export default function PlnaMocPage() {
     companyName: '', companyIco: '', companyScope: '', bankAccount: '', bankName: '',
     customScope: '',
     validUntil: '', singleUse: false, allowSubstitution: false,
+    agentPenalty: '',
     contractDate: '', notaryUpsell: false,
     tier: 'basic' as const,
   });
@@ -247,6 +249,13 @@ export default function PlnaMocPage() {
                   </div>
                 </label>
               </div>
+              {form.tier === 'complete' && (
+                <div className="mt-4 pt-4 border-t border-slate-800/60">
+                  <Field label="Smluvní pokuta při překročení zmocnění (Kč, volitelné)">
+                    <input className={inputClass} name="agentPenalty" type="number" value={form.agentPenalty} onChange={set} placeholder="50 000" />
+                  </Field>
+                </div>
+              )}
             </section>
 
             <section className={cardClass}>
