@@ -86,8 +86,17 @@ export default function SluzbyPage() {
   }, [form]);
 
   const handlePayment = async () => {
+    const missing: string[] = [];
+    if (!form.providerName?.trim()) missing.push('název poskytovatele');
+    if (!form.clientName?.trim()) missing.push('název objednatele');
+    if (!form.serviceDescription?.trim()) missing.push('popis služeb');
+    if (!form.hourlyRate && !form.monthlyFee && !form.totalPrice) missing.push('cenu (hodinová / paušál / pevná)');
+    if (missing.length > 0) {
+      alert(`Smlouva o poskytování služeb vyžaduje: ${missing.join(', ')}.`);
+      return;
+    }
     try {
-    setIsProcessing(true);
+      setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contractType: 'service', tier: form.tier, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'service' }, email: form.clientEmail || form.providerEmail }),
@@ -280,10 +289,10 @@ export default function SluzbyPage() {
                     <option value="court">Obecný soud (výchozí)</option>
                     <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                     <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
-                  {form.disputeResolution === 'arbitration' && (
-                    <p className="mt-2 text-xs text-amber-400 leading-relaxed">⚠ Rozhodčí doložka není platná ve smlouvách se spotřebiteli (zákon č. 216/1994 Sb.). Použijte ji pouze pro vztahy B2B.</p>
-                  )}
-                  </select>
+                </select>
+                {form.disputeResolution === 'arbitration' && (
+                  <p className="mt-2 text-xs text-amber-400 leading-relaxed">⚠ U spotřebitelských smluv (B2C) bývá rozhodčí doložka neúčinná dle zák. č. 216/1994 Sb. Doporučujeme ji použít pouze ve vztazích mezi podnikateli (B2B).</p>
+                )}
                 </div>
                 <div className="mt-6">
                   <BuilderTierSelector

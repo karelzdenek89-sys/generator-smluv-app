@@ -93,8 +93,21 @@ export default function PracovniPage() {
   }, [form]);
 
   const handlePayment = async () => {
+    // Validace § 34 ZP — pracovní smlouva BEZ druhu práce, místa a dne nástupu
+    // je ze zákona neplatná. Tato pole jsou zde tvrdě povinná.
+    const missing: string[] = [];
+    if (!form.employerName?.trim()) missing.push('název / jméno zaměstnavatele');
+    if (!form.employeeName?.trim()) missing.push('jméno zaměstnance');
+    if (!form.jobTitle?.trim()) missing.push('druh práce');
+    if (!form.workPlace?.trim()) missing.push('místo výkonu práce');
+    if (!form.startDate) missing.push('den nástupu do práce');
+    if (!form.salary && !form.hourlyRate) missing.push('výši mzdy / hodinové sazby');
+    if (missing.length > 0) {
+      alert(`Pracovní smlouva podle § 34 ZP vyžaduje: ${missing.join(', ')}. Bez nich by smlouva mohla být neplatná.`);
+      return;
+    }
     try {
-    setIsProcessing(true);
+      setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contractType: 'employment', tier: form.tier, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'employment' }, email: form.employerEmail }),

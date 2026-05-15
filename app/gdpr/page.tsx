@@ -32,10 +32,10 @@ export default function GdprPage() {
               1. Správce osobních údajů
             </h2>
             <p className="mb-3">
-              Správcem osobních údajů je provozovatel platformy <strong className="text-white">SmlouvaHned</strong> (dále jen „Správce"):
+              Správcem osobních údajů je fyzická osoba — podnikatel provozující platformu SmlouvaHned.cz (dále jen „Správce"):
             </p>
             <div className="bg-white/3 border border-white/8 rounded-xl p-4 text-slate-300 space-y-1 text-sm">
-              <p><strong className="text-white">SmlouvaHned</strong></p>
+              <p><strong className="text-white">Karel Zdeněk</strong>, fyzická osoba — podnikatel</p>
               <p>IČO: 23660295</p>
               <p>Místo podnikání: Plzeňská 189, 345 61 Staňkov</p>
               <p>Kontaktní e-mail: <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">info@smlouvahned.cz</a></p>

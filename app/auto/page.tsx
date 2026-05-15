@@ -879,10 +879,11 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
 
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <input
+                  type="date"
                   name="handoverDate"
                   value={formData.handoverDate}
                   onChange={handleChange}
-                  placeholder="Datum předání"
+                  aria-label="Datum předání"
                   className={inputClass}
                 />
                 <input
@@ -1160,10 +1161,10 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     <option value="court">Obecný soud (výchozí)</option>
                     <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                     <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
-                  {formData.disputeResolution === 'arbitration' && (
-                    <p className="mt-2 text-xs text-amber-400 leading-relaxed">⚠ Rozhodčí doložka není platná ve smlouvách se spotřebiteli (zákon č. 216/1994 Sb.). Použijte ji pouze pro vztahy B2B.</p>
-                  )}
-                  </select>
+                </select>
+                {formData.disputeResolution === 'arbitration' && (
+                  <p className="mt-2 text-xs text-amber-400 leading-relaxed">⚠ U spotřebitelských smluv (B2C) bývá rozhodčí doložka neúčinná dle zák. č. 216/1994 Sb. Doporučujeme ji použít pouze ve vztazích mezi podnikateli (B2B).</p>
+                )}
                 </div>
                 {packageConfig ? (
                   <div className="rounded-2xl border border-amber-500/20 bg-amber-500/8 p-5">

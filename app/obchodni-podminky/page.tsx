@@ -117,8 +117,11 @@ export default function TermsPage() {
             <p className="mb-3">
               Zákazník nese plnou odpovědnost za správnost a pravdivost údajů vložených do formuláře. Poskytovatel neodpovídá za škody vzniklé chybným vyplněním nebo nevhodným použitím vygenerovaného dokumentu v rozporu s platnými zákony.
             </p>
-            <p>
+            <p className="mb-3">
               Šablony jsou navrženy pro typické standardní situace a nemusí být vhodné pro atypické nebo sporné případy. Poskytovatel neposkytuje právní poradenství ani právní zastoupení.
+            </p>
+            <p>
+              Celková odpovědnost Poskytovatele za škodu vzniklou Zákazníkovi v souvislosti s jednou objednávkou je omezena částkou skutečně zaplacenou Zákazníkem za tuto objednávku, nestanoví-li kogentní právní úprava jinak. Toto omezení se neuplatní v případě úmyslu nebo hrubé nedbalosti Poskytovatele.
             </p>
           </section>
 

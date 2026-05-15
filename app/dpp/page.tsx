@@ -81,8 +81,19 @@ export default function DppPage() {
   }, [form]);
 
   const handlePayment = async () => {
+    // Validace § 75 ZP — DPP musí mít druh práce, místo, dobu a odměnu.
+    const missing: string[] = [];
+    if (!form.employerName?.trim()) missing.push('název zaměstnavatele');
+    if (!form.employeeName?.trim()) missing.push('jméno zaměstnance');
+    if (!form.taskDescription?.trim()) missing.push('popis pracovního úkolu');
+    if (!form.workPlace?.trim()) missing.push('místo výkonu práce');
+    if (!form.hourlyRate && !form.totalRemuneration) missing.push('výši odměny');
+    if (missing.length > 0) {
+      alert(`Dohoda o provedení práce dle § 75 ZP vyžaduje: ${missing.join(', ')}.`);
+      return;
+    }
     try {
-    setIsProcessing(true);
+      setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contractType: 'dpp', tier: form.tier, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'dpp' }, email: form.employerEmail }),

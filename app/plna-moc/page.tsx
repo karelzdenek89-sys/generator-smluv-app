@@ -76,7 +76,11 @@ export default function PlnaMocPage() {
   }, [form]);
 
   const handlePayment = async () => {
-    if (!form.principalName || !form.agentName) { alert('Vyplňte prosím jména zmocnitele a zmocněnce.'); return; }
+    const missing: string[] = [];
+    if (!form.principalName?.trim()) missing.push('jméno zmocnitele');
+    if (!form.agentName?.trim()) missing.push('jméno zmocněnce');
+    if (form.poaType === 'general' && !form.customScope?.trim()) missing.push('rozsah zmocnění (popis úkonu)');
+    if (missing.length > 0) { alert(`Plná moc vyžaduje: ${missing.join(', ')}.`); return; }
     try {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {

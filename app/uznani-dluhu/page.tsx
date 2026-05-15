@@ -76,8 +76,13 @@ export default function UznanidluhuPage() {
   }, [form]);
 
   const handlePayment = async () => {
+    const missing: string[] = [];
+    if (!form.creditorName?.trim()) missing.push('jméno věřitele');
+    if (!form.debtorName?.trim()) missing.push('jméno dlužníka');
+    if (!form.debtAmount) missing.push('výši dluhu');
+    if (missing.length > 0) { alert(`Uznání dluhu vyžaduje: ${missing.join(', ')}.`); return; }
     try {
-    setIsProcessing(true);
+      setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contractType: 'debt_acknowledgment', tier: form.tier, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'debt_acknowledgment' }, email: form.creditorEmail }),

@@ -76,7 +76,7 @@ const softwareSchema = {
     'Okamžitý export do PDF',
     '14 typů standardizovaných dokumentů',
     'Citace konkrétních paragrafů OZ a zákoníku práce přímo v dokumentu',
-    'Upozornění na právní rizika při vyplnění formuláře',
+    'Upozornění na typicky problematické volby ve formuláři (bez individuálního posouzení)',
     'Ochranné klauzule a smluvní sankce v základní variantě',
     'Šablony aktualizované dle české legislativy k 1. 1. 2026',
     'Šifrované dočasné úložiště dat — automatické smazání po 7–30 dnech',
@@ -212,8 +212,9 @@ export default function Home() {
               <span className="text-[#c9a852]">ne bez nich.</span>
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-slate-400">
-              Každý dokument cituje konkrétní ustanovení zákona, obsahuje ochranné klauzule
-              a upozorňuje na rizika — to, co jiné generátory vynechávají.
+              Každý dokument odkazuje na související ustanovení OZ a zákoníku práce
+              a obsahuje běžné ochranné klauzule. Šablony pokrývají typické situace;
+              nejde o individuální právní službu.
             </p>
           </div>
 
@@ -226,8 +227,8 @@ export default function Home() {
               },
               {
                 icon: '⚠',
-                title: 'Upozornění na rizika při vyplnění',
-                desc: 'Formulář varuje u nebezpečných voleb — příliš vysoký úrok, neplatná rozhodčí doložka v B2C, chybějící souhlas pronajímatele.',
+                title: 'Upozornění u problematických voleb',
+                desc: 'Formulář upozorní na volby, které bývají v praxi sporné — neobvykle vysoký úrok, rozhodčí doložka ve spotřebitelské smlouvě, chybějící souhlas pronajímatele. Nejde o individuální právní posouzení.',
               },
               {
                 icon: '✓',
