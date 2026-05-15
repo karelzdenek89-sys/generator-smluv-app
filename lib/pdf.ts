@@ -131,6 +131,10 @@ function isLoanSchedule(title: string): boolean {
   return title.toUpperCase().includes('SPLÁTKOVÝ KALENDÁŘ');
 }
 
+function isDppDeliveryProtocol(title: string): boolean {
+  return title.toUpperCase().includes('PŘEDÁVACÍ A AKCEPTAČNÍ PROTOKOL VÝSTUPŮ');
+}
+
 function isLeaseProtocol(title: string): boolean {
   return title.toUpperCase().includes('PŘEDÁVACÍ PROTOKOL K NÁJEMNÍ SMLOUVĚ');
 }
@@ -296,6 +300,10 @@ function drawSummaryBox(
 
   const amount = (data.price ?? data.loanAmount ?? data.rentAmount ?? data.debtAmount ?? data.totalPrice ?? data.monthlyFee ?? data.salary ?? data.totalRemuneration ?? data.hourlyRate) as number | undefined;
   if (amount && !isNaN(Number(amount)) && Number(amount) > 0) {
+    // Specifické formátování pro hodinovou sazbu (DPP / DPČ / služby).
+    const isHourly = !data.price && !data.loanAmount && !data.rentAmount && !data.debtAmount
+      && !data.totalPrice && !data.monthlyFee && !data.salary && !data.totalRemuneration
+      && Boolean(data.hourlyRate);
     const amountLabel =
       data.monthlyFee ? 'Měsíční paušál' :
       data.salary ? 'Mzda (hrubá/měs.)' :
@@ -303,8 +311,10 @@ function drawSummaryBox(
       data.rentAmount && contractType === 'sublease' ? 'Podnájemné' :
       data.loanAmount ? 'Výše zápůjčky' :
       data.debtAmount ? 'Výše dluhu' :
+      isHourly ? 'Hodinová odměna' :
       'Sjednaná částka';
-    identLines.push(`${amountLabel}: ${Number(amount).toLocaleString('cs-CZ')} Kč`);
+    const suffix = isHourly ? ' Kč/hod.' : ' Kč';
+    identLines.push(`${amountLabel}: ${Number(amount).toLocaleString('cs-CZ')}${suffix}`);
   }
 
   switch (contractType) {
@@ -814,6 +824,180 @@ function drawLoanSchedule(
   const note = 'Poznámka: kalendář je orientační. Úrok je počítán z nesplaceného zůstatku jistiny měsíční sazbou (roční sazba / 12). Každá splátka se započítává nejprve na úroky (§ 1932 OZ). Výše poslední splátky je upravena tak, aby přesně odpovídala skutečně nesplacené jistině a úroku ke dni její splatnosti. Skutečný úrok závisí na datu úhrady; je-li úhrada provedena před řádným termínem splatnosti, snižuje se přirostlý úrok.';
   const noteLines = doc.splitTextToSize(note, contentWidth);
   doc.text(noteLines, MARGIN, y);
+
+  doc.setTextColor(0);
+}
+
+/**
+ * Příloha k DPP (Professional+): předávací a akceptační protokol výstupů.
+ * Strukturovaný formulář pro každý jednotlivý akt předání práce, s prostorem pro
+ * popis výstupu, odpracované hodiny, výhrady kvality zaměstnavatele a potvrzení převzetí.
+ */
+function drawDppDeliveryProtocol(
+  doc: jsPDF,
+  data: StoredContractData,
+  contractTitle: string,
+  docId: string,
+): void {
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const contentWidth = pageWidth - MARGIN * 2;
+  const dash = (n = 8) => '_'.repeat(n);
+
+  doc.addPage();
+  drawHeader(doc, contractTitle, false, docId);
+  let y = 22;
+
+  // Title block
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(13);
+  doc.setTextColor(INK_R, INK_G, INK_B);
+  doc.text('PŘÍLOHA Č. 1', MARGIN, y);
+  y += 6;
+  doc.setFontSize(11);
+  doc.text('PŘEDÁVACÍ A AKCEPTAČNÍ PROTOKOL VÝSTUPŮ', MARGIN, y);
+  y += 5;
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(8);
+  doc.setTextColor(META_R, META_G, META_B);
+  doc.text('Nedílná součást dohody o provedení práce — sepisuje se při předání výstupů zaměstnavateli', MARGIN, y);
+  y += 8;
+
+  doc.setDrawColor(RULE_R, RULE_G, RULE_B);
+  doc.setLineWidth(0.3);
+  doc.line(MARGIN, y, pageWidth - MARGIN, y);
+  y += 10;
+
+  // A — IDENTIFIKACE
+  const sectionHeader = (title: string) => {
+    doc.setFont('Roboto', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(INK_R, INK_G, INK_B);
+    doc.text(title, MARGIN, y);
+    y += 6;
+    doc.setFont('Roboto', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(BODY_R, BODY_G, BODY_B);
+  };
+  const fieldLabel = (label: string) => {
+    doc.setFont('Roboto', 'normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(META_R, META_G, META_B);
+    doc.text(label, MARGIN, y);
+    y += 3.5;
+  };
+  const writableLine = (yPos: number) => {
+    doc.setDrawColor(SIGN_R, SIGN_G, SIGN_B);
+    doc.setLineWidth(0.25);
+    doc.line(MARGIN, yPos, pageWidth - MARGIN, yPos);
+  };
+  const writableBlock = (lines: number) => {
+    for (let i = 0; i < lines; i += 1) {
+      writableLine(y);
+      y += 6;
+    }
+    y += 2;
+  };
+
+  sectionHeader('A  IDENTIFIKACE');
+  const employer = String(data.employerName ?? '');
+  const employee = String(data.employeeName ?? '');
+  doc.text(`Zaměstnavatel: ${employer || dash(36)}`, MARGIN, y);
+  y += 5.5;
+  doc.text(`Zaměstnanec: ${employee || dash(36)}`, MARGIN, y);
+  y += 5.5;
+  doc.text(`Dohoda o provedení práce ID: ${docId}`, MARGIN, y);
+  y += 9;
+
+  // B — POPIS VÝSTUPU
+  sectionHeader('B  POPIS PŘEDÁVANÉHO VÝSTUPU');
+  fieldLabel('Název / označení pracovního úkolu');
+  writableBlock(1);
+  fieldLabel('Popis předávaného výstupu (rozsah, forma, technické parametry)');
+  writableBlock(3);
+
+  // C — ČASOVÝ A KVANTITATIVNÍ ROZSAH
+  sectionHeader('C  ČASOVÝ A KVANTITATIVNÍ ROZSAH');
+  const halfX = MARGIN + (contentWidth - 10) / 2 + 5;
+  fieldLabel('Datum předání');
+  doc.line(MARGIN, y, MARGIN + (contentWidth - 10) / 2, y);
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(7.5);
+  doc.setTextColor(META_R, META_G, META_B);
+  doc.text('Počet odpracovaných hodin', halfX, y - 3.5);
+  doc.line(halfX, y, pageWidth - MARGIN, y);
+  y += 8;
+  fieldLabel('Souhrn odpracovaných hodin v aktuálním kalendářním měsíci');
+  writableBlock(1);
+
+  // D — PŘIPOMÍNKY ZAMĚSTNAVATELE
+  sectionHeader('D  PŘIPOMÍNKY ZAMĚSTNAVATELE');
+  writableBlock(3);
+
+  // E — VÝHRADY KVALITY
+  sectionHeader('E  VÝHRADY KVALITY');
+  // Box checkbox jako nakreslené čtverečky (Roboto subset neobsahuje ☐).
+  const drawCheckbox = (yy: number) => {
+    doc.setDrawColor(SIGN_R, SIGN_G, SIGN_B);
+    doc.setLineWidth(0.4);
+    doc.rect(MARGIN, yy - 3, 3, 3);
+  };
+  drawCheckbox(y);
+  doc.text('Bez výhrad — výstup splňuje sjednané zadání a kvalitu.', MARGIN + 5, y);
+  y += 5.5;
+  drawCheckbox(y);
+  doc.text('S výhradami — popis vad / nedostatků:', MARGIN + 5, y);
+  y += 6;
+  writableBlock(2);
+
+  // F — POTVRZENÍ PŘEVZETÍ + PODPISY
+  if (y > 235) {
+    doc.addPage();
+    drawHeader(doc, contractTitle, false, docId);
+    y = 22;
+  }
+  sectionHeader('F  POTVRZENÍ PŘEVZETÍ A PODPISY');
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(8.5);
+  doc.setTextColor(BODY_R, BODY_G, BODY_B);
+  const confirm = 'Smluvní strany potvrzují, že výstupy byly předány a převzaty v rozsahu uvedeném v tomto protokolu. Případné výhrady jsou zaznamenány výše. Tento protokol je podkladem pro zúčtování odměny dle čl. IV dohody.';
+  const confLines = doc.splitTextToSize(confirm, contentWidth);
+  doc.text(confLines, MARGIN, y);
+  y += confLines.length * 4.5 + 8;
+
+  // Two-column signatures
+  const colW = (contentWidth - 14) / 2;
+  const rightX = MARGIN + colW + 14;
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(9);
+  doc.setTextColor(BODY_R, BODY_G, BODY_B);
+  doc.text('V', MARGIN, y);
+  doc.setDrawColor(SIGN_R, SIGN_G, SIGN_B);
+  doc.setLineWidth(0.25);
+  doc.line(MARGIN + 5, y, MARGIN + colW * 0.52, y);
+  doc.text('dne', MARGIN + colW * 0.55, y);
+  doc.line(MARGIN + colW * 0.64, y, MARGIN + colW, y);
+  doc.text('V', rightX, y);
+  doc.line(rightX + 5, y, rightX + colW * 0.52, y);
+  doc.text('dne', rightX + colW * 0.55, y);
+  doc.line(rightX + colW * 0.64, y, rightX + colW, y);
+  y += 17;
+
+  doc.setDrawColor(50, 50, 50);
+  doc.setLineWidth(0.5);
+  doc.line(MARGIN, y, MARGIN + colW, y);
+  doc.line(rightX, y, rightX + colW, y);
+  y += 4;
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(7.5);
+  doc.setTextColor(META_R, META_G, META_B);
+  doc.text('(vlastnoruční podpis)', MARGIN + colW / 2, y, { align: 'center' });
+  doc.text('(vlastnoruční podpis)', rightX + colW / 2, y, { align: 'center' });
+  y += 6;
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(INK_R, INK_G, INK_B);
+  doc.text('ZAMĚSTNAVATEL', MARGIN + colW / 2, y, { align: 'center' });
+  doc.text('ZAMĚSTNANEC', rightX + colW / 2, y, { align: 'center' });
 
   doc.setTextColor(0);
 }
@@ -2043,6 +2227,13 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
     if (isLoanSchedule(section.title)) {
       const annexNumber = data.transferMethod !== 'transfer' ? 2 : 1;
       drawLoanSchedule(doc, data, meta.title, docId, annexNumber);
+      inProtocol = true;
+      continue;
+    }
+
+    // DPP delivery and acceptance protocol → custom form (Professional+)
+    if (isDppDeliveryProtocol(section.title)) {
+      drawDppDeliveryProtocol(doc, data, meta.title, docId);
       inProtocol = true;
       continue;
     }
