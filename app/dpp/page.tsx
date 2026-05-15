@@ -145,7 +145,7 @@ export default function DppPage() {
           { q: 'Jaký je rozdíl mezi DPP a pracovní smlouvou?', a: 'DPP je určena pro příležitostné nebo krátkodobé pracovní úkoly (max. 300 hodin ročně u jednoho zaměstnavatele). Pracovní smlouva zakládá trvalý pracovní poměr s pravidelnou pracovní dobou a zákonnou ochranou zaměstnance.' },
           { q: 'Jaký je limit hodin u DPP?', a: 'Zákoník práce stanoví maximálně 300 hodin ročně u jednoho zaměstnavatele. Při překročení tohoto limitu by bylo nutné uzavřít jiný typ pracovněprávního vztahu.' },
           { q: 'Musí být DPP písemná?', a: 'Ano, § 77 zákoníku práce vyžaduje písemnou formu DPP. Ústní dohoda není platná.' },
-          { q: 'Platí se z DPP pojistné a daně?', a: 'Při odměně do 10 000 Kč měsíčně (u jednoho zaměstnavatele) se zpravidla neodvádí sociální ani zdravotní pojistné. Z odměny se odvádí daň z příjmů — přesný postup závisí na konkrétní situaci.' },
+          { q: 'Platí se z DPP pojistné a daně?', a: 'Pro rok 2026 vzniká účast na nemocenském a důchodovém pojištění při dosažení rozhodného příjmu 12 000 Kč hrubého měsíčně u jednoho zaměstnavatele. Pod tuto hranici se zpravidla neodvádí sociální ani zdravotní pojistné. Z odměny se odvádí daň z příjmů — přesný postup závisí na konkrétní situaci a aktuální metodice ČSSZ.' },
           { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
         ]}
         ctaLabel="Vytvořit dohodu o provedení práce"
@@ -218,7 +218,7 @@ export default function DppPage() {
               </section>
 
               <section className={cardClass}>
-                <SectionTitle index="05" title="Odměna" subtitle="DPP bez odvodů SP/ZP do 10 000 Kč/měsíc u jednoho zaměstnavatele." />
+                <SectionTitle index="05" title="Odměna" subtitle="Pro rok 2026: účast na pojištění vzniká při dosažení 12 000 Kč hrubého měsíčně u jednoho zaměstnavatele." />
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Field label="Typ odměny">
                     <select className={inputClass} name="remunerationType" value={form.remunerationType} onChange={set}>
