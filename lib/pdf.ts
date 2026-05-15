@@ -119,6 +119,42 @@ function isSignatureSection(title: string): boolean {
   return title.toUpperCase().includes('PODPISY');
 }
 
+/**
+ * Převod role z 1. pádu (nominativ) do 2. pádu (genitiv) pro výsledné věty
+ * typu „Smlouva nabývá platnosti podpisem věřitele a vydlužitele.".
+ * Mapa pokrývá všech 14 typů smluv + ručitele; fallback ponechá vstup beze změny
+ * (lépe gramaticky nepřesné než zkomolené).
+ */
+function roleGenitive(role: string): string {
+  const r = role.trim();
+  const map: Record<string, string> = {
+    'Pronajímatel': 'pronajímatele',
+    'Podnajímatel': 'podnajímatele',
+    'Nájemce': 'nájemce',
+    'Podnájemce': 'podnájemce',
+    'Prodávající': 'prodávajícího',
+    'Kupující': 'kupujícího',
+    'Dárce': 'dárce',
+    'Obdarovaný': 'obdarovaného',
+    'Zhotovitel': 'zhotovitele',
+    'Objednatel': 'objednatele',
+    'Věřitel': 'věřitele',
+    'Vydlužitel': 'vydlužitele',
+    'Dlužník': 'dlužníka',
+    'Zaměstnavatel': 'zaměstnavatele',
+    'Zaměstnanec': 'zaměstnance',
+    'Poskytovatel': 'poskytovatele',
+    'Poskytující strana': 'poskytující strany',
+    'Přijímající strana': 'přijímající strany',
+    'Zmocnitel': 'zmocnitele',
+    'Zmocněnec': 'zmocněnce',
+    'Strana A': 'strany A',
+    'Strana B': 'strany B',
+    'Ručitel': 'ručitele',
+  };
+  return map[r] ?? r.toLowerCase();
+}
+
 function isProtocolSection(title: string): boolean {
   return title.toUpperCase().includes('PŘEDÁVACÍ PROTOKOL') || title.toUpperCase().includes('PŘÍLOHA');
 }
@@ -1759,17 +1795,14 @@ function drawSignatureSection(
   doc.line(MARGIN, y, pageWidth - MARGIN, y);
   y += 5;
 
-  // Closing note — plain, concise; rozlišujeme přítomnost ručitele.
+  // Closing note — plain, concise; vždy s konkrétními rolemi z labelLeft/labelRight.
+  // Třetí strana (typicky ručitel) má vlastní větu o vzniku závazku až podpisem.
   doc.setFont('Roboto', 'normal');
   doc.setFontSize(7.5);
   doc.setTextColor(META_R, META_G, META_B);
-  const baseNote = extraLabel
-    ? 'Smlouva nabývá platnosti podpisem věřitele a vydlužitele. Ručitelský závazek vzniká podpisem ručitele.'
-    : 'Smlouva nabývá platnosti podpisem věřitele a vydlužitele.';
-  // Specializace pro neúvěrové smlouvy: použít obecnější formulaci s rolemi z labelLeft/labelRight.
-  const isLoanLike = /věřitel/i.test(labelLeft) || /věřitel/i.test(labelRight);
-  const note = (isLoanLike ? baseNote : 'Smlouva nabývá platnosti podpisem obou smluvních stran.')
-    + ' Je-li podepisována elektronicky, platí přiměřeně nařízení EU č. 910/2014 (eIDAS).';
+  const note = `Smlouva nabývá platnosti podpisem ${roleGenitive(labelLeft)} a ${roleGenitive(labelRight)}.${
+    extraLabel ? ` Ručitelský závazek vzniká podpisem ${roleGenitive(extraLabel)}.` : ''
+  } Je-li podepisována elektronicky, platí přiměřeně nařízení EU č. 910/2014 (eIDAS).`;
   const noteLines = doc.splitTextToSize(note, pageWidth - MARGIN * 2);
   doc.text(noteLines, MARGIN, y);
   doc.setTextColor(0);
