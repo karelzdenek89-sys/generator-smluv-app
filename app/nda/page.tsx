@@ -30,6 +30,7 @@ type NdaFormData = {
   nonCompete: boolean;
   nonCompetePeriod: string;
   nonCompeteScope: string;
+  nonCompeteTerritory: string;
   specialInfoCategories: string;
   notaryUpsell: boolean;
   tier: 'basic' | 'complete';
@@ -90,6 +91,7 @@ export default function NdaBuilderPage() {
     nonCompete: false,
     nonCompetePeriod: '24 měsíců',
     nonCompeteScope: '',
+    nonCompeteTerritory: 'Česká republika',
     specialInfoCategories: '',
     notaryUpsell: false,
     tier: 'basic' as const,
@@ -389,6 +391,10 @@ export default function NdaBuilderPage() {
                       <div>
                         <label className={labelClass}>Rozsah / odvětví</label>
                         <input value={formData.nonCompeteScope} onChange={e => set('nonCompeteScope', e.target.value)} placeholder="Vývoj CRM softwaru pro pojišťovny v ČR" aria-label="Rozsah / odvětví" className={inputClass} />
+                      </div>
+                      <div>
+                        <label className={labelClass}>Územní rozsah</label>
+                        <input value={formData.nonCompeteTerritory} onChange={e => set('nonCompeteTerritory', e.target.value)} placeholder="Česká republika" aria-label="Územní rozsah" className={inputClass} />
                       </div>
                     </div>
                   )}

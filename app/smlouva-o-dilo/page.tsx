@@ -16,21 +16,31 @@ type WorkContractData = {
   clientAddress: string;
   clientRegNo: string;
   clientId?: string;
+  clientEmail: string;
 
   contractorName: string;
   contractorAddress: string;
   contractorRegNo: string;
   contractorId?: string;
+  contractorEmail: string;
 
   workTitle: string;
   workDescription: string;
   workLocation: string;
+  technicalSpecs: string;
+  milestones: string;
   materialBy: 'contractor' | 'client' | 'both';
 
   priceAmount: string;
   currency: string;
+  vatIncluded: boolean;
   paymentType: PaymentType;
   depositAmount: string;
+  depositDueDays: string;
+  finalPaymentDays: string;
+  invoiceDueDays: string;
+  bankAccount: string;
+  variableSymbol: string;
 
   startDate: string;
   endDate: string;
@@ -38,10 +48,14 @@ type WorkContractData = {
   warrantyMonths: string;
   delayPenaltyPerDay: string;
   defectPenaltyPercent: string;
+  clientPenaltyPerDay: string;
+  maxPenaltyPercent: string;
 
   insuranceRequired: boolean;
+  insuranceLimit: string;
   handoverProtocol: boolean;
   withdrawalRight: boolean;
+  ipAssignment: 'client' | 'contractor';
   notaryUpsell: boolean;
   tier: 'basic' | 'complete';
   disputeResolution: 'court' | 'mediation' | 'arbitration';
@@ -51,25 +65,39 @@ const defaultData: WorkContractData = {
   clientName: '',
   clientAddress: '',
   clientRegNo: '',
+  clientEmail: '',
   contractorName: '',
   contractorAddress: '',
   contractorRegNo: '',
+  contractorEmail: '',
   workTitle: '',
   workDescription: '',
   workLocation: '',
+  technicalSpecs: '',
+  milestones: '',
   materialBy: 'contractor',
   priceAmount: '',
   currency: 'Kč',
+  vatIncluded: false,
   paymentType: 'after_completion',
   depositAmount: '',
+  depositDueDays: '5',
+  finalPaymentDays: '14',
+  invoiceDueDays: '14',
+  bankAccount: '',
+  variableSymbol: '',
   startDate: '',
   endDate: '',
   warrantyMonths: '24',
   delayPenaltyPerDay: '0.05',
   defectPenaltyPercent: '10',
+  clientPenaltyPerDay: '0.05',
+  maxPenaltyPercent: '20',
   insuranceRequired: true,
+  insuranceLimit: '',
   handoverProtocol: true,
   withdrawalRight: false,
+  ipAssignment: 'client',
   notaryUpsell: false,
   tier: 'basic' as const,
   disputeResolution: 'court' as const,
@@ -288,6 +316,14 @@ export default function WorkContractPage() {
                       value={formData.clientAddress}
                       onChange={(e) => updateField('clientAddress', e.target.value)}
                     />
+                    <input
+                      type="email"
+                      placeholder="E-mail objednatele (volitelné)"
+                      aria-label="E-mail objednatele"
+                      className={inputClass}
+                      value={formData.clientEmail}
+                      onChange={(e) => updateField('clientEmail', e.target.value)}
+                    />
                   </div>
                 </section>
 
@@ -320,6 +356,14 @@ export default function WorkContractPage() {
                       value={formData.contractorAddress}
                       onChange={(e) => updateField('contractorAddress', e.target.value)}
                     />
+                    <input
+                      type="email"
+                      placeholder="E-mail zhotovitele (volitelné)"
+                      aria-label="E-mail zhotovitele"
+                      className={inputClass}
+                      value={formData.contractorEmail}
+                      onChange={(e) => updateField('contractorEmail', e.target.value)}
+                    />
                   </div>
                 </section>
               </div>
@@ -351,6 +395,22 @@ export default function WorkContractPage() {
                     className={inputClass}
                     value={formData.workLocation}
                     onChange={(e) => updateField('workLocation', e.target.value)}
+                  />
+
+                  <textarea
+                    placeholder="Technické specifikace / projektová dokumentace (volitelné)"
+                    aria-label="Technické specifikace"
+                    className={textareaClass}
+                    value={formData.technicalSpecs}
+                    onChange={(e) => updateField('technicalSpecs', e.target.value)}
+                  />
+
+                  <textarea
+                    placeholder="Průběžné milníky (volitelné — např. 30 % dokončení střechy, 50 % rozvody…)"
+                    aria-label="Průběžné milníky"
+                    className={textareaClass}
+                    value={formData.milestones}
+                    onChange={(e) => updateField('milestones', e.target.value)}
                   />
 
                   <div>
@@ -418,18 +478,83 @@ export default function WorkContractPage() {
                   </div>
 
                   {formData.paymentType === 'with_deposit' && (
-                    <div className="md:col-span-2">
-                      <label className="text-xs text-slate-400">Výše zálohy</label>
-                      <input
-                        type="number"
-                        placeholder="Záloha"
-                        aria-label="Záloha"
-                        className={`${inputClass} mt-2`}
-                        value={formData.depositAmount}
-                        onChange={(e) => updateField('depositAmount', e.target.value)}
-                      />
-                    </div>
+                    <>
+                      <div>
+                        <label className="text-xs text-slate-400">Výše zálohy</label>
+                        <input
+                          type="number"
+                          placeholder="Záloha"
+                          aria-label="Záloha"
+                          className={`${inputClass} mt-2`}
+                          value={formData.depositAmount}
+                          onChange={(e) => updateField('depositAmount', e.target.value)}
+                        />
+                      </div>
+                      <div>
+                        <label className="text-xs text-slate-400">Splatnost zálohy (prac. dnů)</label>
+                        <input
+                          type="number"
+                          aria-label="Splatnost zálohy"
+                          className={`${inputClass} mt-2`}
+                          value={formData.depositDueDays}
+                          onChange={(e) => updateField('depositDueDays', e.target.value)}
+                        />
+                      </div>
+                    </>
                   )}
+
+                  <div>
+                    <label className="text-xs text-slate-400">Splatnost doplatku (dnů)</label>
+                    <input
+                      type="number"
+                      aria-label="Splatnost doplatku"
+                      className={`${inputClass} mt-2`}
+                      value={formData.finalPaymentDays}
+                      onChange={(e) => updateField('finalPaymentDays', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400">Splatnost faktur (dnů)</label>
+                    <input
+                      type="number"
+                      aria-label="Splatnost faktur"
+                      className={`${inputClass} mt-2`}
+                      value={formData.invoiceDueDays}
+                      onChange={(e) => updateField('invoiceDueDays', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400">Bankovní účet zhotovitele</label>
+                    <input
+                      type="text"
+                      aria-label="Bankovní účet"
+                      placeholder="123456789/0100"
+                      className={`${inputClass} mt-2`}
+                      value={formData.bankAccount}
+                      onChange={(e) => updateField('bankAccount', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400">Variabilní symbol</label>
+                    <input
+                      type="text"
+                      aria-label="Variabilní symbol"
+                      className={`${inputClass} mt-2`}
+                      value={formData.variableSymbol}
+                      onChange={(e) => updateField('variableSymbol', e.target.value)}
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="flex items-center gap-3 text-sm text-slate-300 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.vatIncluded}
+                        onChange={(e) => updateField('vatIncluded', e.target.checked)}
+                        className="h-4 w-4 accent-amber-500"
+                      />
+                      <span>Cena včetně DPH (jinak bez DPH)</span>
+                    </label>
+                  </div>
 
                   <div>
                     <label className="text-xs text-slate-400">Zahájení prací</label>
@@ -470,14 +595,45 @@ export default function WorkContractPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Pokuta za prodlení (%/den)</label>
+                    <label className="text-xs text-slate-400">Pokuta za prodlení zhotovitele (%/den)</label>
                     <input
-                      aria-label="Pokuta za prodlení (%/den)"
+                      aria-label="Pokuta za prodlení zhotovitele"
                       type="number"
                       step="0.01"
                       className={`${inputClass} mt-2`}
                       value={formData.delayPenaltyPerDay}
                       onChange={(e) => updateField('delayPenaltyPerDay', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400">Pokuta za prodlení objednatele (%/den)</label>
+                    <input
+                      aria-label="Pokuta za prodlení objednatele"
+                      type="number"
+                      step="0.01"
+                      className={`${inputClass} mt-2`}
+                      value={formData.clientPenaltyPerDay}
+                      onChange={(e) => updateField('clientPenaltyPerDay', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400">Pokuta za vady (% z ceny)</label>
+                    <input
+                      aria-label="Pokuta za vady"
+                      type="number"
+                      className={`${inputClass} mt-2`}
+                      value={formData.defectPenaltyPercent}
+                      onChange={(e) => updateField('defectPenaltyPercent', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-slate-400">Strop pokut celkem (% z ceny)</label>
+                    <input
+                      aria-label="Strop pokut"
+                      type="number"
+                      className={`${inputClass} mt-2`}
+                      value={formData.maxPenaltyPercent}
+                      onChange={(e) => updateField('maxPenaltyPercent', e.target.value)}
                     />
                   </div>
                 </div>
@@ -492,6 +648,19 @@ export default function WorkContractPage() {
                     />
                     Zhotovitel je povinen mít pojištění odpovědnosti
                   </label>
+                  {formData.insuranceRequired && (
+                    <div className="ml-7">
+                      <label className="text-xs text-slate-400">Min. limit pojištění (Kč)</label>
+                      <input
+                        aria-label="Limit pojištění"
+                        type="number"
+                        placeholder="2 000 000"
+                        className={`${inputClass} mt-2`}
+                        value={formData.insuranceLimit}
+                        onChange={(e) => updateField('insuranceLimit', e.target.value)}
+                      />
+                    </div>
+                  )}
 
                   <label className="flex items-center gap-3 cursor-pointer">
                     <input
@@ -502,6 +671,36 @@ export default function WorkContractPage() {
                     />
                     Předání díla proběhne protokolem
                   </label>
+
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.withdrawalRight}
+                      onChange={(e) => updateField('withdrawalRight', e.target.checked)}
+                      className="accent-amber-500 w-5 h-5"
+                    />
+                    Sjednat výslovné právo odstoupení od smlouvy
+                  </label>
+
+                  <div>
+                    <label className="text-xs text-slate-400 block mb-2">Vlastnictví výstupů</label>
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      {(['client', 'contractor'] as const).map((opt) => (
+                        <button
+                          key={opt}
+                          type="button"
+                          onClick={() => updateField('ipAssignment', opt)}
+                          className={`rounded-xl border px-4 py-3 text-sm text-left transition ${
+                            formData.ipAssignment === opt
+                              ? 'border-amber-500/70 bg-amber-500/10 text-white'
+                              : 'border-slate-700/80 bg-[#111c31] text-slate-300 hover:border-slate-500'
+                          }`}
+                        >
+                          {opt === 'client' ? 'Objednatel (dílo patří klientovi)' : 'Zhotovitel (licence klientovi)'}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
                   <div className="pt-4 border-t border-slate-800">
                     <label className="flex items-center gap-3 cursor-pointer">
