@@ -923,7 +923,11 @@ function buildLoanContractSections(d: StoredContractData): ContractSection[] {
         hasGuarantor
           ? 'Ručitel prohlašuje, že se seznámil s obsahem této smlouvy, zejména s výší zápůjčky, úroky, dobou splatnosti, smluvní pokutou a podmínkami ztráty výhody splátek, a tyto podmínky bere na vědomí. Ručitel přijímá ručení a zavazuje se uspokojit pohledávku věřitele včetně příslušenství, nesplní-li ji vydlužitel řádně a včas po písemné výzvě věřitele (§ 2021 OZ).'
           : '',
-        'V případě nesplacení pohledávky je věřitel oprávněn uplatnit zajišťovací instrumenty v souladu s platnými právními předpisy a v pořadí, které sám zvolí, není-li zákonem stanoveno jinak.',
+        // Rozsah ručení — explicitně, aby nedocházelo k nejasnostem ohledně smluvní pokuty.
+        hasGuarantor
+          ? 'Ručení se vztahuje na jistinu zápůjčky, sjednané úroky, zákonný úrok z prodlení a účelně vynaložené náklady spojené s uplatněním pohledávky. Ručení se nevztahuje na smluvní pokutu, není-li výslovně sjednáno jinak.'
+          : '',
+        'V případě nesplacení pohledávky je věřitel oprávněn uplatnit zajišťovací prostředky v souladu s platnými právními předpisy, není-li zákonem stanoveno jinak.',
         'Zajištění zůstává v platnosti po celou dobu trvání závazku a zaniká teprve úplným uhrazením pohledávky včetně příslušenství.',
       ].filter(Boolean) as string[],
     }] : []),
@@ -987,7 +991,9 @@ function buildLoanContractSections(d: StoredContractData): ContractSection[] {
           ? 'Výše poslední splátky bude upravena tak, aby odpovídala skutečně nesplacené jistině a přirostlým úrokům ke dni její splatnosti.'
           : '',
         d.bankAccount ? `Platby budou zasílány na bankovní účet věřitele č. ${asText(d.bankAccount)}${d.variableSymbol ? `, VS: ${asText(d.variableSymbol)}` : ''}.` : '',
-        `Smluvní pokuta za prodlení se splátkou činí ${formatCsNumber(d.latePenaltyRate ?? '0,05')} % z dlužné částky za každý den prodlení, nejméně však ${formatCsNumber(d.minLatePenalty ?? 100)} Kč.`,
+        d.minLatePenalty && Number(d.minLatePenalty) > 0
+          ? `Smluvní pokuta za prodlení se splátkou činí ${formatCsNumber(d.latePenaltyRate ?? '0,05')} % z dlužné částky za každý den prodlení, nejméně však ${formatCsNumber(d.minLatePenalty)} Kč; minimální výše pokuty byla sjednána s ohledem na výši zápůjčky a strany ji považují za přiměřenou.`
+          : `Smluvní pokuta za prodlení se splátkou činí ${formatCsNumber(d.latePenaltyRate ?? '0,05')} % z dlužné částky za každý den prodlení.`,
         // Pravidla pro ztrátu výhody splátek a předčasné splacení jsou systematicky
         // v premium sekci VII; v Basic tieru je zde shrnutí ve zjednodušené formě.
         ...(hasPremiumClauses ? [] : [
@@ -1010,7 +1016,9 @@ function buildLoanContractSections(d: StoredContractData): ContractSection[] {
       body: [
         'Smlouva se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů.',
         disputeClause(d),
-        'Smlouva je vyhotovena ve dvou stejnopisech; každá strana obdrží jedno.',
+        hasGuarantor
+          ? 'Smlouva je vyhotovena ve třech stejnopisech; věřitel, vydlužitel i ručitel obdrží po jednom stejnopisu.'
+          : 'Smlouva je vyhotovena ve dvou stejnopisech; věřitel a vydlužitel obdrží po jednom stejnopisu.',
         'Změny a doplnění smlouvy jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků.',
         'Neplatnost jednotlivého ustanovení smlouvy nemá vliv na platnost ostatních ustanovení.',
         'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. o zpracování osobních údajů. Osobní údaje uvedené v této smlouvě jsou zpracovávány výhradně za účelem uzavření, plnění a případného vymáhání práv z tohoto smluvního vztahu. Správcem osobních údajů je každá ze smluvních stran v rozsahu údajů, které zpracovává o druhé straně. Každá ze stran má právo na přístup ke svým osobním údajům, jejich opravu nebo výmaz, jakož i právo podat stížnost u Úřadu pro ochranu osobních údajů (www.uoou.cz). Osobní údaje budou uchovávány po dobu trvání smluvního vztahu a dále po dobu stanovenou právními předpisy, zpravidla 10 let od jeho skončení.',
