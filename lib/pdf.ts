@@ -731,7 +731,7 @@ function drawLoanSchedule(
   doc.setFont('Roboto', 'normal');
   doc.setFontSize(8);
   doc.setTextColor(META_R, META_G, META_B);
-  doc.text('Orientační rozpad pravidelných splátek dle čl. IV smlouvy o zápůjčce', MARGIN, y);
+  doc.text('Splátkový kalendář při řádném a včasném splácení dle čl. IV smlouvy o zápůjčce', MARGIN, y);
   y += 8;
 
   // Souhrn
@@ -821,7 +821,7 @@ function drawLoanSchedule(
   doc.setFont('Roboto', 'normal');
   doc.setFontSize(7.5);
   doc.setTextColor(META_R, META_G, META_B);
-  const note = 'Poznámka: kalendář je orientační. Úrok je počítán z nesplaceného zůstatku jistiny měsíční sazbou (roční sazba / 12). Každá splátka se započítává nejprve na úroky (§ 1932 OZ). Výše poslední splátky je upravena tak, aby přesně odpovídala skutečně nesplacené jistině a úroku ke dni její splatnosti. Skutečný úrok závisí na datu úhrady; je-li úhrada provedena před řádným termínem splatnosti, snižuje se přirostlý úrok.';
+  const note = 'Poznámka: Splátkový kalendář vychází z předpokladu, že splátky budou hrazeny řádně a včas podle sjednaných termínů. Při prodlení, předčasném splacení nebo mimořádných splátkách se výše úroků a zůstatku přepočítá podle skutečného data úhrady. Úrok je počítán z nesplaceného zůstatku jistiny měsíční sazbou (roční sazba / 12); každá splátka se započítává nejprve na úroky (§ 1932 OZ). Výše poslední splátky je upravena tak, aby přesně odpovídala skutečně nesplacené jistině a úroku ke dni její splatnosti.';
   const noteLines = doc.splitTextToSize(note, contentWidth);
   doc.text(noteLines, MARGIN, y);
 
@@ -1759,12 +1759,17 @@ function drawSignatureSection(
   doc.line(MARGIN, y, pageWidth - MARGIN, y);
   y += 5;
 
-  // Closing note — plain, concise
+  // Closing note — plain, concise; rozlišujeme přítomnost ručitele.
   doc.setFont('Roboto', 'normal');
   doc.setFontSize(7.5);
   doc.setTextColor(META_R, META_G, META_B);
-  const note =
-    'Smlouva nabývá platnosti podpisem obou smluvních stran. Je-li podepisována elektronicky, platí přiměřeně nařízení EU č. 910/2014 (eIDAS).';
+  const baseNote = extraLabel
+    ? 'Smlouva nabývá platnosti podpisem věřitele a vydlužitele. Ručitelský závazek vzniká podpisem ručitele.'
+    : 'Smlouva nabývá platnosti podpisem věřitele a vydlužitele.';
+  // Specializace pro neúvěrové smlouvy: použít obecnější formulaci s rolemi z labelLeft/labelRight.
+  const isLoanLike = /věřitel/i.test(labelLeft) || /věřitel/i.test(labelRight);
+  const note = (isLoanLike ? baseNote : 'Smlouva nabývá platnosti podpisem obou smluvních stran.')
+    + ' Je-li podepisována elektronicky, platí přiměřeně nařízení EU č. 910/2014 (eIDAS).';
   const noteLines = doc.splitTextToSize(note, pageWidth - MARGIN * 2);
   doc.text(noteLines, MARGIN, y);
   doc.setTextColor(0);
@@ -1834,7 +1839,7 @@ function getSigningInstructions(contractType: ContractType): string[] {
       '6. ZVLÁŠTNÍ POKYNY PRO SMLOUVU O ZÁPŮJČCE',
       '• U hotovostního předání sepište potvrzení (stvrzenku) — vzor je přílohou.',
       '• U úročené zápůjčky se splátkami uchovávejte všechny doklady o úhradách.',
-      '• U částek nad 270 000 Kč nelze předat hotovost (zák. č. 254/2004 Sb.); použijte převod.',
+      '• U částek přesahujících 270 000 Kč nesmí být platba provedena v hotovosti (zák. č. 254/2004 Sb.); použijte bezhotovostní převod.',
       '• Pokud je sjednán ručitel, musí samostatně podepsat prohlášení (čl. VI + 3. podpisový blok).',
       '• Zápůjčka NENÍ určena pro podnikatelské poskytování úvěrů (režim § 257/2016 Sb.).',
     ],
@@ -1976,7 +1981,7 @@ function getPreSignChecklist(contractType: ContractType): string[] {
       '☐  Úroková sazba a způsob splácení úroku jsou jednoznačné',
       '☐  U úročené zápůjčky je přiložen splátkový kalendář',
       '☐  U hotovostního předání je připravena stvrzenka (příloha č. 1)',
-      '☐  U hotovosti nad 270 000 Kč zvažte bezhotovostní převod (zákon č. 254/2004 Sb.)',
+      '☐  U částek přesahujících 270 000 Kč nesmí být platba provedena v hotovosti; použijte bezhotovostní převod (zákon č. 254/2004 Sb.)',
       '☐  Pokud je sjednán ručitel, je uveden v čl. VI a podepisuje samostatný blok',
       '☐  Datum splatnosti a první splátky odpovídá dohodě',
       '☐  Sankce za prodlení (% za den + minimum) jsou přiměřené',
