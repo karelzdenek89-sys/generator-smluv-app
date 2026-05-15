@@ -267,7 +267,16 @@ function buildGiftContractSections(d: StoredContractData): ContractSection[] {
         giftSubject(),
         'Obdarovaný dar přijímá.',
         d.giftType === 'money'
-          ? `Peněžní prostředky budou ${d.transferMethod === 'transfer' ? (d.bankAccount ? `převedeny bankovním převodem na účet obdarovaného č. ${asText(d.bankAccount)}` : 'převedeny bankovním převodem na účet obdarovaného sdělený při podpisu smlouvy') : 'předány v hotovosti při podpisu smlouvy'}.`
+          ? (() => {
+              if (d.transferMethod === 'transfer') {
+                return d.bankAccount
+                  ? `Peněžní prostředky budou převedeny bankovním převodem na účet obdarovaného č. ${asText(d.bankAccount)}.`
+                  : 'Peněžní prostředky budou převedeny bankovním převodem na účet obdarovaného sdělený při podpisu smlouvy.';
+              }
+              return Number(d.amount ?? 0) > 270000
+                ? 'Pozor: peněžitý dar přesahuje 270 000 Kč; předání v hotovosti je vyloučeno (§ 4 zák. č. 254/2004 Sb., o omezení plateb v hotovosti). Strany jsou povinny zvolit bezhotovostní převod.'
+                : 'Peněžní prostředky budou předány v hotovosti při podpisu smlouvy. Strany berou na vědomí, že předání v hotovosti nad 270 000 Kč je dle zák. č. 254/2004 Sb. vyloučeno.';
+            })()
           : '',
       ].filter(Boolean) as string[],
     },
@@ -288,7 +297,7 @@ function buildGiftContractSections(d: StoredContractData): ContractSection[] {
       body: [
         'Tato smlouva se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů.',
         disputeClause(d),
-        'Smlouva je vyhotovena ve dvou stejnopisech; každá smluvní strana obdrží jedno.',
+        'Smlouva je vyhotovena ve dvou stejnopisech; dárce a obdarovaný obdrží po jednom stejnopisu.',
         'Jakékoli změny nebo doplnění smlouvy jsou platné pouze ve formě písemného, číslovaného a podepsaného dodatku.',
         'Neplatnost jednotlivého ustanovení smlouvy nemá vliv na platnost ostatních ustanovení.',
         d.giftType === 'property'
@@ -441,7 +450,7 @@ function buildWorkContractSections(d: StoredContractData): ContractSection[] {
         'Tato smlouva se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů.',
         disputeClause(d),
         'Tato smlouva představuje úplné ujednání o provedení díla a nahrazuje veškerá předchozí ujednání a přísliby týkající se rozsahu díla, ceny a harmonogramu.',
-        'Smlouva je vyhotovena ve dvou stejnopisech; každá smluvní strana obdrží jedno.',
+        'Smlouva je vyhotovena ve dvou stejnopisech; objednatel a zhotovitel obdrží po jednom stejnopisu.',
         'Změny smlouvy jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků.',
         'Neplatnost jednotlivého ustanovení smlouvy nemá vliv na platnost ostatních ustanovení.',
         'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. o zpracování osobních údajů. Osobní údaje uvedené v této smlouvě jsou zpracovávány výhradně za účelem uzavření, plnění a případného vymáhání práv z tohoto smluvního vztahu. Správcem osobních údajů je každá ze smluvních stran v rozsahu údajů, které zpracovává o druhé straně. Každá ze stran má právo na přístup ke svým osobním údajům, jejich opravu nebo výmaz, jakož i právo podat stížnost u Úřadu pro ochranu osobních údajů (www.uoou.cz). Osobní údaje budou uchovávány po dobu trvání smluvního vztahu a dále po dobu stanovenou právními předpisy, zpravidla 10 let od jeho skončení.',
@@ -463,9 +472,15 @@ function buildWorkContractSections(d: StoredContractData): ContractSection[] {
 // ─────────────────────────────────────────────
 function buildCarContractSections(d: StoredContractData): ContractSection[] {
   const { hasPremiumClauses } = resolveTierFeatures(d);
+  // Limit hotovosti dle zák. č. 254/2004 Sb. — při ceně přesahující 270 000 Kč
+  // se hotovostní úhrada nesmí použít; PDF na to upozorní v textu.
+  const cashOverLimit = d.paymentMethod === 'cash'
+    && Number(d.priceAmount ?? d.purchasePrice ?? 0) > 270000;
   const paymentText =
     d.paymentMethod === 'cash'
-      ? `V hotovosti při podpisu smlouvy, nejpozději však při fyzickém předání vozidla.`
+      ? cashOverLimit
+        ? 'Pozor: kupní cena přesahuje 270 000 Kč; platba v hotovosti je vyloučena (§ 4 zák. č. 254/2004 Sb., o omezení plateb v hotovosti). Strany jsou povinny zvolit bezhotovostní úhradu před podpisem smlouvy.'
+        : 'V hotovosti při podpisu smlouvy, nejpozději však při fyzickém předání vozidla. Strany berou na vědomí, že platba v hotovosti nad 270 000 Kč je dle zák. č. 254/2004 Sb. vyloučena.'
       : d.bankAccount
         ? `Bankovním převodem na účet prodávajícího č. ${asText(d.bankAccount)}${d.variableSymbol ? `, VS: ${asText(d.variableSymbol)}` : ''}, do ${asText(d.paymentDueDays, '3')} pracovních dnů od podpisu smlouvy.`
         : `Bankovním převodem na účet prodávajícího, jehož údaje budou kupujícímu sděleny při podpisu smlouvy, do ${asText(d.paymentDueDays, '3')} pracovních dnů od podpisu.`;
@@ -637,7 +652,7 @@ function buildCarContractSections(d: StoredContractData): ContractSection[] {
       body: [
         'Tato smlouva se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů.',
         disputeClause(d),
-        'Smlouva je vyhotovena ve dvou stejnopisech; každá smluvní strana obdrží jedno.',
+        'Smlouva je vyhotovena ve dvou stejnopisech; prodávající a kupující obdrží po jednom stejnopisu.',
         'Veškeré změny smlouvy jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků.',
         'Neplatnost jednotlivého ustanovení smlouvy nemá vliv na platnost ostatních ustanovení.',
         'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. o zpracování osobních údajů. Osobní údaje uvedené v této smlouvě jsou zpracovávány výhradně za účelem uzavření, plnění a případného vymáhání práv z tohoto smluvního vztahu. Správcem osobních údajů je každá ze smluvních stran v rozsahu údajů, které zpracovává o druhé straně. Každá ze stran má právo na přístup ke svým osobním údajům, jejich opravu nebo výmaz, jakož i právo podat stížnost u Úřadu pro ochranu osobních údajů (www.uoou.cz). Osobní údaje budou uchovávány po dobu trvání smluvního vztahu a dále po dobu stanovenou právními předpisy, zpravidla 10 let od jeho skončení.',
@@ -852,7 +867,7 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
       body: [
         'Tato smlouva se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů, a zákonem č. 67/2013 Sb. (vyúčtování služeb).',
         disputeClause(d),
-        'Smlouva je vyhotovena ve dvou stejnopisech; každá smluvní strana obdrží jedno.',
+        'Smlouva je vyhotovena ve dvou stejnopisech; pronajímatel a nájemce obdrží po jednom stejnopisu.',
         'Změny jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků.',
         'Neplatnost jednotlivého ustanovení smlouvy nemá vliv na platnost ostatních ustanovení.',
         'Přílohou č. 1 smlouvy je předávací protokol, který tvoří nedílnou součást smlouvy.',
@@ -1169,7 +1184,7 @@ function buildNdaContractSections(d: StoredContractData): ContractSection[] {
         'Smlouva se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů.',
         disputeClause(d),
         'Tato smlouva představuje úplné ujednání o jejím předmětu a nahrazuje veškerá předchozí ujednání, prohlášení a přísliby týkající se důvěrných informací a jejich ochrany.',
-        'Smlouva je vyhotovena ve dvou stejnopisech; každá strana obdrží jedno.',
+        'Smlouva je vyhotovena ve dvou stejnopisech; Poskytující strana a Přijímající strana obdrží po jednom stejnopisu.',
         'Změny jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků.',
         'Je-li jakékoli ustanovení smlouvy neplatné nebo nevymahatelné, ostatní ustanovení zůstávají v plné platnosti a účinnosti.',
         'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. o zpracování osobních údajů. Osobní údaje uvedené v této smlouvě jsou zpracovávány výhradně za účelem uzavření, plnění a případného vymáhání práv z tohoto smluvního vztahu. Správcem osobních údajů je každá ze smluvních stran v rozsahu údajů, které zpracovává o druhé straně. Každá ze stran má právo na přístup ke svým osobním údajům, jejich opravu nebo výmaz, jakož i právo podat stížnost u Úřadu pro ochranu osobních údajů (www.uoou.cz). Osobní údaje budou uchovávány po dobu trvání smluvního vztahu a dále po dobu stanovenou právními předpisy, zpravidla 10 let od jeho skončení.',
@@ -1223,7 +1238,9 @@ function buildGeneralSaleContractSections(d: StoredContractData): ContractSectio
         : `Kupní cena bude uhrazena bankovním převodem na účet prodávajícího sdělený při podpisu smlouvy, a to do ${asText(d.paymentDays, '5')} pracovních dnů od podpisu smlouvy.`
       : d.paymentMethod === 'escrow'
       ? `Kupní cena bude uhrazena prostřednictvím advokátní/notářské úschovy. Podmínky úschovy jsou sjednány samostatně.`
-      : `Kupní cena bude uhrazena v hotovosti při podpisu smlouvy / předání předmětu prodeje.`;
+      : Number(d.price ?? 0) > 270000
+      ? `Pozor: kupní cena přesahuje 270 000 Kč; platba v hotovosti je vyloučena (§ 4 zák. č. 254/2004 Sb., o omezení plateb v hotovosti). Strany jsou povinny zvolit bezhotovostní úhradu.`
+      : `Kupní cena bude uhrazena v hotovosti při podpisu smlouvy / předání předmětu prodeje. Strany berou na vědomí, že platba v hotovosti nad 270 000 Kč je dle zák. č. 254/2004 Sb. vyloučena.`;
 
   const warrantyClause = d.warrantyMonths && Number(d.warrantyMonths) > 0
     ? `Prodávající poskytuje kupujícímu smluvní záruku za jakost v délce ${asText(d.warrantyMonths)} měsíců ode dne předání, přesahující zákonný rámec. V záruční době odpovídá prodávající za to, že předmět prodeje bude mít vlastnosti sjednané touto smlouvou.`
@@ -1318,7 +1335,7 @@ function buildGeneralSaleContractSections(d: StoredContractData): ContractSectio
       body: [
         'Smlouva se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů.',
         disputeClause(d),
-        'Smlouva je vyhotovena ve dvou stejnopisech; každá smluvní strana obdrží jedno.',
+        'Smlouva je vyhotovena ve dvou stejnopisech; prodávající a kupující obdrží po jednom stejnopisu.',
         'Jakékoli změny jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků.',
         'Neplatnost jednotlivého ustanovení smlouvy nemá vliv na platnost ostatních ustanovení.',
         'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. o zpracování osobních údajů. Osobní údaje uvedené v této smlouvě jsou zpracovávány výhradně za účelem uzavření, plnění a případného vymáhání práv z tohoto smluvního vztahu. Správcem osobních údajů je každá ze smluvních stran v rozsahu údajů, které zpracovává o druhé straně. Každá ze stran má právo na přístup ke svým osobním údajům, jejich opravu nebo výmaz, jakož i právo podat stížnost u Úřadu pro ochranu osobních údajů (www.uoou.cz). Osobní údaje budou uchovávány po dobu trvání smluvního vztahu a dále po dobu stanovenou právními předpisy, zpravidla 10 let od jeho skončení.',
@@ -1460,7 +1477,7 @@ function buildEmploymentContractSections(d: StoredContractData): ContractSection
         'Pracovní smlouva se řídí zákonem č. 262/2006 Sb., zákoník práce, ve znění pozdějších předpisů, a subsidiárně zákonem č. 89/2012 Sb., občanský zákoník.',
         'Zaměstnavatel je povinen uzavřít pracovní smlouvu před nástupem zaměstnance do práce (§ 34 odst. 3 ZP). Zaměstnanec nesmí nastoupit do práce, dokud nebyla smlouva podepsána.',
         disputeClause(d, true),
-        'Smlouva je vyhotovena ve dvou stejnopisech; zaměstnavatel i zaměstnanec obdrží po jednom vyhotovení (§ 37 ZP).',
+        'Smlouva je vyhotovena ve dvou stejnopisech; zaměstnavatel a zaměstnanec obdrží po jednom stejnopisu (§ 37 ZP).',
         'Změny pracovní smlouvy jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků (§ 564 OZ).',
         'Neplatnost jednotlivého ustanovení smlouvy nemá vliv na platnost ostatních ustanovení.',
         'Zpracování osobních údajů zaměstnance probíhá v souladu s nařízením EU 2016/679 (GDPR), zákonem č. 110/2019 Sb. a § 316 zákoníku práce. Osobní údaje jsou zpracovávány za účelem vzniku, trvání, změny a skončení pracovněprávního vztahu, plnění zákonných povinností zaměstnavatele (mzdy, pojistné, daně) a ochrany oprávněných zájmů zaměstnavatele. Zaměstnanec má právo na přístup ke svým osobním údajům, jejich opravu, výmaz nebo omezení zpracování v rozsahu stanoveném právními předpisy, a právo podat stížnost u ÚOOÚ (www.uoou.cz). Osobní údaje budou uchovávány po dobu pracovněprávního vztahu a dále po dobu stanovenou zákonem (zejm. zákon č. 582/1991 Sb., zákon č. 235/2004 Sb.).',
@@ -1578,7 +1595,7 @@ function buildDppContractSections(d: StoredContractData): ContractSection[] {
       body: [
         'Dohoda se řídí zákonem č. 262/2006 Sb., zákoník práce, ve znění pozdějších předpisů, a subsidiárně zákonem č. 89/2012 Sb., občanský zákoník.',
         disputeClause(d, true),
-        'Dohoda je vyhotovena ve dvou stejnopisech; každá strana obdrží jedno (§ 77 odst. 1 ZP).',
+        'Dohoda je vyhotovena ve dvou stejnopisech; zaměstnavatel a zaměstnanec obdrží po jednom stejnopisu (§ 77 odst. 1 ZP).',
         'Změny dohody jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků.',
         'Neplatnost jednotlivého ustanovení nemá vliv na platnost ostatních ustanovení dohody.',
         'Zpracování osobních údajů pracovníka probíhá v souladu s nařízením EU 2016/679 (GDPR), zákonem č. 110/2019 Sb. a § 316 zákoníku práce. Osobní údaje jsou zpracovávány za účelem uzavření a plnění dohody o provedení práce, plnění zákonných povinností zaměstnavatele (odvod daně, sociální a zdravotní pojistné) a ochrany oprávněných zájmů stran. Pracovník má právo na přístup ke svým osobním údajům, jejich opravu nebo výmaz, a právo podat stížnost u ÚOOÚ (www.uoou.cz).',
@@ -1726,7 +1743,7 @@ function buildServiceContractSections(d: StoredContractData): ContractSection[] 
         'Smlouva se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů.',
         disputeClause(d),
         'Tato smlouva představuje úplné ujednání o poskytování služeb, ceně, výstupech a IP režimu a nahrazuje veškerá předchozí ujednání a přísliby stran v tomto rozsahu.',
-        'Smlouva je vyhotovena ve dvou stejnopisech; každá strana obdrží jedno.',
+        'Smlouva je vyhotovena ve dvou stejnopisech; poskytovatel a objednatel obdrží po jednom stejnopisu.',
         'Změny jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků.',
         'Neplatnost jednotlivého ustanovení smlouvy nemá vliv na platnost ostatních ustanovení.',
         'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. o zpracování osobních údajů. Osobní údaje uvedené v této smlouvě jsou zpracovávány výhradně za účelem uzavření, plnění a případného vymáhání práv z tohoto smluvního vztahu. Správcem osobních údajů je každá ze smluvních stran v rozsahu údajů, které zpracovává o druhé straně. Každá ze stran má právo na přístup ke svým osobním údajům, jejich opravu nebo výmaz, jakož i právo podat stížnost u Úřadu pro ochranu osobních údajů (www.uoou.cz). Osobní údaje budou uchovávány po dobu trvání smluvního vztahu a dále po dobu stanovenou právními předpisy, zpravidla 10 let od jeho skončení.',
@@ -1879,7 +1896,7 @@ function buildSubleaseContractSections(d: StoredContractData): ContractSection[]
       body: [
         'Smlouva se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů.',
         disputeClause(d),
-        'Smlouva je vyhotovena ve dvou stejnopisech; každá smluvní strana obdrží jedno.',
+        'Smlouva je vyhotovena ve dvou stejnopisech; podnajímatel a podnájemce obdrží po jednom stejnopisu.',
         'Veškeré změny jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků.',
         'Neplatnost jednotlivého ustanovení smlouvy nemá vliv na platnost ostatních ustanovení.',
         'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. o zpracování osobních údajů. Osobní údaje uvedené v této smlouvě jsou zpracovávány výhradně za účelem uzavření, plnění a případného vymáhání práv z tohoto smluvního vztahu. Správcem osobních údajů je každá ze smluvních stran v rozsahu údajů, které zpracovává o druhé straně. Každá ze stran má právo na přístup ke svým osobním údajům, jejich opravu nebo výmaz, jakož i právo podat stížnost u Úřadu pro ochranu osobních údajů (www.uoou.cz). Osobní údaje budou uchovávány po dobu trvání smluvního vztahu a dále po dobu stanovenou právními předpisy, zpravidla 10 let od jeho skončení.',
@@ -2094,7 +2111,7 @@ function buildDebtAcknowledgmentSections(d: StoredContractData): ContractSection
       body: [
         'Tato listina se řídí právním řádem České republiky, zejména zákonem č. 89/2012 Sb., občanský zákoník, ve znění pozdějších předpisů.',
         disputeClause(d),
-        'Listina je vyhotovena ve dvou stejnopisech; každá strana obdrží jedno.',
+        'Listina je vyhotovena ve dvou stejnopisech; věřitel a dlužník obdrží po jednom stejnopisu.',
         'Tato listina je sama o sobě závazná a není podmíněna splněním žádné jiné podmínky. Dílčí plnění dluhu tuto listinu neruší a nemá vliv na platnost uznání zbývající části dluhu.',
         'Neplatnost jednotlivého ustanovení nemá vliv na platnost ostatních ustanovení listiny.',
         'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. o zpracování osobních údajů. Osobní údaje uvedené v této smlouvě jsou zpracovávány výhradně za účelem uzavření, plnění a případného vymáhání práv z tohoto smluvního vztahu. Správcem osobních údajů je každá ze smluvních stran v rozsahu údajů, které zpracovává o druhé straně. Každá ze stran má právo na přístup ke svým osobním údajům, jejich opravu nebo výmaz, jakož i právo podat stížnost u Úřadu pro ochranu osobních údajů (www.uoou.cz). Osobní údaje budou uchovávány po dobu trvání smluvního vztahu a dále po dobu stanovenou právními předpisy, zpravidla 10 let od jeho skončení.',
@@ -2221,7 +2238,7 @@ function buildCooperationContractSections(d: StoredContractData): ContractSectio
         // V premium režimu je řešení sporů již samostatně v IX. — zde by duplikovalo.
         ...(hasPremiumClauses ? [] : [disputeClause(d)]),
         'Tato smlouva představuje úplné ujednání o spolupráci, rozdělení výnosů, rozhodování a IP režimu a nahrazuje veškerá předchozí ujednání stran v tomto rozsahu.',
-        'Smlouva je vyhotovena ve dvou stejnopisech; každá strana obdrží jedno.',
+        'Smlouva je vyhotovena ve dvou stejnopisech; Strana A a Strana B obdrží po jednom stejnopisu.',
         'Veškeré změny jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků.',
         'Je-li jakékoli ustanovení smlouvy neplatné nebo nevymahatelné, ostatní ustanovení zůstávají v plné platnosti a účinnosti.',
         'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. o zpracování osobních údajů. Osobní údaje uvedené v této smlouvě jsou zpracovávány výhradně za účelem uzavření, plnění a případného vymáhání práv z tohoto smluvního vztahu. Správcem osobních údajů je každá ze smluvních stran v rozsahu údajů, které zpracovává o druhé straně. Každá ze stran má právo na přístup ke svým osobním údajům, jejich opravu nebo výmaz, jakož i právo podat stížnost u Úřadu pro ochranu osobních údajů (www.uoou.cz). Osobní údaje budou uchovávány po dobu trvání smluvního vztahu a dále po dobu stanovenou právními předpisy, zpravidla 10 let od jeho skončení.',
