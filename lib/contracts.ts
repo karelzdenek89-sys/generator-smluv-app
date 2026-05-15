@@ -1492,7 +1492,7 @@ function buildDppContractSections(d: StoredContractData): ContractSection[] {
       title: 'VII. DUŠEVNÍ VLASTNICTVÍ',
       body: [
         'Výsledky práce (díla, výtvory, software, texty, grafika, databáze apod.) vytvořené zaměstnancem v rámci plnění dohody jsou zaměstnaneckými díly ve smyslu § 58 zákona č. 121/2000 Sb., autorský zákon. Zaměstnavatel vykonává veškerá majetková autorská práva k těmto dílům ode dne jejich vzniku.',
-        'Zaměstnanec se zavazuje nevykonávat svá osobnostní autorská práva (§ 11 zákona č. 121/2000 Sb., autorský zákon) způsobem, který by zaměstnavateli bránil v řádném užití díla v rámci podnikatelské nebo provozní činnosti. Osobnostních autorských práv se autor nemůže platně vzdát.',
+        'Zaměstnanec uděluje zaměstnavateli souhlas k úpravám, zpracování, spojení s jiným dílem, zařazení do díla souborného a dalším změnám vytvořených výstupů v rozsahu potřebném pro jejich obvyklé užití zaměstnavatelem, není-li takový postup v rozporu s dobrými mravy nebo oprávněnými osobnostními právy autora (§ 11 zákona č. 121/2000 Sb., autorský zákon).',
         'Výše uvedené platí i pro zaměstnancem vyvinutý software, algoritmy a technická řešení; zaměstnanec je povinen zdrojové kódy, dokumentaci a know-how předat zaměstnavateli nejpozději ke dni skončení dohody.',
       ],
     },
@@ -1534,10 +1534,12 @@ function buildDppContractSections(d: StoredContractData): ContractSection[] {
       ].filter(Boolean) as string[],
     },
     {
-      title: 'III. DOBA TRVÁNÍ A TERMÍN SPLNĚNÍ',
+      title: 'III. DOBA TRVÁNÍ A UKONČENÍ DOHODY',
       body: [
-        `Dohoda se uzavírá na dobu: ${d.durationType === 'fixed' ? `určitou od ${formatDate(d.startDate, 'neuvedeno')} do ${formatDate(d.endDate, 'neuvedeno')}` : 'neurčitou (lze ukončit dohodou nebo výpovědí s 15denní výpovědní dobou)'}`,
+        `Dohoda se uzavírá na dobu: ${d.durationType === 'fixed' && d.startDate && d.endDate ? `určitou od ${formatDate(d.startDate)} do ${formatDate(d.endDate)}` : 'neurčitou'}`,
         d.deadline ? `Pracovní úkol musí být splněn nejpozději do: ${asText(d.deadline)}` : '',
+        'Dohodu lze ukončit písemnou dohodou smluvních stran. Není-li sjednáno jinak, může kterákoli ze stran dohodu vypovědět z jakéhokoli důvodu nebo bez uvedení důvodu s patnáctidenní výpovědní dobou, která začíná dnem doručení výpovědi druhé straně.',
+        'Dohoda dále zaniká způsoby stanovenými zákoníkem práce, zejména splněním sjednaného pracovního úkolu, uplynutím sjednané doby, dohodou stran nebo okamžitým zrušením z důvodů stanovených zákonem.',
       ].filter(Boolean) as string[],
     },
     {
@@ -1553,12 +1555,13 @@ function buildDppContractSections(d: StoredContractData): ContractSection[] {
       body: [
         'Zaměstnanec je povinen vykonávat sjednané práce osobně, řádně a v souladu s pokyny zaměstnavatele.',
         `Na dohodu o provedení práce se v základním rozsahu nevztahují ustanovení zákoníku práce o pracovní době, odstupném a dalších nárocích typických pro hlavní pracovní poměr (§ 77 odst. 2 ZP). ${DPP_VACATION_NOTE}`,
+        'Zaměstnavatel je povinen předem rozvrhnout pracovní dobu zaměstnance v písemném rozvrhu směn a seznámit s ním zaměstnance nejpozději 3 dny před začátkem směny nebo období, na které je pracovní doba rozvržena, pokud se strany písemně nedohodnou na jiné době seznámení.',
+        'Práce může být vykonávána v sídle zaměstnavatele, na sjednaném místě výkonu práce dle čl. II nebo vzdáleně z místa zvoleného zaměstnancem, pokud to povaha úkolu umožňuje a pokud zaměstnanec dodrží požadavky zaměstnavatele na ochranu důvěrných informací, bezpečnost dat a předávání výstupů.',
         d.toolsProvided === 'employer'
           ? 'Pracovní pomůcky, nástroje a vybavení nutné pro výkon práce zajišťuje zaměstnavatel.'
           : d.toolsProvided === 'employee'
           ? 'Zaměstnanec zajišťuje pracovní pomůcky, nástroje a vybavení na vlastní náklady; zaměstnavatel mu uhradí prokazatelně vynaložené náklady pouze tehdy, bylo-li to předem písemně dohodnuto.'
           : 'Pracovní pomůcky a vybavení potřebné pro výkon práce zajišťují strany dle vzájemné dohody.',
-        'Zaměstnanec není povinen práci osobně vykonávat na pracovišti zaměstnavatele, pokud není výslovně dohodnuto jinak.',
       ],
     },
     ...premiumContent,
@@ -1577,6 +1580,15 @@ function buildDppContractSections(d: StoredContractData): ContractSection[] {
   ];
 
   sections.push({ title: `${hasPremiumClauses ? 'X' : 'VII'}. PODPISY`, body: [] });
+
+  // Professional+ příloha: předávací a akceptační protokol výstupů.
+  if (hasPremiumClauses) {
+    sections.push({
+      title: 'PŘÍLOHA Č. 1 – PŘEDÁVACÍ A AKCEPTAČNÍ PROTOKOL VÝSTUPŮ',
+      body: [],
+    });
+  }
+
   return sections;
 }
 
