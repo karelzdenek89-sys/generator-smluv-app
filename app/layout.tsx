@@ -143,7 +143,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#060912" />
         <meta
           name="seznam-wmt"
-          content="xQaMUlE4cn6PrnQkBxclmM5kzajCqWAD"
+          content="zK8529Fk6nDwr8TdyohYqF2LU7YpQVCf"
         />
         <script
           type="application/ld+json"
