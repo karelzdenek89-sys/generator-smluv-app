@@ -36,6 +36,7 @@ export default function Footer() {
               </div>
               <div className="flex flex-col gap-2 text-slate-500">
                 <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
+                <Link href="/slovnik" className="hover:text-white transition-colors">Slovník pojmů</Link>
                 <Link href="/faq" className="hover:text-white transition-colors">Časté dotazy</Link>
                 <Link href="/o-projektu" className="hover:text-white transition-colors">O projektu</Link>
                 <Link href="/kontakt" className="hover:text-white transition-colors">Kontakt</Link>
