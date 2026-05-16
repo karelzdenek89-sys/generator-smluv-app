@@ -26,6 +26,13 @@ export type ArticleSchemaInput = {
   dateModified?: string;
   image?: string;
   authorName?: string;
+  /**
+   * Volitelný „job title" autora. Pro SmlouvaHned VŽDY platí:
+   * autorovo postavení je „Zakladatel a provozovatel SmlouvaHned"
+   * — NIKOLI advokát, právník, koncipient. Karel Zdeněk není advokát.
+   */
+  authorJobTitle?: string;
+  authorUrl?: string;
 };
 
 /**
@@ -47,9 +54,21 @@ export function articleSchema({
   dateModified,
   image,
   authorName,
+  authorJobTitle,
+  authorUrl,
 }: ArticleSchemaInput) {
   const author = authorName
-    ? { '@type': 'Person' as const, name: authorName }
+    ? {
+        '@type': 'Person' as const,
+        name: authorName,
+        ...(authorJobTitle ? { jobTitle: authorJobTitle } : {}),
+        ...(authorUrl ? { url: authorUrl } : {}),
+        worksFor: {
+          '@type': 'Organization',
+          name: 'SmlouvaHned',
+          url: BASE_URL,
+        },
+      }
     : { '@type': 'Organization' as const, name: 'SmlouvaHned', url: BASE_URL };
 
   return {

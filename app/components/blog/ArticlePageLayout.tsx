@@ -4,7 +4,9 @@ import TrackedLink from '@/app/components/analytics/TrackedLink';
 import ArticleInlineCta from './ArticleInlineCta';
 import ArticleTrustBox from './ArticleTrustBox';
 import RelatedArticles from './RelatedArticles';
+import InformativeDisclaimer from './InformativeDisclaimer';
 import { articleSchema, breadcrumbSchema, jsonLdScript } from '@/lib/schemas';
+import { CONTENT_AUTHOR } from '@/lib/author';
 
 type TocItem = {
   href: string;
@@ -28,6 +30,9 @@ type ArticlePageLayoutProps = {
   readTime: string;
   dateTime: string;
   dateLabel: string;
+  /** ISO datum poslední revize obsahu — zobrazuje se „Aktualizováno". */
+  dateModified?: string;
+  dateModifiedLabel?: string;
   breadcrumbLabel: string;
   title: string;
   intro: string;
@@ -48,6 +53,8 @@ export default function ArticlePageLayout({
   readTime,
   dateTime,
   dateLabel,
+  dateModified,
+  dateModifiedLabel,
   breadcrumbLabel,
   title,
   intro,
@@ -65,6 +72,10 @@ export default function ArticlePageLayout({
     description: intro,
     url: articleUrl,
     datePublished: dateTime,
+    dateModified: dateModified ?? dateTime,
+    authorName: CONTENT_AUTHOR.name,
+    authorJobTitle: CONTENT_AUTHOR.jobTitle,
+    authorUrl: CONTENT_AUTHOR.url,
   });
   const crumbs = breadcrumbSchema([
     { label: 'SmlouvaHned', href: '/' },
@@ -102,11 +113,43 @@ export default function ArticlePageLayout({
           <time className="text-xs text-slate-600" dateTime={dateTime}>
             {dateLabel}
           </time>
+          {dateModified && dateModifiedLabel ? (
+            <time
+              className="text-xs text-slate-600"
+              dateTime={dateModified}
+              title="Datum poslední revize obsahu"
+            >
+              · Aktualizováno {dateModifiedLabel}
+            </time>
+          ) : null}
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
           {title}
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-400">{intro}</p>
+
+        <div
+          className="mt-5 flex items-center gap-3 text-xs text-slate-500"
+          itemScope
+          itemType="https://schema.org/Person"
+        >
+          <span
+            aria-hidden="true"
+            className="flex h-7 w-7 items-center justify-center rounded-full border border-amber-500/30 bg-amber-500/10 text-[11px] font-bold text-amber-400"
+          >
+            KZ
+          </span>
+          <div>
+            <span className="text-slate-400">Autor: </span>
+            <span itemProp="name" className="font-semibold text-slate-300">
+              {CONTENT_AUTHOR.name}
+            </span>
+            <span className="mx-2 text-slate-700">·</span>
+            <span itemProp="jobTitle" className="text-slate-500">
+              {CONTENT_AUTHOR.jobTitle}
+            </span>
+          </div>
+        </div>
 
         {primaryAction ? (
           <div className="mt-7">
@@ -134,6 +177,8 @@ export default function ArticlePageLayout({
           ))}
         </ol>
       </nav>
+
+      <InformativeDisclaimer className="mb-10" />
 
       {children}
 
