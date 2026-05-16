@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     canonical: 'https://smlouvahned.cz/blog/vypoved-z-najmu-bytu-2026',
   },
   openGraph: {
-    title: 'Výpověď z nájmu bytu: výpovědní lhůty, důvody a forma',
+    title: 'Výpověď z nájmu bytu 2026: výpovědní lhůty, důvody a forma',
     description:
       'Přehled pravidel pro ukončení nájmu bytu výpovědí — zákonné důvody, lhůty a písemná forma.',
     url: 'https://smlouvahned.cz/blog/vypoved-z-najmu-bytu-2026',

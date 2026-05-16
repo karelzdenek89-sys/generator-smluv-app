@@ -4,9 +4,9 @@ import ProductSchemas from '@/app/components/seo/ProductSchemas';
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
 export const metadata: Metadata = {
-  title: 'Vytvořit kupní smlouvu na věc — formulář | SmlouvaHned',
+  title: 'Kupní smlouva na věc 2026 — formulář online | SmlouvaHned',
   description:
-    'Formulář pro kupní smlouvu na movitou věc. Strany, popis věci, cena, předání — PDF ihned. Od 99 Kč.',
+    'Kupní smlouva na movitou věc 2026 dle § 2079 OZ. Strany, popis věci, cena, předání — PDF ihned. Od 99 Kč.',
   keywords: [
     'vytvořit kupní smlouvu',
     'kupní smlouva formulář',
@@ -15,8 +15,8 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: `${BASE_URL}/kupni` },
   openGraph: {
-    title: 'Vytvořit kupní smlouvu na věc — formulář | SmlouvaHned',
-    description: 'Kupní smlouva na movitou věc v PDF ihned. Od 99 Kč.',
+    title: 'Kupní smlouva na věc 2026 — formulář online | SmlouvaHned',
+    description: 'Kupní smlouva na movitou věc 2026 v PDF ihned. Od 99 Kč.',
     url: `${BASE_URL}/kupni`,
     type: 'website',
   },

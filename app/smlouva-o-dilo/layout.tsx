@@ -4,9 +4,9 @@ import ProductSchemas from '@/app/components/seo/ProductSchemas';
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
 export const metadata: Metadata = {
-  title: 'Vytvořit smlouvu o dílo — formulář online | SmlouvaHned',
+  title: 'Smlouva o dílo 2026 — formulář online | SmlouvaHned',
   description:
-    'Formulář pro smlouvu o dílo dle § 2586 OZ. Dílo, cena, termín a sankce — PDF ihned. Od 99 Kč.',
+    'Smlouva o dílo 2026 dle § 2586 OZ. Dílo, cena, termín a sankce — PDF ihned ke stažení. Od 99 Kč.',
   keywords: [
     'vytvořit smlouvu o dílo',
     'smlouva o dílo formulář',
@@ -15,8 +15,8 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: `${BASE_URL}/smlouva-o-dilo` },
   openGraph: {
-    title: 'Vytvořit smlouvu o dílo — formulář online | SmlouvaHned',
-    description: 'Smlouva o dílo s termíny, cenou a sankcemi. PDF ihned. Od 99 Kč.',
+    title: 'Smlouva o dílo 2026 — formulář online | SmlouvaHned',
+    description: 'Smlouva o dílo 2026 s termíny, cenou a sankcemi. PDF ihned. Od 99 Kč.',
     url: `${BASE_URL}/smlouva-o-dilo`,
     type: 'website',
   },

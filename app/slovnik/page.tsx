@@ -12,14 +12,14 @@ import InformativeDisclaimer from '@/app/components/blog/InformativeDisclaimer';
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
 export const metadata: Metadata = {
-  title: 'Slovník právních pojmů | SmlouvaHned',
+  title: 'Slovník právních pojmů 2026 | SmlouvaHned',
   description:
-    'Informativní slovník pojmů ze smluvního práva — nájem, koupě, dílo, DPP, plná moc a další. Stručná vysvětlení s odkazy na § občanského zákoníku a zákoníku práce.',
+    'Slovník právních pojmů 2026 — nájem, koupě, dílo, DPP, plná moc a další. Stručná vysvětlení s odkazy na § občanského zákoníku a zákoníku práce, aktuální pro rok 2026.',
   alternates: { canonical: `${BASE_URL}/slovnik` },
   openGraph: {
-    title: 'Slovník právních pojmů | SmlouvaHned',
+    title: 'Slovník právních pojmů 2026 | SmlouvaHned',
     description:
-      'Informativní slovník pojmů ze smluvního práva s odkazy na § OZ a ZP. Aktuální k 2026.',
+      'Slovník pojmů ze smluvního práva s odkazy na § OZ a ZP. Aktuální k roku 2026.',
     url: `${BASE_URL}/slovnik`,
     type: 'website',
   },
@@ -98,13 +98,13 @@ export default function SlovnikPage() {
             Slovník
           </div>
           <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-white mb-4">
-            Slovník právních pojmů
+            Slovník právních pojmů 2026
           </h1>
           <p className="text-slate-400 text-base leading-relaxed max-w-2xl">
             Stručné vysvětlení {GLOSSARY.length}+ pojmů, se kterými se setkáte ve smlouvách —
             nájem, koupě, dílo, dohody o pracích konaných mimo pracovní poměr, plná moc a další.
             U každého termínu uvádíme citaci platného právního předpisu a odkaz na související
-            průvodce.
+            průvodce. Obsah je aktuální pro rok 2026.
           </p>
         </header>
 

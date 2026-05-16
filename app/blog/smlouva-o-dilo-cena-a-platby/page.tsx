@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     canonical: 'https://smlouvahned.cz/blog/smlouva-o-dilo-cena-a-platby',
   },
   openGraph: {
-    title: 'Smlouva o dílo: jak zachytit cenu, zálohy a platební podmínky',
+    title: 'Smlouva o dílo 2026: jak zachytit cenu, zálohy a platební podmínky',
     description:
       'Pevná cena nebo rozpočet, zálohy a platební milníky, vícepráce. Praktický přehled toho, co ve smlouvě o dílo sjednat ohledně plateb.',
     url: 'https://smlouvahned.cz/blog/smlouva-o-dilo-cena-a-platby',
