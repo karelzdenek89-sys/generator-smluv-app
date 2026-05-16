@@ -17,51 +17,9 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  headline: 'Jak správně předat byt nájemci 2026: Co zachytit v protokolu a na co nezapomenout',
-  description:
-    'Praktický přehled předání bytu nájemci. Co uvést do předávacího protokolu, jak pracovat s odečty měřidel, klíči, vybavením a kdy si připravit i potvrzení o převzetí kauce.',
-  url: 'https://smlouvahned.cz/blog/predani-bytu-najemci-2026',
-  datePublished: '2026-04-06',
-  dateModified: '2026-04-06',
-  author: { '@type': 'Organization', name: 'SmlouvaHned', url: 'https://smlouvahned.cz' },
-  publisher: {
-    '@type': 'Organization',
-    name: 'SmlouvaHned',
-    logo: { '@type': 'ImageObject', url: 'https://smlouvahned.cz/og-image.png' },
-  },
-  image: 'https://smlouvahned.cz/og-image.png',
-  inLanguage: 'cs',
-};
-
-const breadcrumbLd = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
-    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://smlouvahned.cz/blog' },
-    {
-      '@type': 'ListItem',
-      position: 3,
-      name: 'Jak správně předat byt nájemci 2026',
-      item: 'https://smlouvahned.cz/blog/predani-bytu-najemci-2026',
-    },
-  ],
-};
-
 export default function PredaniBytuNajemci2026Page() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd).replace(/</g, '\\u003c') }}
-      />
 
       <ArticlePageLayout
         category="Bydlení"

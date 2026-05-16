@@ -18,51 +18,9 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  headline: 'DPP nebo DPČ: přehled rozdílů, limitů a kdy co použít v roce 2026',
-  description:
-    'Praktický přehled rozdílů mezi dohodou o provedení práce a dohodou o pracovní činnosti. Limity hodin, odvody, písemná forma a kdy která dohoda dává smysl.',
-  url: 'https://smlouvahned.cz/blog/dpp-dpc-porovnani-2026',
-  datePublished: '2026-04-15',
-  dateModified: '2026-04-15',
-  author: { '@type': 'Organization', name: 'SmlouvaHned', url: 'https://smlouvahned.cz' },
-  publisher: {
-    '@type': 'Organization',
-    name: 'SmlouvaHned',
-    logo: { '@type': 'ImageObject', url: 'https://smlouvahned.cz/og-image.png' },
-  },
-  image: 'https://smlouvahned.cz/og-image.png',
-  inLanguage: 'cs',
-};
-
-const breadcrumbLd = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
-    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://smlouvahned.cz/blog' },
-    {
-      '@type': 'ListItem',
-      position: 3,
-      name: 'DPP nebo DPČ: přehled rozdílů 2026',
-      item: 'https://smlouvahned.cz/blog/dpp-dpc-porovnani-2026',
-    },
-  ],
-};
-
 export default function DppDpcPorovnani2026Page() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd).replace(/</g, '\\u003c') }}
-      />
 
       <ArticlePageLayout
         category="Práce a zaměstnání"

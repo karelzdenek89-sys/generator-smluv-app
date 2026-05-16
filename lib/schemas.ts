@@ -27,6 +27,18 @@ export type ArticleSchemaInput = {
   image?: string;
 };
 
+/**
+ * Doplní časové pásmo k ISO date řetězci (např. „2026-04-15") na
+ * „2026-04-15T08:00:00+02:00" — Google Rich Results doporučuje
+ * datetime s timezone, jinak hlásí non-critical warning.
+ */
+function toIsoDateTimeCz(date: string): string {
+  if (!date) return date;
+  // Pokud už obsahuje T (datetime), vrátit beze změny.
+  if (date.includes('T')) return date;
+  return `${date}T08:00:00+02:00`;
+}
+
 export function articleSchema({
   title,
   description,
@@ -50,8 +62,8 @@ export function articleSchema({
         ? image
         : `${BASE_URL}${image}`
       : `${BASE_URL}/og-image.png`,
-    datePublished,
-    dateModified: dateModified || datePublished,
+    datePublished: toIsoDateTimeCz(datePublished),
+    dateModified: toIsoDateTimeCz(dateModified || datePublished),
     author: {
       '@type': 'Organization',
       name: 'SmlouvaHned',

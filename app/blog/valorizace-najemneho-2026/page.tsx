@@ -17,51 +17,9 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  headline: 'Valorizace nájemného 2026: Jak ji správně sjednat ve smlouvě',
-  description:
-    'Inflační doložka, valorizace nájemného a roční zvyšování nájmu v roce 2026. Co zákon umožňuje, jak klauzuli formulovat a jakým chybám se vyhnout.',
-  url: 'https://smlouvahned.cz/blog/valorizace-najemneho-2026',
-  datePublished: '2026-05-02',
-  dateModified: '2026-05-02',
-  author: { '@type': 'Organization', name: 'SmlouvaHned', url: 'https://smlouvahned.cz' },
-  publisher: {
-    '@type': 'Organization',
-    name: 'SmlouvaHned',
-    logo: { '@type': 'ImageObject', url: 'https://smlouvahned.cz/og-image.png' },
-  },
-  image: 'https://smlouvahned.cz/og-image.png',
-  inLanguage: 'cs',
-};
-
-const breadcrumbLd = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
-    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://smlouvahned.cz/blog' },
-    {
-      '@type': 'ListItem',
-      position: 3,
-      name: 'Valorizace nájemného 2026',
-      item: 'https://smlouvahned.cz/blog/valorizace-najemneho-2026',
-    },
-  ],
-};
-
 export default function ValorizaceNajemneho2026Page() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd).replace(/</g, '\\u003c') }}
-      />
 
       <ArticlePageLayout
         category="Bydlení"
