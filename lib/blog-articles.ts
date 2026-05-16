@@ -34,7 +34,7 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   },
   {
     slug: 'vypoved-z-najmu-bytu-2026',
-    title: 'Výpověď z nájmu bytu: výpovědní lhůty, důvody a forma',
+    title: 'Výpověď z nájmu bytu 2026: výpovědní lhůty, důvody a forma',
     excerpt:
       'Kdy a jak může pronajímatel nebo nájemce ukončit nájem výpovědí. Zákonné důvody, tříměsíční lhůta a co mít v nájemní smlouvě předem ošetřeno.',
     category: 'Bydlení',
@@ -45,7 +45,7 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   },
   {
     slug: 'dpp-dpc-porovnani-2026',
-    title: 'DPP nebo DPČ: přehled rozdílů, limitů a kdy co použít',
+    title: 'DPP nebo DPČ 2026: přehled rozdílů, limitů a kdy co použít',
     excerpt:
       'Srovnání dohody o provedení práce a dohody o pracovní činnosti — hodinové limity, limity pro odvody a kdy která dohoda dává smysl.',
     category: 'Práce a zaměstnání',
@@ -56,7 +56,7 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   },
   {
     slug: 'smlouva-o-dilo-cena-a-platby',
-    title: 'Smlouva o dílo: jak zachytit cenu, zálohy a platební podmínky',
+    title: 'Smlouva o dílo 2026: jak zachytit cenu, zálohy a platební podmínky',
     excerpt:
       'Pevná cena nebo položkový rozpočet, zálohy, platební milníky a vícepráce. Co ve smlouvě o dílo písemně sjednat, aby platby fungovaly v praxi.',
     category: 'Podnikání a zakázky',
@@ -67,7 +67,7 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   },
   {
     slug: 'predani-bytu-najemci-2026',
-    title: 'Jak správně předat byt nájemci: Co zachytit v protokolu a na co nezapomenout',
+    title: 'Předání bytu nájemci 2026: Co zachytit v protokolu a na co nezapomenout',
     excerpt:
       'Přehledný postup pro předání bytu nájemci, odečty měřidel, stav vybavení, klíče a praktické body, které je vhodné písemně potvrdit.',
     category: 'Bydlení',
@@ -89,7 +89,7 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   },
   {
     slug: 'chyby-pri-pronajmu-bytu-2026',
-    title: 'Nejčastější chyby při pronájmu bytu: Na co si dát pozor před podpisem',
+    title: 'Nejčastější chyby při pronájmu bytu 2026: Na co si dát pozor před podpisem',
     excerpt:
       'Shrnutí nejčastějších pochybení při pronájmu bytu, od nejasné kauce po chybějící předávací protokol a nepřesná pravidla užívání.',
     category: 'Bydlení',
@@ -111,7 +111,7 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   },
   {
     slug: 'predani-vozidla-kupujicimu-2026',
-    title: 'Jak správně předat vozidlo kupujícímu: Protokol, klíče, doklady a stav vozu',
+    title: 'Předání vozidla kupujícímu 2026: Protokol, klíče, doklady a stav vozu',
     excerpt:
       'Praktický přehled toho, co si při předání vozidla písemně potvrdit a jak předejít sporům o stav vozu nebo rozsah předaných dokladů.',
     category: 'Vozidla',
@@ -122,7 +122,7 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   },
   {
     slug: 'doklady-pri-prodeji-auta-2026',
-    title: 'Jaké doklady předat při prodeji auta: Přehled pro běžný převod vozidla',
+    title: 'Jaké doklady předat při prodeji auta 2026: Přehled pro běžný převod vozidla',
     excerpt:
       'Co bývá vhodné předat spolu s vozidlem, jak pracovat s technickými doklady a jak předejít nedorozumění po podpisu smlouvy.',
     category: 'Vozidla',
@@ -232,7 +232,7 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   },
   {
     slug: 'kupni-smlouva-movita-vec',
-    title: 'Kupní smlouva na movitou věc: Kdy stačí obecná kupní smlouva a co má obsahovat',
+    title: 'Kupní smlouva na movitou věc 2026: Kdy stačí obecná kupní smlouva a co má obsahovat',
     excerpt:
       'Jak pracovat s obecnou kupní smlouvou na movitou věc, kdy stačí jednoduché řešení a kdy je vhodné jít do detailnější úpravy.',
     category: 'Osobní a majetkové',

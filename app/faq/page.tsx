@@ -5,13 +5,13 @@ import { breadcrumbSchema, faqPageSchema, jsonLdScript, type FaqItem } from '@/l
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
 export const metadata: Metadata = {
-  title: 'Časté dotazy (FAQ) | SmlouvaHned',
+  title: 'Časté dotazy (FAQ) 2026 | SmlouvaHned',
   description:
-    'Odpovědi na časté otázky o tvorbě smluv online, platnosti dokumentů, cenách, GDPR a vrácení peněz.',
+    'Odpovědi na časté otázky o tvorbě smluv online v roce 2026 — platnost dokumentů, ceny, GDPR, vrácení peněz.',
   alternates: { canonical: `${BASE_URL}/faq` },
   openGraph: {
-    title: 'Časté dotazy (FAQ) | SmlouvaHned',
-    description: 'Odpovědi na časté otázky o smluvních dokumentech, cenách a GDPR.',
+    title: 'Časté dotazy (FAQ) 2026 | SmlouvaHned',
+    description: 'Odpovědi na časté otázky o smluvních dokumentech 2026, cenách a GDPR.',
     url: `${BASE_URL}/faq`,
     type: 'website',
   },
@@ -159,10 +159,11 @@ export default function FaqPage() {
             FAQ
           </div>
           <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-white mb-4">
-            Časté dotazy
+            Časté dotazy 2026
           </h1>
           <p className="text-slate-400 text-base leading-relaxed max-w-2xl">
             Odpovědi na nejčastější otázky o SmlouvaHned — ceny, právní platnost, technika i GDPR.
+            Obsah je aktuální pro rok 2026.
             Pokud nenajdete odpověď, napište na{' '}
             <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:text-amber-300 underline underline-offset-2">
               info@smlouvahned.cz
