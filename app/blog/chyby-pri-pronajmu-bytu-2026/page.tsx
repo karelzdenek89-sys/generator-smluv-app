@@ -27,6 +27,7 @@ export default function ChybyPriPronajmuBytu2026Page() {
         dateTime="2026-04-06"
         dateLabel="6. dubna 2026"
         breadcrumbLabel="Nejčastější chyby při pronájmu bytu 2026"
+        slug="chyby-pri-pronajmu-bytu-2026"
         title="Nejčastější chyby při pronájmu bytu: Na co si dát pozor před podpisem"
         intro="Většina problémů při pronájmu nevzniká kvůli jedné velké chybě, ale kvůli několika drobným nepřesnostem. Nejasná pravidla užívání, chybějící protokol nebo špatně zachycená kauce pak komplikují celý nájemní vztah."
         toc={[

@@ -3,6 +3,8 @@ import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 import RelatedContracts from '@/app/components/RelatedContracts';
+import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
+import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
 export const metadata: Metadata = {
   title: 'Kupní smlouva na věc 2026: Co musí obsahovat a nejčastější chyby',
@@ -55,6 +57,7 @@ const breadcrumbLd = {
 export default function KupniSmlouvaMovitaVecPage() {
   return (
     <article className="mx-auto max-w-3xl px-6 py-12">
+      <BlogArticleSchemas slug="kupni-smlouva-movita-vec" />
 
       {/* Breadcrumb */}
       <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">
@@ -338,6 +341,7 @@ export default function KupniSmlouvaMovitaVecPage() {
         </div>
       </div>
       <RelatedContracts currentHref="/blog/kupni-smlouva-movita-vec" cluster="auto" />
+      <RelatedArticles currentSlug="kupni-smlouva-movita-vec" />
     </article>
   );
 }

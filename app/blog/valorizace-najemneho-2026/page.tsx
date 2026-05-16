@@ -27,6 +27,7 @@ export default function ValorizaceNajemneho2026Page() {
         dateTime="2026-05-02"
         dateLabel="2. května 2026"
         breadcrumbLabel="Valorizace nájemného 2026"
+        slug="valorizace-najemneho-2026"
         title="Valorizace nájemného 2026: Jak ji správně sjednat ve smlouvě"
         intro="Po několika letech zvýšené inflace se valorizační doložka stala v nájemních smlouvách standardem. V roce 2026 ji řeší skoro každý pronajímatel — ať už sjednává novou smlouvu, nebo se chystá poprvé zvýšit nájem u běžící smlouvy. Tento průvodce shrnuje, co zákon umožňuje, jak doložku formulovat a kde dělají strany nejčastější chyby."
         toc={[

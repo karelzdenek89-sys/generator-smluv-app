@@ -27,6 +27,7 @@ export default function DokladyPriProdejiAuta2026Page() {
         dateTime="2026-04-06"
         dateLabel="6. dubna 2026"
         breadcrumbLabel="Jaké doklady předat při prodeji auta 2026"
+        slug="doklady-pri-prodeji-auta-2026"
         title="Jaké doklady předat při prodeji auta: Přehled pro běžný převod vozidla"
         intro="Při prodeji auta nejde jen o podpis kupní smlouvy. V praxi je důležité, aby obě strany měly jasno i v tom, jaké doklady a podklady byly při převodu skutečně předány."
         toc={[

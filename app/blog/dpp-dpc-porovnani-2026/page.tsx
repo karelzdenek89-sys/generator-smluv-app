@@ -28,6 +28,7 @@ export default function DppDpcPorovnani2026Page() {
         dateTime="2026-04-15"
         dateLabel="15. dubna 2026"
         breadcrumbLabel="DPP nebo DPČ: rozdíly 2026"
+        slug="dpp-dpc-porovnani-2026"
         title="DPP nebo DPČ: přehled rozdílů, limitů a kdy co použít v roce 2026"
         intro="Dohoda o provedení práce a dohoda o pracovní činnosti jsou dva různé smluvní typy s odlišnými limity, povinnostmi a vhodným použitím. Rozdíl není jen v hodinových stropech — liší se i v podmínkách pro odvody a v tom, pro jaké typy spolupráce se hodí."
         toc={[

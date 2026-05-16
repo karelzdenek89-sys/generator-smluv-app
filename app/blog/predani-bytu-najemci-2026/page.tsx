@@ -27,6 +27,7 @@ export default function PredaniBytuNajemci2026Page() {
         dateTime="2026-04-06"
         dateLabel="6. dubna 2026"
         breadcrumbLabel="Předání bytu nájemci 2026"
+        slug="predani-bytu-najemci-2026"
         title="Jak správně předat byt nájemci: Co zachytit v protokolu a na co nezapomenout"
         intro="Při podpisu nájemní smlouvy bývá pozornost soustředěná hlavně na výši nájemného a kauci. Samotné předání bytu ale rozhoduje o tom, jestli později vzniknou spory o stav nemovitosti, měřidla, klíče nebo vybavení."
         toc={[

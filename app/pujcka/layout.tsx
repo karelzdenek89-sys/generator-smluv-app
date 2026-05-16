@@ -1,42 +1,35 @@
 import type { Metadata } from 'next';
+import ProductSchemas from '@/app/components/seo/ProductSchemas';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
 export const metadata: Metadata = {
   title: 'Smlouva o zápůjčce (půjčka) online 2026 | SmlouvaHned',
-  description: 'Sestavte smlouvu o zápůjčce peněz online. Splátky, úroky, zajištění — vše zachyceno v PDF. Od 99 Kč.',
-  keywords: ['smlouva o zápůjčce', 'půjčka smlouva vzor 2026', 'smlouva o půjčce peněz', 'zápůjčka smlouva online'],
+  description:
+    'Smlouva o zápůjčce peněz online. Splátky, úroky, zajištění — vše zachyceno v PDF. Od 99 Kč.',
+  keywords: [
+    'smlouva o zápůjčce',
+    'půjčka smlouva vzor 2026',
+    'smlouva o půjčce peněz',
+    'zápůjčka smlouva online',
+  ],
   alternates: { canonical: `${BASE_URL}/pujcka` },
   openGraph: {
     title: 'Smlouva o zápůjčce (půjčka) online 2026 | SmlouvaHned',
-    description: 'Sestavte smlouvu o zápůjčce peněz online. Splátky, úroky, zajištění — vše zachyceno v PDF. Od 99 Kč.',
+    description: 'Zápůjčka peněz se splátkami a úroky. PDF ihned. Od 99 Kč.',
     url: `${BASE_URL}/pujcka`,
     type: 'website',
-  },
-};
-
-const softwareSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'SoftwareApplication',
-  name: 'Smlouva o zápůjčce — formulář online',
-  applicationCategory: 'BusinessApplication',
-  operatingSystem: 'Web',
-  url: 'https://smlouvahned.cz/pujcka',
-  inLanguage: 'cs',
-  offers: {
-    '@type': 'AggregateOffer',
-    lowPrice: '99',
-    highPrice: '199',
-    priceCurrency: 'CZK',
   },
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema).replace(/</g, '\\u003c') }}
+      <ProductSchemas
+        appName="Smlouva o zápůjčce — formulář online"
+        slug="/pujcka"
+        description="Online generátor smlouvy o zápůjčce dle § 2390 OZ. Jistina, úrok, splátky, zajištění."
+        breadcrumbLabel="Smlouva o zápůjčce"
       />
       {children}
     </>

@@ -27,6 +27,7 @@ export default function KaucePronajemBytu2026Page() {
         dateTime="2026-04-06"
         dateLabel="6. dubna 2026"
         breadcrumbLabel="Kauce při pronájmu bytu 2026"
+        slug="kauce-pronajem-bytu-2026"
         title="Kauce při pronájmu bytu: Jak ji správně sjednat a potvrdit"
         intro="Kauce, správně jistota, patří mezi nejčastější body nájemní smlouvy. Nejasně sjednaná jistota ale vede k častým sporům: kdy byla uhrazena, v jaké výši, za jakých podmínek se vrací a co z ní lze započíst."
         toc={[

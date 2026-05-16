@@ -28,6 +28,7 @@ export default function SmlouvaODiloCenaAPlatbyPage() {
         dateTime="2026-04-15"
         dateLabel="15. dubna 2026"
         breadcrumbLabel="Smlouva o dílo: cena a platby"
+        slug="smlouva-o-dilo-cena-a-platby"
         title="Smlouva o dílo: jak zachytit cenu, zálohy a platební podmínky"
         intro="Cena je ve smlouvě o dílo jedním z nejdůležitějších a zároveň nejčastěji nepřesně sjednaných bodů. Zákon nabízí několik způsobů, jak cenu určit — a způsob, který si strany zvolí, výrazně ovlivňuje to, co se stane při zdražení, změně rozsahu nebo překročení odhadovaných nákladů."
         toc={[

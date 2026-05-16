@@ -19,8 +19,11 @@ const organizationSchema = {
   '@type': 'AboutPage',
   name: 'O projektu SmlouvaHned.cz',
   url: 'https://smlouvahned.cz/o-projektu',
+  inLanguage: 'cs',
   description:
     'Informace o provozovateli, metodice tvorby šablon a povaze softwarového nástroje SmlouvaHned.cz.',
+  datePublished: '2024-01-01T08:00:00+01:00',
+  dateModified: '2026-01-01T08:00:00+01:00',
   mainEntity: {
     '@type': 'Organization',
     name: 'SmlouvaHned',

@@ -27,6 +27,7 @@ export default function PredaniVozidlaKupujicimu2026Page() {
         dateTime="2026-04-06"
         dateLabel="6. dubna 2026"
         breadcrumbLabel="Předání vozidla kupujícímu 2026"
+        slug="predani-vozidla-kupujicimu-2026"
         title="Jak správně předat vozidlo kupujícímu: Protokol, klíče, doklady a stav vozu"
         intro="Kupní smlouva na vozidlo řeší právní základ převodu. Samotné předání auta ale bývá stejně důležité. Právě v tomto okamžiku se potvrzuje stav vozu, počet klíčů, předané doklady i příslušenství."
         toc={[
