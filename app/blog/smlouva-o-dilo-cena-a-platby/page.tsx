@@ -18,51 +18,9 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  headline: 'Smlouva o dílo: jak zachytit cenu, zálohy a platební podmínky',
-  description:
-    'Pevná cena nebo položkový rozpočet, zálohy, platební milníky a vícepráce. Co ve smlouvě o dílo písemně sjednat, aby platební podmínky fungovaly v praxi.',
-  url: 'https://smlouvahned.cz/blog/smlouva-o-dilo-cena-a-platby',
-  datePublished: '2026-04-15',
-  dateModified: '2026-04-15',
-  author: { '@type': 'Organization', name: 'SmlouvaHned', url: 'https://smlouvahned.cz' },
-  publisher: {
-    '@type': 'Organization',
-    name: 'SmlouvaHned',
-    logo: { '@type': 'ImageObject', url: 'https://smlouvahned.cz/og-image.png' },
-  },
-  image: 'https://smlouvahned.cz/og-image.png',
-  inLanguage: 'cs',
-};
-
-const breadcrumbLd = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
-    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://smlouvahned.cz/blog' },
-    {
-      '@type': 'ListItem',
-      position: 3,
-      name: 'Smlouva o dílo: cena a platby',
-      item: 'https://smlouvahned.cz/blog/smlouva-o-dilo-cena-a-platby',
-    },
-  ],
-};
-
 export default function SmlouvaODiloCenaAPlatbyPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd).replace(/</g, '\\u003c') }}
-      />
 
       <ArticlePageLayout
         category="Podnikání a zakázky"
