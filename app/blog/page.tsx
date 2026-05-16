@@ -1,17 +1,59 @@
 import type { Metadata } from 'next';
 import TrackedLink from '@/app/components/analytics/TrackedLink';
 import { BLOG_ARTICLES, BLOG_CLUSTERS } from '@/lib/blog-articles';
+import { breadcrumbSchema, jsonLdScript } from '@/lib/schemas';
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
 export const metadata: Metadata = {
   title: 'Blog | Právní průvodce 2026',
   description:
     'Praktické průvodce ke smlouvám a běžným právním situacím. Obecně informační obsah aktuální pro legislativu 2026.',
-  alternates: { canonical: 'https://smlouvahned.cz/blog' },
+  alternates: { canonical: `${BASE_URL}/blog` },
+  openGraph: {
+    title: 'Blog | SmlouvaHned — Právní průvodce 2026',
+    description: 'Praktické průvodce ke smlouvám a běžným právním situacím dle legislativy 2026.',
+    url: `${BASE_URL}/blog`,
+    type: 'website',
+  },
 };
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Blog | SmlouvaHned',
+  url: `${BASE_URL}/blog`,
+  inLanguage: 'cs',
+  description: 'Praktické průvodce ke smluvním dokumentům a běžným právním situacím (legislativa 2026).',
+  isPartOf: { '@type': 'WebSite', url: BASE_URL, name: 'SmlouvaHned' },
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: BLOG_ARTICLES.length,
+    itemListElement: BLOG_ARTICLES.map((a, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      url: `${BASE_URL}${a.href}`,
+      name: a.title,
+    })),
+  },
+};
+
+const blogBreadcrumb = breadcrumbSchema([
+  { label: 'SmlouvaHned', href: '/' },
+  { label: 'Blog', href: '/blog' },
+]);
 
 export default function BlogIndexPage() {
   return (
     <div className="blog-listing mx-auto max-w-5xl px-6 py-12">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(collectionSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(blogBreadcrumb) }}
+      />
       <div className="max-w-3xl">
         <div className="site-kicker">Právní průvodce</div>
         <h1 className="site-heading-lg mt-4 text-[#f2e7c8]">

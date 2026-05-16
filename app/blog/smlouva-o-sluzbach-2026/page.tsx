@@ -3,6 +3,8 @@ import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 import RelatedContracts from '@/app/components/RelatedContracts';
+import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
+import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
 export const metadata: Metadata = {
   title: 'Smlouva o poskytování služeb 2026: Vzor, náležitosti a jak se chránit',
@@ -56,6 +58,7 @@ const breadcrumbLd = {
 export default function SmlouvaOSluzbach2026Page() {
   return (
     <article className="mx-auto max-w-3xl px-6 py-12">
+      <BlogArticleSchemas slug="smlouva-o-sluzbach-2026" />
 
       {/* Breadcrumb */}
       <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">
@@ -350,6 +353,7 @@ export default function SmlouvaOSluzbach2026Page() {
         </div>
       </div>
       <RelatedContracts currentHref="/blog/smlouva-o-sluzbach-2026" cluster="prace" />
+      <RelatedArticles currentSlug="smlouva-o-sluzbach-2026" />
     </article>
   );
 }

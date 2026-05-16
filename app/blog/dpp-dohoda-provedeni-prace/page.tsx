@@ -3,6 +3,8 @@ import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 import RelatedContracts from '@/app/components/RelatedContracts';
+import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
+import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
 export const metadata: Metadata = {
   title: 'DPP dohoda o provedení práce 2026: Limity, odvody a jak ji správně napsat',
@@ -56,6 +58,7 @@ const breadcrumbLd = {
 export default function DppPage() {
   return (
     <article className="mx-auto max-w-3xl px-6 py-12">
+      <BlogArticleSchemas slug="dpp-dohoda-provedeni-prace" />
 
       {/* Breadcrumb */}
       <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">
@@ -364,6 +367,7 @@ export default function DppPage() {
         </div>
       </div>
       <RelatedContracts currentHref="/blog/dpp-dohoda-provedeni-prace" cluster="prace" />
+      <RelatedArticles currentSlug="dpp-dohoda-provedeni-prace" />
     </article>
   );
 }

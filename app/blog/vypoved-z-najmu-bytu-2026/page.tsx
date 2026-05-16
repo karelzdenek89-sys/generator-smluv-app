@@ -28,6 +28,7 @@ export default function VypovedZNajmuBytu2026Page() {
         dateTime="2026-04-15"
         dateLabel="15. dubna 2026"
         breadcrumbLabel="Výpověď z nájmu bytu 2026"
+        slug="vypoved-z-najmu-bytu-2026"
         title="Výpověď z nájmu bytu: výpovědní lhůty, důvody a forma"
         intro="Ukončení nájmu výpovědí se řídí poměrně přesně danými pravidly — liší se podle toho, kdo výpověď dává, z jakého důvodu a jak je nastavena samotná smlouva. Tento článek shrnuje základní parametry, které jsou prakticky nejčastěji potřeba."
         toc={[

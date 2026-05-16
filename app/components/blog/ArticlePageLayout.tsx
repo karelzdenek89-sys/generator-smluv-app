@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import TrackedLink from '@/app/components/analytics/TrackedLink';
 import ArticleInlineCta from './ArticleInlineCta';
 import ArticleTrustBox from './ArticleTrustBox';
+import RelatedArticles from './RelatedArticles';
 import { articleSchema, breadcrumbSchema, jsonLdScript } from '@/lib/schemas';
 
 type TocItem = {
@@ -173,6 +174,8 @@ export default function ArticlePageLayout({
           ))}
         </div>
       </div>
+
+      {slug ? <RelatedArticles currentSlug={slug} /> : null}
     </article>
   );
 }

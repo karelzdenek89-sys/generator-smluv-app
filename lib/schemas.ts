@@ -25,6 +25,7 @@ export type ArticleSchemaInput = {
   datePublished: string;
   dateModified?: string;
   image?: string;
+  authorName?: string;
 };
 
 /**
@@ -34,7 +35,6 @@ export type ArticleSchemaInput = {
  */
 function toIsoDateTimeCz(date: string): string {
   if (!date) return date;
-  // Pokud už obsahuje T (datetime), vrátit beze změny.
   if (date.includes('T')) return date;
   return `${date}T08:00:00+02:00`;
 }
@@ -46,7 +46,12 @@ export function articleSchema({
   datePublished,
   dateModified,
   image,
+  authorName,
 }: ArticleSchemaInput) {
+  const author = authorName
+    ? { '@type': 'Person' as const, name: authorName }
+    : { '@type': 'Organization' as const, name: 'SmlouvaHned', url: BASE_URL };
+
   return {
     '@context': 'https://schema.org',
     '@type': 'Article',
@@ -64,11 +69,7 @@ export function articleSchema({
       : `${BASE_URL}/og-image.png`,
     datePublished: toIsoDateTimeCz(datePublished),
     dateModified: toIsoDateTimeCz(dateModified || datePublished),
-    author: {
-      '@type': 'Organization',
-      name: 'SmlouvaHned',
-      url: BASE_URL,
-    },
+    author,
     publisher: {
       '@type': 'Organization',
       name: 'SmlouvaHned',
@@ -76,8 +77,78 @@ export function articleSchema({
       logo: {
         '@type': 'ImageObject',
         url: `${BASE_URL}/og-image.png`,
+        width: 1200,
+        height: 630,
       },
     },
+  };
+}
+
+export type SoftwareApplicationSchemaInput = {
+  name: string;
+  slug: string;
+  description?: string;
+  /**
+   * Pokud false (default), použije se třístupňový pricing 99/199/299 Kč.
+   * Pokud true, jen 99/199 Kč (pro produkty bez tematického balíčku).
+   */
+  twoTierOnly?: boolean;
+};
+
+export function softwareApplicationSchema({
+  name,
+  slug,
+  description,
+  twoTierOnly = false,
+}: SoftwareApplicationSchemaInput) {
+  const url = `${BASE_URL}${slug}`;
+  const offers = twoTierOnly
+    ? [
+        { '@type': 'Offer', name: 'Základní dokument', price: '99', priceCurrency: 'CZK', url },
+        { '@type': 'Offer', name: 'Rozšířený dokument', price: '199', priceCurrency: 'CZK', url },
+      ]
+    : [
+        { '@type': 'Offer', name: 'Základní dokument', price: '99', priceCurrency: 'CZK', url },
+        { '@type': 'Offer', name: 'Rozšířený dokument', price: '199', priceCurrency: 'CZK', url },
+        { '@type': 'Offer', name: 'Tematický balíček', price: '299', priceCurrency: 'CZK', url },
+      ];
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name,
+    url,
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Web',
+    inLanguage: 'cs',
+    ...(description ? { description } : {}),
+    provider: {
+      '@type': 'Organization',
+      name: 'SmlouvaHned',
+      url: BASE_URL,
+    },
+    offers: {
+      '@type': 'AggregateOffer',
+      priceCurrency: 'CZK',
+      lowPrice: '99',
+      highPrice: twoTierOnly ? '199' : '299',
+      offerCount: String(offers.length),
+      offers,
+    },
+  };
+}
+
+export type FaqItem = { question: string; answer: string };
+
+export function faqPageSchema(items: FaqItem[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: { '@type': 'Answer', text: item.answer },
+    })),
   };
 }
 

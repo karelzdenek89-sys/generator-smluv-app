@@ -1,10 +1,12 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
+import ProductSchemas from '@/app/components/seo/ProductSchemas';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
 export const metadata: Metadata = {
   title: 'Nájemní smlouva online 2026 — vzor, formulář, PDF ihned | SmlouvaHned',
-  description: 'Nájemní smlouva na byt 2026 — vyplníte strany, nájemné, kauci a pravidla, dostanete kompletní PDF připravené k podpisu. Vzor dle aktuálního občanského zákoníku.',
+  description:
+    'Nájemní smlouva na byt 2026. Vyplníte strany, nájemné, kauci a pravidla — dostanete PDF dle občanského zákoníku.',
   keywords: [
     'nájemní smlouva 2026',
     'vzor nájemní smlouvy 2026',
@@ -18,38 +20,23 @@ export const metadata: Metadata = {
   alternates: { canonical: `${BASE_URL}/najem` },
   openGraph: {
     title: 'Nájemní smlouva online 2026 — vzor, formulář, PDF ihned | SmlouvaHned',
-    description: 'Nájemní smlouva na byt 2026 dle občanského zákoníku. Vyplníte formulář, dostanete PDF připravené k podpisu.',
+    description:
+      'Nájemní smlouva na byt 2026 dle občanského zákoníku. Formulář → PDF připravené k podpisu. Od 99 Kč.',
     url: `${BASE_URL}/najem`,
     type: 'website',
-  },
-};
-
-const softwareSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'SoftwareApplication',
-  name: 'Nájemní smlouva — formulář online',
-  applicationCategory: 'BusinessApplication',
-  operatingSystem: 'Web',
-  url: 'https://smlouvahned.cz/najem',
-  inLanguage: 'cs',
-  offers: {
-    '@type': 'AggregateOffer',
-    lowPrice: '99',
-    highPrice: '199',
-    priceCurrency: 'CZK',
   },
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema).replace(/</g, '\\u003c') }}
+      <ProductSchemas
+        appName="Nájemní smlouva — formulář online"
+        slug="/najem"
+        description="Online generátor nájemní smlouvy na byt dle § 2235 a násl. OZ. Kauce, nájemné, valorizace, předávací protokol."
+        breadcrumbLabel="Nájemní smlouva"
       />
       {children}
     </>
   );
 }
-
-

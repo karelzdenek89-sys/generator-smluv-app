@@ -3,6 +3,8 @@ import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 import RelatedContracts from '@/app/components/RelatedContracts';
+import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
+import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
 export const metadata: Metadata = {
   title: 'Darovací smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
@@ -57,6 +59,7 @@ const breadcrumbLd = {
 export default function DarovaciSmlouvaVzor2026Page() {
   return (
     <article className="mx-auto max-w-3xl px-6 py-12">
+      <BlogArticleSchemas slug="darovaci-smlouva-2026" />
 
       {/* Breadcrumb */}
       <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">
@@ -450,6 +453,7 @@ export default function DarovaciSmlouvaVzor2026Page() {
       </div>
 
       <RelatedContracts currentHref="/blog/darovaci-smlouva-2026" cluster="darovani" />
+      <RelatedArticles currentSlug="darovaci-smlouva-2026" />
     </article>
   );
 }

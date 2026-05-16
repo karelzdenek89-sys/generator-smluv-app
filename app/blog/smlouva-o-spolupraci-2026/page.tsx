@@ -3,6 +3,8 @@ import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 import RelatedContracts from '@/app/components/RelatedContracts';
+import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
+import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
 export const metadata: Metadata = {
   title: 'Smlouva o spolupráci OSVČ 2026: Co musí obsahovat a jak se chránit',
@@ -56,6 +58,7 @@ const breadcrumbLd = {
 export default function SmlouvaOSpolupraci2026Page() {
   return (
     <article className="mx-auto max-w-3xl px-6 py-12">
+      <BlogArticleSchemas slug="smlouva-o-spolupraci-2026" />
 
       {/* Breadcrumb */}
       <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">
@@ -354,6 +357,7 @@ export default function SmlouvaOSpolupraci2026Page() {
         </div>
       </div>
       <RelatedContracts currentHref="/blog/smlouva-o-spolupraci-2026" cluster="b2b" />
+      <RelatedArticles currentSlug="smlouva-o-spolupraci-2026" />
     </article>
   );
 }

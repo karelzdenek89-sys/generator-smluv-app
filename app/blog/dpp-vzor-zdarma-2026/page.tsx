@@ -3,6 +3,8 @@ import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 import RelatedContracts from '@/app/components/RelatedContracts';
+import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
+import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
 export const metadata: Metadata = {
   title: 'DPP vzor zdarma 2026 — co v něm chybí a proč na tom záleží',
@@ -57,6 +59,7 @@ const breadcrumbLd = {
 export default function DppVzorZdarmaPage() {
   return (
     <article className="mx-auto max-w-3xl px-6 py-12">
+      <BlogArticleSchemas slug="dpp-vzor-zdarma-2026" />
 
       {/* Breadcrumb */}
       <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">
@@ -322,6 +325,7 @@ export default function DppVzorZdarmaPage() {
         </div>
       </nav>
       <RelatedContracts currentHref="/blog/dpp-vzor-zdarma-2026" cluster="prace" />
+      <RelatedArticles currentSlug="dpp-vzor-zdarma-2026" />
     </article>
   );
 }
