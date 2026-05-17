@@ -72,16 +72,30 @@ function withContracts(c: Array<Omit<LandingContract, 'href'>>): LandingContract
 const EN: LandingContent = {
   htmlTitle: 'Czech contracts online — rental, employment, NDA in 5 minutes | SmlouvaHned',
   metaDescription:
-    'Generate Czech legal contracts online without a lawyer. Rental agreement, DPP work agreement, employment contract, NDA, power of attorney and more — fill the form, get a Czech PDF ready to sign. Made for foreigners living in the Czech Republic.',
+    'Generate Czech legal contracts online — rental agreement, lease, DPP work agreement, employment contract, NDA, power of attorney. Bilingual Czech + English PDF, no lawyer needed. For expats and foreigners in Prague, Brno and across the Czech Republic.',
   keywords: [
+    // Primary contract-type intent
     'rental agreement Czech Republic',
     'lease contract Prague',
-    'DPP agreement English',
-    'Czech employment contract template',
-    'NDA Czech Republic',
+    'lease contract Brno',
+    'Czech rental contract English',
     'flat rental contract Czechia',
     'sublease agreement Prague',
-    'power of attorney Czech Republic',
+    // Employment / work
+    'Czech employment contract template English',
+    'Czech work contract for foreigners',
+    'DPP agreement English template',
+    'dohoda o provedení práce English',
+    // Officialdom
+    'power of attorney Czech Republic English',
+    'power of attorney foreign police Czech',
+    'NDA Czech Republic English',
+    // Audience / cross-cutting
+    'Czech contract template English',
+    'Czech legal documents English',
+    'online contract generator Czech Republic',
+    'contracts for expats in Czech Republic',
+    'contracts for foreigners Prague Brno',
   ],
   ogTitle: 'Czech contracts online — rental, employment, NDA in 5 minutes',
   ogDescription:
@@ -153,14 +167,29 @@ const EN: LandingContent = {
 const UK: LandingContent = {
   htmlTitle: 'Чеські договори онлайн — оренда, працевлаштування, NDA за 5 хвилин | SmlouvaHned',
   metaDescription:
-    'Створюйте чеські юридичні договори онлайн без адвоката. Договір оренди, ДПП, трудовий договір, NDA, довіреність та інші — заповнюєте форму, отримуєте чеський PDF, готовий до підпису. Для іноземців, які живуть у Чехії.',
+    'Створюйте чеські юридичні договори онлайн — договір оренди, ДПП, трудовий договір, NDA, довіреність та інші. Двомовний PDF чеська + українська, без адвоката. Для українців у Празі, Брно та по всій Чехії.',
   keywords: [
+    // Primary contract-type intent
     'договір оренди Чехія',
+    'договір оренди Прага',
     'оренда квартири Прага',
+    'оренда квартири Чехія',
+    'оренда квартири Брно',
+    'договір найму українською',
+    // Employment / work
     'трудовий договір Чехія',
     'ДПП договір українською',
-    'NDA Чехія',
+    'робота в Чехії договір',
+    'дохода о проведення праці', // common Czech term users may search for
+    // Officialdom
     'довіреність Чехія',
+    'довіреність для іноземної поліції',
+    'NDA Чехія українською',
+    // Audience / cross-cutting
+    'юридичні документи Чехія українською',
+    'договір для українців у Чехії',
+    'договори для іноземців у Празі',
+    'генератор договорів Чехія українською',
   ],
   ogTitle: 'Чеські договори онлайн — оренда, праця, NDA за 5 хвилин',
   ogDescription:
@@ -232,14 +261,28 @@ const UK: LandingContent = {
 const RU: LandingContent = {
   htmlTitle: 'Чешские договоры онлайн — аренда, трудоустройство, NDA за 5 минут | SmlouvaHned',
   metaDescription:
-    'Создавайте чешские юридические договоры онлайн без адвоката. Договор аренды, ДПП, трудовой договор, NDA, доверенность и другие — заполните форму, получите чешский PDF, готовый к подписи. Для иностранцев, живущих в Чехии.',
+    'Создавайте чешские юридические договоры онлайн — договор найма, ДПП, трудовой договор, NDA, доверенность и другие. Двуязычный PDF чешский + русский, без адвоката. Для русскоговорящих в Праге, Брно и по всей Чехии.',
   keywords: [
+    // Primary contract-type intent
     'договор найма Чехия',
+    'договор найма Прага',
     'аренда квартиры Прага',
+    'аренда квартиры Чехия',
+    'аренда квартиры Брно',
+    'договор найма на русском',
+    // Employment / work
     'трудовой договор Чехия',
     'ДПП договор русский',
-    'NDA Чехия',
+    'работа в Чехии договор',
+    // Officialdom
     'доверенность Чехия',
+    'доверенность для иностранной полиции',
+    'NDA Чехия на русском',
+    // Audience / cross-cutting
+    'юридические документы Чехия на русском',
+    'договор для иностранцев в Чехии',
+    'договоры для русскоговорящих в Праге',
+    'генератор договоров Чехия',
   ],
   ogTitle: 'Чешские договоры онлайн — аренда, работа, NDA за 5 минут',
   ogDescription:
@@ -311,14 +354,29 @@ const RU: LandingContent = {
 const VN: LandingContent = {
   htmlTitle: 'Hợp đồng tiếng Séc trực tuyến — thuê nhà, lao động, NDA trong 5 phút | SmlouvaHned',
   metaDescription:
-    'Tạo hợp đồng pháp lý tiếng Séc trực tuyến mà không cần luật sư. Hợp đồng thuê nhà, DPP, hợp đồng lao động, NDA, giấy ủy quyền — điền biểu mẫu và nhận PDF tiếng Séc sẵn sàng để ký. Dành cho người nước ngoài sống tại Cộng hòa Séc.',
+    'Tạo hợp đồng pháp lý tiếng Séc trực tuyến — hợp đồng thuê nhà, DPP, hợp đồng lao động, NDA, giấy ủy quyền và các hợp đồng khác. PDF song ngữ tiếng Séc + tiếng Việt, không cần luật sư. Dành cho cộng đồng người Việt tại Praha, Brno và trên toàn Cộng hòa Séc.',
   keywords: [
+    // Primary contract-type intent
     'hợp đồng thuê nhà Séc',
     'hợp đồng thuê nhà Praha',
+    'thuê nhà Praha tiếng Việt',
+    'thuê nhà Brno tiếng Việt',
+    'hợp đồng cho thuê lại Séc',
+    // Employment / work
     'hợp đồng lao động Séc',
+    'hợp đồng lao động Praha',
     'DPP tiếng Việt',
-    'NDA Séc',
+    'dohoda o provedení práce tiếng Việt',
+    // Officialdom
     'giấy ủy quyền Séc',
+    'giấy ủy quyền cảnh sát người nước ngoài',
+    'NDA Séc tiếng Việt',
+    // Audience / cross-cutting
+    'giấy tờ pháp lý Séc tiếng Việt',
+    'hợp đồng cho người Việt tại Séc',
+    'cộng đồng người Việt tại Cộng hòa Séc',
+    'hợp đồng song ngữ Séc Việt',
+    'tạo hợp đồng Séc trực tuyến',
   ],
   ogTitle: 'Hợp đồng tiếng Séc trực tuyến — thuê nhà, lao động, NDA',
   ogDescription:
@@ -390,14 +448,29 @@ const VN: LandingContent = {
 const DE: LandingContent = {
   htmlTitle: 'Tschechische Verträge online — Mietvertrag, Arbeit, NDA in 5 Minuten | SmlouvaHned',
   metaDescription:
-    'Tschechische Rechtsverträge online ohne Anwalt erstellen. Mietvertrag, DPP, Arbeitsvertrag, NDA, Vollmacht und mehr — Formular ausfüllen, fertige tschechische PDF zum Unterschreiben erhalten. Für Ausländer in Tschechien.',
+    'Tschechische Rechtsverträge online erstellen — Mietvertrag, DPP, Arbeitsvertrag, NDA, Vollmacht und weitere. Zweisprachige PDF Tschechisch + Deutsch, ohne Anwalt. Für deutschsprachige Expats in Prag, Brünn und in ganz Tschechien.',
   keywords: [
+    // Primary contract-type intent
     'Mietvertrag Tschechien',
+    'Mietvertrag Prag',
     'Wohnung mieten Prag',
+    'Wohnung mieten Tschechien',
+    'Wohnung mieten Brünn',
+    'Untermietvertrag Tschechien',
+    // Employment / work
     'Arbeitsvertrag Tschechien',
+    'Arbeitsvertrag Prag',
     'DPP Vertrag Deutsch',
-    'NDA Tschechien',
+    'dohoda o provedení práce Deutsch',
+    // Officialdom
     'Vollmacht Tschechien',
+    'Vollmacht Ausländerpolizei',
+    'NDA Tschechien Deutsch',
+    // Audience / cross-cutting
+    'tschechische Verträge auf Deutsch',
+    'Mietvertrag für Ausländer Tschechien',
+    'Verträge für Expats Prag',
+    'tschechischer Vertragsgenerator Deutsch',
   ],
   ogTitle: 'Tschechische Verträge online — Mietvertrag, Arbeit, NDA in 5 Minuten',
   ogDescription:
