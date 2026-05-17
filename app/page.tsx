@@ -2,13 +2,24 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import ContractGridPremium from '@/app/components/ContractGridPremium';
+import LanguageSwitcher from '@/app/components/LanguageSwitcher';
 import { SEO_LANDINGS, CLUSTER_LABELS, type ClusterKey } from '@/lib/internal-links';
+import { FOREIGN_LOCALES, LOCALE_META } from '@/lib/i18n/locales';
+
+const HOMEPAGE_BASE_URL = 'https://smlouvahned.cz';
+const homepageLanguageAlternates: Record<string, string> = {
+  cs: HOMEPAGE_BASE_URL,
+  'x-default': HOMEPAGE_BASE_URL,
+};
+for (const l of FOREIGN_LOCALES) {
+  homepageLanguageAlternates[LOCALE_META[l].htmlLang] = `${HOMEPAGE_BASE_URL}/${LOCALE_META[l].segment}`;
+}
 
 export const metadata: Metadata = {
   title: { absolute: 'Generování smluv online 2026 — PDF ihned ke stažení | SmlouvaHned' },
   description:
     '14 typů smluv online dle OZ 2026 — nájemní, kupní, pracovní, NDA a další. Vyplníte formulář, PDF s citacemi § stahujete ihned. Od 99 Kč.',
-  alternates: { canonical: 'https://smlouvahned.cz' },
+  alternates: { canonical: HOMEPAGE_BASE_URL, languages: homepageLanguageAlternates },
   openGraph: {
     title: 'Generování smluv online 2026 — PDF ihned ke stažení | SmlouvaHned',
     description:
@@ -122,7 +133,7 @@ export default function Home() {
         </div>
 
         {/* Navbar */}
-        <nav className="relative z-10 mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-7 md:px-10">
+        <nav className="relative z-30 mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-7 md:px-10">
           <Link href="/" className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#c9a852]/40 bg-[#040c1a]/80 text-xs font-black text-[#c9a852]">
               SH
@@ -141,6 +152,7 @@ export default function Home() {
               className="rounded-lg border border-[#c9a852]/30 px-4 py-1.5 text-[#c9a852] transition-all duration-200 hover:border-[#c9a852]/60 hover:text-[#d4b86a]">
               Moje dokumenty
             </Link>
+            <LanguageSwitcher current="cs" variant="desktop" />
           </div>
         </nav>
 

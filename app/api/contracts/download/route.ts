@@ -3,6 +3,7 @@ import { redis } from '@/lib/redis';
 import { stripe } from '@/lib/stripe';
 import { getContractMeta, type StoredContractData } from '@/lib/contracts';
 import { renderContractPdf } from '@/lib/pdf';
+import { ALL_LOCALES, type Locale } from '@/lib/i18n/locales';
 
 export const runtime = 'nodejs';
 
@@ -154,7 +155,17 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const pdf = await renderContractPdf(fullData);
+    // `lang` is user-controlled (URL query). Whitelist against ALL_LOCALES;
+    // also accept BCP-47 `vi` as alias for the Vietnamese URL segment `vn`.
+    const rawLang = (req.nextUrl.searchParams.get('lang') || '').toLowerCase();
+    const langAlias: Record<string, string> = { vi: 'vn' };
+    const normalized = langAlias[rawLang] ?? rawLang;
+    const targetLocale: Locale | undefined =
+      normalized && (ALL_LOCALES as readonly string[]).includes(normalized)
+        ? (normalized as Locale)
+        : undefined;
+
+    const pdf = await renderContractPdf(fullData, { targetLocale });
     const meta = getContractMeta(fullData.contractType);
 
     // Počítač stažení + obnovit TTL (7 dní basic, 30 dní ostatní)

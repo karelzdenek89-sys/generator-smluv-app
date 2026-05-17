@@ -1,8 +1,11 @@
 ﻿import type { Metadata } from 'next';
 import { Inter, Playfair_Display } from 'next/font/google';
+import { headers } from 'next/headers';
+import { detectLocaleFromPath, FOREIGN_LOCALES, LOCALE_META } from '@/lib/i18n/locales';
 import './globals.css';
 import CookiesBanner from '@/app/components/CookiesBanner';
 import Footer from '@/app/components/Footer';
+import ForeignVisitorBanner from '@/app/components/ForeignVisitorBanner';
 
 const inter = Inter({
   subsets: ['latin', 'latin-ext'],
@@ -17,6 +20,17 @@ const playfair = Playfair_Display({
 });
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
+
+// hreflang alternates advertised on every page that doesn't override metadata.
+// Critical for the CZ homepage — without these Google can't discover the
+// /en /uk /ru /vn /de variants from the root URL.
+const rootLanguageAlternates: Record<string, string> = {
+  cs: BASE_URL,
+  'x-default': BASE_URL,
+};
+for (const l of FOREIGN_LOCALES) {
+  rootLanguageAlternates[LOCALE_META[l].htmlLang] = `${BASE_URL}/${LOCALE_META[l].segment}`;
+}
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
@@ -79,6 +93,7 @@ export const metadata: Metadata = {
   },
   alternates: {
     canonical: BASE_URL,
+    languages: rootLanguageAlternates,
   },
 };
 
@@ -128,11 +143,15 @@ const websiteSchema = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const hdrs = await headers();
+  const pathname = hdrs.get('x-pathname') ?? '';
+  const locale = detectLocaleFromPath(pathname);
+  const lang = LOCALE_META[locale].htmlLang;
   return (
-    <html lang="cs">
+    <html lang={lang}>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -158,6 +177,7 @@ export default function RootLayout({
         className={`${inter.variable} ${playfair.variable} antialiased bg-[#060912] text-[#d7dee8]`}
         style={{ colorScheme: 'dark' }}
       >
+        <ForeignVisitorBanner />
         {children}
         <Footer />
         <CookiesBanner />
