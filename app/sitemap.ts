@@ -1,16 +1,34 @@
 import type { MetadataRoute } from 'next';
+import { FOREIGN_LOCALES, LOCALE_META } from '@/lib/i18n/locales';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
+const localeAlternates: Record<string, string> = {
+  cs: `${BASE_URL}/`,
+  'x-default': `${BASE_URL}/`,
+};
+for (const l of FOREIGN_LOCALES) {
+  localeAlternates[LOCALE_META[l].htmlLang] = `${BASE_URL}/${LOCALE_META[l].segment}`;
+}
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
+  const foreignEntries: MetadataRoute.Sitemap = FOREIGN_LOCALES.map(l => ({
+    url: `${BASE_URL}/${LOCALE_META[l].segment}`,
+    lastModified: now,
+    changeFrequency: 'weekly' as const,
+    priority: 0.9,
+    alternates: { languages: localeAlternates },
+  }));
   return [
     {
       url: `${BASE_URL}/`,
       lastModified: now,
       changeFrequency: 'weekly',
       priority: 1.0,
+      alternates: { languages: localeAlternates },
     },
+    ...foreignEntries,
     {
       url: `${BASE_URL}/najem`,
       lastModified: now,

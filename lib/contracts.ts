@@ -32,9 +32,41 @@ export type StoredContractData = {
   [key: string]: unknown;
 };
 
+import { buildLeaseTranslationsBySection } from './contracts-i18n/lease';
+import { buildSubleaseTranslationsBySection } from './contracts-i18n/sublease';
+import { buildDppTranslationsBySection } from './contracts-i18n/dpp';
+import { buildEmploymentTranslationsBySection } from './contracts-i18n/employment';
+import { buildPowerOfAttorneyTranslationsBySection } from './contracts-i18n/power-of-attorney';
+import { buildCarTranslationsBySection } from './contracts-i18n/car';
+
+function attachTranslations(sections: ContractSection[], translations: Array<NonNullable<ContractSection['translations']>>): ContractSection[] {
+  for (let i = 0; i < sections.length; i++) {
+    if (translations[i]) sections[i].translations = translations[i];
+  }
+  return sections;
+}
+
 export type ContractSection = {
   title: string;
   body: string[];
+  /**
+   * Optional translations for the section.
+   *
+   * Each locale key holds the foreign-language version of `title` and `body`.
+   * When present, the PDF renderer emits a bilingual layout: the Czech text is
+   * the legally binding version; the foreign translation is rendered under
+   * each Czech paragraph in smaller gray italic for the reader's convenience.
+   *
+   * Translation lines should align 1:1 with `body` indices. Missing entries
+   * fall back to Czech-only rendering for that paragraph.
+   *
+   * NOTE: All existing builders return Czech only. Translations are intended
+   * to be populated later by a translator with Czech legal background.
+   */
+  translations?: Partial<Record<'en' | 'uk' | 'ru' | 'vn' | 'de', {
+    title?: string;
+    body?: string[];
+  }>>;
 };
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -666,7 +698,7 @@ function buildCarContractSections(d: StoredContractData): ContractSection[] {
     body: [],
   });
 
-  return sections;
+  return attachTranslations(sections, buildCarTranslationsBySection(d, hasPremiumClauses));
 }
 
 // ─────────────────────────────────────────────
@@ -889,6 +921,14 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
     title: `PŘÍLOHA Č. 1 – PŘEDÁVACÍ PROTOKOL K NÁJEMNÍ SMLOUVĚ`,
     body: [],
   });
+
+  // Attach foreign-language translations (EN populated; UK/RU/VN/DE are
+  // skeletons waiting for a translator). Index-aligned with each section's
+  // post-filter body by construction.
+  const translations = buildLeaseTranslationsBySection(d, hasPremiumClauses);
+  for (let i = 0; i < sections.length; i++) {
+    if (translations[i]) sections[i].translations = translations[i];
+  }
 
   return sections;
 }
@@ -1487,7 +1527,7 @@ function buildEmploymentContractSections(d: StoredContractData): ContractSection
   ];
 
   sections.push({ title: `${hasPremiumClauses ? 'XI' : 'IX'}. PODPISY`, body: [] });
-  return sections;
+  return attachTranslations(sections, buildEmploymentTranslationsBySection(d, hasPremiumClauses));
 }
 
 // ─────────────────────────────────────────────
@@ -1614,7 +1654,7 @@ function buildDppContractSections(d: StoredContractData): ContractSection[] {
     });
   }
 
-  return sections;
+  return attachTranslations(sections, buildDppTranslationsBySection(d, hasPremiumClauses));
 }
 
 // ─────────────────────────────────────────────
@@ -1906,7 +1946,7 @@ function buildSubleaseContractSections(d: StoredContractData): ContractSection[]
   ];
 
   sections.push({ title: `${hasPremiumClauses ? 'XIII' : 'X'}. PODPISY`, body: [] });
-  return sections;
+  return attachTranslations(sections, buildSubleaseTranslationsBySection(d, hasPremiumClauses));
 }
 
 // ─────────────────────────────────────────────
@@ -2032,7 +2072,7 @@ function buildPowerOfAttorneyContractSections(d: StoredContractData): ContractSe
   });
   sections.push({ title: `${hasPremiumClauses ? 'IX' : 'VII'}. PODPISY`, body: [] });
 
-  return sections;
+  return attachTranslations(sections, buildPowerOfAttorneyTranslationsBySection(d, hasPremiumClauses));
 }
 
 // ─────────────────────────────────────────────

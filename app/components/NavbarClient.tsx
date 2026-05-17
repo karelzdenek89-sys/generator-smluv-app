@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
+import LanguageSwitcher from '@/app/components/LanguageSwitcher';
 
 const navLinks = [
   { href: '/najemni-smlouva', label: 'Nájemní smlouva' },
@@ -82,6 +83,8 @@ export default function NavbarClient() {
             <Link href="#dokumenty" onClick={closeMenu} className="mobile-nav-cta-ref">
               Vybrat dokument <span aria-hidden>&rarr;</span>
             </Link>
+
+            <LanguageSwitcher current="cs" variant="mobile" />
           </nav>
         </div>
       ) : null}
