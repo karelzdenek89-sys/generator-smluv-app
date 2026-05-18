@@ -15,7 +15,14 @@ const eslintConfig = defineConfig([
     "**/worktrees/**",
     "node_modules/**",
     "sample-pdfs/**",
+    "scripts/**/*.mjs",
   ]),
+  {
+    files: ["app/blog/**/*.tsx"],
+    rules: {
+      "react/no-unescaped-entities": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;

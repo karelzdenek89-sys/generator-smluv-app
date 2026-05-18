@@ -168,7 +168,7 @@ test.describe('EN lease expat smoke', () => {
     await page.goto('/darovaci?lang=en');
     await expect(page.getByText('Czech-only form')).toBeVisible();
     await expect(
-      page.getByText(/currently available in Czech only/i),
+      page.getByRole('main').getByText(/currently available in Czech only/i),
     ).toBeVisible();
     await expect(page.getByText(/bilingual/i)).toHaveCount(0);
   });

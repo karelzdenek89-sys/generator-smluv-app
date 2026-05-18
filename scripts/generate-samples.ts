@@ -1,11 +1,10 @@
 // Skript pro generovĂˇnĂ­ vzorovĂ˝ch PDF smluv
 // SpuĹˇtÄ›nĂ­: node --experimental-strip-types scripts/generate-samples.ts
 
-import { readFile, writeFile, mkdir } from 'node:fs/promises';
+import { writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
-import { jsPDF } from 'jspdf';
-import { getContractMeta, buildContractSections } from '../lib/contracts.ts';
-import type { StoredContractData, ContractType, Tier } from '../lib/contracts.ts';
+import { renderContractPdf } from '../lib/pdf';
+import type { StoredContractData, Tier } from '../lib/contracts';
 
 const projectDir = process.cwd();
 const outputDir = path.join(projectDir, 'vzory-smluv');
@@ -369,175 +368,18 @@ const SAMPLES: Array<{ data: StoredContractData; tier: Tier; label: string }> = 
   },
 ];
 
-// â”€â”€ Font loading â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
-async function loadFontBase64(fileName: string): Promise<string> {
-  const filePath = path.join(projectDir, 'public', 'fonts', fileName);
-  const file = await readFile(filePath);
-  return file.toString('base64');
-}
-
-async function setupFonts(doc: jsPDF): Promise<void> {
-  type PdfWithVfs = jsPDF & { internal: { vFS?: Record<string, string> } };
-  const pdfDoc = doc as PdfWithVfs;
-  if (!pdfDoc.internal.vFS) pdfDoc.internal.vFS = {};
-  const [regular, bold] = await Promise.all([
-    loadFontBase64('Roboto-Regular.ttf'),
-    loadFontBase64('Roboto-Bold.ttf'),
-  ]);
-  pdfDoc.addFileToVFS('Roboto-Regular.ttf', regular);
-  pdfDoc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
-  pdfDoc.addFileToVFS('Roboto-Bold.ttf', bold);
-  pdfDoc.addFont('Roboto-Bold.ttf', 'Roboto', 'bold');
-  doc.setFont('Roboto', 'normal');
-}
-
-// â”€â”€ Minimal PDF renderer (same logic as lib/pdf.ts) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-
-function drawHeader(doc: jsPDF, title: string): void {
-  const pageWidth = doc.internal.pageSize.getWidth();
-  doc.setFont('Roboto', 'bold');
-  doc.setFontSize(18);
-  doc.setTextColor(20, 20, 20);
-  doc.text(title.toUpperCase(), pageWidth / 2, 20, { align: 'center' });
-  doc.setDrawColor(200, 160, 40);
-  doc.setLineWidth(0.7);
-  doc.line(20, 26, pageWidth - 20, 26);
-  doc.setLineWidth(0.2);
-  doc.setDrawColor(180, 180, 180);
-}
-
-function drawFooter(doc: jsPDF): void {
-  const pageCount = doc.getNumberOfPages();
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
-  for (let i = 1; i <= pageCount; i++) {
-    doc.setPage(i);
-    doc.setFont('Roboto', 'normal');
-    doc.setFontSize(8);
-    doc.setTextColor(150);
-    doc.text(`Strana ${i} z ${pageCount}`, pageWidth / 2, pageHeight - 8, { align: 'center' });
-    doc.text('SmlouvaHned.cz', 20, pageHeight - 8);
-    doc.text('GenerovĂˇno ' + new Date().toLocaleDateString('cs-CZ'), pageWidth - 20, pageHeight - 8, { align: 'right' });
-    doc.setTextColor(0);
+async function main(): Promise<void> {
+  await mkdir(outputDir, { recursive: true });
+  for (const sample of SAMPLES) {
+    const data: StoredContractData = { ...sample.data, tier: sample.tier };
+    const pdf = await renderContractPdf(data);
+    const outPath = path.join(outputDir, `${sample.label}.pdf`);
+    await writeFile(outPath, pdf);
+    console.log(`Wrote ${outPath}`);
   }
 }
 
-function getSignatureLabels(contractType: ContractType): [string, string] {
-  const labels: Record<ContractType, [string, string]> = {
-    lease: ['PronajĂ­matel', 'NĂˇjemce'],
-    car_sale: ['ProdĂˇvajĂ­cĂ­', 'KupujĂ­cĂ­'],
-    gift: ['DĂˇrce', 'ObdarovanĂ˝'],
-    work_contract: ['Objednatel', 'Zhotovitel'],
-    loan: ['VÄ›Ĺ™itel (pĹŻjÄŤujĂ­cĂ­)', 'DluĹľnĂ­k (pĹ™Ă­jemce)'],
-    nda: ['Strana poskytujĂ­cĂ­ informace', 'Strana pĹ™ijĂ­majĂ­cĂ­ informace'],
-    general_sale: ['ProdĂˇvajĂ­cĂ­', 'KupujĂ­cĂ­'],
-    employment: ['ZamÄ›stnavatel', 'ZamÄ›stnanec'],
-    dpp: ['ZamÄ›stnavatel', 'ZamÄ›stnanec'],
-    service: ['Poskytovatel', 'Objednatel'],
-    sublease: ['NĂˇjemce (podnajĂ­matel)', 'PodnĂˇjemce'],
-    power_of_attorney: ['Zmocnitel', 'ZmocnÄ›nec'],
-    debt_acknowledgment: ['VÄ›Ĺ™itel', 'DluĹľnĂ­k'],
-    cooperation: ['Strana A', 'Strana B'],
-  };
-  return labels[contractType] ?? ['SmluvnĂ­ strana I.', 'SmluvnĂ­ strana II.'];
-}
-
-async function renderSamplePdf(data: StoredContractData): Promise<Buffer> {
-  const meta = getContractMeta(data.contractType);
-  const sections = buildContractSections(data);
-  const [labelLeft, labelRight] = getSignatureLabels(data.contractType);
-
-  const doc = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
-  await setupFonts(doc);
-
-  const margin = 20;
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const contentWidth = pageWidth - margin * 2;
-  let y = 35;
-
-  drawHeader(doc, meta.title);
-
-  for (const section of sections) {
-    const isSignature = section.title.toUpperCase().includes('PODPISY');
-    const isProtocol = section.title.toUpperCase().includes('PĹEDĂVACĂŤ PROTOKOL') || section.title.toUpperCase().includes('PĹĂŤLOHA');
-
-    if (isProtocol && y > 40) {
-      doc.addPage();
-      drawHeader(doc, meta.title);
-      y = 35;
-      doc.setFont('Roboto', 'normal');
-      doc.setFontSize(10);
-      doc.setTextColor(30, 30, 30);
-      doc.setDrawColor(200, 160, 40);
-      doc.setLineWidth(0.5);
-      doc.line(margin, y, pageWidth - margin, y);
-      doc.setLineWidth(0.2);
-      doc.setDrawColor(180, 180, 180);
-      y += 8;
-    }
-
-    if (y > 255) {
-      doc.addPage();
-      drawHeader(doc, meta.title);
-      y = 35;
-      doc.setFont('Roboto', 'normal');
-      doc.setFontSize(10);
-      doc.setTextColor(30, 30, 30);
-    }
-
-    if (isSignature) {
-      if (y > 230) {
-        doc.addPage();
-        drawHeader(doc, meta.title);
-        y = 35;
-        doc.setFont('Roboto', 'normal');
-        doc.setFontSize(10);
-        doc.setTextColor(30, 30, 30);
-      }
-      doc.setFont('Roboto', 'bold');
-      doc.setFontSize(11);
-      doc.setTextColor(20, 20, 20);
-      doc.text(section.title, margin, y);
-      y += 10;
-      doc.setFont('Roboto', 'normal');
-      doc.setFontSize(10);
-      doc.text('V ________________________ dne __________________', margin, y);
-      y += 18;
-      const lineWidth = 70;
-      const leftX = margin;
-      const rightX = pageWidth - margin - lineWidth;
-      doc.setDrawColor(80);
-      doc.setLineWidth(0.4);
-      doc.line(leftX, y, leftX + lineWidth, y);
-      doc.line(rightX, y, rightX + lineWidth, y);
-      y += 6;
-      doc.setFont('Roboto', 'bold');
-      doc.setFontSize(9);
-      doc.setTextColor(60);
-      doc.text(labelLeft, leftX + lineWidth / 2, y, { align: 'center' });
-      doc.text(labelRight, rightX + lineWidth / 2, y, { align: 'center' });
-      doc.setFont('Roboto', 'normal');
-      doc.setTextColor(0);
-      y += 14;
-      continue;
-    }
-
-    y += 2;
-    doc.setFont('Roboto', 'bold');
-    doc.setFontSize(11);
-    doc.setTextColor(20, 20, 20);
-    const titleLines = doc.splitTextToSize(section.title, contentWidth);
-    doc.text(titleLines, margin, y);
-    y += titleLines.length * 6 + 1;
-
-    doc.setFont('Roboto', 'normal');
-    doc.setFontSize(10);
-    doc.setTextColor(30, 30, 30);
-
-    for (const line of section.body) {
-      const safeLine = (line != null && String(line).trim()) ? String(line) : ' ';
-      const splitLines = doc.splitTextToSize(safeLine, contentWidth);
-      if (y + splitLines.length * 5.5 > 275) {
-        doc.addPage();
-        drawHeader(doc
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

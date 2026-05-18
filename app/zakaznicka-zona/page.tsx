@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 
@@ -45,6 +45,7 @@ export default function CustomerZone() {
   const [downloadLang, setDownloadLang] = useState<Record<string, string>>({});
   const [errorMsg, setErrorMsg] = useState('');
   const [resolvedEmail, setResolvedEmail] = useState('');
+  const autoFetchedAccess = useRef('');
 
   const applyOrders = useCallback((nextOrders: Order[], displayEmail = '') => {
     setOrders(nextOrders);
@@ -85,7 +86,12 @@ export default function CustomerZone() {
   );
 
   useEffect(() => {
-    if (portalAccess) void fetchWithAccess(portalAccess);
+    if (!portalAccess || autoFetchedAccess.current === portalAccess) return;
+    autoFetchedAccess.current = portalAccess;
+    const timer = window.setTimeout(() => {
+      void fetchWithAccess(portalAccess);
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, [portalAccess, fetchWithAccess]);
 
   const handleSessionLookup = async (e: React.FormEvent) => {
