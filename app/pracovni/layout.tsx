@@ -1,19 +1,22 @@
 import type { Metadata } from 'next';
 import ProductSchemas from '@/app/components/seo/ProductSchemas';
+import { getExpatContractHreflangAlternates } from '@/lib/i18n/expat-hreflang';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
 export const metadata: Metadata = {
   title: 'Pracovní smlouva 2026 — formulář online | SmlouvaHned',
   description:
-    'Pracovní smlouva 2026 dle zákoníku práce. Mzda, pracovní doba, zkušební lhůta — PDF ihned ke stažení. Od 99 Kč.',
+    'Pracovní smlouva 2026 dle zákoníku práce. Mzda, pracovní doba, zkušební lhůta — PDF ihned. English & Ukrainian guided forms for foreigners.',
   keywords: [
     'vytvořit pracovní smlouvu',
     'pracovní smlouva formulář',
     'pracovní smlouva generátor',
     'pracovní smlouva PDF',
+    'Czech employment contract',
+    'pracovní smlouva English',
   ],
-  alternates: { canonical: `${BASE_URL}/pracovni` },
+  alternates: getExpatContractHreflangAlternates('employment'),
   openGraph: {
     title: 'Pracovní smlouva 2026 — formulář online | SmlouvaHned',
     description: 'Pracovní smlouva 2026 dle zákoníku práce v PDF ihned. Od 99 Kč.',

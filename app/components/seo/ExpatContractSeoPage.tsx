@@ -1,49 +1,19 @@
-import type { Metadata } from 'next';
 import Link from 'next/link';
-import { notFound, redirect } from 'next/navigation';
-import { getPublicLocalePath, LEGAL_NOTICE, normalizeLocale, type AppLocale } from '@/lib/locale';
+import { getPublicLocalePath, LEGAL_NOTICE, type AppLocale } from '@/lib/locale';
 import { LEASE_USE_NOTICE_EN, LEASE_USE_NOTICE_UK } from '@/lib/i18n/safety-copy';
-import { getRentalSeoContent, RENTAL_SEO_LOCALES } from '@/lib/i18n/rental-seo-content';
+import type { ExpatSeoContent } from '@/lib/i18n/expat-seo-landings';
 
-type PageProps = {
-  params: Promise<{ locale: string }>;
+type Props = {
+  locale: AppLocale;
+  content: ExpatSeoContent;
 };
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { locale: rawLocale } = await params;
-  const locale = normalizeLocale(rawLocale);
-  const content = getRentalSeoContent(locale);
-  if (!content) return { title: 'SmlouvaHned' };
-  return {
-    title: content.metadata.title,
-    description: content.metadata.description,
-    keywords: content.metadata.keywords,
-    alternates: { canonical: content.canonical },
-    openGraph: {
-      title: content.metadata.openGraphTitle,
-      description: content.metadata.openGraphDescription,
-      url: content.canonical,
-      locale: content.metadata.openGraphLocale,
-      type: 'website',
-    },
-  };
-}
-
-export function generateStaticParams() {
-  return RENTAL_SEO_LOCALES.map((locale) => ({ locale }));
-}
-
-function leaseUseNotice(locale: AppLocale) {
+function extraNotice(locale: AppLocale, contractKey: ExpatSeoContent['contractKey']) {
+  if (contractKey !== 'lease') return null;
   return locale === 'ua' ? LEASE_USE_NOTICE_UK : LEASE_USE_NOTICE_EN;
 }
 
-export default async function RentalAgreementCzechRepublicPage({ params }: PageProps) {
-  const { locale: rawLocale } = await params;
-  if (rawLocale === 'uk') redirect('/ua/rental-agreement-czech-republic');
-  const locale = normalizeLocale(rawLocale);
-  const content = getRentalSeoContent(locale);
-  if (!content) notFound();
-
+export default function ExpatContractSeoPage({ locale, content }: Props) {
   const faqSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -55,6 +25,7 @@ export default async function RentalAgreementCzechRepublicPage({ params }: PageP
   };
 
   const expatHref = `/${getPublicLocalePath(locale)}`;
+  const leaseNotice = extraNotice(locale, content.contractKey);
 
   return (
     <main className="min-h-screen bg-[#040c1a] text-slate-200">
@@ -71,12 +42,7 @@ export default async function RentalAgreementCzechRepublicPage({ params }: PageP
             itemListElement: [
               { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
               { '@type': 'ListItem', position: 2, name: 'Expats', item: `https://smlouvahned.cz${expatHref}` },
-              {
-                '@type': 'ListItem',
-                position: 3,
-                name: content.h1,
-                item: content.canonical,
-              },
+              { '@type': 'ListItem', position: 3, name: content.h1, item: content.canonical },
             ],
           }).replace(/</g, '\\u003c'),
         }}
@@ -104,7 +70,7 @@ export default async function RentalAgreementCzechRepublicPage({ params }: PageP
         <div className="mt-8 flex flex-wrap gap-3">
           <Link
             href={content.builderHref}
-            data-testid="seo-rental-cta"
+            data-testid={`seo-${content.contractKey}-cta`}
             className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-400 px-6 py-4 text-sm font-black uppercase tracking-wide text-black hover:brightness-110 transition"
           >
             {content.cta}
@@ -120,7 +86,7 @@ export default async function RentalAgreementCzechRepublicPage({ params }: PageP
         <div className="mt-10 rounded-2xl border border-sky-400/25 bg-sky-400/10 p-6 text-sm leading-7 text-sky-50">
           <p className="font-bold text-sky-100">{locale === 'ua' ? 'Важливо' : 'Important'}</p>
           <p className="mt-2">{LEGAL_NOTICE[locale]}</p>
-          <p className="mt-2">{leaseUseNotice(locale)}</p>
+          {leaseNotice ? <p className="mt-2">{leaseNotice}</p> : null}
         </div>
       </section>
 

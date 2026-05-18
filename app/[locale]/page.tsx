@@ -16,6 +16,8 @@ import {
   OTHER_CONTRACTS_CZECH_ONLY_HINT,
   type ExpatContractType,
 } from '@/lib/i18n/expat-locale-copy';
+import { getExpatSeoHref } from '@/lib/i18n/expat-seo-landings';
+import { LANDINGS } from '@/lib/i18n/landings';
 
 type LocalePageProps = {
   params: Promise<{ locale: string }>;
@@ -69,19 +71,21 @@ const localeLinks = [
   { locale: 'ua', href: '/ua', flag: '🇺🇦', label: 'UA' },
 ] as const;
 
-const coreContracts = [
-  {
-    href: EXPAT_CONTRACT_ROUTES.lease,
-    capabilityKey: 'lease' as const,
-    seoHref: '/en/rental-agreement-czech-republic',
-    seoHrefUa: '/ua/rental-agreement-czech-republic',
-  },
-  { href: EXPAT_CONTRACT_ROUTES.sublease, capabilityKey: 'sublease' as const },
-  { href: EXPAT_CONTRACT_ROUTES.employment, capabilityKey: 'employment' as const },
-  { href: EXPAT_CONTRACT_ROUTES.dpp, capabilityKey: 'dpp' as const },
-  { href: EXPAT_CONTRACT_ROUTES.power_of_attorney, capabilityKey: 'power_of_attorney' as const },
-  { href: EXPAT_CONTRACT_ROUTES.car_sale, capabilityKey: 'car_sale' as const },
-] as const;
+const coreContracts = (
+  [
+    'lease',
+    'sublease',
+    'employment',
+    'dpp',
+    'power_of_attorney',
+    'car_sale',
+  ] as const
+).map((capabilityKey) => ({
+  href: EXPAT_CONTRACT_ROUTES[capabilityKey],
+  capabilityKey,
+  seoHrefEn: getExpatSeoHref('en', capabilityKey),
+  seoHrefUa: getExpatSeoHref('ua', capabilityKey),
+}));
 
 function coreContractCopy(locale: AppLocale, key: ExpatContractType) {
   if (locale === 'en' || locale === 'ua') {
@@ -100,10 +104,26 @@ export async function generateMetadata({ params }: LocalePageProps): Promise<Met
   const locale = normalizeLocale(rawLocale);
   const publicLocale = getPublicLocalePath(locale);
   if (locale === 'cs' || ![locale, publicLocale].includes(rawLocale as AppLocale)) return { title: 'SmlouvaHned' };
+  const landing = LANDINGS[locale];
   return {
-    title: `${pageCopy[locale].title} | SmlouvaHned.cz`,
-    description: pageCopy[locale].subtitle,
-    alternates: { canonical: `https://smlouvahned.cz/${publicLocale}` },
+    title: landing.htmlTitle,
+    description: landing.metaDescription,
+    keywords: landing.keywords,
+    alternates: {
+      canonical: `https://smlouvahned.cz/${publicLocale}`,
+      languages: {
+        cs: 'https://smlouvahned.cz',
+        en: 'https://smlouvahned.cz/en',
+        uk: 'https://smlouvahned.cz/ua',
+        'x-default': 'https://smlouvahned.cz',
+      },
+    },
+    openGraph: {
+      title: landing.ogTitle,
+      description: landing.ogDescription,
+      url: `https://smlouvahned.cz/${publicLocale}`,
+      type: 'website',
+    },
   };
 }
 
@@ -199,13 +219,9 @@ export default async function LocaleLandingPage({ params }: LocalePageProps) {
                 >
                   {copy.cta} →
                 </Link>
-                {'seoHref' in contract && (locale === 'en' || locale === 'ua') ? (
+                {(locale === 'en' || locale === 'ua') ? (
                   <Link
-                    href={
-                      locale === 'ua' && 'seoHrefUa' in contract
-                        ? String(contract.seoHrefUa)
-                        : String(contract.seoHref)
-                    }
+                    href={locale === 'ua' ? contract.seoHrefUa : contract.seoHrefEn}
                     className="text-sm font-semibold text-slate-400 hover:text-white"
                   >
                     {copy.learnMore ?? 'Learn more'}

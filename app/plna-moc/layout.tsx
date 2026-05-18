@@ -1,14 +1,21 @@
 import type { Metadata } from 'next';
 import ProductSchemas from '@/app/components/seo/ProductSchemas';
+import { getExpatContractHreflangAlternates } from '@/lib/i18n/expat-hreflang';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
 export const metadata: Metadata = {
   title: 'Plná moc online 2026 | SmlouvaHned',
   description:
-    'Plná moc obecná, jednorázová nebo ověřená pro zastoupení před úřadem, bankou či v obchodní věci. Od 99 Kč.',
-  keywords: ['plná moc online', 'plná moc vzor 2026', 'plná moc formulář', 'plná moc ke stažení'],
-  alternates: { canonical: `${BASE_URL}/plna-moc` },
+    'Plná moc obecná, jednorázová nebo ověřená pro zastoupení před úřadem, bankou či v obchodní věci. English & Ukrainian guided forms.',
+  keywords: [
+    'plná moc online',
+    'plná moc vzor 2026',
+    'plná moc formulář',
+    'power of attorney Czech Republic',
+    'plná moc English',
+  ],
+  alternates: getExpatContractHreflangAlternates('power_of_attorney'),
   openGraph: {
     title: 'Plná moc online 2026 | SmlouvaHned',
     description: 'Plná moc obecná, jednorázová nebo ověřená. PDF ihned. Od 99 Kč.',

@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { FOREIGN_LOCALES, LOCALE_META } from '@/lib/i18n/locales';
 import { getAllExpatBlogSlugs, getExpatBlogCanonical } from '@/lib/i18n/expat-blog-articles';
+import { EXPAT_SEO_LOCALES, EXPAT_SEO_SLUGS } from '@/lib/i18n/expat-seo-landings';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
@@ -392,23 +393,27 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly',
       priority: 0.85,
     },
-    {
-      url: `${BASE_URL}/en/rental-agreement-czech-republic`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
+    ...EXPAT_SEO_LOCALES.flatMap((locale) =>
+      EXPAT_SEO_SLUGS.map((slug) => ({
+        url: `${BASE_URL}/${locale}/${slug}`,
+        lastModified: now,
+        changeFrequency: 'weekly' as const,
+        priority: locale === 'en' ? 0.9 : 0.88,
+        alternates: {
+          languages: {
+            cs: `${BASE_URL}/`,
+            en: `${BASE_URL}/en/${slug}`,
+            uk: `${BASE_URL}/ua/${slug}`,
+            'x-default': `${BASE_URL}/`,
+          },
+        },
+      })),
+    ),
     {
       url: `${BASE_URL}/ua`,
       lastModified: now,
       changeFrequency: 'weekly',
       priority: 0.85,
-    },
-    {
-      url: `${BASE_URL}/ua/rental-agreement-czech-republic`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.88,
     },
     ...getAllExpatBlogSlugs().map((slug) => ({
       url: getExpatBlogCanonical(slug),

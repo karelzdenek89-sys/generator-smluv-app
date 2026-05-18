@@ -1,19 +1,22 @@
 import type { Metadata } from 'next';
 import ProductSchemas from '@/app/components/seo/ProductSchemas';
+import { getExpatContractHreflangAlternates } from '@/lib/i18n/expat-hreflang';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
 export const metadata: Metadata = {
   title: 'Dohoda o provedení práce (DPP) online 2026 | SmlouvaHned',
   description:
-    'DPP pro brigády a jednorázové práce. Max. 300 hod./rok. Formulář, PDF ke stažení dle zákoníku práce 2026.',
+    'DPP pro brigády a jednorázové práce. Max. 300 hod./rok. Formulář, PDF ke stažení dle zákoníku práce 2026. English & Ukrainian guided forms.',
   keywords: [
     'DPP 2026',
     'dohoda o provedení práce vzor',
     'DPP online',
     'dohoda o provedení práce formulář',
+    'DPP agreement Czech Republic',
+    'dohoda o provedení práce English',
   ],
-  alternates: { canonical: `${BASE_URL}/dpp` },
+  alternates: getExpatContractHreflangAlternates('dpp'),
   openGraph: {
     title: 'Dohoda o provedení práce (DPP) online 2026 | SmlouvaHned',
     description: 'DPP pro brigády do 300 hod./rok. PDF dle zákoníku práce 2026. Od 99 Kč.',

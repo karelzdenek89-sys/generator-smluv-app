@@ -1,20 +1,21 @@
 import type { Metadata } from 'next';
 import ProductSchemas from '@/app/components/seo/ProductSchemas';
+import { getExpatContractHreflangAlternates } from '@/lib/i18n/expat-hreflang';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
 export const metadata: Metadata = {
   title: 'Kupní smlouva na auto online 2026 | SmlouvaHned',
   description:
-    'Vytvořte kupní smlouvu na vozidlo od 99 Kč. Pokrývá VIN, STK, emise, historii i tachometr. PDF ihned ke stažení.',
+    'Kupní smlouva na vozidlo — VIN, STK, emise, historie, tachometr. PDF ihned. English & Ukrainian guided forms for private car sales.',
   keywords: [
     'kupní smlouva auto',
     'kupní smlouva vozidlo 2026',
     'smlouva prodej auta',
-    'kupní smlouva ojetý vůz',
-    'kupní smlouva online',
+    'car sale agreement Czech Republic',
+    'kupní smlouva auto English',
   ],
-  alternates: { canonical: `${BASE_URL}/auto` },
+  alternates: getExpatContractHreflangAlternates('car_sale'),
   openGraph: {
     title: 'Kupní smlouva na auto online 2026 | SmlouvaHned',
     description:

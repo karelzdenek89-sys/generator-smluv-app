@@ -89,7 +89,8 @@ function testLocalePropagation() {
   assert.match(landing, /Available in Czech/);
   assert.match(landing, /redirect\('\/en'\)/);
   assert.match(landing, /іноземців у Чехії/);
-  assert.match(landing, /\/ua\/rental-agreement-czech-republic/);
+  assert.match(landing, /getExpatSeoHref/);
+  assert.match(read('lib/i18n/expat-seo-landings.ts'), /rental-agreement-czech-republic/);
   assert.doesNotMatch(landing, /\/ru/);
   assert.doesNotMatch(landing, /\/de/);
   assert.doesNotMatch(landing, /\/vn/);
@@ -538,7 +539,7 @@ function testLeasePreviewHelpers() {
 }
 
 function testSeoRentalLandingPage() {
-  const page = read('lib/i18n/rental-seo-content.ts');
+  const page = read('lib/i18n/expat-seo-landings.ts');
   assert.match(page, /Rental Agreement in the Czech Republic/);
   const pageFlat = page.replace(/\s+/g, ' ');
   assert.match(
@@ -546,12 +547,12 @@ function testSeoRentalLandingPage() {
     /Fill in the rental form in English and generate a Czech rental agreement with an explanatory English translation annex/,
   );
   assert.match(page, /Create rental agreement/);
-  assert.match(page, /\/najem\?lang=en/);
+  assert.match(page, /builderHref: `\$\{builderPath\}\?lang=\$\{locale\}`/);
   assert.match(page, /not a law firm/i);
   assert.match(page, /not certified or official/i);
   assert.match(page, /does not guarantee acceptance by any authority/i);
-  assert.match(page, /Explanatory English Translation Annex/);
-  assert.match(page, /\/najem\?lang=ua/);
+  assert.match(page, /explanatory English translation annex/i);
+  assert.match(page, /EXPAT_CONTRACT_ROUTES\[contractKey\]/);
   assert.match(page, /Договір оренди в Чехії/);
   assert.match(page, /пояснювальним українським додатком/);
 
@@ -599,14 +600,28 @@ function testLocalizedBlogArticles() {
   assert.doesNotMatch(expatArticles.toLowerCase(), /visa-ready|accepted by foreign police|certified translation guaranteed|official translation guaranteed/);
 }
 
+function testExpatSeoLandingPages() {
+  const seo = read('lib/i18n/expat-seo-landings.ts');
+  const seoPage = read('app/[locale]/[expatSeoSlug]/page.tsx');
+  const sitemap = read('app/sitemap.ts');
+  assert.match(seo, /employment-contract-czech-republic/);
+  assert.match(seo, /dpp-agreement-czech-republic/);
+  assert.match(seo, /sublease-agreement-czech-republic/);
+  assert.match(seo, /power-of-attorney-czech-republic/);
+  assert.match(seo, /car-sale-agreement-czech-republic/);
+  assert.match(seoPage, /getExpatSeoLandingBySlug/);
+  assert.match(seoPage, /EXPAT_SEO_SLUGS/);
+  assert.match(sitemap, /EXPAT_SEO_SLUGS/);
+  assert.match(read('app/najem/layout.tsx'), /getExpatContractHreflangAlternates\('lease'\)/);
+}
+
 function testE2eFlowStaticPaths() {
-  const seo = read('lib/i18n/rental-seo-content.ts');
-  const seoPage = read('app/[locale]/rental-agreement-czech-republic/page.tsx');
+  const seo = read('lib/i18n/expat-seo-landings.ts');
+  const seoPage = read('app/[locale]/[expatSeoSlug]/page.tsx');
   const najem = read('app/najem/page.tsx');
-  assert.match(seo, /\/najem\?lang=en/);
-  assert.match(seo, /\/najem\?lang=ua/);
-  assert.match(seoPage, /getRentalSeoContent/);
-  assert.match(seoPage, /RENTAL_SEO_LOCALES/);
+  assert.match(seo, /builderHref: `\$\{builderPath\}\?lang=\$\{locale\}`/);
+  assert.match(seoPage, /getExpatSeoLandingBySlug/);
+  assert.match(seoPage, /EXPAT_SEO_SLUGS/);
   assert.match(najem, /lang: builderLocale/);
   assert.match(najem, /BuilderCheckoutSummary/);
   assert.match(read('lib/packages.ts'), /getLocalizedIncludedItems/);
@@ -764,6 +779,7 @@ async function main() {
   testBuilderNoticeUkCopy();
   testUkLandingLocalizedCards();
   testSeoRentalLandingPage();
+  testExpatSeoLandingPages();
   testLocalizedBlogArticles();
   testE2eFlowStaticPaths();
   testLeasePreviewHelpers();
