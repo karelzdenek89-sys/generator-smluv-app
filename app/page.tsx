@@ -111,6 +111,7 @@ const languageLinks = FOREIGN_LOCALES.map((locale) => {
   const meta = LOCALE_META[locale];
   return {
     href: `/${meta.segment}`,
+    flag: meta.flag,
     label: meta.nativeName,
     ariaLabel:
       locale === 'en'
@@ -180,8 +181,9 @@ export default function Home() {
                   key={item.href}
                   href={item.href}
                   aria-label={item.ariaLabel}
-                  className="inline-flex items-center rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-[#c9a852] transition-colors hover:border-[#c9a852]/50 hover:bg-[#c9a852]/10 hover:text-[#f4df8f]"
+                  className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-[#c9a852] transition-colors hover:border-[#c9a852]/50 hover:bg-[#c9a852]/10 hover:text-[#f4df8f]"
                 >
+                  <span className="text-sm leading-none" aria-hidden="true">{item.flag}</span>
                   {item.label}
                 </Link>
               ))}

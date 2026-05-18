@@ -4,10 +4,11 @@ import ExpatBlogArticleView from '@/app/components/blog/ExpatBlogArticleView';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import {
   getAllExpatBlogSlugs,
-  getExpatBlogAlternateSlug,
   getExpatBlogArticle,
   getExpatBlogCanonical,
 } from '@/lib/i18n/expat-blog-articles';
+import { getExpatBlogHreflangAlternates } from '@/lib/i18n/expat-blog-sitemap';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/site';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -24,16 +25,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const canonical = getExpatBlogCanonical(slug);
   const lang = article.audience === 'en' ? 'en' : 'uk';
-  const alternateSlug = getExpatBlogAlternateSlug(slug);
-  const languageAlternates: Record<string, string> = {
-    [lang]: canonical,
-  };
-  if (alternateSlug) {
-    languageAlternates[article.audience === 'en' ? 'uk' : 'en'] = getExpatBlogCanonical(alternateSlug);
-  }
+  const languageAlternates = getExpatBlogHreflangAlternates(slug) ?? { [lang]: canonical };
 
   return {
-    title: `${article.title} | SmlouvaHned.cz`,
+    title: { absolute: `${article.title} | SmlouvaHned.cz` },
     description: article.excerpt,
     keywords: article.keywords,
     alternates: { canonical, languages: languageAlternates },
@@ -43,6 +38,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       url: canonical,
       type: 'article',
       locale: article.audience === 'en' ? 'en_US' : 'uk_UA',
+      images: [DEFAULT_OG_IMAGE],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: article.title,
+      description: article.excerpt,
+      images: [DEFAULT_OG_IMAGE.url],
     },
     other: {
       'content-language': lang,
@@ -55,11 +57,14 @@ export default async function ExpatBlogArticlePage({ params }: PageProps) {
   const article = getExpatBlogArticle(slug);
   if (!article) notFound();
 
+  const lang = article.audience === 'en' ? 'en' : 'uk';
+
   return (
     <>
       <BlogArticleSchemas
         slug={`expat/${slug}`}
         datePublished={article.dateTime}
+        inLanguage={lang}
         withVisibleHeader={false}
       />
       <ExpatBlogArticleView article={article} />

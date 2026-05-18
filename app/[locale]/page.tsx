@@ -19,6 +19,7 @@ import {
 import { getExpatSeoHref } from '@/lib/i18n/expat-seo-landings';
 import ExpatLocaleSchemas from '@/app/components/seo/ExpatLocaleSchemas';
 import { LANDINGS } from '@/lib/i18n/landings';
+import { DEFAULT_OG_IMAGE, SITE_URL } from '@/lib/seo/site';
 import { FOREIGN_LOCALES, LOCALE_META } from '@/lib/i18n/locales';
 
 type LocalePageProps = {
@@ -73,6 +74,7 @@ const localeLinks = FOREIGN_LOCALES.map((loc) => {
   return {
     locale: loc,
     href: `/${meta.segment}`,
+    flag: meta.flag,
     label: meta.nativeName,
     ariaLabel: loc === 'en' ? 'English overview' : 'Український огляд',
   };
@@ -112,24 +114,33 @@ export async function generateMetadata({ params }: LocalePageProps): Promise<Met
   const publicLocale = getPublicLocalePath(locale);
   if (locale === 'cs' || ![locale, publicLocale].includes(rawLocale as AppLocale)) return { title: 'SmlouvaHned' };
   const landing = LANDINGS[locale];
+  const hubUrl = `${SITE_URL}/${publicLocale}`;
   return {
-    title: landing.htmlTitle,
+    title: { absolute: landing.htmlTitle },
     description: landing.metaDescription,
     keywords: landing.keywords,
     alternates: {
-      canonical: `https://smlouvahned.cz/${publicLocale}`,
+      canonical: hubUrl,
       languages: {
-        cs: 'https://smlouvahned.cz',
-        en: 'https://smlouvahned.cz/en',
-        uk: 'https://smlouvahned.cz/ua',
-        'x-default': 'https://smlouvahned.cz',
+        cs: SITE_URL,
+        en: `${SITE_URL}/en`,
+        uk: `${SITE_URL}/ua`,
+        'x-default': SITE_URL,
       },
     },
     openGraph: {
       title: landing.ogTitle,
       description: landing.ogDescription,
-      url: `https://smlouvahned.cz/${publicLocale}`,
+      url: hubUrl,
       type: 'website',
+      locale: locale === 'ua' ? 'uk_UA' : 'en_US',
+      images: [DEFAULT_OG_IMAGE],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: landing.ogTitle,
+      description: landing.ogDescription,
+      images: [DEFAULT_OG_IMAGE.url],
     },
   };
 }
@@ -173,12 +184,13 @@ export default async function LocaleLandingPage({ params }: LocalePageProps) {
                 href={item.href}
                 aria-label={item.ariaLabel}
                 aria-current={item.locale === locale ? 'page' : undefined}
-                className={`inline-flex items-center rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition ${
+                className={`inline-flex items-center gap-2 rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition ${
                   item.locale === locale
                     ? 'border-[#c9a852]/50 bg-[#c9a852]/10 text-[#c9a852]'
                     : 'border-white/10 bg-white/5 hover:border-white/20 hover:text-white'
                 }`}
               >
+                <span aria-hidden="true">{item.flag}</span>
                 {item.label}
               </Link>
             ))}

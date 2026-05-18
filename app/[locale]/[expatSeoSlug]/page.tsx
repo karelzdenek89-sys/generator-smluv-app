@@ -2,11 +2,13 @@ import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 import ExpatContractSeoPage from '@/app/components/seo/ExpatContractSeoPage';
 import { getPublicLocalePath, normalizeLocale } from '@/lib/locale';
+import { getExpatSeoPageHreflangAlternates } from '@/lib/i18n/expat-hreflang';
 import {
   EXPAT_SEO_LOCALES,
   EXPAT_SEO_SLUGS,
   getExpatSeoLandingBySlug,
 } from '@/lib/i18n/expat-seo-landings';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/site';
 
 type PageProps = {
   params: Promise<{ locale: string; expatSeoSlug: string }>;
@@ -17,18 +19,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const locale = normalizeLocale(rawLocale);
   const content = getExpatSeoLandingBySlug(expatSeoSlug, locale);
   if (!content) return { title: 'SmlouvaHned' };
+
+  const languages = getExpatSeoPageHreflangAlternates(content.contractKey);
+
   return {
-    title: content.metadata.title,
+    title: { absolute: content.metadata.title },
     description: content.metadata.description,
     keywords: content.metadata.keywords,
     alternates: {
       canonical: content.canonical,
-      languages: {
-        cs: `https://smlouvahned.cz${content.builderHref.split('?')[0]}`,
-        en: `https://smlouvahned.cz/en/${expatSeoSlug}`,
-        uk: `https://smlouvahned.cz/ua/${expatSeoSlug}`,
-        'x-default': `https://smlouvahned.cz${content.builderHref.split('?')[0]}`,
-      },
+      languages,
     },
     openGraph: {
       title: content.metadata.openGraphTitle,
@@ -36,6 +36,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       url: content.canonical,
       locale: content.metadata.openGraphLocale,
       type: 'website',
+      images: [DEFAULT_OG_IMAGE],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: content.metadata.openGraphTitle,
+      description: content.metadata.openGraphDescription,
+      images: [DEFAULT_OG_IMAGE.url],
     },
   };
 }

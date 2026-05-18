@@ -98,13 +98,12 @@ function testLocalePropagation() {
   assert.doesNotMatch(landing, /\/de/);
   assert.doesNotMatch(landing, /\/vn/);
   assert.doesNotMatch(landing, /🇻🇳/);
-  assert.match(landing, /🇬🇧/);
-  assert.match(landing, /🇺🇦/);
+  assert.match(landing, /item\.flag/);
 
   const homepage = read('app/page.tsx');
   assert.match(homepage, /Potřebujete smlouvu v cizím jazyce/);
   assert.match(homepage, /nativeName/);
-  assert.doesNotMatch(homepage, /item\.flag/);
+  assert.match(homepage, /item\.flag/);
   assert.match(homepage, /Потрібен договір іншою мовою/);
   assert.doesNotMatch(homepage, /\/vn/);
   assert.doesNotMatch(homepage, /Bạn cần|ngôn ngữ|label: 'VI'/);
@@ -114,6 +113,24 @@ function testLocalePropagation() {
   assert.match(builderLocale, /readBuilderLocaleFromBrowser/);
   assert.match(read('lib/locale.ts'), /preferred-locale/);
   assert.doesNotMatch(builderLocale, /readCookie/);
+
+  const proxy = read('proxy.ts');
+  assert.match(proxy, /langQuery === 'cs'/);
+  assert.match(proxy, /preferred-locale', 'cs'/);
+
+  const sitemap = read('app/sitemap.ts');
+  assert.match(sitemap, /getExpatSeoPageHreflangAlternates/);
+  assert.match(sitemap, /expatBlogSitemapEntries/);
+  assert.doesNotMatch(sitemap, /cs: `\$\{BASE_URL\}\/`,\s*\n\s*en: `\$\{BASE_URL\}\/en\/\$\{slug\}`/);
+
+  const seoPage = read('app/[locale]/[expatSeoSlug]/page.tsx');
+  assert.match(seoPage, /title: \{ absolute:/);
+  assert.match(seoPage, /DEFAULT_OG_IMAGE/);
+
+  const expatBlogPage = read('app/blog/expat/[slug]/page.tsx');
+  assert.match(expatBlogPage, /getExpatBlogHreflangAlternates/);
+  assert.match(expatBlogPage, /inLanguage=\{lang\}/);
+  assert.match(proxy, /Czech canonical URLs reset stale foreign preferences/);
 }
 
 function testNoMisleadingBilingualMarketing() {
@@ -622,7 +639,7 @@ function testLocalizedBlogArticles() {
   assert.match(read('lib/locale.ts'), /readBuilderLocaleFromBrowser/);
   assert.match(read('lib/packages.ts'), /getStripePriceIdForCheckout/);
   assert.match(expatArticles, /getExpatBlogAlternateSlug/);
-  assert.match(sitemap, /getAllExpatBlogSlugs/);
+  assert.match(sitemap, /expatBlogSitemapEntries/);
   assert.match(landing, /ExpatLocaleSchemas/);
   assert.match(landing, /\/blog\/expat\/foreigners-czech-contracts-guide-en/);
   assert.match(landing, /\/blog\/expat\/foreigners-czech-contracts-guide-ua/);
@@ -641,6 +658,9 @@ function testExpatSeoLandingPages() {
   assert.match(seoPage, /getExpatSeoLandingBySlug/);
   assert.match(seoPage, /EXPAT_SEO_SLUGS/);
   assert.match(sitemap, /EXPAT_SEO_SLUGS/);
+  assert.match(sitemap, /getExpatSeoPageHreflangAlternates/);
+  assert.match(sitemap, /\/najem`/);
+  assert.match(read('app/components/seo/ExpatContractSeoPage.tsx'), /blogGuideHref/);
   assert.match(read('app/najem/layout.tsx'), /getExpatContractHreflangAlternates\('lease'\)/);
 }
 

@@ -1,4 +1,6 @@
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
+import { SITE_URL } from '@/lib/seo/site';
+
+const BASE_URL = SITE_URL;
 
 export type BreadcrumbItem = {
   label: string;
@@ -33,6 +35,7 @@ export type ArticleSchemaInput = {
    */
   authorJobTitle?: string;
   authorUrl?: string;
+  inLanguage?: string;
 };
 
 /**
@@ -56,6 +59,7 @@ export function articleSchema({
   authorName,
   authorJobTitle,
   authorUrl,
+  inLanguage = 'cs',
 }: ArticleSchemaInput) {
   const author = authorName
     ? {
@@ -76,7 +80,7 @@ export function articleSchema({
     '@type': 'Article',
     headline: title,
     description,
-    inLanguage: 'cs',
+    inLanguage,
     mainEntityOfPage: {
       '@type': 'WebPage',
       '@id': url.startsWith('http') ? url : `${BASE_URL}${url}`,

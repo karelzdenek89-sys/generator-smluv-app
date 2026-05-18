@@ -1,9 +1,16 @@
 import type { MetadataRoute } from 'next';
 import { FOREIGN_LOCALES, LOCALE_META } from '@/lib/i18n/locales';
-import { getAllExpatBlogSlugs, getExpatBlogCanonical } from '@/lib/i18n/expat-blog-articles';
-import { EXPAT_SEO_LOCALES, EXPAT_SEO_SLUGS } from '@/lib/i18n/expat-seo-landings';
+import { expatBlogSitemapEntries } from '@/lib/i18n/expat-blog-sitemap';
+import { getExpatBlogCanonical } from '@/lib/i18n/expat-blog-articles';
+import {
+  EXPAT_SEO_LOCALES,
+  EXPAT_SEO_SLUGS,
+  getExpatContractKeyBySeoSlug,
+} from '@/lib/i18n/expat-seo-landings';
+import { getExpatSeoPageHreflangAlternates } from '@/lib/i18n/expat-hreflang';
+import { SITE_URL } from '@/lib/seo/site';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
+const BASE_URL = SITE_URL;
 
 const localeAlternates: Record<string, string> = {
   cs: `${BASE_URL}/`,
@@ -388,26 +395,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.3,
     },
     ...EXPAT_SEO_LOCALES.flatMap((locale) =>
-      EXPAT_SEO_SLUGS.map((slug) => ({
-        url: `${BASE_URL}/${locale}/${slug}`,
-        lastModified: now,
-        changeFrequency: 'weekly' as const,
-        priority: locale === 'en' ? 0.9 : 0.88,
-        alternates: {
-          languages: {
-            cs: `${BASE_URL}/`,
-            en: `${BASE_URL}/en/${slug}`,
-            uk: `${BASE_URL}/ua/${slug}`,
-            'x-default': `${BASE_URL}/`,
-          },
-        },
-      })),
+      EXPAT_SEO_SLUGS.map((slug) => {
+        const contractKey = getExpatContractKeyBySeoSlug(slug);
+        const languages = contractKey ? getExpatSeoPageHreflangAlternates(contractKey) : undefined;
+        return {
+          url: `${BASE_URL}/${locale}/${slug}`,
+          lastModified: now,
+          changeFrequency: 'weekly' as const,
+          priority: locale === 'en' ? 0.9 : 0.88,
+          ...(languages ? { alternates: { languages } } : {}),
+        };
+      }),
     ),
-    ...getAllExpatBlogSlugs().map((slug) => ({
+    ...expatBlogSitemapEntries().map(({ slug, alternates }) => ({
       url: getExpatBlogCanonical(slug),
       lastModified: now,
       changeFrequency: 'monthly' as const,
       priority: slug.includes('foreigners-czech-contracts-guide') ? 0.82 : 0.78,
+      ...(alternates ? { alternates: { languages: alternates } } : {}),
     })),
   ];
 }

@@ -5,6 +5,8 @@ import InformativeDisclaimer from '@/app/components/blog/InformativeDisclaimer';
 
 type Props = {
   slug: string;
+  /** ISO 639-1 / BCP 47 language tag for Article schema (e.g. cs, en, uk). */
+  inLanguage?: string;
   /** Volitelný datePublished v ISO formátu „YYYY-MM-DD" — pokud není v BLOG_ARTICLES */
   datePublished?: string;
   /** Volitelný dateModified v ISO formátu „YYYY-MM-DD" */
@@ -47,6 +49,7 @@ function czechDateToIso(date: string): string {
 
 export default function BlogArticleSchemas({
   slug,
+  inLanguage = 'cs',
   datePublished,
   dateModified,
   withVisibleHeader = true,
@@ -66,6 +69,7 @@ export default function BlogArticleSchemas({
     authorName: CONTENT_AUTHOR.name,
     authorJobTitle: CONTENT_AUTHOR.jobTitle,
     authorUrl: CONTENT_AUTHOR.url,
+    inLanguage,
   });
 
   const breadcrumb = breadcrumbSchema([

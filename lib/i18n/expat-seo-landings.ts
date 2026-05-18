@@ -1,7 +1,6 @@
 import type { AppLocale, ExpatContractType } from '@/lib/locale';
 import { EXPAT_CONTRACT_ROUTES } from '@/lib/locale';
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
+import { SITE_URL } from '@/lib/seo/site';
 
 export type ExpatSeoContent = {
   contractKey: ExpatContractType;
@@ -22,13 +21,22 @@ export type ExpatSeoContent = {
   subtitle: string;
   cta: string;
   backToExpats: string;
+  expatHubLabel: string;
+  blogGuideLabel: string;
+  blogGuideHref: string;
   faq: { q: string; a: string }[];
   legalBullets: string[];
 };
 
 type LocalePack = Omit<
   ExpatSeoContent,
-  'contractKey' | 'slug' | 'builderHref' | 'canonical'
+  | 'contractKey'
+  | 'slug'
+  | 'builderHref'
+  | 'canonical'
+  | 'blogGuideHref'
+  | 'expatHubLabel'
+  | 'blogGuideLabel'
 >;
 
 function build(
@@ -43,9 +51,19 @@ function build(
     contractKey,
     slug,
     builderHref: `${builderPath}?lang=${locale}`,
-    canonical: `${BASE_URL}/${segment}/${slug}`,
+    canonical: `${SITE_URL}/${segment}/${slug}`,
+    blogGuideHref: `/blog/expat/${slug}-guide-${locale}`,
+    expatHubLabel: locale === 'ua' ? 'Іноземці в Чехії' : 'Expats in Czechia',
+    blogGuideLabel: locale === 'ua' ? 'Детальний гід (стаття)' : 'Read the detailed guide',
     ...pack,
   };
+}
+
+export function getExpatBlogGuideSlug(
+  contractKey: ExpatContractType,
+  locale: 'en' | 'ua',
+): string {
+  return `${SLUG_BY_CONTRACT[contractKey]}-guide-${locale}`;
 }
 
 const LEASE_EN: LocalePack = {
