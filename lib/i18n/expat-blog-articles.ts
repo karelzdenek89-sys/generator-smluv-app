@@ -1,4 +1,5 @@
 import type { ExpatContractType } from '@/lib/i18n/expat-locale-copy';
+import { getExpatSeoHref } from '@/lib/i18n/expat-seo-landings';
 import { EXPAT_CONTRACT_ROUTES, withLocale, type AppLocale } from '@/lib/locale';
 
 export type ExpatBlogAudience = 'en' | 'ua';
@@ -52,10 +53,6 @@ function builder(locale: AppLocale, contract: ExpatContractType): string {
 
 function hub(locale: AppLocale): string {
   return `/${locale}`;
-}
-
-function rentalSeo(locale: AppLocale): string {
-  return `/${locale}/rental-agreement-czech-republic`;
 }
 
 const SAFETY_EN = [
@@ -125,13 +122,11 @@ function contractArticleEn(
     primaryCta: ExpatBlogArticle['primaryCta'];
     trust: ExpatBlogArticle['trustBox'];
     relatedSlugs: string[];
-    seoLanding?: boolean;
   },
 ): ExpatBlogArticle {
   const leaseExtras =
     contract === 'lease'
       ? {
-          seoLandingHref: rentalSeo('en'),
           sections: [
             ...opts.sections,
             {
@@ -160,7 +155,7 @@ function contractArticleEn(
     intro: opts.intro,
     keywords: opts.keywords,
     builderHref: builder('en', contract),
-    seoLandingHref: opts.seoLanding ? rentalSeo('en') : leaseExtras.seoLandingHref,
+    seoLandingHref: getExpatSeoHref('en', contract),
     expatHubHref: hub('en'),
     toc: opts.sections.map((s, i) => ({
       href: `#${s.id}`,
@@ -224,7 +219,7 @@ function contractArticleUa(
     intro: opts.intro,
     keywords: opts.keywords,
     builderHref: builder('ua', contract),
-    seoLandingHref: contract === 'lease' ? rentalSeo('ua') : undefined,
+    seoLandingHref: getExpatSeoHref('ua', contract),
     expatHubHref: hub('ua'),
     toc: sections.map((s, i) => ({ href: `#${s.id}`, label: `${i + 1}. ${s.title}` })),
     sections,
@@ -298,7 +293,6 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
       },
     ],
     builderHref: builder('en', 'lease'),
-    seoLandingHref: rentalSeo('en'),
     primaryCta: {
       title: 'Start with housing',
       body: 'Most expats begin with a rental agreement. Read the dedicated guide or open the form directly.',
@@ -340,7 +334,6 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
       'У Чехії ви зазвичай підписуєте договори чеською. SmlouvaHned допомагає заповнити форму українською, а згенерований документ залишається переважно чеською.',
     keywords: ['чеські договори іноземці', 'договір оренди Чехія', 'документи для іноземців'],
     builderHref: builder('ua', 'lease'),
-    seoLandingHref: rentalSeo('ua'),
     expatHubHref: hub('ua'),
     toc: [
       { href: '#how-it-works', label: '1. Як це працює' },
@@ -443,7 +436,6 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
       lawyerSuitable: 'Commercial units, rent control disputes, eviction conflicts or employer-provided housing schemes.',
     },
     relatedSlugs: [HUB_GUIDE_EN, 'employment-contract-czech-republic-guide-en'],
-    seoLanding: true,
   }),
 
   contractArticleUa('lease', {
@@ -853,23 +845,29 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
 
 export const EXPAT_BLOG_CONTRACT_LINKS: Record<
   ExpatBlogAudience,
-  { contract: ExpatContractType; guideSlug: string; labelEn: string; labelUa: string }[]
+  {
+    contract: ExpatContractType;
+    guideSlug: string;
+    seoHref: string;
+    labelEn: string;
+    labelUa: string;
+  }[]
 > = {
   en: [
-    { contract: 'lease', guideSlug: 'rental-agreement-czech-republic-guide-en', labelEn: 'Rental agreement', labelUa: '' },
-    { contract: 'employment', guideSlug: 'employment-contract-czech-republic-guide-en', labelEn: 'Employment contract', labelUa: '' },
-    { contract: 'dpp', guideSlug: 'dpp-agreement-czech-republic-guide-en', labelEn: 'DPP agreement', labelUa: '' },
-    { contract: 'sublease', guideSlug: 'sublease-agreement-czech-republic-guide-en', labelEn: 'Sublease', labelUa: '' },
-    { contract: 'power_of_attorney', guideSlug: 'power-of-attorney-czech-republic-guide-en', labelEn: 'Power of attorney', labelUa: '' },
-    { contract: 'car_sale', guideSlug: 'car-sale-agreement-czech-republic-guide-en', labelEn: 'Car purchase', labelUa: '' },
+    { contract: 'lease', guideSlug: 'rental-agreement-czech-republic-guide-en', seoHref: getExpatSeoHref('en', 'lease'), labelEn: 'Rental agreement', labelUa: '' },
+    { contract: 'employment', guideSlug: 'employment-contract-czech-republic-guide-en', seoHref: getExpatSeoHref('en', 'employment'), labelEn: 'Employment contract', labelUa: '' },
+    { contract: 'dpp', guideSlug: 'dpp-agreement-czech-republic-guide-en', seoHref: getExpatSeoHref('en', 'dpp'), labelEn: 'DPP agreement', labelUa: '' },
+    { contract: 'sublease', guideSlug: 'sublease-agreement-czech-republic-guide-en', seoHref: getExpatSeoHref('en', 'sublease'), labelEn: 'Sublease', labelUa: '' },
+    { contract: 'power_of_attorney', guideSlug: 'power-of-attorney-czech-republic-guide-en', seoHref: getExpatSeoHref('en', 'power_of_attorney'), labelEn: 'Power of attorney', labelUa: '' },
+    { contract: 'car_sale', guideSlug: 'car-sale-agreement-czech-republic-guide-en', seoHref: getExpatSeoHref('en', 'car_sale'), labelEn: 'Car purchase', labelUa: '' },
   ],
   ua: [
-    { contract: 'lease', guideSlug: 'rental-agreement-czech-republic-guide-ua', labelEn: '', labelUa: 'Договір оренди' },
-    { contract: 'employment', guideSlug: 'employment-contract-czech-republic-guide-ua', labelEn: '', labelUa: 'Трудовий договір' },
-    { contract: 'dpp', guideSlug: 'dpp-agreement-czech-republic-guide-ua', labelEn: '', labelUa: 'DPP' },
-    { contract: 'sublease', guideSlug: 'sublease-agreement-czech-republic-guide-ua', labelEn: '', labelUa: 'Піднайм' },
-    { contract: 'power_of_attorney', guideSlug: 'power-of-attorney-czech-republic-guide-ua', labelEn: '', labelUa: 'Довіреність' },
-    { contract: 'car_sale', guideSlug: 'car-sale-agreement-czech-republic-guide-ua', labelEn: '', labelUa: 'Купівля авто' },
+    { contract: 'lease', guideSlug: 'rental-agreement-czech-republic-guide-ua', seoHref: getExpatSeoHref('ua', 'lease'), labelEn: '', labelUa: 'Договір оренди' },
+    { contract: 'employment', guideSlug: 'employment-contract-czech-republic-guide-ua', seoHref: getExpatSeoHref('ua', 'employment'), labelEn: '', labelUa: 'Трудовий договір' },
+    { contract: 'dpp', guideSlug: 'dpp-agreement-czech-republic-guide-ua', seoHref: getExpatSeoHref('ua', 'dpp'), labelEn: '', labelUa: 'DPP' },
+    { contract: 'sublease', guideSlug: 'sublease-agreement-czech-republic-guide-ua', seoHref: getExpatSeoHref('ua', 'sublease'), labelEn: '', labelUa: 'Піднайм' },
+    { contract: 'power_of_attorney', guideSlug: 'power-of-attorney-czech-republic-guide-ua', seoHref: getExpatSeoHref('ua', 'power_of_attorney'), labelEn: '', labelUa: 'Довіреність' },
+    { contract: 'car_sale', guideSlug: 'car-sale-agreement-czech-republic-guide-ua', seoHref: getExpatSeoHref('ua', 'car_sale'), labelEn: '', labelUa: 'Купівля авто' },
   ],
 };
 

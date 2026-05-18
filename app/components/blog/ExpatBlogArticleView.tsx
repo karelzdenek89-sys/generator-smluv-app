@@ -8,18 +8,28 @@ import {
   getExpatBlogArticle,
   type ExpatBlogArticle,
 } from '@/lib/i18n/expat-blog-articles';
-import { withLocale, type AppLocale } from '@/lib/locale';
-import { EXPAT_CONTRACT_ROUTES } from '@/lib/locale';
+import { getExpatSeoLanding } from '@/lib/i18n/expat-seo-landings';
+import { EXPAT_CONTRACT_ROUTES, withLocale, type AppLocale } from '@/lib/locale';
 
 type Props = {
   article: ExpatBlogArticle;
 };
+
+function seoLandingLinkLabel(article: ExpatBlogArticle): string | null {
+  if (!article.seoLandingHref || article.contractKey === 'hub') return null;
+  const seo = getExpatSeoLanding(article.contractKey, article.audience);
+  if (!seo) return null;
+  return article.audience === 'en'
+    ? `Full page: ${seo.h1}`
+    : `Сторінка: ${seo.h1}`;
+}
 
 export default function ExpatBlogArticleView({ article }: Props) {
   const locale: AppLocale = article.audience;
   const contractLinks = EXPAT_BLOG_CONTRACT_LINKS[locale];
   const hubSlug =
     locale === 'en' ? 'foreigners-czech-contracts-guide-en' : 'foreigners-czech-contracts-guide-ua';
+  const seoLinkLabel = seoLandingLinkLabel(article);
 
   return (
     <article className="blog-listing mx-auto max-w-3xl px-6 py-12">
@@ -56,9 +66,9 @@ export default function ExpatBlogArticleView({ article }: Props) {
           <Link href={article.expatHubHref} className="link-gold-elegant">
             {article.ui.backToExpats}
           </Link>
-          {article.seoLandingHref ? (
+          {article.seoLandingHref && seoLinkLabel ? (
             <Link href={article.seoLandingHref} className="link-gold-elegant">
-              {locale === 'en' ? 'Rental SEO page' : 'Сторінка про оренду'}
+              {seoLinkLabel} →
             </Link>
           ) : null}
         </div>
@@ -71,11 +81,21 @@ export default function ExpatBlogArticleView({ article }: Props) {
         href={article.builderHref}
       />
 
+      {article.seoLandingHref && seoLinkLabel && article.contractKey !== 'hub' ? (
+        <p className="mb-10 text-center text-sm text-[#bba98c]">
+          <Link href={article.seoLandingHref} className="font-semibold text-[#d6ac60] hover:underline">
+            {seoLinkLabel} →
+          </Link>
+        </p>
+      ) : null}
+
       {article.contractKey === 'hub' ? (
         <section className="site-content-card mb-10 rounded-[1.75rem] p-6">
           <h2 className="text-xl font-semibold text-[#f2e7c8]">{article.ui.contractLinksTitle}</h2>
           <ul className="mt-5 space-y-4">
-            {contractLinks.map((item) => (
+            {contractLinks.map((item) => {
+              const seo = getExpatSeoLanding(item.contract, locale);
+              return (
               <li
                 key={item.contract}
                 className="flex flex-col gap-2 border-b border-[rgba(166,134,91,0.12)] pb-4 last:border-0 last:pb-0 sm:flex-row sm:items-center sm:justify-between"
@@ -84,12 +104,20 @@ export default function ExpatBlogArticleView({ article }: Props) {
                   <div className="font-semibold text-[#f2e7c8]">
                     {locale === 'en' ? item.labelEn : item.labelUa}
                   </div>
-                  <Link
-                    href={`/blog/expat/${item.guideSlug}`}
-                    className="mt-1 inline-block text-sm text-[#d6ac60] hover:underline"
-                  >
-                    {locale === 'en' ? 'Read guide →' : 'Читати гід →'}
-                  </Link>
+                  <div className="mt-2 flex flex-col gap-1 text-sm">
+                    <Link
+                      href={`/blog/expat/${item.guideSlug}`}
+                      className="text-[#d6ac60] hover:underline"
+                    >
+                      {locale === 'en' ? 'Read guide →' : 'Читати гід →'}
+                    </Link>
+                    <Link href={item.seoHref} className="text-[#bba98c] hover:text-[#d6ac60] hover:underline">
+                      {locale === 'en'
+                        ? `Contract overview: ${seo?.h1 ?? item.labelEn}`
+                        : `Огляд: ${seo?.h1 ?? item.labelUa}`}{' '}
+                      →
+                    </Link>
+                  </div>
                 </div>
                 <TrackedLink
                   href={withLocale(EXPAT_CONTRACT_ROUTES[item.contract], locale)}
@@ -105,7 +133,8 @@ export default function ExpatBlogArticleView({ article }: Props) {
                   {locale === 'en' ? 'Open form' : 'Відкрити форму'}
                 </TrackedLink>
               </li>
-            ))}
+              );
+            })}
           </ul>
         </section>
       ) : null}

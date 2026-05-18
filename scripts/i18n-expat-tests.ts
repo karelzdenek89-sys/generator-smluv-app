@@ -584,6 +584,9 @@ function testLocalizedBlogArticles() {
   assert.equal(uaRental.builderHref, '/najem?lang=ua');
   assert.equal(enRental.seoLandingHref, '/en/rental-agreement-czech-republic');
   assert.equal(uaRental.seoLandingHref, '/ua/rental-agreement-czech-republic');
+  const enEmployment = getExpatBlogArticle('employment-contract-czech-republic-guide-en');
+  assert.ok(enEmployment);
+  assert.equal(enEmployment.seoLandingHref, '/en/employment-contract-czech-republic');
   assert.match(enRental.disclaimer.body, /not a substitute/i);
   assert.match(enRental.sections.map((section) => section.paragraphs.join(' ')).join(' '), /not a certified translation/i);
 
@@ -594,7 +597,10 @@ function testLocalizedBlogArticles() {
   assert.match(expatArticles, /employment-contract-czech-republic-guide-en/);
   assert.match(expatArticles, /power-of-attorney-czech-republic-guide-ua/);
   assert.match(expatView, /withLocale\(EXPAT_CONTRACT_ROUTES\[item\.contract\], locale\)/);
+  assert.match(expatView, /item\.seoHref/);
+  assert.match(expatArticles, /getExpatSeoHref/);
   assert.match(sitemap, /getAllExpatBlogSlugs/);
+  assert.match(landing, /ExpatLocaleSchemas/);
   assert.match(landing, /\/blog\/expat\/foreigners-czech-contracts-guide-en/);
   assert.match(landing, /\/blog\/expat\/foreigners-czech-contracts-guide-ua/);
   assert.doesNotMatch(expatArticles.toLowerCase(), /visa-ready|accepted by foreign police|certified translation guaranteed|official translation guaranteed/);

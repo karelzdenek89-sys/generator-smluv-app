@@ -1,5 +1,8 @@
+import Link from 'next/link';
 import TrackedLink from '@/app/components/analytics/TrackedLink';
 import type { BlogArticleMeta } from '@/lib/blog-articles';
+import { EXPAT_BLOG_CONTRACT_LINKS } from '@/lib/i18n/expat-blog-articles';
+import { getExpatSeoLanding } from '@/lib/i18n/expat-seo-landings';
 
 const COPY = {
   en: {
@@ -12,6 +15,7 @@ const COPY = {
     overviewLabel: 'English contract overview',
     hubLabel: 'Start with the main guide',
     articlesHeading: 'All English guides',
+    seoHeading: 'Contract overview pages (SEO)',
   },
   ua: {
     flag: '🇺🇦',
@@ -23,6 +27,7 @@ const COPY = {
     overviewLabel: 'Огляд договорів українською',
     hubLabel: 'Почніть з головного гіда',
     articlesHeading: 'Усі гіди українською',
+    seoHeading: 'Оглядові сторінки договорів',
   },
 } as const;
 
@@ -39,6 +44,7 @@ export default function ExpatBlogLocalePanel({ locale, hub, articles }: Props) {
       ? 'border-sky-500/25 bg-sky-500/5 hover:border-sky-400/40'
       : 'border-amber-500/25 bg-amber-500/8 hover:border-amber-400/35';
   const topicArticles = articles.filter((a) => !a.slug.includes('foreigners-czech-contracts-guide'));
+  const seoLinks = EXPAT_BLOG_CONTRACT_LINKS[locale];
 
   return (
     <div className={`site-content-card rounded-[1.75rem] border p-7 transition ${borderClass}`}>
@@ -107,6 +113,27 @@ export default function ExpatBlogLocalePanel({ locale, hub, articles }: Props) {
                 </TrackedLink>
               </li>
             ))}
+          </ul>
+        </div>
+      ) : null}
+
+      {seoLinks.length > 0 ? (
+        <div className="mt-8 border-t border-white/10 pt-8">
+          <p className="text-sm font-semibold uppercase tracking-wider text-[#bba98c]">{copy.seoHeading}</p>
+          <ul className="mt-4 space-y-2">
+            {seoLinks.map((item) => {
+              const seo = getExpatSeoLanding(item.contract, locale);
+              return (
+                <li key={item.contract}>
+                  <Link
+                    href={item.seoHref}
+                    className="block text-sm leading-7 text-[#d6ac60] hover:underline"
+                  >
+                    {seo?.h1 ?? (locale === 'en' ? item.labelEn : item.labelUa)}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
       ) : null}
