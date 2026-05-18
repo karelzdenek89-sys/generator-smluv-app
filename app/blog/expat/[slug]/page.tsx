@@ -8,7 +8,6 @@ import {
   getExpatBlogCanonical,
 } from '@/lib/i18n/expat-blog-articles';
 import { getExpatBlogHreflangAlternates } from '@/lib/i18n/expat-blog-sitemap';
-import { DEFAULT_OG_IMAGE } from '@/lib/seo/site';
 
 type PageProps = {
   params: Promise<{ slug: string }>;
@@ -38,13 +37,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       url: canonical,
       type: 'article',
       locale: article.audience === 'en' ? 'en_US' : 'uk_UA',
-      images: [DEFAULT_OG_IMAGE],
     },
     twitter: {
       card: 'summary_large_image',
       title: article.title,
       description: article.excerpt,
-      images: [DEFAULT_OG_IMAGE.url],
     },
     other: {
       'content-language': lang,

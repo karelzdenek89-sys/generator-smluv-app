@@ -12,6 +12,11 @@ import { jsPDF } from 'jspdf';
 
 const OUT_DIR = path.join(process.cwd(), 'tmp', 'pdf-test');
 
+type JsPdfWithFonts = jsPDF & {
+  addFileToVFS(fileName: string, fileData: string): void;
+  addFont(fileName: string, fontName: string, fontStyle: string): void;
+};
+
 const samples: Array<{ label: string; text: string; expect: RegExp }> = [
   { label: 'UK (Ukrainian)', text: 'Привіт, це договір оренди. ї є щ', expect: /Привіт/ },
   { label: 'RU (Russian)',   text: 'Привет, это договор аренды. ё ы ъ', expect: /Привет/ },
@@ -31,7 +36,7 @@ async function run() {
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
   const regular = await loadB64('NotoSans-Regular.ttf');
   const bold = await loadB64('NotoSans-Bold.ttf');
-  const pdfDoc = doc as any;
+  const pdfDoc = doc as JsPdfWithFonts;
   pdfDoc.addFileToVFS('NotoSans-Regular.ttf', regular);
   pdfDoc.addFont('NotoSans-Regular.ttf', 'NotoSans', 'normal');
   pdfDoc.addFileToVFS('NotoSans-Bold.ttf', bold);

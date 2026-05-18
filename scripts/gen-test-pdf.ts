@@ -1,7 +1,8 @@
 import { renderContractPdf } from '../lib/pdf';
 import { writeFileSync } from 'fs';
+import type { StoredContractData } from '../lib/contracts';
 
-const testData = {
+const testData: StoredContractData = {
   contractType: 'lease' as const,
   tier: 'complete' as const,
   notaryUpsell: true,
@@ -69,7 +70,7 @@ const testData = {
 
 (async () => {
   console.log('Generating PDF...');
-  const buf = await renderContractPdf(testData as any);
+  const buf = await renderContractPdf(testData);
   writeFileSync('/sessions/laughing-beautiful-brown/test-lease.pdf', buf);
   console.log(`Done — ${buf.length} bytes → test-lease.pdf`);
 })();

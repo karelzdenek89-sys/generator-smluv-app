@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { getBlogArticleBySlug } from './blog-articles';
+import { getExpatBlogArticle } from './i18n/expat-blog-articles';
 
 export const OG_SIZE = { width: 1200, height: 630 } as const;
 export const OG_CONTENT_TYPE = 'image/png';
@@ -11,6 +12,22 @@ export function renderArticleOgImageBySlug(slug: string) {
   }
   return renderBlogOgImage({
     title: article.title,
+    category: article.category,
+  });
+}
+
+export function renderExpatBlogOgImageBySlug(slug: string) {
+  const article = getExpatBlogArticle(slug);
+  if (!article) {
+    return renderBlogOgImage({ title: 'SmlouvaHned · Expat guide', kicker: 'SmlouvaHned · Blog' });
+  }
+  const kicker =
+    article.audience === 'en'
+      ? 'SmlouvaHned · Expat guide'
+      : 'SmlouvaHned · Гід для іноземців';
+  return renderBlogOgImage({
+    title: article.title,
+    kicker,
     category: article.category,
   });
 }
@@ -77,7 +94,7 @@ export function renderBlogOgImage({ title, kicker = 'SmlouvaHned · Blog', categ
           {category ? (
             <div
               style={{
-                display: 'inline-flex',
+                display: 'flex',
                 alignSelf: 'flex-start',
                 padding: '8px 18px',
                 borderRadius: 999,

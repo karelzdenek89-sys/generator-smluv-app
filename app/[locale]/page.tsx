@@ -17,7 +17,6 @@ import {
   type ExpatContractType,
 } from '@/lib/i18n/expat-locale-copy';
 import { getExpatSeoHref } from '@/lib/i18n/expat-seo-landings';
-import ExpatLocaleSchemas from '@/app/components/seo/ExpatLocaleSchemas';
 import { LANDINGS } from '@/lib/i18n/landings';
 import { DEFAULT_OG_IMAGE, SITE_URL } from '@/lib/seo/site';
 import { FOREIGN_LOCALES, LOCALE_META } from '@/lib/i18n/locales';
@@ -169,9 +168,7 @@ export default async function LocaleLandingPage({ params }: LocalePageProps) {
       : OTHER_CONTRACTS_CZECH_ONLY_HINT.en;
 
   return (
-    <>
-      <ExpatLocaleSchemas locale={locale} />
-      <main className="min-h-screen bg-[#040c1a] text-slate-200">
+    <main className="min-h-screen bg-[#040c1a] text-slate-200">
       <section className="mx-auto max-w-7xl px-6 py-10 md:px-10 md:py-16">
         <nav className="mb-16 flex items-center justify-between">
           <Link href="/" className="font-serif italic text-lg font-semibold text-white">
@@ -300,6 +297,5 @@ export default async function LocaleLandingPage({ params }: LocalePageProps) {
         </div>
       </section>
     </main>
-    </>
   );
 }

@@ -41,7 +41,11 @@ async function main() {
   console.log('---------------------|-------------|------------|-------------|-------------|------------|-------------|-------|--------');
   const totals = { basicSec: 0, profSec: 0, complSec: 0, basicPg: 0, profPg: 0, complPg: 0 };
   for (const type of TYPES) {
-    const row: Record<Tier, { sections: number; pages: number }> = {} as any;
+    const row: Record<Tier, { sections: number; pages: number }> = {
+      basic: { sections: 0, pages: 0 },
+      professional: { sections: 0, pages: 0 },
+      complete: { sections: 0, pages: 0 },
+    };
     for (const tier of TIERS) {
       const data = { ...minimalInput(type), contractType: type, tier } as StoredContractData;
       const sections = buildContractSections(data);

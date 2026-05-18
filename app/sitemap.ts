@@ -7,7 +7,10 @@ import {
   EXPAT_SEO_SLUGS,
   getExpatContractKeyBySeoSlug,
 } from '@/lib/i18n/expat-seo-landings';
-import { getExpatSeoPageHreflangAlternates } from '@/lib/i18n/expat-hreflang';
+import {
+  EXPAT_BUILDER_SITEMAP,
+  getExpatSeoPageHreflangAlternates,
+} from '@/lib/i18n/expat-hreflang';
 import { SITE_URL } from '@/lib/seo/site';
 
 const BASE_URL = SITE_URL;
@@ -39,18 +42,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     ...foreignEntries,
     {
-      url: `${BASE_URL}/najem`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.9,
-    },
-    {
-      url: `${BASE_URL}/auto`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.9,
-    },
-    {
       url: `${BASE_URL}/darovaci`,
       lastModified: now,
       changeFrequency: 'monthly',
@@ -81,34 +72,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     },
     {
-      url: `${BASE_URL}/pracovni`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.9,
-    },
-    {
-      url: `${BASE_URL}/dpp`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.9,
-    },
-    {
       url: `${BASE_URL}/sluzby`,
       lastModified: now,
       changeFrequency: 'monthly',
       priority: 0.88,
-    },
-    {
-      url: `${BASE_URL}/podnajem`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.88,
-    },
-    {
-      url: `${BASE_URL}/plna-moc`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.85,
     },
     {
       url: `${BASE_URL}/uznani-dluhu`,
@@ -394,6 +361,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'yearly',
       priority: 0.3,
     },
+    ...EXPAT_BUILDER_SITEMAP.map(({ path, contractKey }) => ({
+      url: `${BASE_URL}${path}`,
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: 0.9,
+      alternates: { languages: getExpatSeoPageHreflangAlternates(contractKey) },
+    })),
     ...EXPAT_SEO_LOCALES.flatMap((locale) =>
       EXPAT_SEO_SLUGS.map((slug) => {
         const contractKey = getExpatContractKeyBySeoSlug(slug);

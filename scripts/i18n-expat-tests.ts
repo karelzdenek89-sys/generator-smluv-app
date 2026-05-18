@@ -119,6 +119,7 @@ function testLocalePropagation() {
   assert.match(proxy, /preferred-locale', 'cs'/);
 
   const sitemap = read('app/sitemap.ts');
+  assert.match(sitemap, /EXPAT_BUILDER_SITEMAP/);
   assert.match(sitemap, /getExpatSeoPageHreflangAlternates/);
   assert.match(sitemap, /expatBlogSitemapEntries/);
   assert.doesNotMatch(sitemap, /cs: `\$\{BASE_URL\}\/`,\s*\n\s*en: `\$\{BASE_URL\}\/en\/\$\{slug\}`/);
@@ -130,6 +131,9 @@ function testLocalePropagation() {
   const expatBlogPage = read('app/blog/expat/[slug]/page.tsx');
   assert.match(expatBlogPage, /getExpatBlogHreflangAlternates/);
   assert.match(expatBlogPage, /inLanguage=\{lang\}/);
+  assert.match(read('app/blog/expat/[slug]/opengraph-image.tsx'), /renderExpatBlogOgImageBySlug/);
+  assert.match(read('app/layout.tsx'), /showCzechSiteSchemas/);
+  assert.match(read('app/[locale]/layout.tsx'), /ExpatLocaleSchemas/);
   assert.match(proxy, /Czech canonical URLs reset stale foreign preferences/);
 }
 
@@ -640,7 +644,7 @@ function testLocalizedBlogArticles() {
   assert.match(read('lib/packages.ts'), /getStripePriceIdForCheckout/);
   assert.match(expatArticles, /getExpatBlogAlternateSlug/);
   assert.match(sitemap, /expatBlogSitemapEntries/);
-  assert.match(landing, /ExpatLocaleSchemas/);
+  assert.match(read('app/[locale]/layout.tsx'), /ExpatLocaleSchemas/);
   assert.match(landing, /\/blog\/expat\/foreigners-czech-contracts-guide-en/);
   assert.match(landing, /\/blog\/expat\/foreigners-czech-contracts-guide-ua/);
   assert.doesNotMatch(expatArticles.toLowerCase(), /visa-ready|accepted by foreign police|certified translation guaranteed|official translation guaranteed/);
@@ -658,8 +662,8 @@ function testExpatSeoLandingPages() {
   assert.match(seoPage, /getExpatSeoLandingBySlug/);
   assert.match(seoPage, /EXPAT_SEO_SLUGS/);
   assert.match(sitemap, /EXPAT_SEO_SLUGS/);
+  assert.match(sitemap, /EXPAT_BUILDER_SITEMAP\.map/);
   assert.match(sitemap, /getExpatSeoPageHreflangAlternates/);
-  assert.match(sitemap, /\/najem`/);
   assert.match(read('app/components/seo/ExpatContractSeoPage.tsx'), /blogGuideHref/);
   assert.match(read('app/najem/layout.tsx'), /getExpatContractHreflangAlternates\('lease'\)/);
 }

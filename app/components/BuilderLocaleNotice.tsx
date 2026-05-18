@@ -9,7 +9,6 @@ import {
   getUnsupportedFormNotice,
   isExpatContract,
   isSupportedLocaleInput,
-  normalizeLocale,
   readBuilderLocaleFromBrowser,
   type AppLocale,
 } from '@/lib/locale';
@@ -20,17 +19,31 @@ import {
 } from '@/lib/i18n/safety-copy';
 
 export function useBuilderLocale(): AppLocale {
-  const [locale] = useState<AppLocale>(() =>
+  const [locale, setLocale] = useState<AppLocale>(() =>
     typeof window === 'undefined' ? 'cs' : readBuilderLocaleFromBrowser(),
   );
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const queryLocale = params.get('lang');
-    if (queryLocale && isSupportedLocaleInput(queryLocale)) {
-      const normalized = normalizeLocale(queryLocale);
-      document.cookie = `preferred-locale=${encodeURIComponent(normalized)}; path=/; max-age=31536000; SameSite=Lax`;
-    }
+    const syncLocale = () => {
+      const nextLocale = readBuilderLocaleFromBrowser();
+      const params = new URLSearchParams(window.location.search);
+      const queryLocale = params.get('lang');
+
+      if (queryLocale && isSupportedLocaleInput(queryLocale)) {
+        document.cookie = `preferred-locale=${encodeURIComponent(nextLocale)}; path=/; max-age=31536000; SameSite=Lax`;
+      }
+
+      setLocale((current) => (current === nextLocale ? current : nextLocale));
+    };
+
+    syncLocale();
+    window.addEventListener('popstate', syncLocale);
+    window.addEventListener('pageshow', syncLocale);
+
+    return () => {
+      window.removeEventListener('popstate', syncLocale);
+      window.removeEventListener('pageshow', syncLocale);
+    };
   }, []);
 
   return locale;

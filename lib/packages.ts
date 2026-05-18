@@ -188,11 +188,7 @@ export function getStripePriceIdForCheckout(
 ): string | undefined {
   const pkg = normalizeThematicPackageKey(packageKey);
   if (pkg) {
-    return (
-      process.env.STRIPE_PRICE_ID_PACKAGE ??
-      process.env.STRIPE_PRICE_ID_PREMIUM ??
-      process.env.STRIPE_PRICE_ID_COMPLETE
-    );
+    return process.env.STRIPE_PRICE_ID_PACKAGE;
   }
   if (tier === 'basic') return process.env.STRIPE_PRICE_ID_BASIC;
   if (tier === 'professional') return process.env.STRIPE_PRICE_ID_PRO;

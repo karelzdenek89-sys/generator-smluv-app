@@ -150,6 +150,7 @@ export default async function RootLayout({
   const pathname = hdrs.get('x-pathname') ?? '';
   const locale = detectLocaleFromPath(pathname);
   const lang = LOCALE_META[locale].htmlLang;
+  const showCzechSiteSchemas = locale === 'cs';
   return (
     <html lang={lang}>
       <head>
@@ -164,14 +165,22 @@ export default async function RootLayout({
           name="seznam-wmt"
           content="zK8529Fk6nDwr8TdyohYqF2LU7YpQVCf"
         />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema).replace(/</g, '\\u003c') }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema).replace(/</g, '\\u003c') }}
-        />
+        {showCzechSiteSchemas ? (
+          <>
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify(organizationSchema).replace(/</g, '\\u003c'),
+              }}
+            />
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify(websiteSchema).replace(/</g, '\\u003c'),
+              }}
+            />
+          </>
+        ) : null}
       </head>
       <body
         className={`${inter.variable} ${playfair.variable} antialiased bg-[#060912] text-[#d7dee8]`}

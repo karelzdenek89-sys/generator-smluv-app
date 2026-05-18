@@ -55,7 +55,14 @@ function testCheckoutRouteCoverage() {
   }
   assert.match(checkout, /packageKey/);
   assert.match(checkout, /getStripePriceIdForCheckout/);
-  assert.match(read('lib/packages.ts'), /STRIPE_PRICE_ID_PACKAGE/);
+  const packages = read('lib/packages.ts');
+  assert.match(packages, /STRIPE_PRICE_ID_PACKAGE/);
+  assert.doesNotMatch(
+    packages,
+    /STRIPE_PRICE_ID_PACKAGE\s*\?\?\s*process\.env\.STRIPE_PRICE_ID_PREMIUM/,
+    '299 Kč packages must not fall back to the 199 Kč complete tier price',
+  );
+  assert.match(read('.env.example'), /STRIPE_PRICE_ID_PACKAGE/);
   assert.match(checkout, /CANCEL_URLS/);
 }
 
