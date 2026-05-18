@@ -19,6 +19,7 @@ import {
 import { getExpatSeoHref } from '@/lib/i18n/expat-seo-landings';
 import ExpatLocaleSchemas from '@/app/components/seo/ExpatLocaleSchemas';
 import { LANDINGS } from '@/lib/i18n/landings';
+import { FOREIGN_LOCALES, LOCALE_META } from '@/lib/i18n/locales';
 
 type LocalePageProps = {
   params: Promise<{ locale: string }>;
@@ -67,10 +68,15 @@ const pageCopy: Record<Exclude<AppLocale, 'cs'>, {
   },
 };
 
-const localeLinks = [
-  { locale: 'en', href: '/en', flag: '🇬🇧', label: 'EN' },
-  { locale: 'ua', href: '/ua', flag: '🇺🇦', label: 'UA' },
-] as const;
+const localeLinks = FOREIGN_LOCALES.map((loc) => {
+  const meta = LOCALE_META[loc];
+  return {
+    locale: loc,
+    href: `/${meta.segment}`,
+    label: meta.nativeName,
+    ariaLabel: loc === 'en' ? 'English overview' : 'Український огляд',
+  };
+});
 
 const coreContracts = (
   [
@@ -165,13 +171,14 @@ export default async function LocaleLandingPage({ params }: LocalePageProps) {
               <Link
                 key={item.locale}
                 href={item.href}
-                className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 transition ${
+                aria-label={item.ariaLabel}
+                aria-current={item.locale === locale ? 'page' : undefined}
+                className={`inline-flex items-center rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition ${
                   item.locale === locale
                     ? 'border-[#c9a852]/50 bg-[#c9a852]/10 text-[#c9a852]'
                     : 'border-white/10 bg-white/5 hover:border-white/20 hover:text-white'
                 }`}
               >
-                <span className="text-sm leading-none" aria-hidden="true">{item.flag}</span>
                 {item.label}
               </Link>
             ))}

@@ -102,7 +102,9 @@ function testLocalePropagation() {
   assert.match(landing, /🇺🇦/);
 
   const homepage = read('app/page.tsx');
-  assert.match(homepage, /Need a contract in another language/);
+  assert.match(homepage, /Potřebujete smlouvu v cizím jazyce/);
+  assert.match(homepage, /nativeName/);
+  assert.doesNotMatch(homepage, /item\.flag/);
   assert.match(homepage, /Потрібен договір іншою мовою/);
   assert.doesNotMatch(homepage, /\/vn/);
   assert.doesNotMatch(homepage, /Bạn cần|ngôn ngữ|label: 'VI'/);
