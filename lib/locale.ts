@@ -54,9 +54,9 @@ export const EXPAT_CONTRACT_ROUTES: Record<ContractType, string> = {
 export function readBuilderLocaleFromBrowser(): AppLocale {
   if (typeof window === 'undefined') return 'cs';
   const params = new URLSearchParams(window.location.search);
-  const queryLocale = params.get('lang');
-  if (queryLocale && isSupportedLocaleInput(queryLocale)) {
-    return normalizeLocale(queryLocale);
+  if (params.has('lang')) {
+    const queryLocale = params.get('lang');
+    return isSupportedLocaleInput(queryLocale) ? normalizeLocale(queryLocale) : 'cs';
   }
   const match = document.cookie.match(/(?:^|;\s*)preferred-locale=([^;]+)/);
   if (match?.[1]) {

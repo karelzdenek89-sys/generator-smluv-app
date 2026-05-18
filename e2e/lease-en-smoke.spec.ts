@@ -94,7 +94,7 @@ test.describe('EN lease expat smoke', () => {
     assertNoForbiddenMarketing(seoText);
     assertSafeMarketing(seoText);
 
-    await page.getByTestId('seo-rental-cta').click();
+    await page.getByTestId('seo-lease-cta').click();
     await page.waitForURL(/\/najem\?lang=en/);
     expect(page.url()).toMatch(/lang=en/);
 

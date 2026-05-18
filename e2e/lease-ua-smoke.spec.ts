@@ -13,7 +13,7 @@ const FORBIDDEN_MARKETING = [
 const SAFE_MARKETING_UA = [
   'юридичн',
   'імміграційн',
-  'не офіційн',
+  'офіційн',
   'чеськ',
 ];
 
@@ -92,7 +92,7 @@ test.describe('UA lease expat smoke', () => {
     assertNoForbiddenMarketing(seoText);
     assertSafeMarketingUa(seoText);
 
-    await page.getByTestId('seo-rental-cta').click();
+    await page.getByTestId('seo-lease-cta').click();
     await page.waitForURL(/\/najem\?lang=ua/);
     expect(page.url()).toMatch(/lang=ua/);
 

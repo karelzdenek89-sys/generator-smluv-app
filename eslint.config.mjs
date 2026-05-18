@@ -15,6 +15,8 @@ const eslintConfig = defineConfig([
     "**/worktrees/**",
     "node_modules/**",
     "sample-pdfs/**",
+    "test-results/**",
+    "playwright-report/**",
     "scripts/**/*.mjs",
   ]),
   {
