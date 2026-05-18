@@ -158,7 +158,6 @@ export async function getAnalyticsDashboardData(windowDays = 7): Promise<Analyti
   let situationToBuilderClicks = 0;
   let situationToPackageClicks = 0;
   let packageViews = 0;
-  let packageCtaClicks = 0;
   let builderViews = 0;
   let packageFlowEntries = 0;
   let tier99Selections = 0;
@@ -287,7 +286,6 @@ export async function getAnalyticsDashboardData(windowDays = 7): Promise<Analyti
         break;
 
       case 'package_cta_click':
-        packageCtaClicks += 1;
         if (packageKey && isBuilderDestination(destination)) {
           const current = packageStats.get(packageKey) ?? {
             views: 0,

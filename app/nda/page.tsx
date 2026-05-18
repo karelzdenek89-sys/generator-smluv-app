@@ -100,9 +100,6 @@ export default function NdaBuilderPage() {
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
-  const [withdrawalConsent, setWithdrawalConsent] = useState(false);
-  const [withdrawalError, setWithdrawalError] = useState(false);
-
   const set = (field: keyof NdaFormData, value: string | boolean) =>
     setFormData((p) => ({ ...p, [field]: value }));
 

@@ -81,9 +81,6 @@ export default function GiftContractPage() {
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
-  const [withdrawalConsent, setWithdrawalConsent] = useState(false);
-  const [withdrawalError, setWithdrawalError] = useState(false);
-
   const updateField = (field: keyof FormDataType, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };

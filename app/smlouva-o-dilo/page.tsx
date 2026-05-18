@@ -107,9 +107,6 @@ export default function WorkContractPage() {
   const [formData, setFormData] = useState<WorkContractData>(defaultData);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
-  const [withdrawalConsent, setWithdrawalConsent] = useState(false);
-  const [withdrawalError, setWithdrawalError] = useState(false);
-
   const updateField = (field: keyof WorkContractData, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };

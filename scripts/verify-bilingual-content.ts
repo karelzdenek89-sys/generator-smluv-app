@@ -49,7 +49,7 @@ async function run() {
         ['CZ prevailing disclaimer', /rozhodující české znění/.test(text)],
         ['CZ "not certified translation" disclaimer', /nejedná se o úřední ani ověřený překlad/.test(text)],
       ];
-      for (const [name, ok] of checks) {
+      for (const [, ok] of checks) {
         total++;
         if (!ok) failed++;
       }

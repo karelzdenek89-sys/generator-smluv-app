@@ -177,7 +177,6 @@ async function main() {
       }
     }
 
-    const enLarger = lang !== 'cs';
     const annexNote = lang === 'cs' ? 'CZ only' : lang === 'en' ? 'CZ+EN annex' : contract === 'dpp' ? 'CZ+UA overview' : 'CZ+UA annex';
     const status = issues.filter((i) => i.file === fname && i.level === 'error').length === 0 ? 'OK' : 'FAIL';
     rows.push(

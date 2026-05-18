@@ -338,7 +338,7 @@ export default async function InternalAnalyticsPage({
 
   return (
     <div className="min-h-screen bg-[#05080f] px-6 py-12 md:px-10">
-      {data ? <DashboardContent data={data} /> : <p className="text-center text-slate-400 py-20">Data nejsou k dispozici.</p>}
+      {data ? <DashboardContent data={data} /> : <DashboardError />}
     </div>
   );
 }

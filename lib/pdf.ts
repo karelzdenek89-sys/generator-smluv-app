@@ -719,17 +719,6 @@ async function measureSectionPages(
   return pageMap;
 }
 
-function estimateTocPageCount(sections: { title: string }[]): number {
-  const visible = sections.filter(s => !isSignatureSection(s.title));
-  let y = 40;
-  let pages = 1;
-  for (const _ of visible) {
-    y += 7;
-    if (y > 270) { pages++; y = 29; }
-  }
-  return pages;
-}
-
 function drawTableOfContents(
   doc: jsPDF,
   sections: { title: string }[],
