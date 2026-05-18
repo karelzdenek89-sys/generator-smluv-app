@@ -115,7 +115,7 @@ export function generateStaticParams() {
 
 export default async function LocaleLandingPage({ params }: LocalePageProps) {
   const { locale: rawLocale } = await params;
-  if (rawLocale === 'vi' || rawLocale === 'vn') redirect('/en');
+  if (rawLocale === 'vi' || rawLocale === 'vn' || rawLocale === 'ru' || rawLocale === 'de') redirect('/en');
   if (rawLocale === 'uk') redirect('/ua');
   const locale = normalizeLocale(rawLocale);
   const publicLocale = getPublicLocalePath(locale);

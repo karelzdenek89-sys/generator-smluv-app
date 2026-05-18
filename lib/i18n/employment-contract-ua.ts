@@ -3,11 +3,12 @@ import { resolveTierFeatures } from '@/lib/contracts';
 import {
   asText,
   disputeClauseLaborUa,
-  formatAmount,
-  formatDate,
+  formatAmountCs,
+  formatDateCs,
   pluralMonthsUa,
   today,
 } from '@/lib/i18n/expat-contract-helpers';
+import { EMPLOYMENT_WORK_ELIGIBILITY_NOTICE_UK } from '@/lib/i18n/safety-copy';
 import { ZP_TRIAL_MONTHS_LEADERSHIP, ZP_TRIAL_MONTHS_STANDARD } from '@/lib/legal-constants-2026';
 
 /** Пояснювальний український переклад чеського трудового договору — не офіційний. */
@@ -30,13 +31,13 @@ export function buildEmploymentContractSectionsUa(d: StoredContractData): Contra
 
   const durationClause =
     d.employmentType === 'fixed'
-      ? `на строк до ${formatDate(d.endDate, 'не вказано')}`
+      ? `на строк до ${formatDateCs(d.endDate, 'не вказано')}`
       : 'на невизначений строк';
 
   const salaryDesc =
     d.salaryType === 'monthly'
-      ? `Брутто-зарплата: ${formatAmount(d.salary)} Kč на місяць. Виплата до ${asText(d.payDay, '15')}-го числа наступного місяця на рахунок працівника.`
-      : `Погодинна ставка: ${formatAmount(d.hourlyRate)} Kč/год брутто.`;
+      ? `Брутто-зарплата: ${formatAmountCs(d.salary)} Kč на місяць. Виплата до ${asText(d.payDay, '15')}-го числа наступного місяця на рахунок працівника.`
+      : `Погодинна ставка: ${formatAmountCs(d.hourlyRate)} Kč/год брутто.`;
 
   const workTimeClause = d.workHours
     ? `Тижневий робочий час: ${asText(d.workHours)} год. Графік: ${asText(d.workSchedule, 'пн–пт, 8:00–17:00')}.`
@@ -73,7 +74,9 @@ export function buildEmploymentContractSectionsUa(d: StoredContractData): Contra
       title: 'ПРЕАМБУЛА',
       body: [
         'Цей трудовий договір укладено згідно з § 34 та наст. закону ЧР № 262/2006 Зб. (трудовий кодекс).',
-        `Дата укладення: ${d.contractDate ? formatDate(d.contractDate) : today()}`,
+        `Дата укладення: ${d.contractDate ? formatDateCs(d.contractDate) : today()}`,
+        'У разі розбіжностей між цим оглядом і чеським текстом перевага має чеське формулювання.',
+        EMPLOYMENT_WORK_ELIGIBILITY_NOTICE_UK,
       ],
     },
     {
@@ -81,7 +84,7 @@ export function buildEmploymentContractSectionsUa(d: StoredContractData): Contra
       body: [
         `Роботодавець: ${asText(d.employerName)}, IČO: ${asText(d.employerIco, '—')}, адреса: ${asText(d.employerAddress)}`,
         d.employerEmail ? `E-mail роботодавця: ${asText(d.employerEmail)}` : '',
-        `Працівник: ${asText(d.employeeName)}, нар.: ${asText(d.employeeBirth, '—')}, адреса: ${asText(d.employeeAddress)}`,
+        `Працівник: ${asText(d.employeeName)}, дата народження: ${d.employeeBirth ? formatDateCs(d.employeeBirth) : '—'}, адреса: ${asText(d.employeeAddress)}`,
         d.employeeEmail ? `E-mail працівника: ${asText(d.employeeEmail)}` : '',
       ].filter(Boolean) as string[],
     },
@@ -97,7 +100,7 @@ export function buildEmploymentContractSectionsUa(d: StoredContractData): Contra
     {
       title: 'III. ПОЧАТОК І СТРОК',
       body: [
-        `Вихід на роботу: ${formatDate(d.startDate, 'не вказано')}`,
+        `Вихід на роботу: ${formatDateCs(d.startDate, 'не вказано')}`,
         `Трудові відносини ${durationClause}.`,
         trialPeriodClause,
       ],

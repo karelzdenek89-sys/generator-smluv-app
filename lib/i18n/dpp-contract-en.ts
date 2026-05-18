@@ -9,8 +9,19 @@ import {
   formatDate,
   today,
 } from '@/lib/i18n/expat-contract-helpers';
+import { EMPLOYMENT_WORK_ELIGIBILITY_NOTICE_EN } from '@/lib/i18n/safety-copy';
 
-/** Explanatory English translation of the Czech DPP agreement — not certified or official. */
+function dppToolsClauseEn(d: StoredContractData): string {
+  if (d.toolsProvided === 'employer') {
+    return 'The employer provides tools and equipment needed for the work.';
+  }
+  if (d.toolsProvided === 'employee') {
+    return 'The worker provides tools at their own cost; reimbursement only if agreed in writing in advance.';
+  }
+  return 'Tools and equipment are provided as agreed between the parties.';
+}
+
+/** Explanatory English overview of the Czech DPP agreement — not a full clause-by-clause translation. */
 export function buildDppContractSectionsEn(d: StoredContractData): ContractSection[] {
   const { hasPremiumClauses } = resolveTierFeatures(d);
   const remunerationDesc =
@@ -44,7 +55,7 @@ export function buildDppContractSectionsEn(d: StoredContractData): ContractSecti
           body: [
             'Failure to perform properly without serious employer fault may give rise to damage liability under Section 257 LC.',
             'The employer may raise quality objections within 5 business days and request defect removal within 10 business days.',
-            'No contractual penalties to the worker’s detriment; proven damage may be claimed.',
+            'No contractual penalties to the worker’s detriment; only statutory compensation for proven damage.',
           ],
         },
       ]
@@ -57,6 +68,8 @@ export function buildDppContractSectionsEn(d: StoredContractData): ContractSecti
         'This agreement to perform work (DPP) is concluded under Sections 75 et seq. of Act No. 262/2006 Coll., the Labour Code.',
         `Date of conclusion: ${d.contractDate ? formatDate(d.contractDate) : today()}`,
         DPP_HOURS_LIMIT_EN,
+        'If this overview differs from the Czech text of the agreement, the Czech wording prevails.',
+        EMPLOYMENT_WORK_ELIGIBILITY_NOTICE_EN,
       ],
     },
     {
@@ -74,7 +87,7 @@ export function buildDppContractSectionsEn(d: StoredContractData): ContractSecti
         `Work to be performed: ${asText(d.taskDescription, 'not stated')}`,
         d.taskDetails ? `Details: ${asText(d.taskDetails)}` : '',
         `Place of work: ${asText(d.workPlace, 'not stated')}`,
-        `Estimated scope: ${asText(d.estimatedHours, 'not stated')} hours.`,
+        `Estimated scope: ${asText(d.estimatedHours, 'not stated')} hours (max. 300 h/year with one employer).`,
       ].filter(Boolean) as string[],
     },
     {
@@ -82,13 +95,16 @@ export function buildDppContractSectionsEn(d: StoredContractData): ContractSecti
       body: [
         `Term: ${d.durationType === 'fixed' && d.startDate && d.endDate ? `fixed from ${formatDate(d.startDate)} to ${formatDate(d.endDate)}` : 'indefinite'}`,
         d.deadline ? `Task deadline: ${asText(d.deadline)}` : '',
-        'Either party may terminate with 15 days’ notice unless otherwise agreed; the agreement also ends by law when the task is completed or on other statutory grounds.',
+        'The agreement may be terminated by written mutual consent.',
+        'Unless otherwise agreed, either party may terminate with 15 days’ notice from delivery to the other party.',
+        'The agreement also ends when the task is completed, when the term expires, by mutual consent or on other statutory grounds.',
       ].filter(Boolean) as string[],
     },
     {
       title: 'IV. REMUNERATION',
       body: [
         remunerationDesc,
+        'DPP remuneration is generally exempt from social and health insurance if monthly income with one employer stays below the statutory threshold.',
         DPP_THRESHOLD_NOTE_EN,
         d.paymentAccount
           ? `Payment to account ${asText(d.paymentAccount)} within ${asText(d.paymentDays, '15')} days after completion / month-end.`
@@ -99,8 +115,11 @@ export function buildDppContractSectionsEn(d: StoredContractData): ContractSecti
       title: 'V. PERFORMANCE CONDITIONS',
       body: [
         'The worker shall perform work personally, properly and follow the employer’s instructions.',
-        'Standard working-time rules for full employment do not apply to the same extent (Section 77(2) LC).',
-        'Work may be performed on site, at the agreed place or remotely if the task allows and confidentiality is protected.',
+        'Standard full-time working-time rules apply only to a limited extent (Section 77(2) LC).',
+        'Holiday entitlement may arise under Section 77a LC if the agreement lasts at least 4 weeks with the same employer and the worker performs at least 20 hours (four times the fictitious weekly working time); calculation under Sections 213 and 77a.',
+        'The employer must draw up a written shift schedule and inform the worker at least 3 days before a shift unless otherwise agreed in writing.',
+        'Work may be performed on site, at the agreed place or remotely if the task allows and confidentiality and data security are protected.',
+        dppToolsClauseEn(d),
       ],
     },
     ...premiumContent,
@@ -111,9 +130,9 @@ export function buildDppContractSectionsEn(d: StoredContractData): ContractSecti
         disputeClauseLaborEn(),
         'Two copies; each party receives one (Section 77(1) LC).',
         'Amendments in writing, numbered and signed.',
-        'Invalidity of one clause does not affect the rest.',
-        'Personal data processed under GDPR and Section 316 LC.',
-        'Force majeure under Section 2913(2) Civil Code; monetary obligations remain due.',
+        'Invalidity of one clause does not affect the rest of the agreement.',
+        'Personal data processed under GDPR, Act No. 110/2019 Coll. and Section 316 LC; the worker has access, rectification, erasure and complaint rights to the Office for Personal Data Protection (uoou.cz).',
+        'Force majeure under Section 2913(2) Civil Code excuses non-monetary breach; monetary obligations remain. The affected party must notify the other in writing without delay.',
       ],
     },
     { title: `${hasPremiumClauses ? 'X' : 'VII'}. SIGNATURES`, body: [] },

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { redis } from '@/lib/redis';
 import { stripe } from '@/lib/stripe';
+import { ensurePortalAccessToken } from '@/lib/orders-portal';
 
 export const runtime = 'nodejs';
 
@@ -94,9 +95,11 @@ export async function POST(req: Request) {
           const customerEmailForIndex = session.customer_email || (existing.email as string);
           if (customerEmailForIndex) {
             try {
-              const emailKey = `orders:email:${customerEmailForIndex.toLowerCase().trim()}`;
+              const normalizedEmail = customerEmailForIndex.toLowerCase().trim();
+              const emailKey = `orders:email:${normalizedEmail}`;
               await redis.sadd(emailKey, session.id);
               await redis.expire(emailKey, TTL_COMPLETE); // index drží 30 dní
+              await ensurePortalAccessToken(normalizedEmail);
             } catch (indexErr) {
               console.warn('[webhook] Email index error (non-critical):', indexErr);
             }
@@ -112,6 +115,7 @@ export async function POST(req: Request) {
             console.error(`[webhook] KRITICKÁ CHYBA: zákazník nemá e-mail (session ${session.id}) — potvrzovací e-mail NEBYL odeslán!`);
           }
           if (resendKey && customerEmail) {
+            const portalToken = await ensurePortalAccessToken(customerEmail).catch(() => null);
             await sendDownloadEmail(
               resendKey,
               customerEmail,
@@ -120,6 +124,7 @@ export async function POST(req: Request) {
               process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz',
               tier,
               lang,
+              portalToken,
             ).catch((err) => console.error('[webhook] E-mail error:', err));
           }
         }
@@ -144,6 +149,7 @@ async function sendDownloadEmail(
   baseUrl: string,
   tier: string = 'basic',
   lang: string = 'cs',
+  portalToken: string | null = null,
 ): Promise<void> {
   const contractNames: Record<string, string> = {
     lease: 'Nájemní smlouva',
@@ -165,6 +171,9 @@ async function sendDownloadEmail(
   const contractName = contractNames[contractType] || 'Právní dokument';
   const langQuery = lang === 'cs' ? '' : `&lang=${encodeURIComponent(lang)}`;
   const downloadUrl = `${baseUrl}/api/contracts/download?session_id=${sessionId}${langQuery}`;
+  const portalUrl = portalToken
+    ? `${baseUrl}/zakaznicka-zona?access=${encodeURIComponent(portalToken)}`
+    : `${baseUrl}/zakaznicka-zona`;
 
   await fetch('https://api.resend.com/emails', {
     method: 'POST',
@@ -194,8 +203,12 @@ async function sendDownloadEmail(
               ${contractName} je připravena ke stažení.
             </p>
             <a href="${downloadUrl}"
-               style="display:block;text-align:center;background:linear-gradient(135deg,#f59e0b,#eab308);color:#000;font-weight:900;font-size:18px;padding:18px 32px;border-radius:16px;text-decoration:none;margin-bottom:24px;letter-spacing:-0.3px;">
+               style="display:block;text-align:center;background:linear-gradient(135deg,#f59e0b,#eab308);color:#000;font-weight:900;font-size:18px;padding:18px 32px;border-radius:16px;text-decoration:none;margin-bottom:16px;letter-spacing:-0.3px;">
               STÁHNOUT PDF DOKUMENT
+            </a>
+            <a href="${portalUrl}"
+               style="display:block;text-align:center;border:1px solid #334155;color:#cbd5e1;font-weight:700;font-size:14px;padding:12px 24px;border-radius:12px;text-decoration:none;margin-bottom:24px;">
+              MOJE DOKUMENTY (bezpečný přístup)
             </a>
             <p style="color:#64748b;font-size:12px;text-align:center;margin:0;">
               Odkaz ke stažení je platný ${tier === 'basic' ? '7 dní' : '30 dní'} od zaplacení.<br>

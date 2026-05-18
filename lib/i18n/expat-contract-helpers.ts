@@ -69,7 +69,7 @@ export function disputeClauseUa(d: StoredContractData): string {
     case 'mediation':
       return 'Сторони спочатку намагаються вирішити спір мирно. За відсутності згоди — медіація за законом ЧР № 202/2012 Зб. про медіацію або компетентний суд Чехії.';
     case 'arbitration':
-      return 'Спори з цієї угоди остаточно вирішуються в арбітражі при Гospодарській коморі ЧР та Agrární komoře ČR за її правилами, одним арбітром. Місце: Прага. Мова: чеська (закон № 216/1994 Зб.). Сторони відмовляються від загального суду в межах цієї договірної дільниці.';
+      return 'Спори з цього договору остаточно вирішуються в арбітражі при Господарській коморі ЧР та Agrární komoře ČR за її правилами, одним арбітром. Місце: Прага. Мова: чеська (закон № 216/1994 Зб.). Сторони відмовляються від загального суду в межах цієї договірної дільниці.';
     default:
       return 'Спори спочатку вирішуються мирно. За відсутності згоди — компетентний суд Чехії.';
   }
@@ -80,16 +80,19 @@ export function disputeClauseLaborEn(): string {
 }
 
 export function disputeClauseLaborUa(): string {
-  return 'Трудові спори вирішує компетентний суд згідно з § 9(1) закону ЧР № 99/1963 Зб. (OSŘ). Сторони зобов’язуються спочатку намагатися вирішити спір мирно.';
+  return 'Трудові спори вирішує компетентний суд відповідно до § 9(1) закону ЧР № 99/1963 Зб. (OSŘ). Сторони зобов’язуються спочатку намагатися вирішити спір мирно.';
 }
 
-export const DPP_THRESHOLD_NOTE_EN = `For 2026, decisive monthly gross income for social insurance on a work-performance agreement (DPP) with one employer is CZK ${DPP_MONTHLY_THRESHOLD_2026_CZK.toLocaleString('en-US')}. When reached or exceeded, insurance participation and related employer obligations arise.`;
+export const DPP_THRESHOLD_NOTE_EN = `For 2026, decisive monthly gross income for social insurance on a work-performance agreement (DPP) with one employer is CZK ${DPP_MONTHLY_THRESHOLD_2026_CZK.toLocaleString('cs-CZ')}. When reached or exceeded, insurance participation and related employer obligations arise. The employer reports the worker in regular monthly filings to the Czech Social Security Administration (ČSSZ).`;
 
-export const DPP_THRESHOLD_NOTE_UA = `У 2026 році вирішальний місячний брутто-дохід для соціального страхування за DPP у одного роботодавця — ${DPP_MONTHLY_THRESHOLD_2026_CZK.toLocaleString('cs-CZ')} Kč. Після досягнення виникають зобов’язання зі страхування.`;
+export const DPP_THRESHOLD_NOTE_UA = `У 2026 році вирішальний місячний брутто-дохід для участі в соціальному страхуванні за DPP у одного роботодавця становить ${DPP_MONTHLY_THRESHOLD_2026_CZK.toLocaleString('cs-CZ')} Kč. Після досягнення цієї суми виникають зобов’язання зі страхування та пов’язані обов’язки роботодавця. Роботодавець подає звітність до ČSSZ щомісяця.`;
 
 export const DPP_HOURS_LIMIT_EN = `Work under a DPP must not exceed ${DPP_MAX_HOURS_PER_YEAR} hours per calendar year with one employer (Section 75(2) of the Labour Code).`;
 
-export const DPP_HOURS_LIMIT_UA = `Обсяг роботи за DPP не може перевищувати ${DPP_MAX_HOURS_PER_YEAR} годин на рік у одного роботодавця (§ 75(2) трудового кодексу ЧР).`;
+export const DPP_HOURS_LIMIT_UA = `Обсяг роботи за DPP не може перевищувати ${DPP_MAX_HOURS_PER_YEAR} годин на календарний рік у одного роботодавця (§ 75(2) трудового кодексу ЧР).`;
+
+export const DPP_VACATION_NOTE_UA =
+  'Право на відпустку за DPP виникає за § 77a трудового кодексу ЧР (з 1. 1. 2024): договір має тривати безперервно щонайменше 4 тижні у того ж роботодавця, а працівник має відпрацювати щонайменше 4-кратний фіктивний тижневий робочий час (20 год). Розрахунок робить роботодавець за § 213 та § 77a.';
 
 export const ZP_TRIAL_STANDARD_EN = ZP_TRIAL_MONTHS_STANDARD;
 export const ZP_TRIAL_LEADERSHIP_EN = ZP_TRIAL_MONTHS_LEADERSHIP;

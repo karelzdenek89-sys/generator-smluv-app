@@ -3,6 +3,7 @@ import { redis } from '@/lib/redis';
 import { normalizePricingTier } from '@/lib/pricing';
 import { getThematicPackageConfig } from '@/lib/packages';
 import { normalizeLocale } from '@/lib/locale';
+import { resolveEmailFromPortalToken } from '@/lib/orders-portal';
 
 export const runtime = 'nodejs';
 
@@ -24,6 +25,8 @@ type DraftData = {
   tier?: string;
   paid?: boolean;
   lang?: string;
+  customerEmail?: string | null;
+  email?: string | null;
   payload?: { lang?: string };
 };
 
@@ -44,6 +47,76 @@ const CONTRACT_NAMES: Record<string, string> = {
   cooperation: 'Smlouva o spolupráci',
 };
 
+function draftEmail(draft: DraftData | null | undefined): string | null {
+  const raw = draft?.customerEmail ?? draft?.email;
+  if (!raw || typeof raw !== 'string') return null;
+  const normalized = raw.toLowerCase().trim();
+  return normalized.includes('@') ? normalized : null;
+}
+
+async function listOrdersForEmail(email: string) {
+  const emailKey = `orders:email:${email}`;
+  const sessionIds = (await redis.smembers(emailKey)) as string[];
+
+  if (!sessionIds?.length) {
+    return [];
+  }
+
+  const orders = await Promise.all(
+    sessionIds.map(async (sessionId) => {
+      try {
+        const draftId = await redis.get<string>(`session:draft:${sessionId}`);
+
+        if (draftId) {
+          const draft = await redis.get<DraftData>(`contract:draft:${draftId}`);
+          const ownerEmail = draftEmail(draft);
+          if (ownerEmail && ownerEmail !== email) {
+            return null;
+          }
+          if (draft?.paid) {
+            const packageConfig = getThematicPackageConfig(draft.packageKey);
+            return {
+              sessionId,
+              contractName:
+                CONTRACT_NAMES[draft.contractType ?? ''] ?? 'Právní dokument',
+              packageLabel: packageConfig?.title ?? null,
+              paidAt: draft.paidAt ?? null,
+              tier: normalizePricingTier(draft.tier),
+              lang: normalizeLocale(draft.lang ?? draft.payload?.lang),
+            };
+          }
+        }
+
+        return {
+          sessionId,
+          contractName: 'Právní dokument',
+          packageLabel: null,
+          paidAt: null,
+          tier: 'basic',
+          lang: 'cs',
+        };
+      } catch {
+        return {
+          sessionId,
+          contractName: 'Právní dokument',
+          packageLabel: null,
+          paidAt: null,
+          tier: 'basic',
+          lang: 'cs',
+        };
+      }
+    }),
+  );
+
+  return orders
+    .filter((order): order is NonNullable<typeof order> => order !== null)
+    .sort((a, b) => {
+      if (!a.paidAt) return 1;
+      if (!b.paidAt) return -1;
+      return new Date(b.paidAt).getTime() - new Date(a.paidAt).getTime();
+    });
+}
+
 export async function GET(req: NextRequest) {
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
   const allowed = await checkRateLimit(ip);
@@ -54,68 +127,64 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const email = req.nextUrl.searchParams.get('email')?.toLowerCase().trim();
-  if (!email || !email.includes('@')) {
-    return NextResponse.json({ error: 'Neplatný e-mail.' }, { status: 400 });
+  const accessToken = req.nextUrl.searchParams.get('access')?.trim();
+  const sessionId = req.nextUrl.searchParams.get('session_id')?.trim();
+  const emailParam = req.nextUrl.searchParams.get('email')?.toLowerCase().trim();
+
+  // Single-document lookup: session_id from purchase e-mail (no e-mail index leak).
+  if (sessionId) {
+    if (!emailParam || !emailParam.includes('@')) {
+      return NextResponse.json(
+        { error: 'Pro stažení zadejte e-mail použitý při platbě spolu s ID relace z potvrzovacího e-mailu.' },
+        { status: 400 },
+      );
+    }
+
+    try {
+      const draftId = await redis.get<string>(`session:draft:${sessionId}`);
+      if (!draftId) {
+        return NextResponse.json({ orders: [] });
+      }
+      const draft = await redis.get<DraftData>(`contract:draft:${draftId}`);
+      const ownerEmail = draftEmail(draft);
+      if (!draft?.paid || !ownerEmail || ownerEmail !== emailParam) {
+        return NextResponse.json({ orders: [] });
+      }
+
+      const packageConfig = getThematicPackageConfig(draft.packageKey);
+      return NextResponse.json({
+        orders: [
+          {
+            sessionId,
+            contractName: CONTRACT_NAMES[draft.contractType ?? ''] ?? 'Právní dokument',
+            packageLabel: packageConfig?.title ?? null,
+            paidAt: draft.paidAt ?? null,
+            tier: normalizePricingTier(draft.tier),
+            lang: normalizeLocale(draft.lang ?? draft.payload?.lang),
+          },
+        ],
+      });
+    } catch (err) {
+      console.error('[orders API] session lookup error:', err);
+      return NextResponse.json({ error: 'Chyba serveru.' }, { status: 500 });
+    }
+  }
+
+  // List all documents: requires signed portal token from purchase e-mail.
+  const emailFromToken = await resolveEmailFromPortalToken(accessToken);
+  if (!emailFromToken) {
+    return NextResponse.json(
+      {
+        error:
+          'Přístup k dokumentům vyžaduje bezpečný odkaz z potvrzovacího e-mailu po platbě. Stažení jednoho PDF je možné i přes odkaz „Stáhnout PDF“ v e-mailu.',
+      },
+      { status: 401 },
+    );
   }
 
   try {
-    const emailKey = `orders:email:${email}`;
-    const sessionIds = (await redis.smembers(emailKey)) as string[];
-
-    if (!sessionIds || sessionIds.length === 0) {
-      return NextResponse.json({ orders: [] });
-    }
-
-    const orders = await Promise.all(
-      sessionIds.map(async (sessionId) => {
-        try {
-          const draftId = await redis.get<string>(`session:draft:${sessionId}`);
-
-          if (draftId) {
-            const draft = await redis.get<DraftData>(`contract:draft:${draftId}`);
-            if (draft?.paid) {
-              const packageConfig = getThematicPackageConfig(draft.packageKey);
-              return {
-                sessionId,
-                contractName:
-                  CONTRACT_NAMES[draft.contractType ?? ''] ?? 'Právní dokument',
-                packageLabel: packageConfig?.title ?? null,
-                paidAt: draft.paidAt ?? null,
-                tier: normalizePricingTier(draft.tier),
-                lang: normalizeLocale(draft.lang ?? draft.payload?.lang),
-              };
-            }
-          }
-
-          return {
-            sessionId,
-            contractName: 'Právní dokument',
-            packageLabel: null,
-            paidAt: null,
-            tier: 'basic',
-            lang: 'cs',
-          };
-        } catch {
-          return {
-            sessionId,
-            contractName: 'Právní dokument',
-            packageLabel: null,
-            paidAt: null,
-            tier: 'basic',
-            lang: 'cs',
-          };
-        }
-      }),
-    );
-
-    orders.sort((a, b) => {
-      if (!a.paidAt) return 1;
-      if (!b.paidAt) return -1;
-      return new Date(b.paidAt).getTime() - new Date(a.paidAt).getTime();
-    });
-
-    return NextResponse.json({ orders });
+    const orders = await listOrdersForEmail(emailFromToken);
+    return NextResponse.json({ orders, email: emailFromToken });
   } catch (err) {
     console.error('[orders API] Error:', err);
     return NextResponse.json({ error: 'Chyba serveru.' }, { status: 500 });

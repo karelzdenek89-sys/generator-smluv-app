@@ -1,6 +1,6 @@
 import type { ContractSection, StoredContractData } from '@/lib/contracts';
 import { resolveTierFeatures } from '@/lib/contracts';
-import { asText, disputeClauseUa, formatAmount, formatDate, today } from '@/lib/i18n/expat-contract-helpers';
+import { asText, disputeClauseUa, formatAmountCs, formatDateCs, today } from '@/lib/i18n/expat-contract-helpers';
 
 function yesNoUa(value: unknown, yes: string, no: string): string {
   return value === true || value === 'yes' ? yes : no;
@@ -20,7 +20,7 @@ export function buildSubleaseContractSectionsUa(d: StoredContractData): Contract
       body: [
         'Договір піднайму за § 2274 та наст. цивільного кодексу ЧР № 89/2012 Зб.',
         consentNote,
-        `Дата: ${d.contractDate ? formatDate(d.contractDate) : today()}`,
+        `Дата: ${d.contractDate ? formatDateCs(d.contractDate) : today()}`,
       ],
     },
     {
@@ -43,8 +43,8 @@ export function buildSubleaseContractSectionsUa(d: StoredContractData): Contract
       title: 'III. СТРОК',
       body: [
         d.duration === 'fixed'
-          ? `Строковий: ${formatDate(d.startDate)} – ${formatDate(d.endDate)}.`
-          : `Безстроковий з ${formatDate(d.startDate)}.`,
+          ? `Строковий: ${formatDateCs(d.startDate)} – ${formatDateCs(d.endDate)}.`
+          : `Безстроковий з ${formatDateCs(d.startDate)}.`,
         d.duration === 'indefinite' ? `Попередження: ${asText(d.noticePeriod, '3')} міс.` : '',
         'Піднайм припиняється з основною орендою.',
       ].filter(Boolean) as string[],
@@ -52,9 +52,9 @@ export function buildSubleaseContractSectionsUa(d: StoredContractData): Contract
     {
       title: 'IV. ПЛАТІ',
       body: [
-        `Підоренда: ${formatAmount(d.rentAmount)} Kč/міс.`,
-        d.utilityAmount ? `Комунальні аванси: ${formatAmount(d.utilityAmount)} Kč.` : '',
-        d.depositAmount ? `Застава: ${formatAmount(d.depositAmount)} Kč, повернення за 30 днів.` : '',
+        `Підоренда: ${formatAmountCs(d.rentAmount)} Kč/міс.`,
+        d.utilityAmount ? `Комунальні аванси: ${formatAmountCs(d.utilityAmount)} Kč.` : '',
+        d.depositAmount ? `Застава: ${formatAmountCs(d.depositAmount)} Kč, повернення за 30 днів.` : '',
         `До ${asText(d.paymentDay, '15')}-го числа${d.bankAccount ? `, рахунок ${asText(d.bankAccount)}` : ''}.`,
       ].filter(Boolean) as string[],
     },
@@ -71,7 +71,7 @@ export function buildSubleaseContractSectionsUa(d: StoredContractData): Contract
     {
       title: 'VI. ПЕРЕДАЧА',
       body: [
-        `Дата: ${formatDate(d.handoverDate)}. Ключі: ${asText(d.keysCount, '1')}.`,
+        `Дата: ${formatDateCs(d.handoverDate)}. Ключі: ${asText(d.keysCount, '1')}.`,
         d.knownDefects ? `Вади: ${asText(d.knownDefects)}.` : '',
       ].filter(Boolean) as string[],
     },

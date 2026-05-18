@@ -1,6 +1,6 @@
 import type { ContractSection, StoredContractData } from '@/lib/contracts';
 import { resolveTierFeatures } from '@/lib/contracts';
-import { asText, formatAmount, formatDate, today } from '@/lib/i18n/lease-contract-en';
+import { asText, formatAmountCs, formatDateCs, today } from '@/lib/i18n/expat-contract-helpers';
 
 function disputeClauseUk(d: StoredContractData): string {
   switch (d.disputeResolution) {
@@ -30,7 +30,7 @@ export function buildLeaseContractSectionsUk(d: StoredContractData): ContractSec
   const leaseDuration = d.leaseDuration
     ? asText(d.leaseDuration)
     : isFixedTerm
-      ? `на визначений строк до ${formatDate(d.endDate)}`
+      ? `на визначений строк до ${formatDateCs(d.endDate)}`
       : 'на невизначений строк';
   const hasDeposit =
     d.depositAmount !== undefined &&
@@ -71,7 +71,7 @@ export function buildLeaseContractSectionsUk(d: StoredContractData): ContractSec
       title: 'ПРЕАМБУЛА',
       body: [
         'Цей договір оренди укладено згідно з § 2201 та наст. закону № 89/2012 Зб. (ЦК) та § 2235 та наст. про оренду житла.',
-        `Дата укладення: ${d.contractDate ? formatDate(d.contractDate) : today()}`,
+        `Дата укладення: ${d.contractDate ? formatDateCs(d.contractDate) : today()}`,
       ],
     },
     {
@@ -107,8 +107,8 @@ export function buildLeaseContractSectionsUk(d: StoredContractData): ContractSec
       title: 'III. СТРОК',
       body: [
         `Строк оренди: ${leaseDuration}.`,
-        d.startDate ? `Початок: ${formatDate(d.startDate)}.` : '',
-        d.handoverDate ? `Фізична передача: ${formatDate(d.handoverDate)}.` : '',
+        d.startDate ? `Початок: ${formatDateCs(d.startDate)}.` : '',
+        d.handoverDate ? `Фізична передача: ${formatDateCs(d.handoverDate)}.` : '',
         isFixedTerm
           ? 'Після закінчення строку договір припиняється, якщо сторони письмово не домовляться інакше. Дострокове розірвання — лише на підставах закону або цього договору.'
           : 'Орендар може розірвати з тримісячним попередженням без вказання причин. Орендодавець — лише на підставах закону (§ 2288 ЦК).',
@@ -117,11 +117,11 @@ export function buildLeaseContractSectionsUk(d: StoredContractData): ContractSec
     {
       title: 'IV. ОРЕНДНА ПЛАТА ТА ПОСЛУГИ',
       body: [
-        `Щомісячна оренда: ${formatAmount(d.rentAmount)} Kč.`,
+        `Щомісячна оренда: ${formatAmountCs(d.rentAmount)} Kč.`,
         hasUtilities
-          ? `Щомісячний аванс за послуги: ${formatAmount(utilitiesAmount)} Kč.`
+          ? `Щомісячний аванс за послуги: ${formatAmountCs(utilitiesAmount)} Kč.`
           : 'Окремий аванс за послуги не узгоджено; орендар платить постачальникам або за розрахунком орендодавця.',
-        hasUtilities ? `Разом на місяць: ${formatAmount(monthlyTotal)} Kč.` : '',
+        hasUtilities ? `Разом на місяць: ${formatAmountCs(monthlyTotal)} Kč.` : '',
         `Оплата до ${paymentDay}-го числа кожного місяця наперед.`,
         d.bankAccount ? `Рахунок: ${asText(d.bankAccount)}.` : '',
         d.variableSymbol ? `Змінний символ: ${asText(d.variableSymbol)}.` : '',
@@ -144,7 +144,7 @@ export function buildLeaseContractSectionsUk(d: StoredContractData): ContractSec
       title: 'V. ЗАСТАВА',
       body: hasDeposit
         ? [
-            `До передачі (найпізніше при підписанні) орендар сплачує заставу ${formatAmount(d.depositAmount)} Kč${d.rentAmount && Number(d.rentAmount) > 0 ? ` (${Math.round(Number(d.depositAmount) / Number(d.rentAmount))}× місячна оренда)` : ''}.`,
+            `До передачі (найпізніше при підписанні) орендар сплачує заставу ${formatAmountCs(d.depositAmount)} Kč${d.rentAmount && Number(d.rentAmount) > 0 ? ` (${Math.round(Number(d.depositAmount) / Number(d.rentAmount))}× місячна оренда)` : ''}.`,
             'Застава забезпечує вимоги орендодавця, зокрема борг, аванси, шкоду та відновлення понад нормальне зношення.',
             'Повернення протягом місяця після закінчення та звільнення, з відсотками, за вирахуванням обґрунтованих сум.',
             'Залік — лише з письмовим повідомленням і розшифровкою.',
@@ -236,7 +236,7 @@ export function buildLeaseContractSectionsUk(d: StoredContractData): ContractSec
         'Пояснювальний український підсумок передачі. Первинний чеський протокол у PDF має перевагу при розбіжностях.',
         `Квартира: ${propertyAddress}`,
         `Орендодавець: ${asText(d.landlordName)} · Орендар: ${asText(d.tenantName)}`,
-        `Дата передачі: ${formatDate(d.handoverDate)}`,
+        `Дата передачі: ${formatDateCs(d.handoverDate)}`,
         d.electricityMeter
           ? `Електрика (${asText(d.electricityMeterSerial, '—')}): ${asText(d.electricityMeter)} кВт·год`
           : '',

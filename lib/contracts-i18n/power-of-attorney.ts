@@ -184,9 +184,6 @@ function de(d: StoredContractData, hasPremium: boolean): ParaPair[] {
 export function buildPowerOfAttorneyTranslationsBySection(d: StoredContractData, hasPremium: boolean): Array<NonNullable<ContractSection['translations']>> {
   return buildBilingualTranslations({
     en: () => en(d, hasPremium),
-    uk: () => uk(d, hasPremium),
-    ru: () => ru(d, hasPremium),
-    vn: () => vn(d, hasPremium),
-    de: () => de(d, hasPremium),
+    ua: () => uk(d, hasPremium),
   });
 }

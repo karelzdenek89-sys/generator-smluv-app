@@ -1,6 +1,5 @@
-import LocaleLandingPage from '@/app/components/LocaleLandingPage';
-import { LANDINGS } from '@/lib/i18n/landings';
+import { redirect } from 'next/navigation';
 
-export default function GermanLandingPage() {
-  return <LocaleLandingPage locale="de" content={LANDINGS.de} />;
+export default function RetiredGermanLandingPage() {
+  redirect('/en');
 }

@@ -1,6 +1,6 @@
 import type { ContractSection, StoredContractData } from '@/lib/contracts';
 import { resolveTierFeatures } from '@/lib/contracts';
-import { asText, disputeClauseUa, formatAmount, formatDate, today } from '@/lib/i18n/expat-contract-helpers';
+import { asText, disputeClauseUa, formatAmountCs, formatDateCs, today } from '@/lib/i18n/expat-contract-helpers';
 
 /** Пояснювальний переклад купівлі авто — не офіційний. */
 export function buildCarContractSectionsUa(d: StoredContractData): ContractSection[] {
@@ -26,7 +26,7 @@ export function buildCarContractSectionsUa(d: StoredContractData): ContractSecti
       title: 'ПРЕАМБУЛА',
       body: [
         'Купівельна угода на авто за § 2079 та наст. цивільного кодексу ЧР.',
-        `Дата: ${d.contractDate ? formatDate(d.contractDate) : today()}`,
+        `Дата: ${d.contractDate ? formatDateCs(d.contractDate) : today()}`,
       ],
     },
     {
@@ -42,18 +42,18 @@ export function buildCarContractSectionsUa(d: StoredContractData): ContractSecti
         `${asText(d.carMake)} ${asText(d.carModel, '')}`.trim(),
         d.carVIN ? `VIN: ${asText(d.carVIN)}` : '',
         d.carPlate ? `Номер: ${asText(d.carPlate)}` : '',
-        d.carMileage ? `Пробіг: ${formatAmount(d.carMileage)} km` : '',
+        d.carMileage ? `Пробіг: ${formatAmountCs(d.carMileage)} km` : '',
         d.knownDefects ? `Вади: ${asText(d.knownDefects)}` : 'Прихованих вад продавець не знає.',
       ].filter(Boolean) as string[],
     },
     {
       title: 'III. ЦІНА',
-      body: [`Ціна: ${formatAmount(d.priceAmount ?? d.purchasePrice)} Kč.`, paymentText, ownershipTransfer],
+      body: [`Ціна: ${formatAmountCs(d.priceAmount ?? d.purchasePrice)} Kč.`, paymentText, ownershipTransfer],
     },
     {
       title: 'IV. ПЕРЕДАЧА',
       body: [
-        `Дата: ${formatDate(d.handoverDate, 'при підписі')}.`,
+        `Дата: ${formatDateCs(d.handoverDate, 'при підписі')}.`,
         'Покупець реєструє авто та страхує після переходу власності.',
       ],
     },

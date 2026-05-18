@@ -7,7 +7,7 @@ export const formatAmount = (amount?: unknown) => {
   if (amount === null || amount === undefined || amount === '') return emptyLine;
   const num = Number(amount);
   if (!Number.isFinite(num)) return emptyLine;
-  return num.toLocaleString('en-US');
+  return num.toLocaleString('cs-CZ');
 };
 
 export const asText = (value: unknown, fallback = emptyLine, maxLength = 1000) => {
@@ -24,12 +24,12 @@ export const formatDate = (value: unknown, fallback = emptyLine): string => {
   const isoMatch = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
   if (isoMatch) {
     const [, year, month, day] = isoMatch;
-    return `${parseInt(day, 10)}/${parseInt(month, 10)}/${year}`;
+    return `${parseInt(day, 10)}. ${parseInt(month, 10)}. ${year}`;
   }
   return str;
 };
 
-export const today = () => new Date().toLocaleDateString('en-GB');
+export const today = () => new Date().toLocaleDateString('cs-CZ');
 
 function disputeClauseEn(d: StoredContractData): string {
   switch (d.disputeResolution) {

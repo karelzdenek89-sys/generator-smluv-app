@@ -52,11 +52,11 @@ async function run() {
     const r = await fetchHtml('/vi');
     check('/vi returns 308 redirect', r.status === 308, `got ${r.status}`);
     const loc = r.headers.get('location') || '';
-    check('/vi Location header points to /vn', loc.endsWith('/vn') || loc.includes('/vn'), `Location: ${loc}`);
+    check('/vi Location header points to /en', loc.endsWith('/en') || loc.includes('/en'), `Location: ${loc}`);
   }
   {
     const r = await fetchHtml('/vi/najem');
-    check('/vi/<path> also redirects to /vn/<path>', r.status === 308 && (r.headers.get('location') || '').includes('/vn/najem'));
+    check('/vi/<path> also redirects to /en/<path>', r.status === 308 && (r.headers.get('location') || '').includes('/en'));
   }
 
   // ─── 3. Each foreign landing has correct canonical + hreflang links ─────

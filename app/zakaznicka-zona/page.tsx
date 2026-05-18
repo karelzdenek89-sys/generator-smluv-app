@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 type Order = {
   sessionId: string;
@@ -34,38 +35,91 @@ const TTL_LABEL: Record<string, string> = {
 };
 
 export default function CustomerZone() {
-  const [email, setEmail]         = useState('');
-  const [state, setState]         = useState<LookupState>('idle');
-  const [orders, setOrders]       = useState<Order[]>([]);
-  const [downloadLang, setDownloadLang] = useState<Record<string, string>>({});
-  const [errorMsg, setErrorMsg]   = useState('');
+  const searchParams = useSearchParams();
+  const portalAccess = searchParams.get('access')?.trim() ?? '';
 
-  const handleLookup = async (e: React.FormEvent) => {
+  const [email, setEmail] = useState('');
+  const [sessionId, setSessionId] = useState('');
+  const [state, setState] = useState<LookupState>('idle');
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [downloadLang, setDownloadLang] = useState<Record<string, string>>({});
+  const [errorMsg, setErrorMsg] = useState('');
+  const [resolvedEmail, setResolvedEmail] = useState('');
+
+  const applyOrders = useCallback((nextOrders: Order[], displayEmail = '') => {
+    setOrders(nextOrders);
+    setDownloadLang(
+      Object.fromEntries(nextOrders.map((order) => [order.sessionId, normalizeDownloadLang(order.lang)])),
+    );
+    if (displayEmail) setResolvedEmail(displayEmail);
+    setState('done');
+  }, []);
+
+  const fetchWithAccess = useCallback(
+    async (access: string) => {
+      setState('loading');
+      setErrorMsg('');
+      try {
+        const res = await fetch(`/api/orders?access=${encodeURIComponent(access)}`, { cache: 'no-store' });
+        if (res.status === 429) {
+          setErrorMsg('Příliš mnoho dotazů. Zkuste to za chvíli.');
+          setState('error');
+          return;
+        }
+        const data = (await res.json()) as { orders?: Order[]; email?: string; error?: string };
+        if (!res.ok) {
+          setErrorMsg(
+            data.error ??
+              'Neplatný odkaz. Použijte „Moje dokumenty“ z potvrzovacího e-mailu po platbě.',
+          );
+          setState('error');
+          return;
+        }
+        applyOrders(data.orders ?? [], data.email ?? '');
+      } catch {
+        setErrorMsg('Nepodařilo se načíst objednávky. Zkuste to znovu.');
+        setState('error');
+      }
+    },
+    [applyOrders],
+  );
+
+  useEffect(() => {
+    if (portalAccess) void fetchWithAccess(portalAccess);
+  }, [portalAccess, fetchWithAccess]);
+
+  const handleSessionLookup = async (e: React.FormEvent) => {
     e.preventDefault();
-    const trimmed = email.trim().toLowerCase();
-    if (!trimmed || !trimmed.includes('@')) {
-      setErrorMsg('Zadejte platný e-mail.');
+    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedSession = sessionId.trim();
+    if (!trimmedEmail.includes('@') || !trimmedSession) {
+      setErrorMsg('Zadejte e-mail z platby a ID relace z potvrzovacího e-mailu.');
       return;
     }
     setState('loading');
     setErrorMsg('');
     try {
-      const res = await fetch(`/api/orders?email=${encodeURIComponent(trimmed)}`, { cache: 'no-store' });
+      const qs = new URLSearchParams({ email: trimmedEmail, session_id: trimmedSession });
+      const res = await fetch(`/api/orders?${qs.toString()}`, { cache: 'no-store' });
       if (res.status === 429) {
         setErrorMsg('Příliš mnoho dotazů. Zkuste to za chvíli.');
         setState('error');
         return;
       }
-      if (!res.ok) throw new Error('Server error');
-      const data = (await res.json()) as { orders: Order[] };
-      setOrders(data.orders ?? []);
-      setDownloadLang(Object.fromEntries((data.orders ?? []).map((order) => [order.sessionId, normalizeDownloadLang(order.lang)])));
-      setState('done');
+      const data = (await res.json()) as { orders?: Order[]; error?: string };
+      if (!res.ok) {
+        setErrorMsg(data.error ?? 'Dokument nenalezen.');
+        setState('error');
+        return;
+      }
+      applyOrders(data.orders ?? [], trimmedEmail);
     } catch {
-      setErrorMsg('Nepodařilo se načíst objednávky. Zkuste to znovu.');
+      setErrorMsg('Nepodařilo se načíst dokument. Zkuste to znovu.');
       setState('error');
     }
   };
+
+  const displayEmail = resolvedEmail || email;
 
   const formatDate = (iso: string | null) => {
     if (!iso) return '—';
@@ -98,42 +152,45 @@ export default function CustomerZone() {
           <div className="w-12 h-12 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-center justify-center text-xl">📁</div>
           <div>
             <h1 className="text-3xl font-black text-white uppercase italic tracking-tighter">Moje dokumenty</h1>
-            <p className="text-slate-500 text-xs mt-0.5">Zadejte e-mail z objednávky — zobrazí se na jakémkoliv zařízení</p>
+            <p className="text-slate-500 text-xs mt-0.5">
+              Použijte bezpečný odkaz z potvrzovacího e-mailu, nebo ověřte jeden dokument e-mailem a ID relace.
+            </p>
           </div>
         </div>
 
         {/* E-mail lookup form */}
-        <form onSubmit={handleLookup} className="bg-[#0c1426] border border-slate-800 rounded-3xl p-6 mb-6">
+        <form onSubmit={handleSessionLookup} className="bg-[#0c1426] border border-slate-800 rounded-3xl p-6 mb-6">
           <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-3">
-            E-mail z objednávky
+            Ověření jednoho dokumentu
           </label>
-          <div className="flex gap-3">
+          <div className="space-y-3">
             <input
               type="email"
               value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder="vas@email.cz"
-              required
-              className="flex-1 bg-[#141f35] border border-slate-700 rounded-2xl px-4 py-3 text-white placeholder-slate-600 text-sm focus:outline-none focus:border-amber-500/50 transition"
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="E-mail z platby"
+              className="w-full bg-[#141f35] border border-slate-700 rounded-2xl px-4 py-3 text-white placeholder-slate-600 text-sm focus:outline-none focus:border-amber-500/50 transition"
+            />
+            <input
+              type="text"
+              value={sessionId}
+              onChange={(e) => setSessionId(e.target.value)}
+              placeholder="ID relace (cs_…) z potvrzovacího e-mailu"
+              className="w-full bg-[#141f35] border border-slate-700 rounded-2xl px-4 py-3 text-white placeholder-slate-600 text-sm focus:outline-none focus:border-amber-500/50 transition"
             />
             <button
               type="submit"
               disabled={state === 'loading'}
-              className="px-6 py-3 bg-amber-500 text-black font-black text-sm rounded-2xl hover:bg-amber-400 transition disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wide flex-shrink-0"
+              className="w-full px-6 py-3 bg-amber-500 text-black font-black text-sm rounded-2xl hover:bg-amber-400 transition disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-wide"
             >
-              {state === 'loading' ? (
-                <span className="flex items-center gap-2">
-                  <span className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin inline-block" />
-                  Hledám…
-                </span>
-              ) : 'Zobrazit'}
+              {state === 'loading' ? 'Ověřuji…' : 'Zobrazit dokument'}
             </button>
           </div>
           {errorMsg && (
             <p className="mt-2 text-xs text-rose-400">{errorMsg}</p>
           )}
           <p className="mt-3 text-xs text-slate-600">
-            Po zadání e-mailu se zobrazí všechny dokumenty zakoupené na této adrese. Nikam nic neposíláme.
+            Seznam všech dokumentů je jen přes odkaz „Moje dokumenty“ v e-mailu po platbě.
           </p>
         </form>
 
@@ -144,7 +201,7 @@ export default function CustomerZone() {
               <div className="text-4xl mb-4">📭</div>
               <h2 className="font-black text-white text-lg mb-2">Žádné dokumenty</h2>
               <p className="text-slate-400 text-sm mb-6 max-w-sm mx-auto">
-                Na e-mailu <span className="text-white font-bold">{email}</span> nenalezeny žádné objednávky. Zkontrolujte překlep nebo použijte e-mail ze Stripe potvrzení.
+                Pro <span className="text-white font-bold">{displayEmail}</span> nenalezeny žádné objednávky. Zkontrolujte překlep nebo použijte e-mail ze Stripe potvrzení.
               </p>
               <Link href="/"
                 className="inline-block px-8 py-3 bg-amber-500 text-black font-black uppercase text-sm rounded-2xl hover:bg-amber-400 transition">
@@ -207,7 +264,7 @@ export default function CustomerZone() {
             </li>
             <li className="flex items-start gap-2">
               <span className="text-amber-400/60">•</span>
-              <span>Dokumenty jsou dostupné na libovolném zařízení — stačí zadat e-mail z objednávky.</span>
+              <span>Všechny dokumenty: použijte bezpečný odkaz z potvrzovacího e-mailu. Jedno PDF: e-mail + ID relace výše.</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-amber-400/60">•</span>

@@ -1,6 +1,6 @@
 import type { ContractSection, StoredContractData } from '@/lib/contracts';
 import { resolveTierFeatures } from '@/lib/contracts';
-import { asText, disputeClauseUa, formatDate, today } from '@/lib/i18n/expat-contract-helpers';
+import { asText, disputeClauseUa, formatDateCs, today } from '@/lib/i18n/expat-contract-helpers';
 
 function scopeDescUa(d: StoredContractData): string {
   switch (d.poaType) {
@@ -31,7 +31,7 @@ export function buildPowerOfAttorneyContractSectionsUa(d: StoredContractData): C
       title: 'ПРЕАМБУЛА',
       body: [
         'Довіреність за § 441–449 цивільного кодексу ЧР № 89/2012 Зб.',
-        `Дата: ${d.contractDate ? formatDate(d.contractDate) : today()}`,
+        `Дата: ${d.contractDate ? formatDateCs(d.contractDate) : today()}`,
         'Шаблон з генератора; органи можуть вимагати нотаріальний підпис або офіційну форму.',
       ],
     },

@@ -1,6 +1,5 @@
-import LocaleLandingPage from '@/app/components/LocaleLandingPage';
-import { LANDINGS } from '@/lib/i18n/landings';
+import { redirect } from 'next/navigation';
 
-export default function VietnameseLandingPage() {
-  return <LocaleLandingPage locale="vn" content={LANDINGS.vn} />;
+export default function RetiredVietnameseLandingPage() {
+  redirect('/en');
 }

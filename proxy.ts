@@ -1,33 +1,44 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const FOREIGN_SEGMENTS = ['en', 'uk', 'ru', 'vn', 'de'] as const;
-type ForeignSeg = (typeof FOREIGN_SEGMENTS)[number];
+/** Supported public locale URL segments (expat product). */
+const ACTIVE_LOCALE_SEGMENTS = ['en', 'ua'] as const;
 
-/**
- * Aliases for foreign-locale URL segments. The Vietnamese ISO code is `vi`
- * (BCP-47) so search engines and direct links may use `/vi/...`. We canonicalise
- * everything to `/vn/...` to match our routing tree, via a 308 permanent redirect.
- */
-const SEGMENT_ALIASES: Record<string, ForeignSeg> = {
-  vi: 'vn',
+/** Retired segments → canonical expat landing (308). */
+const RETIRED_LOCALE_REDIRECTS: Record<string, string> = {
+  vi: '/en',
+  vn: '/en',
+  ru: '/en',
+  de: '/en',
+  uk: '/ua',
 };
 
+function redirectPermanent(request: NextRequest, pathname: string): NextResponse {
+  const url = request.nextUrl.clone();
+  url.pathname = pathname;
+  return NextResponse.redirect(url, 308);
+}
+
+function rewritePathSegment(pathname: string, fromSeg: string, toSeg: string): string {
+  if (pathname === `/${fromSeg}`) return `/${toSeg}`;
+  if (pathname.startsWith(`/${fromSeg}/`)) {
+    return pathname.replace(`/${fromSeg}`, `/${toSeg}`);
+  }
+  return pathname;
+}
+
 /** Map an Accept-Language primary tag to one of our supported segments. */
-function inferLocaleFromAcceptLanguage(header: string | null): ForeignSeg | null {
+function inferLocaleFromAcceptLanguage(header: string | null): 'en' | 'ua' | null {
   if (!header) return null;
-  const langs = header.split(',').map(p => {
+  const langs = header.split(',').map((p) => {
     const [tag, q = 'q=1'] = p.trim().split(';');
     return { tag: tag.toLowerCase(), q: parseFloat(q.replace('q=', '')) || 1 };
   }).sort((a, b) => b.q - a.q);
 
   for (const { tag } of langs) {
-    if (tag.startsWith('cs')) return null; // Czech speaker — no banner needed
+    if (tag.startsWith('cs')) return null;
     if (tag.startsWith('en')) return 'en';
-    if (tag.startsWith('uk')) return 'uk';
-    if (tag.startsWith('ru')) return 'ru';
-    if (tag.startsWith('vi') || tag.startsWith('vn')) return 'vn';
-    if (tag.startsWith('de')) return 'de';
+    if (tag.startsWith('uk')) return 'ua';
   }
   return null;
 }
@@ -35,21 +46,20 @@ function inferLocaleFromAcceptLanguage(header: string | null): ForeignSeg | null
 export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
-  // 0) Permanent redirect from aliased segments to canonical ones, e.g. /vi → /vn.
-  //    Done first so search-engine signals consolidate on a single URL.
-  for (const [alias, canonical] of Object.entries(SEGMENT_ALIASES)) {
-    if (pathname === `/${alias}` || pathname.startsWith(`/${alias}/`)) {
-      const url = request.nextUrl.clone();
-      url.pathname = pathname.replace(`/${alias}`, `/${canonical}`);
-      return NextResponse.redirect(url, 308);
+  // 0) Retired locale segments → canonical /en or /ua (incl. nested paths).
+  for (const [seg, target] of Object.entries(RETIRED_LOCALE_REDIRECTS)) {
+    if (pathname === `/${seg}` || pathname.startsWith(`/${seg}/`)) {
+      const canonicalSeg = target.replace('/', '');
+      const nextPath = rewritePathSegment(pathname, seg, canonicalSeg);
+      return redirectPermanent(request, nextPath);
     }
   }
 
   const response = NextResponse.next();
   response.headers.set('x-pathname', pathname);
 
-  // 1) Explicit foreign-landing visit → store the preference for future pages.
-  for (const seg of FOREIGN_SEGMENTS) {
+  // 1) Explicit foreign-landing visit → store preference for builder banners.
+  for (const seg of ACTIVE_LOCALE_SEGMENTS) {
     if (pathname === `/${seg}` || pathname.startsWith(`/${seg}/`)) {
       response.cookies.set('preferred-locale', seg, {
         path: '/',
@@ -60,9 +70,7 @@ export function proxy(request: NextRequest) {
     }
   }
 
-  // 2) No explicit cookie yet → fall back to Accept-Language detection so
-  //    foreign visitors who reach a Czech builder directly still see the
-  //    bilingual-PDF explainer banner in their language.
+  // 2) Accept-Language fallback when no cookie yet.
   if (!request.cookies.get('preferred-locale')) {
     const inferred = inferLocaleFromAcceptLanguage(request.headers.get('accept-language'));
     if (inferred) {

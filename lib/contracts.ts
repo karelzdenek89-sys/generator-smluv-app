@@ -63,7 +63,7 @@ export type ContractSection = {
    * NOTE: All existing builders return Czech only. Translations are intended
    * to be populated later by a translator with Czech legal background.
    */
-  translations?: Partial<Record<'en' | 'uk' | 'ru' | 'vn' | 'de', {
+  translations?: Partial<Record<'en' | 'ua', {
     title?: string;
     body?: string[];
   }>>;

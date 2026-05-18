@@ -1,80 +1,116 @@
 import { cookies, headers } from 'next/headers';
 import Link from 'next/link';
-import { LOCALE_META, type Locale } from '@/lib/i18n/locales';
+import {
+  getContractTypeByPath,
+  getUnsupportedFormNotice,
+  isExpatContract,
+  normalizeLocale,
+  type AppLocale,
+} from '@/lib/locale';
+import { LOCALE_META } from '@/lib/i18n/locales';
 import DismissButtonClient from './ForeignBannerDismissButton';
+
+type ActiveLocale = Exclude<AppLocale, 'cs'>;
 
 type BannerCopy = {
   heading: string;
   body: string;
-  pdfNote: string;
+  detail: string;
   translateHint: string;
   backToLanding: string;
   dismiss: string;
 };
 
-const COPY: Record<Exclude<Locale, 'cs'>, BannerCopy> = {
+const SUPPORTED_COPY: Record<ActiveLocale, BannerCopy> = {
   en: {
-    heading: 'You came from the English version',
+    heading: 'You came from the English overview',
     body: 'The form on this page is in Czech.',
-    pdfNote: 'The PDF you generate will be bilingual: Czech wording prevails, with an English translation alongside for convenience only (not a certified or official translation).',
-    translateHint: 'Tip: right-click the page and choose "Translate to English" to fill the form in English.',
+    detail:
+      'For supported contracts, the PDF includes Czech wording plus an explanatory English annex (not certified or official). In case of discrepancy, the Czech text prevails.',
+    translateHint: 'Tip: right-click the page and choose "Translate to English" to fill the form.',
     backToLanding: '← Back to English overview',
     dismiss: 'Got it',
   },
-  uk: {
-    heading: 'Ви прийшли з української версії',
+  ua: {
+    heading: 'Ви перейшли з українського огляду',
     body: 'Форма на цій сторінці чеською мовою.',
-    pdfNote: 'Створене PDF буде двомовним: переважає чеське формулювання, а український переклад надається поруч лише для зручності (не є офіційним або засвідченим перекладом).',
-    translateHint: 'Підказка: клацніть правою кнопкою миші і виберіть «Перекласти», щоб заповнити форму українською.',
-    backToLanding: '← Назад до української сторінки',
+    detail:
+      'Для обраних договорів PDF містить чеський текст і пояснювальний український додаток (не офіційний переклад). У разі розбіжностей перевага має чеське формулювання.',
+    translateHint: 'Підказка: клацніть правою кнопкою миші і виберіть «Перекласти».',
+    backToLanding: '← Назад до українського огляду',
     dismiss: 'Зрозуміло',
   },
-  ru: {
-    heading: 'Вы пришли с русской версии',
-    body: 'Форма на этой странице на чешском языке.',
-    pdfNote: 'Сгенерированный PDF будет двуязычным: преимущественную силу имеет чешская формулировка, а русский перевод предоставляется рядом исключительно для удобства (не является официальным или заверенным переводом).',
-    translateHint: 'Подсказка: щёлкните правой кнопкой и выберите «Перевести», чтобы заполнить форму по-русски.',
-    backToLanding: '← Назад на русскую страницу',
-    dismiss: 'Понятно',
+};
+
+const CZECH_ONLY_COPY: Record<ActiveLocale, BannerCopy> = {
+  en: {
+    heading: 'You came from the English overview',
+    body: 'This contract form is available in Czech only.',
+    detail:
+      'The generated PDF will be in Czech. Selected core contracts (rental, employment, DPP, and others) offer English form guidance and an explanatory annex.',
+    translateHint: 'Tip: use your browser translator while filling the Czech form.',
+    backToLanding: '← Back to English overview',
+    dismiss: 'Got it',
   },
-  vn: {
-    heading: 'Bạn đến từ phiên bản tiếng Việt',
-    body: 'Biểu mẫu trên trang này bằng tiếng Séc.',
-    pdfNote: 'PDF được tạo sẽ song ngữ: bản tiếng Séc được ưu tiên áp dụng, bản dịch tiếng Việt được cung cấp bên cạnh chỉ để tiện theo dõi (không phải là bản dịch chính thức hoặc có công chứng).',
-    translateHint: 'Mẹo: nhấp chuột phải và chọn "Dịch" để điền biểu mẫu bằng tiếng Việt.',
-    backToLanding: '← Quay lại trang tiếng Việt',
-    dismiss: 'Đã hiểu',
-  },
-  de: {
-    heading: 'Sie kommen aus der deutschen Version',
-    body: 'Das Formular auf dieser Seite ist auf Tschechisch.',
-    pdfNote: 'Ihre erzeugte PDF wird zweisprachig sein: maßgebend ist der tschechische Wortlaut, eine deutsche Übersetzung wird daneben ausschließlich zur Verständlichkeit beigefügt (keine beglaubigte oder amtliche Übersetzung).',
-    translateHint: 'Tipp: Klicken Sie mit der rechten Maustaste und wählen Sie „Übersetzen", um das Formular auf Deutsch auszufüllen.',
-    backToLanding: '← Zurück zur deutschen Übersicht',
-    dismiss: 'Verstanden',
+  ua: {
+    heading: 'Ви перейшли з українського огляду',
+    body: 'Ця форма доступна лише чеською.',
+    detail:
+      'PDF буде чеською. Для основних договорів (оренда, праця, DPP тощо) є підказки українською та пояснювальний додаток у PDF.',
+    translateHint: 'Підказка: використайте перекладач браузера під час заповнення.',
+    backToLanding: '← Назад до українського огляду',
+    dismiss: 'Зрозуміло',
   },
 };
+
+function mapCookieToAppLocale(raw: string | undefined): ActiveLocale | null {
+  if (!raw) return null;
+  const normalized = normalizeLocale(raw);
+  return normalized === 'cs' ? null : normalized;
+}
 
 export default async function ForeignVisitorBanner() {
   const hdrs = await headers();
   const pathname = hdrs.get('x-pathname') ?? '';
 
-  // Don't show on the foreign landing pages themselves; only on CZ pages
-  // (the form/builder pages where the labels are still Czech).
-  for (const seg of ['en', 'uk', 'ru', 'vn', 'de']) {
+  for (const seg of ['en', 'ua', 'uk', 'ru', 'vn', 'vi', 'de']) {
     if (pathname === `/${seg}` || pathname.startsWith(`/${seg}/`)) return null;
   }
 
   const cookieStore = await cookies();
-  const dismissed = cookieStore.get('foreign-banner-dismissed')?.value === '1';
-  if (dismissed) return null;
+  if (cookieStore.get('foreign-banner-dismissed')?.value === '1') return null;
 
-  const localeCookie = cookieStore.get('preferred-locale')?.value;
-  if (!localeCookie || !(localeCookie in COPY)) return null;
-  const locale = localeCookie as Exclude<Locale, 'cs'>;
-  const copy = COPY[locale];
+  const locale = mapCookieToAppLocale(cookieStore.get('preferred-locale')?.value);
+  if (!locale) return null;
+
+  const contractType = getContractTypeByPath(pathname);
+  const supported = contractType ? isExpatContract(contractType) : false;
+  const copy = supported ? SUPPORTED_COPY[locale] : CZECH_ONLY_COPY[locale];
   const meta = LOCALE_META[locale];
+  const unsupportedNote =
+    !supported && contractType ? getUnsupportedFormNotice(locale) : null;
 
+  return (
+    <VisitorBannerShell
+      locale={locale}
+      meta={meta}
+      copy={copy}
+      unsupportedNote={unsupportedNote}
+    />
+  );
+}
+
+function VisitorBannerShell({
+  locale,
+  meta,
+  copy,
+  unsupportedNote,
+}: {
+  locale: ActiveLocale;
+  meta: (typeof LOCALE_META)[ActiveLocale];
+  copy: BannerCopy;
+  unsupportedNote: string | null;
+}) {
   return (
     <div
       lang={meta.htmlLang}
@@ -89,11 +125,12 @@ export default async function ForeignVisitorBanner() {
             {copy.heading}
           </div>
           <div className="mt-0.5 text-amber-100/90">
-            {copy.body} {copy.pdfNote}
+            {copy.body} {copy.detail}
           </div>
-          <div className="mt-0.5 text-xs text-amber-100/70">
-            {copy.translateHint}
-          </div>
+          {unsupportedNote ? (
+            <div className="mt-1 text-xs text-amber-100/80">{unsupportedNote}</div>
+          ) : null}
+          <div className="mt-0.5 text-xs text-amber-100/70">{copy.translateHint}</div>
         </div>
         <div className="flex shrink-0 items-center gap-3">
           <Link

@@ -467,10 +467,7 @@ const DE: LandingContent = {
 
 export const LANDINGS: Record<Exclude<Locale, 'cs'>, LandingContent> = {
   en: EN,
-  uk: UK,
-  ru: RU,
-  vn: VN,
-  de: DE,
+  ua: UK,
 };
 
 import type { Metadata } from 'next';
@@ -478,9 +475,11 @@ import { FOREIGN_LOCALES, LOCALE_META } from './locales';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
-export function makeLandingMetadata(locale: Exclude<Locale, 'cs'>): Metadata {
-  const content = LANDINGS[locale];
-  const meta = LOCALE_META[locale];
+export function makeLandingMetadata(locale: Exclude<Locale, 'cs'> | 'uk' | 'ru' | 'vn' | 'de'): Metadata {
+  const resolved: Exclude<Locale, 'cs'> =
+    locale === 'uk' ? 'ua' : locale === 'en' || locale === 'ua' ? locale : 'en';
+  const content = LANDINGS[resolved];
+  const meta = LOCALE_META[resolved];
   const url = `${BASE_URL}/${meta.segment}`;
 
   const languages: Record<string, string> = {

@@ -8,6 +8,7 @@ import {
   pluralMonthsEn,
   today,
 } from '@/lib/i18n/expat-contract-helpers';
+import { EMPLOYMENT_WORK_ELIGIBILITY_NOTICE_EN } from '@/lib/i18n/safety-copy';
 import { ZP_TRIAL_MONTHS_LEADERSHIP, ZP_TRIAL_MONTHS_STANDARD } from '@/lib/legal-constants-2026';
 
 /** Explanatory English translation of the Czech employment contract — not certified or official. */
@@ -74,6 +75,8 @@ export function buildEmploymentContractSectionsEn(d: StoredContractData): Contra
       body: [
         'This employment contract (the “Contract”) is concluded under Sections 34 et seq. of Act No. 262/2006 Coll., the Labour Code (the “LC”).',
         `Date of conclusion: ${d.contractDate ? formatDate(d.contractDate) : today()}`,
+        'If this translation differs from the Czech text of the contract, the Czech wording prevails.',
+        EMPLOYMENT_WORK_ELIGIBILITY_NOTICE_EN,
       ],
     },
     {
