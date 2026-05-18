@@ -38,9 +38,12 @@ import {
 import { getExpatBlogArticle } from '../lib/i18n/expat-blog-articles';
 import {
   getCarFormUi,
+  getDppFormUi,
+  getEmploymentFormUi,
   getPoaFormUi,
   getSubleaseFormUi,
 } from '../lib/i18n/expat-builder-forms';
+import { formatRemoteWorkForContract, REMOTE_WORK_KEYS } from '../lib/i18n/employment-remote-work';
 import { buildExpatPreviewSections } from '../lib/i18n/expat-contract-preview';
 
 const root = process.cwd();
@@ -353,10 +356,22 @@ function testExpatCapabilityDifferentiation() {
 }
 
 function testExpatBuilderFormsLocalized() {
+  const czechLandingMarkers = ['Sestaveno dle', 'Vyplňte údaje dokumentu', 'Zobrazí se náhled'];
   for (const locale of ['en', 'ua'] as const) {
     const sub = getSubleaseFormUi(locale);
     assert.equal(sub.isLocalized, true);
     assert.ok(sub.fields.landlordName);
+    assert.ok(sub.landing.benefits.length >= 3);
+    assert.ok(sub.landing.faq.length >= 2);
+    for (const m of czechLandingMarkers) {
+      assert.ok(!JSON.stringify(sub.landing).includes(m), `sublease ${locale} still has CS: ${m}`);
+    }
+    const emp = getEmploymentFormUi(locale);
+    assert.ok(emp.page.placeholders.jobTitle);
+    assert.equal(emp.remoteWorkValues.full, REMOTE_WORK_KEYS.full);
+    const dpp = getDppFormUi(locale);
+    assert.ok(dpp.fields.employerIco);
+    assert.ok(dpp.options.durationFixed);
     const poa = getPoaFormUi(locale);
     assert.equal(poa.isLocalized, true);
     assert.ok(poa.fields.principalName);
@@ -364,6 +379,8 @@ function testExpatBuilderFormsLocalized() {
     assert.equal(car.isLocalized, true);
     assert.ok(car.fields.sellerName);
   }
+  assert.equal(formatRemoteWorkForContract(REMOTE_WORK_KEYS.full, 'en'), 'full remote (100 %)');
+  assert.equal(formatRemoteWorkForContract('plný remote (100 %)', 'cs'), 'plný home office (100 %)');
   const subleasePreview = buildExpatPreviewSections('sublease', 'en', {
     contractType: 'sublease',
     tier: 'basic',

@@ -55,18 +55,25 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 export default function PracovniPage() {
   const builderLocale = useBuilderLocale();
   const ui = useMemo(() => getEmploymentFormUi(builderLocale), [builderLocale]);
-  const [form, setForm] = useState<FormData>({
-    employerName: '', employerIco: '', employerAddress: '', employerEmail: '',
-    employeeName: '', employeeBirth: '', employeeAddress: '', employeeEmail: '',
-    jobTitle: '', jobDescription: '', workPlace: '', remoteWork: '',
-    startDate: '', employmentType: 'indefinite', endDate: '',
-    trialPeriodMonths: '3', noticePeriod: '2',
-    workHours: '40', workSchedule: 'pondělí–pátek, 8:00–17:00', breakMinutes: '30', vacationWeeks: '4',
-    salary: '', salaryType: 'monthly', hourlyRate: '', payDay: '15', bonusDesc: '',
-    nonCompete: false, nonCompetePeriod: '12', breachPenalty: '50000',
-    isManager: false,
-    contractDate: '', notaryUpsell: false,
-    tier: 'basic' as const,
+  const [form, setForm] = useState<FormData>(() => {
+    const d = getEmploymentFormUi(builderLocale).page.defaults;
+    return {
+      employerName: '', employerIco: '', employerAddress: '', employerEmail: '',
+      employeeName: '', employeeBirth: '', employeeAddress: '', employeeEmail: '',
+      jobTitle: '', jobDescription: '', workPlace: '', remoteWork: '',
+      startDate: '', employmentType: 'indefinite', endDate: '',
+      trialPeriodMonths: d.trialPeriodMonths ?? '3',
+      noticePeriod: d.noticePeriod ?? '2',
+      workHours: d.workHours ?? '40',
+      workSchedule: d.workSchedule ?? '',
+      breakMinutes: d.breakMinutes ?? '30',
+      vacationWeeks: d.vacationWeeks ?? '4',
+      salary: '', salaryType: 'monthly', hourlyRate: '', payDay: d.payDay ?? '15', bonusDesc: '',
+      nonCompete: false, nonCompetePeriod: d.nonCompetePeriod ?? '12', breachPenalty: d.breachPenalty ?? '50000',
+      isManager: false,
+      contractDate: '', notaryUpsell: false,
+      tier: 'basic' as const,
+    };
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -159,43 +166,14 @@ export default function PracovniPage() {
         h1Main={ui.landing.h1Main}
         h1Accent={ui.landing.h1Accent}
         subtitle={ui.landing.subtitle}
-        benefits={[
-          { icon: '⚖️', text: 'Sestaveno dle § 33–65 zákoníku práce (zákon č. 262/2006 Sb.)' },
-          { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
-          { icon: '👔', text: 'Splňuje zákonné náležitosti — druh práce, místo, nástup' },
-          { icon: '🔒', text: 'Pokrývá zkušební dobu, odměnu i podmínky ukončení' },
-        ]}
-        contents={[
-          'Identifikaci zaměstnavatele a zaměstnance',
-          'Druh práce a pracovní náplň',
-          'Místo výkonu práce',
-          'Den nástupu do práce',
-          'Mzdu nebo plat a způsob odměňování',
-          'Délku zkušební doby',
-          'Pracovní dobu a rozvržení směn',
-          'Podmínky ukončení pracovního poměru',
-          'Závěrečná ustanovení a GDPR',
-        ]}
-        whenSuitable={[
-          'Vznik standardního pracovního poměru (HPP nebo zkrácený úvazek)',
-          'Uzavření pracovní smlouvy na dobu určitou nebo neurčitou',
-          'Situace, kdy je třeba formálně zaměstnat fyzickou osobu',
-          'Případy se zkušební dobou nebo specifickým místem výkonu práce',
-        ]}
-        whenOther={[
-          { label: 'Dohoda o provedení práce (DPP)', href: '/dpp', text: 'Pro krátkodobé nebo brigádnické úkoly do 300 hodin ročně — bez vzniku plného pracovního poměru.' },
-          { label: 'Smlouva o poskytování služeb', href: '/sluzby', text: 'Pro spolupráci s OSVČ nebo firmou mimo pracovněprávní vztah.' },
-        ]}
-        faq={[
-          { q: 'Jaké jsou povinné náležitosti pracovní smlouvy?', a: 'Zákoník práce vyžaduje tři povinné náležitosti: druh práce, místo výkonu práce a den nástupu. Chybí-li některá z nich, smlouva není platná. Ostatní ujednání (mzda, pracovní doba, zkušební doba) jsou vhodná, ale zákon je přímo nevyžaduje v samotné smlouvě.' },
-          { q: 'Jak dlouhá může být zkušební doba?', a: 'U řadových zaměstnanců maximálně 4 měsíce, u vedoucích zaměstnanců maximálně 8 měsíců (dle aktuálního znění § 35 zákoníku práce). Zkušební dobu lze sjednat nejpozději v den nástupu do práce.' },
-          { q: 'Lze uzavřít pracovní smlouvu na dobu určitou?', a: 'Ano, ale zákon ji omezuje — maximálně 3 roky, přičemž smlouvu na dobu určitou lze opakovat nejvýše dvakrát. Poté musí být uzavřena smlouva na dobu neurčitou.' },
-          { q: 'Musí být pracovní smlouva podepsána před nástupem?', a: 'Zákoník práce vyžaduje uzavření pracovní smlouvy před začátkem výkonu práce. Podpis smlouvy v den nástupu je přípustný.' },
-          { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
-        ]}
+        benefits={ui.landing.benefits}
+        contents={ui.landing.contents}
+        whenSuitable={ui.landing.whenSuitable}
+        whenOther={ui.landing.whenOther}
+        faq={ui.landing.faq}
         ctaLabel={ui.landing.ctaLabel}
         formId="formular"
-        guideHref="/pracovni-smlouva"
+        guideHref={ui.landing.guideHref}
         guideLabel={ui.landing.guideLabel}
       />
 
@@ -212,39 +190,39 @@ export default function PracovniPage() {
               <section className={cardClass}>
                 <SectionTitle index="01" title={ui.sections.employer.title} subtitle={ui.sections.employer.subtitle} />
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label={ui.fields.employerName}><input className={inputClass} name="employerName" value={form.employerName} onChange={set} placeholder="ABC s.r.o." /></Field>
-                  <Field label={ui.fields.employerIco}><input className={inputClass} name="employerIco" value={form.employerIco} onChange={set} placeholder="12345678" /></Field>
-                  <Field label={ui.fields.employerAddress}><input className={inputClass} name="employerAddress" value={form.employerAddress} onChange={set} placeholder="Náměstí 1, Praha 1" /></Field>
-                  <Field label={ui.fields.employerEmail}><input className={inputClass} name="employerEmail" value={form.employerEmail} onChange={set} type="email" placeholder="hr@firma.cz" /></Field>
+                  <Field label={ui.fields.employerName}><input className={inputClass} name="employerName" value={form.employerName} onChange={set} placeholder={ui.page.placeholders.employerName} /></Field>
+                  <Field label={ui.fields.employerIco}><input className={inputClass} name="employerIco" value={form.employerIco} onChange={set} placeholder={ui.page.placeholders.employerIco} /></Field>
+                  <Field label={ui.fields.employerAddress}><input className={inputClass} name="employerAddress" value={form.employerAddress} onChange={set} placeholder={ui.page.placeholders.employerAddress} /></Field>
+                  <Field label={ui.fields.employerEmail}><input className={inputClass} name="employerEmail" value={form.employerEmail} onChange={set} type="email" placeholder={ui.page.placeholders.employerEmail} /></Field>
                 </div>
               </section>
 
               <section className={cardClass}>
                 <SectionTitle index="02" title={ui.sections.employee.title} />
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label={ui.fields.employeeName}><input className={inputClass} name="employeeName" value={form.employeeName} onChange={set} placeholder="Jana Nováková" /></Field>
-                  <Field label={ui.fields.employeeBirth}><input className={inputClass} name="employeeBirth" value={form.employeeBirth} onChange={set} placeholder="15.03.1995" /></Field>
-                  <Field label={ui.fields.employeeAddress}><input className={inputClass} name="employeeAddress" value={form.employeeAddress} onChange={set} placeholder="Ulice 5, Brno" /></Field>
-                  <Field label={ui.fields.employeeEmail}><input className={inputClass} name="employeeEmail" value={form.employeeEmail} onChange={set} type="email" placeholder="jana@email.cz" /></Field>
+                  <Field label={ui.fields.employeeName}><input className={inputClass} name="employeeName" value={form.employeeName} onChange={set} placeholder={ui.page.placeholders.employeeName} /></Field>
+                  <Field label={ui.fields.employeeBirth}><input className={inputClass} name="employeeBirth" value={form.employeeBirth} onChange={set} placeholder={ui.page.placeholders.employeeBirth} /></Field>
+                  <Field label={ui.fields.employeeAddress}><input className={inputClass} name="employeeAddress" value={form.employeeAddress} onChange={set} placeholder={ui.page.placeholders.employeeAddress} /></Field>
+                  <Field label={ui.fields.employeeEmail}><input className={inputClass} name="employeeEmail" value={form.employeeEmail} onChange={set} type="email" placeholder={ui.page.placeholders.employeeEmail} /></Field>
                 </div>
               </section>
 
               <section className={cardClass}>
                 <SectionTitle index="03" title={ui.sections.job.title} subtitle={ui.sections.job.subtitle} />
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label={ui.fields.jobTitle}><input className={inputClass} name="jobTitle" value={form.jobTitle} onChange={set} placeholder="Programátor / Účetní / Skladník" /></Field>
-                  <Field label={ui.fields.workPlace}><input className={inputClass} name="workPlace" value={form.workPlace} onChange={set} placeholder="Praha 1, sídlo firmy" /></Field>
+                  <Field label={ui.fields.jobTitle}><input className={inputClass} name="jobTitle" value={form.jobTitle} onChange={set} placeholder={ui.page.placeholders.jobTitle} /></Field>
+                  <Field label={ui.fields.workPlace}><input className={inputClass} name="workPlace" value={form.workPlace} onChange={set} placeholder={ui.page.placeholders.workPlace} /></Field>
                   <div className="sm:col-span-2">
                     <Field label={ui.fields.jobDescription}>
-                      <textarea className="w-full min-h-[80px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="jobDescription" value={form.jobDescription} onChange={set} placeholder="Vývoj a správa webových aplikací, účast na code review, komunikace s klienty…" />
+                      <textarea className="w-full min-h-[80px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="jobDescription" value={form.jobDescription} onChange={set} placeholder={ui.page.placeholders.jobDescription} />
                     </Field>
                   </div>
                   <Field label={ui.fields.remoteWork}>
                     <select aria-label={ui.options.remoteEmpty} className={inputClass} name="remoteWork" value={form.remoteWork} onChange={set}>
                       <option value="">{ui.options.remoteEmpty}</option>
-                      <option value="plný remote (100 %)">{ui.options.remoteFull}</option>
-                      <option value="hybridní (dle dohody)">{ui.options.remoteHybrid}</option>
-                      <option value="není povoleno">{ui.options.remoteNo}</option>
+                      <option value={ui.remoteWorkValues.full}>{ui.options.remoteFull}</option>
+                      <option value={ui.remoteWorkValues.hybrid}>{ui.options.remoteHybrid}</option>
+                      <option value={ui.remoteWorkValues.none}>{ui.options.remoteNo}</option>
                     </select>
                   </Field>
                 </div>
@@ -264,7 +242,7 @@ export default function PracovniPage() {
                   <Field label={ui.fields.trialMonths}>
                     <input className={inputClass} name="trialPeriodMonths" value={form.trialPeriodMonths} onChange={set} type="number" min="0" max="8" />
                     {Number(form.trialPeriodMonths) > (form.isManager ? 8 : 4) && (
-                      <p className="mt-1.5 text-xs text-rose-400 font-medium">⚠ Zákonné maximum je {form.isManager ? '8' : '4'} měsíce (§ 35 ZP).</p>
+                      <p className="mt-1.5 text-xs text-rose-400 font-medium">⚠ {ui.page.hints.trialMaxWarning(form.isManager ? 8 : 4)}</p>
                     )}
                   </Field>
                   <Field label={ui.fields.noticePeriod}><input className={inputClass} name="noticePeriod" value={form.noticePeriod} onChange={set} type="number" min="1" max="6" /></Field>
@@ -272,7 +250,7 @@ export default function PracovniPage() {
                     <input type="checkbox" name="isManager" checked={form.isManager} onChange={set} className="mt-1 h-5 w-5 accent-amber-500" />
                     <div>
                       <div className="text-sm font-semibold text-white">{ui.fields.isManager}</div>
-                      <div className="mt-1 text-xs leading-relaxed text-slate-400">Vedoucí pracovní místo dle § 11 ZP. Zkušební doba může být až 8 měsíců (dle aktuálního znění § 35 ZP). Smlouva bude upravena pro vedoucího zaměstnance.</div>
+                      <div className="mt-1 text-xs leading-relaxed text-slate-400">{ui.page.hints.managerRole}</div>
                     </div>
                   </label>
                 </div>
@@ -282,7 +260,7 @@ export default function PracovniPage() {
                 <SectionTitle index="05" title={ui.sections.hours.title} />
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Field label={ui.fields.workHours}><input className={inputClass} name="workHours" value={form.workHours} onChange={set} type="number" /></Field>
-                  <Field label={ui.fields.workSchedule}><input className={inputClass} name="workSchedule" value={form.workSchedule} onChange={set} placeholder="Po–Pá, 8:00–17:00" /></Field>
+                  <Field label={ui.fields.workSchedule}><input className={inputClass} name="workSchedule" value={form.workSchedule} onChange={set} placeholder={ui.page.placeholders.workSchedule} /></Field>
                   <Field label={ui.fields.breakMinutes}><input className={inputClass} name="breakMinutes" value={form.breakMinutes} onChange={set} type="number" /></Field>
                   <Field label={ui.fields.vacationWeeks}><input className={inputClass} name="vacationWeeks" value={form.vacationWeeks} onChange={set} type="number" /></Field>
                 </div>
@@ -298,13 +276,13 @@ export default function PracovniPage() {
                     </select>
                   </Field>
                   {form.salaryType === 'monthly'
-                    ? <Field label={ui.fields.salary}><input className={inputClass} name="salary" value={form.salary} onChange={set} type="number" placeholder="45000" /></Field>
-                    : <Field label={ui.fields.hourlyRate}><input className={inputClass} name="hourlyRate" value={form.hourlyRate} onChange={set} type="number" placeholder="250" /></Field>
+                    ? <Field label={ui.fields.salary}><input className={inputClass} name="salary" value={form.salary} onChange={set} type="number" placeholder={ui.page.placeholders.salary} /></Field>
+                    : <Field label={ui.fields.hourlyRate}><input className={inputClass} name="hourlyRate" value={form.hourlyRate} onChange={set} type="number" placeholder={ui.page.placeholders.hourlyRate} /></Field>
                   }
-                  <Field label="Výplatní termín (den v měsíci)"><input className={inputClass} name="payDay" value={form.payDay} onChange={set} type="number" min="1" max="31" /></Field>
+                  <Field label={ui.fields.payDay}><input className={inputClass} name="payDay" value={form.payDay} onChange={set} type="number" min="1" max="31" /></Field>
                   <div className="sm:col-span-2">
-                    <Field label="Bonusy / prémie (popis, nepovinné)">
-                      <input className={inputClass} name="bonusDesc" value={form.bonusDesc} onChange={set} placeholder="Roční bonus dle hodnocení, max. 2 měsíční platy" />
+                    <Field label={ui.fields.bonusDesc}>
+                      <input className={inputClass} name="bonusDesc" value={form.bonusDesc} onChange={set} placeholder={ui.page.placeholders.bonusDesc} />
                     </Field>
                   </div>
                 </div>
@@ -368,7 +346,7 @@ export default function PracovniPage() {
                 <div><div className={`font-bold ${scoreColor}`}>{risk.label}</div><div className="text-xs text-slate-500">{ui.form.scoreOf}</div></div>
               </div>
               {risk.warnings.length === 0
-                ? <p className="text-sm text-emerald-400">✓ Smlouva splňuje povinné náležitosti ZP.</p>
+                ? <p className="text-sm text-emerald-400">{ui.page.hints.contractCompliant}</p>
                 : <ul className="space-y-2">{risk.warnings.map((w, i) => (
                     <li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-rose-500/10 text-rose-300' : w.level === 'medium' ? 'bg-amber-500/10 text-amber-300' : 'bg-slate-700/40 text-slate-400'}`}>
                       {w.level === 'high' ? '⚠ ' : '▲ '}{w.text}
@@ -386,10 +364,10 @@ export default function PracovniPage() {
               />
               {(!form.employerName || !form.employeeName || !form.jobTitle) && !isProcessing && (
                 <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3 text-xs text-slate-400 space-y-1">
-                  <div className="font-semibold mb-1">Vyplňte pro pokračování:</div>
-                  {!form.employerName && <div>• Název zaměstnavatele</div>}
-                  {!form.employeeName && <div>• Jméno zaměstnance</div>}
-                  {!form.jobTitle && <div>• Pracovní pozice</div>}
+                  <div className="font-semibold mb-1">{ui.form.fillToContinue}</div>
+                  {!form.employerName && <div>• {ui.page.sidebarMissing.employerName}</div>}
+                  {!form.employeeName && <div>• {ui.page.sidebarMissing.employeeName}</div>}
+                  {!form.jobTitle && <div>• {ui.page.sidebarMissing.jobTitle}</div>}
                 </div>
               )}
                               {/* Tlačítko generování */}
@@ -401,7 +379,7 @@ export default function PracovniPage() {
                 </button>
 
                 <p className="mt-3 text-center text-[11px] text-slate-500">
-                  Zobrazí se náhled dokumentu připraveného k odemčení
+                  {ui.form.previewHint}
                 </p>
             </div>
           </div>

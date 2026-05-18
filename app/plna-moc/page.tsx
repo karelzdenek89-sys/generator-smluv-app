@@ -140,40 +140,14 @@ export default function PlnaMocPage() {
     h1Main: ui.landing.h1Main,
     h1Accent: ui.landing.h1Accent,
     subtitle: ui.landing.subtitle,
-    benefits: [
-      { icon: '⚖️', text: 'Sestaveno dle § 441–456 OZ — zastoupení na základě plné moci' },
-      { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
-      { icon: '🔒', text: 'Pokrývá obecnou i speciální plnou moc (nemovitost, soud, banka)' },
-      { icon: '📅', text: 'Jasně vymezená platnost a případné omezení zmocnění' },
-    ],
-    contents: [
-      'Identifikaci zmocnitele (kdo plnou moc uděluje)',
-      'Identifikaci zmocněnce (komu je zmocnění uděleno)',
-      'Přesné vymezení rozsahu zmocnění',
-      'Dobu platnosti plné moci',
-      'Podmínky pro substitut (přenesení zmocnění)',
-      'Platnost pro jednorázové nebo opakované jednání',
-      'Závěrečná ustanovení a GDPR',
-    ],
-    whenSuitable: [
-      'Zastupování při prodeji nebo koupi nemovitosti',
-      'Zastupování v soudním nebo správním řízení',
-      'Správa bankovního účtu v nepřítomnosti majitele',
-      'Jednání jménem firmy nebo zastupování při podpisech dokumentů',
-    ],
-    whenOther: [
-      { label: 'Smlouva o spolupráci', href: '/spoluprace', text: 'Pokud potřebujete dlouhodobý rámec spolupráce, nikoli jednorázové zmocnění.' },
-    ],
-    faq: [
-      { q: 'Kdy je nutné ověřit podpis na plné moci?', a: 'Úřední ověření podpisu (legalizace) je vyžadováno tam, kde to zákon nebo příjemce dokumentu stanoví — typicky při prodeji nemovitostí, zastupování u katastrálního úřadu nebo při bankovních operacích. Pro běžné zastoupení při každodenních jednáních ověření není povinné.' },
-      { q: 'Jak dlouho platí plná moc?', a: 'Plná moc platí po dobu uvedenou v dokumentu, nebo do jejího odvolání zmocnitelem. Bez časového omezení platí do odvolání nebo smrti zmocnitele.' },
-      { q: 'Může zmocněnec přenést zmocnění na další osobu?', a: 'Pouze pokud to plná moc výslovně umožňuje — tzv. substituce. Bez tohoto ujednání nemůže zmocněnec nikoho dalšího zmocnit.' },
-      { q: 'Je generální plná moc riskantní?', a: 'Plná moc s neomezeným rozsahem zmocnění je velmi silný dokument. Doporučujeme vždy přesně vymezit, k jakým jednáním je zmocněnec oprávněn — omezuje se tak riziko zneužití.' },
-      { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
-    ],
+    benefits: ui.landing.benefits,
+    contents: ui.landing.contents,
+    whenSuitable: ui.landing.whenSuitable,
+    whenOther: ui.landing.whenOther,
+    faq: ui.landing.faq,
     ctaLabel: ui.landing.ctaLabel,
     formId: 'formular',
-    guideHref: '/plna-moc-online',
+    guideHref: ui.landing.guideHref,
     guideLabel: ui.landing.guideLabel,
   };
 
@@ -349,7 +323,7 @@ export default function PlnaMocPage() {
                 </button>
 
                 <p className="mt-3 text-center text-[11px] text-slate-500">
-                  Zobrazí se náhled dokumentu připraveného k odemčení
+                  {ui.form.previewHint}
                 </p>
             </div>
           </div>

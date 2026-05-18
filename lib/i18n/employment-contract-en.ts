@@ -10,6 +10,7 @@ import {
 } from '@/lib/i18n/expat-contract-helpers';
 import { EMPLOYMENT_WORK_ELIGIBILITY_NOTICE_EN } from '@/lib/i18n/safety-copy';
 import { ZP_TRIAL_MONTHS_LEADERSHIP, ZP_TRIAL_MONTHS_STANDARD } from '@/lib/legal-constants-2026';
+import { formatRemoteWorkForContract } from '@/lib/i18n/employment-remote-work';
 
 /** Explanatory English translation of the Czech employment contract — not certified or official. */
 export function buildEmploymentContractSectionsEn(d: StoredContractData): ContractSection[] {
@@ -94,7 +95,9 @@ export function buildEmploymentContractSectionsEn(d: StoredContractData): Contra
         `Job title / type of work: ${asText(d.jobTitle, 'not stated')}`,
         `Job description: ${asText(d.jobDescription, 'as per current job description')}`,
         `Place of work: ${asText(d.workPlace, 'not stated')}`,
-        d.remoteWork ? `Remote work (home office): ${asText(d.remoteWork)}` : '',
+        d.remoteWork
+          ? `Remote work (home office): ${asText(formatRemoteWorkForContract(String(d.remoteWork), 'en'))}`
+          : '',
       ].filter(Boolean) as string[],
     },
     {

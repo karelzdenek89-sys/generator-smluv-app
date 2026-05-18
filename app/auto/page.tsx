@@ -439,41 +439,14 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
         h1Main={ui.landing.h1Main}
         h1Accent={ui.landing.h1Accent}
         subtitle={ui.landing.subtitle}
-        benefits={[
-          { icon: '🚗', text: 'Určeno specificky pro prodej automobilu, motocyklu nebo přívěsu' },
-          { icon: '🔍', text: 'Pokrývá VIN, STK, emise, počet vlastníků i stav tachometru' },
-          { icon: '⚖️', text: 'Přechod vlastnictví, odpovědnost za vady a zákonná záruka' },
-          { icon: '📄', text: 'Profesionální PDF ke stažení ihned po zaplacení' },
-        ]}
-        contents={[
-          'Identifikaci prodávajícího a kupujícího',
-          'Technické parametry vozidla (VIN, SPZ, rok výroby, stav tachometru)',
-          'Platnost STK, emisní kontroly a počet předchozích vlastníků',
-          'Kupní cenu a způsob úhrady',
-          'Stav vozidla, známé závady a vybavení',
-          'Datum a podmínky předání vozidla a dokladů',
-          'Přechod vlastnického práva a odpovědnosti',
-          'Závěrečná ustanovení, GDPR a vyšší moc',
-        ]}
-        whenSuitable={[
-          'Prodej osobního automobilu mezi soukromými osobami',
-          'Prodej motocyklu, skúteru nebo přívěsu',
-          'Prodej firemního vozidla fyzické osobě nebo firmě',
-          'Případy, kde je klíčové jasně zdokumentovat stav vozidla a podmínky převodu',
-        ]}
-        whenOther={[
-          { label: 'Kupní smlouva na movitou věc', href: '/kupni', text: 'Pro prodej nábytku, elektroniky, kola nebo jiné movité věci mimo motorová vozidla.' },
-        ]}
-        faq={[
-          { q: 'Proč potřebuji kupní smlouvu při prodeji auta?', a: 'Kupní smlouva prokazuje podmínky převodu a chrání obě strany. Dokládá smluvní cenu, stav vozidla v okamžiku prodeje a skutečnost, že kupující věděl o případných závadách. Bez smlouvy je obtížné prokázat, co bylo dohodnuto.' },
-          { q: 'Musím kupní smlouvu ověřit u notáře?', a: 'Pro běžný prodej motorového vozidla notářské ověření není vyžadováno. Smlouva je platná podpisem obou stran. Ověřený podpis může pomoci v případě sporu, ale není povinný.' },
-          { q: 'Co je VIN a proč je důležitý?', a: 'VIN (Vehicle Identification Number) je unikátní 17místný identifikátor vozidla. Umožňuje ověřit historii auta, výrobní specifikace a zda vozidlo nebylo kradeno nebo havarováno. Jeho uvedení ve smlouvě je zásadní pro jednoznačnou identifikaci.' },
-          { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
-          { q: 'Jak mám přihlásit vozidlo na nového majitele?', a: 'Po podpisu smlouvy musí kupující vozidlo přepsat na dopravním inspektorátu (MDIC) ve svém místě bydliště. K přepisu potřebuje kupní smlouvu, technický průkaz, doklad totožnosti a potvrzení o zaplacení daně z nabytí (pokud se vztahuje).' },
-        ]}
+        benefits={ui.landing.benefits}
+        contents={ui.landing.contents}
+        whenSuitable={ui.landing.whenSuitable}
+        whenOther={ui.landing.whenOther}
+        faq={ui.landing.faq}
         ctaLabel={ui.landing.ctaLabel}
         formId="formular"
-        guideHref="/blog/kupni-smlouva-na-auto-2026"
+        guideHref={ui.landing.guideHref}
         guideLabel={ui.landing.guideLabel}
       />
 
@@ -1180,7 +1153,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 </button>
 
                 <p className="mt-3 text-center text-[11px] text-slate-500">
-                  Zobrazí se náhled dokumentu připraveného k odemčení
+                  {ui.form.previewHint}
                 </p>
               </div>
             </div>

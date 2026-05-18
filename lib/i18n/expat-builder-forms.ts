@@ -1,6 +1,13 @@
 import type { AppLocale, ExpatContractType } from '@/lib/locale';
 import { LEGAL_NOTICE } from '@/lib/locale';
 import { getEmploymentWorkEligibilityNotice } from '@/lib/i18n/safety-copy';
+import {
+  getExpatBuilderLanding,
+  getExpatBuilderPageExtras,
+  type ExpatBuilderLandingBlock,
+  type ExpatBuilderPageExtras,
+} from '@/lib/i18n/expat-builder-landing';
+import { REMOTE_WORK_KEYS } from '@/lib/i18n/employment-remote-work';
 import type { ExpatLabelPack } from '@/lib/i18n/expat-form-field-labels';
 import {
   CAR_LABELS_EN,
@@ -16,7 +23,7 @@ export type ExpatBuilderFormUi = {
   isLocalized: boolean;
   header: { brand: string; docType: string; close: string };
   notices: { legal: string; workEligibility?: string; leaseUse?: string };
-  landing: {
+  landing: ExpatBuilderLandingBlock & {
     badge: string;
     h1Main: string;
     h1Accent: string;
@@ -24,6 +31,8 @@ export type ExpatBuilderFormUi = {
     ctaLabel: string;
     guideLabel: string;
   };
+  page: ExpatBuilderPageExtras;
+  remoteWorkValues: { full: string; hybrid: string; none: string };
   form: {
     title: string;
     requiredHint: string;
@@ -42,7 +51,36 @@ export type ExpatBuilderFormUi = {
   risk: { good: string; average: string; needsWork: string };
 };
 
-const SHARED_EN: Omit<ExpatBuilderFormUi, 'locale' | 'isLocalized' | 'landing' | 'sections' | 'fields' | 'options' | 'notices'> & {
+type ExpatBuilderFormUiCore = Omit<ExpatBuilderFormUi, 'landing' | 'page' | 'remoteWorkValues'> & {
+  landing: Pick<
+    ExpatBuilderFormUi['landing'],
+    'badge' | 'h1Main' | 'h1Accent' | 'subtitle' | 'ctaLabel' | 'guideLabel'
+  >;
+};
+
+function withLandingAndPage(
+  contract: Exclude<ExpatContractType, 'lease'>,
+  locale: AppLocale,
+  ui: ExpatBuilderFormUiCore,
+): ExpatBuilderFormUi {
+  const block = getExpatBuilderLanding(contract, locale);
+  const page = getExpatBuilderPageExtras(contract, locale);
+  return {
+    ...ui,
+    landing: { ...ui.landing, ...block },
+    page,
+    remoteWorkValues: {
+      full: REMOTE_WORK_KEYS.full,
+      hybrid: REMOTE_WORK_KEYS.hybrid,
+      none: REMOTE_WORK_KEYS.none,
+    },
+  };
+}
+
+const SHARED_EN: Omit<
+  ExpatBuilderFormUi,
+  'locale' | 'isLocalized' | 'landing' | 'sections' | 'fields' | 'options' | 'notices' | 'page' | 'remoteWorkValues'
+> & {
   notices: ExpatBuilderFormUi['notices'];
 } = {
   header: { brand: 'SmlouvaHned', docType: 'Contract builder', close: 'Close' },
@@ -83,7 +121,7 @@ const SHARED_UA: typeof SHARED_EN = {
 function employmentUi(locale: AppLocale): ExpatBuilderFormUi {
   const isLocalized = locale !== 'cs';
   if (locale === 'ua') {
-    return {
+    return withLandingAndPage('employment', locale, {
       locale,
       isLocalized,
       ...SHARED_UA,
@@ -146,10 +184,11 @@ function employmentUi(locale: AppLocale): ExpatBuilderFormUi {
         remoteHybrid: 'Гібрид',
         remoteNo: 'Не дозволено',
       },
-    };
+      risk: { good: 'Добре налаштовано', average: 'Середній захист', needsWork: 'Рекомендовані доповнення' },
+    });
   }
   if (locale === 'en') {
-    return {
+    return withLandingAndPage('employment', locale, {
       locale,
       isLocalized,
       ...SHARED_EN,
@@ -212,9 +251,10 @@ function employmentUi(locale: AppLocale): ExpatBuilderFormUi {
         remoteHybrid: 'Hybrid',
         remoteNo: 'Not allowed',
       },
-    };
+      risk: { good: 'Good setup', average: 'Average protection', needsWork: 'Recommended fixes' },
+    });
   }
-  return {
+  return withLandingAndPage('employment', 'cs', {
     locale: 'cs',
     isLocalized: false,
     header: { brand: 'SmlouvaHned Builder', docType: 'Pracovní smlouva — § 34 zákoníku práce', close: 'Zavřít' },
@@ -291,12 +331,12 @@ function employmentUi(locale: AppLocale): ExpatBuilderFormUi {
       remoteNo: 'Není povoleno',
     },
     risk: { good: 'Dobré nastavení', average: 'Průměrná ochrana', needsWork: 'Doporučená doplnění' },
-  };
+  });
 }
 
 function dppUi(locale: AppLocale): ExpatBuilderFormUi {
   const base = locale === 'ua' ? { ...SHARED_UA } : locale === 'en' ? { ...SHARED_EN } : null;
-  const cs: ExpatBuilderFormUi = {
+  const cs: ExpatBuilderFormUiCore = {
     locale: 'cs',
     isLocalized: false,
     header: { brand: 'SmlouvaHned', docType: 'Dohoda o provedení práce (DPP)', close: 'Zavřít' },
@@ -329,19 +369,38 @@ function dppUi(locale: AppLocale): ExpatBuilderFormUi {
       pay: { title: 'Odměna' },
     },
     fields: {
-      employerName: 'Zaměstnavatel *',
-      employeeName: 'Zaměstnanec *',
-      taskDescription: 'Popis úkolu *',
-      workPlace: 'Místo výkonu *',
-      estimatedHours: 'Počet hodin',
-      totalRemuneration: 'Odměna celkem (Kč)',
-      hourlyRate: 'Sazba (Kč/hod)',
+      employerName: 'Název / jméno *',
+      employerIco: 'IČO *',
+      employerAddress: 'Sídlo / adresa *',
+      employerEmail: 'E-mail',
+      employeeName: 'Jméno a příjmení *',
+      employeeBirth: 'Datum narození *',
+      employeeAddress: 'Trvalé bydliště *',
+      employeeEmail: 'E-mail',
+      taskDescription: 'Druh práce / název úkolu *',
+      taskDetails: 'Podrobný popis (nepovinné)',
+      workPlace: 'Místo výkonu práce',
+      estimatedHours: 'Předpokládaný rozsah (hod.) *',
+      durationType: 'Typ trvání',
+      startDate: 'Začátek',
+      endDate: 'Konec',
+      deadline: 'Termín splnění úkolu',
+      remunerationType: 'Typ odměny',
+      totalRemuneration: 'Celková odměna (Kč) *',
+      hourlyRate: 'Hodinová sazba (Kč/hod.) *',
+      paymentAccount: 'Číslo účtu (výplata)',
+      paymentDays: 'Výplata do (dní po splnění)',
     },
-    options: {},
+    options: {
+      durationFixed: 'Na dobu určitou',
+      durationIndefinite: 'Na dobu neurčitou',
+      payFixed: 'Paušální (za celý úkol)',
+      payHourly: 'Hodinová sazba',
+    },
     risk: { good: 'Bez rizik', average: 'Drobná rizika', needsWork: 'Doporučená doplnění' },
   };
-  if (!base) return cs;
-  return {
+  if (!base) return withLandingAndPage('dpp', 'cs', cs);
+  return withLandingAndPage('dpp', locale, {
     ...cs,
     locale,
     isLocalized: true,
@@ -370,54 +429,96 @@ function dppUi(locale: AppLocale): ExpatBuilderFormUi {
       locale === 'en'
         ? {
             employer: { title: 'Employer' },
-            employee: { title: 'Worker' },
-            task: { title: 'Task' },
-            term: { title: 'Duration' },
-            pay: { title: 'Remuneration' },
+            employee: { title: 'Worker (assignee)' },
+            task: { title: 'Work task', subtitle: 'Describe precisely to avoid disputes.' },
+            term: { title: 'Duration and deadline' },
+            pay: { title: 'Remuneration', subtitle: '2026: insurance applies from CZK 12,000 gross/month with one employer.' },
           }
         : {
             employer: { title: 'Роботодавець' },
             employee: { title: 'Працівник' },
-            task: { title: 'Завдання' },
-            term: { title: 'Строк' },
-            pay: { title: 'Винагорода' },
+            task: { title: 'Завдання', subtitle: 'Опишіть якомога точніше.' },
+            term: { title: 'Строк виконання' },
+            pay: { title: 'Винагорода', subtitle: '2026: страхування від 12 000 Kč брутто/міс.' },
           },
     fields:
       locale === 'en'
         ? {
-            employerName: 'Employer *',
-            employeeName: 'Worker *',
-            taskDescription: 'Task description *',
-            workPlace: 'Place of work *',
-            estimatedHours: 'Estimated hours',
-            totalRemuneration: 'Lump sum (CZK)',
-            hourlyRate: 'Hourly rate (CZK)',
+            employerName: 'Employer name *',
+            employerIco: 'Company ID (IČO) *',
+            employerAddress: 'Address *',
+            employerEmail: 'E-mail',
+            employeeName: 'Worker full name *',
+            employeeBirth: 'Date of birth *',
+            employeeAddress: 'Address *',
+            employeeEmail: 'E-mail',
+            taskDescription: 'Task / job title *',
+            taskDetails: 'Details (optional)',
+            workPlace: 'Place of work',
+            estimatedHours: 'Estimated hours *',
+            durationType: 'Duration type',
+            startDate: 'Start',
+            endDate: 'End',
+            deadline: 'Completion deadline',
+            remunerationType: 'Pay type',
+            totalRemuneration: 'Lump sum (CZK) *',
+            hourlyRate: 'Hourly rate (CZK/h) *',
+            paymentAccount: 'Bank account',
+            paymentDays: 'Pay within (days after completion)',
           }
         : {
             employerName: 'Роботодавець *',
-            employeeName: 'Працівник *',
+            employerIco: 'IČO *',
+            employerAddress: 'Адреса *',
+            employerEmail: 'E-mail',
+            employeeName: 'ПІБ працівника *',
+            employeeBirth: 'Дата народження *',
+            employeeAddress: 'Адреса *',
+            employeeEmail: 'E-mail',
             taskDescription: 'Опис завдання *',
-            workPlace: 'Місце *',
-            estimatedHours: 'Години',
-            totalRemuneration: 'Сума (Kč)',
-            hourlyRate: 'Ставка (Kč/год)',
+            taskDetails: 'Деталі (необов’язково)',
+            workPlace: 'Місце роботи',
+            estimatedHours: 'Години *',
+            durationType: 'Тип строку',
+            startDate: 'Початок',
+            endDate: 'Кінець',
+            deadline: 'Крайній термін',
+            remunerationType: 'Тип оплати',
+            totalRemuneration: 'Сума (Kč) *',
+            hourlyRate: 'Ставка (Kč/год) *',
+            paymentAccount: 'Рахунок',
+            paymentDays: 'Виплата протягом (днів)',
           },
-    options: {},
+    options:
+      locale === 'en'
+        ? {
+            durationFixed: 'Fixed term',
+            durationIndefinite: 'Indefinite',
+            payFixed: 'Lump sum (whole task)',
+            payHourly: 'Hourly rate',
+          }
+        : {
+            durationFixed: 'На визначений строк',
+            durationIndefinite: 'На невизначений строк',
+            payFixed: 'Паушальна (за все завдання)',
+            payHourly: 'Погодинна',
+          },
     risk: base.risk,
-  };
+  });
 }
 
 function genericUi(
+  contract: Exclude<ExpatContractType, 'lease' | 'employment' | 'dpp'>,
   locale: AppLocale,
-  cs: ExpatBuilderFormUi,
-  enLanding: ExpatBuilderFormUi['landing'],
-  uaLanding: ExpatBuilderFormUi['landing'],
+  cs: ExpatBuilderFormUiCore,
+  enLanding: ExpatBuilderFormUiCore['landing'],
+  uaLanding: ExpatBuilderFormUiCore['landing'],
   labels?: { en: ExpatLabelPack; ua: ExpatLabelPack },
 ): ExpatBuilderFormUi {
-  if (locale === 'cs') return cs;
+  if (locale === 'cs') return withLandingAndPage(contract, 'cs', cs as ExpatBuilderFormUiCore);
   const base = locale === 'en' ? SHARED_EN : SHARED_UA;
   const pack = locale === 'en' ? labels?.en : labels?.ua;
-  return {
+  return withLandingAndPage(contract, locale, {
     ...cs,
     locale,
     isLocalized: true,
@@ -429,11 +530,12 @@ function genericUi(
     fields: pack?.fields ?? cs.fields,
     options: pack?.options ?? cs.options,
     risk: base.risk,
-  };
+  });
 }
 
 const subleaseUi = (locale: AppLocale) =>
   genericUi(
+    'sublease',
     locale,
     {
       locale: 'cs',
@@ -486,6 +588,7 @@ const subleaseUi = (locale: AppLocale) =>
 
 const carUi = (locale: AppLocale) =>
   genericUi(
+    'car_sale',
     locale,
     {
       locale: 'cs',
@@ -538,6 +641,7 @@ const carUi = (locale: AppLocale) =>
 
 const poaUi = (locale: AppLocale) =>
   genericUi(
+    'power_of_attorney',
     locale,
     {
       locale: 'cs',

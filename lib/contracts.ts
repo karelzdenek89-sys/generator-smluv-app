@@ -38,6 +38,7 @@ import { buildDppTranslationsBySection } from './contracts-i18n/dpp';
 import { buildEmploymentTranslationsBySection } from './contracts-i18n/employment';
 import { buildPowerOfAttorneyTranslationsBySection } from './contracts-i18n/power-of-attorney';
 import { buildCarTranslationsBySection } from './contracts-i18n/car';
+import { formatRemoteWorkForContract } from './i18n/employment-remote-work';
 
 function attachTranslations(sections: ContractSection[], translations: Array<NonNullable<ContractSection['translations']>>): ContractSection[] {
   for (let i = 0; i < sections.length; i++) {
@@ -1464,7 +1465,9 @@ function buildEmploymentContractSections(d: StoredContractData): ContractSection
         `Druh práce (pracovní pozice): ${asText(d.jobTitle, 'neuvedeno')}`,
         `Popis pracovní náplně: ${asText(d.jobDescription, 'dle aktuálního popisu pracovního místa')}`,
         `Místo výkonu práce: ${asText(d.workPlace, 'neuvedeno')}`,
-        d.remoteWork ? `Možnost práce na dálku (home office): ${asText(d.remoteWork)}` : '',
+        d.remoteWork
+          ? `Možnost práce na dálku (home office): ${asText(formatRemoteWorkForContract(String(d.remoteWork), 'cs'))}`
+          : '',
       ].filter(Boolean) as string[],
     },
     {

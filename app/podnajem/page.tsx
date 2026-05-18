@@ -194,39 +194,14 @@ export default function PodnajemuPage() {
         h1Main={ui.landing.h1Main}
         h1Accent={ui.landing.h1Accent}
         subtitle={ui.landing.subtitle}
-        benefits={[
-          { icon: '⚖️', text: 'Sestaveno dle § 2274–2278 OZ (podnájem bytu)' },
-          { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
-          { icon: '🏠', text: 'Vhodné pro podnájem celého bytu i jeho části' },
-          { icon: '🔒', text: 'Jasně vymezená práva a povinnosti podnájemce' },
-        ]}
-        contents={[
-          'Identifikaci nájemce (jako pronajímatele) a podnájemce',
-          'Přesný popis předmětu podnájmu (byt nebo část)',
-          'Výši podnájemného a způsob platby',
-          'Dobu podnájmu a podmínky ukončení',
-          'Práva a povinnosti podnájemce',
-          'Podmínky užívání společných prostor',
-          'Závěrečná ustanovení a GDPR',
-        ]}
-        whenSuitable={[
-          'Jste nájemcem bytu a chcete část nebo celý byt přenechat podnájemci',
-          'Spolubydlení — pronájem pokoje v bytě, který sami užíváte',
-          'Dočasné přenechání bytu po dobu vaší nepřítomnosti',
-          'Situace, kdy máte souhlas pronajímatele s podnájmem',
-        ]}
-        whenOther={[
-          { label: 'Nájemní smlouva', href: '/najem', text: 'Pokud jste vlastník nemovitosti a uzavíráte nájemní vztah přímo s nájemcem.' },
-        ]}
-        faq={[
-          { q: 'Potřebuji souhlas pronajímatele k podnájmu?', a: 'Obecně ano — § 2274 OZ vyžaduje souhlas pronajímatele, pokud v bytě nájemce sám nebydlí. Pokud v bytě sám bydlíte a přijímáte spolubydlícího, souhlas není nutný, ale pronajímatele je třeba o změně informovat.' },
-          { q: 'Jaký je rozdíl mezi podnájmem a nájmem?', a: 'Podnájem vzniká, když nájemce přenechá byt (nebo jeho část) třetí osobě. Podnájemce nemá přímý vztah k vlastníkovi nemovitosti a jeho práva jsou odvozena od nájemce.' },
-          { q: 'Co se stane, když skončí nájemní smlouva?', a: 'Ukončením nájemní smlouvy zaniká i podnájemní smlouva — podnájemce nemá právo nadále v bytě setrvat, pokud s ním vlastník neuzavře novou smlouvu.' },
-          { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
-        ]}
+        benefits={ui.landing.benefits}
+        contents={ui.landing.contents}
+        whenSuitable={ui.landing.whenSuitable}
+        whenOther={ui.landing.whenOther}
+        faq={ui.landing.faq}
         ctaLabel={ui.landing.ctaLabel}
         formId="formular"
-        guideHref="/podnajemni-smlouva"
+        guideHref={ui.landing.guideHref}
         guideLabel={ui.landing.guideLabel}
       />
 

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useMemo, useState } from 'react';
 import ContractPreview from '@/app/components/ContractPreview';
@@ -96,14 +96,14 @@ export default function DppPage() {
   }, [form, builderLocale]);
 
   const handlePayment = async () => {
-    // Validace § 75 ZP — DPP musí mít druh práce, místo, dobu a odměnu.
+    // Validace ? 75 ZP ? DPP mus? m?t druh pr?ce, m?sto, dobu a odm?nu.
     const missing: string[] = [];
     if (!form.employerName?.trim()) missing.push(validationFields.employerName);
     if (!form.employeeName?.trim()) missing.push(validationFields.employeeName);
     if (!form.taskDescription?.trim()) missing.push(validationFields.taskDescription);
-    if (!form.workPlace?.trim()) missing.push(builderLocale === 'cs' ? 'místo výkonu práce' : builderLocale === 'en' ? 'place of work' : 'місце виконання');
+    if (!form.workPlace?.trim()) missing.push(builderLocale === 'cs' ? 'm?sto v?konu pr?ce' : builderLocale === 'en' ? 'place of work' : '????? ?????????');
     if (!form.hourlyRate && !form.totalRemuneration) {
-      missing.push(builderLocale === 'cs' ? 'výši odměny' : builderLocale === 'en' ? 'remuneration' : 'винагороду');
+      missing.push(builderLocale === 'cs' ? 'v??i odm?ny' : builderLocale === 'en' ? 'remuneration' : '??????????');
     }
     if (missing.length > 0) {
       alert(`${ui.form.validationPrefix} ${missing.join(', ')}.`);
@@ -148,42 +148,15 @@ export default function DppPage() {
         h1Main={ui.landing.h1Main}
         h1Accent={ui.landing.h1Accent}
         subtitle={ui.landing.subtitle}
-        benefits={[
-          { icon: '⚖️', text: 'Sestaveno dle § 75–76 zákoníku práce (zákon č. 262/2006 Sb.)' },
-          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
-          { icon: '👷', text: 'Vhodné pro brigády, výpomoci a jednorázové úkoly' },
-          { icon: '🔒', text: 'Jasně vymezený rozsah práce, odměna a termín splnění' },
-        ]}
-        contents={[
-          'Identifikaci zaměstnavatele a zaměstnance (brigádníka)',
-          'Přesné vymezení pracovního úkolu',
-          'Odměnu za provedení práce (celková nebo hodinová sazba)',
-          'Časový rozsah a termín dokončení',
-          'Místo výkonu práce',
-          'Podmínky platby odměny',
-          'Závěrečná ustanovení a GDPR',
-        ]}
-        whenSuitable={[
-          'Brigáda, sezónní výpomoc nebo jednorázový úkol',
-          'Rozsah do 300 hodin ročně u jednoho zaměstnavatele',
-          'Situace, kdy není vhodný ani žádoucí plný pracovní poměr',
-          'Menší projekty pro fyzické osoby nebo OSVČ vykonávající práci pro zaměstnavatele',
-        ]}
-        whenOther={[
-          { label: 'Pracovní smlouva', href: '/pracovni', text: 'Pokud jde o pravidelný pracovní poměr s pevnou pracovní dobou a trvalým charakterem.' },
-          { label: 'Smlouva o poskytování služeb', href: '/sluzby', text: 'Pokud spolupracujete s OSVČ nebo firmou — nikoliv se zaměstnancem v pracovněprávním vztahu.' },
-        ]}
-        faq={[
-          { q: 'Jaký je rozdíl mezi DPP a pracovní smlouvou?', a: 'DPP je určena pro příležitostné nebo krátkodobé pracovní úkoly (max. 300 hodin ročně u jednoho zaměstnavatele). Pracovní smlouva zakládá trvalý pracovní poměr s pravidelnou pracovní dobou a zákonnou ochranou zaměstnance.' },
-          { q: 'Jaký je limit hodin u DPP?', a: 'Zákoník práce stanoví maximálně 300 hodin ročně u jednoho zaměstnavatele. Při překročení tohoto limitu by bylo nutné uzavřít jiný typ pracovněprávního vztahu.' },
-          { q: 'Musí být DPP písemná?', a: 'Ano, § 77 zákoníku práce vyžaduje písemnou formu DPP. Ústní dohoda není platná.' },
-          { q: 'Platí se z DPP pojistné a daně?', a: 'Pro rok 2026 vzniká účast na nemocenském a důchodovém pojištění při dosažení rozhodného příjmu 12 000 Kč hrubého měsíčně u jednoho zaměstnavatele. Pod tuto hranici se zpravidla neodvádí sociální ani zdravotní pojistné. Z odměny se odvádí daň z příjmů — přesný postup závisí na konkrétní situaci a aktuální metodice ČSSZ.' },
-          { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
-        ]}
-        ctaLabel="Vytvořit dohodu o provedení práce"
+        benefits={ui.landing.benefits}
+        contents={ui.landing.contents}
+        whenSuitable={ui.landing.whenSuitable}
+        whenOther={ui.landing.whenOther}
+        faq={ui.landing.faq}
+        ctaLabel={ui.landing.ctaLabel}
         formId="formular"
-        guideHref="/dohoda-o-provedeni-prace"
-        guideLabel="Průvodce DPP — kdy ji použít, limity hodin a zdanění v 2026"
+        guideHref={ui.landing.guideHref}
+        guideLabel={ui.landing.guideLabel}
       />
 
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8">
@@ -192,78 +165,78 @@ export default function DppPage() {
 
             <div id="formular" className="space-y-6">
               <div className="mb-6 border-t border-slate-800/60 pt-8">
-                <h2 className="text-lg font-black text-white uppercase tracking-wide">Vyplňte údaje dokumentu</h2>
-                <p className="text-sm text-slate-500 mt-1">Všechna povinná pole jsou označena *</p>
+                <h2 className="text-lg font-black text-white uppercase tracking-wide">{ui.form.title}</h2>
+                <p className="text-sm text-slate-500 mt-1">{ui.form.requiredHint}</p>
               </div>
 
               <section className={cardClass}>
-                <SectionTitle index="01" title="Zaměstnavatel" />
+                <SectionTitle index="01" title={ui.sections.employer.title} />
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label="Název / jméno *"><input className={inputClass} name="employerName" value={form.employerName} onChange={set} placeholder="ABC s.r.o." /></Field>
-                  <Field label="IČO *"><input className={inputClass} name="employerIco" value={form.employerIco} onChange={set} placeholder="12345678" /></Field>
-                  <Field label="Sídlo / adresa *"><input className={inputClass} name="employerAddress" value={form.employerAddress} onChange={set} placeholder="Náměstí 1, Praha 1" /></Field>
-                  <Field label="E-mail"><input className={inputClass} name="employerEmail" value={form.employerEmail} onChange={set} type="email" placeholder="info@firma.cz" /></Field>
+                  <Field label={ui.fields.employerName}><input className={inputClass} name="employerName" value={form.employerName} onChange={set} placeholder={ui.page.placeholders.employerName} /></Field>
+                  <Field label={ui.fields.employerIco}><input className={inputClass} name="employerIco" value={form.employerIco} onChange={set} placeholder={ui.page.placeholders.employerIco} /></Field>
+                  <Field label={ui.fields.employerAddress}><input className={inputClass} name="employerAddress" value={form.employerAddress} onChange={set} placeholder={ui.page.placeholders.employerAddress} /></Field>
+                  <Field label={ui.fields.employerEmail}><input className={inputClass} name="employerEmail" value={form.employerEmail} onChange={set} type="email" placeholder={ui.page.placeholders.employerEmail} /></Field>
                 </div>
               </section>
 
               <section className={cardClass}>
-                <SectionTitle index="02" title="Zaměstnanec (brigádník)" />
+                <SectionTitle index="02" title={ui.sections.employee.title} />
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label="Jméno a příjmení *"><input className={inputClass} name="employeeName" value={form.employeeName} onChange={set} placeholder="Tomáš Pokorný" /></Field>
-                  <Field label="Datum narození *"><input className={inputClass} name="employeeBirth" value={form.employeeBirth} onChange={set} placeholder="15.06.2002" /></Field>
-                  <Field label="Trvalé bydliště *"><input className={inputClass} name="employeeAddress" value={form.employeeAddress} onChange={set} placeholder="Ulice 5, Brno" /></Field>
-                  <Field label="E-mail"><input className={inputClass} name="employeeEmail" value={form.employeeEmail} onChange={set} type="email" placeholder="tomas@email.cz" /></Field>
+                  <Field label={ui.fields.employeeName}><input className={inputClass} name="employeeName" value={form.employeeName} onChange={set} placeholder={ui.page.placeholders.employeeName} /></Field>
+                  <Field label={ui.fields.employeeBirth}><input className={inputClass} name="employeeBirth" value={form.employeeBirth} onChange={set} placeholder={ui.page.placeholders.employeeBirth} /></Field>
+                  <Field label={ui.fields.employeeAddress}><input className={inputClass} name="employeeAddress" value={form.employeeAddress} onChange={set} placeholder={ui.page.placeholders.employeeAddress} /></Field>
+                  <Field label={ui.fields.employeeEmail}><input className={inputClass} name="employeeEmail" value={form.employeeEmail} onChange={set} type="email" placeholder={ui.page.placeholders.employeeEmail} /></Field>
                 </div>
               </section>
 
               <section className={cardClass}>
-                <SectionTitle index="03" title="Pracovní úkol" subtitle="Popište co nejpřesněji — vyhne se sporům o rozsah a výsledek." />
+                <SectionTitle index="03" title={ui.sections.task.title} subtitle={ui.sections.task.subtitle} />
                 <div className="space-y-4">
-                  <Field label="Druh práce / název úkolu *">
-                    <input className={inputClass} name="taskDescription" value={form.taskDescription} onChange={set} placeholder="Obsluha letní akce, roznos letáků, překlad dokumentu…" />
+                  <Field label={ui.fields.taskDescription}>
+                    <input className={inputClass} name="taskDescription" value={form.taskDescription} onChange={set} placeholder={ui.page.placeholders.taskDescription} />
                   </Field>
-                  <Field label="Podrobný popis (nepovinné)">
-                    <textarea className="w-full min-h-[80px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="taskDetails" value={form.taskDetails} onChange={set} placeholder="Překlady z angličtiny do češtiny, přibl. 10 000 slov, formát DOCX…" />
+                  <Field label={ui.fields.taskDetails}>
+                    <textarea className="w-full min-h-[80px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="taskDetails" value={form.taskDetails} onChange={set} placeholder={ui.page.placeholders.taskDetails} />
                   </Field>
                   <div className="grid sm:grid-cols-2 gap-4">
-                    <Field label="Místo výkonu práce"><input className={inputClass} name="workPlace" value={form.workPlace} onChange={set} placeholder="Praha nebo vzdáleně" /></Field>
-                    <Field label="Předpokládaný rozsah (hod.) *">
-                      <input className={inputClass} name="estimatedHours" value={form.estimatedHours} onChange={set} type="number" placeholder="20" />
+                    <Field label={ui.fields.workPlace}><input className={inputClass} name="workPlace" value={form.workPlace} onChange={set} placeholder={ui.page.placeholders.workPlace} /></Field>
+                    <Field label={ui.fields.estimatedHours}>
+                      <input className={inputClass} name="estimatedHours" value={form.estimatedHours} onChange={set} type="number" placeholder={ui.page.placeholders.estimatedHours} />
                     </Field>
                   </div>
                 </div>
               </section>
 
               <section className={cardClass}>
-                <SectionTitle index="04" title="Trvání a termín splnění" />
+                <SectionTitle index="04" title={ui.sections.term.title} />
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label="Typ trvání">
+                  <Field label={ui.fields.durationType}>
                     <select className={inputClass} name="durationType" value={form.durationType} onChange={set}>
-                      <option value="fixed">Na dobu určitou</option>
-                      <option value="indefinite">Na dobu neurčitou</option>
+                      <option value="fixed">{ui.options.durationFixed}</option>
+                      <option value="indefinite">{ui.options.durationIndefinite}</option>
                     </select>
                   </Field>
-                  <Field label="Začátek"><input className={inputClass} name="startDate" value={form.startDate} onChange={set} type="date" /></Field>
-                  {form.durationType === 'fixed' && <Field label="Konec"><input className={inputClass} name="endDate" value={form.endDate} onChange={set} type="date" /></Field>}
-                  <Field label="Termín splnění úkolu (nejpozději)"><input className={inputClass} name="deadline" value={form.deadline} onChange={set} type="date" /></Field>
+                  <Field label={ui.fields.startDate}><input className={inputClass} name="startDate" value={form.startDate} onChange={set} type="date" /></Field>
+                  {form.durationType === 'fixed' && <Field label={ui.fields.endDate}><input className={inputClass} name="endDate" value={form.endDate} onChange={set} type="date" /></Field>}
+                  <Field label={ui.fields.deadline}><input className={inputClass} name="deadline" value={form.deadline} onChange={set} type="date" /></Field>
                 </div>
               </section>
 
               <section className={cardClass}>
-                <SectionTitle index="05" title="Odměna" subtitle="Pro rok 2026: účast na pojištění vzniká při dosažení 12 000 Kč hrubého měsíčně u jednoho zaměstnavatele." />
+                <SectionTitle index="05" title={ui.sections.pay.title} subtitle={ui.sections.pay.subtitle} />
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label="Typ odměny">
+                  <Field label={ui.fields.remunerationType}>
                     <select className={inputClass} name="remunerationType" value={form.remunerationType} onChange={set}>
-                      <option value="fixed">Paušální (za celý úkol)</option>
-                      <option value="hourly">Hodinová sazba</option>
+                      <option value="fixed">{ui.options.payFixed}</option>
+                      <option value="hourly">{ui.options.payHourly}</option>
                     </select>
                   </Field>
                   {form.remunerationType === 'fixed'
-                    ? <Field label="Celková odměna (Kč) *"><input className={inputClass} name="totalRemuneration" value={form.totalRemuneration} onChange={set} type="number" placeholder="5000" /></Field>
-                    : <Field label="Hodinová sazba (Kč/hod.) *"><input className={inputClass} name="hourlyRate" value={form.hourlyRate} onChange={set} type="number" placeholder="180" /></Field>
+                    ? <Field label={ui.fields.totalRemuneration}><input className={inputClass} name="totalRemuneration" value={form.totalRemuneration} onChange={set} type="number" placeholder={ui.page.placeholders.totalRemuneration} /></Field>
+                    : <Field label={ui.fields.hourlyRate}><input className={inputClass} name="hourlyRate" value={form.hourlyRate} onChange={set} type="number" placeholder={ui.page.placeholders.hourlyRate} /></Field>
                   }
-                  <Field label="Číslo účtu (výplata)"><input className={inputClass} name="paymentAccount" value={form.paymentAccount} onChange={set} placeholder="123456789/0800" /></Field>
-                  <Field label="Výplata do (dní po splnění)"><input className={inputClass} name="paymentDays" value={form.paymentDays} onChange={set} type="number" /></Field>
+                  <Field label={ui.fields.paymentAccount}><input className={inputClass} name="paymentAccount" value={form.paymentAccount} onChange={set} placeholder={ui.page.placeholders.paymentAccount} /></Field>
+                  <Field label={ui.fields.paymentDays}><input className={inputClass} name="paymentDays" value={form.paymentDays} onChange={set} type="number" /></Field>
                 </div>
               </section>
 
@@ -286,19 +259,19 @@ export default function DppPage() {
           <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-24">
             {/* Watermarked document preview */}
             {previewSections.length > 0 && (
-              <ContractPreview sections={previewSections} title="Dohoda o provedení práce" />
+              <ContractPreview sections={previewSections} title={ui.form.documentLabel} />
             )}
             <div className={cardClass}>
-              <div className="builder-kicker mb-4">Kontrola úplnosti</div>
+              <div className="builder-kicker mb-4">{ui.form.analysisTitle}</div>
               <div className="flex items-center gap-4 mb-4">
                 <div className={`text-5xl font-black ${scoreColor}`}>{risk.score}</div>
-                <div><div className={`font-bold ${scoreColor}`}>{risk.label}</div><div className="text-xs text-slate-500">ze 100 bodů</div></div>
+                <div><div className={`font-bold ${scoreColor}`}>{risk.label}</div><div className="text-xs text-slate-500">{ui.form.scoreOf}</div></div>
               </div>
               {risk.warnings.length === 0
-                ? <p className="text-sm text-emerald-400">✓ DPP je v pořádku.</p>
+                ? <p className="text-sm text-emerald-400">{ui.page.hints.dppOk ?? ui.page.hints.contractCompliant}</p>
                 : <ul className="space-y-2">{risk.warnings.map((w, i) => (
                     <li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-rose-500/10 text-rose-300' : 'bg-amber-500/10 text-amber-300'}`}>
-                      {w.level === 'high' ? '⚠ ' : '▲ '}{w.text}
+                      {w.level === 'high' ? '? ' : '^ '}{w.text}
                     </li>
                   ))}</ul>
               }
@@ -308,27 +281,27 @@ export default function DppPage() {
               <BuilderCheckoutSummary
                 contractType="dpp"
                 tier={form.tier}
-                documentLabel="Dohoda o provedení práce"
+                documentLabel={ui.form.documentLabel}
                 onUpgrade={() => setForm((prev) => ({ ...prev, tier: 'complete', notaryUpsell: true }))}
               />
               {(!form.employerName || !form.employeeName || !form.taskDescription) && !isProcessing && (
                 <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3 text-xs text-slate-400 space-y-1">
-                  <div className="font-semibold mb-1">Vyplňte pro pokračování:</div>
-                  {!form.employerName && <div>• Název zaměstnavatele</div>}
-                  {!form.employeeName && <div>• Jméno zaměstnance</div>}
-                  {!form.taskDescription && <div>• Popis pracovního úkolu</div>}
+                  <div className="font-semibold mb-1">{ui.form.fillToContinue}</div>
+                  {!form.employerName && <div>? {ui.page.sidebarMissing.employerName}</div>}
+                  {!form.employeeName && <div>? {ui.page.sidebarMissing.employeeName}</div>}
+                  {!form.taskDescription && <div>? {ui.page.sidebarMissing.taskDescription}</div>}
                 </div>
               )}
-                              {/* Tlačítko generování */}
+                              {/* Tla??tko generov?n? */}
                 <button
                   onClick={() => setShowPreviewModal(true)}
                   className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >
-                  Vygenerovat smlouvu →
+                  Vygenerovat smlouvu ?
                 </button>
 
                 <p className="mt-3 text-center text-[11px] text-slate-500">
-                  Zobrazí se náhled dokumentu připraveného k odemčení
+                  {ui.form.previewHint}
                 </p>
             </div>
           </div>
@@ -338,7 +311,7 @@ export default function DppPage() {
     {showPreviewModal && (
       <PaymentModal
         sections={previewSections}
-        title="Dohoda o provedení práce"
+        title={ui.form.documentLabel}
         tier={form.tier}
         onTierChange={(t) => setForm((prev) => ({ ...prev, tier: t }))}
         contractType="dpp"

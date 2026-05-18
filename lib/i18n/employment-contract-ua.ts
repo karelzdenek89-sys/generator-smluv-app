@@ -10,6 +10,7 @@ import {
 } from '@/lib/i18n/expat-contract-helpers';
 import { EMPLOYMENT_WORK_ELIGIBILITY_NOTICE_UK } from '@/lib/i18n/safety-copy';
 import { ZP_TRIAL_MONTHS_LEADERSHIP, ZP_TRIAL_MONTHS_STANDARD } from '@/lib/legal-constants-2026';
+import { formatRemoteWorkForContract } from '@/lib/i18n/employment-remote-work';
 
 /** Пояснювальний український переклад чеського трудового договору — не офіційний. */
 export function buildEmploymentContractSectionsUa(d: StoredContractData): ContractSection[] {
@@ -94,7 +95,9 @@ export function buildEmploymentContractSectionsUa(d: StoredContractData): Contra
         `Посада / вид роботи: ${asText(d.jobTitle, 'не вказано')}`,
         `Опис: ${asText(d.jobDescription, 'згідно з описом посади')}`,
         `Місце виконання: ${asText(d.workPlace, 'не вказано')}`,
-        d.remoteWork ? `Віддалена робота: ${asText(d.remoteWork)}` : '',
+        d.remoteWork
+          ? `Віддалена робота: ${asText(formatRemoteWorkForContract(String(d.remoteWork), 'ua'))}`
+          : '',
       ].filter(Boolean) as string[],
     },
     {
