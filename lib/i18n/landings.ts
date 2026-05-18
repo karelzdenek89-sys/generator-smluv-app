@@ -94,7 +94,7 @@ const EN: LandingContent = {
   ctaPrimary: 'Start a rental agreement →',
   ctaSecondary: 'Start a DPP agreement',
   warningBanner:
-    '⚠ English-guided forms are available for rental, employment and DPP. Sublease, power of attorney and car sale still use a Czech form (browser translate helps). The PDF is primarily Czech; supported contracts may include an explanatory English annex — not certified or official. Czech wording prevails.',
+    '⚠ English-guided forms are available for rental, employment, DPP, sublease, power of attorney and car sale. The PDF is primarily Czech; supported contracts include an explanatory English annex — not certified or official. Czech wording prevails.',
   contractsHeading: 'Available contracts',
   openCzechForm: 'Open Czech form →',
   contracts: withContracts([
@@ -116,7 +116,7 @@ const EN: LandingContent = {
   howItWorksHeading: 'How it works',
   howItWorks: [
     { title: '1. Pick a contract.', description: 'Choose from 14 standard document types above.' },
-    { title: '2. Fill the form.', description: 'Enter the parties, amounts, dates, and optional clauses. Rental, employment and DPP use an English-guided form; other supported contracts use a Czech form — use your browser translator if needed.' },
+    { title: '2. Fill the form.', description: 'Enter the parties, amounts, dates, and optional clauses. Rental, employment, DPP, sublease, power of attorney and car sale use an English-guided form; other document types on this site are Czech-only for now.' },
     { title: '3. Pay and download.', description: 'Pay by card via Stripe (CZK). Download your Czech PDF immediately; supported contracts may include an explanatory English annex. The link stays valid for 7–30 days.' },
     { title: '4. Sign on paper.', description: 'Print, both parties sign, keep one copy each. Czech contracts generally do not require notarisation unless they concern real estate transfer or specific corporate acts.' },
   ],
@@ -131,7 +131,7 @@ const EN: LandingContent = {
   ],
   faqHeading: 'Frequently asked questions',
   faq: [
-    { q: 'I do not speak Czech. Can I still use SmlouvaHned?', a: 'Yes for supported contracts: the PDF is primarily Czech and may include an explanatory translation annex. Other forms are Czech-only for now — use your browser translator while filling. The translation is not certified or official; Czech wording prevails.' },
+    { q: 'I do not speak Czech. Can I still use SmlouvaHned?', a: 'Yes for the six supported expat contracts: English-guided forms with a primarily Czech PDF and explanatory English annex. Other document types on this site are Czech-only for now. The annex is not certified or official; Czech wording prevails.' },
     { q: 'Is the contract legally valid in the Czech Republic?', a: 'Yes. Each template is built around the relevant provisions of the Czech Civil Code (Občanský zákoník, Act No. 89/2012 Coll.) or the Labour Code. Section references appear in the document.' },
     { q: 'Is SmlouvaHned a law firm?', a: 'No. SmlouvaHned is a software tool that generates standard template contracts. It is not legal advice and does not replace consultation with a Czech attorney (advokát).' },
     { q: 'How do payments work?', a: 'After you fill the form you can choose a tier and pay by card via Stripe. Payments are processed in Czech crowns (CZK).' },
@@ -173,7 +173,7 @@ const UA: LandingContent = {
   ctaPrimary: 'Створити договір оренди →',
   ctaSecondary: 'Створити ДПП',
   warningBanner:
-    '⚠ Форми українською доступні для оренди, праці та DPP. Піднайом, довіреність і купівля авто поки лише чеською формою (допоможе перекладач браузера). PDF переважно чеською; для обраних договорів — пояснювальний український додаток, не офіційний переклад. Перевага має чеська версія.',
+    '⚠ Форми українською доступні для оренди, праці, DPP, піднайму, довіреності та купівлі авто. PDF переважно чеською; для цих договорів — пояснювальний український додаток, не офіційний переклад. Перевага має чеська версія.',
   contractsHeading: 'Доступні договори',
   openCzechForm: 'Відкрити чеську форму →',
   contracts: withContracts([
@@ -195,7 +195,7 @@ const UA: LandingContent = {
   howItWorksHeading: 'Як це працює',
   howItWorks: [
     { title: '1. Оберіть договір.', description: 'Виберіть один із 14 стандартних типів документів.' },
-    { title: '2. Заповніть форму.', description: 'Введіть сторони, суми, дати та опційні пункти. Оренда, праця та DPP — форма з підказками українською; інші підтримувані договори — чеська форма, за потреби перекладач браузера.' },
+    { title: '2. Заповніть форму.', description: 'Введіть сторони, суми, дати та опційні пункти. Шість expat-договорів (оренда, праця, DPP, піднайм, довіреність, авто) — форма українською; інші типи документів на сайті поки лише чеською.' },
     { title: '3. Оплатіть і завантажте.', description: 'Оплата карткою через Stripe (CZK). Завантажте чеський PDF одразу; для підтримуваних договорів можливий пояснювальний український додаток. Посилання чинне 7–30 днів.' },
     { title: '4. Підпишіть на папері.', description: 'Роздрукуйте, обидві сторони підписують, кожен залишає собі примірник. Нотаріальне засвідчення зазвичай не потрібне (виняток — нерухомість, корпоративні акти).' },
   ],

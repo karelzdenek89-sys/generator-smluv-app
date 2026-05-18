@@ -36,6 +36,12 @@ import {
   getContractPreviewLabels,
 } from '../lib/i18n/lease-preview';
 import { getExpatBlogArticle } from '../lib/i18n/expat-blog-articles';
+import {
+  getCarFormUi,
+  getPoaFormUi,
+  getSubleaseFormUi,
+} from '../lib/i18n/expat-builder-forms';
+import { buildExpatPreviewSections } from '../lib/i18n/expat-contract-preview';
 
 const root = process.cwd();
 const read = (path: string) => readFileSync(`${root}/${path}`, 'utf8');
@@ -339,8 +345,36 @@ function testExpatCapabilityDifferentiation() {
   assert.match(EXPAT_CONTRACT_CAPABILITY.ua.lease, /українськ/i);
   assert.match(EXPAT_CONTRACT_CAPABILITY.en.employment, /English-guided form/i);
   assert.match(EXPAT_CONTRACT_CAPABILITY.ua.dpp, /огляд основних умов/i);
-  assert.match(EXPAT_CONTRACT_CAPABILITY.en.sublease, /Czech form/i);
-  assert.doesNotMatch(EXPAT_CONTRACT_CAPABILITY.en.sublease, /English-guided form/i);
+  assert.match(EXPAT_CONTRACT_CAPABILITY.en.sublease, /English-guided form/i);
+  assert.match(EXPAT_CONTRACT_CAPABILITY.en.power_of_attorney, /English-guided form/i);
+  assert.match(EXPAT_CONTRACT_CAPABILITY.en.car_sale, /English-guided form/i);
+}
+
+function testExpatBuilderFormsLocalized() {
+  for (const locale of ['en', 'ua'] as const) {
+    const sub = getSubleaseFormUi(locale);
+    assert.equal(sub.isLocalized, true);
+    assert.ok(sub.fields.landlordName);
+    const poa = getPoaFormUi(locale);
+    assert.equal(poa.isLocalized, true);
+    assert.ok(poa.fields.principalName);
+    const car = getCarFormUi(locale);
+    assert.equal(car.isLocalized, true);
+    assert.ok(car.fields.sellerName);
+  }
+  const subleasePreview = buildExpatPreviewSections('sublease', 'en', {
+    contractType: 'sublease',
+    tier: 'basic',
+    lang: 'en',
+    landlordName: 'Jan Novak',
+    tenantName: 'John Doe',
+    flatAddress: 'Prague',
+    rentAmount: '15000',
+    startDate: '2026-06-01',
+    duration: 'fixed',
+    endDate: '2027-05-31',
+  } as StoredContractData);
+  assert.ok(subleasePreview.length > 0);
 }
 
 function testExpatContractTranslationBuilders() {
@@ -724,6 +758,7 @@ async function main() {
   testEmploymentEligibilityInBuilders();
   testLeaseEnglishContractSections();
   testExpatCapabilityDifferentiation();
+  testExpatBuilderFormsLocalized();
   testExpatContractTranslationBuilders();
   testLeaseUkBuilderUi();
   testBuilderNoticeUkCopy();

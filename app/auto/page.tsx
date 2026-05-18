@@ -7,11 +7,15 @@ import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
-import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
 import { getThematicPackageConfig } from '@/lib/packages';
+import { getCarFormUi } from '@/lib/i18n/expat-builder-forms';
+import {
+  buildExpatPreviewSections,
+  getExpatPreviewLabels,
+} from '@/lib/i18n/expat-contract-preview';
 import PaymentModal from '@/app/components/PaymentModal';
-import { useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
+import { BuilderLocaleNotice, useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
 
 type PaymentMethod = 'cash' | 'transfer';
 type RiskLevel = 'low' | 'medium' | 'high';
@@ -87,6 +91,13 @@ const cardClass = 'builder-card p-6';
 function CarSaleBuilderContent() {
   const searchParams = useSearchParams();
   const builderLocale = useBuilderLocale();
+  const ui = useMemo(() => getCarFormUi(builderLocale), [builderLocale]);
+  const fl = (k: string, cs: string) => ui.fields[k] ?? cs;
+  const sec = (k: string, title: string, subtitle?: string) => {
+    const s = ui.sections[k];
+    return { title: s?.title ?? title, subtitle: s?.subtitle ?? subtitle };
+  };
+  const previewLabels = useMemo(() => getExpatPreviewLabels(builderLocale), [builderLocale]);
   const packageConfig = getThematicPackageConfig(searchParams.get('package'));
   const isVehiclePackage = packageConfig?.key === 'vehicle_sale';
 
@@ -272,10 +283,11 @@ function CarSaleBuilderContent() {
     return {
       score,
       warnings,
-      label: score >= 85 ? 'Dobré nastavení' : score >= 70 ? 'Průměrná ochrana' : 'Rizikovější nastavení',
+      label:
+        score >= 85 ? ui.risk.good : score >= 70 ? ui.risk.average : ui.risk.needsWork,
       checkoutBlocked: formData.paymentMethod === 'cash' && priceNumber > 270000,
     };
-  }, [formData, priceNumber]);
+  }, [formData, priceNumber, ui.risk]);
 
   const previewContract = useMemo(() => {
     return `KUPNÍ SMLOUVA O PRODEJI OJETÉHO VOZIDLA
@@ -328,7 +340,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
   const previewSections = useMemo(() => {
     try {
       if (!formData.sellerName) return [];
-      return buildContractSections({
+      return buildExpatPreviewSections('car_sale', builderLocale, {
         ...formData,
         contractType: 'car_sale',
         packageKey: packageConfig?.key ?? null,
@@ -336,7 +348,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
     } catch {
       return [];
     }
-  }, [formData, packageConfig?.key]);
+  }, [formData, packageConfig?.key, builderLocale]);
 
   async function handlePayment() {
     if (riskAnalysis.checkoutBlocked) {
@@ -389,7 +401,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
       window.location.href = result.url;
     } catch (error) {
       console.error('Checkout error:', error);
-      alert('Chyba platební brány. Zkuste to prosím znovu.');
+      alert(ui.form.paymentError);
       setIsProcessing(false);
     }
   }
@@ -457,6 +469,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
 
   return (
     <>
+    <BuilderLocaleNotice contractType="car_sale" />
     <main className="site-page contract-builder pb-24">
       <header className="contract-builder-header">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
@@ -465,9 +478,9 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
               AUTO
             </div>
             <div>
-              <div className="font-bold tracking-tight text-[#f2e7c8] uppercase">SmlouvaHned</div>
+              <div className="font-bold tracking-tight text-[#f2e7c8] uppercase">{ui.header.brand}</div>
               <div className="text-[11px] uppercase tracking-[0.18em] text-[#bba98c]">
-                Kupní smlouva na vozidlo
+                {ui.header.docType}
               </div>
             </div>
           </div>
@@ -476,16 +489,16 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
             onClick={() => (window.location.href = '/')}
             className="text-sm text-[#d2c8b9] hover:text-[#f2e7c8] transition"
           >
-            Zavřít
+            {ui.header.close}
           </button>
         </div>
       </header>
 
       <ContractLandingSection
-        badge="§ 2079 a násl. občanského zákoníku"
-        h1Main="Kupní smlouva na"
-        h1Accent="auto online"
-        subtitle="Vytvořte kupní smlouvu při prodeji osobního automobilu, motocyklu nebo jiného motorového vozidla. Dokument zachycuje technické parametry, historii, stav tachometru, STK, emise a veškeré podmínky převodu vlastnictví."
+        badge={ui.landing.badge}
+        h1Main={ui.landing.h1Main}
+        h1Accent={ui.landing.h1Accent}
+        subtitle={ui.landing.subtitle}
         benefits={[
           { icon: '🚗', text: 'Určeno specificky pro prodej automobilu, motocyklu nebo přívěsu' },
           { icon: '🔍', text: 'Pokrývá VIN, STK, emise, počet vlastníků i stav tachometru' },
@@ -518,10 +531,10 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
           { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
           { q: 'Jak mám přihlásit vozidlo na nového majitele?', a: 'Po podpisu smlouvy musí kupující vozidlo přepsat na dopravním inspektorátu (MDIC) ve svém místě bydliště. K přepisu potřebuje kupní smlouvu, technický průkaz, doklad totožnosti a potvrzení o zaplacení daně z nabytí (pokud se vztahuje).' },
         ]}
-        ctaLabel="Vytvořit kupní smlouvu na auto"
+        ctaLabel={ui.landing.ctaLabel}
         formId="formular"
         guideHref="/blog/kupni-smlouva-na-auto-2026"
-        guideLabel="Průvodce kupní smlouvou na auto — VIN, STK, vady a bezpečné předání"
+        guideLabel={ui.landing.guideLabel}
       />
 
       {packageConfig ? (
@@ -591,8 +604,8 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
 
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8" id="formular">
         <div className="mb-6 border-t border-slate-800/60 pt-8">
-          <h2 className="text-lg font-black text-white uppercase tracking-wide">Vyplňte údaje dokumentu</h2>
-          <p className="text-sm text-slate-500 mt-1">Všechna povinná pole jsou označena *</p>
+          <h2 className="text-lg font-black text-white uppercase tracking-wide">{ui.form.title}</h2>
+          <p className="text-sm text-slate-500 mt-1">{ui.form.requiredHint}</p>
         </div>
 
         <div className="grid lg:grid-cols-12 gap-8 items-start">
@@ -600,22 +613,22 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
             <section className={cardClass}>
               <SectionTitle
                 index="01"
-                title="Smluvní strany"
-                subtitle="Doplň co nejpřesnější identifikaci obou stran. To je základ vymahatelnosti."
+                title={sec('s01', 'Smluvní strany').title}
+                subtitle={sec('s01', 'Smluvní strany', 'Doplň co nejpřesnější identifikaci obou stran. To je základ vymahatelnosti.').subtitle}
               />
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <input
                   name="sellerName"
                   value={formData.sellerName}
                   onChange={handleChange}
-                  placeholder="Prodávající – celé jméno"
+                  placeholder={fl('sellerName', 'Prodávající – celé jméno')}
                   className={inputClass}
                 />
                 <input
                   name="sellerId"
                   value={formData.sellerId}
                   onChange={handleChange}
-                  placeholder="Prodávající – RČ / datum narození"
+                  placeholder={fl('sellerId', 'Prodávající – RČ / datum narození')}
                   className={inputClass}
                 />
               </div>
@@ -624,14 +637,14 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   name="sellerAddress"
                   value={formData.sellerAddress}
                   onChange={handleChange}
-                  placeholder="Prodávající – adresa"
+                  placeholder={fl('sellerAddress', 'Prodávající – adresa')}
                   className={inputClass}
                 />
                 <input
                   name="sellerOP"
                   value={formData.sellerOP}
                   onChange={handleChange}
-                  placeholder="Prodávající – číslo OP"
+                  placeholder={fl('sellerOP', 'Prodávající – číslo OP')}
                   className={inputClass}
                 />
               </div>
@@ -640,14 +653,14 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   name="sellerEmail"
                   value={formData.sellerEmail}
                   onChange={handleChange}
-                  placeholder="Prodávající – e-mail (volitelné)"
+                  placeholder={fl('sellerEmail', 'Prodávající – e-mail (volitelné)')}
                   className={inputClass}
                 />
                 <input
                   name="sellerPhone"
                   value={formData.sellerPhone}
                   onChange={handleChange}
-                  placeholder="Prodávající – telefon (volitelné)"
+                  placeholder={fl('sellerPhone', 'Prodávající – telefon (volitelné)')}
                   className={inputClass}
                 />
               </div>
@@ -658,14 +671,14 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     name="buyerName"
                     value={formData.buyerName}
                     onChange={handleChange}
-                    placeholder="Kupující – celé jméno"
+                    placeholder={fl('buyerName', 'Kupující – celé jméno')}
                     className={inputClass}
                   />
                   <input
                     name="buyerId"
                     value={formData.buyerId}
                     onChange={handleChange}
-                    placeholder="Kupující – RČ / datum narození"
+                    placeholder={fl('buyerId', 'Kupující – RČ / datum narození')}
                     className={inputClass}
                   />
                 </div>
@@ -674,14 +687,14 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     name="buyerAddress"
                     value={formData.buyerAddress}
                     onChange={handleChange}
-                    placeholder="Kupující – adresa"
+                    placeholder={fl('buyerAddress', 'Kupující – adresa')}
                     className={inputClass}
                   />
                   <input
                     name="buyerOP"
                     value={formData.buyerOP}
                     onChange={handleChange}
-                    placeholder="Kupující – číslo OP"
+                    placeholder={fl('buyerOP', 'Kupující – číslo OP')}
                     className={inputClass}
                   />
                 </div>
@@ -690,14 +703,14 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     name="buyerEmail"
                     value={formData.buyerEmail}
                     onChange={handleChange}
-                    placeholder="Kupující – e-mail (volitelné)"
+                    placeholder={fl('buyerEmail', 'Kupující – e-mail (volitelné)')}
                     className={inputClass}
                   />
                   <input
                     name="buyerPhone"
                     value={formData.buyerPhone}
                     onChange={handleChange}
-                    placeholder="Kupující – telefon (volitelné)"
+                    placeholder={fl('buyerPhone', 'Kupující – telefon (volitelné)')}
                     className={inputClass}
                   />
                 </div>
@@ -707,8 +720,8 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
             <section className={cardClass}>
               <SectionTitle
                 index="02"
-                title="Specifikace vozidla"
-                subtitle="Každá změna se okamžitě promítne do náhledu vpravo."
+                title={sec('s02', 'Specifikace vozidla').title}
+                subtitle={sec('s02', 'Specifikace vozidla', 'Každá změna se okamžitě promítne do náhledu vpravo.').subtitle}
               />
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <input
@@ -835,8 +848,8 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
             <section className={cardClass}>
               <SectionTitle
                 index="03"
-                title="Cena, úhrada a předání"
-                subtitle="Tyto údaje se okamžitě propsají do smlouvy."
+                title={sec('s03', 'Cena, úhrada a předání').title}
+                subtitle={sec('s03', 'Cena, úhrada a předání', 'Tyto údaje se okamžitě propsají do smlouvy.').subtitle}
               />
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <input
@@ -913,8 +926,8 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
             <section className={cardClass}>
               <SectionTitle
                 index="04"
-                title="Technický stav a předání"
-                subtitle="Tato část chrání hlavně prodávajícího proti budoucím sporům."
+                title={sec('s04', 'Technický stav a předání').title}
+                subtitle={sec('s04', 'Technický stav a předání', 'Tato část chrání hlavně prodávajícího proti budoucím sporům.').subtitle}
               />
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <input
@@ -966,71 +979,71 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
             <section className={cardClass}>
               <SectionTitle
                 index="05"
-                title="Právní nastavení"
-                subtitle="Přepínače mění obsah smlouvy i risk score."
+                title={sec('s05', 'Právní nastavení').title}
+                subtitle={sec('s05', 'Právní nastavení', 'Přepínače mění obsah smlouvy i risk score.').subtitle}
               />
               <div className="grid sm:grid-cols-2 gap-4">
                 <ToggleCard
                   name="serviceHistory"
                   checked={formData.serviceHistory}
-                  label="Servisní historie k dispozici"
+                  label={fl('serviceHistory', 'Servisní historie k dispozici')}
                   hint="Ve smlouvě se uvede, že je servisní historie nebo knížka předána."
                 />
                 <ToggleCard
                   name="accidentHistory"
                   checked={formData.accidentHistory}
-                  label="Vozidlo bylo havarováno"
+                  label={fl('accidentHistory', 'Vozidlo bylo havarováno')}
                   hint="Pokud ano, je lepší to přiznat výslovně a přesně."
                   danger={formData.accidentHistory}
                 />
                 <ToggleCard
                   name="strictWarranties"
                   checked={formData.strictWarranties}
-                  label="Přísnější právní prohlášení"
+                  label={fl('strictWarranties', 'Přísnější právní prohlášení')}
                   hint="Doporučená volba. Posiluje text o vadách, právních omezeních a stavu vozidla."
                 />
                 <ToggleCard
                   name="odometerGuaranteed"
                   checked={formData.odometerGuaranteed}
-                  label="Garantovat stav tachometru"
+                  label={fl('odometerGuaranteed', 'Garantovat stav tachometru')}
                   hint="Silnější ochrana kupujícího, ale jen pokud si jsi tím jistý."
                 />
                 <ToggleCard
                   name="buyerInspectedVehicle"
                   checked={formData.buyerInspectedVehicle}
-                  label="Kupující vozidlo prohlédl"
+                  label={fl('buyerInspectedVehicle', 'Kupující vozidlo prohlédl')}
                   hint="Doporučená volba. Snižuje prostor pro pozdější námitky."
                 />
                 <ToggleCard
                   name="testDriveCompleted"
                   checked={formData.testDriveCompleted}
-                  label="Proběhla zkušební jízda"
+                  label={fl('testDriveCompleted', 'Proběhla zkušební jízda')}
                   hint="Zkušební jízda proběhla před podpisem smlouvy. Uvede se v sekci prohlídky."
                 />
                 <ToggleCard
                   name="mechanicInspectionOffered"
                   checked={formData.mechanicInspectionOffered}
-                  label="Kupující měl možnost prověřit vozidlo mechanikem"
+                  label={fl('mechanicInspectionOffered', 'Kupující měl možnost prověřit vozidlo mechanikem')}
                   hint="Prodávající umožnil nezávislou technickou prohlídku. Posiluje postavení při případném sporu o vady."
                 />
                 <ToggleCard
                   name="isPledged"
                   checked={formData.isPledged}
-                  label="Na vozidle vázne zástava"
+                  label={fl('isPledged', 'Na vozidle vázne zástava')}
                   hint="Musí být výslovně uvedeno."
                   danger={formData.isPledged}
                 />
                 <ToggleCard
                   name="isInLeasing"
                   checked={formData.isInLeasing}
-                  label="Vozidlo je v leasingu / financování"
+                  label={fl('isInLeasing', 'Vozidlo je v leasingu / financování')}
                   hint="Zásadní právní informace."
                   danger={formData.isInLeasing}
                 />
                 <ToggleCard
                   name="hasThirdPartyRights"
                   checked={formData.hasThirdPartyRights}
-                  label="Existují práva třetích osob"
+                  label={fl('hasThirdPartyRights', 'Existují práva třetích osob')}
                   hint="Např. společné vlastnictví, zajištění, omezení."
                   danger={formData.hasThirdPartyRights}
                 />
@@ -1042,7 +1055,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
             <div className="sticky top-24 space-y-6">
               {/* Watermarked document preview */}
               {previewSections.length > 0 && (
-                <ContractPreview sections={previewSections} title="Kupní smlouva na vozidlo" />
+                <ContractPreview sections={previewSections} title={ui.form.documentLabel} labels={previewLabels} />
               )}
               <div className={cardClass}>
                 <div className="flex items-start justify-between gap-4">
@@ -1213,7 +1226,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   contractType="car_sale"
                   tier={formData.tier}
                   packageKey={packageConfig?.key ?? null}
-                  documentLabel="Kupní smlouva na vozidlo"
+                  documentLabel={ui.form.documentLabel}
                   onUpgrade={() => setFormData((prev) => ({ ...prev, tier: 'complete', notaryUpsell: true }))}
                 />
 
@@ -1238,7 +1251,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
     {showPreviewModal && (
       <PaymentModal
         sections={previewSections}
-        title="Kupní smlouva na vozidlo"
+        title={ui.form.documentLabel}
         tier={formData.tier}
         onTierChange={(t) => setFormData((prev) => ({ ...prev, tier: t }))}
         contractType="car_sale"

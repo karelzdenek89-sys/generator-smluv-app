@@ -1,6 +1,15 @@
 import type { AppLocale, ExpatContractType } from '@/lib/locale';
 import { LEGAL_NOTICE } from '@/lib/locale';
 import { getEmploymentWorkEligibilityNotice } from '@/lib/i18n/safety-copy';
+import type { ExpatLabelPack } from '@/lib/i18n/expat-form-field-labels';
+import {
+  CAR_LABELS_EN,
+  CAR_LABELS_UA,
+  POA_LABELS_EN,
+  POA_LABELS_UA,
+  SUBLEASE_LABELS_EN,
+  SUBLEASE_LABELS_UA,
+} from '@/lib/i18n/expat-form-field-labels';
 
 export type ExpatBuilderFormUi = {
   locale: AppLocale;
@@ -403,17 +412,22 @@ function genericUi(
   cs: ExpatBuilderFormUi,
   enLanding: ExpatBuilderFormUi['landing'],
   uaLanding: ExpatBuilderFormUi['landing'],
+  labels?: { en: ExpatLabelPack; ua: ExpatLabelPack },
 ): ExpatBuilderFormUi {
   if (locale === 'cs') return cs;
   const base = locale === 'en' ? SHARED_EN : SHARED_UA;
+  const pack = locale === 'en' ? labels?.en : labels?.ua;
   return {
     ...cs,
     locale,
     isLocalized: true,
-    header: base.header,
+    header: { ...cs.header, docType: (locale === 'en' ? enLanding : uaLanding).h1Main },
     notices: base.notices,
     landing: locale === 'en' ? enLanding : uaLanding,
     form: { ...cs.form, ...base.form, documentLabel: cs.form.documentLabel },
+    sections: pack?.sections ?? cs.sections,
+    fields: pack?.fields ?? cs.fields,
+    options: pack?.options ?? cs.options,
     risk: base.risk,
   };
 }
@@ -467,6 +481,7 @@ const subleaseUi = (locale: AppLocale) =>
       ctaLabel: 'Створити піднайм',
       guideLabel: 'Гід з піднайму',
     },
+    { en: SUBLEASE_LABELS_EN, ua: SUBLEASE_LABELS_UA },
   );
 
 const carUi = (locale: AppLocale) =>
@@ -518,6 +533,7 @@ const carUi = (locale: AppLocale) =>
       ctaLabel: 'Створити договір',
       guideLabel: 'Гід',
     },
+    { en: CAR_LABELS_EN, ua: CAR_LABELS_UA },
   );
 
 const poaUi = (locale: AppLocale) =>
@@ -569,6 +585,7 @@ const poaUi = (locale: AppLocale) =>
       ctaLabel: 'Створити довіреність',
       guideLabel: 'Гід',
     },
+    { en: POA_LABELS_EN, ua: POA_LABELS_UA },
   );
 
 const UI_GETTERS: Record<Exclude<ExpatContractType, 'lease'>, (locale: AppLocale) => ExpatBuilderFormUi> = {
@@ -592,4 +609,16 @@ export function getEmploymentFormUi(locale: AppLocale): ExpatBuilderFormUi {
 
 export function getDppFormUi(locale: AppLocale): ExpatBuilderFormUi {
   return dppUi(locale);
+}
+
+export function getSubleaseFormUi(locale: AppLocale): ExpatBuilderFormUi {
+  return subleaseUi(locale);
+}
+
+export function getPoaFormUi(locale: AppLocale): ExpatBuilderFormUi {
+  return poaUi(locale);
+}
+
+export function getCarFormUi(locale: AppLocale): ExpatBuilderFormUi {
+  return carUi(locale);
 }

@@ -34,17 +34,17 @@ export const EXPAT_CONTRACT_CAPABILITY: Record<
     lease: CAPABILITY_FULL_EN,
     employment: CAPABILITY_FULL_EN,
     dpp: CAPABILITY_FULL_EN,
-    sublease: CAPABILITY_PDF_ONLY_EN,
-    power_of_attorney: CAPABILITY_PDF_ONLY_EN,
-    car_sale: CAPABILITY_PDF_ONLY_EN,
+    sublease: CAPABILITY_FULL_EN,
+    power_of_attorney: CAPABILITY_FULL_EN,
+    car_sale: CAPABILITY_FULL_EN,
   },
   ua: {
     lease: CAPABILITY_FULL_UA,
     employment: CAPABILITY_FULL_UA,
     dpp: 'Форма українською · чеський PDF + пояснювальний огляд основних умов (DPP, не повний переклад).',
-    sublease: CAPABILITY_PDF_ONLY_UA,
-    power_of_attorney: CAPABILITY_PDF_ONLY_UA,
-    car_sale: CAPABILITY_PDF_ONLY_UA,
+    sublease: CAPABILITY_FULL_UA,
+    power_of_attorney: CAPABILITY_FULL_UA,
+    car_sale: CAPABILITY_FULL_UA,
   },
 };
 
