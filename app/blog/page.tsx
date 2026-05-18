@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import TrackedLink from '@/app/components/analytics/TrackedLink';
+import ExpatBlogLocalePanel from '@/app/components/blog/ExpatBlogLocalePanel';
 import {
   BLOG_ARTICLES,
   BLOG_CLUSTERS,
@@ -135,74 +136,22 @@ export default function BlogIndexPage() {
         </div>
       </section>
 
-      <section className="mt-12">
-        <div className="site-kicker">Pro cizince v ČR</div>
-        <h2 className="site-heading-md mt-4 text-[#f2e7c8]">
-          Anglické a ukrajinské průvodce ke smlouvám
+      <section className="mt-12" aria-labelledby="expat-guides-heading">
+        <h2 id="expat-guides-heading" className="sr-only">
+          Guides for foreigners in English and Ukrainian
         </h2>
-        <p className="mt-4 max-w-3xl text-base leading-8 text-[#d2c8b9]">
-          Tyto články vysvětlují typické české smlouvy pro expaty. Formulář může být v angličtině
-          nebo ukrajinštině; dokument v PDF je primárně česky. U nájmu je k dispozici pojasňující
-          překlad — není úřední ani ověřený.
-        </p>
-        <div className="mt-6 grid gap-4 sm:grid-cols-2">
-          {EXPAT_BLOG_HUB_EN ? (
-            <TrackedLink
-              href={EXPAT_BLOG_HUB_EN.href}
-              eventName="blog_cta_click"
-              eventParams={{
-                source: 'blog_index',
-                surface: 'expat_hub',
-                cta_type: 'hub_en',
-                destination: EXPAT_BLOG_HUB_EN.href,
-              }}
-              className="blog-card block rounded-[1.5rem] border border-sky-500/20 bg-sky-500/5 p-5 transition hover:border-sky-400/35"
-            >
-              <span className="text-lg">🇬🇧</span>
-              <div className="mt-2 font-semibold text-[#f2e7c8]">English guides</div>
-              <p className="mt-2 text-sm leading-7 text-[#d2c8b9]">{EXPAT_BLOG_HUB_EN.excerpt}</p>
-            </TrackedLink>
-          ) : null}
-          {EXPAT_BLOG_HUB_UA ? (
-            <TrackedLink
-              href={EXPAT_BLOG_HUB_UA.href}
-              eventName="blog_cta_click"
-              eventParams={{
-                source: 'blog_index',
-                surface: 'expat_hub',
-                cta_type: 'hub_ua',
-                destination: EXPAT_BLOG_HUB_UA.href,
-              }}
-              className="blog-card block rounded-[1.5rem] border border-amber-500/20 bg-amber-500/8 p-5 transition hover:border-amber-400/30"
-            >
-              <span className="text-lg">🇺🇦</span>
-              <div className="mt-2 font-semibold text-[#f2e7c8]">Гіди українською</div>
-              <p className="mt-2 text-sm leading-7 text-[#d2c8b9]">{EXPAT_BLOG_HUB_UA.excerpt}</p>
-            </TrackedLink>
-          ) : null}
+        <div className="grid gap-6 lg:grid-cols-2">
+          <ExpatBlogLocalePanel
+            locale="en"
+            hub={EXPAT_BLOG_HUB_EN}
+            articles={EXPAT_BLOG_ARTICLES_LIST.filter((a) => a.audience === 'en')}
+          />
+          <ExpatBlogLocalePanel
+            locale="ua"
+            hub={EXPAT_BLOG_HUB_UA}
+            articles={EXPAT_BLOG_ARTICLES_LIST.filter((a) => a.audience === 'ua')}
+          />
         </div>
-        <ul className="mt-6 grid gap-3 sm:grid-cols-2">
-          {EXPAT_BLOG_ARTICLES_LIST.filter(
-            (a) => !a.slug.includes('foreigners-czech-contracts-guide'),
-          ).map((article) => (
-              <li key={article.slug}>
-                <TrackedLink
-                  href={article.href}
-                  eventName="blog_cta_click"
-                  eventParams={{
-                    source: 'blog_index',
-                    surface: 'expat_list',
-                    article_slug: article.slug,
-                    destination: article.href,
-                  }}
-                  className="block text-sm text-[#d6ac60] hover:underline"
-                >
-                  <span className="mr-2">{article.audience === 'en' ? '🇬🇧' : '🇺🇦'}</span>
-                  {article.title}
-                </TrackedLink>
-              </li>
-            ))}
-        </ul>
       </section>
 
       <div className="mt-10 grid gap-6">

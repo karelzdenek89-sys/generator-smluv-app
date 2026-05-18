@@ -305,15 +305,6 @@ export const BLOG_CLUSTERS: readonly BlogClusterMeta[] = [
     packageLabel: 'Balíček pro pronajímatele',
   },
   {
-    key: 'expat',
-    title: 'Průvodce pro cizince (angličtina a ukrajinština)',
-    description:
-      'Informativní články s odkazy na formuláře v angličtině nebo ukrajinštině a český PDF výstup. Vhodné pro expaty v České republice.',
-    situationHref: '/en',
-    packageHref: '/ua',
-    packageLabel: 'Ukrajinská verze (/ua)',
-  },
-  {
     key: 'vehicle',
     title: 'Prodej vozidla a předání auta',
     description:
