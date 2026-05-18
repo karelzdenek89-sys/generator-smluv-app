@@ -11,6 +11,7 @@ import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
 import { getThematicPackageConfig } from '@/lib/packages';
 import PaymentModal from '@/app/components/PaymentModal';
+import { useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
 
 type PaymentMethod = 'cash' | 'transfer';
 type RiskLevel = 'low' | 'medium' | 'high';
@@ -85,6 +86,7 @@ const cardClass = 'builder-card p-6';
 
 function CarSaleBuilderContent() {
   const searchParams = useSearchParams();
+  const builderLocale = useBuilderLocale();
   const packageConfig = getThematicPackageConfig(searchParams.get('package'));
   const isVehiclePackage = packageConfig?.key === 'vehicle_sale';
 
@@ -362,6 +364,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
         ...formData,
         contractType: 'car_sale' as const,
         packageKey: packageConfig?.key ?? null,
+        lang: builderLocale,
       };
 
       const res = await fetch('/api/checkout', {
@@ -372,6 +375,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
           tier: packageConfig ? packageConfig.defaultTier : formData.tier,
           packageKey: packageConfig?.key ?? null,
           notaryUpsell: packageConfig ? true : formData.tier !== 'basic',
+          lang: builderLocale,
           payload,
         }),
       });
@@ -1238,6 +1242,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
         tier={formData.tier}
         onTierChange={(t) => setFormData((prev) => ({ ...prev, tier: t }))}
         contractType="car_sale"
+        lang={builderLocale}
         packageKey={packageConfig?.key ?? null}
         onPay={handlePayment}
         isProcessing={isProcessing}

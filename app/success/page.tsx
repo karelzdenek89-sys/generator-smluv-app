@@ -3,6 +3,7 @@
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import { normalizeLocale } from '@/lib/locale';
 
 type DownloadState = 'checking' | 'ready' | 'error';
 
@@ -24,6 +25,7 @@ const pageShell = 'min-h-screen bg-[#05080f] px-6 py-16 text-slate-200';
 function SuccessContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
+  const lang = normalizeLocale(searchParams.get('lang'));
   const [dlState, setDlState] = useState<DownloadState>('checking');
   const [progress, setProgress] = useState(0);
   const [orderMeta, setOrderMeta] = useState<SuccessStatusResponse | null>(null);
@@ -32,8 +34,9 @@ function SuccessContent() {
 
   const downloadUrl = useMemo(() => {
     if (!encodedSessionId) return null;
-    return `/api/contracts/download?session_id=${encodedSessionId}`;
-  }, [encodedSessionId]);
+    const langQuery = lang === 'cs' ? '' : `&lang=${encodeURIComponent(lang)}`;
+    return `/api/contracts/download?session_id=${encodedSessionId}${langQuery}`;
+  }, [encodedSessionId, lang]);
 
   const purchaseTitle =
     orderMeta?.packageLabel ?? orderMeta?.contractName ?? 'Váš smluvní dokument';
@@ -48,13 +51,13 @@ function SuccessContent() {
       }>;
       const alreadySaved = existing.some((order) => order.sessionId === sessionId);
       if (!alreadySaved) {
-        const updated = [{ sessionId, date: new Date().toISOString() }, ...existing].slice(0, 10);
+        const updated = [{ sessionId, date: new Date().toISOString(), lang }, ...existing].slice(0, 10);
         localStorage.setItem('sh_orders', JSON.stringify(updated));
       }
     } catch {
       // localStorage nemusí být dostupné
     }
-  }, [encodedSessionId, sessionId]);
+  }, [encodedSessionId, sessionId, lang]);
 
   useEffect(() => {
     if (!encodedSessionId) return;

@@ -9,6 +9,7 @@ import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/PaymentModal';
+import { useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
 
 type FormData = {
   landlordName: string; landlordId: string; landlordAddress: string; landlordEmail: string;
@@ -50,6 +51,7 @@ function Toggle({ name, checked, label, hint, onChange }: { name: string; checke
 }
 
 export default function PodnajemuPage() {
+  const builderLocale = useBuilderLocale();
   const [form, setForm] = useState<FormData>({
     landlordName: '', landlordId: '', landlordAddress: '', landlordEmail: '',
     tenantName: '', tenantId: '', tenantAddress: '', tenantEmail: '',
@@ -147,7 +149,8 @@ export default function PodnajemuPage() {
           contractType: 'sublease',
           tier: form.tier,
           notaryUpsell: form.tier !== 'basic',
-          payload: { ...form, contractType: 'sublease' },
+          lang: builderLocale,
+          payload: { ...form, contractType: 'sublease', lang: builderLocale },
           email: form.landlordEmail || form.tenantEmail || undefined,
         }),
       });
@@ -431,6 +434,7 @@ export default function PodnajemuPage() {
         tier={form.tier}
         onTierChange={(t) => setForm((prev) => ({ ...prev, tier: t }))}
         contractType="sublease"
+        lang={builderLocale}
         onPay={handlePayment}
         isProcessing={isProcessing}
         onClose={() => setShowPreviewModal(false)}

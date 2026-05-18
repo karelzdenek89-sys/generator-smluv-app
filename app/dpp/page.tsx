@@ -5,9 +5,15 @@ import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
-import { buildContractSections } from '@/lib/contracts';
+import { getDppFormUi } from '@/lib/i18n/expat-builder-forms';
+import {
+  buildExpatPreviewSections,
+  getExpatPreviewDateLocale,
+  getExpatPreviewLabels,
+} from '@/lib/i18n/expat-contract-preview';
 import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/PaymentModal';
+import { BuilderLocaleNotice, useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
 
 type FormData = {
   employerName: string; employerIco: string; employerAddress: string; employerEmail: string;
@@ -43,6 +49,8 @@ function SectionTitle({ index, title, subtitle }: { index: string; title: string
 }
 
 export default function DppPage() {
+  const builderLocale = useBuilderLocale();
+  const ui = useMemo(() => getDppFormUi(builderLocale), [builderLocale]);
   const [form, setForm] = useState<FormData>({
     employerName: '', employerIco: '', employerAddress: '', employerEmail: '',
     employeeName: '', employeeBirth: '', employeeAddress: '', employeeEmail: '',
@@ -74,11 +82,11 @@ export default function DppPage() {
   const previewSections = useMemo(() => {
     try {
       if (!form.employerName) return [];
-      return buildContractSections({ ...form, contractType: 'dpp' } as StoredContractData);
+      return buildExpatPreviewSections('dpp', builderLocale, { ...form, contractType: 'dpp' } as StoredContractData);
     } catch {
       return [];
     }
-  }, [form]);
+  }, [form, builderLocale]);
 
   const handlePayment = async () => {
     // Validace § 75 ZP — DPP musí mít druh práce, místo, dobu a odměnu.
@@ -96,7 +104,7 @@ export default function DppPage() {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contractType: 'dpp', tier: form.tier, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'dpp' }, email: form.employerEmail }),
+        body: JSON.stringify({ contractType: 'dpp', tier: form.tier, notaryUpsell: form.tier !== 'basic', lang: builderLocale, payload: { ...form, contractType: 'dpp', lang: builderLocale }, email: form.employerEmail }),
       });
       const data = await res.json();
       if (!res.ok || !data?.url) throw new Error();
@@ -108,25 +116,26 @@ export default function DppPage() {
 
   return (
     <>
+    <BuilderLocaleNotice contractType="dpp" />
     <main className="site-page contract-builder min-h-screen pb-24">
       <header className="contract-builder-header sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500 text-slate-900 font-black text-sm">SH</div>
             <div>
-              <div className="font-bold tracking-tight text-white">SmlouvaHned</div>
-              <div className="text-[11px] text-slate-500">Dohoda o provedení práce — § 75 ZP</div>
+              <div className="font-bold tracking-tight text-white">{ui.header.brand}</div>
+              <div className="text-[11px] text-slate-500">{ui.header.docType}</div>
             </div>
           </div>
-          <button onClick={() => window.location.href = '/'} className="text-sm text-slate-400 hover:text-white transition">Zavřít</button>
+          <button onClick={() => window.location.href = '/'} className="text-sm text-slate-400 hover:text-white transition">{ui.header.close}</button>
         </div>
       </header>
 
       <ContractLandingSection
-        badge="§ 75 zákoníku práce"
-        h1Main="Dohoda o provedení"
-        h1Accent="práce online"
-        subtitle="Vytvořte dohodu o provedení práce (DPP) pro jednorázový nebo opakující se úkol mimo pracovní poměr. Vhodné pro brigády, sezónní výpomoc i krátkodobé projekty. Rozsah práce nesmí překročit 300 hodin ročně u jednoho zaměstnavatele."
+        badge={ui.landing.badge}
+        h1Main={ui.landing.h1Main}
+        h1Accent={ui.landing.h1Accent}
+        subtitle={ui.landing.subtitle}
         benefits={[
           { icon: '⚖️', text: 'Sestaveno dle § 75–76 zákoníku práce (zákon č. 262/2006 Sb.)' },
           { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
@@ -321,6 +330,7 @@ export default function DppPage() {
         tier={form.tier}
         onTierChange={(t) => setForm((prev) => ({ ...prev, tier: t }))}
         contractType="dpp"
+        lang={builderLocale}
         onPay={handlePayment}
         isProcessing={isProcessing}
         onClose={() => setShowPreviewModal(false)}

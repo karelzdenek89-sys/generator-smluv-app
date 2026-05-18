@@ -1,4 +1,8 @@
-export type BlogClusterKey = 'landlord' | 'vehicle' | 'general';
+import { EXPAT_BLOG_META } from '@/lib/i18n/expat-blog-articles';
+
+export type BlogClusterKey = 'landlord' | 'vehicle' | 'general' | 'expat';
+
+export type BlogAudience = 'cs' | 'en' | 'ua';
 
 export type BlogArticleMeta = {
   slug: string;
@@ -9,6 +13,8 @@ export type BlogArticleMeta = {
   date: string;
   cluster: BlogClusterKey;
   href: string;
+  /** Expat guides: en / ua. Czech articles omit this field. */
+  audience?: BlogAudience;
 };
 
 export type BlogClusterMeta = {
@@ -285,6 +291,7 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
     cluster: 'general',
     href: '/blog/smlouva-o-spolupraci-2026',
   },
+  ...EXPAT_BLOG_META,
 ] as const;
 
 export const BLOG_CLUSTERS: readonly BlogClusterMeta[] = [
@@ -298,6 +305,15 @@ export const BLOG_CLUSTERS: readonly BlogClusterMeta[] = [
     packageLabel: 'Balíček pro pronajímatele',
   },
   {
+    key: 'expat',
+    title: 'Průvodce pro cizince (angličtina a ukrajinština)',
+    description:
+      'Informativní články s odkazy na formuláře v angličtině nebo ukrajinštině a český PDF výstup. Vhodné pro expaty v České republice.',
+    situationHref: '/en',
+    packageHref: '/ua',
+    packageLabel: 'Ukrajinská verze (/ua)',
+  },
+  {
     key: 'vehicle',
     title: 'Prodej vozidla a předání auta',
     description:
@@ -309,5 +325,21 @@ export const BLOG_CLUSTERS: readonly BlogClusterMeta[] = [
 ] as const;
 
 export function getBlogArticleBySlug(slug: string) {
-  return BLOG_ARTICLES.find((article) => article.slug === slug) ?? null;
+  const direct = BLOG_ARTICLES.find((article) => article.slug === slug);
+  if (direct) return direct;
+  return null;
 }
+
+export const CZECH_BLOG_ARTICLES = BLOG_ARTICLES.filter((a) => !a.audience || a.audience === 'cs');
+
+export const EXPAT_BLOG_ARTICLES_LIST = BLOG_ARTICLES.filter(
+  (a): a is BlogArticleMeta & { audience: 'en' | 'ua' } =>
+    a.audience === 'en' || a.audience === 'ua',
+);
+
+export const EXPAT_BLOG_HUB_EN = BLOG_ARTICLES.find(
+  (a) => a.slug === 'expat/foreigners-czech-contracts-guide-en',
+);
+export const EXPAT_BLOG_HUB_UA = BLOG_ARTICLES.find(
+  (a) => a.slug === 'expat/foreigners-czech-contracts-guide-ua',
+);

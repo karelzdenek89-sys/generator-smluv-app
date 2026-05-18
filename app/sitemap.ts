@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { FOREIGN_LOCALES, LOCALE_META } from '@/lib/i18n/locales';
+import { getAllExpatBlogSlugs, getExpatBlogCanonical } from '@/lib/i18n/expat-blog-articles';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
@@ -385,5 +386,35 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'yearly',
       priority: 0.3,
     },
+    {
+      url: `${BASE_URL}/en`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.85,
+    },
+    {
+      url: `${BASE_URL}/en/rental-agreement-czech-republic`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/ua`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.85,
+    },
+    {
+      url: `${BASE_URL}/ua/rental-agreement-czech-republic`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.88,
+    },
+    ...getAllExpatBlogSlugs().map((slug) => ({
+      url: getExpatBlogCanonical(slug),
+      lastModified: now,
+      changeFrequency: 'monthly' as const,
+      priority: slug.includes('foreigners-czech-contracts-guide') ? 0.82 : 0.78,
+    })),
   ];
 }

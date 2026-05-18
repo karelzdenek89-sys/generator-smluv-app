@@ -13,6 +13,7 @@ import { randomUUID } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { redis } from '@/lib/redis';
 import { stripe } from '@/lib/stripe';
+import { normalizeLocale } from '@/lib/locale';
 
 export const runtime = 'nodejs';
 
@@ -117,6 +118,8 @@ export async function POST(req: Request) {
         ? (body.payload as Record<string, unknown>)
         : body;
 
+    const lang = normalizeLocale(body.lang ?? payload.lang);
+
     // 3. Price ID
     const priceId = getPriceId(tier);
     if (!priceId) {
@@ -139,8 +142,9 @@ export async function POST(req: Request) {
           contractType,
           tier,
           notaryUpsell,
+          lang,
           email: email ?? null,
-          payload: { ...payload, contractType, tier, notaryUpsell },
+          payload: { ...payload, contractType, tier, notaryUpsell, lang },
           paid: false,
           createdAt: new Date().toISOString(),
         },
@@ -155,18 +159,21 @@ export async function POST(req: Request) {
     // automatic_payment_methods zapíná Google Pay, Apple Pay a vše z Dashboardu
     // Stripe v20 typy tuto prop ještě neznají → přetypujeme přes unknown
     const cancelPath = CANCEL_URLS[contractType] ?? '/';
+    const langQuery = lang === 'cs' ? '' : `&lang=${encodeURIComponent(lang)}`;
+    const cancelLangQuery = lang === 'cs' ? '' : `?lang=${encodeURIComponent(lang)}`;
 
     const sessionParams = {
       mode:           'payment' as const,
       customer_email: email,
       locale:         'cs' as const,
       line_items:     [{ price: priceId, quantity: 1 }],
-      success_url:    `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url:     `${baseUrl}${cancelPath}`,
+      success_url:    `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}${langQuery}`,
+      cancel_url:     `${baseUrl}${cancelPath}${cancelLangQuery}`,
       metadata: {
         draftId,
         contractType,
         tier,
+        lang,
         notaryUpsell: String(notaryUpsell),
       },
     };

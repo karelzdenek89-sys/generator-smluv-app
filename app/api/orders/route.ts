@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { redis } from '@/lib/redis';
 import { normalizePricingTier } from '@/lib/pricing';
 import { getThematicPackageConfig } from '@/lib/packages';
+import { normalizeLocale } from '@/lib/locale';
 
 export const runtime = 'nodejs';
 
@@ -22,6 +23,8 @@ type DraftData = {
   paidAt?: string;
   tier?: string;
   paid?: boolean;
+  lang?: string;
+  payload?: { lang?: string };
 };
 
 const CONTRACT_NAMES: Record<string, string> = {
@@ -80,6 +83,7 @@ export async function GET(req: NextRequest) {
                 packageLabel: packageConfig?.title ?? null,
                 paidAt: draft.paidAt ?? null,
                 tier: normalizePricingTier(draft.tier),
+                lang: normalizeLocale(draft.lang ?? draft.payload?.lang),
               };
             }
           }
@@ -90,6 +94,7 @@ export async function GET(req: NextRequest) {
             packageLabel: null,
             paidAt: null,
             tier: 'basic',
+            lang: 'cs',
           };
         } catch {
           return {
@@ -98,6 +103,7 @@ export async function GET(req: NextRequest) {
             packageLabel: null,
             paidAt: null,
             tier: 'basic',
+            lang: 'cs',
           };
         }
       }),

@@ -8,8 +8,15 @@ import ContractPreview from '@/app/components/ContractPreview';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import PaymentModal from '@/app/components/PaymentModal';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
-import { buildContractSections } from '@/lib/contracts';
-import type { StoredContractData } from '@/lib/contracts';
+import { useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
+import { getLeaseFormUi } from '@/lib/i18n/lease-form';
+import {
+  buildLeaseHandoverPreview,
+  buildLeasePlainPreview,
+  buildLeasePreviewSections,
+  getContractPreviewLabels,
+  isExpatLeaseLocale,
+} from '@/lib/i18n/lease-preview';
 import { getThematicPackageConfig } from '@/lib/packages';
 
 type LeaseFormData = {
@@ -85,6 +92,8 @@ const cardClass = 'builder-card p-6';
 
 function LeaseBuilderContent() {
   const searchParams = useSearchParams();
+  const builderLocale = useBuilderLocale();
+  const ui = useMemo(() => getLeaseFormUi(builderLocale), [builderLocale]);
   const packageConfig = getThematicPackageConfig(searchParams.get('package'));
   const isLandlordPackage = packageConfig?.key === 'landlord';
 
@@ -229,239 +238,109 @@ function LeaseBuilderContent() {
 
     if (!formData.landlordId || !formData.tenantId || !formData.landlordOP || !formData.tenantOP) {
       score -= 16;
-      warnings.push({
-        text: 'Doplňte identifikaci smluvních stran. Bez přesných údajů je vymahatelnost slabší.',
-        level: 'high',
-      });
+      warnings.push({ text: ui.risk.partyId, level: 'high' });
     }
 
     if (!formData.flatUnitNumber || !formData.cadastralArea) {
       score -= 10;
-      warnings.push({
-        text: 'Byt není dostatečně přesně identifikován (číslo jednotky / katastrální území).',
-        level: 'high',
-      });
+      warnings.push({ text: ui.risk.unitId, level: 'high' });
     }
 
     if (formData.duration === 'fixed' && !formData.endDate) {
       score -= 10;
-      warnings.push({
-        text: 'U doby určité chybí datum konce nájmu.',
-        level: 'high',
-      });
+      warnings.push({ text: ui.risk.endDate, level: 'high' });
     }
 
     if (numbers.rent > 0 && numbers.deposit < numbers.rent * 2) {
       score -= 12;
-      warnings.push({
-        text: 'Doporučená doplnění: Kauce by měla být alespoň dvojnásobek měsíčního nájemného.',
-        level: 'medium',
-      });
+      warnings.push({ text: ui.risk.deposit, level: 'medium' });
     }
 
     if (formData.allowAirbnb) {
       score -= 28;
-      warnings.push({
-        text: 'Airbnb / krátkodobý podnájem je povolen. Riziko škod, sousedských sporů a obcházení účelu nájmu je vysoké.',
-        level: 'high',
-      });
+      warnings.push({ text: ui.risk.airbnb, level: 'high' });
     }
 
     if (formData.allowSmoking) {
       score -= 8;
-      warnings.push({
-        text: 'Kouření v bytě zvyšuje riziko škod a sporů při vrácení kauce.',
-        level: 'medium',
-      });
+      warnings.push({ text: ui.risk.smoking, level: 'medium' });
     }
 
     if (!formData.strictPenalties) {
       score -= 10;
-      warnings.push({
-        text: 'Doporučujeme zapnout přísnější režim pokut. Smlouva bude silnější při porušení povinností.',
-        level: 'medium',
-      });
+      warnings.push({ text: ui.risk.penalties, level: 'medium' });
     }
 
     if (!formData.inspectionAllowed) {
       score -= 6;
-      warnings.push({
-        text: 'Doporučujeme povolit pravidelnou kontrolu bytu. To zvyšuje kontrolu nad stavem nemovitosti.',
-        level: 'low',
-      });
+      warnings.push({ text: ui.risk.inspection, level: 'low' });
     }
 
     if (!formData.keysCount || !formData.equipmentList) {
       score -= 6;
-      warnings.push({
-        text: 'Doplňte údaje pro předávací protokol (klíče / vybavení). To usnadňuje dokazování škody.',
-        level: 'medium',
-      });
+      warnings.push({ text: ui.risk.handover, level: 'medium' });
     }
 
     if (!formData.utilitiesIncludedText.trim()) {
       score -= 5;
-      warnings.push({
-        text: 'Doporučujeme specifikovat, co přesně zahrnují služby a zálohy.',
-        level: 'low',
-      });
+      warnings.push({ text: ui.risk.utilities, level: 'low' });
     }
 
     const rentNum = Number(formData.rentAmount) || 0;
     const depositNum = Number(formData.depositAmount) || 0;
-    if (rentNum > 0 && depositNum > rentNum * 6) {
-      warnings.push({
-        text: 'Kauce přesahuje zákonné maximum 6 měsíčních nájmů (§ 2254 OZ). Přebytek je nevymahatelný.',
-        level: 'high',
-      });
+    if (rentNum > 0 && depositNum > rentNum * 3) {
+      warnings.push({ text: ui.risk.depositMax, level: 'high' });
     }
 
     score = Math.max(0, Math.min(100, score));
 
+    const { riskLabels } = ui.sidebar;
     return {
       score,
       warnings,
-      label: score >= 85 ? 'Dobré nastavení' : score >= 70 ? 'Průměrná ochrana' : 'Doporučená doplnění',
+      label:
+        score >= 85 ? riskLabels.good : score >= 70 ? riskLabels.average : riskLabels.improve,
     };
-  }, [formData, numbers]);
+  }, [formData, numbers, ui]);
 
-  const previewContract = useMemo(() => {
-    return `
-NÁJEMNÍ SMLOUVA O NÁJMU BYTU
-uzavřená dle § 2235 a násl. zákona č. 89/2012 Sb., občanský zákoník
+  const previewContract = useMemo(
+    () => buildLeasePlainPreview(builderLocale, formData, numbers.total || 0),
+    [builderLocale, formData, numbers.total],
+  );
 
-I. SMLUVNÍ STRANY
-
-Pronajímatel:
-Jméno a příjmení: ${formData.landlordName || '................'}
-Rodné číslo / datum narození: ${formData.landlordId || '................'}
-Trvale bytem: ${formData.landlordAddress || '................'}
-Číslo OP: ${formData.landlordOP || '................'}
-
-Nájemce:
-Jméno a příjmení: ${formData.tenantName || '................'}
-Rodné číslo / datum narození: ${formData.tenantId || '................'}
-Trvale bytem: ${formData.tenantAddress || '................'}
-Číslo OP: ${formData.tenantOP || '................'}
-
-II. PŘEDMĚT NÁJMU
-
-Adresa bytu: ${formData.flatAddress || '................'}
-Dispozice: ${formData.flatLayout || '................'}
-Výměra: ${formData.flatArea ? formData.flatArea + ' m²' : '................'}
-Číslo jednotky: ${formData.flatUnitNumber || '................'}
-Podlaží: ${formData.floor || '................'}
-Katastrální území: ${formData.cadastralArea || '................'}
-Číslo parcely: ${formData.parcelNumber || 'neuvedeno'}
-List vlastnictví: ${formData.ownershipSheet || '................'}
-
-III. DOBA NÁJMU
-
-Začátek nájmu: ${formData.startDate || '................'}
-Předání bytu: ${formData.handoverDate || '................'}
-Doba nájmu: ${
-      formData.duration === 'fixed'
-        ? `určitá do ${formData.endDate || '................'}`
-        : 'neurčitá'
-    }
-
-IV. NÁJEMNÉ A PLATBY
-
-Měsíční nájemné: ${formData.rentAmount || '0'} Kč
-Služby: ${formData.utilityAmount || '0'} Kč
-Celkem měsíčně: ${numbers.total || 0} Kč
-Kauce: ${formData.depositAmount || '0'} Kč
-Splatnost: k ${formData.paymentDay || '...'} dni v měsíci
-Bankovní účet: ${formData.bankAccount || '................'}
-Variabilní symbol: ${formData.variableSymbol || '................'}
-
-V. PRAVIDLA NÁJMU
-
-Maximální počet osob: ${formData.maxOccupants || '...'}
-Domácí zvířata: ${formData.allowPets ? 'povolena' : 'zakázána'}
-Kouření: ${formData.allowSmoking ? 'povoleno' : 'zakázáno'}
-Airbnb / krátkodobý podnájem: ${formData.allowAirbnb ? 'povoleno' : 'zakázáno'}
-Přísnější pokuty: ${formData.strictPenalties ? 'ano' : 'ne'}
-Kontrola bytu: ${formData.inspectionAllowed ? 'ano' : 'ne'}
-Podnikání v bytě: ${formData.businessUseAllowed ? 'povoleno' : 'zakázáno'}
-Inflační doložka: ${formData.includeInflationIndexation ? 'ano (indexace dle ČSÚ)' : 'ne'}
-
-VI. PŘEDÁNÍ A VYBAVENÍ
-
-Počet klíčů: ${formData.keysCount || '...'}
-Elektroměr: ${formData.electricityMeter || '................'} kWh (č. měřiče: ${formData.electricityMeterSerial || '................'})
-Plynoměr: ${formData.gasMeter || '................'} m³ (č. měřiče: ${formData.gasMeterSerial || '................'})
-Vodoměr studená voda: ${formData.waterMeter || '................'} m³ (č. měřiče: ${formData.waterMeterSerial || '................'})
-Vodoměr teplá voda: ${formData.hotWaterMeter || '................'} m³ (č. měřiče: ${formData.hotWaterMeterSerial || '................'})
-
-Vybavení:
-${formData.equipmentList || '................'}
-
-Známé vady / poznámky:
-${formData.knownDefects || 'Bez zjevných vad.'}
-
-V __________________ dne __________________
-
-______________________________
-Pronajímatel
-
-______________________________
-Nájemce
-    `.trim();
-  }, [formData, numbers.total]);
-
-  const handoverProtocol = useMemo(() => {
-    return `
-PŘEDÁVACÍ PROTOKOL
-
-k nájemní smlouvě k bytu na adrese ${formData.flatAddress || '................'}
-
-Pronajímatel: ${formData.landlordName || '................'}
-Nájemce: ${formData.tenantName || '................'}
-Datum předání: ${formData.handoverDate || '................'}
-
-1. Stav měřidel při předání
-- Elektroměr (č. ${formData.electricityMeterSerial || '................'}): ${formData.electricityMeter || '................'} kWh
-- Plynoměr (č. ${formData.gasMeterSerial || '................'}): ${formData.gasMeter || '................'} m³
-- Vodoměr studená voda (č. ${formData.waterMeterSerial || '................'}): ${formData.waterMeter || '................'} m³
-- Vodoměr teplá voda (č. ${formData.hotWaterMeterSerial || '................'}): ${formData.hotWaterMeter || '................'} m³
-
-2. Předané klíče
-- Celkový počet klíčů: ${formData.keysCount || '................'}
-
-3. Předané vybavení
-${formData.equipmentList || '................'}
-
-4. Zjištěné vady / poškození / poznámky
-${formData.knownDefects || 'Bez zjevných vad.'}
-    `.trim();
-  }, [formData]);
+  const handoverProtocol = useMemo(
+    () => buildLeaseHandoverPreview(builderLocale, formData),
+    [builderLocale, formData],
+  );
 
   const previewSections = useMemo(() => {
     try {
       if (!formData.landlordName && !formData.tenantName) return [];
-      return buildContractSections({
-        ...formData,
-        contractType: 'lease',
-        packageKey: packageConfig?.key ?? null,
-      } as StoredContractData);
+      return buildLeasePreviewSections(builderLocale, formData, packageConfig?.key ?? null);
     } catch {
       return [];
     }
-  }, [formData, packageConfig?.key]);
+  }, [builderLocale, formData, packageConfig?.key]);
+
+  const contractPreviewLabels = useMemo(
+    () => getContractPreviewLabels(builderLocale),
+    [builderLocale],
+  );
+
+  const previewDateLocale = builderLocale === 'ua' ? 'uk-UA' : builderLocale === 'en' ? 'en-GB' : 'cs-CZ';
 
   const handlePayment = async () => {
     // Validace povinných polí
     const missingFields: string[] = [];
-    if (!formData.landlordName.trim()) missingFields.push('jméno pronajímatele');
-    if (!formData.tenantName.trim()) missingFields.push('jméno nájemce');
-    if (!formData.flatAddress.trim()) missingFields.push('adresu bytu');
-    if (!formData.rentAmount.trim()) missingFields.push('výši nájemného');
-    if (!formData.startDate) missingFields.push('datum začátku nájmu');
-    if (formData.duration === 'fixed' && !formData.endDate) missingFields.push('datum konce nájmu (doba určitá)');
+    if (!formData.landlordName.trim()) missingFields.push(ui.validation.fields.landlordName);
+    if (!formData.tenantName.trim()) missingFields.push(ui.validation.fields.tenantName);
+    if (!formData.flatAddress.trim()) missingFields.push(ui.validation.fields.flatAddress);
+    if (!formData.rentAmount.trim()) missingFields.push(ui.validation.fields.rentAmount);
+    if (!formData.startDate) missingFields.push(ui.validation.fields.startDate);
+    if (formData.duration === 'fixed' && !formData.endDate) missingFields.push(ui.validation.fields.endDate);
 
     if (missingFields.length > 0) {
-      alert(`Vyplňte prosím: ${missingFields.join(', ')}.`);
+      alert(`${ui.validation.alertPrefix}: ${missingFields.join(', ')}.`);
       return;
     }
 
@@ -471,6 +350,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
       const payload = {
         ...formData,
         contractType: 'lease' as const,
+        lang: builderLocale,
       };
 
       const res = await fetch('/api/checkout', {
@@ -481,6 +361,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
           tier: formData.tier,
           packageKey: packageConfig?.key ?? null,
           notaryUpsell: packageConfig ? true : formData.tier !== 'basic',
+          lang: builderLocale,
           payload,
         }),
       });
@@ -488,13 +369,13 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
       const result = await res.json();
 
       if (!res.ok || !result?.url) {
-        throw new Error(result?.error || 'Nepodařilo se vytvořit checkout session.');
+        throw new Error(result?.error || ui.validation.checkoutError);
       }
 
       window.location.href = result.url;
     } catch (error) {
       console.error('Checkout error:', error);
-      alert('Chyba platební brány. Zkuste to prosím znovu nebo kontaktujte info@smlouvahned.cz');
+      alert(ui.validation.paymentError);
       setIsProcessing(false);
     }
   };
@@ -571,7 +452,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
             </div>
             <div>
               <div className="font-bold tracking-tight text-[#f2e7c8]">SmlouvaHned</div>
-              <div className="text-[11px] uppercase tracking-[0.18em] text-[#bba98c]">Nájemní smlouva</div>
+              <div className="text-[11px] uppercase tracking-[0.18em] text-[#bba98c]">{ui.header.docType}</div>
             </div>
           </div>
 
@@ -579,52 +460,25 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
             onClick={() => (window.location.href = '/')}
             className="text-sm text-[#d2c8b9] hover:text-[#f2e7c8] transition"
           >
-            Zavřít
+            {ui.header.close}
           </button>
         </div>
       </header>
 
       <ContractLandingSection
-        badge="§ 2235 a násl. občanského zákoníku"
-        h1Main="Nájemní smlouva na"
-        h1Accent="byt online"
-        subtitle="Vytvořte nájemní smlouvu pro pronájem bytu nebo domu rychle a přehledně. Šablona pokrývá klíčová ujednání — od výše nájmu a kauce po pravidla užívání a ukončení nájmu, strukturovaná dle § 2235 a násl. OZ."
-        benefits={[
-          { icon: '⚖️', text: 'Sestaveno dle § 2235–2301 OZ (nájemní smlouva na byt)' },
-          { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
-          { icon: '🏠', text: 'Pokrývá dobu určitou i neurčitou, kauce a poplatky' },
-          { icon: '🔒', text: 'Vhodné pro pronájem bytu, domu nebo jeho části' },
-        ]}
-        contents={[
-          'Identifikaci pronajímatele a nájemce',
-          'Přesný popis bytu (adresa, dispozice, číslo jednotky)',
-          'Výši nájmu, záloh na služby a způsob platby',
-          'Výši a podmínky kauce (jistoty)',
-          'Dobu nájmu a podmínky ukončení',
-          'Práva a povinnosti stran (domácí zvířata, kouření, podnájem)',
-          'Stav bytu při předání a předávací podmínky',
-          'Závěrečná ustanovení, GDPR a vyšší moc',
-        ]}
-        whenSuitable={[
-          'Pronájem celého bytu nebo domu soukromé osobě',
-          'Pronájem části nemovitosti (pokoj, garsonka)',
-          'Uzavření nájemního vztahu na dobu určitou nebo neurčitou',
-          'Případy, kdy potřebujete mít jasně ošetřené podmínky užívání nemovitosti',
-        ]}
-        whenOther={[
-          { label: 'Podnájemní smlouva', href: '/podnajem', text: 'Pokud sám jste nájemcem a dáváte byt nebo jeho část do podnájmu.' },
-        ]}
-        faq={[
-          { q: 'Co je rozdíl mezi nájemní a podnájemní smlouvou?', a: 'Nájemní smlouva je uzavírána přímo s vlastníkem nemovitosti. Podnájemní smlouva se používá, pokud nájemce sám dál pronajímá byt nebo jeho část třetí osobě — k tomu zpravidla potřebuje souhlas pronajímatele.' },
-          { q: 'Je nutná písemná nájemní smlouva?', a: 'Zákon písemnou formu výslovně nevyžaduje, ale silně ji doporučuje. Ústní dohoda je obtížně prokazatelná a v případě sporu může být pro nájemce i pronajímatele nevýhodná.' },
-          { q: 'Jak vysoká může být kauce?', a: 'Podle § 2254 OZ smí kauce (jistota) činit nejvýše trojnásobek měsíčního nájemného. Pronajímatel ji musí po skončení nájmu vrátit, pokud nájemce nezpůsobil škodu.' },
-          { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
-          { q: 'Musí smlouvu ověřit notář?', a: 'Pro běžné nájemní smlouvy na byt notářské ověření není vyžadováno. Podpisy obou stran postačují.' },
-        ]}
-        ctaLabel="Vytvořit nájemní smlouvu"
+        badge={ui.landing.badge}
+        h1Main={ui.landing.h1Main}
+        h1Accent={ui.landing.h1Accent}
+        subtitle={ui.landing.subtitle}
+        benefits={ui.landing.benefits}
+        contents={ui.landing.contents}
+        whenSuitable={ui.landing.whenSuitable}
+        whenOther={ui.landing.whenOther}
+        faq={ui.landing.faq}
+        ctaLabel={ui.landing.ctaLabel}
         formId="formular"
         guideHref="/najemni-smlouva"
-        guideLabel="Průvodce nájemní smlouvou — co obsahuje, kdy ji použít a nejčastější chyby"
+        guideLabel={ui.landing.guideLabel}
       />
 
       {packageConfig ? (
@@ -639,12 +493,12 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                 <p className="mt-3 text-sm leading-7 text-[#d7d0c3]">{packageConfig.builderDescription}</p>
               </div>
               <div className="min-w-[180px] rounded-2xl border border-[rgba(214,172,96,0.18)] bg-[rgba(255,255,255,0.03)] px-5 py-4 text-left">
-                <div className="mt-2 text-xs leading-6 text-[#bba98c]">Nájemní smlouva v komplexní variantě a navazující podklady v jednom výstupu.</div>
+                <div className="mt-2 text-xs leading-6 text-[#bba98c]">{ui.package.packageFlowNote}</div>
                 <Link
                   href="/najem"
                   className="mt-3 inline-block text-xs leading-6 text-[#cbbba0] transition hover:text-white"
                 >
-                  Řešíte jen samotnou nájemní smlouvu? Vraťte se na samostatný dokument →
+                  {ui.package.backToSingle}
                 </Link>
               </div>
             </div>
@@ -658,21 +512,21 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
           >
             <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
               <div className="max-w-3xl">
-                <div className="site-kicker">Tematický balíček</div>
+                <div className="site-kicker">{ui.package.thematicBadge}</div>
                 <h2 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-[#f2e7c8]">
-                  Balíček pro pronajímatele
+                  {ui.package.thematicTitle}
                 </h2>
                 <p className="mt-3 text-sm leading-7 text-[#d7d0c3]">
-                  Pokud chcete řešit i předání bytu a potvrzení o převzetí kauce, pokračujte tematickým balíčkem pro pronajímatele.
+                  {ui.package.thematicDesc}
                 </p>
                 <p className="mt-3 text-xs leading-6 text-[#bba98c]">
-                  Pokud si nejste jistí, kterou cestu zvolit, pomůže vám orientační stránka{' '}
-                  <span className="link-gold-elegant underline">Dokumenty pro pronajímatele</span>.
+                  {ui.package.thematicHint}{' '}
+                  <span className="link-gold-elegant underline">{ui.package.landlordBundleGuideLabel}</span>.
                 </p>
               </div>
               <div className="flex items-center gap-4">
                 <span className="link-gold-elegant text-sm font-semibold">
-                  Otevřít balíček →
+                  {ui.package.thematicCta}
                 </span>
               </div>
             </div>
@@ -683,26 +537,33 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8">
         <div className="grid lg:grid-cols-12 gap-8 items-start">
           <div id="formular" className="lg:col-span-7 space-y-6">
-            <div className="mb-6 border-t border-slate-800/60 pt-8"><h2 className="text-lg font-black text-white uppercase tracking-wide">Vyplňte údaje dokumentu</h2><p className="text-sm text-slate-500 mt-1">Všechna povinná pole jsou označena *</p></div>
+            {ui.isEnglish ? (
+              <section className="rounded-2xl border border-sky-400/25 bg-sky-400/10 p-5 text-sm leading-7 text-sky-50">
+                <p className="font-bold text-sky-100">{ui.notices.legal}</p>
+                <p className="mt-2 text-sky-100/90">{ui.notices.leaseUse}</p>
+              </section>
+            ) : null}
+            <div className="mb-6 border-t border-slate-800/60 pt-8"><h2 className="text-lg font-black text-white uppercase tracking-wide">{ui.form.title}</h2><p className="text-sm text-slate-500 mt-1">{ui.form.requiredHint}</p></div>
             <section className={cardClass}>
               <SectionTitle
-                index="01"
-                title="Pronajímatel"
-                subtitle="Přesná identifikace výrazně zvyšuje vymahatelnost smlouvy."
+                index={ui.form.sections.landlord.index}
+                title={ui.form.sections.landlord.title}
+                subtitle={ui.form.sections.landlord.subtitle}
               />
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <input
                   value={formData.landlordName}
                   onChange={handleChange}
                   name="landlordName"
-                  placeholder="Celé jméno"
+                  data-testid="lease-landlord-name"
+                  placeholder={ui.form.placeholders.fullName}
                   className={inputClass}
                 />
                 <input
                   value={formData.landlordId}
                   onChange={handleChange}
                   name="landlordId"
-                  placeholder="Rodné číslo / datum narození"
+                  placeholder={ui.form.placeholders.birthId}
                   className={inputClass}
                 />
               </div>
@@ -711,14 +572,14 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   value={formData.landlordAddress}
                   onChange={handleChange}
                   name="landlordAddress"
-                  placeholder="Trvalé bydliště"
+                  placeholder={ui.form.placeholders.address}
                   className={inputClass}
                 />
                 <input
                   value={formData.landlordOP}
                   onChange={handleChange}
                   name="landlordOP"
-                  placeholder="Číslo OP"
+                  placeholder={ui.form.placeholders.idCard}
                   className={inputClass}
                 />
               </div>
@@ -727,14 +588,14 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   value={formData.landlordEmail}
                   onChange={handleChange}
                   name="landlordEmail"
-                  placeholder="E-mail (volitelné)"
+                  placeholder={ui.form.placeholders.emailOptional}
                   className={inputClass}
                 />
                 <input
                   value={formData.landlordPhone}
                   onChange={handleChange}
                   name="landlordPhone"
-                  placeholder="Telefon (volitelné)"
+                  placeholder={ui.form.placeholders.phoneOptional}
                   className={inputClass}
                 />
               </div>
@@ -742,23 +603,24 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
 
             <section className={cardClass}>
               <SectionTitle
-                index="02"
-                title="Nájemce"
-                subtitle="Vyplň co nejpřesněji, zejména OP a adresu."
+                index={ui.form.sections.tenant.index}
+                title={ui.form.sections.tenant.title}
+                subtitle={ui.form.sections.tenant.subtitle}
               />
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <input
                   value={formData.tenantName}
                   onChange={handleChange}
                   name="tenantName"
-                  placeholder="Celé jméno"
+                  data-testid="lease-tenant-name"
+                  placeholder={ui.form.placeholders.fullName}
                   className={inputClass}
                 />
                 <input
                   value={formData.tenantId}
                   onChange={handleChange}
                   name="tenantId"
-                  placeholder="Rodné číslo / datum narození"
+                  placeholder={ui.form.placeholders.birthId}
                   className={inputClass}
                 />
               </div>
@@ -767,14 +629,14 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   value={formData.tenantAddress}
                   onChange={handleChange}
                   name="tenantAddress"
-                  placeholder="Trvalé bydliště"
+                  placeholder={ui.form.placeholders.address}
                   className={inputClass}
                 />
                 <input
                   value={formData.tenantOP}
                   onChange={handleChange}
                   name="tenantOP"
-                  placeholder="Číslo OP"
+                  placeholder={ui.form.placeholders.idCard}
                   className={inputClass}
                 />
               </div>
@@ -783,14 +645,14 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   value={formData.tenantEmail}
                   onChange={handleChange}
                   name="tenantEmail"
-                  placeholder="E-mail (volitelné)"
+                  placeholder={ui.form.placeholders.emailOptional}
                   className={inputClass}
                 />
                 <input
                   value={formData.tenantPhone}
                   onChange={handleChange}
                   name="tenantPhone"
-                  placeholder="Telefon (volitelné)"
+                  placeholder={ui.form.placeholders.phoneOptional}
                   className={inputClass}
                 />
               </div>
@@ -798,23 +660,24 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
 
             <section className={cardClass}>
               <SectionTitle
-                index="03"
-                title="Nemovitost"
-                subtitle="Tady se rozhoduje, jestli je byt ve smlouvě popsán profesionálně, nebo jen přibližně."
+                index={ui.form.sections.property.index}
+                title={ui.form.sections.property.title}
+                subtitle={ui.form.sections.property.subtitle}
               />
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <input
                   value={formData.flatAddress}
                   onChange={handleChange}
                   name="flatAddress"
-                  placeholder="Adresa bytu"
+                  data-testid="lease-flat-address"
+                  placeholder={ui.form.placeholders.flatAddress}
                   className={inputClass}
                 />
                 <input
                   value={formData.flatLayout}
                   onChange={handleChange}
                   name="flatLayout"
-                  placeholder="Dispozice (např. 2+kk)"
+                  placeholder={ui.form.placeholders.layout}
                   className={inputClass}
                 />
               </div>
@@ -823,21 +686,21 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   value={formData.flatUnitNumber}
                   onChange={handleChange}
                   name="flatUnitNumber"
-                  placeholder="Číslo jednotky"
+                  placeholder={ui.form.placeholders.unitNumber}
                   className={inputClass}
                 />
                 <input
                   value={formData.flatArea}
                   onChange={handleChange}
                   name="flatArea"
-                  placeholder="Výměra bytu (m²)"
+                  placeholder={ui.form.placeholders.area}
                   className={inputClass}
                 />
                 <input
                   value={formData.floor}
                   onChange={handleChange}
                   name="floor"
-                  placeholder="Podlaží / patro"
+                  placeholder={ui.form.placeholders.floor}
                   className={inputClass}
                 />
               </div>
@@ -846,21 +709,21 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   value={formData.ownershipSheet}
                   onChange={handleChange}
                   name="ownershipSheet"
-                  placeholder="List vlastnictví č."
+                  placeholder={ui.form.placeholders.ownershipSheet}
                   className={inputClass}
                 />
                 <input
                   value={formData.cadastralArea}
                   onChange={handleChange}
                   name="cadastralArea"
-                  placeholder="Katastrální území (název)"
+                  placeholder={ui.form.placeholders.cadastral}
                   className={inputClass}
                 />
                 <input
                   value={formData.parcelNumber}
                   onChange={handleChange}
                   name="parcelNumber"
-                  placeholder="Číslo parcely (volitelné)"
+                  placeholder={ui.form.placeholders.parcelOptional}
                   className={inputClass}
                 />
               </div>
@@ -868,26 +731,27 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
 
             <section className={cardClass}>
               <SectionTitle
-                index="04"
-                title="Doba nájmu a platby"
-                subtitle="Základ každé funkční smlouvy je jasný termín, cena a splatnost."
+                index={ui.form.sections.term.index}
+                title={ui.form.sections.term.title}
+                subtitle={ui.form.sections.term.subtitle}
               />
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-[0.12em] text-slate-400 mb-1.5">
-                    Začátek nájmu
+                    {ui.form.labels.startDate}
                   </label>
                   <input
                     value={formData.startDate}
                     onChange={handleChange}
                     type="date"
                     name="startDate"
+                    data-testid="lease-start-date"
                     className={inputClass}
                   />
                 </div>
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-[0.12em] text-slate-400 mb-1.5">
-                    Předání bytu
+                    {ui.form.labels.handoverDate}
                   </label>
                   <input
                     value={formData.handoverDate}
@@ -906,8 +770,8 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   name="duration"
                   className={inputClass}
                 >
-                  <option value="fixed">Doba určitá</option>
-                  <option value="indefinite">Doba neurčitá</option>
+                  <option value="fixed">{ui.form.duration.fixed}</option>
+                  <option value="indefinite">{ui.form.duration.indefinite}</option>
                 </select>
 
                 {formData.duration === 'fixed' ? (
@@ -916,11 +780,12 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                     onChange={handleChange}
                     type="date"
                     name="endDate"
+                    data-testid="lease-end-date"
                     className={inputClass}
                   />
                 ) : (
                   <div className="rounded-xl border border-dashed border-slate-700 px-4 py-3 text-sm text-slate-500 bg-[#111c31]">
-                    U doby neurčité není datum konce potřeba.
+                    {ui.form.duration.indefiniteHint}
                   </div>
                 )}
               </div>
@@ -931,7 +796,8 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   type="number"
                   name="rentAmount"
-                  placeholder="Nájem (Kč)"
+                  data-testid="lease-rent-amount"
+                  placeholder={ui.form.placeholders.rent}
                   className={inputClass}
                 />
                 <input
@@ -939,7 +805,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   type="number"
                   name="utilityAmount"
-                  placeholder="Služby (Kč)"
+                  placeholder={ui.form.placeholders.utilities}
                   className={inputClass}
                 />
                 <div>
@@ -948,11 +814,11 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                     onChange={handleChange}
                     type="number"
                     name="depositAmount"
-                    placeholder="Kauce (Kč)"
+                    placeholder={ui.form.placeholders.deposit}
                     className={inputClass}
                   />
-                  {Number(formData.rentAmount) > 0 && Number(formData.depositAmount) > Number(formData.rentAmount) * 6 && (
-                    <p className="mt-1.5 text-xs text-rose-400 font-medium">⚠ Přesahuje zákonné maximum 6× nájem (§ 2254 OZ).</p>
+                  {Number(formData.rentAmount) > 0 && Number(formData.depositAmount) > Number(formData.rentAmount) * 3 && (
+                    <p className="mt-1.5 text-xs text-rose-400 font-medium">{ui.form.depositWarning}</p>
                   )}
                 </div>
               </div>
@@ -962,7 +828,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   value={formData.bankAccount}
                   onChange={handleChange}
                   name="bankAccount"
-                  placeholder="Číslo účtu"
+                  placeholder={ui.form.placeholders.bankAccount}
                   className={inputClass}
                 />
                 <input
@@ -970,14 +836,14 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   type="number"
                   name="paymentDay"
-                  placeholder="Den splatnosti"
+                  placeholder={ui.form.placeholders.paymentDay}
                   className={inputClass}
                 />
                 <input
                   value={formData.variableSymbol}
                   onChange={handleChange}
                   name="variableSymbol"
-                  placeholder="Variabilní symbol"
+                  placeholder={ui.form.placeholders.variableSymbol}
                   className={inputClass}
                 />
               </div>
@@ -986,27 +852,27 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                 value={formData.utilitiesIncludedText}
                 onChange={handleChange}
                 name="utilitiesIncludedText"
-                placeholder="Co zahrnují služby? Např. voda, teplo, úklid společných prostor, osvětlení domu, internet..."
+                placeholder={ui.form.placeholders.utilitiesDetail}
                 className={textareaClass}
               />
 
               <div className="mt-4 rounded-2xl border border-emerald-500/15 bg-emerald-500/5 p-4">
                 <div className="text-xs uppercase tracking-widest text-emerald-400 font-bold mb-1">
-                  Souhrn plateb
+                  {ui.form.paymentSummary.heading}
                 </div>
                 <div className="text-sm text-slate-300">
-                  Měsíční nájem: <span className="font-bold text-white">{numbers.rent || 0} Kč</span> ·
-                  Služby: <span className="font-bold text-white">{numbers.utils || 0} Kč</span> ·
-                  Celkem: <span className="font-bold text-emerald-300">{numbers.total || 0} Kč</span>
+                  {ui.form.paymentSummary.rent}: <span className="font-bold text-white">{numbers.rent || 0} Kč</span> ·
+                  {ui.form.paymentSummary.utilities}: <span className="font-bold text-white">{numbers.utils || 0} Kč</span> ·
+                  {ui.form.paymentSummary.total}: <span className="font-bold text-emerald-300">{numbers.total || 0} Kč</span>
                 </div>
               </div>
             </section>
 
             <section className={cardClass}>
               <SectionTitle
-                index="05"
-                title="Předávací protokol"
-                subtitle="Tohle je přesně ta část, která při sporu rozhoduje o škodě a vrácení kauce."
+                index={ui.form.sections.handover.index}
+                title={ui.form.sections.handover.title}
+                subtitle={ui.form.sections.handover.subtitle}
               />
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <input
@@ -1014,24 +880,24 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   onChange={handleChange}
                   type="number"
                   name="keysCount"
-                  placeholder="Počet klíčů (ks)"
+                  placeholder={ui.form.placeholders.keysCount}
                   className={inputClass}
                 />
               </div>
-              <p className="text-xs font-bold uppercase tracking-[0.10em] text-slate-400 mb-2">Stav měřičů při předání</p>
+              <p className="text-xs font-bold uppercase tracking-[0.10em] text-slate-400 mb-2">{ui.form.labels.metersHeading}</p>
               <div className="grid sm:grid-cols-2 gap-3 mb-2">
                 <input
                   value={formData.electricityMeter}
                   onChange={handleChange}
                   name="electricityMeter"
-                  placeholder="Elektroměr — stav (kWh)"
+                  placeholder={ui.form.placeholders.electricityReading}
                   className={inputClass}
                 />
                 <input
                   value={formData.electricityMeterSerial}
                   onChange={handleChange}
                   name="electricityMeterSerial"
-                  placeholder="Elektroměr — číslo měřiče"
+                  placeholder={ui.form.placeholders.electricitySerial}
                   className={inputClass}
                 />
               </div>
@@ -1040,14 +906,14 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   value={formData.gasMeter}
                   onChange={handleChange}
                   name="gasMeter"
-                  placeholder="Plynoměr — stav (m³)"
+                  placeholder={ui.form.placeholders.gasReading}
                   className={inputClass}
                 />
                 <input
                   value={formData.gasMeterSerial}
                   onChange={handleChange}
                   name="gasMeterSerial"
-                  placeholder="Plynoměr — číslo měřiče"
+                  placeholder={ui.form.placeholders.gasSerial}
                   className={inputClass}
                 />
               </div>
@@ -1056,14 +922,14 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   value={formData.waterMeter}
                   onChange={handleChange}
                   name="waterMeter"
-                  placeholder="Vodoměr studená voda — stav (m³)"
+                  placeholder={ui.form.placeholders.coldWaterReading}
                   className={inputClass}
                 />
                 <input
                   value={formData.waterMeterSerial}
                   onChange={handleChange}
                   name="waterMeterSerial"
-                  placeholder="Vodoměr studená — číslo měřiče"
+                  placeholder={ui.form.placeholders.coldWaterSerial}
                   className={inputClass}
                 />
               </div>
@@ -1072,14 +938,14 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   value={formData.hotWaterMeter}
                   onChange={handleChange}
                   name="hotWaterMeter"
-                  placeholder="Vodoměr teplá voda — stav (m³)"
+                  placeholder={ui.form.placeholders.hotWaterReading}
                   className={inputClass}
                 />
                 <input
                   value={formData.hotWaterMeterSerial}
                   onChange={handleChange}
                   name="hotWaterMeterSerial"
-                  placeholder="Vodoměr teplá — číslo měřiče"
+                  placeholder={ui.form.placeholders.hotWaterSerial}
                   className={inputClass}
                 />
               </div>
@@ -1089,7 +955,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   value={formData.equipmentList}
                   onChange={handleChange}
                   name="equipmentList"
-                  placeholder="Seznam vybavení bytu. Např. kuchyňská linka, trouba, lednice, myčka, postel, skříně..."
+                  placeholder={ui.form.placeholders.equipment}
                   className={textareaClass}
                 />
               </div>
@@ -1098,68 +964,68 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                 value={formData.knownDefects}
                 onChange={handleChange}
                 name="knownDefects"
-                placeholder="Známé vady / poškození / poznámky. Např. oděrky na podlaze, prasklina u umyvadla, chybějící žaluzie..."
+                placeholder={ui.form.placeholders.defects}
                 className={textareaClass}
               />
             </section>
 
             <section className={cardClass}>
               <SectionTitle
-                index="06"
-                title="Pravidla nájmu"
-                subtitle="Tady nastavuješ, jak tvrdý nebo měkký režim bude smlouva mít."
+                index={ui.form.sections.rules.index}
+                title={ui.form.sections.rules.title}
+                subtitle={ui.form.sections.rules.subtitle}
               />
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <ToggleCard
                   name="allowPets"
                   checked={formData.allowPets}
-                  label="Domácí zvířata"
-                  hint="Povolení nebo zákaz chovu zvířat v bytě."
+                  label={ui.form.toggles.pets.label}
+                  hint={ui.form.toggles.pets.hint}
                 />
                 <ToggleCard
                   name="allowSmoking"
                   checked={formData.allowSmoking}
-                  label="Kouření v bytě"
-                  hint="Povolení kouření zvyšuje riziko škod."
+                  label={ui.form.toggles.smoking.label}
+                  hint={ui.form.toggles.smoking.hint}
                   danger={formData.allowSmoking}
                 />
                 <ToggleCard
                   name="allowAirbnb"
                   checked={formData.allowAirbnb}
-                  label="Airbnb / krátkodobý podnájem"
-                  hint="Vysoce rizikové nastavení pro pronajímatele."
+                  label={ui.form.toggles.airbnb.label}
+                  hint={ui.form.toggles.airbnb.hint}
                   danger
                 />
                 <ToggleCard
                   name="strictPenalties"
                   checked={formData.strictPenalties}
-                  label="Přísnější smluvní pokuty"
-                  hint="Doporučená volba. Zvyšuje ochranu při neplacení a nevyklizení."
+                  label={ui.form.toggles.penalties.label}
+                  hint={ui.form.toggles.penalties.hint}
                 />
                 <ToggleCard
                   name="inspectionAllowed"
                   checked={formData.inspectionAllowed}
-                  label="Právo kontroly bytu"
-                  hint="Pronajímatel může po oznámení zkontrolovat stav bytu."
+                  label={ui.form.toggles.inspection.label}
+                  hint={ui.form.toggles.inspection.hint}
                 />
                 <ToggleCard
                   name="businessUseAllowed"
                   checked={formData.businessUseAllowed}
-                  label="Povolit podnikání v bytě"
-                  hint="Obvykle je lepší nechat byt pouze k bydlení."
+                  label={ui.form.toggles.business.label}
+                  hint={ui.form.toggles.business.hint}
                   danger={formData.businessUseAllowed}
                 />
                 <ToggleCard
                   name="includeInflationIndexation"
                   checked={formData.includeInflationIndexation}
-                  label="Inflační doložka (indexace nájemného)"
-                  hint="Nájemné se každoročně upraví podle indexu spotřebitelských cen ČSÚ. Alternativa k jednostrannému zvýšení dle § 2249 OZ."
+                  label={ui.form.toggles.indexation.label}
+                  hint={ui.form.toggles.indexation.hint}
                 />
               </div>
 
               <div className="rounded-2xl border border-slate-700/80 bg-[#111c31] p-4 w-fit">
                 <div className="text-xs uppercase tracking-widest text-slate-500 mb-2">
-                  Maximální počet osob
+                  {ui.form.labels.maxOccupants}
                 </div>
                 <input
                   value={formData.maxOccupants}
@@ -1174,14 +1040,14 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
             {/* Řešení sporů */}
             <section className={cardClass}>
               <div className="mb-2">
-                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
+                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">{ui.form.labels.dispute}</div>
                 <select className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
-                  <option value="court">Obecný soud (výchozí)</option>
-                  <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
-                  <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
+                  <option value="court">{ui.form.dispute.court}</option>
+                  <option value="mediation">{ui.form.dispute.mediation}</option>
+                  <option value="arbitration">{ui.form.dispute.arbitration}</option>
                 </select>
                 {formData.disputeResolution === 'arbitration' && (
-                  <p className="mt-2 text-xs text-amber-400 leading-relaxed">⚠ U spotřebitelských smluv (B2C) bývá rozhodčí doložka neúčinná dle zák. č. 216/1994 Sb. Doporučujeme ji použít pouze ve vztazích mezi podnikateli (B2B).</p>
+                  <p className="mt-2 text-xs text-amber-400 leading-relaxed">{ui.form.dispute.arbitrationWarning}</p>
                 )}
               </div>
             </section>
@@ -1189,12 +1055,12 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
             {/* === Vyberte úroveň zpracování dokumentu === */}
             <section className={cardClass}>
               <SectionTitle
-                index="07"
-                title={packageConfig ? 'Zvolený produkt' : 'Vyberte úroveň zpracování'}
+                index={ui.form.sections.tier.index}
+                title={packageConfig ? ui.tier.packageProduct : ui.form.sections.tier.title}
                 subtitle={
                   packageConfig
-                    ? 'V balíčku pro pronajímatele je zahrnuta nájemní smlouva v komplexní variantě a navazující podklady.'
-                    : 'Základní varianta obsahuje standardní dokument. Rozšířená varianta přidává širší rozsah klauzulí a praktičtější podklady.'
+                    ? ui.form.sections.tier.subtitlePackage
+                    : ui.form.sections.tier.subtitleChoice
                 }
               />
               {packageConfig ? (
@@ -1209,13 +1075,14 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                       </p>
                     </div>
                     <div className="text-left sm:text-right">
-                      <div className="mt-1 text-xs leading-6 text-[#bba98c]">Komplexní nájemní smlouva a související podklady.</div>
+                      <div className="mt-1 text-xs leading-6 text-[#bba98c]">{ui.tier.packageNote}</div>
                     </div>
                   </div>
                 </div>
               ) : (
                 <BuilderTierSelector
                   contractType="lease"
+                  tierSelectorCopy={ui.tierSelector}
                   tier={formData.tier}
                   onTierChange={(tier) =>
                     setFormData((prev) => ({ ...prev, tier, notaryUpsell: tier !== 'basic' }))
@@ -1224,13 +1091,13 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
               )}
               {!packageConfig ? (
                 <p className="mt-4 text-xs leading-relaxed text-[#b9c1d0]">
-                  Řešíte vedle samotné smlouvy i předání bytu, stavy měřidel a potvrzení o převzetí kauce?{' '}
+                  {ui.form.tierLinkIntro}{' '}
                   <Link href="/balicek-pronajimatel" className="link-gold-elegant">
-                    Zobrazit Balíček pro pronajímatele
+                    {ui.form.tierLinkLandlord}
                   </Link>
-                  . Pokud si chcete nejprve ujasnit, která cesta je pro vás vhodná, otevřete{' '}
+                  . {ui.form.tierPackageGuideNote}{' '}
                   <Link href="/pro-pronajimatele" className="link-gold-elegant">
-                    dokumenty pro pronajímatele
+                    {ui.form.tierLinkGuide}
                   </Link>
                   .
                 </p>
@@ -1242,17 +1109,39 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
             <div className="sticky top-24 space-y-6">
               {/* Watermarked document preview */}
               {previewSections.length > 0 && (
-                <ContractPreview sections={previewSections} title="Nájemní smlouva" />
+                <ContractPreview
+                  sections={previewSections}
+                  title={ui.sidebar.documentTitle}
+                  labels={contractPreviewLabels ?? undefined}
+                  dateLocale={previewDateLocale}
+                />
               )}
+              {isExpatLeaseLocale(builderLocale) && ui.sidebar.expatDeliverables?.length ? (
+                <div className={`${cardClass} border-amber-500/25 bg-amber-500/5`}>
+                  <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-300">
+                    {ui.sidebar.expatDeliverablesTitle}
+                  </div>
+                  <ul className="mt-3 space-y-2 text-sm leading-relaxed text-slate-200">
+                    {ui.sidebar.expatDeliverables.map(item => (
+                      <li key={item} className="flex gap-2">
+                        <span className="text-amber-400" aria-hidden>
+                          ✓
+                        </span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
               <div className={`${cardClass} overflow-hidden`}>
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <div className="text-[11px] font-black uppercase tracking-[0.22em] text-slate-400">
-                      Stav vyplnění
+                      {ui.sidebar.completionTitle}
                     </div>
                     <div className="mt-2 text-3xl font-black text-white">{completion}%</div>
                     <div className="mt-1 text-sm text-slate-400">
-                      Čím kompletnější údaje, tím silnější výsledná smlouva.
+                      {ui.sidebar.completionHint}
                     </div>
                   </div>
                   <div
@@ -1264,7 +1153,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                           : 'bg-rose-500/10 text-rose-300 border border-rose-500/20'
                     }`}
                   >
-                    {completion >= 85 ? 'Skoro hotovo' : completion >= 60 ? 'Dobré' : 'Doplň údaje'}
+                    {completion >= 85 ? ui.sidebar.badgeReady : completion >= 60 ? ui.sidebar.badgeGood : ui.sidebar.badgeFill}
                   </div>
                 </div>
 
@@ -1282,7 +1171,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                 <div className="flex justify-between items-start gap-4 mb-4">
                   <div>
                     <h3 className="font-black text-white text-sm uppercase tracking-[0.18em]">
-                      Kontrola úplnosti
+                      {ui.sidebar.riskTitle}
                     </h3>
                     <p className="text-sm text-slate-400 mt-1">{riskAnalysis.label}</p>
                   </div>
@@ -1317,7 +1206,7 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                     ))
                   ) : (
                     <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-sm text-emerald-200">
-                      Smlouva je zatím nastavena velmi dobře. Rizikové prvky nejsou detekovány.
+                      {ui.sidebar.riskOk}
                     </div>
                   )}
                 </div>
@@ -1327,10 +1216,10 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                 <div className="absolute top-0 left-0 w-full h-1.5 bg-amber-500" />
                 <div className="mb-3">
                   <div className="text-[10px] font-black uppercase tracking-[0.24em] text-slate-400">
-                    Náhled výstupu
+                    {ui.sidebar.previewTitle}
                   </div>
                   <div className="mt-1 text-xs text-slate-500">
-                    Tady se okamžitě propisují všechny změny z formuláře.
+                    {ui.sidebar.previewHint}
                   </div>
                 </div>
 
@@ -1343,10 +1232,10 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
               <div className={cardClass}>
                 <div className="mb-3">
                   <div className="text-[11px] font-black uppercase tracking-[0.22em] text-slate-400">
-                    Předávací protokol
+                    {ui.sidebar.protocolTitle}
                   </div>
                   <div className="mt-1 text-sm text-slate-400">
-                    Automaticky generovaná příloha ke smlouvě.
+                    {ui.sidebar.protocolHint}
                   </div>
                 </div>
 
@@ -1362,20 +1251,24 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
                   contractType="lease"
                   tier={formData.tier}
                   packageKey={packageConfig?.key ?? null}
-                  documentLabel="Nájemní smlouva"
+                  documentLabel={ui.sidebar.checkoutDocument}
+                  summaryCopy={ui.checkoutSummary}
+                  locale={builderLocale}
                   onUpgrade={() => setFormData((prev) => ({ ...prev, tier: 'complete', notaryUpsell: true }))}
                 />
 
                 {/* Tlačítko generování */}
                 <button
+                  type="button"
+                  data-testid="lease-open-checkout"
                   onClick={() => setShowPreviewModal(true)}
                   className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >
-                  Vygenerovat smlouvu →
+                  {ui.sidebar.generateCta}
                 </button>
 
                 <p className="mt-3 text-center text-[11px] text-slate-500">
-                  Zobrazí se náhled dokumentu připraveného k odemčení
+                  {ui.sidebar.generateHint}
                 </p>
               </div>
             </div>
@@ -1387,11 +1280,13 @@ ${formData.knownDefects || 'Bez zjevných vad.'}
     {showPreviewModal && (
       <PaymentModal
         sections={previewSections}
-        title="Nájemní smlouva"
+        title={ui.sidebar.documentTitle}
         tier={formData.tier}
         onTierChange={(t) => setFormData((prev) => ({ ...prev, tier: t }))}
         packageKey={packageConfig?.key ?? null}
         contractType="lease"
+        lang={builderLocale}
+        paymentCopy={ui.paymentModal}
         onPay={handlePayment}
         isProcessing={isProcessing}
         onClose={() => setShowPreviewModal(false)}

@@ -163,7 +163,7 @@ export default function KupniSmlouvaAutoPage() {
           <li className="flex items-start gap-3">
             <span className="mt-1 flex-shrink-0 text-amber-500 font-bold">✓</span>
             <div>
-              <strong className="text-slate-300">Odpovědnost za vady</strong> — prodej "jak stojí a leží" (as is) u ojetých vozů
+              <strong className="text-slate-300">Odpovědnost za vady</strong> — prodej jak stojí a leží (as is) u ojetých vozů
               je legitimitní, ale musí být výslovně sjednán a nesmí zakrývat úmyslně zamlčené vady.
             </div>
           </li>
@@ -204,7 +204,7 @@ export default function KupniSmlouvaAutoPage() {
         <ul className="mb-5 space-y-2 text-slate-400">
           <li className="flex items-start gap-2"><span className="mt-1 text-amber-500 flex-shrink-0">•</span>Datum platnosti STK (s razítkem a příslušnou přilepenou nálepkou)</li>
           <li className="flex items-start gap-2"><span className="mt-1 text-amber-500 flex-shrink-0">•</span>Datum poslední emisní kontroly (pro vozy podléhající emisní kontrole)</li>
-          <li className="flex items-start gap-2"><span className="mt-1 text-amber-500 flex-shrink-0">•</span>Případné závady zjištěné při poslední STK (i tzv. "doporučení")</li>
+          <li className="flex items-start gap-2"><span className="mt-1 text-amber-500 flex-shrink-0">•</span>Případné závady zjištěné při poslední STK (včetně tzv. doporučení)</li>
         </ul>
 
         <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm text-slate-400 leading-relaxed">
@@ -290,7 +290,7 @@ export default function KupniSmlouvaAutoPage() {
             {
               n: '5',
               title: 'Chybí přepis na úřadě',
-              body: 'Bez přepisu vozidla v registru zůstáváte v systému stále vlastníkem — odpovídáte za přestupky, pojistné události i dálniční poplatky. Přepis zajistěte nejpozději do 15 dnů od převzetí vozidla (§ 8 odst. 2 zák. č. 56/2001 Sb.).',
+              body: 'Bez zápisu změny vlastníka v registru zůstáváte v systému stále vedení u vozidla — může to komplikovat přestupky, pojistné události i dálniční poplatky. Žádost o zápis změny vlastníka podejte nejpozději do 10 pracovních dnů od přechodu vlastnického práva (§ 8 odst. 2 zák. č. 56/2001 Sb.).',
             },
           ].map(c => (
             <div key={c.n} className="rounded-2xl border border-white/8 bg-[#0c1426] p-5">
@@ -332,7 +332,7 @@ export default function KupniSmlouvaAutoPage() {
         <h3 className="mb-3 text-lg font-black text-white">Přepis na úřadě</h3>
         <p className="mb-4 text-slate-400 leading-relaxed">
           Přepis vozidla na nového majitele se provádí na příslušném obecním úřadě s rozšířenou působností.
-          Nový vlastník musí přepis provést <strong className="text-slate-300">do 15 dnů</strong> od převzetí vozidla (§ 8 odst. 2 zák. č. 56/2001 Sb.).
+          Žádost o zápis změny vlastníka se podává <strong className="text-slate-300">do 10 pracovních dnů</strong> od přechodu vlastnického práva (§ 8 odst. 2 zák. č. 56/2001 Sb.).
           K přepisu je nutná:
         </p>
         <ul className="mb-5 space-y-2 text-slate-400">
@@ -363,7 +363,7 @@ export default function KupniSmlouvaAutoPage() {
             'Popište konkrétní vady a stav vozidla — neurčité formulace vás nechrání',
             'Ověřte zástavní právo nebo leasing na vozidle před podpisem',
             'Prověřte historii vozidla přes VIN databáze (Cebia, CarVertical)',
-            'Zajistěte přepis na úřadě do 15 dnů od převzetí (§ 8 odst. 2 zák. č. 56/2001 Sb.)',
+            'Podejte žádost o zápis změny vlastníka do 10 pracovních dnů (§ 8 odst. 2 zák. č. 56/2001 Sb.)',
           ].map(t => (
             <div key={t} className="flex items-start gap-2 text-sm text-slate-300">
               <span className="mt-0.5 flex-shrink-0 text-amber-400 font-bold">✓</span>

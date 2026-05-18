@@ -189,7 +189,7 @@ export default function DppVzorZdarmaPage() {
             <tbody className="divide-y divide-white/5">
               {[
                 ['Limit hodin', '300 hodin ročně u jednoho zaměstnavatele (§ 75 ZP)'],
-                ['Srážková daň', 'Příjem do 11 500 Kč/měsíc — 15% srážková daň (bez podpisu prohlášení)'],
+                ['Pojistné a daň', 'Pro rok 2026 sledujte rozhodný příjem 12 000 Kč/měsíc; daňový režim závisí na prohlášení poplatníka a konkrétní situaci'],
                 ['Zdravotní pojištění', 'Odvod od příjmu 4 500 Kč/měsíc — zaměstnavatel musí sledovat kumulaci u více DPP'],
                 ['Oznamovací povinnost', 'Zaměstnavatel hlásí DPP na ČSSZ do 8 dnů od nástupu'],
                 ['Minimální odměna', 'Hodinová odměna nesmí být nižší než minimální mzda (20 800 Kč/měs. → 124 Kč/hod.)'],

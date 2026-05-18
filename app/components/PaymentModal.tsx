@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react';
 import { PRICING_TIER_CONFIG } from '@/lib/pricing';
 import { getEffectiveIncludedItems, getThematicPackageConfig } from '@/lib/packages';
+import { getLocalizedPackagePresentation, getLocalizedPricingTier } from '@/lib/i18n/pricing-locale';
+import { LEGAL_NOTICE, normalizeLocale } from '@/lib/locale';
+import type { LeaseFormUi } from '@/lib/i18n/lease-form';
 
 interface Section {
   title: string;
@@ -16,6 +19,8 @@ interface PaymentModalProps {
   onTierChange: (tier: 'basic' | 'complete') => void;
   packageKey?: string | null;
   contractType: string;
+  lang?: string;
+  paymentCopy?: LeaseFormUi['paymentModal'];
   onPay: () => void;
   isProcessing: boolean;
   onClose: () => void;
@@ -28,13 +33,20 @@ export default function PaymentModal({
   onTierChange,
   packageKey,
   contractType,
+  lang,
+  paymentCopy,
   onPay,
   isProcessing,
   onClose,
 }: PaymentModalProps) {
   const [gdprConsent, setGdprConsent] = useState(false);
   const packageConfig = getThematicPackageConfig(packageKey);
-  const includedItems = getEffectiveIncludedItems(contractType, tier, packageKey);
+  const locale = normalizeLocale(lang);
+  const copy = paymentCopy;
+  const includedItems = getEffectiveIncludedItems(contractType, tier, packageKey, locale);
+  const localizedPackage = packageConfig
+    ? getLocalizedPackagePresentation(packageConfig.key, locale)
+    : null;
   const price = packageConfig
     ? packageConfig.priceLabel
     : tier === 'complete'
@@ -59,6 +71,7 @@ export default function PaymentModal({
 
   return (
     <div
+      data-testid="lease-checkout-modal"
       className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
       style={{ background: 'rgba(5, 8, 15, 0.92)', backdropFilter: 'blur(8px)' }}
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
@@ -69,7 +82,7 @@ export default function PaymentModal({
         <button
           onClick={onClose}
           className="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/8 text-slate-400 hover:bg-white/14 hover:text-white transition"
-          aria-label="Zavřít"
+          aria-label={copy?.close ?? 'Zavřít'}
         >
           ✕
         </button>
@@ -133,8 +146,8 @@ export default function PaymentModal({
                 </svg>
               </div>
               <div>
-                <div className="text-lg font-black text-white">Váš dokument je připraven</div>
-                <div className="mt-1 text-sm text-slate-400">Odemkněte přístup k plnému PDF dokumentu</div>
+                <div className="text-lg font-black text-white">{copy?.readyTitle ?? 'Váš dokument je připraven'}</div>
+                <div className="mt-1 text-sm text-slate-400">{copy?.readySubtitle ?? 'Odemkněte přístup k plnému PDF dokumentu'}</div>
               </div>
             </div>
           </div>
@@ -146,19 +159,19 @@ export default function PaymentModal({
 
             {/* Hlavička */}
             <div className="mb-6">
-              <div className="text-[11px] font-black uppercase tracking-[0.2em] text-amber-400/80">Odemknout dokument</div>
+              <div className="text-[11px] font-black uppercase tracking-[0.2em] text-amber-400/80">{copy?.unlockHeading ?? 'Odemknout dokument'}</div>
               <h2 className="mt-2 text-2xl font-black leading-tight text-white">{title}</h2>
               <p className="mt-2 text-sm text-slate-400">
                 {hasSections
-                  ? 'Váš dokument je sestavený a připravený ke stažení. Vyberte variantu a dokončete platbu.'
-                  : 'Doplňte zbývající údaje ve formuláři a vyberte variantu dokumentu.'}
+                  ? (copy?.unlockSubtitleReady ?? 'Váš dokument je sestavený a připravený ke stažení. Vyberte variantu a dokončete platbu.')
+                  : (copy?.unlockSubtitleEmpty ?? 'Doplňte zbývající údaje ve formuláři a vyberte variantu dokumentu.')}
               </p>
             </div>
 
             {/* Výběr varianty — pouze pokud není package */}
             {!packageConfig && (
               <div className="mb-5 space-y-2">
-                <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">Varianta dokumentu</div>
+                <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">{copy?.tierHeading ?? 'Varianta dokumentu'}</div>
                 {(['basic', 'complete'] as const).map((t) => {
                   const cfg = PRICING_TIER_CONFIG[t];
                   const isSelected = tier === t;
@@ -178,7 +191,13 @@ export default function PaymentModal({
                           <div className={`h-4 w-4 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${isSelected ? 'border-amber-400' : 'border-slate-600'}`}>
                             {isSelected && <div className="h-2 w-2 rounded-full bg-amber-400" />}
                           </div>
-                          <span className="font-bold text-white text-sm">{cfg.title}</span>
+                          <span className="font-bold text-white text-sm">
+                            {copy
+                              ? t === 'basic'
+                                ? copy.tierBasicTitle
+                                : copy.tierCompleteTitle
+                              : getLocalizedPricingTier(t, locale).title}
+                          </span>
                           {cfg.badge && (
                             <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-bold text-amber-400">
                               {cfg.badge}
@@ -189,7 +208,13 @@ export default function PaymentModal({
                           {cfg.priceLabel}
                         </span>
                       </div>
-                      <p className="mt-1.5 pl-6 text-xs text-slate-400">{cfg.shortDescription}</p>
+                      <p className="mt-1.5 pl-6 text-xs text-slate-400">
+                        {copy
+                          ? t === 'basic'
+                            ? copy.tierBasicDesc
+                            : copy.tierCompleteDesc
+                          : getLocalizedPricingTier(t, locale).shortDescription}
+                      </p>
                     </button>
                   );
                 })}
@@ -200,16 +225,18 @@ export default function PaymentModal({
             {packageConfig && (
               <div className="mb-5 rounded-2xl border border-amber-500/20 bg-amber-500/8 p-4">
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-white">{packageConfig.title}</span>
+                  <span className="font-bold text-white">{localizedPackage?.title ?? packageConfig.title}</span>
                   <span className="font-black text-amber-400 text-xl">{packageConfig.priceLabel}</span>
                 </div>
-                <p className="mt-1 text-xs text-slate-400">{packageConfig.checkoutDescription}</p>
+                <p className="mt-1 text-xs text-slate-400">
+                  {localizedPackage?.checkoutDescription ?? packageConfig.checkoutDescription}
+                </p>
               </div>
             )}
 
             {/* Co je součástí */}
             <div className="mb-5 rounded-xl border border-slate-700/50 bg-slate-800/40 px-4 py-3">
-              <div className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-500">Součástí je</div>
+              <div className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-500">{copy?.includedHeading ?? 'Součástí je'}</div>
               <ul className="space-y-1.5">
                 {includedItems.map((item) => (
                   <li key={item} className="flex items-start gap-2 text-xs text-slate-300">
@@ -220,29 +247,42 @@ export default function PaymentModal({
               </ul>
             </div>
 
+            {locale !== 'cs' && (
+              <div className="mb-5 rounded-xl border border-sky-400/20 bg-sky-400/10 px-4 py-3 text-xs leading-6 text-sky-100">
+                {LEGAL_NOTICE[locale]}
+              </div>
+            )}
+
             <div className="mt-auto space-y-4">
               {/* Souhlas s OP + vzdání se odstoupení */}
               <label className="flex cursor-pointer items-start gap-3 group">
                 <input
                   type="checkbox"
+                  data-testid="lease-checkout-consent"
                   checked={gdprConsent}
                   onChange={(e) => setGdprConsent(e.target.checked)}
                   className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
                 />
                 <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
-                  Přijímám{' '}
-                  <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">obchodní podmínky</a>
-                  {' '}a beru na vědomí{' '}
-                  <a href="/gdpr" target="_blank" className="text-amber-400 underline hover:text-amber-300">zásady ochrany osobních údajů</a>.
-                  Výslovně souhlasím s okamžitým zahájením plnění a beru na vědomí, že tím <strong className="text-slate-300">ztrácím právo na odstoupení od smlouvy</strong> dle § 1837 písm. l) OZ.
+                  {copy?.consentLabel ?? (
+                    <>
+                      Přijímám{' '}
+                      <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">obchodní podmínky</a>
+                      {' '}a beru na vědomí{' '}
+                      <a href="/gdpr" target="_blank" className="text-amber-400 underline hover:text-amber-300">zásady ochrany osobních údajů</a>.
+                      Výslovně souhlasím s okamžitým zahájením plnění a beru na vědomí, že tím <strong className="text-slate-300">ztrácím právo na odstoupení od smlouvy</strong> dle § 1837 písm. l) OZ.
+                    </>
+                  )}
                 </span>
               </label>
 
               {/* Platební tlačítko */}
               <button
+                type="button"
+                data-testid="lease-checkout-pay"
                 onClick={() => {
                   if (!gdprConsent) {
-                    alert('Potvrďte prosím souhlas se zpracováním osobních údajů.');
+                    alert(copy?.gdprRequired ?? 'Potvrďte prosím souhlas se zpracováním osobních údajů.');
                     return;
                   }
                   onPay();
@@ -253,15 +293,15 @@ export default function PaymentModal({
                 {isProcessing ? (
                   <span className="flex items-center justify-center gap-2">
                     <span className="w-5 h-5 border-2 border-black/40 border-t-black rounded-full animate-spin" />
-                    Přesměrování na platbu…
+                    {copy?.processing ?? 'Přesměrování na platbu…'}
                   </span>
                 ) : (
-                  `Odemknout a stáhnout — ${price} →`
+                  copy ? `${copy.payCtaWithPrice} — ${price} →` : `Odemknout a stáhnout — ${price} →`
                 )}
               </button>
 
               <p className="text-center text-[11px] text-slate-500">
-                🔒 Zabezpečená platba přes Stripe · PDF ke stažení ihned
+                {copy?.footerSecure ?? '🔒 Zabezpečená platba přes Stripe · PDF ke stažení ihned'}
               </p>
             </div>
           </div>

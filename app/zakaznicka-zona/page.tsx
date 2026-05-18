@@ -8,9 +8,18 @@ type Order = {
   contractName: string;
   paidAt: string | null;
   tier: string;
+  lang?: string;
 };
 
 type LookupState = 'idle' | 'loading' | 'done' | 'error';
+
+function normalizeDownloadLang(value?: string | null) {
+  if (value === 'en' || value === 'ua' || value === 'uk' || value === 'ukr') {
+    if (value === 'uk' || value === 'ukr') return 'ua';
+    return value;
+  }
+  return 'cs';
+}
 
 const TIER_LABEL: Record<string, { label: string; color: string }> = {
   basic:        { label: 'Základní',       color: 'text-slate-400' },
@@ -28,6 +37,7 @@ export default function CustomerZone() {
   const [email, setEmail]         = useState('');
   const [state, setState]         = useState<LookupState>('idle');
   const [orders, setOrders]       = useState<Order[]>([]);
+  const [downloadLang, setDownloadLang] = useState<Record<string, string>>({});
   const [errorMsg, setErrorMsg]   = useState('');
 
   const handleLookup = async (e: React.FormEvent) => {
@@ -49,6 +59,7 @@ export default function CustomerZone() {
       if (!res.ok) throw new Error('Server error');
       const data = (await res.json()) as { orders: Order[] };
       setOrders(data.orders ?? []);
+      setDownloadLang(Object.fromEntries((data.orders ?? []).map((order) => [order.sessionId, normalizeDownloadLang(order.lang)])));
       setState('done');
     } catch {
       setErrorMsg('Nepodařilo se načíst objednávky. Zkuste to znovu.');
@@ -66,8 +77,11 @@ export default function CustomerZone() {
     } catch { return iso; }
   };
 
-  const downloadUrl = (sessionId: string) =>
-    `/api/contracts/download?session_id=${encodeURIComponent(sessionId)}`;
+  const downloadUrl = (sessionId: string) => {
+    const lang = downloadLang[sessionId] ?? 'cs';
+    const langQuery = lang === 'cs' ? '' : `&lang=${encodeURIComponent(lang)}`;
+    return `/api/contracts/download?session_id=${encodeURIComponent(sessionId)}${langQuery}`;
+  };
 
   return (
     <main className="min-h-screen bg-[#05080f] text-slate-200 py-16 px-6">
@@ -142,7 +156,7 @@ export default function CustomerZone() {
               <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2 px-1">
                 Nalezeno {orders.length} {orders.length === 1 ? 'dokument' : orders.length < 5 ? 'dokumenty' : 'dokumentů'}
               </div>
-              {orders.map((order, index) => {
+              {orders.map((order) => {
                 const tierInfo = TIER_LABEL[order.tier] ?? TIER_LABEL.basic;
                 const ttlLabel = TTL_LABEL[order.tier] ?? '7 dní';
                 return (
@@ -160,10 +174,22 @@ export default function CustomerZone() {
                         <div className="text-xs text-slate-600 mt-0.5">Platnost odkazu: {ttlLabel} od zaplacení</div>
                       </div>
                     </div>
-                    <a href={downloadUrl(order.sessionId)}
-                      className="flex-shrink-0 px-4 py-2 bg-amber-500/10 border border-amber-500/20 text-amber-400 font-bold text-xs uppercase rounded-xl hover:bg-amber-500 hover:text-black transition">
-                      Stáhnout
-                    </a>
+                    <div className="flex flex-shrink-0 items-center gap-2">
+                      <select
+                        aria-label="PDF language"
+                        value={downloadLang[order.sessionId] ?? normalizeDownloadLang(order.lang)}
+                        onChange={(e) => setDownloadLang((prev) => ({ ...prev, [order.sessionId]: e.target.value }))}
+                        className="rounded-xl border border-slate-700 bg-[#141f35] px-2 py-2 text-xs text-slate-300"
+                      >
+                        <option value="cs">CS</option>
+                        <option value="en">EN</option>
+                        <option value="ua">UA</option>
+                      </select>
+                      <a href={downloadUrl(order.sessionId)}
+                        className="px-4 py-2 bg-amber-500/10 border border-amber-500/20 text-amber-400 font-bold text-xs uppercase rounded-xl hover:bg-amber-500 hover:text-black transition">
+                        Stáhnout
+                      </a>
+                    </div>
                   </div>
                 );
               })}

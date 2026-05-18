@@ -9,7 +9,7 @@ import RelatedArticles from '@/app/components/blog/RelatedArticles';
 export const metadata: Metadata = {
   title: 'DPP dohoda o provedení práce 2026: Limity, odvody a jak ji správně napsat',
   description:
-    'Průvodce dohodou o provedení práce pro rok 2026. Limit 300 hodin ročně, srážková daň do 11 500 Kč, zdravotní pojištění, povinné náležitosti a nejčastější chyby zaměstnavatelů.',
+    'Průvodce dohodou o provedení práce pro rok 2026. Limit 300 hodin ročně, rozhodný příjem 12 000 Kč, zdravotní pojištění, povinné náležitosti a nejčastější chyby zaměstnavatelů.',
   keywords: [
     'DPP dohoda o provedení práce',
     'dohoda o provedení práce vzor 2026',
@@ -183,17 +183,17 @@ export default function DppPage() {
             </thead>
             <tbody className="divide-y divide-white/5">
               <tr className="bg-emerald-500/5">
-                <td className="px-4 py-3 text-slate-300">Do 11 500 Kč</td>
+                <td className="px-4 py-3 text-slate-300">Do 11 999 Kč</td>
                 <td className="px-4 py-3 text-emerald-400">Srážková 15 % (bez podpisu prohlášení)</td>
                 <td className="px-4 py-3 text-emerald-400">Bez odvodů</td>
               </tr>
               <tr>
-                <td className="px-4 py-3 text-slate-300">Do 11 500 Kč (s prohlášením)</td>
+                <td className="px-4 py-3 text-slate-300">Do 11 999 Kč (s prohlášením)</td>
                 <td className="px-4 py-3 text-slate-400">Zálohová 15 % — sleva na poplatníka</td>
                 <td className="px-4 py-3 text-emerald-400">Bez odvodů</td>
               </tr>
               <tr className="bg-red-500/5">
-                <td className="px-4 py-3 text-slate-300">Nad 11 500 Kč</td>
+                <td className="px-4 py-3 text-slate-300">Od 12 000 Kč</td>
                 <td className="px-4 py-3 text-slate-400">Zálohová 15–23 %</td>
                 <td className="px-4 py-3 text-red-400">SP + ZP povinné</td>
               </tr>
@@ -202,7 +202,7 @@ export default function DppPage() {
         </div>
 
         <div className="rounded-2xl border border-amber-500/15 bg-amber-500/5 p-5 text-sm text-slate-400 leading-relaxed">
-          <strong className="text-amber-400">⚠️ Upozornění:</strong> Hranice 11 500 Kč je pro rok 2026 — každoročně se může měnit (váže se
+          <strong className="text-amber-400">⚠️ Upozornění:</strong> Hranice 12 000 Kč je pro rok 2026 — každoročně se může měnit (váže se
           na čtvrtinu průměrné mzdy). Vždy ověřte aktuální hranici na webu MPSV nebo daňového portálu.
         </div>
       </section>
@@ -250,7 +250,7 @@ export default function DppPage() {
             <div className="mb-2 text-sm font-black text-white">Oznámení na ČSSZ</div>
             <p className="text-sm text-slate-400 leading-relaxed">
               Od roku 2024 je zaměstnavatel povinen hlásit nástup každého zaměstnance na DPP na ČSSZ
-              (ePortál ČSSZ), a to nejpozději v den nástupu. Platí i pro DPP pod 11 500 Kč, kde se
+              (ePortál ČSSZ), a to nejpozději v den nástupu. Platí i pro DPP pod 12 000 Kč, kde se
               odvody neplatí. Sankce za nesplnění: až 100 000 Kč.
             </p>
           </div>
@@ -272,7 +272,7 @@ export default function DppPage() {
             <div className="mb-2 text-sm font-black text-white">Potvrzení o zaměstnání (Zápočtový list)</div>
             <p className="text-sm text-slate-400 leading-relaxed">
               Při skončení DPP je zaměstnavatel povinen vydat potvrzení o zaměstnání (§ 313 ZP),
-              i když se jedná „pouze" o brigádu na dohodu.
+              i když se jedná jen o brigádu na dohodu.
             </p>
           </div>
         </div>
@@ -316,7 +316,7 @@ export default function DppPage() {
           {[
             'DPP lze uzavřít na max. 300 hodin ročně u jednoho zaměstnavatele — sledujte evidenci',
             'Od roku 2024: každý zaměstnanec na DPP musí být nahlášen na ČSSZ nejpozději v den nástupu',
-            'Bez odvodů: odměna do 11 500 Kč/měsíc (srážková daň 15 % bez podpisu prohlášení)',
+            'Pojistné: pro rok 2026 sledujte rozhodný příjem 12 000 Kč/měsíc u jednoho zaměstnavatele',
             'Smlouva musí být písemná a obsahovat vymezení práce, rozsah hodin a odměnu',
             'Hodinová odměna nesmí klesnout pod minimální mzdu (2026: 20,80 Kč/hod)',
             'Při skončení vydejte zaměstnanci potvrzení o zaměstnání (zápočtový list)',

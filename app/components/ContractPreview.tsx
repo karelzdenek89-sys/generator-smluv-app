@@ -1,5 +1,7 @@
 ﻿'use client';
 
+import type { ContractPreviewLabels } from '@/lib/i18n/lease-preview';
+
 interface Section {
   title: string;
   body: string[];
@@ -9,17 +11,29 @@ interface ContractPreviewProps {
   sections: Section[];
   title: string;
   previewCount?: number;
+  labels?: ContractPreviewLabels;
+  dateLocale?: string;
 }
+
+const DEFAULT_LABELS: ContractPreviewLabels = {
+  kicker: 'Náhled výstupu',
+  intro: 'Průběžný náhled struktury dokumentu podle zadaných údajů.',
+  footer:
+    'Zobrazen je orientační náhled struktury dokumentu. Finální výstup se sestaví podle vyplněných údajů.',
+};
 
 export default function ContractPreview({
   sections,
   title,
   previewCount = 3,
+  labels,
+  dateLocale = 'cs-CZ',
 }: ContractPreviewProps) {
   if (!sections?.length) return null;
 
+  const copy = labels ?? DEFAULT_LABELS;
   const visibleSections = sections.slice(0, previewCount);
-  const today = new Date().toLocaleDateString('cs-CZ', {
+  const today = new Date().toLocaleDateString(dateLocale, {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
@@ -27,10 +41,8 @@ export default function ContractPreview({
 
   return (
     <div className="site-content-card overflow-hidden rounded-[1.75rem] p-5">
-      <div className="builder-kicker mb-3">Náhled výstupu</div>
-      <div className="mb-4 text-sm leading-7 text-[#d2c8b9]">
-        Průběžný náhled struktury dokumentu podle zadaných údajů.
-      </div>
+      <div className="builder-kicker mb-3">{copy.kicker}</div>
+      <div className="mb-4 text-sm leading-7 text-[#d2c8b9]">{copy.intro}</div>
 
       <div className="overflow-hidden rounded-[1.5rem] border border-[rgba(166,134,91,0.18)] bg-[#f5efe3] shadow-[0_18px_44px_rgba(10,8,7,0.18)]">
         <div className="border-b border-[#dccdae] px-6 py-5">
@@ -68,10 +80,9 @@ export default function ContractPreview({
         </div>
 
         <div className="border-t border-[#dccdae] px-6 py-3 text-[11px] leading-6 text-[#7c6747]">
-          Zobrazen je orientační náhled struktury dokumentu. Finální výstup se sestaví podle vyplněných údajů.
+          {copy.footer}
         </div>
       </div>
     </div>
   );
 }
-

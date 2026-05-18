@@ -8,6 +8,7 @@ import {
 } from './pricing';
 import type { ContractType } from './contracts';
 import { getTierIncludedItems } from './tier-copy';
+import { getLocalizedIncludedItems, getLocalizedPackagePresentation } from './i18n/pricing-locale';
 
 export type ThematicPackageKey = 'landlord' | 'vehicle_sale';
 
@@ -133,18 +134,31 @@ export function getEffectiveIncludedItems(
   contractType: string | null | undefined,
   tier: PricingTier,
   packageKey?: string | null,
+  locale?: string | null,
 ): readonly string[] {
   const packageConfig = getThematicPackageConfig(packageKey);
-  if (packageConfig) return packageConfig.includedOutputs;
+  if (packageConfig) {
+    const localized = getLocalizedPackagePresentation(packageConfig.key, locale);
+    if (localized) return getLocalizedIncludedItems(contractType, tier, packageKey, locale);
+    return packageConfig.includedOutputs;
+  }
+  if (locale && locale !== 'cs') {
+    return getLocalizedIncludedItems(contractType, tier, packageKey, locale);
+  }
   return getTierIncludedItems(contractType, tier);
 }
 
 export function getEffectivePurchaseTitle(
   tier: PricingTier,
   packageKey?: string | null,
+  locale?: string | null,
 ): string {
   const packageConfig = getThematicPackageConfig(packageKey);
-  if (packageConfig) return packageConfig.title;
+  if (packageConfig) {
+    const localized = getLocalizedPackagePresentation(packageConfig.key, locale);
+    if (localized) return localized.title;
+    return packageConfig.title;
+  }
   return normalizePricingTier(tier) === 'complete'
     ? 'Rozšířený dokument'
     : 'Základní dokument';

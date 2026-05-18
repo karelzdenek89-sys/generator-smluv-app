@@ -11,6 +11,9 @@ import {
   getEffectiveIncludedItems,
   getThematicPackageConfig,
 } from '@/lib/packages';
+import type { LeaseFormUi } from '@/lib/i18n/lease-form';
+import { normalizeLocale } from '@/lib/locale';
+import { getLocalizedPackagePresentation } from '@/lib/i18n/pricing-locale';
 
 type BuilderCheckoutSummaryProps = {
   tier: PricingTier;
@@ -19,6 +22,8 @@ type BuilderCheckoutSummaryProps = {
   onUpgrade?: () => void;
   title?: string;
   documentLabel?: string;
+  summaryCopy?: LeaseFormUi['checkoutSummary'];
+  locale?: string | null;
 };
 
 export default function BuilderCheckoutSummary({
@@ -26,32 +31,40 @@ export default function BuilderCheckoutSummary({
   contractType,
   packageKey,
   onUpgrade,
-  title = 'Shrnutí objednávky',
+  title,
   documentLabel = 'Vybraný dokument',
+  summaryCopy,
+  locale: localeProp,
 }: BuilderCheckoutSummaryProps) {
   const pathname = usePathname();
   const isComplete = tier === 'complete';
   const packageConfig = getThematicPackageConfig(packageKey);
-  const includedItems = getEffectiveIncludedItems(contractType, tier, packageKey);
+  const locale = normalizeLocale(localeProp);
+  const localizedPackage = packageConfig
+    ? getLocalizedPackagePresentation(packageConfig.key, locale)
+    : null;
+  const includedItems = getEffectiveIncludedItems(contractType, tier, packageKey, locale);
   const defaults = getAnalyticsDefaultsForPathname(pathname ?? '/');
+  const copy = summaryCopy;
+  const resolvedTitle = title ?? copy?.title ?? 'Shrnutí objednávky';
 
   if (packageConfig) {
     return (
       <>
         <div className="mb-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
-          {title}
+          {resolvedTitle}
         </div>
 
         <div className="mb-4 rounded-2xl border border-white/8 bg-white/3 p-4">
-          <div className="text-base font-semibold text-white">{packageConfig.title}</div>
+          <div className="text-base font-semibold text-white">{localizedPackage?.title ?? packageConfig.title}</div>
           <div className="mt-2 text-sm leading-relaxed text-slate-400">
-            {packageConfig.checkoutDescription}
+            {localizedPackage?.checkoutDescription ?? packageConfig.checkoutDescription}
           </div>
         </div>
 
         <div className="mt-4 rounded-xl border border-slate-700/50 bg-slate-800/40 px-4 py-3">
           <div className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-500">
-            Součástí balíčku je
+            {copy?.packageIncludes ?? 'Součástí balíčku je'}
           </div>
           <ul className="space-y-1.5">
             {includedItems.map((item) => (
@@ -64,8 +77,8 @@ export default function BuilderCheckoutSummary({
         </div>
 
         <p className="mt-4 text-xs leading-relaxed text-slate-400">
-          Po dokončení objednávky získáte výstup odpovídající tomuto balíčku,
-          připravený k závěrečné kontrole a podpisu.
+          {copy?.afterOrder ??
+            'Po dokončení objednávky získáte výstup odpovídající tomuto balíčku, připravený k závěrečné kontrole a podpisu.'}
         </p>
       </>
     );
@@ -74,7 +87,7 @@ export default function BuilderCheckoutSummary({
   return (
     <>
       <div className="mb-4 text-[10px] font-black uppercase tracking-widest text-slate-400">
-        {title}
+        {resolvedTitle}
       </div>
 
       <div className="mb-4 rounded-2xl border border-white/8 bg-white/3 p-4">
@@ -103,20 +116,20 @@ export default function BuilderCheckoutSummary({
           className="mb-4 w-full rounded-2xl border border-amber-500/20 bg-amber-500/8 px-4 py-3 text-left transition hover:border-amber-500/35 hover:bg-amber-500/12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/60"
         >
           <div className="mb-1 text-xs font-black uppercase tracking-widest text-amber-400">
-            {PRICING_UPSELL_COPY.title}
+            {copy?.upgradeTitle ?? PRICING_UPSELL_COPY.title}
           </div>
           <div className="text-sm leading-relaxed text-slate-300">
-            {PRICING_UPSELL_COPY.description}
+            {copy?.upgradeDescription ?? PRICING_UPSELL_COPY.description}
           </div>
           <div className="mt-3 inline-flex rounded-full border border-amber-500/25 px-3 py-1 text-[11px] font-semibold text-amber-300">
-            {PRICING_UPSELL_COPY.cta}
+            {copy?.upgradeButton ?? copy?.upgradeCta ?? PRICING_UPSELL_COPY.cta}
           </div>
         </button>
       ) : null}
 
       <div className="mt-4 rounded-xl border border-slate-700/50 bg-slate-800/40 px-4 py-3">
         <div className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-500">
-          Součástí varianty je
+          {copy?.variantIncludes ?? 'Součástí varianty je'}
         </div>
         <ul className="space-y-1.5">
           {includedItems.map((item) => (
@@ -129,8 +142,8 @@ export default function BuilderCheckoutSummary({
       </div>
 
       <p className="mt-4 text-xs leading-relaxed text-slate-400">
-        Po dokončení objednávky získáte výstup odpovídající zvolené variantě,
-        připravený k závěrečné kontrole a podpisu.
+        {copy?.afterOrderVariant ??
+          'Po dokončení objednávky získáte výstup odpovídající zvolené variantě, připravený k závěrečné kontrole a podpisu.'}
       </p>
     </>
   );

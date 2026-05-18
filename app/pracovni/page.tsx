@@ -5,9 +5,15 @@ import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
-import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/PaymentModal';
+import { BuilderLocaleNotice, useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
+import { getEmploymentFormUi } from '@/lib/i18n/expat-builder-forms';
+import {
+  buildExpatPreviewSections,
+  getExpatPreviewDateLocale,
+  getExpatPreviewLabels,
+} from '@/lib/i18n/expat-contract-preview';
 
 type FormData = {
   employerName: string; employerIco: string; employerAddress: string; employerEmail: string;
@@ -46,6 +52,8 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 export default function PracovniPage() {
+  const builderLocale = useBuilderLocale();
+  const ui = useMemo(() => getEmploymentFormUi(builderLocale), [builderLocale]);
   const [form, setForm] = useState<FormData>({
     employerName: '', employerIco: '', employerAddress: '', employerEmail: '',
     employeeName: '', employeeBirth: '', employeeAddress: '', employeeEmail: '',
@@ -80,17 +88,24 @@ export default function PracovniPage() {
     if (form.employmentType === 'fixed' && !form.endDate) { score -= 10; warnings.push({ text: 'Doplňte datum konce pro smlouvu na dobu určitou.', level: 'high' }); }
     const maxTrial = form.isManager ? 8 : 4;
     if (Number(form.trialPeriodMonths) > maxTrial) { warnings.push({ text: `Zákonné maximum zkušební doby je ${maxTrial} měsíce (§ 35 ZP).${form.isManager ? '' : ' U vedoucích zaměstnanců max. 8 měsíců.'}`, level: 'high' }); }
-    return { score: Math.max(0, score), warnings, label: score >= 85 ? 'Dobré nastavení' : score >= 65 ? 'Průměrná ochrana' : 'Doporučená doplnění' };
-  }, [form]);
+    return {
+      score: Math.max(0, score),
+      warnings,
+      label: score >= 85 ? ui.risk.good : score >= 65 ? ui.risk.average : ui.risk.needsWork,
+    };
+  }, [form, ui.risk]);
 
   const previewSections = useMemo(() => {
     try {
       if (!form.employerName) return [];
-      return buildContractSections({ ...form, contractType: 'employment' } as StoredContractData);
+      return buildExpatPreviewSections('employment', builderLocale, {
+        ...form,
+        contractType: 'employment',
+      } as StoredContractData);
     } catch {
       return [];
     }
-  }, [form]);
+  }, [form, builderLocale]);
 
   const handlePayment = async () => {
     // Validace § 34 ZP — pracovní smlouva BEZ druhu práce, místa a dne nástupu
@@ -103,44 +118,48 @@ export default function PracovniPage() {
     if (!form.startDate) missing.push('den nástupu do práce');
     if (!form.salary && !form.hourlyRate) missing.push('výši mzdy / hodinové sazby');
     if (missing.length > 0) {
-      alert(`Pracovní smlouva podle § 34 ZP vyžaduje: ${missing.join(', ')}. Bez nich by smlouva mohla být neplatná.`);
+      alert(`${ui.form.validationPrefix} ${missing.join(', ')}.`);
       return;
     }
     try {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contractType: 'employment', tier: form.tier, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'employment' }, email: form.employerEmail }),
+        body: JSON.stringify({ contractType: 'employment', tier: form.tier, notaryUpsell: form.tier !== 'basic', lang: builderLocale, payload: { ...form, contractType: 'employment', lang: builderLocale }, email: form.employerEmail }),
       });
       const data = await res.json();
       if (!res.ok || !data?.url) throw new Error();
       window.location.href = data.url;
-    } catch { alert('Chyba platební brány.'); setIsProcessing(false); }
+    } catch {
+      alert(ui.form.paymentError);
+      setIsProcessing(false);
+    }
   };
 
   const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-rose-400';
 
   return (
     <>
+    <BuilderLocaleNotice contractType="employment" />
     <main className="min-h-screen bg-[#05080f] text-slate-200 font-sans pb-24">
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[#08101e]/90 backdrop-blur">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500 text-slate-900 font-black text-sm">SH</div>
             <div>
-              <div className="font-bold tracking-tight text-white">SmlouvaHned Builder</div>
-              <div className="text-[11px] text-slate-500">Pracovní smlouva — § 34 zákoníku práce</div>
+              <div className="font-bold tracking-tight text-white">{ui.header.brand}</div>
+              <div className="text-[11px] text-slate-500">{ui.header.docType}</div>
             </div>
           </div>
-          <button onClick={() => window.location.href = '/'} className="text-sm text-slate-400 hover:text-white transition">Zavřít</button>
+          <button onClick={() => window.location.href = '/'} className="text-sm text-slate-400 hover:text-white transition">{ui.header.close}</button>
         </div>
       </header>
 
       <ContractLandingSection
-        badge="§ 33 a násl. zákoníku práce"
-        h1Main="Pracovní smlouva"
-        h1Accent="online"
-        subtitle="Vytvořte pracovní smlouvu pro vznik pracovního poměru. Dokument splňuje zákonem stanovené náležitosti — druh práce, místo výkonu a den nástupu — a pokrývá i odměňování, zkušební dobu a pracovní dobu."
+        badge={ui.landing.badge}
+        h1Main={ui.landing.h1Main}
+        h1Accent={ui.landing.h1Accent}
+        subtitle={ui.landing.subtitle}
         benefits={[
           { icon: '⚖️', text: 'Sestaveno dle § 33–65 zákoníku práce (zákon č. 262/2006 Sb.)' },
           { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
@@ -175,10 +194,10 @@ export default function PracovniPage() {
           { q: 'Musí být pracovní smlouva podepsána před nástupem?', a: 'Zákoník práce vyžaduje uzavření pracovní smlouvy před začátkem výkonu práce. Podpis smlouvy v den nástupu je přípustný.' },
           { q: 'Dostanu dokument ihned po zaplacení?', a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.' },
         ]}
-        ctaLabel="Vytvořit pracovní smlouvu"
+        ctaLabel={ui.landing.ctaLabel}
         formId="formular"
         guideHref="/pracovni-smlouva"
-        guideLabel="Průvodce pracovní smlouvou — zákonné náležitosti, zkušební doba a ukončení"
+        guideLabel={ui.landing.guideLabel}
       />
 
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8">
@@ -187,73 +206,73 @@ export default function PracovniPage() {
 
             <div id="formular" className="space-y-6">
               <div className="mb-6 border-t border-slate-800/60 pt-8">
-                <h2 className="text-lg font-black text-white uppercase tracking-wide">Vyplňte údaje dokumentu</h2>
-                <p className="text-sm text-slate-500 mt-1">Všechna povinná pole jsou označena *</p>
+                <h2 className="text-lg font-black text-white uppercase tracking-wide">{ui.form.title}</h2>
+                <p className="text-sm text-slate-500 mt-1">{ui.form.requiredHint}</p>
               </div>
 
               <section className={cardClass}>
-                <SectionTitle index="01" title="Zaměstnavatel" subtitle="IČO, sídlo a kontakt jsou povinné náležitosti zákoníku práce." />
+                <SectionTitle index="01" title={ui.sections.employer.title} subtitle={ui.sections.employer.subtitle} />
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label="Název firmy / jméno *"><input className={inputClass} name="employerName" value={form.employerName} onChange={set} placeholder="ABC s.r.o." /></Field>
-                  <Field label="IČO *"><input className={inputClass} name="employerIco" value={form.employerIco} onChange={set} placeholder="12345678" /></Field>
-                  <Field label="Sídlo / adresa *"><input className={inputClass} name="employerAddress" value={form.employerAddress} onChange={set} placeholder="Náměstí 1, Praha 1" /></Field>
-                  <Field label="E-mail HR"><input className={inputClass} name="employerEmail" value={form.employerEmail} onChange={set} type="email" placeholder="hr@firma.cz" /></Field>
+                  <Field label={ui.fields.employerName}><input className={inputClass} name="employerName" value={form.employerName} onChange={set} placeholder="ABC s.r.o." /></Field>
+                  <Field label={ui.fields.employerIco}><input className={inputClass} name="employerIco" value={form.employerIco} onChange={set} placeholder="12345678" /></Field>
+                  <Field label={ui.fields.employerAddress}><input className={inputClass} name="employerAddress" value={form.employerAddress} onChange={set} placeholder="Náměstí 1, Praha 1" /></Field>
+                  <Field label={ui.fields.employerEmail}><input className={inputClass} name="employerEmail" value={form.employerEmail} onChange={set} type="email" placeholder="hr@firma.cz" /></Field>
                 </div>
               </section>
 
               <section className={cardClass}>
-                <SectionTitle index="02" title="Zaměstnanec" />
+                <SectionTitle index="02" title={ui.sections.employee.title} />
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label="Jméno a příjmení *"><input className={inputClass} name="employeeName" value={form.employeeName} onChange={set} placeholder="Jana Nováková" /></Field>
-                  <Field label="Datum narození *"><input className={inputClass} name="employeeBirth" value={form.employeeBirth} onChange={set} placeholder="15.03.1995" /></Field>
-                  <Field label="Trvalé bydliště *"><input className={inputClass} name="employeeAddress" value={form.employeeAddress} onChange={set} placeholder="Ulice 5, Brno" /></Field>
-                  <Field label="E-mail zaměstnance"><input className={inputClass} name="employeeEmail" value={form.employeeEmail} onChange={set} type="email" placeholder="jana@email.cz" /></Field>
+                  <Field label={ui.fields.employeeName}><input className={inputClass} name="employeeName" value={form.employeeName} onChange={set} placeholder="Jana Nováková" /></Field>
+                  <Field label={ui.fields.employeeBirth}><input className={inputClass} name="employeeBirth" value={form.employeeBirth} onChange={set} placeholder="15.03.1995" /></Field>
+                  <Field label={ui.fields.employeeAddress}><input className={inputClass} name="employeeAddress" value={form.employeeAddress} onChange={set} placeholder="Ulice 5, Brno" /></Field>
+                  <Field label={ui.fields.employeeEmail}><input className={inputClass} name="employeeEmail" value={form.employeeEmail} onChange={set} type="email" placeholder="jana@email.cz" /></Field>
                 </div>
               </section>
 
               <section className={cardClass}>
-                <SectionTitle index="03" title="Druh a místo práce" subtitle="Povinné náležitosti dle § 34 ZP — bez nich smlouva není platná." />
+                <SectionTitle index="03" title={ui.sections.job.title} subtitle={ui.sections.job.subtitle} />
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label="Pracovní pozice (druh práce) *"><input className={inputClass} name="jobTitle" value={form.jobTitle} onChange={set} placeholder="Programátor / Účetní / Skladník" /></Field>
-                  <Field label="Místo výkonu práce *"><input className={inputClass} name="workPlace" value={form.workPlace} onChange={set} placeholder="Praha 1, sídlo firmy" /></Field>
+                  <Field label={ui.fields.jobTitle}><input className={inputClass} name="jobTitle" value={form.jobTitle} onChange={set} placeholder="Programátor / Účetní / Skladník" /></Field>
+                  <Field label={ui.fields.workPlace}><input className={inputClass} name="workPlace" value={form.workPlace} onChange={set} placeholder="Praha 1, sídlo firmy" /></Field>
                   <div className="sm:col-span-2">
-                    <Field label="Pracovní náplň (nepovinné, ale doporučené)">
+                    <Field label={ui.fields.jobDescription}>
                       <textarea className="w-full min-h-[80px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="jobDescription" value={form.jobDescription} onChange={set} placeholder="Vývoj a správa webových aplikací, účast na code review, komunikace s klienty…" />
                     </Field>
                   </div>
-                  <Field label="Možnost home office">
-                    <select aria-label="— nevyplněno —" className={inputClass} name="remoteWork" value={form.remoteWork} onChange={set}>
-                      <option value="">— nevyplněno —</option>
-                      <option value="plný remote (100 %)">Plný remote (100 %)</option>
-                      <option value="hybridní (dle dohody)">Hybridní (dle dohody)</option>
-                      <option value="není povoleno">Není povoleno</option>
+                  <Field label={ui.fields.remoteWork}>
+                    <select aria-label={ui.options.remoteEmpty} className={inputClass} name="remoteWork" value={form.remoteWork} onChange={set}>
+                      <option value="">{ui.options.remoteEmpty}</option>
+                      <option value="plný remote (100 %)">{ui.options.remoteFull}</option>
+                      <option value="hybridní (dle dohody)">{ui.options.remoteHybrid}</option>
+                      <option value="není povoleno">{ui.options.remoteNo}</option>
                     </select>
                   </Field>
                 </div>
               </section>
 
               <section className={cardClass}>
-                <SectionTitle index="04" title="Trvání pracovního poměru" />
+                <SectionTitle index="04" title={ui.sections.term.title} />
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label="Druh poměru">
-                    <select aria-label="Na dobu neurčitou" className={inputClass} name="employmentType" value={form.employmentType} onChange={set}>
-                      <option value="indefinite">Na dobu neurčitou</option>
-                      <option value="fixed">Na dobu určitou</option>
+                  <Field label={ui.fields.employmentType}>
+                    <select aria-label={ui.options.indefinite} className={inputClass} name="employmentType" value={form.employmentType} onChange={set}>
+                      <option value="indefinite">{ui.options.indefinite}</option>
+                      <option value="fixed">{ui.options.fixed}</option>
                     </select>
                   </Field>
-                  <Field label="Datum nástupu *"><input className={inputClass} name="startDate" value={form.startDate} onChange={set} type="date" /></Field>
-                  {form.employmentType === 'fixed' && <Field label="Datum konce *"><input className={inputClass} name="endDate" value={form.endDate} onChange={set} type="date" /></Field>}
-                  <Field label="Zkušební doba (měsíce, 0 = bez)">
+                  <Field label={ui.fields.startDate}><input className={inputClass} name="startDate" value={form.startDate} onChange={set} type="date" /></Field>
+                  {form.employmentType === 'fixed' && <Field label={ui.fields.endDate}><input className={inputClass} name="endDate" value={form.endDate} onChange={set} type="date" /></Field>}
+                  <Field label={ui.fields.trialMonths}>
                     <input className={inputClass} name="trialPeriodMonths" value={form.trialPeriodMonths} onChange={set} type="number" min="0" max="8" />
                     {Number(form.trialPeriodMonths) > (form.isManager ? 8 : 4) && (
                       <p className="mt-1.5 text-xs text-rose-400 font-medium">⚠ Zákonné maximum je {form.isManager ? '8' : '4'} měsíce (§ 35 ZP).</p>
                     )}
                   </Field>
-                  <Field label="Výpovědní doba (měsíce)"><input className={inputClass} name="noticePeriod" value={form.noticePeriod} onChange={set} type="number" min="1" max="6" /></Field>
+                  <Field label={ui.fields.noticePeriod}><input className={inputClass} name="noticePeriod" value={form.noticePeriod} onChange={set} type="number" min="1" max="6" /></Field>
                   <label className={`col-span-2 flex items-start gap-3 rounded-2xl border p-4 cursor-pointer transition ${form.isManager ? 'border-amber-500/70 bg-amber-500/10' : 'border-slate-700/80 bg-[#111c31]'}`}>
                     <input type="checkbox" name="isManager" checked={form.isManager} onChange={set} className="mt-1 h-5 w-5 accent-amber-500" />
                     <div>
-                      <div className="text-sm font-semibold text-white">Vedoucí zaměstnanec</div>
+                      <div className="text-sm font-semibold text-white">{ui.fields.isManager}</div>
                       <div className="mt-1 text-xs leading-relaxed text-slate-400">Vedoucí pracovní místo dle § 11 ZP. Zkušební doba může být až 8 měsíců (dle aktuálního znění § 35 ZP). Smlouva bude upravena pro vedoucího zaměstnance.</div>
                     </div>
                   </label>
@@ -261,27 +280,27 @@ export default function PracovniPage() {
               </section>
 
               <section className={cardClass}>
-                <SectionTitle index="05" title="Pracovní doba a dovolená" />
+                <SectionTitle index="05" title={ui.sections.hours.title} />
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label="Týdenní pracovní doba (hod.)"><input className={inputClass} name="workHours" value={form.workHours} onChange={set} type="number" /></Field>
-                  <Field label="Rozvrh pracovní doby"><input className={inputClass} name="workSchedule" value={form.workSchedule} onChange={set} placeholder="Po–Pá, 8:00–17:00" /></Field>
-                  <Field label="Přestávka (minut)"><input className={inputClass} name="breakMinutes" value={form.breakMinutes} onChange={set} type="number" /></Field>
-                  <Field label="Dovolená (týdny/rok)"><input className={inputClass} name="vacationWeeks" value={form.vacationWeeks} onChange={set} type="number" /></Field>
+                  <Field label={ui.fields.workHours}><input className={inputClass} name="workHours" value={form.workHours} onChange={set} type="number" /></Field>
+                  <Field label={ui.fields.workSchedule}><input className={inputClass} name="workSchedule" value={form.workSchedule} onChange={set} placeholder="Po–Pá, 8:00–17:00" /></Field>
+                  <Field label={ui.fields.breakMinutes}><input className={inputClass} name="breakMinutes" value={form.breakMinutes} onChange={set} type="number" /></Field>
+                  <Field label={ui.fields.vacationWeeks}><input className={inputClass} name="vacationWeeks" value={form.vacationWeeks} onChange={set} type="number" /></Field>
                 </div>
               </section>
 
               <section className={cardClass}>
-                <SectionTitle index="06" title="Mzda a odměňování" />
+                <SectionTitle index="06" title={ui.sections.pay.title} />
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label="Typ mzdy">
-                    <select aria-label="Měsíční" className={inputClass} name="salaryType" value={form.salaryType} onChange={set}>
-                      <option value="monthly">Měsíční</option>
-                      <option value="hourly">Hodinová</option>
+                  <Field label={ui.fields.salaryType}>
+                    <select aria-label={ui.options.monthly} className={inputClass} name="salaryType" value={form.salaryType} onChange={set}>
+                      <option value="monthly">{ui.options.monthly}</option>
+                      <option value="hourly">{ui.options.hourly}</option>
                     </select>
                   </Field>
                   {form.salaryType === 'monthly'
-                    ? <Field label="Hrubá měsíční mzda (Kč)"><input className={inputClass} name="salary" value={form.salary} onChange={set} type="number" placeholder="45000" /></Field>
-                    : <Field label="Hodinová mzda (Kč/hod.)"><input className={inputClass} name="hourlyRate" value={form.hourlyRate} onChange={set} type="number" placeholder="250" /></Field>
+                    ? <Field label={ui.fields.salary}><input className={inputClass} name="salary" value={form.salary} onChange={set} type="number" placeholder="45000" /></Field>
+                    : <Field label={ui.fields.hourlyRate}><input className={inputClass} name="hourlyRate" value={form.hourlyRate} onChange={set} type="number" placeholder="250" /></Field>
                   }
                   <Field label="Výplatní termín (den v měsíci)"><input className={inputClass} name="payDay" value={form.payDay} onChange={set} type="number" min="1" max="31" /></Field>
                   <div className="sm:col-span-2">
@@ -294,7 +313,7 @@ export default function PracovniPage() {
 
               {/* Doplňující ustanovení */}
               <section className={cardClass}>
-                <SectionTitle index="07" title="Doplňující ustanovení" subtitle="Konkurenční doložka a ochrana obchodního tajemství." />
+                <SectionTitle index="07" title={ui.sections.extra.title} subtitle={ui.sections.extra.subtitle} />
 
                 {/* === VÝBĚR BALÍČKU === */}
                 <div className="mt-6">
@@ -310,10 +329,10 @@ export default function PracovniPage() {
                   <div className="mt-4 grid sm:grid-cols-2 gap-4">
                     <label htmlFor="nonCompete" className={`flex items-start gap-3 cursor-pointer rounded-xl border p-4 transition ${form.nonCompete ? 'border-amber-500/70 bg-amber-500/10' : 'border-slate-700/60 bg-[#111c31]'}`}>
                       <input id="nonCompete" type="checkbox" name="nonCompete" checked={form.nonCompete} onChange={set} className="mt-0.5 h-4 w-4 accent-amber-500" />
-                      <div className="text-sm text-white">Konkurenční doložka</div>
+                      <div className="text-sm text-white">{ui.fields.nonCompete}</div>
                     </label>
                     {form.nonCompete && (
-                      <Field label="Délka zákazu (měsíce)">
+                      <Field label={ui.fields.nonCompetePeriod}>
                         <input
                           id="nonCompetePeriod"
                           className={inputClass}
@@ -336,13 +355,18 @@ export default function PracovniPage() {
           <div className="lg:col-span-5 space-y-5 lg:sticky lg:top-24">
             {/* Watermarked document preview */}
             {previewSections.length > 0 && (
-              <ContractPreview sections={previewSections} title="Pracovní smlouva" />
+              <ContractPreview
+                sections={previewSections}
+                title={ui.form.documentLabel}
+                labels={getExpatPreviewLabels(builderLocale)}
+                dateLocale={getExpatPreviewDateLocale(builderLocale)}
+              />
             )}
             <div className={cardClass}>
-              <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90 mb-4">Analýza smlouvy</div>
+              <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90 mb-4">{ui.form.analysisTitle}</div>
               <div className="flex items-center gap-4 mb-4">
                 <div className={`text-5xl font-black ${scoreColor}`}>{risk.score}</div>
-                <div><div className={`font-bold ${scoreColor}`}>{risk.label}</div><div className="text-xs text-slate-500">ze 100 bodů</div></div>
+                <div><div className={`font-bold ${scoreColor}`}>{risk.label}</div><div className="text-xs text-slate-500">{ui.form.scoreOf}</div></div>
               </div>
               {risk.warnings.length === 0
                 ? <p className="text-sm text-emerald-400">✓ Smlouva splňuje povinné náležitosti ZP.</p>
@@ -358,7 +382,7 @@ export default function PracovniPage() {
               <BuilderCheckoutSummary
                 contractType="employment"
                 tier={form.tier}
-                documentLabel="Pracovní smlouva"
+                documentLabel={ui.form.documentLabel}
                 onUpgrade={() => setForm((prev) => ({ ...prev, tier: 'complete', notaryUpsell: true }))}
               />
               {(!form.employerName || !form.employeeName || !form.jobTitle) && !isProcessing && (
@@ -374,7 +398,7 @@ export default function PracovniPage() {
                   onClick={() => setShowPreviewModal(true)}
                   className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >
-                  Vygenerovat smlouvu →
+                  {ui.form.generate}
                 </button>
 
                 <p className="mt-3 text-center text-[11px] text-slate-500">
@@ -388,10 +412,11 @@ export default function PracovniPage() {
     {showPreviewModal && (
       <PaymentModal
         sections={previewSections}
-        title="Pracovní smlouva"
+        title={ui.form.documentLabel}
         tier={form.tier}
         onTierChange={(t) => setForm((prev) => ({ ...prev, tier: t }))}
         contractType="employment"
+        lang={builderLocale}
         onPay={handlePayment}
         isProcessing={isProcessing}
         onClose={() => setShowPreviewModal(false)}

@@ -25,7 +25,7 @@ const faq = [
   },
   {
     q: 'Kdy se z DPP platí odvody?',
-    a: 'Od roku 2024 platí, že pokud odměna z DPP nepřesáhne 11 500 Kč/měsíc (u jednoho zaměstnavatele), nevzniká účast na sociálním ani zdravotním pojištění. Při překročení hranice se odvody platí z celé odměny.',
+    a: 'Pro rok 2026 platí, že pokud odměna z DPP nedosáhne rozhodného příjmu 12 000 Kč hrubého měsíčně u jednoho zaměstnavatele, zpravidla nevzniká účast na sociálním ani zdravotním pojištění. Při dosažení hranice se odvody řeší podle aktuální metodiky ČSSZ.',
   },
   {
     q: 'Musí být DPP písemná?',
@@ -37,7 +37,7 @@ const faq = [
   },
   {
     q: 'Lze uzavřít DPP s více zaměstnavateli najednou?',
-    a: 'Ano. Limit 300 hodin platí u každého zaměstnavatele zvlášť. Limit pro bezodvodový rámec (11 500 Kč/měs.) se hodnotí u každého zaměstnavatele individuálně.',
+    a: 'Ano. Limit 300 hodin platí u každého zaměstnavatele zvlášť. Pro rok 2026 vzniká účast na pojištění při dosažení rozhodného příjmu 12 000 Kč hrubého měsíčně u jednoho zaměstnavatele.',
   },
 ];
 
@@ -95,7 +95,7 @@ export default function DohodaOProvedeniPracePage() {
           </h1>
           <p className="text-lg text-slate-400 leading-relaxed max-w-2xl mb-8">
             Pro brigády, jednorázové úkoly i kreativní práce. Sestavena dle zákoníku práce 2026 —
-            max. 300 hod./rok, limit odvodů do 11 500 Kč/měs., volitelná IP doložka pro kreativní práce.
+            max. 300 hod./rok, rozhodný příjem 12 000 Kč/měs. pro rok 2026, volitelná IP doložka pro kreativní práce.
           </p>
           <Link href="/dpp"
             className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-8 py-4 text-base font-black uppercase tracking-tight text-black shadow-[0_0_30px_rgba(245,158,11,0.25)] transition hover:bg-amber-400">
@@ -109,7 +109,7 @@ export default function DohodaOProvedeniPracePage() {
           <div className="grid gap-4 md:grid-cols-2">
             {[
               { icon: '🎨', title: 'Kreativní práce a digitál', desc: 'Grafika, copywriting, překlad, fotografie — jednorázová nebo projektová spolupráce bez dlouhodobého závazku.' },
-              { icon: '🛒', title: 'Brigády a výpomoc', desc: 'Sezonní výpomoc, akce, brigády — DPP bez odvodů do 11 500 Kč/měs. a 300 hod./rok.' },
+              { icon: '🛒', title: 'Brigády a výpomoc', desc: 'Sezonní výpomoc, akce, brigády — DPP s limitem 300 hod./rok a rozhodným příjmem 12 000 Kč/měs. pro rok 2026.' },
               { icon: '🏫', title: 'Lektoři a koučové', desc: 'Přednášky, workshopy, kurzy — jasné podmínky odměňování a hodinový rozsah.' },
               { icon: '💼', title: 'Jednorázové projekty', desc: 'Zpráva, analýza, příprava dokumentace — konkrétní výstup, konkrétní odměna, bez průběžného zaměstnaneckého vztahu.' },
             ].map(c => (
@@ -133,7 +133,7 @@ export default function DohodaOProvedeniPracePage() {
               <div className="text-xs text-slate-400">Max. roční rozsah u jednoho zaměstnavatele</div>
             </div>
             <div className="rounded-2xl bg-white/5 p-4 text-center">
-              <div className="text-2xl font-black text-amber-400 mb-1">11 500 Kč</div>
+              <div className="text-2xl font-black text-amber-400 mb-1">12 000 Kč</div>
               <div className="text-xs text-slate-400">Měsíční limit bez povinnosti odvodů SP/ZP</div>
             </div>
             <div className="rounded-2xl bg-white/5 p-4 text-center">

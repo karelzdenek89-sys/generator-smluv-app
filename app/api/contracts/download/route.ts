@@ -3,7 +3,7 @@ import { redis } from '@/lib/redis';
 import { stripe } from '@/lib/stripe';
 import { getContractMeta, type StoredContractData } from '@/lib/contracts';
 import { renderContractPdf } from '@/lib/pdf';
-import { ALL_LOCALES, type Locale } from '@/lib/i18n/locales';
+import { normalizeLocale } from '@/lib/locale';
 
 export const runtime = 'nodejs';
 
@@ -44,11 +44,13 @@ type DraftRecord = {
   stripeSessionId?: string;
   paymentStatus?: string;
   downloadCount?: number;
+  lang?: string;
 };
 
 export async function GET(req: NextRequest) {
   try {
     const sessionId = req.nextUrl.searchParams.get('session_id');
+    const requestedLang = normalizeLocale(req.nextUrl.searchParams.get('lang'));
 
     if (!sessionId) {
       return NextResponse.json({ error: 'Missing session_id.' }, { status: 400 });
@@ -93,6 +95,7 @@ export async function GET(req: NextRequest) {
           createdAt: new Date().toISOString(),
           stripeSessionId: session.id,
           paymentStatus: session.payment_status,
+          lang: normalizeLocale(session.metadata.lang),
         };
       } else {
         return NextResponse.json(
@@ -131,13 +134,13 @@ export async function GET(req: NextRequest) {
     }
 
     // Tier je primární zdroj pravdy — odvozujeme ho z více míst pro robustnost
-    const resolvedTier = (draft.tier || (draft.payload as any).tier || 'basic') as 'basic' | 'professional' | 'complete';
+    const resolvedTier = (draft.tier || draft.payload.tier || 'basic') as 'basic' | 'professional' | 'complete';
 
     // notaryUpsell = true pro professional a complete (i když Redis draft neobsahuje flag)
     // Tím je zajištěno, že zákazník dostane přesně ten obsah, za který zaplatil
     const resolvedNotaryUpsell =
       draft.notaryUpsell === true ||
-      Boolean((draft.payload as any).notaryUpsell) ||
+      Boolean(draft.payload.notaryUpsell) ||
       resolvedTier === 'professional' ||
       resolvedTier === 'complete';
 
@@ -146,6 +149,9 @@ export async function GET(req: NextRequest) {
       contractType: draft.payload.contractType || draft.contractType,
       notaryUpsell: resolvedNotaryUpsell,
       tier: resolvedTier,
+      lang: requestedLang !== 'cs'
+        ? requestedLang
+        : normalizeLocale(draft.payload.lang ?? draft.lang ?? session.metadata?.lang),
     };
 
     if (!fullData.contractType) {
@@ -155,17 +161,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // `lang` is user-controlled (URL query). Whitelist against ALL_LOCALES;
-    // also accept BCP-47 `vi` as alias for the Vietnamese URL segment `vn`.
-    const rawLang = (req.nextUrl.searchParams.get('lang') || '').toLowerCase();
-    const langAlias: Record<string, string> = { vi: 'vn' };
-    const normalized = langAlias[rawLang] ?? rawLang;
-    const targetLocale: Locale | undefined =
-      normalized && (ALL_LOCALES as readonly string[]).includes(normalized)
-        ? (normalized as Locale)
-        : undefined;
-
-    const pdf = await renderContractPdf(fullData, { targetLocale });
+    const pdf = await renderContractPdf(fullData);
     const meta = getContractMeta(fullData.contractType);
 
     // Počítač stažení + obnovit TTL (7 dní basic, 30 dní ostatní)

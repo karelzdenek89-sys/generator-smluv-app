@@ -107,6 +107,11 @@ const softwareSchema = {
   },
 };
 
+const languageLinks = [
+  { href: '/en', flag: '🇬🇧', label: 'EN' },
+  { href: '/ua', flag: '🇺🇦', label: 'UA' },
+];
+
 
 export default function Home() {
   return (
@@ -155,6 +160,27 @@ export default function Home() {
             <LanguageSwitcher current="cs" variant="desktop" />
           </div>
         </nav>
+
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-6 md:px-10">
+          <div className="flex flex-col gap-3 rounded-2xl border border-[#c9a852]/25 bg-[#040c1a]/75 px-4 py-3 text-sm text-slate-300 shadow-[0_18px_60px_rgba(0,0,0,0.25)] backdrop-blur-sm md:flex-row md:items-center md:justify-between">
+            <div className="flex flex-col gap-1 leading-relaxed md:flex-row md:flex-wrap md:items-center md:gap-x-3 md:gap-y-1">
+              <span className="font-semibold text-white">Need a contract in another language?</span>
+              <span className="text-slate-400">Потрібен договір іншою мовою?</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {languageLinks.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-bold tracking-[0.12em] text-[#c9a852] transition-colors hover:border-[#c9a852]/50 hover:bg-[#c9a852]/10 hover:text-[#f4df8f]"
+                >
+                  <span className="text-sm leading-none" aria-hidden="true">{item.flag}</span>
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
 
         {/* Hero content */}
         <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-6 pb-24 pt-6 md:px-10">

@@ -37,7 +37,7 @@ const faq = [
   },
   {
     q: 'Čím se liší pracovní smlouva od DPP a DPČ?',
-    a: 'Pracovní smlouva zakládá plnohodnotný pracovní poměr s odvody sociálního a zdravotního pojištění. DPP (do 300 hod./rok, do 11 500 Kč/měs.) a DPČ jsou dohody mimo pracovní poměr s odlišným režimem odvodů.',
+    a: 'Pracovní smlouva zakládá plnohodnotný pracovní poměr s odvody sociálního a zdravotního pojištění. DPP má limit 300 hod./rok u jednoho zaměstnavatele a pro rok 2026 rozhodný příjem 12 000 Kč/měs.; DPČ má odlišný režim odvodů.',
   },
 ];
 

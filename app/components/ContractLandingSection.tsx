@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { getAnalyticsDefaultsForPathname, trackEvent } from '@/lib/analytics';
+import { getBuilderCopy, getContractTypeByPath } from '@/lib/locale';
+import { BuilderLocaleNotice, useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
 
 export interface ContractLandingBenefit {
   icon: string;
@@ -56,6 +58,9 @@ export default function ContractLandingSection({
 }: ContractLandingSectionProps) {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const pathname = usePathname();
+  const locale = useBuilderLocale();
+  const contractType = getContractTypeByPath(pathname);
+  const localizedCopy = contractType ? getBuilderCopy(contractType, locale) : null;
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -94,21 +99,30 @@ export default function ContractLandingSection({
 
   return (
     <>
+      {contractType ? <BuilderLocaleNotice contractType={contractType} /> : null}
       <section className="mx-auto max-w-7xl px-4 pb-12 pt-12 lg:px-8 lg:pt-16">
         <div className="max-w-3xl">
           <div className="site-kicker">{badge}</div>
           <h1 className="site-heading-xl mt-5 max-w-4xl text-[#f2e7c8]">
-            {h1Main} {h1Accent ? <span className="site-gold">{h1Accent}</span> : null}
-            {h1Suffix ? <> {h1Suffix}</> : null}
+            {localizedCopy ? (
+              localizedCopy.title
+            ) : (
+              <>
+                {h1Main} {h1Accent ? <span className="site-gold">{h1Accent}</span> : null}
+                {h1Suffix ? <> {h1Suffix}</> : null}
+              </>
+            )}
           </h1>
-          <p className="site-body-lg mt-6 max-w-3xl text-[#ddd5c7]">{subtitle}</p>
+          <p className="site-body-lg mt-6 max-w-3xl text-[#ddd5c7]">
+            {localizedCopy?.description ?? subtitle}
+          </p>
 
           <div className="mt-8 flex flex-wrap gap-4">
             <button onClick={() => scrollTo(formId)} className="site-button-primary">
-              {ctaLabel}
+              {localizedCopy ? 'Start the form' : ctaLabel}
             </button>
             <button onClick={() => scrollTo('obsah')} className="site-button-secondary">
-              Co dokument obsahuje
+              {localizedCopy ? 'What is included' : 'Co dokument obsahuje'}
             </button>
           </div>
 
@@ -136,10 +150,14 @@ export default function ContractLandingSection({
       <section id="obsah" className="mx-auto max-w-7xl border-t border-[rgba(166,134,91,0.12)] px-4 py-14 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="site-content-card rounded-[1.75rem] p-7">
-            <div className="site-kicker">Obsah dokumentu</div>
-            <h2 className="site-heading-lg mt-4 text-[#f2e7c8]">Co dokument obsahuje</h2>
+            <div className="site-kicker">{localizedCopy ? 'Document contents' : 'Obsah dokumentu'}</div>
+            <h2 className="site-heading-lg mt-4 text-[#f2e7c8]">
+              {localizedCopy ? 'What the document includes' : 'Co dokument obsahuje'}
+            </h2>
             <p className="site-body mt-4 text-[#d2c8b9]">
-              Strukturovaný obsah obvyklý pro tento typ dokumentu, sestavený podle vašich podmínek.
+              {localizedCopy
+                ? 'Structured Czech contract content assembled from your answers. English labels and notices help you understand the form.'
+                : 'Strukturovaný obsah obvyklý pro tento typ dokumentu, sestavený podle vašich podmínek.'}
             </p>
             <ul className="mt-6 space-y-4">
               {contents.map((item) => (
@@ -155,8 +173,10 @@ export default function ContractLandingSection({
 
           <div className="space-y-6">
             <div className="site-content-card rounded-[1.75rem] p-7">
-              <div className="site-kicker">Vhodné použití</div>
-              <h2 className="site-heading-lg mt-4 text-[#f2e7c8]">Kdy je tento dokument vhodný</h2>
+              <div className="site-kicker">{localizedCopy ? 'Typical use' : 'Vhodné použití'}</div>
+              <h2 className="site-heading-lg mt-4 text-[#f2e7c8]">
+                {localizedCopy ? 'When this document is suitable' : 'Kdy je tento dokument vhodný'}
+              </h2>
               <ul className="mt-6 space-y-4">
                 {whenSuitable.map((item) => (
                   <li key={item} className="flex items-start gap-3 text-base leading-8 text-[#ddd5c7]">
@@ -171,9 +191,9 @@ export default function ContractLandingSection({
 
             {whenOther?.length ? (
               <div className="site-content-card rounded-[1.75rem] p-7">
-                <div className="site-kicker">Jiný typ dokumentu</div>
+                <div className="site-kicker">{localizedCopy ? 'Other document' : 'Jiný typ dokumentu'}</div>
                 <h3 className="mt-4 text-2xl font-semibold tracking-[-0.03em] text-[#f2e7c8]">
-                  Kdy už je lepší zvolit jiný postup
+                  {localizedCopy ? 'When another document may fit better' : 'Kdy už je lepší zvolit jiný postup'}
                 </h3>
                 <div className="mt-6 space-y-3">
                   {whenOther.map((item) => (
@@ -195,8 +215,10 @@ export default function ContractLandingSection({
 
       <section className="mx-auto max-w-7xl border-t border-[rgba(166,134,91,0.12)] px-4 py-14 lg:px-8">
         <div className="max-w-3xl">
-          <div className="site-kicker">Časté otázky</div>
-          <h2 className="site-heading-lg mt-4 text-[#f2e7c8]">Nejčastější dotazy</h2>
+          <div className="site-kicker">{localizedCopy ? 'FAQ' : 'Časté otázky'}</div>
+          <h2 className="site-heading-lg mt-4 text-[#f2e7c8]">
+            {localizedCopy ? 'Common questions' : 'Nejčastější dotazy'}
+          </h2>
         </div>
         <div className="mt-8 max-w-3xl space-y-3">
           {faq.map((item, index) => (

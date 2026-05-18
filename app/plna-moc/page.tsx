@@ -8,6 +8,7 @@ import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/PaymentModal';
+import { useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
 
 type FormData = {
   principalName: string; principalId: string; principalAddress: string; principalEmail: string;
@@ -33,6 +34,7 @@ function SectionTitle({ index, title, subtitle }: { index: string; title: string
 }
 
 export default function PlnaMocPage() {
+  const builderLocale = useBuilderLocale();
   const [form, setForm] = useState<FormData>({
     principalName: '', principalId: '', principalAddress: '', principalEmail: '',
     agentName: '', agentId: '', agentAddress: '', agentEmail: '',
@@ -85,7 +87,7 @@ export default function PlnaMocPage() {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contractType: 'power_of_attorney', tier: form.tier, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'power_of_attorney' }, email: form.principalEmail }),
+        body: JSON.stringify({ contractType: 'power_of_attorney', tier: form.tier, notaryUpsell: form.tier !== 'basic', lang: builderLocale, payload: { ...form, contractType: 'power_of_attorney', lang: builderLocale }, email: form.principalEmail }),
       });
       const data = await res.json();
       if (!res.ok || !data?.url) throw new Error();
@@ -326,6 +328,7 @@ export default function PlnaMocPage() {
         tier={form.tier}
         onTierChange={(t) => setForm((prev) => ({ ...prev, tier: t }))}
         contractType="power_of_attorney"
+        lang={builderLocale}
         onPay={handlePayment}
         isProcessing={isProcessing}
         onClose={() => setShowPreviewModal(false)}

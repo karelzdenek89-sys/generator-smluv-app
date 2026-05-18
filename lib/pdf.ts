@@ -2,23 +2,18 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { jsPDF } from 'jspdf';
-import { getContractMeta, buildContractSections, resolveTierFeatures, type StoredContractData, type ContractType, type ContractSection } from './contracts';
+import { getContractMeta, buildContractSections, resolveTierFeatures, type StoredContractData, type ContractType } from './contracts';
 import { LEGAL_STATE_DISCLAIMER } from './legal-constants-2026';
+import { isExpatContract, normalizeLocale } from './locale';
+import { getExpatAnnexMeta, getPage1ExpatNoticeLines } from './i18n/expat-pdf-annex';
 import {
-  LOCALE_META,
-  PDF_BILINGUAL_DISCLAIMER,
-  PDF_BILINGUAL_DISCLAIMER_CS,
-  type Locale,
-} from './i18n/locales';
-
-export type RenderPdfOptions = {
-  /**
-   * When set to a non-Czech locale, the PDF renders bilingually:
-   * Czech (legally binding) + foreign translation under each paragraph.
-   * If no translations are attached to a section, that section renders Czech-only.
-   */
-  targetLocale?: Locale;
-};
+  buildExpatTranslationSections,
+  hasExpatTranslationAnnex,
+  isExpatAnnexLocale,
+  type ExpatAnnexLocale,
+} from './i18n/expat-translation-registry';
+import { getCompleteAnnexExpatIntro } from './i18n/lease-complete-annex-i18n';
+import type { AppLocale } from './locale';
 
 // ─────────────────────────────────────────────
 //  FONT LOADER & CACHE
@@ -35,59 +30,32 @@ async function loadFontBase64(fileName: string): Promise<string> {
   }
 }
 
-type FontFamily = 'Roboto' | 'NotoSans';
+let _fontCache: { regular: string; bold: string } | null = null;
 
-const FONT_FILES: Record<FontFamily, { regular: string; bold: string }> = {
-  Roboto: { regular: 'Roboto-Regular.ttf', bold: 'Roboto-Bold.ttf' },
-  NotoSans: { regular: 'NotoSans-Regular.ttf', bold: 'NotoSans-Bold.ttf' },
+type JsPdfWithVfs = jsPDF & {
+  internal: jsPDF['internal'] & { vFS?: Record<string, string> };
 };
 
-const _fontCache: Partial<Record<FontFamily, { regular: string; bold: string }>> = {};
-
-async function getFonts(family: FontFamily): Promise<{ regular: string; bold: string }> {
-  if (_fontCache[family]) return _fontCache[family]!;
-  const files = FONT_FILES[family];
+async function getFonts(): Promise<{ regular: string; bold: string }> {
+  if (_fontCache) return _fontCache;
   const [regular, bold] = await Promise.all([
-    loadFontBase64(files.regular),
-    loadFontBase64(files.bold),
+    loadFontBase64('Roboto-Regular.ttf'),
+    loadFontBase64('Roboto-Bold.ttf'),
   ]);
-  _fontCache[family] = { regular, bold };
-  return _fontCache[family]!;
+  _fontCache = { regular, bold };
+  return _fontCache;
 }
 
-/**
- * Roboto covers Latin (Czech, English, German) but NOT Cyrillic or Vietnamese.
- * Noto Sans covers all of the above so we switch to it when the target locale
- * requires extended characters.
- */
-function pickFontFamily(targetLocale: Locale | undefined): FontFamily {
-  if (!targetLocale || targetLocale === 'cs') return 'Roboto';
-  const meta = LOCALE_META[targetLocale];
-  // Defensive: if the caller passes an unknown locale (e.g. via a stray query
-  // param), fall back to Roboto rather than throwing — the bilingual disclaimer
-  // simply won't render and we degrade to Czech-only output.
-  return meta?.needsExtendedFont ? 'NotoSans' : 'Roboto';
-}
-
-/**
- * Registers the chosen font family bytes UNDER THE NAME "Roboto" inside the
- * jsPDF document. This is intentional: the rest of the renderer makes ~90
- * hardcoded `setFont('Roboto', …)` calls. Aliasing the alternative file
- * (NotoSans) to the same logical name keeps all of that code working while
- * enabling Cyrillic / Vietnamese glyphs when a non-Latin target locale is
- * requested.
- */
-async function ensurePdfFonts(doc: jsPDF, family: FontFamily = 'Roboto'): Promise<void> {
-  const pdfDoc = doc as any;
+async function ensurePdfFonts(doc: jsPDF): Promise<void> {
+  const pdfDoc = doc as JsPdfWithVfs;
   if (!pdfDoc.internal.vFS) {
     pdfDoc.internal.vFS = {};
   }
-  const { regular, bold } = await getFonts(family);
-  const files = FONT_FILES[family];
-  pdfDoc.addFileToVFS(files.regular, regular);
-  pdfDoc.addFont(files.regular, 'Roboto', 'normal');
-  pdfDoc.addFileToVFS(files.bold, bold);
-  pdfDoc.addFont(files.bold, 'Roboto', 'bold');
+  const { regular, bold } = await getFonts();
+  pdfDoc.addFileToVFS('Roboto-Regular.ttf', regular);
+  pdfDoc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
+  pdfDoc.addFileToVFS('Roboto-Bold.ttf', bold);
+  pdfDoc.addFont('Roboto-Bold.ttf', 'Roboto', 'bold');
   doc.setFont('Roboto', 'normal');
 }
 
@@ -162,136 +130,8 @@ function getSignatureLabels(contractType: ContractType, data?: StoredContractDat
 }
 
 function isSignatureSection(title: string): boolean {
-  return title.toUpperCase().includes('PODPISY');
-}
-
-// ─────────────────────────────────────────────
-//  BILINGUAL RENDERING HELPERS
-// ─────────────────────────────────────────────
-
-const TRANSLATION_R = 110, TRANSLATION_G = 110, TRANSLATION_B = 110;
-const TRANSLATION_FONT_SIZE = 8.5;
-const TRANSLATION_LEAD = 4.4;
-
-function pickSectionTranslation(
-  section: ContractSection,
-  locale: Exclude<Locale, 'cs'>,
-  index: number,
-): string | null {
-  const t = section.translations?.[locale];
-  if (!t || !t.body) return null;
-  const line = t.body[index];
-  if (!line) return null;
-  return String(line).trim() || null;
-}
-
-/**
- * Renders the bilingual disclaimer banner shown once near the top of the
- * document. Czech line is authoritative; foreign line is informative.
- */
-function drawBilingualDisclaimer(
-  doc: jsPDF,
-  y: number,
-  contentWidth: number,
-  locale: Exclude<Locale, 'cs'>,
-): number {
-  const cs = PDF_BILINGUAL_DISCLAIMER_CS;
-  const fg = PDF_BILINGUAL_DISCLAIMER[locale];
-
-  const paddingX = 4;
-  const paddingY = 4;
-  const innerWidth = contentWidth - paddingX * 2;
-
-  doc.setFont('Roboto', 'normal');
-  doc.setFontSize(9);
-  const csLines = doc.splitTextToSize(cs, innerWidth);
-  doc.setFontSize(8.5);
-  const fgLines = doc.splitTextToSize(fg, innerWidth);
-
-  const boxHeight =
-    paddingY * 2 + csLines.length * 4.6 + 1.5 + fgLines.length * 4.2;
-
-  doc.setDrawColor(BOX_BD_R, BOX_BD_G, BOX_BD_B);
-  doc.setFillColor(BOX_BG_R, BOX_BG_G, BOX_BG_B);
-  doc.roundedRect(MARGIN, y, contentWidth, boxHeight, 1.5, 1.5, 'FD');
-
-  let cursor = y + paddingY + 3.2;
-  doc.setFont('Roboto', 'bold');
-  doc.setFontSize(9);
-  doc.setTextColor(INK_R, INK_G, INK_B);
-  doc.text(csLines, MARGIN + paddingX, cursor);
-  cursor += csLines.length * 4.6 + 1.5;
-
-  doc.setFont('Roboto', 'normal');
-  doc.setFontSize(8.5);
-  doc.setTextColor(TRANSLATION_R, TRANSLATION_G, TRANSLATION_B);
-  doc.text(fgLines, MARGIN + paddingX, cursor);
-
-  // Restore default state for the next renderer.
-  doc.setFont('Roboto', 'normal');
-  doc.setFontSize(10);
-  doc.setTextColor(BODY_R, BODY_G, BODY_B);
-
-  return y + boxHeight + 6;
-}
-
-/**
- * Renders the foreign-language version of a section title under the Czech
- * heading, in smaller grey type, mirroring the body-translation styling.
- */
-function drawTranslatedSubtitle(
-  doc: jsPDF,
-  text: string,
-  y: number,
-  contentWidth: number,
-): number {
-  doc.setFont('Roboto', 'normal');
-  doc.setFontSize(9);
-  doc.setTextColor(TRANSLATION_R, TRANSLATION_G, TRANSLATION_B);
-  const lines = doc.splitTextToSize(text, contentWidth);
-  doc.text(lines, MARGIN, y, { align: 'left', maxWidth: contentWidth });
-  const advance = lines.length * 4.6 + 2;
-  // Restore body defaults
-  doc.setFont('Roboto', 'normal');
-  doc.setFontSize(10);
-  doc.setTextColor(BODY_R, BODY_G, BODY_B);
-  return y + advance;
-}
-
-/**
- * Renders one translated paragraph below its Czech counterpart in smaller
- * grey type. Handles its own page break if the translation would overflow.
- */
-function drawTranslatedParagraph(
-  doc: jsPDF,
-  text: string,
-  y: number,
-  contentWidth: number,
-  title: string,
-  docId: string,
-): number {
-  const indent = 4;
-  const maxWidth = contentWidth - indent;
-  doc.setFont('Roboto', 'normal');
-  doc.setFontSize(TRANSLATION_FONT_SIZE);
-  doc.setTextColor(TRANSLATION_R, TRANSLATION_G, TRANSLATION_B);
-  const lines = doc.splitTextToSize(text, maxWidth);
-  const lh = lines.length * TRANSLATION_LEAD + 1.5;
-
-  if (y + lh > 272) {
-    doc.addPage();
-    drawHeader(doc, title, false, docId);
-    y = 22;
-  }
-
-  doc.text(lines, MARGIN + indent, y, { align: 'left', maxWidth });
-  y += lh;
-
-  // Restore body defaults for the next Czech paragraph.
-  doc.setFont('Roboto', 'normal');
-  doc.setFontSize(10);
-  doc.setTextColor(BODY_R, BODY_G, BODY_B);
-  return y;
+  const upper = title.toUpperCase();
+  return upper.includes('PODPISY') || upper.includes('SIGNATURES');
 }
 
 /**
@@ -630,6 +470,179 @@ function drawSummaryBox(
   doc.setLineWidth(0.2);
 
   return startY + boxH + 7;
+}
+
+function drawLanguageNotice(doc: jsPDF, data: StoredContractData, startY: number, contentWidth: number): number {
+  const locale = normalizeLocale(data.lang);
+  if (locale === 'cs') return startY;
+
+  const supported = isExpatContract(data.contractType);
+  const lines = supported
+    ? getPage1ExpatNoticeLines(data)
+    : [
+        'CZECH-ONLY FORM NOTICE',
+        'This form is currently available in Czech only. Selected core contracts may include English form guidance and explanatory notices where available.',
+      ];
+
+  if (lines.length === 0) return startY;
+
+  const splitLines: string[][] = [];
+  let totalTextLines = 0;
+  for (const line of lines) {
+    const split = doc.splitTextToSize(line, contentWidth - 8) as string[];
+    splitLines.push(split);
+    totalTextLines += split.length;
+  }
+
+  const padTop = 7;
+  const padBottom = 6;
+  const lineStep = 4.2;
+  const boxH = padTop + totalTextLines * lineStep + padBottom;
+
+  let y = startY + 4;
+  doc.setDrawColor(160, 170, 185);
+  doc.setFillColor(245, 248, 252);
+  doc.roundedRect(MARGIN, y, contentWidth, boxH, 2, 2, 'FD');
+  y += padTop;
+
+  splitLines.forEach((split, index) => {
+    doc.setFont('Roboto', index === 0 ? 'bold' : 'normal');
+    doc.setFontSize(index === 0 ? 8.5 : 7.4);
+    doc.setTextColor(index === 0 ? 15 : 65, index === 0 ? 23 : 75, index === 0 ? 42 : 90);
+    doc.text(split, MARGIN + 4, y);
+    y += split.length * lineStep;
+  });
+
+  doc.setTextColor(0);
+  return startY + boxH + 7;
+}
+
+function drawExpatTranslationAnnexDivider(
+  doc: jsPDF,
+  meta: ReturnType<typeof getExpatAnnexMeta>,
+  metaTitle: string,
+  docId: string,
+  contentWidth: number,
+): number {
+  doc.addPage();
+  drawHeader(doc, metaTitle, false, docId);
+  let y = 36;
+
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(12);
+  doc.setTextColor(15, 23, 42);
+  const titleSplit = doc.splitTextToSize(meta.title, contentWidth - 8) as string[];
+
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(8.2);
+  doc.setTextColor(55, 65, 82);
+  const intro = doc.splitTextToSize(meta.intro, contentWidth - 8) as string[];
+
+  const padTop = 10;
+  const padBottom = 12;
+  const titleBlockH = titleSplit.length * 5 + 6;
+  const introBlockH = intro.length * 3.8 + 4;
+  const hintBlockH = 14;
+  const boxH = padTop + titleBlockH + introBlockH + hintBlockH + padBottom;
+
+  doc.setDrawColor(160, 170, 185);
+  doc.setFillColor(245, 248, 252);
+  doc.roundedRect(MARGIN, y, contentWidth, boxH, 2, 2, 'FD');
+  y += padTop;
+
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(12);
+  doc.setTextColor(15, 23, 42);
+  doc.text(titleSplit, MARGIN + 4, y);
+  y += titleBlockH;
+
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(8.2);
+  doc.setTextColor(55, 65, 82);
+  doc.text(intro, MARGIN + 4, y);
+  y += introBlockH + 6;
+
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(100, 70, 20);
+  doc.text(meta.nextPageHint, MARGIN + 4, y);
+
+  doc.setTextColor(0);
+  return y + padBottom;
+}
+
+function renderExpatTranslationAnnex(
+  doc: jsPDF,
+  data: StoredContractData,
+  annexLocale: ExpatAnnexLocale,
+  metaTitle: string,
+  docId: string,
+  contentWidth: number,
+  labelLeft: string,
+  labelRight: string,
+  extraSigLabel?: string,
+  extraSigName?: string,
+): void {
+  if (!isExpatAnnexLocale(annexLocale) || !isExpatContract(data.contractType)) return;
+
+  const meta = getExpatAnnexMeta(data.contractType, annexLocale);
+  const sections = buildExpatTranslationSections(data.contractType, annexLocale, data);
+
+  drawExpatTranslationAnnexDivider(doc, meta, metaTitle, docId, contentWidth);
+
+  doc.addPage();
+  drawHeader(doc, meta.header, false, docId);
+  let y = 22;
+  let endOfTextDrawn = false;
+
+  for (const section of sections) {
+
+    if (isSignatureSection(section.title)) {
+      if (!endOfTextDrawn) {
+        y = drawEndOfTextMarker(doc, y, metaTitle);
+        endOfTextDrawn = true;
+      }
+      y = drawSignatureSection(doc, section.title, labelLeft, labelRight, y, metaTitle, extraSigLabel, extraSigName);
+      continue;
+    }
+
+    const orphanBuffer = section.body.length > 0 ? 32 : 20;
+    if (y + orphanBuffer > 272) {
+      doc.addPage();
+      drawHeader(doc, meta.header, false, docId);
+      y = 22;
+      doc.setFont('Roboto', 'normal');
+      doc.setFontSize(10);
+      doc.setTextColor(BODY_R, BODY_G, BODY_B);
+    }
+
+    y += 4;
+    y = drawSectionTitle(doc, section.title, y, contentWidth, false);
+
+    const bodyLines = section.body.slice(0, 80);
+    for (let i = 0; i < bodyLines.length; i++) {
+      const raw = bodyLines[i] != null ? String(bodyLines[i]) : '';
+      const safe = raw.length > 800 ? `${raw.substring(0, 800)}…` : raw.trim() || ' ';
+      const split = doc.splitTextToSize(safe, contentWidth);
+      const lh = split.length * BODY_LEAD + 2;
+      const isLast = i === bodyLines.length - 1;
+      const needsBreak = isLast ? y + lh > 268 : y + lh + 8 > 268;
+
+      if (needsBreak) {
+        doc.addPage();
+        drawHeader(doc, meta.header, false, docId);
+        y = 22;
+        doc.setFont('Roboto', 'normal');
+        doc.setFontSize(10);
+        doc.setTextColor(BODY_R, BODY_G, BODY_B);
+      }
+
+      doc.text(split, MARGIN, y, { align: 'justify', maxWidth: contentWidth });
+      y += lh;
+    }
+
+    y += SECTION_GAP;
+  }
 }
 
 // ─────────────────────────────────────────────
@@ -1471,7 +1484,7 @@ function drawLeaseProtocolForm(
     doc.setDrawColor(BOX_BD_R, BOX_BD_G, BOX_BD_B);
     doc.setLineWidth(0.2);
     doc.rect(kx, y + labelH, keyColW - 3, 8);
-    const prefilled = kt.field ? asT((data as any)[kt.field], '') : '';
+    const prefilled = kt.field ? asT(data[kt.field], '') : '';
     if (prefilled) {
       doc.setFont('Roboto', 'normal');
       doc.setFontSize(9);
@@ -1648,6 +1661,12 @@ function drawLeaseProtocolForm(
   y += rooms.length * 10 + 6;
 
   // Poznámky ke stavu místností
+  if (y + 28 > 272) {
+    doc.addPage();
+    drawHeader(doc, contractTitle, false, docId);
+    y = 20;
+  }
+
   doc.setFont('Roboto', 'bold');
   doc.setFontSize(7.5);
   doc.setTextColor(META_R, META_G, META_B);
@@ -2037,7 +2056,7 @@ function getSigningInstructions(contractType: ContractType): string[] {
       '',
       '6. ZVLÁŠTNÍ POKYNY PRO KUPNÍ SMLOUVU NA VOZIDLO',
       '• Současně s podpisem předejte velký i malý technický průkaz.',
-      '• Změnu vlastníka oznamte příslušnému úřadu do 15 dnů (§ 8 odst. 2 zák. č. 56/2001 Sb.).',
+      '• Žádost o zápis změny vlastníka podejte příslušnému úřadu do 10 pracovních dnů (§ 8 odst. 2 zák. č. 56/2001 Sb.).',
       '• Zdokumentujte stav tachometru a celkový stav vozidla fotografiemi.',
       '• Ověřte, zda na vozidle nevázne zákaz převodu (registr vozidel).',
       '• Kupující sjedná nové povinné ručení nejpozději ke dni převodu vlastnictví.',
@@ -2289,8 +2308,10 @@ function drawCompleteTierPages(
   contentWidth: number,
   title: string,
   docId: string,
+  locale: AppLocale,
 ): void {
   const pageWidth = doc.internal.pageSize.getWidth();
+  const expatIntro = getCompleteAnnexExpatIntro(locale);
 
   // --- Průvodní pokyny ---
   doc.addPage();
@@ -2307,6 +2328,31 @@ function drawCompleteTierPages(
   doc.setTextColor(META_R, META_G, META_B);
   doc.text('PŘÍLOHA K DOKUMENTU — PRŮVODNÍ POKYNY', MARGIN, y);
   y += 8;
+
+  if (expatIntro?.length) {
+    for (const line of expatIntro) {
+      if (!line) {
+        y += 3;
+        continue;
+      }
+      const isHeading = line === line.toUpperCase() && line.length > 8;
+      doc.setFont('Roboto', isHeading ? 'bold' : 'normal');
+      doc.setFontSize(isHeading ? 9 : 8.5);
+      doc.setTextColor(isHeading ? INK_R : BODY_R, isHeading ? INK_G : BODY_G, isHeading ? INK_B : BODY_B);
+      const split = doc.splitTextToSize(line, contentWidth);
+      if (y + split.length * 5 > 272) {
+        doc.addPage();
+        drawHeader(doc, title, false, docId);
+        y = 22;
+      }
+      doc.text(split, MARGIN, y);
+      y += split.length * 5 + 1;
+    }
+    y += 4;
+    doc.setDrawColor(RULE_R, RULE_G, RULE_B);
+    doc.line(MARGIN, y, pageWidth - MARGIN, y);
+    y += 6;
+  }
 
   const instructions = getSigningInstructions(contractType);
   for (const line of instructions) {
@@ -2375,17 +2421,7 @@ function drawCompleteTierPages(
 //  MAIN RENDER
 // ─────────────────────────────────────────────
 
-export async function renderContractPdf(
-  data: StoredContractData,
-  options: RenderPdfOptions = {},
-): Promise<Buffer> {
-  // Coerce unknown locales to undefined so the rest of the renderer treats the
-  // request as Czech-only. This guards against ?lang=garbage on the API route.
-  const candidate = options.targetLocale;
-  const targetLocale: Exclude<Locale, 'cs'> | undefined =
-    candidate && candidate !== 'cs' && LOCALE_META[candidate as Locale]
-      ? (candidate as Exclude<Locale, 'cs'>)
-      : undefined;
+export async function renderContractPdf(data: StoredContractData): Promise<Buffer> {
   const meta      = getContractMeta(data.contractType);
   const sections  = buildContractSections(data);
   const [labelLeft, labelRight] = getSignatureLabels(data.contractType, data);
@@ -2396,10 +2432,10 @@ export async function renderContractPdf(
   const { docId, hash } = buildDocumentTrace(data);
 
   const doc = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
-  await ensurePdfFonts(doc, pickFontFamily(targetLocale));
+  await ensurePdfFonts(doc);
 
   const generatedDate = new Date().toLocaleDateString('cs-CZ');
-  (doc as any).setProperties({
+  doc.setProperties({
     title:    meta.title,
     subject:  `Smlouva vygenerovaná na SmlouvaHned.cz – ${generatedDate} – ${docId}`,
     author:   'SmlouvaHned.cz',
@@ -2416,11 +2452,7 @@ export async function renderContractPdf(
   // First-page body starts with generous breathing room below header
   let y = 40;
   y = drawSummaryBox(doc, data, data.contractType, y);
-
-  // ── Bilingual disclaimer (only when a non-Czech locale is requested) ──
-  if (targetLocale) {
-    y = drawBilingualDisclaimer(doc, y, contentWidth, targetLocale);
-  }
+  y = drawLanguageNotice(doc, data, y, contentWidth);
 
   let inProtocol   = false;
   let endOfTextDrawn = false;
@@ -2502,14 +2534,6 @@ export async function renderContractPdf(
     y += 4;
     y = drawSectionTitle(doc, section.title, y, contentWidth, inProtocol);
 
-    // Bilingual subtitle under each CZ section heading
-    if (targetLocale) {
-      const trTitle = section.translations?.[targetLocale]?.title;
-      if (trTitle) {
-        y = drawTranslatedSubtitle(doc, trTitle, y, contentWidth);
-      }
-    }
-
     const bodyLines = section.body.slice(0, 80);
     for (let i = 0; i < bodyLines.length; i++) {
       const raw  = bodyLines[i] != null ? String(bodyLines[i]) : '';
@@ -2531,22 +2555,30 @@ export async function renderContractPdf(
 
       doc.text(split, MARGIN, y, { align: 'justify', maxWidth: contentWidth });
       y += lh;
-
-      // ── Bilingual translation: render foreign-language paragraph below ──
-      if (targetLocale) {
-        const translated = pickSectionTranslation(section, targetLocale, i);
-        if (translated) {
-          y = drawTranslatedParagraph(doc, translated, y, contentWidth, meta.title, docId);
-        }
-      }
     }
 
     y += SECTION_GAP;
   }
 
+  const annexLocale = normalizeLocale(data.lang);
+  if (hasExpatTranslationAnnex(data.contractType, annexLocale)) {
+    renderExpatTranslationAnnex(
+      doc,
+      data,
+      annexLocale,
+      meta.title,
+      docId,
+      contentWidth,
+      labelLeft,
+      labelRight,
+      extraSigLabel,
+      extraSigName,
+    );
+  }
+
   // ── Complete-tier appendix pages ──
   if (hasCompletePages) {
-    drawCompleteTierPages(doc, data.contractType, contentWidth, meta.title, docId);
+    drawCompleteTierPages(doc, data.contractType, contentWidth, meta.title, docId, normalizeLocale(data.lang));
   }
 
   // ── Footers (post-processing pass) ──

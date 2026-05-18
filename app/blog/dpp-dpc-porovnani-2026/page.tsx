@@ -150,8 +150,8 @@ export default function DppDpcPorovnani2026Page() {
                 </tr>
                 <tr className="border-b border-white/5">
                   <td className="px-4 py-3">Limit bez odvodů SP/ZP (2026)</td>
-                  <td className="px-4 py-3">Do 12 000 Kč/měs. (rozhodný příjem)</td>
-                  <td className="px-4 py-3">Do 4 500 Kč/měs. (rozhodný příjem)</td>
+                  <td className="px-4 py-3">Do 11 999 Kč/měs.; účast od 12 000 Kč</td>
+                  <td className="px-4 py-3">Do 4 499 Kč/měs.; účast od 4 500 Kč</td>
                 </tr>
                 <tr>
                   <td className="px-4 py-3">Typické použití</td>

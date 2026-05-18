@@ -1,0 +1,5 @@
+.claude/
+sample-pdfs/
+test-results/
+playwright-report/
+blob-report/

@@ -25,12 +25,30 @@ type ArticleAction = {
   href: string;
 };
 
+type ArticlePageLabels = {
+  home: string;
+  blog: string;
+  author: string;
+  updatedPrefix: string;
+  updatedTitle: string;
+  toc: string;
+  tocAria: string;
+  relatedPages: string;
+  primaryCtaEyebrow: string;
+  secondaryCtaEyebrow: string;
+  trustEyebrow: string;
+  trustGeneratorTitle: string;
+  trustLawyerTitle: string;
+  disclaimerLocale: 'cs' | 'en' | 'ua';
+  showRelatedArticles: boolean;
+};
+
 type ArticlePageLayoutProps = {
   category: string;
   readTime: string;
   dateTime: string;
   dateLabel: string;
-  /** ISO datum poslední revize obsahu — zobrazuje se „Aktualizováno". */
+  /** ISO datum poslední revize obsahu, zobrazuje se jako aktualizováno. */
   dateModified?: string;
   dateModifiedLabel?: string;
   breadcrumbLabel: string;
@@ -46,6 +64,25 @@ type ArticlePageLayoutProps = {
   relatedLinks: readonly RelatedLink[];
   children: ReactNode;
   slug?: string;
+  labels?: Partial<ArticlePageLabels>;
+};
+
+const DEFAULT_LABELS: ArticlePageLabels = {
+  home: 'SmlouvaHned',
+  blog: 'Blog',
+  author: 'Autor:',
+  updatedPrefix: 'Aktualizováno',
+  updatedTitle: 'Datum poslední revize obsahu',
+  toc: 'Obsah článku',
+  tocAria: 'Obsah článku',
+  relatedPages: 'Související stránky',
+  primaryCtaEyebrow: 'Související dokument',
+  secondaryCtaEyebrow: 'Další krok',
+  trustEyebrow: 'Kdy služba dává smysl',
+  trustGeneratorTitle: 'Vhodné pro standardní situaci',
+  trustLawyerTitle: 'Kdy už zvolit advokáta',
+  disclaimerLocale: 'cs',
+  showRelatedArticles: true,
 };
 
 export default function ArticlePageLayout({
@@ -65,7 +102,9 @@ export default function ArticlePageLayout({
   relatedLinks,
   children,
   slug,
+  labels,
 }: ArticlePageLayoutProps) {
+  const ui = { ...DEFAULT_LABELS, ...labels };
   const articleUrl = slug ? `/blog/${slug}` : '/blog';
   const article = articleSchema({
     title,
@@ -78,8 +117,8 @@ export default function ArticlePageLayout({
     authorUrl: CONTENT_AUTHOR.url,
   });
   const crumbs = breadcrumbSchema([
-    { label: 'SmlouvaHned', href: '/' },
-    { label: 'Blog', href: '/blog' },
+    { label: ui.home, href: '/' },
+    { label: ui.blog, href: '/blog' },
     { label: breadcrumbLabel, href: articleUrl },
   ]);
   return (
@@ -94,11 +133,11 @@ export default function ArticlePageLayout({
       />
       <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">
         <Link href="/" className="transition hover:text-slate-300">
-          SmlouvaHned
+          {ui.home}
         </Link>
         <span className="mx-2 text-slate-700">›</span>
         <Link href="/blog" className="transition hover:text-slate-300">
-          Blog
+          {ui.blog}
         </Link>
         <span className="mx-2 text-slate-700">›</span>
         <span className="text-slate-400">{breadcrumbLabel}</span>
@@ -117,9 +156,9 @@ export default function ArticlePageLayout({
             <time
               className="text-xs text-slate-600"
               dateTime={dateModified}
-              title="Datum poslední revize obsahu"
+              title={ui.updatedTitle}
             >
-              · Aktualizováno {dateModifiedLabel}
+              · {ui.updatedPrefix} {dateModifiedLabel}
             </time>
           ) : null}
         </div>
@@ -140,7 +179,7 @@ export default function ArticlePageLayout({
             KZ
           </span>
           <div>
-            <span className="text-slate-400">Autor: </span>
+            <span className="text-slate-400">{ui.author} </span>
             <span itemProp="name" className="font-semibold text-slate-300">
               {CONTENT_AUTHOR.name}
             </span>
@@ -158,14 +197,15 @@ export default function ArticlePageLayout({
               body={primaryAction.body}
               buttonLabel={primaryAction.buttonLabel}
               href={primaryAction.href}
+              eyebrow={ui.primaryCtaEyebrow}
             />
           </div>
         ) : null}
       </header>
 
-      <nav className="mb-10 rounded-2xl border border-white/8 bg-[#0c1426] p-6" aria-label="Obsah článku">
+      <nav className="mb-10 rounded-2xl border border-white/8 bg-[#0c1426] p-6" aria-label={ui.tocAria}>
         <div className="mb-3 text-xs font-black uppercase tracking-widest text-slate-500">
-          Obsah článku
+          {ui.toc}
         </div>
         <ol className="space-y-1.5 text-sm text-slate-400">
           {toc.map((item, index) => (
@@ -178,13 +218,18 @@ export default function ArticlePageLayout({
         </ol>
       </nav>
 
-      <InformativeDisclaimer className="mb-10" />
+      <InformativeDisclaimer className="mb-10" locale={ui.disclaimerLocale} />
 
       {children}
 
       <ArticleTrustBox
         generatorSuitable={trustBox.generatorSuitable}
         lawyerSuitable={trustBox.lawyerSuitable}
+        labels={{
+          eyebrow: ui.trustEyebrow,
+          generatorTitle: ui.trustGeneratorTitle,
+          lawyerTitle: ui.trustLawyerTitle,
+        }}
       />
 
       {finalAction ? (
@@ -194,12 +239,13 @@ export default function ArticlePageLayout({
           buttonLabel={finalAction.buttonLabel}
           href={finalAction.href}
           variant="subtle"
+          eyebrow={ui.secondaryCtaEyebrow}
         />
       ) : null}
 
       <div className="mt-12 border-t border-white/8 pt-10">
         <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-600">
-          Související stránky
+          {ui.relatedPages}
         </div>
         <div className="flex flex-wrap gap-3">
           {relatedLinks.map((link) => (
@@ -220,7 +266,7 @@ export default function ArticlePageLayout({
         </div>
       </div>
 
-      {slug ? <RelatedArticles currentSlug={slug} /> : null}
+      {slug && ui.showRelatedArticles ? <RelatedArticles currentSlug={slug} /> : null}
     </article>
   );
 }
