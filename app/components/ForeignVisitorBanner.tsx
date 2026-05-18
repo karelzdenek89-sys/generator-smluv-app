@@ -95,7 +95,6 @@ export default async function ForeignVisitorBanner() {
 
   return (
     <VisitorBannerShell
-      locale={locale}
       meta={meta}
       copy={copy}
       unsupportedNote={unsupportedNote}
@@ -104,12 +103,10 @@ export default async function ForeignVisitorBanner() {
 }
 
 function VisitorBannerShell({
-  locale,
   meta,
   copy,
   unsupportedNote,
 }: {
-  locale: ActiveLocale;
   meta: (typeof LOCALE_META)[ActiveLocale];
   copy: BannerCopy;
   unsupportedNote: string | null;

@@ -27,35 +27,6 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  headline: 'DPP vzor zdarma 2026 — co v něm chybí a proč na tom záleží',
-  description:
-    'Porovnání volných vzorů DPP a generátoru s citacemi zákoníku práce. Co šablony zdarma vynechávají a kdy to vadí.',
-  url: 'https://smlouvahned.cz/blog/dpp-vzor-zdarma-2026',
-  datePublished: '2026-04-18',
-  dateModified: '2026-04-18',
-  author: { '@type': 'Organization', name: 'SmlouvaHned', url: 'https://smlouvahned.cz' },
-  publisher: {
-    '@type': 'Organization',
-    name: 'SmlouvaHned',
-    logo: { '@type': 'ImageObject', url: 'https://smlouvahned.cz/og-image.png' },
-  },
-  image: 'https://smlouvahned.cz/og-image.png',
-  inLanguage: 'cs',
-};
-
-const breadcrumbLd = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
-    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://smlouvahned.cz/blog' },
-    { '@type': 'ListItem', position: 3, name: 'DPP vzor zdarma 2026', item: 'https://smlouvahned.cz/blog/dpp-vzor-zdarma-2026' },
-  ],
-};
-
 export default function DppVzorZdarmaPage() {
   return (
     <article className="mx-auto max-w-3xl px-6 py-12">

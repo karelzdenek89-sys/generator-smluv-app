@@ -27,33 +27,6 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  headline: 'Kupní smlouva na věc 2026: Co musí obsahovat a nejčastější chyby',
-  description: 'Průvodce kupní smlouvou na movitou věc pro rok 2026. Zákonné náležitosti dle OZ, jak popsat předmět koupě, odpovědnost za vady, bezpečné předání a nejčastější chyby.',
-  url: 'https://smlouvahned.cz/blog/kupni-smlouva-movita-vec',
-  datePublished: '2026-03-25',
-  dateModified: '2026-03-25',
-  author: { '@type': 'Organization', name: 'SmlouvaHned', url: 'https://smlouvahned.cz' },
-  publisher: {
-    '@type': 'Organization',
-    name: 'SmlouvaHned',
-    logo: { '@type': 'ImageObject', url: 'https://smlouvahned.cz/og-image.png' },
-  },
-  image: 'https://smlouvahned.cz/og-image.png',
-  inLanguage: 'cs',
-};
-const breadcrumbLd = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
-    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://smlouvahned.cz/blog' },
-    { '@type': 'ListItem', position: 3, name: 'Kupní smlouva na věc 2026: Co musí obsahovat a nejčastější chyby', item: 'https://smlouvahned.cz/blog/kupni-smlouva-movita-vec' },
-  ],
-};
-
 export default function KupniSmlouvaMovitaVecPage() {
   return (
     <article className="mx-auto max-w-3xl px-6 py-12">

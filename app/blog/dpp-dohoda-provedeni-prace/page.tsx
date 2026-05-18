@@ -27,34 +27,6 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  headline: 'DPP dohoda o provedení práce 2026: Limity, odvody a jak ji správně napsat',
-  description:
-    'Průvodce dohodou o provedení práce pro rok 2026. Limit 300 hodin ročně, srážková daň, zdravotní pojištění, povinné náležitosti a nejčastější chyby.',
-  url: 'https://smlouvahned.cz/blog/dpp-dohoda-provedeni-prace',
-  datePublished: '2026-04-02',
-  dateModified: '2026-04-02',
-  author: { '@type': 'Organization', name: 'SmlouvaHned', url: 'https://smlouvahned.cz' },
-  publisher: {
-    '@type': 'Organization',
-    name: 'SmlouvaHned',
-    logo: { '@type': 'ImageObject', url: 'https://smlouvahned.cz/og-image.png' },
-  },
-  image: 'https://smlouvahned.cz/og-image.png',
-  inLanguage: 'cs',
-};
-const breadcrumbLd = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
-    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://smlouvahned.cz/blog' },
-    { '@type': 'ListItem', position: 3, name: 'DPP dohoda o provedení práce 2026: Limity, odvody a jak ji správně napsat', item: 'https://smlouvahned.cz/blog/dpp-dohoda-provedeni-prace' },
-  ],
-};
-
 export default function DppPage() {
   return (
     <article className="mx-auto max-w-3xl px-6 py-12">

@@ -9,8 +9,6 @@ import { getDppFormUi } from '@/lib/i18n/expat-builder-forms';
 import { dppRiskWarnings, dppValidationFields } from '@/lib/i18n/expat-builder-risk';
 import {
   buildExpatPreviewSections,
-  getExpatPreviewDateLocale,
-  getExpatPreviewLabels,
 } from '@/lib/i18n/expat-contract-preview';
 import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/PaymentModal';

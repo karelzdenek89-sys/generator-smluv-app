@@ -123,6 +123,9 @@ function testLocalePropagation() {
   assert.match(sitemap, /getExpatSeoPageHreflangAlternates/);
   assert.match(sitemap, /expatBlogSitemapEntries/);
   assert.doesNotMatch(sitemap, /cs: `\$\{BASE_URL\}\/`,\s*\n\s*en: `\$\{BASE_URL\}\/en\/\$\{slug\}`/);
+  assert.doesNotMatch(sitemap, /\/ru/);
+  assert.doesNotMatch(sitemap, /\/de/);
+  assert.doesNotMatch(sitemap, /\/vn/);
 
   const seoPage = read('app/[locale]/[expatSeoSlug]/page.tsx');
   assert.match(seoPage, /title: \{ absolute:/);
@@ -134,6 +137,11 @@ function testLocalePropagation() {
   assert.match(read('app/blog/expat/[slug]/opengraph-image.tsx'), /renderExpatBlogOgImageBySlug/);
   assert.match(read('app/layout.tsx'), /showCzechSiteSchemas/);
   assert.match(read('app/[locale]/layout.tsx'), /ExpatLocaleSchemas/);
+  for (const retired of ['de', 'ru', 'vn', 'uk']) {
+    const retiredLayout = read(`app/${retired}/layout.tsx`);
+    assert.match(retiredLayout, /index: false/);
+    assert.doesNotMatch(retiredLayout, /makeLandingMetadata/);
+  }
   assert.match(proxy, /Czech canonical URLs reset stale foreign preferences/);
 }
 

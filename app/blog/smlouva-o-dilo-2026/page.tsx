@@ -30,33 +30,6 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  headline: 'Smlouva o dílo 2026: Co musí obsahovat a nejčastější chyby',
-  description: 'Průvodce smlouvou o dílo pro rok 2026. Co musí smlouva obsahovat dle § 2586 OZ, jak se chránit jako objednatel i zhotovitel a kdy nestačí ústní dohoda.',
-  url: 'https://smlouvahned.cz/blog/smlouva-o-dilo-2026',
-  datePublished: '2026-03-10',
-  dateModified: '2026-03-10',
-  author: { '@type': 'Organization', name: 'SmlouvaHned', url: 'https://smlouvahned.cz' },
-  publisher: {
-    '@type': 'Organization',
-    name: 'SmlouvaHned',
-    logo: { '@type': 'ImageObject', url: 'https://smlouvahned.cz/og-image.png' },
-  },
-  image: 'https://smlouvahned.cz/og-image.png',
-  inLanguage: 'cs',
-};
-const breadcrumbLd = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
-    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://smlouvahned.cz/blog' },
-    { '@type': 'ListItem', position: 3, name: 'Smlouva o dílo 2026: Co musí obsahovat a nejčastější chyby', item: 'https://smlouvahned.cz/blog/smlouva-o-dilo-2026' },
-  ],
-};
-
 export default function SmlouvaODiloPage() {
   return (
     <article className="mx-auto max-w-3xl px-6 py-12">

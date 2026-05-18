@@ -27,34 +27,6 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  headline: 'Uznání dluhu 2026: Co to je, co musí obsahovat a proč je důležité',
-  description:
-    'Průvodce uznáním dluhu § 2053 OZ — co je uznání dluhu, náležitosti, jak přerušuje promlčení a nejčastější chyby.',
-  url: 'https://smlouvahned.cz/blog/uznani-dluhu-2026',
-  datePublished: '2026-04-02',
-  dateModified: '2026-04-02',
-  author: { '@type': 'Organization', name: 'SmlouvaHned', url: 'https://smlouvahned.cz' },
-  publisher: {
-    '@type': 'Organization',
-    name: 'SmlouvaHned',
-    logo: { '@type': 'ImageObject', url: 'https://smlouvahned.cz/og-image.png' },
-  },
-  image: 'https://smlouvahned.cz/og-image.png',
-  inLanguage: 'cs',
-};
-const breadcrumbLd = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
-    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://smlouvahned.cz/blog' },
-    { '@type': 'ListItem', position: 3, name: 'Uznání dluhu 2026: Co to je, co musí obsahovat a proč je důležité', item: 'https://smlouvahned.cz/blog/uznani-dluhu-2026' },
-  ],
-};
-
 export default function UznaniDluhu2026Page() {
   return (
     <article className="mx-auto max-w-3xl px-6 py-12">

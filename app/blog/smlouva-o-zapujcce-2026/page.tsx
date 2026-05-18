@@ -27,33 +27,6 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  headline: 'Smlouva o zápůjčce 2026: Vzor + nejčastější chyby při půjčce peněz',
-  description: 'Průvodce smlouvou o zápůjčce pro rok 2026. Co musí obsahovat dle § 2390 OZ, jak nastavit úrok, splátkový kalendář a co dělat při nesplacení.',
-  url: 'https://smlouvahned.cz/blog/smlouva-o-zapujcce-2026',
-  datePublished: '2026-03-28',
-  dateModified: '2026-03-28',
-  author: { '@type': 'Organization', name: 'SmlouvaHned', url: 'https://smlouvahned.cz' },
-  publisher: {
-    '@type': 'Organization',
-    name: 'SmlouvaHned',
-    logo: { '@type': 'ImageObject', url: 'https://smlouvahned.cz/og-image.png' },
-  },
-  image: 'https://smlouvahned.cz/og-image.png',
-  inLanguage: 'cs',
-};
-const breadcrumbLd = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
-    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://smlouvahned.cz/blog' },
-    { '@type': 'ListItem', position: 3, name: 'Smlouva o zápůjčce 2026: Vzor + nejčastější chyby při půjčce peněz', item: 'https://smlouvahned.cz/blog/smlouva-o-zapujcce-2026' },
-  ],
-};
-
 export default function SmlouvaOZapujcce2026Page() {
   return (
     <article className="mx-auto max-w-3xl px-6 py-12">

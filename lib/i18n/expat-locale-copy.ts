@@ -19,12 +19,8 @@ export type BuilderCopy = {
 
 const CAPABILITY_FULL_EN =
   'English-guided form · Czech PDF + explanatory English annex (not certified or official).';
-const CAPABILITY_PDF_ONLY_EN =
-  'Czech form · Czech PDF + explanatory English annex — use browser translate for labels.';
 const CAPABILITY_FULL_UA =
   'Форма українською · чеський PDF + пояснювальний український додаток (не офіційний переклад).';
-const CAPABILITY_PDF_ONLY_UA =
-  'Чеська форма · чеський PDF + пояснювальний додаток — для підписів полів скористайтеся перекладачем браузера.';
 
 export const EXPAT_CONTRACT_CAPABILITY: Record<
   ExpatUiLocale,

@@ -152,15 +152,18 @@ test.describe('EN lease expat smoke', () => {
     await expect(page.getByText('Your contract will be generated primarily in Czech').first()).toBeVisible();
   });
 
-  test('/vn and /vi redirect to /en', async ({ page, context }) => {
+  test('retired locale routes redirect to active hubs', async ({ page, context }) => {
     await context.clearCookies();
-    await page.goto('/vn');
-    await page.waitForURL(/\/en\/?$/);
-    expect(page.url()).toMatch(/\/en\/?$/);
 
-    await page.goto('/vi');
-    await page.waitForURL(/\/en\/?$/);
-    expect(page.url()).toMatch(/\/en\/?$/);
+    for (const retired of ['/vn', '/vi', '/ru', '/de']) {
+      await page.goto(retired);
+      await page.waitForURL(/\/en\/?$/);
+      expect(page.url()).toMatch(/\/en\/?$/);
+    }
+
+    await page.goto('/uk');
+    await page.waitForURL(/\/ua\/?$/);
+    expect(page.url()).toMatch(/\/ua\/?$/);
   });
 
   test('/darovaci?lang=en shows Czech-only notice', async ({ page, context }) => {

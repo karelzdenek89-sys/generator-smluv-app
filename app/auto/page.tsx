@@ -19,7 +19,6 @@ import PaymentModal from '@/app/components/PaymentModal';
 import { BuilderLocaleNotice, useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
 
 type PaymentMethod = 'cash' | 'transfer';
-type RiskLevel = 'low' | 'medium' | 'high';
 
 type CarSaleFormData = {
   sellerName: string;

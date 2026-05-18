@@ -27,34 +27,6 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Article',
-  headline: 'Smlouva o poskytování služeb 2026: Vzor, náležitosti a jak se chránit',
-  description:
-    'Povinné náležitosti smlouvy o poskytování služeb, rozdíl oproti smlouvě o dílo, odpovědnost za vady, reklamace a nejčastější chyby.',
-  url: 'https://smlouvahned.cz/blog/smlouva-o-sluzbach-2026',
-  datePublished: '2026-04-02',
-  dateModified: '2026-04-02',
-  author: { '@type': 'Organization', name: 'SmlouvaHned', url: 'https://smlouvahned.cz' },
-  publisher: {
-    '@type': 'Organization',
-    name: 'SmlouvaHned',
-    logo: { '@type': 'ImageObject', url: 'https://smlouvahned.cz/og-image.png' },
-  },
-  image: 'https://smlouvahned.cz/og-image.png',
-  inLanguage: 'cs',
-};
-const breadcrumbLd = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
-    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://smlouvahned.cz/blog' },
-    { '@type': 'ListItem', position: 3, name: 'Smlouva o poskytování služeb 2026: Vzor, náležitosti a jak se chránit', item: 'https://smlouvahned.cz/blog/smlouva-o-sluzbach-2026' },
-  ],
-};
-
 export default function SmlouvaOSluzbach2026Page() {
   return (
     <article className="mx-auto max-w-3xl px-6 py-12">
