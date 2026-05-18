@@ -27,22 +27,6 @@ function rewritePathSegment(pathname: string, fromSeg: string, toSeg: string): s
   return pathname;
 }
 
-/** Map an Accept-Language primary tag to one of our supported segments. */
-function inferLocaleFromAcceptLanguage(header: string | null): 'en' | 'ua' | null {
-  if (!header) return null;
-  const langs = header.split(',').map((p) => {
-    const [tag, q = 'q=1'] = p.trim().split(';');
-    return { tag: tag.toLowerCase(), q: parseFloat(q.replace('q=', '')) || 1 };
-  }).sort((a, b) => b.q - a.q);
-
-  for (const { tag } of langs) {
-    if (tag.startsWith('cs')) return null;
-    if (tag.startsWith('en')) return 'en';
-    if (tag.startsWith('uk')) return 'ua';
-  }
-  return null;
-}
-
 export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
@@ -61,8 +45,8 @@ export function proxy(request: NextRequest) {
   const langQuery = request.nextUrl.searchParams.get('lang')?.trim().toLowerCase();
   if (langQuery) {
     const preferred =
-      langQuery === 'en'
-        ? 'en'
+      langQuery === 'cs' || langQuery === 'en'
+        ? langQuery
         : langQuery === 'ua' || langQuery === 'uk' || langQuery === 'ukr'
           ? 'ua'
           : null;
@@ -73,6 +57,7 @@ export function proxy(request: NextRequest) {
         sameSite: 'lax',
       });
       response.headers.set('x-preferred-locale', preferred);
+      return response;
     }
   }
 
@@ -88,17 +73,14 @@ export function proxy(request: NextRequest) {
     }
   }
 
-  // 2) Accept-Language fallback when no cookie yet.
-  if (!request.cookies.get('preferred-locale')) {
-    const inferred = inferLocaleFromAcceptLanguage(request.headers.get('accept-language'));
-    if (inferred) {
-      response.cookies.set('preferred-locale', inferred, {
-        path: '/',
-        maxAge: 60 * 60 * 24 * 30,
-        sameSite: 'lax',
-      });
-    }
-  }
+  // 2) Czech canonical URLs reset stale foreign preferences. Foreign builders
+  // keep their locale via explicit ?lang=en/ua from localized landing pages.
+  response.cookies.set('preferred-locale', 'cs', {
+    path: '/',
+    maxAge: 60 * 60 * 24 * 30,
+    sameSite: 'lax',
+  });
+  response.headers.set('x-preferred-locale', 'cs');
 
   return response;
 }
