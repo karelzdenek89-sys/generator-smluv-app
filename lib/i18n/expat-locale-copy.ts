@@ -17,25 +17,34 @@ export type BuilderCopy = {
   fields: string[];
 };
 
+const CAPABILITY_FULL_EN =
+  'English-guided form · Czech PDF + explanatory English annex (not certified or official).';
+const CAPABILITY_PDF_ONLY_EN =
+  'Czech form · Czech PDF + explanatory English annex — use browser translate for labels.';
+const CAPABILITY_FULL_UA =
+  'Форма українською · чеський PDF + пояснювальний український додаток (не офіційний переклад).';
+const CAPABILITY_PDF_ONLY_UA =
+  'Чеська форма · чеський PDF + пояснювальний додаток — для підписів полів скористайтеся перекладачем браузера.';
+
 export const EXPAT_CONTRACT_CAPABILITY: Record<
   ExpatUiLocale,
   Record<ExpatContractType, string>
 > = {
   en: {
-    lease: 'English form + Czech contract + explanatory English translation annex.',
-    sublease: 'English form + Czech contract + explanatory English translation annex.',
-    employment: 'English form + Czech contract + explanatory English translation annex.',
-    dpp: 'English form + Czech contract + explanatory English translation annex.',
-    power_of_attorney: 'English form + Czech contract + explanatory English translation annex.',
-    car_sale: 'English form + Czech contract + explanatory English translation annex.',
+    lease: CAPABILITY_FULL_EN,
+    employment: CAPABILITY_FULL_EN,
+    dpp: CAPABILITY_FULL_EN,
+    sublease: CAPABILITY_PDF_ONLY_EN,
+    power_of_attorney: CAPABILITY_PDF_ONLY_EN,
+    car_sale: CAPABILITY_PDF_ONLY_EN,
   },
   ua: {
-    lease: 'Форма українською + чеський договір + пояснювальний український переклад у PDF.',
-    sublease: 'Форма українською + чеський договір + пояснювальний переклад у PDF.',
-    employment: 'Форма українською + чеський договір + пояснювальний переклад у PDF.',
-    dpp: 'Форма українською + чеський договір + пояснювальний огляд основних умов у PDF.',
-    power_of_attorney: 'Форма українською + чеський договір + пояснювальний переклад у PDF.',
-    car_sale: 'Форма українською + чеський договір + пояснювальний переклад у PDF.',
+    lease: CAPABILITY_FULL_UA,
+    employment: CAPABILITY_FULL_UA,
+    dpp: 'Форма українською · чеський PDF + пояснювальний огляд основних умов (DPP, не повний переклад).',
+    sublease: CAPABILITY_PDF_ONLY_UA,
+    power_of_attorney: CAPABILITY_PDF_ONLY_UA,
+    car_sale: CAPABILITY_PDF_ONLY_UA,
   },
 };
 

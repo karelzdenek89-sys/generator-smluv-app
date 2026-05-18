@@ -79,7 +79,7 @@ function testLocalePropagation() {
 
   const landing = read('app/[locale]/page.tsx');
   assert.match(landing, /Most used contracts for foreigners in the Czech Republic/);
-  assert.match(landing, /English-guided form|English form \+ Czech contract/);
+  assert.match(landing, /English-guided form|English-guided forms are available for rental/i);
   assert.match(landing, /Available in Czech/);
   assert.match(landing, /redirect\('\/en'\)/);
   assert.match(landing, /іноземців у Чехії/);
@@ -334,22 +334,13 @@ function testLeaseEnglishContractSections() {
 }
 
 function testExpatCapabilityDifferentiation() {
-  assert.match(
-    EXPAT_CONTRACT_CAPABILITY.en.lease,
-    /explanatory English translation annex/i,
-  );
-  assert.match(
-    EXPAT_CONTRACT_CAPABILITY.ua.lease,
-    /українськ/i,
-  );
-  assert.match(
-    EXPAT_CONTRACT_CAPABILITY.en.employment,
-    /explanatory English translation annex/i,
-  );
-  assert.match(
-    EXPAT_CONTRACT_CAPABILITY.ua.dpp,
-    /огляд основних умов/i,
-  );
+  assert.match(EXPAT_CONTRACT_CAPABILITY.en.lease, /English-guided form/i);
+  assert.match(EXPAT_CONTRACT_CAPABILITY.en.lease, /explanatory English annex/i);
+  assert.match(EXPAT_CONTRACT_CAPABILITY.ua.lease, /українськ/i);
+  assert.match(EXPAT_CONTRACT_CAPABILITY.en.employment, /English-guided form/i);
+  assert.match(EXPAT_CONTRACT_CAPABILITY.ua.dpp, /огляд основних умов/i);
+  assert.match(EXPAT_CONTRACT_CAPABILITY.en.sublease, /Czech form/i);
+  assert.doesNotMatch(EXPAT_CONTRACT_CAPABILITY.en.sublease, /English-guided form/i);
 }
 
 function testExpatContractTranslationBuilders() {
