@@ -8,7 +8,6 @@ import {
   EXPAT_SEO_SLUGS,
   getExpatSeoLandingBySlug,
 } from '@/lib/i18n/expat-seo-landings';
-import { DEFAULT_OG_IMAGE } from '@/lib/seo/site';
 
 type PageProps = {
   params: Promise<{ locale: string; expatSeoSlug: string }>;
@@ -21,6 +20,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!content) return { title: 'SmlouvaHned' };
 
   const languages = getExpatSeoPageHreflangAlternates(content.contractKey);
+  const ogImage = {
+    url: `${content.canonical}/opengraph-image`,
+    width: 1200,
+    height: 630,
+    alt: content.metadata.openGraphTitle,
+  };
 
   return {
     title: { absolute: content.metadata.title },
@@ -36,13 +41,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       url: content.canonical,
       locale: content.metadata.openGraphLocale,
       type: 'website',
-      images: [DEFAULT_OG_IMAGE],
+      images: [ogImage],
     },
     twitter: {
       card: 'summary_large_image',
       title: content.metadata.openGraphTitle,
       description: content.metadata.openGraphDescription,
-      images: [DEFAULT_OG_IMAGE.url],
+      images: [ogImage.url],
     },
   };
 }

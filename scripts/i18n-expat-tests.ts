@@ -129,12 +129,14 @@ function testLocalePropagation() {
 
   const seoPage = read('app/[locale]/[expatSeoSlug]/page.tsx');
   assert.match(seoPage, /title: \{ absolute:/);
-  assert.match(seoPage, /DEFAULT_OG_IMAGE/);
+  assert.match(seoPage, /\/opengraph-image/);
+  assert.doesNotMatch(seoPage, /DEFAULT_OG_IMAGE/);
 
   const expatBlogPage = read('app/blog/expat/[slug]/page.tsx');
   assert.match(expatBlogPage, /getExpatBlogHreflangAlternates/);
   assert.match(expatBlogPage, /inLanguage=\{lang\}/);
   assert.match(read('app/blog/expat/[slug]/opengraph-image.tsx'), /renderExpatBlogOgImageBySlug/);
+  assert.match(read('app/[locale]/opengraph-image.tsx'), /renderExpatHubOgImage/);
   assert.match(read('app/layout.tsx'), /showCzechSiteSchemas/);
   assert.match(read('app/[locale]/layout.tsx'), /ExpatLocaleSchemas/);
   for (const retired of ['de', 'ru', 'vn', 'uk']) {
@@ -669,6 +671,9 @@ function testExpatSeoLandingPages() {
   assert.match(seo, /car-sale-agreement-czech-republic/);
   assert.match(seoPage, /getExpatSeoLandingBySlug/);
   assert.match(seoPage, /EXPAT_SEO_SLUGS/);
+  assert.match(seoPage, /\/opengraph-image/);
+  assert.doesNotMatch(seoPage, /DEFAULT_OG_IMAGE/);
+  assert.match(read('app/[locale]/[expatSeoSlug]/opengraph-image.tsx'), /renderExpatSeoOgImageBySlug/);
   assert.match(sitemap, /EXPAT_SEO_SLUGS/);
   assert.match(sitemap, /EXPAT_BUILDER_SITEMAP\.map/);
   assert.match(sitemap, /getExpatSeoPageHreflangAlternates/);

@@ -18,7 +18,7 @@ import {
 } from '@/lib/i18n/expat-locale-copy';
 import { getExpatSeoHref } from '@/lib/i18n/expat-seo-landings';
 import { LANDINGS } from '@/lib/i18n/landings';
-import { DEFAULT_OG_IMAGE, SITE_URL } from '@/lib/seo/site';
+import { SITE_URL } from '@/lib/seo/site';
 import { FOREIGN_LOCALES, LOCALE_META } from '@/lib/i18n/locales';
 
 type LocalePageProps = {
@@ -114,6 +114,12 @@ export async function generateMetadata({ params }: LocalePageProps): Promise<Met
   if (locale === 'cs' || ![locale, publicLocale].includes(rawLocale as AppLocale)) return { title: 'SmlouvaHned' };
   const landing = LANDINGS[locale];
   const hubUrl = `${SITE_URL}/${publicLocale}`;
+  const ogImage = {
+    url: `${hubUrl}/opengraph-image`,
+    width: 1200,
+    height: 630,
+    alt: landing.ogTitle,
+  };
   return {
     title: { absolute: landing.htmlTitle },
     description: landing.metaDescription,
@@ -133,13 +139,13 @@ export async function generateMetadata({ params }: LocalePageProps): Promise<Met
       url: hubUrl,
       type: 'website',
       locale: locale === 'ua' ? 'uk_UA' : 'en_US',
-      images: [DEFAULT_OG_IMAGE],
+      images: [ogImage],
     },
     twitter: {
       card: 'summary_large_image',
       title: landing.ogTitle,
       description: landing.ogDescription,
-      images: [DEFAULT_OG_IMAGE.url],
+      images: [ogImage.url],
     },
   };
 }
