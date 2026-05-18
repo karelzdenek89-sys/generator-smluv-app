@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "lint:ci": "eslint app lib e2e scripts/generate-samples.ts scripts/i18n-expat-tests.ts scripts/pre-deploy-expat-check.ts scripts/lint-contracts.ts scripts/audit-pre-deploy-pdfs.ts --quiet",
+    "lint:ci": "eslint app lib e2e scripts/generate-samples.ts scripts/i18n-expat-tests.ts scripts/checkout-flow-audit.ts scripts/pre-deploy-expat-check.ts scripts/lint-contracts.ts scripts/audit-pre-deploy-pdfs.ts --quiet",
     "test:i18n": "tsx scripts/i18n-expat-tests.ts",
     "test:e2e:i18n": "tsx scripts/i18n-expat-tests.ts",
     "test:pdf:i18n": "tsx scripts/i18n-expat-tests.ts",
@@ -15,7 +15,7 @@
     "test:e2e:lease-en": "playwright test e2e/lease-en-smoke.spec.ts",
     "test:e2e:lease-ua": "playwright test e2e/lease-ua-smoke.spec.ts",
     "test:e2e:lease-expat": "playwright test e2e/lease-en-smoke.spec.ts e2e/lease-ua-smoke.spec.ts",
-    "test:pre-deploy": "npm run lint:ci && tsx scripts/i18n-expat-tests.ts && tsx scripts/pre-deploy-expat-check.ts && tsx scripts/lint-contracts.ts"
+    "test:pre-deploy": "npm run lint:ci && tsx scripts/i18n-expat-tests.ts && tsx scripts/checkout-flow-audit.ts && tsx scripts/pre-deploy-expat-check.ts && tsx scripts/lint-contracts.ts"
   },
   "dependencies": {
     "@upstash/redis": "^1.37.0",

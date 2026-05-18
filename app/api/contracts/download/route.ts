@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { redis } from '@/lib/redis';
 import { stripe } from '@/lib/stripe';
+import { normalizeThematicPackageKey } from '@/lib/packages';
 import { getContractMeta, type StoredContractData } from '@/lib/contracts';
 import { renderContractPdf } from '@/lib/pdf';
 import { normalizeLocale } from '@/lib/locale';
@@ -36,6 +37,7 @@ async function checkDownloadRateLimit(sessionId: string): Promise<boolean> {
 type DraftRecord = {
   contractType: StoredContractData['contractType'];
   tier?: 'basic' | 'professional' | 'complete';
+  packageKey?: string | null;
   notaryUpsell?: boolean;
   payload: StoredContractData;
   paid: boolean;
@@ -83,13 +85,16 @@ export async function GET(req: NextRequest) {
       if (session.payment_status === 'paid' && session.metadata?.contractType) {
         console.warn(`[download] Draft missing for ${draftId}, reconstructing from Stripe metadata`);
         const fallbackTier = (session.metadata.tier as DraftRecord['tier']) || 'basic';
+        const fallbackPackageKey = normalizeThematicPackageKey(session.metadata.packageKey);
         draft = {
           contractType: session.metadata.contractType as DraftRecord['contractType'],
           tier: fallbackTier,
+          packageKey: fallbackPackageKey,
           notaryUpsell: session.metadata.notaryUpsell === 'true',
           payload: {
             contractType: session.metadata.contractType as DraftRecord['contractType'],
             tier: fallbackTier,
+            packageKey: fallbackPackageKey,
           },
           paid: true,
           createdAt: new Date().toISOString(),
@@ -144,11 +149,17 @@ export async function GET(req: NextRequest) {
       resolvedTier === 'professional' ||
       resolvedTier === 'complete';
 
+    const resolvedPackageKey =
+      normalizeThematicPackageKey(draft.packageKey) ??
+      normalizeThematicPackageKey(draft.payload.packageKey) ??
+      normalizeThematicPackageKey(session.metadata?.packageKey);
+
     const fullData: StoredContractData = {
       ...draft.payload,
       contractType: draft.payload.contractType || draft.contractType,
       notaryUpsell: resolvedNotaryUpsell,
       tier: resolvedTier,
+      packageKey: resolvedPackageKey,
       lang: requestedLang !== 'cs'
         ? requestedLang
         : normalizeLocale(draft.payload.lang ?? draft.lang ?? session.metadata?.lang),

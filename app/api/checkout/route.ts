@@ -13,6 +13,7 @@ import { randomUUID } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { redis } from '@/lib/redis';
 import { stripe } from '@/lib/stripe';
+import { normalizeThematicPackageKey } from '@/lib/packages';
 import { normalizeLocale } from '@/lib/locale';
 
 export const runtime = 'nodejs';
@@ -120,6 +121,14 @@ export async function POST(req: Request) {
 
     const lang = normalizeLocale(body.lang ?? payload.lang);
 
+    const rawPackageKey =
+      typeof body.packageKey === 'string'
+        ? body.packageKey
+        : typeof payload.packageKey === 'string'
+          ? payload.packageKey
+          : null;
+    const packageKey = normalizeThematicPackageKey(rawPackageKey);
+
     // 3. Price ID
     const priceId = getPriceId(tier);
     if (!priceId) {
@@ -141,10 +150,18 @@ export async function POST(req: Request) {
         {
           contractType,
           tier,
+          packageKey,
           notaryUpsell,
           lang,
           email: email ?? null,
-          payload: { ...payload, contractType, tier, notaryUpsell, lang },
+          payload: {
+            ...payload,
+            contractType,
+            tier,
+            packageKey,
+            notaryUpsell,
+            lang,
+          },
           paid: false,
           createdAt: new Date().toISOString(),
         },
@@ -175,6 +192,7 @@ export async function POST(req: Request) {
         tier,
         lang,
         notaryUpsell: String(notaryUpsell),
+        ...(packageKey ? { packageKey } : {}),
       },
     };
 

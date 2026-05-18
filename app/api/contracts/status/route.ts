@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { redis } from '@/lib/redis';
-import { getThematicPackageConfig } from '@/lib/packages';
+import {
+  getEffectivePriceLabel,
+  getThematicPackageConfig,
+  normalizeThematicPackageKey,
+} from '@/lib/packages';
 import { normalizePricingTier, getTierArchiveDays, getTierPriceLabel } from '@/lib/pricing';
 import { stripe } from '@/lib/stripe';
 import { normalizeLocale } from '@/lib/locale';
@@ -52,13 +56,15 @@ export async function GET(req: NextRequest) {
     const contractType = session.metadata?.contractType ?? '';
     const tier = normalizePricingTier(session.metadata?.tier);
     const lang = normalizeLocale(session.metadata?.lang);
-    let packageKey = session.metadata?.packageKey ?? null;
+    let packageKey = normalizeThematicPackageKey(session.metadata?.packageKey);
     let packageLabel: string | null = null;
 
     if (draftId) {
       try {
         const draft = await redis.get<DraftRecord>(`contract:draft:${draftId}`);
-        if (draft?.packageKey) packageKey = draft.packageKey;
+        if (draft?.packageKey) {
+          packageKey = normalizeThematicPackageKey(draft.packageKey) ?? packageKey;
+        }
       } catch {
         // fail-open: metadata from Stripe is enough for UI
       }
@@ -68,13 +74,15 @@ export async function GET(req: NextRequest) {
       packageLabel = getThematicPackageConfig(packageKey)?.title ?? null;
     }
 
+    const priceLabel = getEffectivePriceLabel(tier, packageKey);
+
     return NextResponse.json({
       status: 'paid',
       tier,
-      tierLabel: getTierPriceLabel(tier),
+      tierLabel: packageLabel ?? getTierPriceLabel(tier),
       packageKey,
       packageLabel,
-      priceLabel: getTierPriceLabel(tier),
+      priceLabel,
       archiveDays: getTierArchiveDays(tier),
       contractType,
       contractName: CONTRACT_NAMES[contractType] ?? 'Právní dokument',
