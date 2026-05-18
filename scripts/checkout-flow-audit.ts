@@ -54,7 +54,8 @@ function testCheckoutRouteCoverage() {
     assert.match(checkout, new RegExp(`'${type}'`), `checkout missing contract type ${type}`);
   }
   assert.match(checkout, /packageKey/);
-  assert.match(checkout, /normalizeThematicPackageKey/);
+  assert.match(checkout, /getStripePriceIdForCheckout/);
+  assert.match(read('lib/packages.ts'), /STRIPE_PRICE_ID_PACKAGE/);
   assert.match(checkout, /CANCEL_URLS/);
 }
 

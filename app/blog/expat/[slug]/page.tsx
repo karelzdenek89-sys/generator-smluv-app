@@ -4,6 +4,7 @@ import ExpatBlogArticleView from '@/app/components/blog/ExpatBlogArticleView';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import {
   getAllExpatBlogSlugs,
+  getExpatBlogAlternateSlug,
   getExpatBlogArticle,
   getExpatBlogCanonical,
 } from '@/lib/i18n/expat-blog-articles';
@@ -23,12 +24,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   const canonical = getExpatBlogCanonical(slug);
   const lang = article.audience === 'en' ? 'en' : 'uk';
+  const alternateSlug = getExpatBlogAlternateSlug(slug);
+  const languageAlternates: Record<string, string> = {
+    [lang]: canonical,
+  };
+  if (alternateSlug) {
+    languageAlternates[article.audience === 'en' ? 'uk' : 'en'] = getExpatBlogCanonical(alternateSlug);
+  }
 
   return {
     title: `${article.title} | SmlouvaHned.cz`,
     description: article.excerpt,
     keywords: article.keywords,
-    alternates: { canonical },
+    alternates: { canonical, languages: languageAlternates },
     openGraph: {
       title: article.title,
       description: article.excerpt,

@@ -10,6 +10,7 @@ import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import type { StoredContractData } from '@/lib/contracts';
 import { getThematicPackageConfig } from '@/lib/packages';
 import { getCarFormUi } from '@/lib/i18n/expat-builder-forms';
+import { carRiskWarnings, carValidationFields } from '@/lib/i18n/expat-builder-risk';
 import {
   buildExpatPreviewSections,
   getExpatPreviewLabels,
@@ -202,92 +203,26 @@ function CarSaleBuilderContent() {
     return Math.round((filled / fields.length) * 100);
   }, [formData]);
 
+  const validationFields = useMemo(
+    () => carValidationFields(builderLocale),
+    [builderLocale],
+  );
+
   const riskAnalysis = useMemo(() => {
-    let score = 100;
-    const warnings: { text: string; level: RiskLevel }[] = [];
-
-    if (!formData.carVIN || formData.carVIN.trim().length !== 17) {
-      score -= 22;
-      warnings.push({
-        text: 'Doporučujeme doplnit správný VIN (17 znaků) pro jednoznačnou identifikaci vozidla.',
-        level: 'high',
-      });
-    }
-
-    if (!formData.sellerOP || !formData.buyerOP || !formData.sellerAddress || !formData.buyerAddress) {
-      score -= 10;
-      warnings.push({
-        text: 'Doporučujeme doplnit přesnou identifikaci obou stran — OP a adresy.',
-        level: 'high',
-      });
-    }
-
-    if (!formData.handoverDate || !formData.handoverPlace) {
-      score -= 10;
-      warnings.push({
-        text: 'Doporučujeme doplnit datum a místo předání vozidla.',
-        level: 'medium',
-      });
-    }
-
-    if (!formData.knownDefects.trim()) {
-      score -= 14;
-      warnings.push({
-        text: 'Doporučujeme doplnit popis známých vad. Detailní popis chrání obě strany.',
-        level: 'high',
-      });
-    }
-
-    if (formData.paymentMethod === 'transfer' && !formData.bankAccount.trim()) {
-      score -= 10;
-      warnings.push({
-        text: 'Doplňte číslo bankovního účtu prodávajícího pro bankovní převod.',
-        level: 'high',
-      });
-    }
-
-    if (formData.paymentMethod === 'cash' && priceNumber > 270000) {
-      score -= 30;
-      warnings.push({
-        text: 'Hotovostní platba nad 270 000 Kč není možná. Změňte způsob úhrady na bankovní převod.',
-        level: 'high',
-      });
-    }
-
-    if (formData.isPledged || formData.isInLeasing || formData.hasThirdPartyRights) {
-      score -= 22;
-      warnings.push({
-        text: 'Doporučujeme doplnit detaily právního omezení nebo práv třetích osob.',
-        level: 'high',
-      });
-    }
-
-    if (!formData.odometerGuaranteed) {
-      score -= 8;
-      warnings.push({
-        text: 'Doporučujeme doplnit garanci stavu tachometru pro přesnější zachycení stavu vozidla.',
-        level: 'medium',
-      });
-    }
-
-    if (!formData.buyerInspectedVehicle) {
-      score -= 6;
-      warnings.push({
-        text: 'Doporučujeme potvrdit, že se kupující seznámil s technickým stavem vozidla.',
-        level: 'low',
-      });
-    }
-
-    score = Math.max(0, Math.min(100, score));
-
+    const { warnings, checkoutBlocked } = carRiskWarnings(builderLocale, formData, priceNumber);
+    const penalty = warnings.reduce(
+      (sum, w) => sum + (w.level === 'high' ? 18 : w.level === 'medium' ? 10 : 5),
+      0,
+    );
+    const score = Math.max(0, Math.min(100, 100 - penalty));
     return {
       score,
       warnings,
       label:
         score >= 85 ? ui.risk.good : score >= 70 ? ui.risk.average : ui.risk.needsWork,
-      checkoutBlocked: formData.paymentMethod === 'cash' && priceNumber > 270000,
+      checkoutBlocked,
     };
-  }, [formData, priceNumber, ui.risk]);
+  }, [formData, priceNumber, builderLocale, ui.risk]);
 
   const previewContract = useMemo(() => {
     return `KUPNÍ SMLOUVA O PRODEJI OJETÉHO VOZIDLA
@@ -352,20 +287,25 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
 
   async function handlePayment() {
     if (riskAnalysis.checkoutBlocked) {
-      alert('Hotovostní platba nad 270 000 Kč není možná. Změň způsob úhrady na bankovní převod.');
+      alert(
+        builderLocale === 'en'
+          ? 'Cash payment over CZK 270,000 is not allowed. Switch to bank transfer.'
+          : builderLocale === 'ua'
+            ? 'Готівка понад 270 000 Kč заборонена. Оберіть банківський переказ.'
+            : 'Hotovostní platba nad 270 000 Kč není možná. Změň způsob úhrady na bankovní převod.',
+      );
       return;
     }
 
-    // Validace povinných polí
     const missingFields: string[] = [];
-    if (!formData.sellerName.trim()) missingFields.push('jméno prodávajícího');
-    if (!formData.buyerName.trim()) missingFields.push('jméno kupujícího');
-    if (!formData.carMake.trim()) missingFields.push('značku vozidla');
-    if (!formData.carVIN.trim()) missingFields.push('VIN kód');
-    if (!formData.priceAmount.trim()) missingFields.push('kupní cenu');
+    if (!formData.sellerName.trim()) missingFields.push(validationFields.sellerName);
+    if (!formData.buyerName.trim()) missingFields.push(validationFields.buyerName);
+    if (!formData.carMake.trim()) missingFields.push(validationFields.carMake);
+    if (!formData.carVIN.trim()) missingFields.push(validationFields.carVIN);
+    if (!formData.priceAmount.trim()) missingFields.push(validationFields.priceAmount);
 
     if (missingFields.length > 0) {
-      alert(`Vyplňte prosím: ${missingFields.join(', ')}.`);
+      alert(`${ui.form.validationPrefix} ${missingFields.join(', ')}.`);
       return;
     }
 

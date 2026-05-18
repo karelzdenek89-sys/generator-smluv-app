@@ -106,7 +106,8 @@ function testLocalePropagation() {
 
   const builderLocale = read('app/components/BuilderLocaleNotice.tsx');
   assert.match(builderLocale, /queryLocale/);
-  assert.match(builderLocale, /return 'cs';/);
+  assert.match(builderLocale, /readBuilderLocaleFromBrowser/);
+  assert.match(read('lib/locale.ts'), /preferred-locale/);
   assert.doesNotMatch(builderLocale, /readCookie/);
 }
 
@@ -599,6 +600,9 @@ function testLocalizedBlogArticles() {
   assert.match(expatView, /withLocale\(EXPAT_CONTRACT_ROUTES\[item\.contract\], locale\)/);
   assert.match(expatView, /item\.seoHref/);
   assert.match(expatArticles, /getExpatSeoHref/);
+  assert.match(read('lib/locale.ts'), /readBuilderLocaleFromBrowser/);
+  assert.match(read('lib/packages.ts'), /getStripePriceIdForCheckout/);
+  assert.match(expatArticles, /getExpatBlogAlternateSlug/);
   assert.match(sitemap, /getAllExpatBlogSlugs/);
   assert.match(landing, /ExpatLocaleSchemas/);
   assert.match(landing, /\/blog\/expat\/foreigners-czech-contracts-guide-en/);

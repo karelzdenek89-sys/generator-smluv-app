@@ -8,6 +8,7 @@ import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import type { StoredContractData } from '@/lib/contracts';
 import { getSubleaseFormUi } from '@/lib/i18n/expat-builder-forms';
+import { subleaseRiskWarnings, subleaseValidationFields } from '@/lib/i18n/expat-builder-risk';
 import {
   buildExpatPreviewSections,
   getExpatPreviewLabels,
@@ -85,50 +86,25 @@ export default function PodnajemuPage() {
     setForm((prev) => ({ ...prev, [name]: val }));
   };
 
-  const risk = useMemo(() => {
-    let score = 100;
-    const warnings: { text: string; level: 'high' | 'medium' | 'low' }[] = [];
+  const validationFields = useMemo(
+    () => subleaseValidationFields(builderLocale),
+    [builderLocale],
+  );
 
-    if (!form.landlordId || !form.tenantId) {
-      score -= 15;
-      warnings.push({ text: 'Doplňte rodná čísla / data narození smluvních stran. Zvýšíte tím vymahatelnost smlouvy.', level: 'high' });
-    }
-    if (form.landlordConsent === 'no') {
-      score -= 30;
-      warnings.push({ text: 'Podnájem bez souhlasu pronajímatele je protiprávní a může vést k výpovědi hlavního nájmu.', level: 'high' });
-    }
-    if (!form.consentDate) {
-      score -= 8;
-      warnings.push({ text: 'Doplňte datum souhlasu pronajímatele k podnájmu.', level: 'medium' });
-    }
-    if (form.duration === 'fixed' && !form.endDate) {
-      score -= 10;
-      warnings.push({ text: 'U doby určité doplňte datum konce podnájmu.', level: 'high' });
-    }
-    if (!form.depositAmount || Number(form.depositAmount) < Number(form.rentAmount)) {
-      score -= 10;
-      warnings.push({ text: 'Doporučená doplnění: Kauce by měla být alespoň v rozsahu měsíčního nájemného.', level: 'medium' });
-    }
-    if (form.allowAirbnb) {
-      score -= 20;
-      warnings.push({ text: 'Povolení dalšího podnájmu / Airbnb je rizikové a může porušovat podmínky hlavní nájemní smlouvy.', level: 'high' });
-    }
-    if (!form.flatUnitNumber || !form.cadastralArea) {
-      score -= 8;
-      warnings.push({ text: 'Doplňte identifikaci bytu (číslo jednotky / katastrální území).', level: 'medium' });
-    }
-    score = Math.max(0, Math.min(100, score));
+  const risk = useMemo(() => {
+    const warnings = subleaseRiskWarnings(builderLocale, form);
+    const penalty = warnings.reduce(
+      (sum, w) => sum + (w.level === 'high' ? 18 : w.level === 'medium' ? 10 : 5),
+      0,
+    );
+    const score = Math.max(0, Math.min(100, 100 - penalty));
     return {
       score,
       warnings,
       label:
-        score >= 85
-          ? ui.risk.good
-          : score >= 65
-            ? ui.risk.average
-            : ui.risk.needsWork,
+        score >= 85 ? ui.risk.good : score >= 65 ? ui.risk.average : ui.risk.needsWork,
     };
-  }, [form, ui.risk]);
+  }, [form, builderLocale, ui.risk]);
 
   const previewSections = useMemo(() => {
     try {
@@ -145,16 +121,33 @@ export default function PodnajemuPage() {
   const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-rose-400';
 
   const handlePayment = async () => {
-    const required = [
-      { field: form.landlordName, msg: 'Jméno podnajímatele' },
-      { field: form.tenantName, msg: 'Jméno podnájemce' },
-      { field: form.flatAddress, msg: 'Adresa bytu' },
-      { field: form.rentAmount, msg: 'Výše nájemného' },
-      { field: form.startDate, msg: 'Datum začátku podnájmu' },
-    ];
-    const missing = required.filter((r) => !r.field.trim()).map((r) => r.msg);
-    if (form.duration === 'fixed' && !form.endDate) missing.push('Datum konce podnájmu');
-    if (missing.length > 0) { alert(`Vyplňte prosím: ${missing.join(', ')}`); return; }
+    const missing: string[] = [];
+    if (!form.landlordName.trim()) missing.push(validationFields.landlordName);
+    if (!form.tenantName.trim()) missing.push(validationFields.tenantName);
+    if (!form.flatAddress.trim()) missing.push(validationFields.flatAddress);
+    if (!form.rentAmount.trim()) missing.push(validationFields.rentAmount);
+    if (!form.startDate) {
+      missing.push(
+        builderLocale === 'cs'
+          ? 'datum začátku podnájmu'
+          : builderLocale === 'en'
+            ? 'sublease start date'
+            : 'дату початку піднайму',
+      );
+    }
+    if (form.duration === 'fixed' && !form.endDate) {
+      missing.push(
+        builderLocale === 'cs'
+          ? 'datum konce podnájmu'
+          : builderLocale === 'en'
+            ? 'sublease end date'
+            : 'дату закінчення піднайму',
+      );
+    }
+    if (missing.length > 0) {
+      alert(`${ui.form.validationPrefix} ${missing.join(', ')}.`);
+      return;
+    }
 
     setIsProcessing(true);
     try {

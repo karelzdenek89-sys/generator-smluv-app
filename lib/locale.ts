@@ -50,6 +50,21 @@ export const EXPAT_CONTRACT_ROUTES: Record<ContractType, string> = {
   cooperation: '/spoluprace',
 };
 
+/** Browser-only: ?lang= wins, then preferred-locale cookie, else cs. */
+export function readBuilderLocaleFromBrowser(): AppLocale {
+  if (typeof window === 'undefined') return 'cs';
+  const params = new URLSearchParams(window.location.search);
+  const queryLocale = params.get('lang');
+  if (queryLocale && isSupportedLocaleInput(queryLocale)) {
+    return normalizeLocale(queryLocale);
+  }
+  const match = document.cookie.match(/(?:^|;\s*)preferred-locale=([^;]+)/);
+  if (match?.[1]) {
+    return normalizeLocale(decodeURIComponent(match[1].trim()));
+  }
+  return 'cs';
+}
+
 export function normalizeLocale(value: unknown): AppLocale {
   const raw = String(value ?? '').trim().toLowerCase();
   if (raw === 'ukr' || raw === 'uk') return 'ua';

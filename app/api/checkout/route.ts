@@ -4,7 +4,8 @@
  *
  * Pravidla:
  *  - Redis fail-open: výpadek Redisu NIKDY nezastaví platbu
- *  - Tier „premium" i „complete" mapují na STRIPE_PRICE_ID_PREMIUM
+ *  - Tematické balíčky (299 Kč) → STRIPE_PRICE_ID_PACKAGE
+ *  - Tier „complete"/„premium" → STRIPE_PRICE_ID_PREMIUM (199 Kč)
  *  - Žádné přísné Zod schema – chybějící pole dostane výchozí hodnotu
  *  - automatic_payment_methods → Google Pay, Apple Pay, karty atd.
  */
@@ -13,7 +14,7 @@ import { randomUUID } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { redis } from '@/lib/redis';
 import { stripe } from '@/lib/stripe';
-import { normalizeThematicPackageKey } from '@/lib/packages';
+import { getStripePriceIdForCheckout, normalizeThematicPackageKey } from '@/lib/packages';
 import { normalizeLocale } from '@/lib/locale';
 
 export const runtime = 'nodejs';
@@ -43,16 +44,6 @@ const CANCEL_URLS: Record<ContractType, string> = {
   debt_acknowledgment:  '/uznani-dluhu',
   cooperation:          '/spoluprace',
 };
-
-// ── Price ID (načítáme za běhu, ne při inicializaci modulu) ───────────────────
-
-function getPriceId(tier: string): string | undefined {
-  if (tier === 'basic')                        return process.env.STRIPE_PRICE_ID_BASIC;
-  if (tier === 'professional')                 return process.env.STRIPE_PRICE_ID_PRO;
-  if (tier === 'complete' || tier === 'premium') return process.env.STRIPE_PRICE_ID_PREMIUM;
-  // neznámý tier → fallback na basic
-  return process.env.STRIPE_PRICE_ID_BASIC;
-}
 
 // ── Rate limit – FAIL-OPEN ────────────────────────────────────────────────────
 
@@ -130,9 +121,11 @@ export async function POST(req: Request) {
     const packageKey = normalizeThematicPackageKey(rawPackageKey);
 
     // 3. Price ID
-    const priceId = getPriceId(tier);
+    const priceId = getStripePriceIdForCheckout(tier, packageKey);
     if (!priceId) {
-      console.error(`[checkout] Chybí Stripe Price ID pro tier: ${tier}`);
+      console.error(
+        `[checkout] Chybí Stripe Price ID pro tier=${tier} packageKey=${packageKey ?? 'none'}`,
+      );
       return NextResponse.json(
         { error: 'Konfigurace ceny nenalezena. Kontaktujte podporu.' },
         { status: 500 },
@@ -182,7 +175,7 @@ export async function POST(req: Request) {
     const sessionParams = {
       mode:           'payment' as const,
       customer_email: email,
-      locale:         (lang === 'en' ? 'en' : 'cs') as 'cs' | 'en',
+      locale:         (lang === 'cs' ? 'cs' : 'en') as 'cs' | 'en',
       line_items:     [{ price: priceId, quantity: 1 }],
       success_url:    `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}${langQuery}`,
       cancel_url:     `${baseUrl}${cancelPath}${cancelLangQuery}`,

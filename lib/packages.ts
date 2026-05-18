@@ -113,6 +113,11 @@ export const THEMATIC_PACKAGES = Object.values(
   THEMATIC_PACKAGE_CONFIG,
 ) as readonly ThematicPackageConfig[];
 
+/** Coerce unknown draft payload values to a thematic package key. */
+export function packageKeyFromUnknown(value: unknown): ThematicPackageKey | null {
+  return typeof value === 'string' ? normalizeThematicPackageKey(value) : null;
+}
+
 export function normalizeThematicPackageKey(
   value?: string | null,
 ): ThematicPackageKey | null {
@@ -171,6 +176,30 @@ export function getEffectivePriceLabel(
   const packageConfig = getThematicPackageConfig(packageKey);
   if (packageConfig) return packageConfig.priceLabel;
   return getTierPriceLabel(tier);
+}
+
+/**
+ * Stripe Price ID for checkout — thematic packages (299 Kč) use STRIPE_PRICE_ID_PACKAGE,
+ * not the standard complete tier price (199 Kč).
+ */
+export function getStripePriceIdForCheckout(
+  tier: string,
+  packageKey?: string | null,
+): string | undefined {
+  const pkg = normalizeThematicPackageKey(packageKey);
+  if (pkg) {
+    return (
+      process.env.STRIPE_PRICE_ID_PACKAGE ??
+      process.env.STRIPE_PRICE_ID_PREMIUM ??
+      process.env.STRIPE_PRICE_ID_COMPLETE
+    );
+  }
+  if (tier === 'basic') return process.env.STRIPE_PRICE_ID_BASIC;
+  if (tier === 'professional') return process.env.STRIPE_PRICE_ID_PRO;
+  if (tier === 'complete' || tier === 'premium') {
+    return process.env.STRIPE_PRICE_ID_PREMIUM ?? process.env.STRIPE_PRICE_ID_COMPLETE;
+  }
+  return process.env.STRIPE_PRICE_ID_BASIC;
 }
 
 export function getEffectiveArchiveDays(

@@ -8,7 +8,9 @@ import {
   getFallbackUiNotice,
   getUnsupportedFormNotice,
   isExpatContract,
+  isSupportedLocaleInput,
   normalizeLocale,
+  readBuilderLocaleFromBrowser,
   type AppLocale,
 } from '@/lib/locale';
 import { getBuilderNoticeLabels } from '@/lib/i18n/expat-locale-copy';
@@ -17,24 +19,19 @@ import {
   getLeaseUseNotice,
 } from '@/lib/i18n/safety-copy';
 
-function readLocaleFromLocation(): AppLocale {
-  if (typeof window === 'undefined') return 'cs';
-  const params = new URLSearchParams(window.location.search);
-  const queryLocale = params.get('lang');
-  if (queryLocale) return normalizeLocale(queryLocale);
-  return 'cs';
-}
-
 export function useBuilderLocale(): AppLocale {
-  const [locale, setLocale] = useState<AppLocale>('cs');
+  const [locale] = useState<AppLocale>(() =>
+    typeof window === 'undefined' ? 'cs' : readBuilderLocaleFromBrowser(),
+  );
 
   useEffect(() => {
-    const nextLocale = readLocaleFromLocation();
-    document.cookie = `preferred-locale=${encodeURIComponent(nextLocale)}; path=/; max-age=31536000; SameSite=Lax`;
-    if (nextLocale !== locale) {
-      window.setTimeout(() => setLocale(nextLocale), 0);
+    const params = new URLSearchParams(window.location.search);
+    const queryLocale = params.get('lang');
+    if (queryLocale && isSupportedLocaleInput(queryLocale)) {
+      const normalized = normalizeLocale(queryLocale);
+      document.cookie = `preferred-locale=${encodeURIComponent(normalized)}; path=/; max-age=31536000; SameSite=Lax`;
     }
-  }, [locale]);
+  }, []);
 
   return locale;
 }

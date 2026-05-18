@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { redis } from '@/lib/redis';
 import { stripe } from '@/lib/stripe';
-import { normalizeThematicPackageKey } from '@/lib/packages';
+import { normalizeThematicPackageKey, packageKeyFromUnknown } from '@/lib/packages';
 import { getContractMeta, type StoredContractData } from '@/lib/contracts';
 import { renderContractPdf } from '@/lib/pdf';
 import { normalizeLocale } from '@/lib/locale';
@@ -151,7 +151,7 @@ export async function GET(req: NextRequest) {
 
     const resolvedPackageKey =
       normalizeThematicPackageKey(draft.packageKey) ??
-      normalizeThematicPackageKey(draft.payload.packageKey) ??
+      packageKeyFromUnknown(draft.payload.packageKey) ??
       normalizeThematicPackageKey(session.metadata?.packageKey);
 
     const fullData: StoredContractData = {

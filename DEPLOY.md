@@ -13,9 +13,10 @@ Nastav v **Project → Settings → Environment Variables** (Production):
 | 🔴 `STRIPE_SECRET_KEY` | Živý Stripe secret key | dashboard.stripe.com → Developers → API keys |
 | 🔴 `STRIPE_WEBHOOK_SECRET` | Webhook signing secret | Stripe → Webhooks → po vytvoření endpointu |
 | 🔴 `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Živý publishable key | Stripe → API keys |
-| 🔴 `STRIPE_PRICE_ID_BASIC` | Live Price ID pro Základní balíček (249 Kč) | Stripe → Products → vytvořit produkt → zkopírovat `price_xxx` |
-| 🔴 `STRIPE_PRICE_ID_PRO` | Live Price ID pro Profesionální balíček (399 Kč) | Stripe → Products → druhý produkt → `price_xxx` |
-| 🔴 `STRIPE_PRICE_ID_PREMIUM` | Live Price ID pro Kompletní balíček (599 Kč) | Stripe → Products → třetí produkt → `price_xxx` |
+| 🔴 `STRIPE_PRICE_ID_BASIC` | Live Price ID — základní dokument (99 Kč) | Stripe → Products → `price_xxx` |
+| 🔴 `STRIPE_PRICE_ID_PRO` | Live Price ID — legacy profesionální (199 Kč), volitelné | Stripe → Products |
+| 🔴 `STRIPE_PRICE_ID_PREMIUM` | Live Price ID — rozšířený dokument / complete (199 Kč) | Stripe → Products |
+| 🔴 `STRIPE_PRICE_ID_PACKAGE` | Live Price ID — tematický balíček pronajímatel / auto (299 Kč) | Stripe → Products |
 | 🔴 `UPSTASH_REDIS_REST_URL` | Upstash Redis URL | console.upstash.com |
 | 🔴 `UPSTASH_REDIS_REST_TOKEN` | Upstash Redis token | console.upstash.com |
 | 🔴 `RESEND_API_KEY` | E-mail API klíč | resend.com → API Keys |

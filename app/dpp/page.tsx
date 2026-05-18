@@ -6,6 +6,7 @@ import ContractLandingSection from '@/app/components/ContractLandingSection';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { getDppFormUi } from '@/lib/i18n/expat-builder-forms';
+import { dppRiskWarnings, dppValidationFields } from '@/lib/i18n/expat-builder-risk';
 import {
   buildExpatPreviewSections,
   getExpatPreviewDateLocale,
@@ -69,15 +70,21 @@ export default function DppPage() {
     setForm(p => ({ ...p, [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value }));
   };
 
+  const validationFields = useMemo(() => dppValidationFields(builderLocale), [builderLocale]);
+
   const risk = useMemo(() => {
-    let score = 100;
-    const warnings: { text: string; level: 'high' | 'medium' | 'low' }[] = [];
-    if (!form.taskDescription) { score -= 25; warnings.push({ text: 'Popis pracovního úkolu je povinný.', level: 'high' }); }
-    if (!form.estimatedHours) { score -= 15; warnings.push({ text: 'Doplňte počet hodin — limit je 300 hod./rok u jednoho zaměstnavatele.', level: 'medium' }); }
-    if (Number(form.estimatedHours) > 300) { score -= 30; warnings.push({ text: 'Počet hodin překračuje zákonný limit 300 hod./rok (§ 75 ZP)!', level: 'high' }); }
-    if (!form.totalRemuneration && !form.hourlyRate) { score -= 15; warnings.push({ text: 'Doporučujeme doplnit odměnu.', level: 'medium' }); }
-    return { score: Math.max(0, score), warnings, label: score >= 85 ? 'Bez rizik' : score >= 65 ? 'Drobná rizika' : 'Doporučená doplnění' };
-  }, [form]);
+    const warnings = dppRiskWarnings(builderLocale, form);
+    const penalty = warnings.reduce(
+      (sum, w) => sum + (w.level === 'high' ? 20 : w.level === 'medium' ? 12 : 5),
+      0,
+    );
+    const score = Math.max(0, 100 - penalty);
+    return {
+      score,
+      warnings,
+      label: score >= 85 ? ui.risk.good : score >= 65 ? ui.risk.average : ui.risk.needsWork,
+    };
+  }, [form, builderLocale, ui.risk]);
 
   const previewSections = useMemo(() => {
     try {
@@ -91,13 +98,15 @@ export default function DppPage() {
   const handlePayment = async () => {
     // Validace § 75 ZP — DPP musí mít druh práce, místo, dobu a odměnu.
     const missing: string[] = [];
-    if (!form.employerName?.trim()) missing.push('název zaměstnavatele');
-    if (!form.employeeName?.trim()) missing.push('jméno zaměstnance');
-    if (!form.taskDescription?.trim()) missing.push('popis pracovního úkolu');
-    if (!form.workPlace?.trim()) missing.push('místo výkonu práce');
-    if (!form.hourlyRate && !form.totalRemuneration) missing.push('výši odměny');
+    if (!form.employerName?.trim()) missing.push(validationFields.employerName);
+    if (!form.employeeName?.trim()) missing.push(validationFields.employeeName);
+    if (!form.taskDescription?.trim()) missing.push(validationFields.taskDescription);
+    if (!form.workPlace?.trim()) missing.push(builderLocale === 'cs' ? 'místo výkonu práce' : builderLocale === 'en' ? 'place of work' : 'місце виконання');
+    if (!form.hourlyRate && !form.totalRemuneration) {
+      missing.push(builderLocale === 'cs' ? 'výši odměny' : builderLocale === 'en' ? 'remuneration' : 'винагороду');
+    }
     if (missing.length > 0) {
-      alert(`Dohoda o provedení práce dle § 75 ZP vyžaduje: ${missing.join(', ')}.`);
+      alert(`${ui.form.validationPrefix} ${missing.join(', ')}.`);
       return;
     }
     try {
@@ -109,7 +118,10 @@ export default function DppPage() {
       const data = await res.json();
       if (!res.ok || !data?.url) throw new Error();
       window.location.href = data.url;
-    } catch { alert('Chyba platební brány.'); setIsProcessing(false); }
+    } catch {
+      alert(ui.form.paymentError);
+      setIsProcessing(false);
+    }
   };
 
   const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-rose-400';

@@ -9,6 +9,7 @@ import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/PaymentModal';
 import { BuilderLocaleNotice, useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
 import { getEmploymentFormUi } from '@/lib/i18n/expat-builder-forms';
+import { employmentRiskWarnings, employmentValidationFields } from '@/lib/i18n/expat-builder-risk';
 import {
   buildExpatPreviewSections,
   getExpatPreviewDateLocale,
@@ -74,23 +75,24 @@ export default function PracovniPage() {
     setForm(p => ({ ...p, [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value }));
   };
 
+  const validationFields = useMemo(
+    () => employmentValidationFields(builderLocale),
+    [builderLocale],
+  );
+
   const risk = useMemo(() => {
-    let score = 100;
-    const warnings: { text: string; level: 'high' | 'medium' | 'low' }[] = [];
-    if (!form.employerIco) { score -= 15; warnings.push({ text: 'Doplňte IČO zaměstnavatele — povinný údaj.', level: 'high' }); }
-    if (!form.jobTitle) { score -= 20; warnings.push({ text: 'Druh práce (pozice) je povinná náležitost § 34 ZP.', level: 'high' }); }
-    if (!form.workPlace) { score -= 15; warnings.push({ text: 'Místo výkonu práce je povinná náležitost § 34 ZP.', level: 'high' }); }
-    if (!form.startDate) { score -= 15; warnings.push({ text: 'Den nástupu je povinná náležitost § 34 ZP.', level: 'high' }); }
-    if (!form.salary && !form.hourlyRate) { score -= 10; warnings.push({ text: 'Doporučujeme doplnit mzdu — zaměstnanec ji musí znát.', level: 'medium' }); }
-    if (form.employmentType === 'fixed' && !form.endDate) { score -= 10; warnings.push({ text: 'Doplňte datum konce pro smlouvu na dobu určitou.', level: 'high' }); }
-    const maxTrial = form.isManager ? 8 : 4;
-    if (Number(form.trialPeriodMonths) > maxTrial) { warnings.push({ text: `Zákonné maximum zkušební doby je ${maxTrial} měsíce (§ 35 ZP).${form.isManager ? '' : ' U vedoucích zaměstnanců max. 8 měsíců.'}`, level: 'high' }); }
+    const warnings = employmentRiskWarnings(builderLocale, form);
+    const penalty = warnings.reduce(
+      (sum, w) => sum + (w.level === 'high' ? 15 : w.level === 'medium' ? 10 : 5),
+      0,
+    );
+    const score = Math.max(0, 100 - penalty);
     return {
-      score: Math.max(0, score),
+      score,
       warnings,
       label: score >= 85 ? ui.risk.good : score >= 65 ? ui.risk.average : ui.risk.needsWork,
     };
-  }, [form, ui.risk]);
+  }, [form, builderLocale, ui.risk]);
 
   const previewSections = useMemo(() => {
     try {
@@ -108,12 +110,12 @@ export default function PracovniPage() {
     // Validace § 34 ZP — pracovní smlouva BEZ druhu práce, místa a dne nástupu
     // je ze zákona neplatná. Tato pole jsou zde tvrdě povinná.
     const missing: string[] = [];
-    if (!form.employerName?.trim()) missing.push('název / jméno zaměstnavatele');
-    if (!form.employeeName?.trim()) missing.push('jméno zaměstnance');
-    if (!form.jobTitle?.trim()) missing.push('druh práce');
-    if (!form.workPlace?.trim()) missing.push('místo výkonu práce');
-    if (!form.startDate) missing.push('den nástupu do práce');
-    if (!form.salary && !form.hourlyRate) missing.push('výši mzdy / hodinové sazby');
+    if (!form.employerName?.trim()) missing.push(validationFields.employerName);
+    if (!form.employeeName?.trim()) missing.push(validationFields.employeeName);
+    if (!form.jobTitle?.trim()) missing.push(validationFields.jobTitle);
+    if (!form.workPlace?.trim()) missing.push(validationFields.workPlace);
+    if (!form.startDate) missing.push(validationFields.startDate);
+    if (!form.salary && !form.hourlyRate) missing.push(validationFields.salary);
     if (missing.length > 0) {
       alert(`${ui.form.validationPrefix} ${missing.join(', ')}.`);
       return;

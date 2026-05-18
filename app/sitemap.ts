@@ -387,12 +387,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'yearly',
       priority: 0.3,
     },
-    {
-      url: `${BASE_URL}/en`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.85,
-    },
     ...EXPAT_SEO_LOCALES.flatMap((locale) =>
       EXPAT_SEO_SLUGS.map((slug) => ({
         url: `${BASE_URL}/${locale}/${slug}`,
@@ -409,12 +403,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
         },
       })),
     ),
-    {
-      url: `${BASE_URL}/ua`,
-      lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 0.85,
-    },
     ...getAllExpatBlogSlugs().map((slug) => ({
       url: getExpatBlogCanonical(slug),
       lastModified: now,

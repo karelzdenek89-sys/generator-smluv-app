@@ -883,6 +883,13 @@ export function getExpatBlogCanonical(slug: string): string {
   return `${BASE}/blog/expat/${slug}`;
 }
 
+/** EN guide slug ↔ UA guide slug (e.g. *-guide-en ↔ *-guide-ua). */
+export function getExpatBlogAlternateSlug(slug: string): string | null {
+  if (slug.endsWith('-guide-en')) return slug.replace(/-guide-en$/, '-guide-ua');
+  if (slug.endsWith('-guide-ua')) return slug.replace(/-guide-ua$/, '-guide-en');
+  return null;
+}
+
 export function expatBlogToBlogMeta(article: ExpatBlogArticle) {
   return {
     slug: `expat/${article.slug}`,

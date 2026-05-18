@@ -7,6 +7,7 @@ import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import type { StoredContractData } from '@/lib/contracts';
 import { getPoaFormUi } from '@/lib/i18n/expat-builder-forms';
+import { poaRiskWarnings, poaValidationFields } from '@/lib/i18n/expat-builder-risk';
 import {
   buildExpatPreviewSections,
   getExpatPreviewLabels,
@@ -66,23 +67,27 @@ export default function PlnaMocPage() {
     setForm(p => ({ ...p, [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value }));
   };
 
+  const validationFields = useMemo(() => poaValidationFields(builderLocale), [builderLocale]);
+
   const risk = useMemo(() => {
-    let score = 100;
-    const warnings: { text: string; level: 'high' | 'medium' | 'low' }[] = [];
-    if (!form.principalName || !form.principalId) { score -= 20; warnings.push({ text: 'Doplňte identifikaci zmocnitele.', level: 'high' }); }
-    if (!form.agentName || !form.agentId) { score -= 20; warnings.push({ text: 'Doplňte identifikaci zmocněnce.', level: 'high' }); }
-    if (form.poaType === 'general' && !form.customScope) { score -= 25; warnings.push({ text: 'Doplňte rozsah zmocnění.', level: 'high' }); }
-    if (!form.validUntil && !form.singleUse) { score -= 5; warnings.push({ text: 'Platnost plné moci není omezena (platí do odvolání).', level: 'low' }); }
-    if (form.notaryUpsell === false && (form.poaType === 'property' || form.poaType === 'company')) {
-      score -= 10; warnings.push({ text: 'Pro nemovitosti a firmy doporučujeme úředně ověřený podpis (ověřená plná moc).', level: 'medium' });
-    }
+    const warnings = poaRiskWarnings(builderLocale, {
+      ...form,
+      needsNotarized:
+        form.notaryUpsell === false &&
+        (form.poaType === 'property' || form.poaType === 'company'),
+    });
+    const penalty = warnings.reduce(
+      (sum, w) => sum + (w.level === 'high' ? 20 : w.level === 'medium' ? 10 : 5),
+      0,
+    );
+    const score = Math.max(0, 100 - penalty);
     return {
-      score: Math.max(0, score),
+      score,
       warnings,
       label:
         score >= 85 ? ui.risk.good : score >= 65 ? ui.risk.average : ui.risk.needsWork,
     };
-  }, [form, ui.risk]);
+  }, [form, builderLocale, ui.risk]);
 
   const previewSections = useMemo(() => {
     try {
@@ -98,10 +103,13 @@ export default function PlnaMocPage() {
 
   const handlePayment = async () => {
     const missing: string[] = [];
-    if (!form.principalName?.trim()) missing.push('jméno zmocnitele');
-    if (!form.agentName?.trim()) missing.push('jméno zmocněnce');
-    if (form.poaType === 'general' && !form.customScope?.trim()) missing.push('rozsah zmocnění (popis úkonu)');
-    if (missing.length > 0) { alert(`Plná moc vyžaduje: ${missing.join(', ')}.`); return; }
+    if (!form.principalName?.trim()) missing.push(validationFields.principalName);
+    if (!form.agentName?.trim()) missing.push(validationFields.agentName);
+    if (form.poaType === 'general' && !form.customScope?.trim()) missing.push(validationFields.customScope);
+    if (missing.length > 0) {
+      alert(`${ui.form.validationPrefix} ${missing.join(', ')}.`);
+      return;
+    }
     try {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {
