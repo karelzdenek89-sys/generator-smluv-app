@@ -165,7 +165,7 @@ export async function POST(req: Request) {
     const sessionParams = {
       mode:           'payment' as const,
       customer_email: email,
-      locale:         'cs' as const,
+      locale:         (lang === 'en' ? 'en' : 'cs') as 'cs' | 'en',
       line_items:     [{ price: priceId, quantity: 1 }],
       success_url:    `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}${langQuery}`,
       cancel_url:     `${baseUrl}${cancelPath}${cancelLangQuery}`,

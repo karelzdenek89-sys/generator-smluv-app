@@ -80,7 +80,10 @@ export default async function ForeignVisitorBanner() {
   const cookieStore = await cookies();
   if (cookieStore.get('foreign-banner-dismissed')?.value === '1') return null;
 
-  const locale = mapCookieToAppLocale(cookieStore.get('preferred-locale')?.value);
+  const headerLocale = hdrs.get('x-preferred-locale');
+  const locale =
+    mapCookieToAppLocale(headerLocale ?? undefined) ??
+    mapCookieToAppLocale(cookieStore.get('preferred-locale')?.value);
   if (!locale) return null;
 
   const contractType = getContractTypeByPath(pathname);

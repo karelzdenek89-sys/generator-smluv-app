@@ -1,11 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { redis } from '@/lib/redis';
+import { getThematicPackageConfig } from '@/lib/packages';
+import { normalizePricingTier, getTierArchiveDays, getTierPriceLabel } from '@/lib/pricing';
 import { stripe } from '@/lib/stripe';
+import { normalizeLocale } from '@/lib/locale';
 
 export const runtime = 'nodejs';
 
+const CONTRACT_NAMES: Record<string, string> = {
+  lease: 'Nájemní smlouva',
+  car_sale: 'Kupní smlouva na vozidlo',
+  gift: 'Darovací smlouva',
+  work_contract: 'Smlouva o dílo',
+  loan: 'Smlouva o zápůjčce',
+  nda: 'Smlouva o mlčenlivosti (NDA)',
+  general_sale: 'Kupní smlouva',
+  employment: 'Pracovní smlouva',
+  dpp: 'Dohoda o provedení práce',
+  service: 'Smlouva o poskytování služeb',
+  sublease: 'Podnájemní smlouva',
+  power_of_attorney: 'Plná moc',
+  debt_acknowledgment: 'Uznání dluhu',
+  cooperation: 'Smlouva o spolupráci',
+};
+
+type DraftRecord = {
+  contractType?: string;
+  packageKey?: string | null;
+  tier?: string;
+  lang?: string;
+};
+
 /**
- * Lightweight payment status check — nevrací PDF, jen stav platby.
- * Používá success page pro polling před zobrazením tlačítka stažení.
+ * Lightweight payment status check — used by the success page before download.
  */
 export async function GET(req: NextRequest) {
   try {
@@ -17,11 +44,42 @@ export async function GET(req: NextRequest) {
 
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
-    if (session.payment_status === 'paid') {
-      return NextResponse.json({ status: 'paid' });
+    if (session.payment_status !== 'paid') {
+      return NextResponse.json({ status: 'pending' });
     }
 
-    return NextResponse.json({ status: 'pending' });
+    const draftId = session.metadata?.draftId || session.client_reference_id;
+    const contractType = session.metadata?.contractType ?? '';
+    const tier = normalizePricingTier(session.metadata?.tier);
+    const lang = normalizeLocale(session.metadata?.lang);
+    let packageKey = session.metadata?.packageKey ?? null;
+    let packageLabel: string | null = null;
+
+    if (draftId) {
+      try {
+        const draft = await redis.get<DraftRecord>(`contract:draft:${draftId}`);
+        if (draft?.packageKey) packageKey = draft.packageKey;
+      } catch {
+        // fail-open: metadata from Stripe is enough for UI
+      }
+    }
+
+    if (packageKey) {
+      packageLabel = getThematicPackageConfig(packageKey)?.title ?? null;
+    }
+
+    return NextResponse.json({
+      status: 'paid',
+      tier,
+      tierLabel: getTierPriceLabel(tier),
+      packageKey,
+      packageLabel,
+      priceLabel: getTierPriceLabel(tier),
+      archiveDays: getTierArchiveDays(tier),
+      contractType,
+      contractName: CONTRACT_NAMES[contractType] ?? 'Právní dokument',
+      lang,
+    });
   } catch {
     return NextResponse.json({ status: 'error' }, { status: 500 });
   }

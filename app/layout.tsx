@@ -23,7 +23,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
 
 // hreflang alternates advertised on every page that doesn't override metadata.
 // Critical for the CZ homepage — without these Google can't discover the
-// /en /uk /ru /vn /de variants from the root URL.
+// /en and /ua expat landing variants from the root URL.
 const rootLanguageAlternates: Record<string, string> = {
   cs: BASE_URL,
   'x-default': BASE_URL,

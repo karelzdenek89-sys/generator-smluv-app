@@ -145,6 +145,19 @@ function testSupportedBuilders() {
   ]);
 }
 
+function testOrdersApiSecurity() {
+  const ordersRoute = read('app/api/orders/route.ts');
+  assert.match(ordersRoute, /email-only enumeration/i);
+  assert.match(ordersRoute, /resolveEmailFromPortalToken/);
+  assert.doesNotMatch(
+    ordersRoute,
+    /get\('email'\)[\s\S]*return NextResponse\.json\(\{ orders \}\)/,
+  );
+  const customerZone = read('app/zakaznicka-zona/page.tsx');
+  assert.doesNotMatch(customerZone, /\/api\/orders\?email=/);
+  assert.match(customerZone, /access=/);
+}
+
 function testUnsupportedContracts() {
   const noticeComponent = `${read('app/components/BuilderLocaleNotice.tsx')}\n${read('lib/locale.ts')}`;
   assert.match(noticeComponent, /getUnsupportedFormNotice/);
@@ -709,6 +722,7 @@ async function main() {
   testNoMisleadingBilingualMarketing();
   testSupportedBuilders();
   testUnsupportedContracts();
+  testOrdersApiSecurity();
   testLegalCopy();
   testLegalAccuracyRegressions();
   testLeaseEnBuilderUi();

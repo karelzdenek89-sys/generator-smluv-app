@@ -58,6 +58,24 @@ export function proxy(request: NextRequest) {
   const response = NextResponse.next();
   response.headers.set('x-pathname', pathname);
 
+  const langQuery = request.nextUrl.searchParams.get('lang')?.trim().toLowerCase();
+  if (langQuery) {
+    const preferred =
+      langQuery === 'en'
+        ? 'en'
+        : langQuery === 'ua' || langQuery === 'uk' || langQuery === 'ukr'
+          ? 'ua'
+          : null;
+    if (preferred) {
+      response.cookies.set('preferred-locale', preferred, {
+        path: '/',
+        maxAge: 60 * 60 * 24 * 30,
+        sameSite: 'lax',
+      });
+      response.headers.set('x-preferred-locale', preferred);
+    }
+  }
+
   // 1) Explicit foreign-landing visit → store preference for builder banners.
   for (const seg of ACTIVE_LOCALE_SEGMENTS) {
     if (pathname === `/${seg}` || pathname.startsWith(`/${seg}/`)) {

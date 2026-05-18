@@ -152,7 +152,8 @@ test.describe('EN lease expat smoke', () => {
     await expect(page.getByText('Your contract will be generated primarily in Czech').first()).toBeVisible();
   });
 
-  test('/vn and /vi redirect to /en', async ({ page }) => {
+  test('/vn and /vi redirect to /en', async ({ page, context }) => {
+    await context.clearCookies();
     await page.goto('/vn');
     await page.waitForURL(/\/en\/?$/);
     expect(page.url()).toMatch(/\/en\/?$/);
@@ -162,7 +163,8 @@ test.describe('EN lease expat smoke', () => {
     expect(page.url()).toMatch(/\/en\/?$/);
   });
 
-  test('/darovaci?lang=en shows Czech-only notice', async ({ page }) => {
+  test('/darovaci?lang=en shows Czech-only notice', async ({ page, context }) => {
+    await context.clearCookies();
     await page.goto('/darovaci?lang=en');
     await expect(page.getByText('Czech-only form')).toBeVisible();
     await expect(

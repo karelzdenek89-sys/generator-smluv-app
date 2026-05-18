@@ -151,7 +151,8 @@ test.describe('UA lease expat smoke', () => {
     ).toBeVisible();
   });
 
-  test('/darovaci?lang=ua shows Czech-only notice', async ({ page }) => {
+  test('/darovaci?lang=ua shows Czech-only notice', async ({ page, context }) => {
+    await context.clearCookies();
     await page.goto('/darovaci?lang=ua');
     await expect(page.getByText('Лише чеська форма')).toBeVisible();
     await expect(page.getByText(/наразі доступна лише чеською/i)).toBeVisible();

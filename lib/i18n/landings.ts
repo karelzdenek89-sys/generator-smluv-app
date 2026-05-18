@@ -90,7 +90,7 @@ const EN: LandingContent = {
   h1Line1: 'Czech contracts online —',
   h1Line2: 'rental, employment, NDA in 5 minutes',
   intro:
-    'SmlouvaHned generates standard Czech legal contracts directly from a structured form. The output is a Czech PDF that meets the requirements of Czech authorities, banks, employers, and the foreign police (cizinecká policie). Made for expats, students, and international professionals living in Prague, Brno, Plzeň, Ostrava and elsewhere in the Czech Republic.',
+    'SmlouvaHned helps foreigners in the Czech Republic create standard Czech contract templates from a structured form. The PDF is generated primarily in Czech; selected core contracts may include an explanatory English annex (not certified or official). Requirements of authorities or third parties may differ.',
   ctaPrimary: 'Start a rental agreement →',
   ctaSecondary: 'Start a DPP agreement',
   warningBanner:
@@ -111,19 +111,19 @@ const EN: LandingContent = {
     { title: 'Contract for work (smlouva o dílo)', blurb: 'Tailor-made work, construction, software, repairs.' },
     { title: 'Service agreement (smlouva o poskytování služeb)', blurb: 'Recurring or one-off service provision.' },
     { title: 'Cooperation agreement (smlouva o spolupráci)', blurb: 'B2B cooperation between independent businesses.' },
-    { title: 'Power of attorney (plná moc)', blurb: 'Authorise another person to act on your behalf — e.g. at the foreign police, bank, or registry.' },
+    { title: 'Power of attorney (plná moc)', blurb: 'Authorise another person to act on your behalf — e.g. at a bank, office, or registry (check whether notarisation is required).' },
   ]),
   howItWorksHeading: 'How it works',
   howItWorks: [
     { title: '1. Pick a contract.', description: 'Choose from 14 standard document types above.' },
     { title: '2. Fill the form.', description: 'Enter the parties, amounts, dates, and any optional clauses. Field labels are currently in Czech — if you get stuck, use a browser translator (right-click → Translate to English).' },
-    { title: '3. Pay and download.', description: 'Pay by card via Stripe (CZK). Download your bilingual Czech + English PDF immediately. The link stays valid for 7–30 days.' },
+    { title: '3. Pay and download.', description: 'Pay by card via Stripe (CZK). Download your Czech PDF immediately; supported contracts may include an explanatory English annex. The link stays valid for 7–30 days.' },
     { title: '4. Sign on paper.', description: 'Print, both parties sign, keep one copy each. Czech contracts generally do not require notarisation unless they concern real estate transfer or specific corporate acts.' },
   ],
   whyHeading: 'Why foreigners use SmlouvaHned',
   whyBullets: [
-    '✓ Bilingual PDF — Czech (the prevailing wording) + your language alongside, so you understand what you sign.',
-    '✓ Czech-language PDF accepted by landlords, employers, banks, the trade licensing office, and the foreign police.',
+    '✓ Czech contract PDF with optional explanatory translation for supported document types (Czech wording prevails).',
+    '✓ Templates reference the Czech Civil Code and Labour Code where relevant.',
     '✓ Templates built around the Czech Civil Code (§ 89/2012 Sb.) and the Labour Code — paragraph references are included.',
     '✓ Encrypted, temporary data storage — deleted automatically after 7–30 days.',
     '✓ Payment in Czech crowns via Stripe. No subscription, you pay per contract.',
@@ -131,7 +131,7 @@ const EN: LandingContent = {
   ],
   faqHeading: 'Frequently asked questions',
   faq: [
-    { q: 'I do not speak Czech. Can I still use SmlouvaHned?', a: 'Yes. The PDF output is bilingual (Czech + your language). The form interface itself is being translated step by step — rental agreement and DPP first. For other contracts, use the browser translator while filling the form. In case of any discrepancy between language versions, the Czech wording prevails — the translation is for convenience only and is not a certified or official translation.' },
+    { q: 'I do not speak Czech. Can I still use SmlouvaHned?', a: 'Yes for supported contracts: the PDF is primarily Czech and may include an explanatory translation annex. Other forms are Czech-only for now — use your browser translator while filling. The translation is not certified or official; Czech wording prevails.' },
     { q: 'Is the contract legally valid in the Czech Republic?', a: 'Yes. Each template is built around the relevant provisions of the Czech Civil Code (Občanský zákoník, Act No. 89/2012 Coll.) or the Labour Code. Section references appear in the document.' },
     { q: 'Is SmlouvaHned a law firm?', a: 'No. SmlouvaHned is a software tool that generates standard template contracts. It is not legal advice and does not replace consultation with a Czech attorney (advokát).' },
     { q: 'How do payments work?', a: 'After you fill the form you can choose a tier and pay by card via Stripe. Payments are processed in Czech crowns (CZK).' },
