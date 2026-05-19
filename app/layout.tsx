@@ -19,7 +19,7 @@ const playfair = Playfair_Display({
   display: 'swap',
 });
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 
 // hreflang alternates advertised on every page that doesn't override metadata.
 // Critical for the CZ homepage — without these Google can't discover the
@@ -102,8 +102,8 @@ const organizationSchema = {
   '@type': 'Organization',
   name: 'SmlouvaHned',
   legalName: 'Karel Zdeněk',
-  url: 'https://smlouvahned.cz',
-  logo: 'https://smlouvahned.cz/og-image.png',
+  url: BASE_URL,
+  logo: `${BASE_URL}/og-image.png`,
   description: 'Softwarový nástroj pro automatizovanou tvorbu standardizovaných smluvních dokumentů online — nájemní smlouva, kupní smlouva, smlouva o dílo, NDA a další. Od 99 Kč.',
   inLanguage: 'cs',
   areaServed: 'CZ',
@@ -131,13 +131,13 @@ const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'SmlouvaHned',
-  url: 'https://smlouvahned.cz',
+  url: BASE_URL,
   inLanguage: 'cs',
   potentialAction: {
     '@type': 'SearchAction',
     target: {
       '@type': 'EntryPoint',
-      urlTemplate: 'https://smlouvahned.cz/blog?q={search_term_string}',
+      urlTemplate: `${BASE_URL}/blog?q={search_term_string}`,
     },
     'query-input': 'required name=search_term_string',
   },

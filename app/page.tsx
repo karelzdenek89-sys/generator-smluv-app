@@ -6,7 +6,7 @@ import LanguageSwitcher from '@/app/components/LanguageSwitcher';
 import { SEO_LANDINGS, CLUSTER_LABELS, type ClusterKey } from '@/lib/internal-links';
 import { FOREIGN_LOCALES, LOCALE_META } from '@/lib/i18n/locales';
 
-const HOMEPAGE_BASE_URL = 'https://smlouvahned.cz';
+const HOMEPAGE_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 const homepageLanguageAlternates: Record<string, string> = {
   cs: HOMEPAGE_BASE_URL,
   'x-default': HOMEPAGE_BASE_URL,
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     title: 'Generování smluv online 2026 — PDF ihned ke stažení | SmlouvaHned',
     description:
       '14 typů smluv online dle OZ 2026 — nájemní, kupní, pracovní, NDA a další. Formulář → PDF s citacemi § ihned. Od 99 Kč.',
-    url: 'https://smlouvahned.cz',
+    url: HOMEPAGE_BASE_URL,
     siteName: 'SmlouvaHned',
     type: 'website',
     locale: 'cs_CZ',
@@ -77,7 +77,7 @@ const softwareSchema = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
   name: 'SmlouvaHned — Generátor smluv',
-  url: 'https://smlouvahned.cz',
+  url: HOMEPAGE_BASE_URL,
   applicationCategory: 'BusinessApplication',
   operatingSystem: 'Web',
   inLanguage: 'cs',
@@ -92,7 +92,7 @@ const softwareSchema = {
     'Šablony aktualizované dle české legislativy k 1. 1. 2026',
     'Šifrované dočasné úložiště dat — automatické smazání po 7–30 dnech',
   ],
-  provider: { '@type': 'Organization', name: 'SmlouvaHned', url: 'https://smlouvahned.cz' },
+  provider: { '@type': 'Organization', name: 'SmlouvaHned', url: HOMEPAGE_BASE_URL },
   offers: {
     '@type': 'AggregateOffer',
     priceCurrency: 'CZK',

@@ -135,6 +135,15 @@ export function getThematicPackageConfig(
   return key ? THEMATIC_PACKAGE_CONFIG[key] : null;
 }
 
+export function normalizeThematicPackageKeyForContract(
+  value: string | null | undefined,
+  contractType: ContractType,
+): ThematicPackageKey | null {
+  const packageConfig = getThematicPackageConfig(value);
+  if (!packageConfig || packageConfig.contractType !== contractType) return null;
+  return packageConfig.key;
+}
+
 export function getEffectiveIncludedItems(
   contractType: string | null | undefined,
   tier: PricingTier,

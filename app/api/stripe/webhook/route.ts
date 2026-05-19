@@ -42,6 +42,13 @@ export async function POST(req: Request) {
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session;
 
+      if (session.payment_status !== 'paid') {
+        console.warn(
+          `[webhook] checkout.session.completed without paid status (${session.id}: ${session.payment_status})`,
+        );
+        return NextResponse.json({ received: true });
+      }
+
       // Idempotence: atomický SET NX — zabránění race condition při Stripe retry
       try {
         const dedupKey = `webhook:paid:${session.id}`;
@@ -69,6 +76,12 @@ export async function POST(req: Request) {
               : {};
           const tier = String(session.metadata?.tier || existing.tier || 'basic');
           const lang = String(session.metadata?.lang || existing.lang || existingPayload.lang || 'cs');
+          const downloadToken =
+            typeof session.metadata?.downloadToken === 'string'
+              ? session.metadata.downloadToken
+              : typeof existing.downloadToken === 'string'
+                ? existing.downloadToken
+                : null;
           const ttl = tier === 'complete' ? TTL_COMPLETE : tier === 'professional' ? TTL_PROFESSIONAL : TTL_BASIC;
           await redis.set(
             key,
@@ -80,6 +93,7 @@ export async function POST(req: Request) {
               stripeSessionId: session.id,
               paymentStatus: session.payment_status,
               customerEmail: session.customer_email || (existing.email as string) || null,
+              ...(downloadToken ? { downloadToken } : {}),
             },
             { ex: ttl },
           );
@@ -121,10 +135,11 @@ export async function POST(req: Request) {
               customerEmail,
               session.id,
               session.metadata?.contractType || 'dokument',
-              process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz',
+              process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz',
               tier,
               lang,
               portalToken,
+              downloadToken,
             ).catch((err) => console.error('[webhook] E-mail error:', err));
           }
         }
@@ -150,6 +165,7 @@ async function sendDownloadEmail(
   tier: string = 'basic',
   lang: string = 'cs',
   portalToken: string | null = null,
+  downloadToken: string | null = null,
 ): Promise<void> {
   const contractNames: Record<string, string> = {
     lease: 'Nájemní smlouva',
@@ -170,7 +186,8 @@ async function sendDownloadEmail(
 
   const contractName = contractNames[contractType] || 'Právní dokument';
   const langQuery = lang === 'cs' ? '' : `&lang=${encodeURIComponent(lang)}`;
-  const downloadUrl = `${baseUrl}/api/contracts/download?session_id=${sessionId}${langQuery}`;
+  const tokenQuery = downloadToken ? `&token=${encodeURIComponent(downloadToken)}` : '';
+  const downloadUrl = `${baseUrl}/api/contracts/download?session_id=${sessionId}${langQuery}${tokenQuery}`;
   const portalUrl = portalToken
     ? `${baseUrl}/zakaznicka-zona?access=${encodeURIComponent(portalToken)}`
     : `${baseUrl}/zakaznicka-zona`;

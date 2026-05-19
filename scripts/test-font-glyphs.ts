@@ -1,5 +1,5 @@
 /**
- * Direct glyph-coverage check for Noto Sans.
+ * Direct glyph-coverage check for the production PDF font.
  *
  * jsPDF emits squares (□) for code points not present in the embedded font.
  * pdf-parse extracts the rendered text as Unicode — if the actual code points
@@ -9,6 +9,7 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import { jsPDF } from 'jspdf';
+import { extractPdfText } from '../lib/pdf-text';
 
 const OUT_DIR = path.join(process.cwd(), 'tmp', 'pdf-test');
 
@@ -34,25 +35,25 @@ async function run() {
   await mkdir(OUT_DIR, { recursive: true });
 
   const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-  const regular = await loadB64('NotoSans-Regular.ttf');
-  const bold = await loadB64('NotoSans-Bold.ttf');
+  const regular = await loadB64('Roboto-Regular.ttf');
+  const bold = await loadB64('Roboto-Bold.ttf');
   const pdfDoc = doc as JsPdfWithFonts;
-  pdfDoc.addFileToVFS('NotoSans-Regular.ttf', regular);
-  pdfDoc.addFont('NotoSans-Regular.ttf', 'NotoSans', 'normal');
-  pdfDoc.addFileToVFS('NotoSans-Bold.ttf', bold);
-  pdfDoc.addFont('NotoSans-Bold.ttf', 'NotoSans', 'bold');
-  doc.setFont('NotoSans', 'normal');
+  pdfDoc.addFileToVFS('Roboto-Regular.ttf', regular);
+  pdfDoc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
+  pdfDoc.addFileToVFS('Roboto-Bold.ttf', bold);
+  pdfDoc.addFont('Roboto-Bold.ttf', 'Roboto', 'bold');
+  doc.setFont('Roboto', 'normal');
   doc.setFontSize(14);
 
   let y = 20;
-  doc.text('Noto Sans glyph coverage probe', 20, y);
+  doc.text('Roboto glyph coverage probe', 20, y);
   y += 12;
   doc.setFontSize(11);
   for (const s of samples) {
-    doc.setFont('NotoSans', 'bold');
+    doc.setFont('Roboto', 'bold');
     doc.text(s.label + ':', 20, y);
     y += 6;
-    doc.setFont('NotoSans', 'normal');
+    doc.setFont('Roboto', 'normal');
     doc.text(s.text, 20, y);
     y += 12;
   }
@@ -62,18 +63,16 @@ async function run() {
   console.log(`Wrote ${file}`);
 
   // Now parse it back and check that Unicode round-trips.
-  const { PDFParse } = await import('pdf-parse');
   const buf = await readFile(file);
-  const parser = new PDFParse({ data: new Uint8Array(buf) });
-  const parsed = await parser.getText();
+  const text = await extractPdfText(buf);
   console.log('\nExtracted text:');
   console.log('───────────────');
-  console.log(parsed.text);
+  console.log(text);
   console.log('───────────────\n');
 
   let failures = 0;
   for (const s of samples) {
-    const ok = s.expect.test(parsed.text);
+    const ok = s.expect.test(text);
     console.log(`${ok ? '✓' : '✗'}  ${s.label.padEnd(18)} regex: ${s.expect}`);
     if (!ok) failures++;
   }

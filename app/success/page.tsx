@@ -25,6 +25,7 @@ const pageShell = 'min-h-screen bg-[#05080f] px-6 py-16 text-slate-200';
 function SuccessContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
+  const token = searchParams.get('token')?.trim() ?? '';
   const lang = normalizeLocale(searchParams.get('lang'));
   const [dlState, setDlState] = useState<DownloadState>('checking');
   const [progress, setProgress] = useState(0);
@@ -35,8 +36,9 @@ function SuccessContent() {
   const downloadUrl = useMemo(() => {
     if (!encodedSessionId) return null;
     const langQuery = lang === 'cs' ? '' : `&lang=${encodeURIComponent(lang)}`;
-    return `/api/contracts/download?session_id=${encodedSessionId}${langQuery}`;
-  }, [encodedSessionId, lang]);
+    const tokenQuery = token ? `&token=${encodeURIComponent(token)}` : '';
+    return `/api/contracts/download?session_id=${encodedSessionId}${langQuery}${tokenQuery}`;
+  }, [encodedSessionId, lang, token]);
 
   const purchaseTitle =
     orderMeta?.packageLabel ?? orderMeta?.contractName ?? 'Váš smluvní dokument';

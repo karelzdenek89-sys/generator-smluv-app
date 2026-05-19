@@ -10,6 +10,7 @@ type Order = {
   paidAt: string | null;
   tier: string;
   lang?: string;
+  downloadToken?: string | null;
 };
 
 type LookupState = 'idle' | 'loading' | 'done' | 'error';
@@ -138,9 +139,11 @@ export default function CustomerZone() {
   };
 
   const downloadUrl = (sessionId: string) => {
+    const order = orders.find((item) => item.sessionId === sessionId);
     const lang = downloadLang[sessionId] ?? 'cs';
     const langQuery = lang === 'cs' ? '' : `&lang=${encodeURIComponent(lang)}`;
-    return `/api/contracts/download?session_id=${encodeURIComponent(sessionId)}${langQuery}`;
+    const tokenQuery = order?.downloadToken ? `&token=${encodeURIComponent(order.downloadToken)}` : '';
+    return `/api/contracts/download?session_id=${encodeURIComponent(sessionId)}${langQuery}${tokenQuery}`;
   };
 
   return (

@@ -3,7 +3,7 @@
  * Dostupný na /api/checkout i /api/pokladna
  *
  * Pravidla:
- *  - Redis fail-open: výpadek Redisu NIKDY nezastaví platbu
+ *  - Draft payload musí být uložen před vytvořením platby
  *  - Tematické balíčky (299 Kč) → STRIPE_PRICE_ID_PACKAGE
  *  - Tier „complete"/„premium" → STRIPE_PRICE_ID_PREMIUM (199 Kč)
  *  - Žádné přísné Zod schema – chybějící pole dostane výchozí hodnotu
@@ -14,7 +14,10 @@ import { randomUUID } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { redis } from '@/lib/redis';
 import { stripe } from '@/lib/stripe';
-import { getStripePriceIdForCheckout, normalizeThematicPackageKey } from '@/lib/packages';
+import {
+  getStripePriceIdForCheckout,
+  normalizeThematicPackageKeyForContract,
+} from '@/lib/packages';
 import { normalizeLocale } from '@/lib/locale';
 
 export const runtime = 'nodejs';
@@ -97,8 +100,8 @@ export async function POST(req: Request) {
       ? rawTier
       : 'basic';
 
-    // notaryUpsell
-    const notaryUpsell = Boolean(body.notaryUpsell) || tier !== 'basic';
+    const paidTier = tier === 'professional' || tier === 'premium' ? 'complete' : tier;
+    const notaryUpsell = paidTier !== 'basic';
 
     // email – prázdný string → undefined
     const rawEmail = typeof body.email === 'string' ? body.email.trim() : '';
@@ -118,13 +121,13 @@ export async function POST(req: Request) {
         : typeof payload.packageKey === 'string'
           ? payload.packageKey
           : null;
-    const packageKey = normalizeThematicPackageKey(rawPackageKey);
+    const packageKey = normalizeThematicPackageKeyForContract(rawPackageKey, contractType);
 
     // 3. Price ID
-    const priceId = getStripePriceIdForCheckout(tier, packageKey);
+    const priceId = getStripePriceIdForCheckout(paidTier, packageKey);
     if (!priceId) {
       console.error(
-        `[checkout] Chybí Stripe Price ID pro tier=${tier} packageKey=${packageKey ?? 'none'}`,
+        `[checkout] Chybí Stripe Price ID pro tier=${paidTier} packageKey=${packageKey ?? 'none'}`,
       );
       return NextResponse.json(
         { error: 'Konfigurace ceny nenalezena. Kontaktujte podporu.' },
@@ -134,23 +137,25 @@ export async function POST(req: Request) {
 
     const baseUrl  = process.env.NEXT_PUBLIC_BASE_URL || new URL(req.url).origin;
     const draftId  = randomUUID();
-    const ttl      = tier === 'basic' ? 7 * 24 * 3600 : 30 * 24 * 3600;
+    const ttl      = paidTier === 'basic' ? 7 * 24 * 3600 : 30 * 24 * 3600;
 
-    // 4. Uložení draftu do Redisu – FAIL-OPEN
+    // 4. Uložení draftu do Redisu — bez payloadu zákazník nedostane správný PDF výstup.
+    const downloadToken = randomUUID();
     try {
       await redis.set(
         `contract:draft:${draftId}`,
         {
           contractType,
-          tier,
+          tier: paidTier,
           packageKey,
           notaryUpsell,
+          downloadToken,
           lang,
           email: email ?? null,
           payload: {
             ...payload,
             contractType,
-            tier,
+            tier: paidTier,
             packageKey,
             notaryUpsell,
             lang,
@@ -161,8 +166,11 @@ export async function POST(req: Request) {
         { ex: ttl },
       );
     } catch (redisErr) {
-      // Draft se neuložil, ale platba může proběhnout – webhook znovu sestaví data z metadat
-      console.error('[checkout] Redis draft save fail-open:', redisErr);
+      console.error('[checkout] Redis draft save failed:', redisErr);
+      return NextResponse.json(
+        { error: 'Dokument se nepodařilo bezpečně uložit před platbou. Zkuste to prosím znovu.' },
+        { status: 503 },
+      );
     }
 
     // 5. Stripe Checkout Session
@@ -170,6 +178,7 @@ export async function POST(req: Request) {
     // Stripe v20 typy tuto prop ještě neznají → přetypujeme přes unknown
     const cancelPath = CANCEL_URLS[contractType] ?? '/';
     const langQuery = lang === 'cs' ? '' : `&lang=${encodeURIComponent(lang)}`;
+    const successTokenQuery = `&token=${encodeURIComponent(downloadToken)}`;
     const cancelLangQuery = lang === 'cs' ? '' : `?lang=${encodeURIComponent(lang)}`;
 
     const sessionParams = {
@@ -177,14 +186,15 @@ export async function POST(req: Request) {
       customer_email: email,
       locale:         (lang === 'cs' ? 'cs' : 'en') as 'cs' | 'en',
       line_items:     [{ price: priceId, quantity: 1 }],
-      success_url:    `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}${langQuery}`,
+      success_url:    `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}${langQuery}${successTokenQuery}`,
       cancel_url:     `${baseUrl}${cancelPath}${cancelLangQuery}`,
       metadata: {
         draftId,
         contractType,
-        tier,
+        tier: paidTier,
         lang,
         notaryUpsell: String(notaryUpsell),
+        downloadToken,
         ...(packageKey ? { packageKey } : {}),
       },
     };

@@ -57,6 +57,7 @@ function testCheckoutRouteCoverage() {
   assert.match(checkout, /getStripePriceIdForCheckout/);
   const packages = read('lib/packages.ts');
   assert.match(packages, /STRIPE_PRICE_ID_PACKAGE/);
+  assert.match(packages, /normalizeThematicPackageKeyForContract/);
   assert.doesNotMatch(
     packages,
     /STRIPE_PRICE_ID_PACKAGE\s*\?\?\s*process\.env\.STRIPE_PRICE_ID_PREMIUM/,
@@ -64,6 +65,9 @@ function testCheckoutRouteCoverage() {
   );
   assert.match(read('.env.example'), /STRIPE_PRICE_ID_PACKAGE/);
   assert.match(checkout, /CANCEL_URLS/);
+  assert.match(checkout, /downloadToken/);
+  assert.match(checkout, /Redis draft save failed/);
+  assert.doesNotMatch(checkout, /Redis draft save fail-open/);
 }
 
 function testBuilderPayloads() {
@@ -98,14 +102,30 @@ function testWebhookAndDownload() {
   const download = read('app/api/contracts/download/route.ts');
   const status = read('app/api/contracts/status/route.ts');
   const success = read('app/success/page.tsx');
+  const orders = read('app/api/orders/route.ts');
+  const contracts = read('lib/contracts.ts');
 
   assert.match(webhook, /checkout\.session\.completed/);
+  assert.match(webhook, /session\.payment_status !== 'paid'/);
+  assert.match(webhook, /downloadToken/);
   assert.match(webhook, /contract:draft:/);
   assert.match(download, /session\.metadata\?\.draftId/);
   assert.match(download, /payment_status === 'paid'/);
+  assert.match(download, /Neplatný nebo chybějící bezpečnostní token/);
+  assert.doesNotMatch(download, /reconstructing from Stripe metadata/);
   assert.match(status, /getEffectivePriceLabel/);
+  assert.match(status, /ratelimit:contract-status/);
+  assert.match(status, /formatStripeAmount/);
+  assert.match(status, /session\.amount_total/);
   assert.match(success, /\/api\/contracts\/status/);
   assert.match(success, /\/api\/contracts\/download/);
+  assert.match(success, /tokenQuery/);
+  assert.match(orders, /downloadToken/);
+  assert.doesNotMatch(
+    contracts,
+    /legacyPremium|Boolean\(d\.notaryUpsell\)/,
+    'notaryUpsell must not unlock paid clauses',
+  );
 }
 
 function testPokladnaAlias() {

@@ -1,5 +1,5 @@
 /** Canonical site origin for metadata, sitemap, and JSON-LD. */
-export const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
+export const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 
 export const DEFAULT_OG_IMAGE = {
   url: `${SITE_URL}/og-image.png`,

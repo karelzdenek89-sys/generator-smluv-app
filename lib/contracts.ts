@@ -78,9 +78,8 @@ export type ContractSection = {
 //  professional (199 Kč)  → + rozšířené klauzule, smluvní pokuty, zajišťovací ujednání
 //  complete              → vše výše + instrukce, checklist, 30denní archivace
 //
-// PRAVIDLO: Obsah smlouvy (premium sekce) se řídí VÝHRADNĚ touto funkcí.
-// Nikdy nespoléhej jen na `d.notaryUpsell` — tier je primární zdroj pravdy.
-// notaryUpsell je zachován pro zpětnou kompatibilitu a jako fallback.
+// PRAVIDLO: Obsah smlouvy (premium sekce) se řídí výhradně zaplaceným tierem.
+// `notaryUpsell` je pouze UI/stavový údaj a nikdy nesmí sám odemykat placený obsah.
 // ═══════════════════════════════════════════════════════════════════════
 
 export type TierFeatures = {
@@ -94,9 +93,7 @@ export type TierFeatures = {
 
 export function resolveTierFeatures(d: StoredContractData): TierFeatures {
   const tier = String(d.tier ?? 'basic').toLowerCase() as Tier;
-  // notaryUpsell je fallback pro starší drafty uložené před zavedením tierů
-  const legacyPremium = Boolean(d.notaryUpsell); // záměrně d.notaryUpsell — ne hasPremiumClauses
-  const hasPremiumClauses = legacyPremium || tier === 'professional' || tier === 'complete';
+  const hasPremiumClauses = tier === 'professional' || tier === 'complete';
   const hasCompletePages = tier === 'complete';
   const archiveDays = tier === 'complete' ? 30 : tier === 'professional' ? 14 : 7;
   return { hasPremiumClauses, hasCompletePages, archiveDays };

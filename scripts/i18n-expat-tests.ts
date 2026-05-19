@@ -119,6 +119,10 @@ function testLocalePropagation() {
   assert.match(proxy, /preferred-locale', 'cs'/);
 
   const sitemap = read('app/sitemap.ts');
+  assert.match(read('lib/seo/site.ts'), /https:\/\/www\.smlouvahned\.cz/);
+  assert.match(read('public/robots.txt'), /https:\/\/www\.smlouvahned\.cz\/sitemap\.xml/);
+  assert.match(read('next.config.ts'), /securityHeaders/);
+  assert.match(read('next.config.ts'), /redirects\(\)/);
   assert.match(sitemap, /EXPAT_BUILDER_SITEMAP/);
   assert.match(sitemap, /getExpatSeoPageHreflangAlternates/);
   assert.match(sitemap, /expatBlogSitemapEntries/);
@@ -135,8 +139,11 @@ function testLocalePropagation() {
   const expatBlogPage = read('app/blog/expat/[slug]/page.tsx');
   assert.match(expatBlogPage, /getExpatBlogHreflangAlternates/);
   assert.match(expatBlogPage, /inLanguage=\{lang\}/);
-  assert.match(read('app/blog/expat/[slug]/opengraph-image.tsx'), /renderExpatBlogOgImageBySlug/);
+  assert.match(read('app/blog/expat/[slug]/opengraph-image.tsx'), /getExpatBlogArticle/);
+  assert.match(read('app/blog/expat/[slug]/opengraph-image.tsx'), /status: 404/);
   assert.match(read('app/[locale]/opengraph-image.tsx'), /renderExpatHubOgImage/);
+  assert.match(read('app/[locale]/opengraph-image.tsx'), /status: 404/);
+  assert.match(read('app/[locale]/[expatSeoSlug]/opengraph-image.tsx'), /getExpatSeoLandingBySlug/);
   assert.match(read('app/layout.tsx'), /showCzechSiteSchemas/);
   assert.match(read('app/[locale]/layout.tsx'), /ExpatLocaleSchemas/);
   for (const retired of ['de', 'ru', 'vn', 'uk']) {

@@ -25,6 +25,7 @@ type DraftData = {
   tier?: string;
   paid?: boolean;
   lang?: string;
+  downloadToken?: string | null;
   customerEmail?: string | null;
   email?: string | null;
   payload?: { lang?: string };
@@ -83,6 +84,7 @@ async function listOrdersForEmail(email: string) {
               paidAt: draft.paidAt ?? null,
               tier: normalizePricingTier(draft.tier),
               lang: normalizeLocale(draft.lang ?? draft.payload?.lang),
+              downloadToken: draft.downloadToken ?? null,
             };
           }
         }
@@ -172,6 +174,7 @@ export async function GET(req: NextRequest) {
             paidAt: draft.paidAt ?? null,
             tier: normalizePricingTier(draft.tier),
             lang: normalizeLocale(draft.lang ?? draft.payload?.lang),
+            downloadToken: draft.downloadToken ?? null,
           },
         ],
       });

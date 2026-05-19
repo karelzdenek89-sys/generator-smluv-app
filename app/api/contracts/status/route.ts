@@ -11,6 +11,17 @@ import { normalizeLocale } from '@/lib/locale';
 
 export const runtime = 'nodejs';
 
+async function checkStatusRateLimit(ip: string): Promise<boolean> {
+  try {
+    const key = `ratelimit:contract-status:${ip}`;
+    const count = await redis.incr(key);
+    if (count === 1) await redis.expire(key, 60 * 10);
+    return count <= 60;
+  } catch {
+    return true;
+  }
+}
+
 const CONTRACT_NAMES: Record<string, string> = {
   lease: 'Nájemní smlouva',
   car_sale: 'Kupní smlouva na vozidlo',
@@ -28,6 +39,15 @@ const CONTRACT_NAMES: Record<string, string> = {
   cooperation: 'Smlouva o spolupráci',
 };
 
+function formatStripeAmount(amount: number | null, currency: string | null): string | null {
+  if (typeof amount !== 'number' || !currency) return null;
+  return new Intl.NumberFormat('cs-CZ', {
+    style: 'currency',
+    currency: currency.toUpperCase(),
+    maximumFractionDigits: 0,
+  }).format(amount / 100);
+}
+
 type DraftRecord = {
   contractType?: string;
   packageKey?: string | null;
@@ -40,6 +60,15 @@ type DraftRecord = {
  */
 export async function GET(req: NextRequest) {
   try {
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+    const allowed = await checkStatusRateLimit(ip);
+    if (!allowed) {
+      return NextResponse.json(
+        { status: 'error', message: 'Příliš mnoho dotazů. Zkuste to za chvíli.' },
+        { status: 429 },
+      );
+    }
+
     const sessionId = req.nextUrl.searchParams.get('session_id');
 
     if (!sessionId) {
@@ -74,7 +103,9 @@ export async function GET(req: NextRequest) {
       packageLabel = getThematicPackageConfig(packageKey)?.title ?? null;
     }
 
-    const priceLabel = getEffectivePriceLabel(tier, packageKey);
+    const priceLabel =
+      formatStripeAmount(session.amount_total, session.currency) ??
+      getEffectivePriceLabel(tier, packageKey);
 
     return NextResponse.json({
       status: 'paid',

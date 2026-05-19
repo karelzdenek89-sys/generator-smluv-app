@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { redis } from '@/lib/redis';
 import { stripe } from '@/lib/stripe';
-import { normalizeThematicPackageKey, packageKeyFromUnknown } from '@/lib/packages';
+import { normalizeThematicPackageKeyForContract } from '@/lib/packages';
 import { getContractMeta, type StoredContractData } from '@/lib/contracts';
 import { renderContractPdf } from '@/lib/pdf';
 import { normalizeLocale } from '@/lib/locale';
@@ -34,9 +34,18 @@ async function checkDownloadRateLimit(sessionId: string): Promise<boolean> {
   }
 }
 
+type PaidTier = 'basic' | 'professional' | 'complete';
+
+function normalizePaidTier(value?: string | null): PaidTier {
+  const raw = String(value ?? 'basic').toLowerCase();
+  if (raw === 'professional') return 'professional';
+  if (raw === 'complete' || raw === 'premium') return 'complete';
+  return 'basic';
+}
+
 type DraftRecord = {
   contractType: StoredContractData['contractType'];
-  tier?: 'basic' | 'professional' | 'complete';
+  tier?: string;
   packageKey?: string | null;
   notaryUpsell?: boolean;
   payload: StoredContractData;
@@ -47,11 +56,13 @@ type DraftRecord = {
   paymentStatus?: string;
   downloadCount?: number;
   lang?: string;
+  downloadToken?: string | null;
 };
 
 export async function GET(req: NextRequest) {
   try {
     const sessionId = req.nextUrl.searchParams.get('session_id');
+    const downloadToken = req.nextUrl.searchParams.get('token')?.trim() ?? '';
     const requestedLang = normalizeLocale(req.nextUrl.searchParams.get('lang'));
 
     if (!sessionId) {
@@ -78,39 +89,17 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    let draft = await redis.get<DraftRecord>(`contract:draft:${draftId}`);
+    const draft = await redis.get<DraftRecord>(`contract:draft:${draftId}`);
 
-    // Fallback: Redis selhal nebo draft expiroval — rekonstruujeme z Stripe metadat
+    // Bez uloženého draftu nemáme zákaznický payload. Nerekonstruujeme prázdný dokument.
     if (!draft) {
-      if (session.payment_status === 'paid' && session.metadata?.contractType) {
-        console.warn(`[download] Draft missing for ${draftId}, reconstructing from Stripe metadata`);
-        const fallbackTier = (session.metadata.tier as DraftRecord['tier']) || 'basic';
-        const fallbackPackageKey = normalizeThematicPackageKey(session.metadata.packageKey);
-        draft = {
-          contractType: session.metadata.contractType as DraftRecord['contractType'],
-          tier: fallbackTier,
-          packageKey: fallbackPackageKey,
-          notaryUpsell: session.metadata.notaryUpsell === 'true',
-          payload: {
-            contractType: session.metadata.contractType as DraftRecord['contractType'],
-            tier: fallbackTier,
-            packageKey: fallbackPackageKey,
-          },
-          paid: true,
-          createdAt: new Date().toISOString(),
-          stripeSessionId: session.id,
-          paymentStatus: session.payment_status,
-          lang: normalizeLocale(session.metadata.lang),
-        };
-      } else {
-        return NextResponse.json(
-          {
-            error: 'Draft nebyl nalezen nebo expiroval.',
-            hint: 'Dokument je dostupný 7 dní od zaplacení. Pro opětovné zaslání kontaktujte info@smlouvahned.cz',
-          },
-          { status: 404 }
-        );
-      }
+      return NextResponse.json(
+        {
+          error: 'Draft nebyl nalezen nebo expiroval.',
+          hint: 'Dokument je dostupný 7 dní od zaplacení. Pro opětovné zaslání kontaktujte info@smlouvahned.cz',
+        },
+        { status: 404 }
+      );
     }
 
     // Dvojitá kontrola: Redis flag + Stripe payment_status
@@ -138,26 +127,32 @@ export async function GET(req: NextRequest) {
       }
     }
 
+    const storedToken = draft.downloadToken || session.metadata?.downloadToken || '';
+    if (storedToken && downloadToken !== storedToken) {
+      return NextResponse.json(
+        { error: 'Neplatný nebo chybějící bezpečnostní token ke stažení.' },
+        { status: 403 },
+      );
+    }
+
     // Tier je primární zdroj pravdy — odvozujeme ho z více míst pro robustnost
-    const resolvedTier = (draft.tier || draft.payload.tier || 'basic') as 'basic' | 'professional' | 'complete';
+    const resolvedTier = normalizePaidTier(session.metadata?.tier || draft.tier);
 
-    // notaryUpsell = true pro professional a complete (i když Redis draft neobsahuje flag)
-    // Tím je zajištěno, že zákazník dostane přesně ten obsah, za který zaplatil
-    const resolvedNotaryUpsell =
-      draft.notaryUpsell === true ||
-      Boolean(draft.payload.notaryUpsell) ||
-      resolvedTier === 'professional' ||
-      resolvedTier === 'complete';
-
+    const resolvedContractType = draft.payload.contractType || draft.contractType;
     const resolvedPackageKey =
-      normalizeThematicPackageKey(draft.packageKey) ??
-      packageKeyFromUnknown(draft.payload.packageKey) ??
-      normalizeThematicPackageKey(session.metadata?.packageKey);
+      normalizeThematicPackageKeyForContract(session.metadata?.packageKey, resolvedContractType) ??
+      normalizeThematicPackageKeyForContract(draft.packageKey, resolvedContractType) ??
+      normalizeThematicPackageKeyForContract(
+        typeof draft.payload.packageKey === 'string' ? draft.payload.packageKey : null,
+        resolvedContractType,
+      );
+    const hasPaidPackage = Boolean(resolvedPackageKey);
+    const paidNotaryUpsell = hasPaidPackage || resolvedTier === 'professional' || resolvedTier === 'complete';
 
     const fullData: StoredContractData = {
       ...draft.payload,
-      contractType: draft.payload.contractType || draft.contractType,
-      notaryUpsell: resolvedNotaryUpsell,
+      contractType: resolvedContractType,
+      notaryUpsell: paidNotaryUpsell,
       tier: resolvedTier,
       packageKey: resolvedPackageKey,
       lang: requestedLang !== 'cs'
