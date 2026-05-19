@@ -1,6 +1,6 @@
 /**
- * Generates a bilingual PDF for each of the 6 foreigner-relevant contracts
- * in all 5 supported foreign locales (30 PDFs) plus a CZ baseline per contract.
+ * Generates a PDF for each of the 6 foreigner-relevant contracts in all active
+ * locales (CS baseline plus EN/UA bilingual outputs).
  */
 import { writeFile, mkdir } from 'node:fs/promises';
 import path from 'node:path';
@@ -31,7 +31,7 @@ async function run() {
       total++;
     }
     for (const loc of FOREIGN_LOCALES) {
-      const pdf = await renderContractPdf(data, { targetLocale: loc });
+      const pdf = await renderContractPdf({ ...data, lang: loc });
       await writeFile(path.join(OUT_DIR, `${contract}-${loc}.pdf`), pdf);
       console.log(`✓ ${contract.padEnd(20)} ${loc}  ${(pdf.length / 1024).toFixed(0).padStart(4)} kB`);
       total++;

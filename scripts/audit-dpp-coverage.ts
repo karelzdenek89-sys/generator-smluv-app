@@ -69,7 +69,7 @@ async function main() {
     { label: '300 hodin limit', cz: /300 hodin/i, ua: /300 годин/i },
     { label: 'odměna 40 000', cz: /40[\s\u00a0]?000/i, ua: /40[\s\u00a0]?000/i },
     { label: '12 000 threshold', cz: /12[\s\u00a0]?000/i, ua: /12[\s\u00a0]?000/i },
-    { label: '15 dní výpověď', cz: /patnáctidenní|15.denní/i, ua: /15.denn/i },
+    { label: '15 dní výpověď', cz: /patnáctidenní|15.denní/i, ua: /15[-\s]?денн/i },
     { label: 'dovolená §77a', cz: /dovolenou|§ 77a/i, ua: /dovolen|77a/i },
     { label: 'rozvrh směn', cz: /rozvrh směn/i, ua: /rozvrh|směn/i },
     { label: 'GDPR', cz: /GDPR|ÚOOÚ/i, ua: /GDPR|316/i },

@@ -118,10 +118,7 @@ async function run() {
   // Each landing must show the new safer wording (not "legally binding").
   const SAFER_PHRASE: Record<Exclude<Locale, 'cs'>, RegExp> = {
     en: /prevail|not a certified or official translation/i,
-    uk: /переважа|не є офіційним або засвідченим/,
-    ru: /преимущественную силу|не является официальным или заверенным/,
-    vn: /ưu tiên|không phải là bản dịch chính thức/,
-    de: /maßgebend|keine beglaubigte oder amtliche/,
+    ua: /переважа|переваг[ау] має|не є офіційним|не офіційний/i,
   };
   for (const loc of FOREIGN_LOCALES) {
     const r = await fetchHtml(`/${LOCALE_META[loc].segment}`);
@@ -135,19 +132,13 @@ async function run() {
     const text = r.html;
     const immigrationMarker: Record<Exclude<Locale, 'cs'>, RegExp> = {
       en: /immigration advice/i,
-      uk: /імміграц/,
-      ru: /иммиграц/,
-      vn: /di trú|nhập cư/,
-      de: /Aufenthalts|Visumsberatung/,
+      ua: /імміграц/,
     };
     check(`/${LOCALE_META[loc].segment} mentions immigration-advice disclaimer`, immigrationMarker[loc].test(text));
 
     const certifiedMarker: Record<Exclude<Locale, 'cs'>, RegExp> = {
       en: /certified|soudní tlumočník/i,
-      uk: /засвідч|soudní tlumočník/,
-      ru: /заверен|soudní tlumočník/,
-      vn: /công chứng|soudní tlumočník/,
-      de: /beglaubigt|soudní tlumočník/,
+      ua: /засвідч|не офіційний|soudní tlumočník/i,
     };
     check(`/${LOCALE_META[loc].segment} mentions certified-translation disclaimer`, certifiedMarker[loc].test(text));
   }
