@@ -6,6 +6,7 @@ import './globals.css';
 import CookiesBanner from '@/app/components/CookiesBanner';
 import Footer from '@/app/components/Footer';
 import ForeignVisitorBanner from '@/app/components/ForeignVisitorBanner';
+import SiteHeader from '@/app/components/SiteHeader';
 
 const inter = Inter({
   subsets: ['latin', 'latin-ext'],
@@ -40,21 +41,6 @@ export const metadata: Metadata = {
   },
   description:
     'Generování smluv online bez právníka. Nájemní smlouva, kupní smlouva, smlouva o dílo, NDA a další — vyplníte formulář, dostanete PDF připravené k podpisu. Dle legislativy 2026.',
-  keywords: [
-    'generování smluv online',
-    'generátor smluv',
-    'nájemní smlouva',
-    'kupní smlouva',
-    'darovací smlouva',
-    'smlouva o dílo',
-    'smlouva o zápůjčce',
-    'NDA',
-    'online smlouva',
-    'šablona smlouvy',
-    'právní dokument',
-    'smlouva PDF',
-    '2026',
-  ],
   authors: [{ name: 'SmlouvaHned', url: BASE_URL }],
   creator: 'SmlouvaHned',
   openGraph: {
@@ -62,7 +48,7 @@ export const metadata: Metadata = {
     locale: 'cs_CZ',
     url: BASE_URL,
     siteName: 'SmlouvaHned',
-    title: 'Generování smluv online 2026 — hotový PDF dokument za 5 minut | SmlouvaHned',
+    title: 'Generování smluv online 2026 — hotový PDF dokument za 5 minut',
     description:
       'Generování smluv online bez právníka. Nájemní smlouva, kupní smlouva, NDA a další — formulář, PDF ihned ke stažení. Dle legislativy 2026.',
     images: [
@@ -77,7 +63,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'SmlouvaHned | Smluvní dokumenty online',
-    description: '14 typů dokumentů. Strukturovaný formulář → PDF. Od 99 Kč.',
+    description: '14 typů dokumentů. Strukturovaný formulář, PDF ihned a volitelné add-ony podle potřeby.',
     images: ['/og-image.png'],
   },
   robots: {
@@ -143,6 +129,12 @@ export default async function RootLayout({
   const locale = detectLocaleFromPath(pathname);
   const lang = LOCALE_META[locale].htmlLang;
   const showCzechSiteSchemas = locale === 'cs';
+  const showSiteHeader =
+    locale === 'cs' &&
+    pathname !== '' &&
+    pathname !== '/' &&
+    !pathname.startsWith('/success') &&
+    !pathname.startsWith('/api');
   return (
     <html lang={lang}>
       <head>
@@ -179,6 +171,7 @@ export default async function RootLayout({
         style={{ colorScheme: 'dark' }}
       >
         <ForeignVisitorBanner />
+        {showSiteHeader ? <SiteHeader /> : null}
         {children}
         <Footer />
         <CookiesBanner />

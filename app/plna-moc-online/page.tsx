@@ -3,7 +3,7 @@ import Link from 'next/link';
 import RelatedContracts from '@/app/components/RelatedContracts';
 
 export const metadata: Metadata = {
-  title: 'Plná moc online 2026 — vzor ke stažení | SmlouvaHned',
+  title: 'Plná moc online 2026 — vzor ke stažení',
   description:
     'Plná moc pro zastoupení před úřadem, bankou nebo v obchodní věci. Obecná, jednorázová nebo ověřená verze. Dle § 441 OZ 2026. Od 99 Kč.',
   keywords: [
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: 'https://www.smlouvahned.cz/plna-moc-online' },
   openGraph: {
-    title: 'Plná moc online 2026 | SmlouvaHned',
+    title: 'Plná moc online 2026',
     description: 'Plná moc pro zastoupení před úřadem, bankou nebo v obchodní věci. § 441 OZ. Od 99 Kč.',
     url: 'https://www.smlouvahned.cz/plna-moc-online',
   },

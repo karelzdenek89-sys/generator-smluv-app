@@ -3,7 +3,7 @@ import Link from 'next/link';
 import RelatedContracts from '@/app/components/RelatedContracts';
 
 export const metadata: Metadata = {
-  title: 'Podnájemní smlouva online 2026 — vzor ke stažení | SmlouvaHned',
+  title: 'Podnájemní smlouva online 2026 — vzor ke stažení',
   description:
     'Podnájemní smlouva se souhlasem pronajímatele. Kauce, pravidla, předávací protokol. Dle § 2274 OZ 2026. PDF ihned ke stažení od 99 Kč.',
   keywords: [
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: 'https://www.smlouvahned.cz/podnajemni-smlouva' },
   openGraph: {
-    title: 'Podnájemní smlouva online 2026 | SmlouvaHned',
+    title: 'Podnájemní smlouva online 2026',
     description: 'Podnájemní smlouva se souhlasem pronajímatele. Kauce, pravidla, předávací protokol. § 2274 OZ. Od 99 Kč.',
     url: 'https://www.smlouvahned.cz/podnajemni-smlouva',
   },

@@ -2,13 +2,13 @@
 import GuideLandingPage from '@/app/components/GuideLandingPage';
 
 export const metadata: Metadata = {
-  title: 'Kupní smlouva vzor 2026 | SmlouvaHned',
+  title: 'Kupní smlouva vzor 2026',
   description:
     'Průvodce kupní smlouvou pro rok 2026. Co dokument obvykle obsahuje, kdy je vhodný pro prodej vozidla nebo jiné věci a kdy už nestačí standardní postup.',
   keywords: ['kupní smlouva', 'kupní smlouva vzor', 'kupní smlouva 2026', 'kupní smlouva auto'],
   alternates: { canonical: 'https://www.smlouvahned.cz/kupni-smlouva' },
   openGraph: {
-    title: 'Kupní smlouva vzor 2026 | SmlouvaHned',
+    title: 'Kupní smlouva vzor 2026',
     description: 'Přehledná průvodcová stránka ke kupní smlouvě pro běžné převody movitých věcí a vozidel.',
     url: 'https://www.smlouvahned.cz/kupni-smlouva',
     type: 'website',

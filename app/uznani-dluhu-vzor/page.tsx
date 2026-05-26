@@ -3,7 +3,7 @@ import Link from 'next/link';
 import RelatedContracts from '@/app/components/RelatedContracts';
 
 export const metadata: Metadata = {
-  title: 'Uznání dluhu online 2026 — vzor ke stažení | SmlouvaHned',
+  title: 'Uznání dluhu online 2026 — vzor ke stažení',
   description:
     'Uznání dluhu obnoví promlčecí lhůtu na 10 let. Splátky, smluvní pokuta, exekuční doložka. Dle § 2053 OZ 2026. Od 99 Kč.',
   keywords: [
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: 'https://www.smlouvahned.cz/uznani-dluhu-vzor' },
   openGraph: {
-    title: 'Uznání dluhu online 2026 | SmlouvaHned',
+    title: 'Uznání dluhu online 2026',
     description: 'Uznání dluhu obnoví promlčecí lhůtu na 10 let. Splátky, smluvní pokuta. § 2053 OZ. Od 99 Kč.',
     url: 'https://www.smlouvahned.cz/uznani-dluhu-vzor',
   },

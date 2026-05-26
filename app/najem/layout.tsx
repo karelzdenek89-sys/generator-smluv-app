@@ -5,7 +5,7 @@ import { getExpatContractHreflangAlternates } from '@/lib/i18n/expat-hreflang';
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 
 export const metadata: Metadata = {
-  title: 'Nájemní smlouva online 2026 — vzor, formulář, PDF ihned | SmlouvaHned',
+  title: 'Nájemní smlouva online 2026 — vzor, formulář, PDF ihned',
   description:
     'Nájemní smlouva na byt 2026. Vyplníte strany, nájemné, kauci a pravidla — dostanete PDF dle občanského zákoníku. English & Ukrainian guided forms for foreigners.',
   keywords: [
@@ -22,11 +22,18 @@ export const metadata: Metadata = {
   ],
   alternates: getExpatContractHreflangAlternates('lease'),
   openGraph: {
-    title: 'Nájemní smlouva online 2026 — vzor, formulář, PDF ihned | SmlouvaHned',
+    title: 'Nájemní smlouva online 2026 — vzor, formulář, PDF ihned',
     description:
       'Nájemní smlouva na byt 2026 dle občanského zákoníku. Formulář → PDF připravené k podpisu. Od 99 Kč.',
     url: `${BASE_URL}/najem`,
     type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'SmlouvaHned - smluvni dokument online' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Nájemní smlouva online 2026',
+    description: 'Nájemní smlouva na byt 2026, PDF ihned a volitelné přílohy v checkoutu.',
+    images: ['/og-image.png'],
   },
 };
 

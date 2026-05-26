@@ -404,7 +404,7 @@ const LEASE_FORM_CS: LeaseFormUi = {
         '⚠ U spotřebitelských smluv (B2C) bývá rozhodčí doložka neúčinná dle zák. č. 216/1994 Sb. Doporučujeme ji použít pouze ve vztazích mezi podnikateli (B2B).',
     },
     tierLinkIntro:
-      'Need handover paperwork, meter readings and deposit confirmation as well?',
+      'Potřebujete také předávací protokol, odečty měřidel a potvrzení o kauci?',
     tierLinkLandlord: 'Zobrazit Balíček pro pronajímatele',
     tierLinkGuide: 'dokumenty pro pronajímatele',
     tierPackageGuideNote:

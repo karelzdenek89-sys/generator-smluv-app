@@ -6,7 +6,7 @@ import { getAnalyticsDashboardData, type AnalyticsDashboardData } from '@/lib/an
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Intern\u00ed reporting | SmlouvaHned.cz',
+  title: 'Intern\u00ed reporting',
   description: 'Intern\u00ed p\u0159ehled v\u00fdkonu funnelu, obsahu a produktov\u00fdch cest.',
   robots: {
     index: false,

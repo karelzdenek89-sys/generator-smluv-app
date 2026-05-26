@@ -4,7 +4,7 @@ import ProductSchemas from '@/app/components/seo/ProductSchemas';
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 
 export const metadata: Metadata = {
-  title: 'Smlouva o spolupráci online 2026 | SmlouvaHned',
+  title: 'Smlouva o spolupráci online 2026',
   description:
     'Smlouva o spolupráci OSVČ nebo firem. Podíl na výnosech, IP práva, mlčenlivost, exit klauzule. Od 99 Kč.',
   keywords: [
@@ -15,10 +15,11 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: `${BASE_URL}/spoluprace` },
   openGraph: {
-    title: 'Smlouva o spolupráci online 2026 | SmlouvaHned',
+    title: 'Smlouva o spolupráci online 2026',
     description: 'Smlouva o spolupráci s IP právy a exit klauzulemi. PDF ihned. Od 99 Kč.',
     url: `${BASE_URL}/spoluprace`,
     type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'SmlouvaHned - smluvni dokument online' }],
   },
 };
 

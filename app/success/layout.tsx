@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Platba přijata — stažení dokumentu | SmlouvaHned',
+  title: 'Platba přijata — stažení dokumentu',
   robots: { index: false, follow: false },
 };
 

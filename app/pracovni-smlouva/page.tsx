@@ -3,7 +3,7 @@ import Link from 'next/link';
 import RelatedContracts from '@/app/components/RelatedContracts';
 
 export const metadata: Metadata = {
-  title: 'Pracovní smlouva online 2026 — vzor zdarma ke stažení | SmlouvaHned',
+  title: 'Pracovní smlouva online 2026 — vzor zdarma ke stažení',
   description:
     'Vygenerujte pracovní smlouvu se všemi zákonnými náležitostmi dle zákoníku práce 2026. Druh práce, místo výkonu, mzda, zkušební doba. PDF ihned od 99 Kč.',
   keywords: [
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: 'https://www.smlouvahned.cz/pracovni-smlouva' },
   openGraph: {
-    title: 'Pracovní smlouva online 2026 | SmlouvaHned',
+    title: 'Pracovní smlouva online 2026',
     description: 'Pracovní smlouva dle zákoníku práce 2026. Mzda, zkušební doba, výpověď. Od 99 Kč.',
     url: 'https://www.smlouvahned.cz/pracovni-smlouva',
   },

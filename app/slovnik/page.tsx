@@ -12,12 +12,12 @@ import InformativeDisclaimer from '@/app/components/blog/InformativeDisclaimer';
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 
 export const metadata: Metadata = {
-  title: 'Slovník právních pojmů 2026 | SmlouvaHned',
+  title: 'Slovník právních pojmů 2026',
   description:
     'Slovník právních pojmů 2026 — nájem, koupě, dílo, DPP, plná moc a další. Stručná vysvětlení s odkazy na § občanského zákoníku a zákoníku práce, aktuální pro rok 2026.',
   alternates: { canonical: `${BASE_URL}/slovnik` },
   openGraph: {
-    title: 'Slovník právních pojmů 2026 | SmlouvaHned',
+    title: 'Slovník právních pojmů 2026',
     description:
       'Slovník pojmů ze smluvního práva s odkazy na § OZ a ZP. Aktuální k roku 2026.',
     url: `${BASE_URL}/slovnik`,

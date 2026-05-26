@@ -2,11 +2,11 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'O projektu | SmlouvaHned — Jak nástroj vznikl a jak funguje',
+  title: 'O projektu — Jak nástroj vznikl a jak funguje',
   description:
     'SmlouvaHned.cz je softwarový nástroj pro automatizovanou tvorbu standardizovaných smluvních dokumentů. Provozovatel: Karel Zdeněk, IČO 23660295. Zjistěte, jak šablony vznikají a proč nejde o advokátní kancelář.',
   openGraph: {
-    title: 'O projektu | SmlouvaHned',
+    title: 'O projektu',
     description:
       'Jak vznikly šablony, kdo provozuje nástroj a proč SmlouvaHned.cz neposkytuje právní poradenství.',
     url: 'https://www.smlouvahned.cz/o-projektu',

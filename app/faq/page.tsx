@@ -5,15 +5,22 @@ import { breadcrumbSchema, faqPageSchema, jsonLdScript, type FaqItem } from '@/l
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 
 export const metadata: Metadata = {
-  title: 'Časté dotazy (FAQ) 2026 | SmlouvaHned',
+  title: 'Časté dotazy (FAQ) 2026',
   description:
     'Odpovědi na časté otázky o tvorbě smluv online v roce 2026 — platnost dokumentů, ceny, GDPR, vrácení peněz.',
   alternates: { canonical: `${BASE_URL}/faq` },
   openGraph: {
-    title: 'Časté dotazy (FAQ) 2026 | SmlouvaHned',
+    title: 'Časté dotazy (FAQ) 2026',
     description: 'Odpovědi na časté otázky o smluvních dokumentech 2026, cenách a GDPR.',
     url: `${BASE_URL}/faq`,
     type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'SmlouvaHned — časté dotazy' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Časté dotazy 2026',
+    description: 'Ceny, doručení, platnost odkazu, GDPR a použití smluvních dokumentů ze SmlouvaHned.',
+    images: ['/og-image.png'],
   },
 };
 
@@ -39,7 +46,7 @@ const FAQ_GROUPS: FaqGroup[] = [
       {
         question: 'Mohu dostat fakturu?',
         answer:
-          'Ano. Po platbě vám automaticky odešleme daňový doklad na uvedený e-mail. V daňovém dokladu lze uvést firemní IČO i DIČ.',
+          'Ano. Po platbě vám odešleme doklad na uvedený e-mail. Provozovatel není plátcem DPH; na dokladu lze uvést firemní IČO.',
       },
       {
         question: 'Vrácení peněz?',
@@ -84,7 +91,7 @@ const FAQ_GROUPS: FaqGroup[] = [
       {
         question: 'Jak rychle dokument obdržím?',
         answer:
-          'Ihned po dokončení platby. Odkaz ke stažení PDF se zobrazí v prohlížeči a odešle se vám e-mailem. Platnost odkazu: Základní dokument 7 dní, Rozšířený dokument 30 dní.',
+          'Ihned po dokončení platby. Odkaz ke stažení PDF se zobrazí v prohlížeči a odešle se vám e-mailem. Platnost odkazu: Základní dokument 7 dní, Rozšířený dokument a tematický balíček 30 dní, případně 90 dní s doplňkem archivace.',
       },
       {
         question: 'V jakém formátu je výstup?',
@@ -109,7 +116,7 @@ const FAQ_GROUPS: FaqGroup[] = [
       {
         question: 'Jak nakládáte s mými údaji?',
         answer:
-          'Údaje jsou uloženy pouze dočasně v šifrovaném úložišti po dobu 7–30 dní (dle zakoupeného dokumentu) a poté automaticky smazány. Platební údaje zpracovává výhradně Stripe — k vašim kartám nemáme přístup.',
+          'Údaje jsou uloženy pouze dočasně v šifrovaném úložišti po dobu 7–30 dní podle zakoupeného dokumentu, případně 90 dní s doplňkem archivace, a poté automaticky smazány. Platební údaje zpracovává výhradně Stripe — k vašim kartám nemáme přístup.',
       },
       {
         question: 'Sdílíte data s třetími stranami?',

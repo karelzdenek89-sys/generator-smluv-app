@@ -5,7 +5,7 @@ import { getExpatContractHreflangAlternates } from '@/lib/i18n/expat-hreflang';
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 
 export const metadata: Metadata = {
-  title: 'Podnájemní smlouva online 2026 | SmlouvaHned',
+  title: 'Podnájemní smlouva online 2026',
   description:
     'Podnájemní smlouva pro nájemce přenechávající byt podnájemci. Souhlas pronajímatele, kauce, PDF. English & Ukrainian guided forms.',
   keywords: [
@@ -17,10 +17,11 @@ export const metadata: Metadata = {
   ],
   alternates: getExpatContractHreflangAlternates('sublease'),
   openGraph: {
-    title: 'Podnájemní smlouva online 2026 | SmlouvaHned',
+    title: 'Podnájemní smlouva online 2026',
     description: 'Podnájemní smlouva pro přenechání bytu podnájemci. PDF ihned. Od 99 Kč.',
     url: `${BASE_URL}/podnajem`,
     type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'SmlouvaHned - smluvni dokument online' }],
   },
 };
 

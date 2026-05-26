@@ -5,7 +5,7 @@ import { getExpatContractHreflangAlternates } from '@/lib/i18n/expat-hreflang';
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 
 export const metadata: Metadata = {
-  title: 'Kupní smlouva na auto online 2026 | SmlouvaHned',
+  title: 'Kupní smlouva na auto online 2026',
   description:
     'Kupní smlouva na vozidlo — VIN, STK, emise, historie, tachometr. PDF ihned. English & Ukrainian guided forms for private car sales.',
   keywords: [
@@ -17,11 +17,12 @@ export const metadata: Metadata = {
   ],
   alternates: getExpatContractHreflangAlternates('car_sale'),
   openGraph: {
-    title: 'Kupní smlouva na auto online 2026 | SmlouvaHned',
+    title: 'Kupní smlouva na auto online 2026',
     description:
       'Kupní smlouva na vozidlo s VIN, STK, emisemi i prohlášením o vadách. PDF ihned. Od 99 Kč.',
     url: `${BASE_URL}/auto`,
     type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'SmlouvaHned - smluvni dokument online' }],
   },
 };
 

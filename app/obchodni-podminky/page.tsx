@@ -5,9 +5,11 @@ import {
   COMPLETE_ARCHIVE_DAYS,
   PRICING_TIER_CONFIG,
 } from '@/lib/pricing';
+import { THEMATIC_PACKAGE_CONFIG } from '@/lib/packages';
+import { CHECKOUT_ADDON_CONFIG } from '@/lib/checkout-addons';
 
 export const metadata: Metadata = {
-  title: 'Obchodní podmínky | SmlouvaHned',
+  title: 'Obchodní podmínky',
   description: 'Obchodní podmínky platné pro využívání automatizované platformy SmlouvaHned.cz pro tvorbu standardizovaných smluvních dokumentů.',
 };
 
@@ -35,7 +37,7 @@ export default function TermsPage() {
           <section className="bg-[#0c1426]/60 border border-white/8 p-6 rounded-[24px]">
             <div className="text-[10px] font-black uppercase tracking-widest text-amber-400/80 mb-3">Charakter služby</div>
             <p className="text-slate-300 text-sm leading-relaxed">
-              SmlouvaHned.cz je <strong className="text-white">automatizovaný softwarový nástroj</strong> (SaaS) pro tvorbu standardizovaných smluvních dokumentů. Provozovatelem je fyzická osoba — podnikatel Karel Zdeněk (IČO 23660295). Platforma není advokátní kanceláří a neposkytuje právní služby ve smyslu zákona č. 85/1996 Sb., o advokacii. Pro složité, sporné nebo nestandardní situace doporučujeme konzultaci s advokátem (seznam na <a href="https://www.cak.cz" target="_blank" rel="noopener" className="text-amber-400 hover:underline">cak.cz</a>).
+              SmlouvaHned.cz je <strong className="text-white">automatizovaný softwarový nástroj</strong> (SaaS) pro tvorbu standardizovaných smluvních dokumentů. Provozovatelem je fyzická osoba — podnikatel Karel Zdeněk (IČO 23660295). Platforma není advokátní kanceláří a neposkytuje právní služby ve smyslu zákona č. 85/1996 Sb., o advokacii. Pro složité, sporné nebo nestandardní situace doporučujeme konzultaci s advokátem (seznam na <a href="https://www.cak.cz" target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:underline">cak.cz</a>).
             </p>
           </section>
 
@@ -89,6 +91,16 @@ export default function TermsPage() {
             <div className="bg-[#0c1426]/60 border border-white/5 rounded-2xl p-5 space-y-2 text-sm mb-3">
               <div className="flex justify-between"><span className="text-slate-400">{PRICING_TIER_CONFIG.basic.title}</span><span className="font-bold text-white">{PRICING_TIER_CONFIG.basic.priceLabel}</span></div>
               <div className="flex justify-between"><span className="text-slate-400">{PRICING_TIER_CONFIG.complete.title}</span><span className="font-bold text-white">{PRICING_TIER_CONFIG.complete.priceLabel}</span></div>
+              <div className="flex justify-between"><span className="text-slate-400">Tematický balíček</span><span className="font-bold text-white">{THEMATIC_PACKAGE_CONFIG.landlord.priceLabel}</span></div>
+            </div>
+            <div className="bg-[#0c1426]/60 border border-white/5 rounded-2xl p-5 space-y-2 text-sm mb-3">
+              <p className="text-xs font-black uppercase tracking-widest text-slate-500">Volitelné doplňky v checkoutu</p>
+              {Object.values(CHECKOUT_ADDON_CONFIG).map((addon) => (
+                <div key={addon.key} className="flex justify-between gap-4">
+                  <span className="text-slate-400">{addon.title}</span>
+                  <span className="font-bold text-white">{addon.priceLabel}</span>
+                </div>
+              ))}
             </div>
             <p className="mb-3 text-xs text-slate-500">
               Poskytovatel není plátcem DPH. Uvedené ceny jsou konečné.
@@ -106,7 +118,7 @@ export default function TermsPage() {
               05. Dostupnost dokumentu ke stažení
             </h2>
             <p>
-              Odkaz ke stažení PDF dokumentu je aktivní po dobu <strong className="text-white">{BASIC_ARCHIVE_DAYS} dní</strong> ({PRICING_TIER_CONFIG.basic.title}) nebo <strong className="text-white">{COMPLETE_ARCHIVE_DAYS} dní</strong> ({PRICING_TIER_CONFIG.complete.title}) od okamžiku zaplacení. Po uplynutí této doby může být dokument nedostupný z důvodu automatického mazání dočasného úložiště. Zákazníkovi doporučujeme dokument ihned po stažení uložit na bezpečném místě. V případě problémů nás kontaktujte na <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">info@smlouvahned.cz</a>.
+              Odkaz ke stažení PDF dokumentu je aktivní po dobu <strong className="text-white">{BASIC_ARCHIVE_DAYS} dní</strong> ({PRICING_TIER_CONFIG.basic.title}) nebo <strong className="text-white">{COMPLETE_ARCHIVE_DAYS} dní</strong> ({PRICING_TIER_CONFIG.complete.title} a tematický balíček) od okamžiku zaplacení. Pokud si Zákazník zakoupí doplněk Dostupnost 90 dní, je odkaz dostupný <strong className="text-white">90 dní</strong> od zaplacení. Po uplynutí této doby může být dokument nedostupný z důvodu automatického mazání dočasného úložiště. Zákazníkovi doporučujeme dokument ihned po stažení uložit na bezpečném místě. V případě problémů nás kontaktujte na <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">info@smlouvahned.cz</a>.
             </p>
           </section>
 
@@ -137,11 +149,11 @@ export default function TermsPage() {
             </p>
             <p className="mb-3">
               Zákazník je oprávněn obrátit se na <strong className="text-white">Českou obchodní inspekci (ČOI)</strong> jako subjekt mimosoudního řešení spotřebitelských sporů. Návrh na mimosoudní řešení sporu lze podat na adrese:{' '}
-              <a href="https://adr.coi.cz" target="_blank" rel="noopener" className="text-amber-400 hover:underline">adr.coi.cz</a>.
+              <a href="https://adr.coi.cz" target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:underline">adr.coi.cz</a>.
             </p>
             <p className="mb-3">
               V souladu s nařízením EU č. 524/2013 je Zákazník oprávněn využít platformu pro online řešení sporů provozovanou Evropskou komisí:{' '}
-              <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener" className="text-amber-400 hover:underline">ec.europa.eu/consumers/odr</a>.
+              <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:underline">ec.europa.eu/consumers/odr</a>.
             </p>
           </section>
 

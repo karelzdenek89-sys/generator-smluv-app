@@ -3,7 +3,7 @@ import Link from 'next/link';
 import RelatedContracts from '@/app/components/RelatedContracts';
 
 export const metadata: Metadata = {
-  title: 'Smlouva o zápůjčce (půjčka) online 2026 | SmlouvaHned',
+  title: 'Smlouva o zápůjčce (půjčka) online 2026',
   description:
     'Smlouva o zápůjčce peněz — splátky, úroky, zajištění. Dle § 2390 OZ 2026. Ochrana věřitele i dlužníka. PDF ihned ke stažení od 99 Kč.',
   keywords: [
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: 'https://www.smlouvahned.cz/pujcka-smlouva' },
   openGraph: {
-    title: 'Smlouva o zápůjčce (půjčka) online 2026 | SmlouvaHned',
+    title: 'Smlouva o zápůjčce (půjčka) online 2026',
     description: 'Smlouva o zápůjčce peněz — splátky, úroky, zajištění. § 2390 OZ. Od 99 Kč.',
     url: 'https://www.smlouvahned.cz/pujcka-smlouva',
   },

@@ -5,7 +5,7 @@ import { getExpatContractHreflangAlternates } from '@/lib/i18n/expat-hreflang';
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 
 export const metadata: Metadata = {
-  title: 'Dohoda o provedení práce (DPP) online 2026 | SmlouvaHned',
+  title: 'Dohoda o provedení práce (DPP) online 2026',
   description:
     'DPP pro brigády a jednorázové práce. Max. 300 hod./rok. Formulář, PDF ke stažení dle zákoníku práce 2026. English & Ukrainian guided forms.',
   keywords: [
@@ -18,10 +18,11 @@ export const metadata: Metadata = {
   ],
   alternates: getExpatContractHreflangAlternates('dpp'),
   openGraph: {
-    title: 'Dohoda o provedení práce (DPP) online 2026 | SmlouvaHned',
+    title: 'Dohoda o provedení práce (DPP) online 2026',
     description: 'DPP pro brigády do 300 hod./rok. PDF dle zákoníku práce 2026. Od 99 Kč.',
     url: `${BASE_URL}/dpp`,
     type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'SmlouvaHned - smluvni dokument online' }],
   },
 };
 

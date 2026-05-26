@@ -218,9 +218,7 @@ function LeaseBuilderContent() {
       formData.rentAmount,
       formData.utilityAmount,
       formData.depositAmount,
-      formData.paymentDay,
       formData.bankAccount,
-      formData.maxOccupants,
     ];
 
     const conditionalTotal = formData.duration === 'fixed' ? 1 : 0;
@@ -233,6 +231,19 @@ function LeaseBuilderContent() {
 
     return Math.round((filled / total) * 100);
   }, [formData]);
+
+  const requiredFieldsMissing = useMemo(() => {
+    const missing: string[] = [];
+    if (!formData.landlordName.trim()) missing.push(ui.validation.fields.landlordName);
+    if (!formData.tenantName.trim()) missing.push(ui.validation.fields.tenantName);
+    if (!formData.flatAddress.trim()) missing.push(ui.validation.fields.flatAddress);
+    if (!formData.rentAmount.trim()) missing.push(ui.validation.fields.rentAmount);
+    if (!formData.startDate) missing.push(ui.validation.fields.startDate);
+    if (formData.duration === 'fixed' && !formData.endDate) missing.push(ui.validation.fields.endDate);
+    return missing;
+  }, [formData, ui.validation.fields]);
+
+  const canOpenCheckout = requiredFieldsMissing.length === 0;
 
   const riskAnalysis = useMemo(() => {
     let score = 100;
@@ -1237,7 +1248,13 @@ function LeaseBuilderContent() {
                 </div>
 
                 <div className="font-serif text-[11px] text-slate-800 leading-relaxed h-[420px] overflow-hidden relative">
-                  <pre className="whitespace-pre-wrap font-serif">{previewContract}</pre>
+                  <div className="space-y-2 break-words">
+                    {previewContract.split('\n').map((line, index) => (
+                      <p key={`${index}-${line.slice(0, 12)}`} className={line.trim() ? '' : 'h-2'}>
+                        {line}
+                      </p>
+                    ))}
+                  </div>
                   <div className="absolute bottom-0 left-0 w-full h-28 bg-gradient-to-t from-white to-transparent" />
                 </div>
               </div>
@@ -1252,10 +1269,14 @@ function LeaseBuilderContent() {
                   </div>
                 </div>
 
-                <div className="rounded-2xl border border-slate-700/80 bg-[#111c31] p-4 max-h-56 overflow-auto">
-                  <pre className="whitespace-pre-wrap text-[11px] leading-relaxed text-slate-300">
-                    {handoverProtocol}
-                  </pre>
+                <div className="max-h-56 overflow-auto rounded-2xl border border-slate-700/80 bg-[#111c31] p-4">
+                  <div className="space-y-1 text-[11px] leading-relaxed text-slate-300 break-words">
+                    {handoverProtocol.split('\n').map((line, index) => (
+                      <p key={`${index}-${line.slice(0, 12)}`} className={line.trim() ? '' : 'h-2'}>
+                        {line}
+                      </p>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -1274,11 +1295,24 @@ function LeaseBuilderContent() {
                 <button
                   type="button"
                   data-testid="lease-open-checkout"
-                  onClick={() => setShowPreviewModal(true)}
-                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
+                  onClick={() => {
+                    if (!canOpenCheckout) {
+                      alert(`${ui.validation.alertPrefix}: ${requiredFieldsMissing.join(', ')}.`);
+                      return;
+                    }
+                    setShowPreviewModal(true);
+                  }}
+                  disabled={!canOpenCheckout}
+                  aria-disabled={!canOpenCheckout}
+                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:brightness-100 disabled:active:scale-100"
                 >
                   {ui.sidebar.generateCta}
                 </button>
+                {!canOpenCheckout ? (
+                  <p className="mt-3 text-xs leading-relaxed text-amber-200/80">
+                    Nejdřív doplňte: {requiredFieldsMissing.join(', ')}.
+                  </p>
+                ) : null}
 
                 <p className="mt-3 text-center text-[11px] text-slate-500">
                   {ui.sidebar.generateHint}

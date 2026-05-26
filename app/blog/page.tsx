@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     'Praktické průvodce ke smlouvám a běžným právním situacím. Obecně informační obsah aktuální pro legislativu 2026.',
   alternates: { canonical: `${BASE_URL}/blog` },
   openGraph: {
-    title: 'Blog | SmlouvaHned — Právní průvodce 2026',
+    title: 'Blog — Právní průvodce 2026',
     description: 'Praktické průvodce ke smlouvám a běžným právním situacím dle legislativy 2026.',
     url: `${BASE_URL}/blog`,
     type: 'website',

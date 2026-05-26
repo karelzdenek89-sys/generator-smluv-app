@@ -21,18 +21,20 @@ export const metadata: Metadata = {
     '14 typů smluv online dle OZ 2026 — nájemní, kupní, pracovní, NDA a další. Vyplníte formulář, PDF s citacemi § stahujete ihned. Od 99 Kč.',
   alternates: { canonical: HOMEPAGE_BASE_URL, languages: homepageLanguageAlternates },
   openGraph: {
-    title: 'Generování smluv online 2026 — PDF ihned ke stažení | SmlouvaHned',
+    title: 'Generování smluv online 2026 — PDF ihned ke stažení',
     description:
       '14 typů smluv online dle OZ 2026 — nájemní, kupní, pracovní, NDA a další. Formulář → PDF s citacemi § ihned. Od 99 Kč.',
     url: HOMEPAGE_BASE_URL,
     siteName: 'SmlouvaHned',
     type: 'website',
     locale: 'cs_CZ',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'SmlouvaHned — generování smluv online' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Generování smluv online 2026 | SmlouvaHned',
+    title: 'Generování smluv online 2026',
     description: '14 typů smluv dle OZ 2026 — formulář → PDF ihned. Od 99 Kč.',
+    images: ['/og-image.png'],
   },
 };
 
@@ -55,7 +57,7 @@ const faqItems = [
   },
   {
     question: 'Jsou bezpečně uložena moje data?',
-    answer: 'Údaje jsou uloženy pouze dočasně v šifrovaném úložišti po dobu 7–30 dní dle zakoupeného dokumentu a poté automaticky smazány. Platební údaje zpracovává výhradně Stripe — na naše servery se nikdy nedostanou.',
+    answer: 'Údaje jsou uloženy pouze dočasně v šifrovaném úložišti po dobu 7–30 dní dle zakoupeného dokumentu, případně 90 dní s doplňkem archivace, a poté automaticky smazány. Platební údaje zpracovává výhradně Stripe — na naše servery se nikdy nedostanou.',
   },
   {
     question: 'Je to náhrada individuální právní služby?',
@@ -233,7 +235,7 @@ export default function Home() {
             </div>
 
             <div className="mt-9 flex flex-wrap items-center gap-x-5 gap-y-2">
-              {['✓ Zákonná struktura OZ/ZP', '✓ PDF ihned ke stažení', '✓ Bezpečná platba Stripe', '✓ Data smazána po 7–30 dnech'].map(t => (
+              {['✓ Zákonná struktura OZ/ZP', '✓ PDF ihned ke stažení', '✓ Bezpečná platba Stripe', '✓ Data smazána po 7–30 dnech, s add-onem 90 dní'].map(t => (
                 <span key={t} className="text-sm text-slate-400">{t}</span>
               ))}
             </div>
@@ -353,7 +355,7 @@ export default function Home() {
                     {CLUSTER_LABELS[cluster]}
                   </h3>
                   <ul className="space-y-2">
-                    {items.map((link) => (
+                    {items.slice(0, 3).map((link) => (
                       <li key={link.href}>
                         <Link
                           href={link.href}
@@ -363,6 +365,13 @@ export default function Home() {
                         </Link>
                       </li>
                     ))}
+                    {items.length > 3 ? (
+                      <li>
+                        <Link href="/blog" className="text-sm font-semibold text-[#c9a852] hover:text-[#f2d58a] transition-colors">
+                          Další průvodce na blogu →
+                        </Link>
+                      </li>
+                    ) : null}
                   </ul>
                 </div>
               );

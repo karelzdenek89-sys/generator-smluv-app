@@ -3,7 +3,7 @@ import Link from 'next/link';
 import ContactForm from '@/app/components/ContactForm';
 
 export const metadata: Metadata = {
-  title: 'Kontakt | SmlouvaHned',
+  title: 'Kontakt',
   description:
     'Dotazy k objednávce, fakturaci nebo technickému výstupu dokumentu. SmlouvaHned neposkytuje individuální právní poradenství.',
 };

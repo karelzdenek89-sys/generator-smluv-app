@@ -60,11 +60,11 @@ export const CHECKOUT_ADDON_CONFIG: Record<CheckoutAddonKey, CheckoutAddonConfig
   },
   extended_archive: {
     key: 'extended_archive',
-    title: 'Dostupnost 90 dní',
+    title: 'Archiv 90 dní',
     priceCzk: 39,
     priceLabel: '+39 Kč',
     description: 'Odkaz ke stažení zůstane dostupný 90 dní od zaplacení.',
-    includedItem: 'Dostupnost odkazu ke stažení 90 dní',
+    includedItem: 'Archiv a dostupnost odkazu ke stažení 90 dní',
   },
   bilingual_annex: {
     key: 'bilingual_annex',

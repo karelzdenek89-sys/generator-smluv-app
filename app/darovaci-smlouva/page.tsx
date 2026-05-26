@@ -2,13 +2,13 @@
 import GuideLandingPage from '@/app/components/GuideLandingPage';
 
 export const metadata: Metadata = {
-  title: 'Darovací smlouva vzor 2026 | SmlouvaHned',
+  title: 'Darovací smlouva vzor 2026',
   description:
     'Průvodce darovací smlouvou pro rok 2026. Co dokument obvykle obsahuje, pro jaké situace je vhodný a kdy už je lepší řešit věc individuálně.',
   keywords: ['darovací smlouva', 'darovací smlouva vzor', 'darovací smlouva 2026', 'darovací smlouva online'],
   alternates: { canonical: 'https://www.smlouvahned.cz/darovaci-smlouva' },
   openGraph: {
-    title: 'Darovací smlouva vzor 2026 | SmlouvaHned',
+    title: 'Darovací smlouva vzor 2026',
     description: 'Průvodcová stránka k darovací smlouvě pro běžné převody mezi známými nebo rodinnými příslušníky.',
     url: 'https://www.smlouvahned.cz/darovaci-smlouva',
     type: 'website',

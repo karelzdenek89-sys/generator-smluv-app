@@ -4,7 +4,7 @@ import ProductSchemas from '@/app/components/seo/ProductSchemas';
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 
 export const metadata: Metadata = {
-  title: 'Smlouva o poskytování služeb online 2026 | SmlouvaHned',
+  title: 'Smlouva o poskytování služeb online 2026',
   description:
     'Smlouva o poskytování služeb pro freelancery a agentury. SLA, IP práva, mlčenlivost. Od 99 Kč.',
   keywords: [
@@ -15,10 +15,11 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: `${BASE_URL}/sluzby` },
   openGraph: {
-    title: 'Smlouva o poskytování služeb online 2026 | SmlouvaHned',
+    title: 'Smlouva o poskytování služeb online 2026',
     description: 'Smlouva o službách s SLA, IP právy a mlčenlivostí. PDF ihned. Od 99 Kč.',
     url: `${BASE_URL}/sluzby`,
     type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'SmlouvaHned - smluvni dokument online' }],
   },
 };
 

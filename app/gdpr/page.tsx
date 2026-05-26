@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Ochrana osobních údajů (GDPR) | SmlouvaHned',
+  title: 'Ochrana osobních údajů (GDPR)',
   description: 'Zásady zpracování osobních údajů platformy SmlouvaHned.cz v souladu s GDPR (nařízení EU 2016/679).',
 };
 
@@ -56,19 +56,19 @@ export default function GdprPage() {
                 <p className="text-slate-400 text-xs mb-2">Jména, adresy, data narození, čísla OP a IČO smluvních stran, které do formuláře zadáte vy sami.</p>
                 <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Účel:</span> Vygenerování standardizovaného smluvního dokumentu dle vašich zadaných dat.</div>
                 <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Právní základ:</span> Plnění smlouvy (čl. 6 odst. 1 písm. b) GDPR).</div>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> 7–30 dní od zaplacení podle zakoupeného balíčku (Základní dokument 7 dní, Rozšířený dokument 30 dní, Tematický balíček 30 dní), poté jsou automaticky smazána z dočasného úložiště.</div>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> 7–30 dní od zaplacení podle zakoupeného dokumentu (Základní dokument 7 dní, Rozšířený dokument 30 dní, Tematický balíček 30 dní), případně 90 dní s doplňkem archivace. Poté jsou data automaticky smazána z dočasného úložiště.</div>
               </div>
               <div className="border border-white/8 rounded-2xl p-5">
                 <div className="font-bold text-white mb-2">E-mailová adresa</div>
                 <p className="text-slate-400 text-xs mb-2">Pokud ji dobrovolně zadáte při objednávce.</p>
                 <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Účel:</span> Zaslání odkazu ke stažení hotového dokumentu.</div>
                 <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Právní základ:</span> Plnění smlouvy + oprávněný zájem (čl. 6 odst. 1 písm. b) a f) GDPR).</div>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> 7–30 dní od objednávky podle zakoupeného balíčku, poté automaticky smazáno.</div>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> 7–30 dní od objednávky podle zakoupeného dokumentu, případně 90 dní s doplňkem archivace, poté automaticky smazáno.</div>
               </div>
               <div className="border border-white/8 rounded-2xl p-5">
                 <div className="font-bold text-white mb-2">Platební údaje</div>
                 <p className="text-slate-400 text-xs mb-2">Čísla platebních karet a bankovní údaje jsou zpracovávány výhradně platební bránou <strong>Stripe</strong> (Stripe, Inc., USA). Správce k nim nemá přístup.</p>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Více o Stripe GDPR:</span> <a href="https://stripe.com/privacy" target="_blank" rel="noopener" className="text-amber-400 hover:underline">stripe.com/privacy</a></div>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Více o Stripe GDPR:</span> <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:underline">stripe.com/privacy</a></div>
               </div>
             </div>
           </section>
@@ -82,7 +82,7 @@ export default function GdprPage() {
             </p>
             <ul className="space-y-2 text-slate-400">
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Stripe, Inc.</strong> — zpracování plateb. Zpracovatel dle čl. 28 GDPR, certifikace PCI DSS Level 1.</span></li>
-              <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Upstash (Redis)</strong> — dočasné uložení dat formuláře po dobu generování a stažení dokumentu (7–30 dní dle balíčku).</span></li>
+              <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Upstash (Redis)</strong> — dočasné uložení dat formuláře po dobu generování a stažení dokumentu (7–30 dní podle zakoupeného dokumentu, případně 90 dní s doplňkem archivace).</span></li>
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Resend</strong> — zasílání transakčních e-mailů (odkaz ke stažení). Pouze pokud zadáte e-mail.</span></li>
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Vercel</strong> — hosting platformy. Údaje jsou zpracovávány v rámci EHP nebo za odpovídajících záruk.</span></li>
             </ul>
@@ -139,7 +139,7 @@ export default function GdprPage() {
               7. Zabezpečení údajů
             </h2>
             <p>
-              Veškerá komunikace je šifrována protokolem TLS (HTTPS). Data formulářů jsou ukládána v šifrovaném dočasném úložišti s automatickým výmazem po 7–30 dnech (dle zakoupeného balíčku). Přístup k datům je omezen na technicky nezbytné osoby. Platební údaje nikdy neprocházejí našimi servery.
+              Veškerá komunikace je šifrována protokolem TLS (HTTPS). Data formulářů jsou ukládána v šifrovaném dočasném úložišti s automatickým výmazem po 7–30 dnech podle zakoupeného dokumentu, případně po 90 dnech s doplňkem archivace. Přístup k datům je omezen na technicky nezbytné osoby. Platební údaje nikdy neprocházejí našimi servery.
             </p>
           </section>
 
@@ -148,7 +148,7 @@ export default function GdprPage() {
               8. Právo podat stížnost
             </h2>
             <p>
-              Máte právo podat stížnost u dozorového úřadu — <strong className="text-white">Úřad pro ochranu osobních údajů (ÚOOÚ)</strong>, se sídlem Pplk. Sochora 27, 170 00 Praha 7, <a href="https://www.uoou.cz" target="_blank" rel="noopener" className="text-amber-400 hover:underline">www.uoou.cz</a>.
+              Máte právo podat stížnost u dozorového úřadu — <strong className="text-white">Úřad pro ochranu osobních údajů (ÚOOÚ)</strong>, se sídlem Pplk. Sochora 27, 170 00 Praha 7, <a href="https://www.uoou.cz" target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:underline">www.uoou.cz</a>.
             </p>
           </section>
 

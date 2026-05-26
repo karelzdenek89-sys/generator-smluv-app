@@ -3,7 +3,7 @@ import Link from 'next/link';
 import RelatedContracts from '@/app/components/RelatedContracts';
 
 export const metadata: Metadata = {
-  title: 'Smlouva o dílo online 2026 — vzor ke stažení | SmlouvaHned',
+  title: 'Smlouva o dílo online 2026 — vzor ke stažení',
   description:
     'Smlouva o dílo pro řemeslníky, freelancery i objednatele. Termíny, cena, sankce, záruky. Dle § 2586 OZ. PDF ihned od 99 Kč. Vhodné pro standardní zakázky.',
   keywords: [
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: 'https://www.smlouvahned.cz/smlouva-o-dilo-online' },
   openGraph: {
-    title: 'Smlouva o dílo online 2026 | SmlouvaHned',
+    title: 'Smlouva o dílo online 2026',
     description: 'Smlouva o dílo s termíny, sankcemi a zárukou. § 2586 OZ. Od 99 Kč.',
     url: 'https://www.smlouvahned.cz/smlouva-o-dilo-online',
   },

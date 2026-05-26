@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: 'https://www.smlouvahned.cz/najemni-smlouva-byt' },
   openGraph: {
-    title: 'Nájemní smlouva na byt 2026 | SmlouvaHned',
+    title: 'Nájemní smlouva na byt 2026',
     description: 'Nájemní smlouva na byt nebo dům. Kauce, zvířata, předávací protokol. § 2235 OZ. Od 99 Kč.',
     url: 'https://www.smlouvahned.cz/najemni-smlouva-byt',
   },

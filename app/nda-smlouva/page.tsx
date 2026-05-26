@@ -2,7 +2,7 @@
 import GuideLandingPage from '@/app/components/GuideLandingPage';
 
 export const metadata: Metadata = {
-  title: 'NDA smlouva vzor 2026 | SmlouvaHned',
+  title: 'NDA smlouva vzor 2026',
   description:
     'Průvodce NDA smlouvou pro rok 2026. Co dokument obvykle obsahuje, kdy je vhodný a kdy už je lepší řešit situaci individuálně.',
   keywords: [
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: 'https://www.smlouvahned.cz/nda-smlouva' },
   openGraph: {
-    title: 'NDA smlouva vzor 2026 | SmlouvaHned',
+    title: 'NDA smlouva vzor 2026',
     description:
       'Přehledná průvodcová stránka k NDA smlouvě pro běžné situace, kdy potřebujete zachytit mlčenlivost a ochranu důvěrných informací.',
     url: 'https://www.smlouvahned.cz/nda-smlouva',

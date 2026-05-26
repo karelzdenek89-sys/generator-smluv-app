@@ -4,7 +4,7 @@ import ProductSchemas from '@/app/components/seo/ProductSchemas';
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 
 export const metadata: Metadata = {
-  title: 'Darovací smlouva 2026 — formulář online | SmlouvaHned',
+  title: 'Darovací smlouva 2026 — formulář online',
   description:
     'Darovací smlouva 2026 dle § 2055 OZ. Dárce, obdarovaný, předmět daru — PDF ihned ke stažení. Od 99 Kč.',
   keywords: [
@@ -15,10 +15,11 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: `${BASE_URL}/darovaci` },
   openGraph: {
-    title: 'Darovací smlouva 2026 — formulář online | SmlouvaHned',
+    title: 'Darovací smlouva 2026 — formulář online',
     description: 'Darovací smlouva 2026 dle § 2055 OZ. PDF ihned ke stažení. Od 99 Kč.',
     url: `${BASE_URL}/darovaci`,
     type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'SmlouvaHned - smluvni dokument online' }],
   },
 };
 

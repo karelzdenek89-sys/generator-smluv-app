@@ -3,7 +3,7 @@ import Link from 'next/link';
 import RelatedContracts from '@/app/components/RelatedContracts';
 
 export const metadata: Metadata = {
-  title: 'Smlouva o spolupráci online 2026 — vzor ke stažení | SmlouvaHned',
+  title: 'Smlouva o spolupráci online 2026 — vzor ke stažení',
   description:
     'Smlouva o spolupráci OSVČ nebo firem. Podíl na výnosech, IP práva, mlčenlivost, exit klauzule. Dle § 1746 OZ 2026. Od 99 Kč.',
   keywords: [
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: 'https://www.smlouvahned.cz/smlouva-o-spolupraci' },
   openGraph: {
-    title: 'Smlouva o spolupráci online 2026 | SmlouvaHned',
+    title: 'Smlouva o spolupráci online 2026',
     description: 'Smlouva o spolupráci OSVČ nebo firem. Podíl na výnosech, IP práva, mlčenlivost, exit. § 1746 OZ. Od 99 Kč.',
     url: 'https://www.smlouvahned.cz/smlouva-o-spolupraci',
   },

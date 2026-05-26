@@ -4,7 +4,7 @@ import ProductSchemas from '@/app/components/seo/ProductSchemas';
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 
 export const metadata: Metadata = {
-  title: 'Smlouva o mlčenlivosti (NDA) online 2026 | SmlouvaHned',
+  title: 'Smlouva o mlčenlivosti (NDA) online 2026',
   description:
     'NDA online — jednostranná nebo oboustranná smlouva o mlčenlivosti s vymezením rozsahu. PDF ihned. Od 99 Kč.',
   keywords: [
@@ -15,11 +15,12 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: `${BASE_URL}/nda` },
   openGraph: {
-    title: 'Smlouva o mlčenlivosti (NDA) online 2026 | SmlouvaHned',
+    title: 'Smlouva o mlčenlivosti (NDA) online 2026',
     description:
       'Sestavte NDA online. Jednostranná nebo oboustranná, s vymezením rozsahu. PDF ihned. Od 99 Kč.',
     url: `${BASE_URL}/nda`,
     type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'SmlouvaHned - smluvni dokument online' }],
   },
 };
 

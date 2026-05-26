@@ -4,7 +4,7 @@ import ProductSchemas from '@/app/components/seo/ProductSchemas';
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 
 export const metadata: Metadata = {
-  title: 'Uznání dluhu online 2026 | SmlouvaHned',
+  title: 'Uznání dluhu online 2026',
   description:
     'Uznání dluhu dle § 2053 OZ — obnoví 10letou promlčecí dobu. Splátky a smluvní pokuta. Od 99 Kč.',
   keywords: [
@@ -15,10 +15,11 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: `${BASE_URL}/uznani-dluhu` },
   openGraph: {
-    title: 'Uznání dluhu online 2026 | SmlouvaHned',
+    title: 'Uznání dluhu online 2026',
     description: 'Uznání dluhu dle § 2053 OZ se splátkovým kalendářem. PDF ihned. Od 99 Kč.',
     url: `${BASE_URL}/uznani-dluhu`,
     type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'SmlouvaHned - smluvni dokument online' }],
   },
 };
 
