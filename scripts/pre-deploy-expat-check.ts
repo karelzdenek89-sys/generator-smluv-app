@@ -149,7 +149,12 @@ async function checkPdf(
   contract: ExpatContractType,
   lang: 'cs' | 'en' | 'ua',
 ): Promise<{ bytes: number; text: string }> {
-  const data: StoredContractData = { ...SAMPLES[contract], lang, tier: 'basic' };
+  const data: StoredContractData = {
+    ...SAMPLES[contract],
+    lang,
+    tier: 'basic',
+    addOns: lang === 'cs' ? [] : ['bilingual_annex'],
+  };
   const pdf = await renderContractPdf(data);
   assert.ok(pdf.length > 2000, `${contract}/${lang}: PDF too small (${pdf.length} B)`);
 
@@ -179,11 +184,11 @@ async function checkPdf(
 
 async function compareSizes() {
   const leaseCs = (await renderContractPdf({ ...SAMPLES.lease, lang: 'cs' })).length;
-  const leaseEn = (await renderContractPdf({ ...SAMPLES.lease, lang: 'en' })).length;
+  const leaseEn = (await renderContractPdf({ ...SAMPLES.lease, lang: 'en', addOns: ['bilingual_annex'] })).length;
   assert.ok(leaseEn > leaseCs + 3000, 'Lease EN should be larger than CS (annex)');
 
   const empCs = (await renderContractPdf({ ...SAMPLES.employment, lang: 'cs' })).length;
-  const empEn = (await renderContractPdf({ ...SAMPLES.employment, lang: 'en' })).length;
+  const empEn = (await renderContractPdf({ ...SAMPLES.employment, lang: 'en', addOns: ['bilingual_annex'] })).length;
   assert.ok(empEn > empCs + 2000, 'Employment EN should be larger than CS (annex)');
 }
 

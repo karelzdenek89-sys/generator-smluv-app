@@ -6,6 +6,7 @@ import {
   EMPLOYMENT_WORK_ELIGIBILITY_NOTICE_UK,
 } from '@/lib/i18n/safety-copy';
 import { hasExpatTranslationAnnex } from '@/lib/i18n/expat-translation-registry';
+import { hasCheckoutAddon } from '@/lib/checkout-addons';
 
 export type ExpatAnnexLocale = 'en' | 'ua';
 
@@ -36,7 +37,9 @@ export function getPage1ExpatNoticeLines(data: StoredContractData): string[] {
   const locale = normalizeLocale(data.lang);
   if (locale === 'cs' || !isExpatContractType(data.contractType)) return [];
 
-  const translationAnnex = hasExpatTranslationAnnex(data.contractType, locale);
+  const translationAnnex =
+    hasCheckoutAddon(data, 'bilingual_annex') &&
+    hasExpatTranslationAnnex(data.contractType, locale);
 
   if (locale === 'ua' && translationAnnex) {
     if (isUaSummaryAnnex(data.contractType)) {
@@ -55,6 +58,13 @@ export function getPage1ExpatNoticeLines(data: StoredContractData): string[] {
     return [
       'CZECH CONTRACT WITH EXPLANATORY ENGLISH TRANSLATION',
       'The contract body below is in Czech. An explanatory English translation follows later in this PDF. It is not certified or official. In case of discrepancy, the Czech wording prevails.',
+    ];
+  }
+
+  if (locale === 'ua') {
+    return [
+      'ЧЕСЬКИЙ ДОКУМЕНТ З УКРАЇНСЬКИМИ ПІДКАЗКАМИ',
+      'Форма була заповнена з українськими підказками. Згенерований документ залишається насамперед чеською мовою.',
     ];
   }
 

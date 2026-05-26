@@ -509,6 +509,7 @@ async function testLeaseUkPdfTextContent() {
     contractType: 'lease',
     tier: 'basic',
     lang: 'ua',
+    addOns: ['bilingual_annex'],
     landlordName: 'Орендодавець Тест',
     tenantName: 'Орендар Тест',
     flatAddress: 'Praha 1',
@@ -705,6 +706,7 @@ async function testLeaseEnPdfTextContent() {
     contractType: 'lease',
     tier: 'basic',
     lang: 'en',
+    addOns: ['bilingual_annex'],
     landlordName: 'Landlord Test',
     tenantName: 'Tenant Test',
     flatAddress: 'Prague 1',
@@ -740,6 +742,7 @@ async function testEmploymentEnPdfTextContent() {
     contractType: 'employment',
     tier: 'basic',
     lang: 'en',
+    addOns: ['bilingual_annex'],
     employerName: 'ACME s.r.o.',
     employerIco: '12345678',
     employerAddress: 'Prague',
@@ -766,6 +769,7 @@ async function testDppUaPdfTextContent() {
     contractType: 'dpp',
     tier: 'basic',
     lang: 'ua',
+    addOns: ['bilingual_annex'],
     employerName: 'ACME s.r.o.',
     employerIco: '12345678',
     employerAddress: 'Praha',
@@ -816,9 +820,16 @@ async function testPdfFallback() {
   };
   const csPdf = await renderContractPdf({ ...minimalLease, lang: 'cs' });
   const enPdf = await renderContractPdf(minimalLease);
+  const enText = (await extractPdfText(enPdf)).toLowerCase();
   assert.ok(enPdf.length > 1000, 'Expected generated English-aware lease PDF');
+  assert.match(enText, /english-guided czech contract/i);
+  assert.doesNotMatch(enText, /explanatory english translation annex/i);
+
+  const enPdfWithAnnex = await renderContractPdf({ ...minimalLease, addOns: ['bilingual_annex'] });
+  const enAnnexText = (await extractPdfText(enPdfWithAnnex)).toLowerCase();
+  assert.match(enAnnexText, /explanatory english translation annex/i);
   assert.ok(
-    enPdf.length > csPdf.length + 4000,
+    enPdfWithAnnex.length > csPdf.length + 4000,
     'EN lease PDF should be substantially larger than CS-only (Czech body + English translation annex)',
   );
 
