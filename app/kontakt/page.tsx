@@ -1,11 +1,31 @@
 ﻿import type { Metadata } from 'next';
 import Link from 'next/link';
 import ContactForm from '@/app/components/ContactForm';
+import { SITE_URL } from '@/lib/seo/site';
+
+const canonicalUrl = `${SITE_URL}/kontakt`;
 
 export const metadata: Metadata = {
   title: 'Kontakt',
   description:
     'Dotazy k objednávce, fakturaci nebo technickému výstupu dokumentu. SmlouvaHned neposkytuje individuální právní poradenství.',
+  alternates: { canonical: canonicalUrl },
+  openGraph: {
+    title: 'Kontakt',
+    description:
+      'Kontakt pro dotazy k objednávce, fakturaci, reklamaci nebo technickému zpřístupnění dokumentu.',
+    url: canonicalUrl,
+    siteName: 'SmlouvaHned',
+    type: 'website',
+    locale: 'cs_CZ',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'SmlouvaHned - kontakt' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Kontakt | SmlouvaHned',
+    description: 'Kontakt pro objednávky, fakturaci, reklamace a technickou podporu.',
+    images: ['/og-image.png'],
+  },
 };
 
 export default function KontaktPage() {

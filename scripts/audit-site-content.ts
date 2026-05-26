@@ -38,12 +38,20 @@ function walkAppFiles(dir = join(ROOT, 'app')): string[] {
 function assertNoDirectMetadataBrandTitles() {
   for (const fullPath of walkAppFiles()) {
     const src = readFileSync(fullPath, 'utf8');
-    assert.doesNotMatch(
-      src,
-      /title:\s*['"][^'"\n]*\|\s*SmlouvaHned(?:\.cz)?[^'"\n]*['"]/,
-      `${fullPath}: direct metadata title includes SmlouvaHned; use the root template or an absolute title`,
+    const match = src.match(/export const metadata[\s\S]*?\n\s*title:\s*['"]([^'"]+)['"]/);
+    if (!match) continue;
+    assert.ok(
+      !match[1].includes('| SmlouvaHned'),
+      `${fullPath}: metadata.title duplicates root title template brand`,
     );
   }
+}
+
+function assertSeoMetadata(path: string) {
+  const src = read(path);
+  assert.match(src, /alternates:\s*\{\s*canonical:/, `${path}: missing canonical metadata`);
+  assert.match(src, /openGraph:\s*\{[\s\S]*images:\s*\[\{ url: '\/og-image\.png'/, `${path}: missing og:image metadata`);
+  assert.match(src, /twitter:\s*\{[\s\S]*card:\s*'summary_large_image'/, `${path}: missing Twitter large-card metadata`);
 }
 
 function main() {
@@ -62,6 +70,7 @@ function main() {
   publicFiles.forEach(assertNoOldPriceCopy);
 
   const terms = read('app/obchodni-podminky/page.tsx');
+  assertSeoMetadata('app/obchodni-podminky/page.tsx');
   assert.match(terms, /PRICING_TIER_CONFIG\.basic\.priceLabel/, 'Terms must use configured basic price');
   assert.match(terms, /PRICING_TIER_CONFIG\.complete\.priceLabel/, 'Terms must use configured extended price');
   assert.match(terms, /THEMATIC_PACKAGE_CONFIG\.landlord\.priceLabel/, 'Terms must show configured package price');
@@ -80,7 +89,10 @@ function main() {
   assert.match(faq, /twitter: \{/, 'FAQ must define page-specific Twitter metadata');
 
   const gdpr = read('app/gdpr/page.tsx');
+  assertSeoMetadata('app/gdpr/page.tsx');
   assert.match(gdpr, /90 dní s doplňkem archivace/, 'GDPR must mention 90-day archive add-on');
+
+  assertSeoMetadata('app/kontakt/page.tsx');
 
   const leaseLayout = read('app/najem/layout.tsx');
   assert.match(leaseLayout, /images: \[\{ url: '\/og-image\.png'/, '/najem must define og:image');
@@ -124,12 +136,23 @@ function main() {
 
   const rootLayout = read('app/layout.tsx');
   const siteHeader = read('app/components/SiteHeader.tsx');
+  assert.doesNotMatch(rootLayout, /alternates:\s*\{[\s\S]*canonical:\s*BASE_URL/, 'Root layout must not force homepage canonical on child pages');
   assert.match(rootLayout, /<SiteHeader \/>/, 'Non-home public pages should use the shared site header');
   for (const label of ['Smlouvy', 'Postup', 'Blog', 'FAQ', 'Moje dokumenty']) {
     assert.match(siteHeader, new RegExp(label), `Shared site header missing ${label}`);
   }
 
   assert.ok(existsSync(join(ROOT, 'app/slovnik/page.tsx')), '/slovnik page must exist');
+
+  assert.ok(!existsSync(join(ROOT, 'app/robots.ts')), 'Use public/robots.txt as the single robots source of truth');
+  const robots = read('public/robots.txt');
+  for (const disallowedPath of ['/api/', '/success', '/interni/', '/navrh-redesignu', '/zakaznicka-zona']) {
+    assert.match(robots, new RegExp(disallowedPath.replace(/\//g, '\\/')), `robots.txt must disallow ${disallowedPath}`);
+  }
+
+  const sitemap = read('app/sitemap.ts');
+  assert.match(sitemap, /DEFAULT_SITEMAP_IMAGE/, 'Sitemap should include the default OG image');
+  assert.match(sitemap, /images: entry\.images \?\? \[DEFAULT_SITEMAP_IMAGE\]/, 'Sitemap entries should include image sitemap data');
 
   console.log('Site content audit passed (prices, legal copy, metadata, /najem UX, /slovnik).');
 }

@@ -3,6 +3,9 @@ Allow: /
 
 Disallow: /api/
 Disallow: /success
+Disallow: /interni/
+Disallow: /navrh-redesignu
 Disallow: /zakaznicka-zona
 
+Host: https://www.smlouvahned.cz
 Sitemap: https://www.smlouvahned.cz/sitemap.xml

@@ -14,6 +14,7 @@ import {
 import { SITE_URL } from '@/lib/seo/site';
 
 const BASE_URL = SITE_URL;
+const DEFAULT_SITEMAP_IMAGE = `${BASE_URL}/og-image.png`;
 
 const localeAlternates: Record<string, string> = {
   cs: `${BASE_URL}/`,
@@ -32,7 +33,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.9,
     alternates: { languages: localeAlternates },
   }));
-  return [
+  const entries: MetadataRoute.Sitemap = [
     {
       url: `${BASE_URL}/`,
       lastModified: now,
@@ -407,4 +408,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
       ...(alternates ? { alternates: { languages: alternates } } : {}),
     })),
   ];
+
+  return entries.map((entry) => ({
+    ...entry,
+    images: entry.images ?? [DEFAULT_SITEMAP_IMAGE],
+  }));
 }

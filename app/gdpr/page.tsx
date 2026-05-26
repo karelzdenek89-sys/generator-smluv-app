@@ -1,9 +1,28 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { SITE_URL } from '@/lib/seo/site';
+
+const canonicalUrl = `${SITE_URL}/gdpr`;
 
 export const metadata: Metadata = {
   title: 'Ochrana osobních údajů (GDPR)',
   description: 'Zásady zpracování osobních údajů platformy SmlouvaHned.cz v souladu s GDPR (nařízení EU 2016/679).',
+  alternates: { canonical: canonicalUrl },
+  openGraph: {
+    title: 'Ochrana osobních údajů (GDPR)',
+    description: 'Jak SmlouvaHned.cz zpracovává osobní údaje při tvorbě a zpřístupnění smluvních dokumentů.',
+    url: canonicalUrl,
+    siteName: 'SmlouvaHned',
+    type: 'website',
+    locale: 'cs_CZ',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'SmlouvaHned - GDPR' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Ochrana osobních údajů | SmlouvaHned',
+    description: 'Zásady zpracování osobních údajů pro tvorbu dokumentů na SmlouvaHned.cz.',
+    images: ['/og-image.png'],
+  },
 };
 
 export default function GdprPage() {

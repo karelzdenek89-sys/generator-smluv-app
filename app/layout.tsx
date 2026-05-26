@@ -1,7 +1,7 @@
 ﻿import type { Metadata } from 'next';
 import { Inter, Playfair_Display } from 'next/font/google';
 import { headers } from 'next/headers';
-import { detectLocaleFromPath, FOREIGN_LOCALES, LOCALE_META } from '@/lib/i18n/locales';
+import { detectLocaleFromPath, LOCALE_META } from '@/lib/i18n/locales';
 import './globals.css';
 import CookiesBanner from '@/app/components/CookiesBanner';
 import Footer from '@/app/components/Footer';
@@ -21,17 +21,6 @@ const playfair = Playfair_Display({
 });
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
-
-// hreflang alternates advertised on every page that doesn't override metadata.
-// Critical for the CZ homepage — without these Google can't discover the
-// /en and /ua expat landing variants from the root URL.
-const rootLanguageAlternates: Record<string, string> = {
-  cs: BASE_URL,
-  'x-default': BASE_URL,
-};
-for (const l of FOREIGN_LOCALES) {
-  rootLanguageAlternates[LOCALE_META[l].htmlLang] = `${BASE_URL}/${LOCALE_META[l].segment}`;
-}
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
@@ -76,10 +65,6 @@ export const metadata: Metadata = {
       'max-image-preview': 'large',
       'max-snippet': -1,
     },
-  },
-  alternates: {
-    canonical: BASE_URL,
-    languages: rootLanguageAlternates,
   },
 };
 

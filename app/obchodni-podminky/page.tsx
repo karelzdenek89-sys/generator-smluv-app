@@ -7,10 +7,29 @@ import {
 } from '@/lib/pricing';
 import { THEMATIC_PACKAGE_CONFIG } from '@/lib/packages';
 import { CHECKOUT_ADDON_CONFIG } from '@/lib/checkout-addons';
+import { SITE_URL } from '@/lib/seo/site';
+
+const canonicalUrl = `${SITE_URL}/obchodni-podminky`;
 
 export const metadata: Metadata = {
   title: 'Obchodní podmínky',
   description: 'Obchodní podmínky platné pro využívání automatizované platformy SmlouvaHned.cz pro tvorbu standardizovaných smluvních dokumentů.',
+  alternates: { canonical: canonicalUrl },
+  openGraph: {
+    title: 'Obchodní podmínky',
+    description: 'Obchodní podmínky platformy SmlouvaHned.cz pro tvorbu standardizovaných smluvních dokumentů.',
+    url: canonicalUrl,
+    siteName: 'SmlouvaHned',
+    type: 'website',
+    locale: 'cs_CZ',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'SmlouvaHned - obchodni podminky' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Obchodní podmínky | SmlouvaHned',
+    description: 'Pravidla objednávky, platby, dostupnosti dokumentů a reklamací na SmlouvaHned.cz.',
+    images: ['/og-image.png'],
+  },
 };
 
 export default function TermsPage() {
