@@ -7,13 +7,13 @@ export const metadata: Metadata = {
   description:
     'Pevná cena nebo položkový rozpočet, zálohy, platební milníky a vícepráce. Co ve smlouvě o dílo písemně sjednat, aby platební podmínky fungovaly v praxi.',
   alternates: {
-    canonical: 'https://smlouvahned.cz/blog/smlouva-o-dilo-cena-a-platby',
+    canonical: 'https://www.smlouvahned.cz/blog/smlouva-o-dilo-cena-a-platby',
   },
   openGraph: {
     title: 'Smlouva o dílo 2026: jak zachytit cenu, zálohy a platební podmínky',
     description:
       'Pevná cena nebo rozpočet, zálohy a platební milníky, vícepráce. Praktický přehled toho, co ve smlouvě o dílo sjednat ohledně plateb.',
-    url: 'https://smlouvahned.cz/blog/smlouva-o-dilo-cena-a-platby',
+    url: 'https://www.smlouvahned.cz/blog/smlouva-o-dilo-cena-a-platby',
     type: 'article',
   },
 };

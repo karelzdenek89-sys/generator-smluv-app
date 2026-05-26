@@ -85,7 +85,7 @@ export default function SluzbyPage() {
     }
   }, [form]);
 
-  const handlePayment = async () => {
+  const handlePayment = async (addOns: string[] = []) => {
     const missing: string[] = [];
     if (!form.providerName?.trim()) missing.push('název poskytovatele');
     if (!form.clientName?.trim()) missing.push('název objednatele');
@@ -99,7 +99,7 @@ export default function SluzbyPage() {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contractType: 'service', tier: form.tier, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'service' }, email: form.clientEmail || form.providerEmail }),
+        body: JSON.stringify({ contractType: 'service', tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'service' }, email: form.clientEmail || form.providerEmail }),
       });
       const data = await res.json();
       if (!res.ok || !data?.url) throw new Error();
@@ -251,7 +251,10 @@ export default function SluzbyPage() {
                   {form.pricingType === 'monthly_flat' && <Field label="Měsíční paušál (Kč)"><input className={inputClass} name="monthlyFee" value={form.monthlyFee} onChange={set} type="number" placeholder="20000" /></Field>}
                   {form.pricingType === 'lump_sum' && <Field label="Celková cena (Kč)"><input className={inputClass} name="totalPrice" value={form.totalPrice} onChange={set} type="number" placeholder="80000" /></Field>}
                   {form.pricingType === 'monthly_flat' && <Field label="Splatnost (den v měsíci)"><input className={inputClass} name="payDay" value={form.payDay} onChange={set} type="number" /></Field>}
+                  <Field label="Fakturační období"><input className={inputClass} name="invoicePeriod" value={form.invoicePeriod} onChange={set} placeholder="měsíčně" /></Field>
                   <Field label="Splatnost faktur (dní)"><input className={inputClass} name="invoiceDueDays" value={form.invoiceDueDays} onChange={set} type="number" /></Field>
+                  <Field label="Úrok z prodlení (% denně)"><input className={inputClass} name="lateInterest" value={form.lateInterest} onChange={set} placeholder="0,05" /></Field>
+                  <Field label="Pokuta za pozdní plnění (% denně)"><input className={inputClass} name="penaltyRate" value={form.penaltyRate} onChange={set} placeholder="0,05" /></Field>
                 </div>
               </section>
 

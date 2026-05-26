@@ -18,11 +18,11 @@ export const metadata: Metadata = {
     'uznání závazku',
     'uznání dluhu chyby',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/blog/uznani-dluhu-2026' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/blog/uznani-dluhu-2026' },
   openGraph: {
     title: 'Uznání dluhu 2026: Co to je, co musí obsahovat a proč je důležité',
     description: 'Co je uznání dluhu, náležitosti, přerušení promlčení a nejčastější chyby. Aktuální pro 2026.',
-    url: 'https://smlouvahned.cz/blog/uznani-dluhu-2026',
+    url: 'https://www.smlouvahned.cz/blog/uznani-dluhu-2026',
     type: 'article',
   },
 };

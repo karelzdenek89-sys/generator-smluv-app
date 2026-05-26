@@ -19,12 +19,12 @@ export const metadata: Metadata = {
     'dar daň 2026',
     'darovací smlouva OZ',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/blog/darovaci-smlouva-2026' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/blog/darovaci-smlouva-2026' },
   openGraph: {
     title: 'Darovací smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
     description:
       'Průvodce darovací smlouvou — zákonné náležitosti, kdy je povinná písemná forma, daňové dopady a kdy lze dar odvolat. Aktuální pro legislativu 2026.',
-    url: 'https://smlouvahned.cz/blog/darovaci-smlouva-2026',
+    url: 'https://www.smlouvahned.cz/blog/darovaci-smlouva-2026',
     type: 'article',
   },
 };

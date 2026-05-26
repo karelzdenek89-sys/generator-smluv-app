@@ -18,6 +18,7 @@ type FormData = {
   employerName: string; employerIco: string; employerAddress: string; employerEmail: string;
   employeeName: string; employeeBirth: string; employeeAddress: string; employeeEmail: string;
   taskDescription: string; taskDetails: string; workPlace: string; estimatedHours: string;
+  toolsProvided: 'employer' | 'employee' | 'shared';
   durationType: 'fixed' | 'indefinite'; startDate: string; endDate: string; deadline: string;
   remunerationType: 'fixed' | 'hourly'; totalRemuneration: string; hourlyRate: string;
   paymentAccount: string; paymentDays: string;
@@ -54,6 +55,7 @@ export default function DppPage() {
     employerName: '', employerIco: '', employerAddress: '', employerEmail: '',
     employeeName: '', employeeBirth: '', employeeAddress: '', employeeEmail: '',
     taskDescription: '', taskDetails: '', workPlace: '', estimatedHours: '',
+    toolsProvided: 'employer',
     durationType: 'fixed', startDate: '', endDate: '', deadline: '',
     remunerationType: 'fixed', totalRemuneration: '', hourlyRate: '',
     paymentAccount: '', paymentDays: '15',
@@ -93,7 +95,7 @@ export default function DppPage() {
     }
   }, [form, builderLocale]);
 
-  const handlePayment = async () => {
+  const handlePayment = async (addOns: string[] = []) => {
     // Validace ? 75 ZP ? DPP mus? m?t druh pr?ce, m?sto, dobu a odm?nu.
     const missing: string[] = [];
     if (!form.employerName?.trim()) missing.push(validationFields.employerName);
@@ -111,7 +113,7 @@ export default function DppPage() {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contractType: 'dpp', tier: form.tier, notaryUpsell: form.tier !== 'basic', lang: builderLocale, payload: { ...form, contractType: 'dpp', lang: builderLocale }, email: form.employerEmail }),
+        body: JSON.stringify({ contractType: 'dpp', tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', lang: builderLocale, payload: { ...form, contractType: 'dpp', lang: builderLocale }, email: form.employerEmail }),
       });
       const data = await res.json();
       if (!res.ok || !data?.url) throw new Error();
@@ -200,6 +202,13 @@ export default function DppPage() {
                     <Field label={ui.fields.workPlace}><input className={inputClass} name="workPlace" value={form.workPlace} onChange={set} placeholder={ui.page.placeholders.workPlace} /></Field>
                     <Field label={ui.fields.estimatedHours}>
                       <input className={inputClass} name="estimatedHours" value={form.estimatedHours} onChange={set} type="number" placeholder={ui.page.placeholders.estimatedHours} />
+                    </Field>
+                    <Field label={ui.fields.toolsProvided}>
+                      <select className={inputClass} name="toolsProvided" value={form.toolsProvided} onChange={set}>
+                        <option value="employer">{ui.options.toolsEmployer}</option>
+                        <option value="employee">{ui.options.toolsEmployee}</option>
+                        <option value="shared">{ui.options.toolsShared}</option>
+                      </select>
                     </Field>
                   </div>
                 </div>

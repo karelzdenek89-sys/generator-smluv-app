@@ -6,13 +6,13 @@ export const metadata: Metadata = {
   description:
     'Přehled nejčastějších chyb při pronájmu bytu. Nejasná kauce, chybějící předávací protokol, slabá pravidla užívání a další body, které je vhodné řešit písemně.',
   alternates: {
-    canonical: 'https://smlouvahned.cz/blog/chyby-pri-pronajmu-bytu-2026',
+    canonical: 'https://www.smlouvahned.cz/blog/chyby-pri-pronajmu-bytu-2026',
   },
   openGraph: {
     title: 'Nejčastější chyby při pronájmu bytu 2026',
     description:
       'Na co si dát pozor při pronájmu bytu, co bývá ve smlouvách nejasné a kdy je praktičtější řešit vedle smlouvy i navazující podklady.',
-    url: 'https://smlouvahned.cz/blog/chyby-pri-pronajmu-bytu-2026',
+    url: 'https://www.smlouvahned.cz/blog/chyby-pri-pronajmu-bytu-2026',
     type: 'article',
   },
 };

@@ -14,11 +14,11 @@ export const metadata: Metadata = {
     'podnájemní smlouva online',
     'podnájem souhlasem',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/podnajemni-smlouva' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/podnajemni-smlouva' },
   openGraph: {
     title: 'Podnájemní smlouva online 2026 | SmlouvaHned',
     description: 'Podnájemní smlouva se souhlasem pronajímatele. Kauce, pravidla, předávací protokol. § 2274 OZ. Od 99 Kč.',
-    url: 'https://smlouvahned.cz/podnajemni-smlouva',
+    url: 'https://www.smlouvahned.cz/podnajemni-smlouva',
   },
 };
 
@@ -50,8 +50,8 @@ export default function PodnajemniSmlouvaPage() {
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
-            { '@type': 'ListItem', position: 2, name: 'Podnájemní smlouva vzor 2026', item: 'https://smlouvahned.cz/podnajemni-smlouva' },
+            { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://www.smlouvahned.cz' },
+            { '@type': 'ListItem', position: 2, name: 'Podnájemní smlouva vzor 2026', item: 'https://www.smlouvahned.cz/podnajemni-smlouva' },
           ],
         }).replace(/</g, '\\u003c') }}
       />

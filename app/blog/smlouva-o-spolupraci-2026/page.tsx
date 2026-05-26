@@ -18,11 +18,11 @@ export const metadata: Metadata = {
     'švarcsystém smlouva',
     'smlouva o spolupráci autorská práva',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/blog/smlouva-o-spolupraci-2026' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/blog/smlouva-o-spolupraci-2026' },
   openGraph: {
     title: 'Smlouva o spolupráci OSVČ 2026: Co musí obsahovat a jak se chránit',
     description: 'Povinné náležitosti, honorář, autorská práva, mlčenlivost a ochrana před švarcsystémem. Aktuální pro 2026.',
-    url: 'https://smlouvahned.cz/blog/smlouva-o-spolupraci-2026',
+    url: 'https://www.smlouvahned.cz/blog/smlouva-o-spolupraci-2026',
     type: 'article',
   },
 };

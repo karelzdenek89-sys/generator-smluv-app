@@ -7,13 +7,13 @@ export const metadata: Metadata = {
   description:
     'Kdy a jak může pronajímatel nebo nájemce ukončit nájem výpovědí. Zákonné důvody, tříměsíční lhůta, písemná forma a co mít v nájemní smlouvě předem ošetřeno.',
   alternates: {
-    canonical: 'https://smlouvahned.cz/blog/vypoved-z-najmu-bytu-2026',
+    canonical: 'https://www.smlouvahned.cz/blog/vypoved-z-najmu-bytu-2026',
   },
   openGraph: {
     title: 'Výpověď z nájmu bytu 2026: výpovědní lhůty, důvody a forma',
     description:
       'Přehled pravidel pro ukončení nájmu bytu výpovědí — zákonné důvody, lhůty a písemná forma.',
-    url: 'https://smlouvahned.cz/blog/vypoved-z-najmu-bytu-2026',
+    url: 'https://www.smlouvahned.cz/blog/vypoved-z-najmu-bytu-2026',
     type: 'article',
   },
 };

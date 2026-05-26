@@ -4,7 +4,13 @@ import { stripe } from '@/lib/stripe';
 import { normalizeThematicPackageKeyForContract } from '@/lib/packages';
 import { getContractMeta, type StoredContractData } from '@/lib/contracts';
 import { renderContractPdf } from '@/lib/pdf';
+import { renderContractDocx } from '@/lib/docx';
 import { normalizeLocale } from '@/lib/locale';
+import {
+  getArchiveDaysWithAddons,
+  hasCheckoutAddon,
+  normalizeStoredCheckoutAddons,
+} from '@/lib/checkout-addons';
 
 export const runtime = 'nodejs';
 
@@ -57,11 +63,13 @@ type DraftRecord = {
   downloadCount?: number;
   lang?: string;
   downloadToken?: string | null;
+  addOns?: unknown;
 };
 
 export async function GET(req: NextRequest) {
   try {
     const sessionId = req.nextUrl.searchParams.get('session_id');
+    const format = req.nextUrl.searchParams.get('format') === 'docx' ? 'docx' : 'pdf';
     const downloadToken = req.nextUrl.searchParams.get('token')?.trim() ?? '';
     const requestedLang = normalizeLocale(req.nextUrl.searchParams.get('lang'));
 
@@ -148,6 +156,7 @@ export async function GET(req: NextRequest) {
       );
     const hasPaidPackage = Boolean(resolvedPackageKey);
     const paidNotaryUpsell = hasPaidPackage || resolvedTier === 'professional' || resolvedTier === 'complete';
+    const addOns = normalizeStoredCheckoutAddons(draft.addOns ?? draft.payload.addOns);
 
     const fullData: StoredContractData = {
       ...draft.payload,
@@ -155,6 +164,7 @@ export async function GET(req: NextRequest) {
       notaryUpsell: paidNotaryUpsell,
       tier: resolvedTier,
       packageKey: resolvedPackageKey,
+      addOns,
       lang: requestedLang !== 'cs'
         ? requestedLang
         : normalizeLocale(draft.payload.lang ?? draft.lang ?? session.metadata?.lang),
@@ -167,11 +177,14 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const pdf = await renderContractPdf(fullData);
     const meta = getContractMeta(fullData.contractType);
 
     // Počítač stažení + obnovit TTL (7 dní basic, 30 dní ostatní)
-    const ttl = getTtlForTier(draft.tier);
+    const ttl = getArchiveDaysWithAddons(
+      resolvedTier === 'professional' ? 'complete' : resolvedTier,
+      resolvedPackageKey,
+      addOns,
+    ) * 60 * 60 * 24;
     await redis.set(
       `contract:draft:${draftId}`,
       {
@@ -183,6 +196,26 @@ export async function GET(req: NextRequest) {
       { ex: ttl },
     );
 
+    if (format === 'docx') {
+      if (!hasCheckoutAddon(fullData, 'docx')) {
+        return NextResponse.json(
+          { error: 'DOCX verze nebyla součástí této objednávky.' },
+          { status: 403 },
+        );
+      }
+
+      const docx = await renderContractDocx(fullData);
+      return new NextResponse(new Uint8Array(docx), {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          'Content-Disposition': `attachment; filename="${meta.fileName.replace(/\.pdf$/i, '.docx')}"`,
+          'Cache-Control': 'no-store, max-age=0',
+        },
+      });
+    }
+
+    const pdf = await renderContractPdf(fullData);
     return new NextResponse(new Uint8Array(pdf), {
       status: 200,
       headers: {

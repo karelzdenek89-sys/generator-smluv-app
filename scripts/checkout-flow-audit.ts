@@ -66,6 +66,9 @@ function testCheckoutRouteCoverage() {
   assert.match(read('.env.example'), /STRIPE_PRICE_ID_PACKAGE/);
   assert.match(checkout, /CANCEL_URLS/);
   assert.match(checkout, /downloadToken/);
+  assert.match(checkout, /normalizeCheckoutAddons/);
+  assert.match(checkout, /price_data/);
+  assert.match(checkout, /getCheckoutAddonMetadata/);
   assert.match(checkout, /Redis draft save failed/);
   assert.doesNotMatch(checkout, /Redis draft save fail-open/);
 }
@@ -80,6 +83,7 @@ function testBuilderPayloads() {
     );
     assert.match(src, /fetch\('\/api\/checkout'/, `${page} must call /api/checkout`);
     assert.match(src, /tier:/, `${page} must send tier`);
+    assert.match(src, /addOns/, `${page} must pass selected checkout add-ons`);
     if (hasLang) {
       assert.match(src, /lang:\s*builderLocale/, `${page} must pass builderLocale as lang`);
     }
@@ -108,19 +112,29 @@ function testWebhookAndDownload() {
   assert.match(webhook, /checkout\.session\.completed/);
   assert.match(webhook, /session\.payment_status !== 'paid'/);
   assert.match(webhook, /downloadToken/);
+  assert.match(webhook, /checkout_addon_purchased/);
+  assert.match(webhook, /normalizeStoredCheckoutAddons/);
   assert.match(webhook, /contract:draft:/);
   assert.match(download, /session\.metadata\?\.draftId/);
   assert.match(download, /payment_status === 'paid'/);
+  assert.match(download, /format.*docx/);
+  assert.match(download, /hasCheckoutAddon\(fullData, 'docx'\)/);
   assert.match(download, /Neplatný nebo chybějící bezpečnostní token/);
   assert.doesNotMatch(download, /reconstructing from Stripe metadata/);
+  assert.match(status, /addOns/);
+  assert.match(status, /includedItems/);
+  assert.match(status, /archiveDays/);
   assert.match(status, /getEffectivePriceLabel/);
   assert.match(status, /ratelimit:contract-status/);
   assert.match(status, /formatStripeAmount/);
   assert.match(status, /session\.amount_total/);
   assert.match(success, /\/api\/contracts\/status/);
   assert.match(success, /\/api\/contracts\/download/);
+  assert.match(success, /format=docx/);
   assert.match(success, /tokenQuery/);
   assert.match(orders, /downloadToken/);
+  assert.match(orders, /addOns/);
+  assert.match(orders, /includedItems/);
   assert.doesNotMatch(
     contracts,
     /legacyPremium|Boolean\(d\.notaryUpsell\)/,

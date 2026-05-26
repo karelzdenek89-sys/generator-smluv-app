@@ -11,7 +11,7 @@ import {
 } from '@/lib/blog-articles';
 import { breadcrumbSchema, jsonLdScript } from '@/lib/schemas';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 
 export const metadata: Metadata = {
   title: 'Blog | Právní průvodce 2026',

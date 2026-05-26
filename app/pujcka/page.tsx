@@ -28,8 +28,10 @@ type LoanFormData = {
   loanAmountWords: string;
   loanPurpose: string;
   transferMethod: 'transfer' | 'cash';
+  disbursementDays: string;
 
   interestRate: string;
+  interestPayment: 'monthly' | 'end';
   repaymentType: RepaymentType;
   repaymentDate: string;
   installmentCount: string;
@@ -39,6 +41,8 @@ type LoanFormData = {
   bankAccount: string;
   variableSymbol: string;
   latePenaltyRate: string;
+  minLatePenalty: string;
+  prepaymentFee: string;
 
   securityType: 'none' | 'guarantee' | 'pledge' | 'bill';
   guarantorName: string;
@@ -84,7 +88,9 @@ export default function LoanBuilderPage() {
     loanAmountWords: '',
     loanPurpose: '',
     transferMethod: 'transfer',
+    disbursementDays: '5',
     interestRate: '0',
+    interestPayment: 'end',
     repaymentType: 'lump_sum',
     repaymentDate: '',
     installmentCount: '12',
@@ -94,6 +100,8 @@ export default function LoanBuilderPage() {
     bankAccount: '',
     variableSymbol: '',
     latePenaltyRate: '0.05',
+    minLatePenalty: '100',
+    prepaymentFee: '',
     securityType: 'none',
     guarantorName: '',
     guarantorId: '',
@@ -157,7 +165,7 @@ export default function LoanBuilderPage() {
 
   const scoreColor = riskScore.score >= 80 ? 'text-emerald-400' : riskScore.score >= 50 ? 'text-amber-400' : 'text-rose-400';
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (addOns: string[] = []) => {
     const missing: string[] = [];
     if (!formData.lenderName?.trim()) missing.push('jméno věřitele');
     if (!formData.borrowerName?.trim()) missing.push('jméno vydlužitele');
@@ -174,6 +182,7 @@ export default function LoanBuilderPage() {
         body: JSON.stringify({
           contractType: 'loan',
           tier: formData.tier,
+          addOns,
           notaryUpsell: formData.tier !== 'basic',
           email: formData.borrowerEmail || formData.lenderEmail || undefined,
           payload: formData,
@@ -346,6 +355,12 @@ export default function LoanBuilderPage() {
                       <option value="cash">V hotovosti</option>
                     </select>
                   </div>
+                  {formData.transferMethod === 'transfer' && (
+                    <div>
+                      <label className={labelClass}>Odeslat do (pracovní dny)</label>
+                      <input type="number" value={formData.disbursementDays} onChange={e => set('disbursementDays', e.target.value)} placeholder="5" aria-label="Odeslat do pracovních dnů" className={inputClass} />
+                    </div>
+                  )}
                   <div>
                     <label className={labelClass}>Úroková sazba (% p.a.)</label>
                     <input type="number" step="0.1" value={formData.interestRate} onChange={e => set('interestRate', e.target.value)} placeholder="0" aria-label="Úroková sazba (% p.a.)" className={inputClass} />
@@ -354,6 +369,21 @@ export default function LoanBuilderPage() {
                       : <p className="text-xs text-slate-500 mt-1">Bezúročná zápůjčka = 0 %</p>
                     }
                   </div>
+                  {Number(formData.interestRate) > 0 && (
+                    <>
+                      <div>
+                        <label className={labelClass}>Splatnost úroků</label>
+                        <select value={formData.interestPayment} onChange={e => set('interestPayment', e.target.value)} aria-label="Splatnost úroků" className={inputClass}>
+                          <option value="end">Jednorázově při splacení</option>
+                          <option value="monthly">Měsíčně spolu s jistinou</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className={labelClass}>Poplatek za předčasné splacení (%)</label>
+                        <input type="number" step="0.1" value={formData.prepaymentFee} onChange={e => set('prepaymentFee', e.target.value)} placeholder="0" aria-label="Poplatek za předčasné splacení" className={inputClass} />
+                      </div>
+                    </>
+                  )}
                   <div className="sm:col-span-2">
                     <label className={labelClass}>Účel zápůjčky (dobrovolné)</label>
                     <input value={formData.loanPurpose} onChange={e => set('loanPurpose', e.target.value)} placeholder="Nákup vozidla, rekonstrukce bytu, provozní náklady…" aria-label="Účel zápůjčky (dobrovolné)" className={inputClass} />
@@ -408,8 +438,16 @@ export default function LoanBuilderPage() {
                       <input value={formData.bankAccount} onChange={e => set('bankAccount', e.target.value)} placeholder="CZ65 0800 0000 1920 0014 5399" aria-label="Číslo účtu pro splácení" className={inputClass} />
                     </div>
                     <div>
+                      <label className={labelClass}>Variabilní symbol</label>
+                      <input value={formData.variableSymbol} onChange={e => set('variableSymbol', e.target.value)} placeholder="20260001" aria-label="Variabilní symbol" className={inputClass} />
+                    </div>
+                    <div>
                       <label className={labelClass}>Úrok z prodlení (% denně)</label>
                       <input type="number" step="0.001" value={formData.latePenaltyRate} onChange={e => set('latePenaltyRate', e.target.value)} placeholder="0.05" aria-label="Úrok z prodlení (% denně)" className={inputClass} />
+                    </div>
+                    <div>
+                      <label className={labelClass}>Minimální pokuta za prodlení (Kč)</label>
+                      <input type="number" value={formData.minLatePenalty} onChange={e => set('minLatePenalty', e.target.value)} placeholder="100" aria-label="Minimální pokuta za prodlení" className={inputClass} />
                     </div>
                   </div>
                 </div>

@@ -7,13 +7,13 @@ export const metadata: Metadata = {
   description:
     'Praktický přehled rozdílů mezi dohodou o provedení práce a dohodou o pracovní činnosti. Limity hodin, odvody, písemná forma a kdy která dohoda dává smysl.',
   alternates: {
-    canonical: 'https://smlouvahned.cz/blog/dpp-dpc-porovnani-2026',
+    canonical: 'https://www.smlouvahned.cz/blog/dpp-dpc-porovnani-2026',
   },
   openGraph: {
     title: 'DPP nebo DPČ: přehled rozdílů, limitů a kdy co použít v roce 2026',
     description:
       'Srovnání DPP a DPČ — hodinové limity, limity pro odvody, povinné náležitosti a praktická doporučení.',
-    url: 'https://smlouvahned.cz/blog/dpp-dpc-porovnani-2026',
+    url: 'https://www.smlouvahned.cz/blog/dpp-dpc-porovnani-2026',
     type: 'article',
   },
 };

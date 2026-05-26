@@ -15,11 +15,11 @@ type FormData = {
   cooperationScope: string; cooperationDetails: string; cooperationGoal: string;
   partyAContribution: string; partyBContribution: string;
   revenueModel: 'revenue_share' | 'fixed_fee' | 'custom';
-  revenueShareA: string; revenueShareB: string; fixedFee: string; revenueDesc: string;
+  revenueShareA: string; revenueShareB: string; fixedFee: string; revenueDesc: string; settlementPeriod: string;
   ipSharing: 'joint' | 'partyA' | 'separate';
   coordinatorName: string;
   durationType: 'fixed' | 'indefinite'; startDate: string; endDate: string; noticePeriod: string;
-  nonCompete: boolean; ndaPenalty: string;
+  nonCompete: boolean; nonCompetePeriod: string; ndaPenalty: string;
   contractDate: string; notaryUpsell: boolean;
   tier: 'basic' | 'complete';
   disputeResolution: 'court' | 'mediation' | 'arbitration';
@@ -42,11 +42,11 @@ export default function SpolupraceePage() {
     cooperationScope: '', cooperationDetails: '', cooperationGoal: '',
     partyAContribution: '', partyBContribution: '',
     revenueModel: 'revenue_share',
-    revenueShareA: '50', revenueShareB: '50', fixedFee: '', revenueDesc: '',
+    revenueShareA: '50', revenueShareB: '50', fixedFee: '', revenueDesc: '', settlementPeriod: 'měsíčně',
     ipSharing: 'joint',
     coordinatorName: '',
     durationType: 'indefinite', startDate: '', endDate: '', noticePeriod: '3',
-    nonCompete: false, ndaPenalty: '100000',
+    nonCompete: false, nonCompetePeriod: '12', ndaPenalty: '100000',
     contractDate: '', notaryUpsell: false,
     tier: 'basic' as const,
     disputeResolution: 'court' as const,
@@ -78,7 +78,7 @@ export default function SpolupraceePage() {
     }
   }, [form]);
 
-  const handlePayment = async () => {
+  const handlePayment = async (addOns: string[] = []) => {
     const missing: string[] = [];
     if (!form.partyAName?.trim()) missing.push('Stranu A');
     if (!form.partyBName?.trim()) missing.push('Stranu B');
@@ -88,7 +88,7 @@ export default function SpolupraceePage() {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contractType: 'cooperation', tier: form.tier, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'cooperation' }, email: form.partyAEmail }),
+        body: JSON.stringify({ contractType: 'cooperation', tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'cooperation' }, email: form.partyAEmail }),
       });
       const data = await res.json();
       if (!res.ok || !data?.url) throw new Error();
@@ -225,6 +225,7 @@ export default function SpolupraceePage() {
                     <>
                       <Field label={`Podíl ${form.partyAName || 'Strany A'} (%)`}><input className={inputClass} name="revenueShareA" value={form.revenueShareA} onChange={set} type="number" /></Field>
                       <Field label={`Podíl ${form.partyBName || 'Strany B'} (%)`}><input className={inputClass} name="revenueShareB" value={form.revenueShareB} onChange={set} type="number" /></Field>
+                      <Field label="Zúčtovací období"><input className={inputClass} name="settlementPeriod" value={form.settlementPeriod} onChange={set} placeholder="měsíčně" /></Field>
                     </>
                   )}
                   {form.revenueModel === 'fixed_fee' && <Field label={`Pevná odměna ${form.partyBName || 'Straně B'} (Kč/měsíc)`}><input className={inputClass} name="fixedFee" value={form.fixedFee} onChange={set} type="number" placeholder="20000" /></Field>}
@@ -250,6 +251,24 @@ export default function SpolupraceePage() {
                     </select>
                   </Field>
                   {form.durationType === 'fixed' ? <Field label="Konec smlouvy"><input className={inputClass} name="endDate" value={form.endDate} onChange={set} type="date" /></Field> : <Field label="Výpovědní doba (měsíce)"><input className={inputClass} name="noticePeriod" value={form.noticePeriod} onChange={set} type="number" /></Field>}
+                </div>
+              </section>
+
+              <section className={cardClass}>
+                <SectionTitle index="07" title="Mlčenlivost a ochrana vztahů" />
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <Field label="Pokuta za porušení mlčenlivosti (Kč)">
+                    <input className={inputClass} name="ndaPenalty" value={form.ndaPenalty} onChange={set} type="number" placeholder="100000" />
+                  </Field>
+                  <label className="flex min-h-[54px] items-center gap-3 rounded-xl border border-slate-700/80 bg-[#111c31] px-4 py-3 text-sm text-slate-200">
+                    <input type="checkbox" name="nonCompete" checked={form.nonCompete} onChange={set} className="h-4 w-4 accent-amber-500" />
+                    Zákaz přetahování zákazníků a klíčových lidí
+                  </label>
+                  {form.nonCompete && (
+                    <Field label="Doba zákazu po skončení (měsíce)">
+                      <input className={inputClass} name="nonCompetePeriod" value={form.nonCompetePeriod} onChange={set} type="number" placeholder="12" />
+                    </Field>
+                  )}
                 </div>
               </section>
 

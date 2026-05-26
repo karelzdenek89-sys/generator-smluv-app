@@ -6,13 +6,13 @@ export const metadata: Metadata = {
   description:
     'Praktický přehled kroků po podpisu kupní smlouvy na vozidlo. Jak přemýšlet o přepisu, proč je důležité mít jasné předání a jaké podklady se hodí připravit předem.',
   alternates: {
-    canonical: 'https://smlouvahned.cz/blog/prepis-vozidla-2026',
+    canonical: 'https://www.smlouvahned.cz/blog/prepis-vozidla-2026',
   },
   openGraph: {
     title: 'Přepis vozidla 2026',
     description:
       'Co řešit po podpisu kupní smlouvy na vozidlo, jak navázat předání auta na další kroky a proč mít podklady zachycené přehledně.',
-    url: 'https://smlouvahned.cz/blog/prepis-vozidla-2026',
+    url: 'https://www.smlouvahned.cz/blog/prepis-vozidla-2026',
     type: 'article',
   },
 };

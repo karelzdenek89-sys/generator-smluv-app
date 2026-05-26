@@ -6,11 +6,11 @@ export const metadata: Metadata = {
   description:
     'Průvodce kupní smlouvou pro rok 2026. Co dokument obvykle obsahuje, kdy je vhodný pro prodej vozidla nebo jiné věci a kdy už nestačí standardní postup.',
   keywords: ['kupní smlouva', 'kupní smlouva vzor', 'kupní smlouva 2026', 'kupní smlouva auto'],
-  alternates: { canonical: 'https://smlouvahned.cz/kupni-smlouva' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/kupni-smlouva' },
   openGraph: {
     title: 'Kupní smlouva vzor 2026 | SmlouvaHned',
     description: 'Přehledná průvodcová stránka ke kupní smlouvě pro běžné převody movitých věcí a vozidel.',
-    url: 'https://smlouvahned.cz/kupni-smlouva',
+    url: 'https://www.smlouvahned.cz/kupni-smlouva',
     type: 'website',
   },
 };
@@ -48,8 +48,8 @@ const breadcrumbSchema = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
-    { '@type': 'ListItem', position: 2, name: 'Kupní smlouva', item: 'https://smlouvahned.cz/kupni-smlouva' },
+    { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://www.smlouvahned.cz' },
+    { '@type': 'ListItem', position: 2, name: 'Kupní smlouva', item: 'https://www.smlouvahned.cz/kupni-smlouva' },
   ],
 };
 

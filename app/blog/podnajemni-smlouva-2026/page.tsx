@@ -18,11 +18,11 @@ export const metadata: Metadata = {
     'podnájem práva podnájemce',
     'podnájemní smlouva chyby',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/blog/podnajemni-smlouva-2026' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/blog/podnajemni-smlouva-2026' },
   openGraph: {
     title: 'Podnájemní smlouva 2026: Co musí obsahovat a souhlas pronajímatele',
     description: 'Souhlas pronajímatele, práva podnájemce, povinné náležitosti a nejčastější chyby. Aktuální pro 2026.',
-    url: 'https://smlouvahned.cz/blog/podnajemni-smlouva-2026',
+    url: 'https://www.smlouvahned.cz/blog/podnajemni-smlouva-2026',
     type: 'article',
   },
 };
@@ -87,7 +87,7 @@ export default function PodnajemniSmlouvaPage() {
       <section id="co-je-podnajem" className="mb-12 scroll-mt-6">
         <h2 className="mb-4 text-2xl font-black tracking-tight text-white">1. Co je podnájem a jak se liší od nájmu</h2>
         <p className="mb-4 text-slate-400 leading-relaxed">
-          Podnájem je upraven § 2215 a násl. občanského zákoníku. Nájemce (ten, kdo má byt pronajatý
+          Podnájem bytu je upraven zejména § 2274 až 2276 občanského zákoníku. Nájemce (ten, kdo má byt pronajatý
           od vlastníka) přenechá byt nebo jeho část podnájemci za úplatu. Vlastník nemovitosti se
           podnájemního vztahu přímo neúčastní — smluvní vztah je pouze mezi nájemcem a podnájemcem.
         </p>
@@ -110,7 +110,7 @@ export default function PodnajemniSmlouvaPage() {
               <tr>
                 <td className="px-4 py-3 font-semibold text-slate-300">Právní základ</td>
                 <td className="px-4 py-3">§ 2201 OZ</td>
-                <td className="px-4 py-3">§ 2215 OZ</td>
+                <td className="px-4 py-3">§ 2274 až 2276 OZ</td>
               </tr>
               <tr>
                 <td className="px-4 py-3 font-semibold text-slate-300">Souhlas třetí strany</td>
@@ -147,7 +147,7 @@ export default function PodnajemniSmlouvaPage() {
               V tomto případě <strong className="text-white">souhlas pronajímatele není ze zákona nutný</strong>,
               ale nájemce musí pronajímatele o záměru informovat.
             </p>
-            <div className="text-xs text-slate-500">§ 2215 odst. 1 OZ</div>
+            <div className="text-xs text-slate-500">§ 2274 OZ</div>
           </div>
           <div className="rounded-2xl border border-red-500/15 bg-red-500/5 p-5">
             <div className="mb-3 text-sm font-black text-red-400">Nájemce v bytě nebydlí</div>
@@ -156,7 +156,7 @@ export default function PodnajemniSmlouvaPage() {
               V tomto případě <strong className="text-white">je souhlas pronajímatele povinný</strong>.
               Podnájem bez souhlasu může vést k výpovědi nájemní smlouvy.
             </p>
-            <div className="text-xs text-slate-500">§ 2215 odst. 2 OZ</div>
+            <div className="text-xs text-slate-500">§ 2275 OZ</div>
           </div>
         </div>
 

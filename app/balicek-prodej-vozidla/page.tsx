@@ -6,12 +6,12 @@ export const metadata: Metadata = {
   title: 'Balíček pro prodej vozidla | SmlouvaHned',
   description:
     'Praktické řešení pro standardní převod vozidla. Kupní smlouva na vozidlo v komplexní variantě, předávací protokol, potvrzení o převzetí vozidla, klíčů a dokladů a související podklady k převodu.',
-  alternates: { canonical: 'https://smlouvahned.cz/balicek-prodej-vozidla' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/balicek-prodej-vozidla' },
   openGraph: {
     title: 'Balíček pro prodej vozidla | SmlouvaHned',
     description:
       'Tematický balíček pro standardní převod vozidla včetně souvisejících podkladů k předání.',
-    url: 'https://smlouvahned.cz/balicek-prodej-vozidla',
+    url: 'https://www.smlouvahned.cz/balicek-prodej-vozidla',
     type: 'website',
   },
 };

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { breadcrumbSchema, faqPageSchema, jsonLdScript, type FaqItem } from '@/lib/schemas';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 
 export const metadata: Metadata = {
   title: 'Časté dotazy (FAQ) 2026 | SmlouvaHned',

@@ -6,13 +6,13 @@ export const metadata: Metadata = {
   description:
     'Praktický přehled toho, co řešit při předání vozidla kupujícímu. Stav vozu, klíče, technické doklady, příslušenství a proč je vhodné mít vše zachycené písemně.',
   alternates: {
-    canonical: 'https://smlouvahned.cz/blog/predani-vozidla-kupujicimu-2026',
+    canonical: 'https://www.smlouvahned.cz/blog/predani-vozidla-kupujicimu-2026',
   },
   openGraph: {
     title: 'Jak správně předat vozidlo kupujícímu 2026',
     description:
       'Co si při předání auta potvrdit a jak předejít sporům o stav vozu, klíče a předané doklady.',
-    url: 'https://smlouvahned.cz/blog/predani-vozidla-kupujicimu-2026',
+    url: 'https://www.smlouvahned.cz/blog/predani-vozidla-kupujicimu-2026',
     type: 'article',
   },
 };

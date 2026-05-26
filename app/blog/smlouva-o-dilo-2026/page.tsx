@@ -20,12 +20,12 @@ export const metadata: Metadata = {
     'smlouva o dílo náležitosti',
     'smlouva o dílo § 2586',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/blog/smlouva-o-dilo-2026' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/blog/smlouva-o-dilo-2026' },
   openGraph: {
     title: 'Smlouva o dílo 2026: Co musí obsahovat a nejčastější chyby',
     description:
       'Zákonné náležitosti smlouvy o dílo dle § 2586 OZ, jak se chránit jako objednatel i zhotovitel a nejčastější chyby při stavebních a řemeslných pracích.',
-    url: 'https://smlouvahned.cz/blog/smlouva-o-dilo-2026',
+    url: 'https://www.smlouvahned.cz/blog/smlouva-o-dilo-2026',
     type: 'article',
   },
 };

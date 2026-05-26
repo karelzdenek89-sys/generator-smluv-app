@@ -76,6 +76,7 @@ type LeaseFormData = {
   maxOccupants: string;
   businessUseAllowed: boolean;
   includeInflationIndexation: boolean;
+  lateVacatePenalty: string;
 
   notaryUpsell: boolean;
   tier: 'basic' | 'complete';
@@ -154,6 +155,7 @@ function LeaseBuilderContent() {
     maxOccupants: '2',
     businessUseAllowed: false,
     includeInflationIndexation: false,
+    lateVacatePenalty: 'jednodenního nájemného',
 
     notaryUpsell: isLandlordPackage,
     tier: isLandlordPackage ? 'complete' : ('basic' as const),
@@ -329,7 +331,7 @@ function LeaseBuilderContent() {
 
   const previewDateLocale = builderLocale === 'ua' ? 'uk-UA' : builderLocale === 'en' ? 'en-GB' : 'cs-CZ';
 
-  const handlePayment = async () => {
+  const handlePayment = async (addOns: string[] = []) => {
     // Validace povinných polí
     const missingFields: string[] = [];
     if (!formData.landlordName.trim()) missingFields.push(ui.validation.fields.landlordName);
@@ -360,6 +362,7 @@ function LeaseBuilderContent() {
           contractType: 'lease',
           tier: formData.tier,
           packageKey: packageConfig?.key ?? null,
+          addOns,
           notaryUpsell: packageConfig ? true : formData.tier !== 'basic',
           lang: builderLocale,
           payload,
@@ -1033,6 +1036,16 @@ function LeaseBuilderContent() {
                   type="number"
                   name="maxOccupants"
                   className="bg-transparent w-24 text-2xl font-black text-white outline-none"
+                />
+              </div>
+
+              <div className="mt-4">
+                <input
+                  value={formData.lateVacatePenalty}
+                  onChange={handleChange}
+                  name="lateVacatePenalty"
+                  placeholder={ui.form.placeholders.lateVacatePenalty}
+                  className={inputClass}
                 />
               </div>
             </section>

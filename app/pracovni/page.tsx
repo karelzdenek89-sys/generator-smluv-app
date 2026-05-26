@@ -113,7 +113,7 @@ export default function PracovniPage() {
     }
   }, [form, builderLocale]);
 
-  const handlePayment = async () => {
+  const handlePayment = async (addOns: string[] = []) => {
     // Validace § 34 ZP — pracovní smlouva BEZ druhu práce, místa a dne nástupu
     // je ze zákona neplatná. Tato pole jsou zde tvrdě povinná.
     const missing: string[] = [];
@@ -131,7 +131,7 @@ export default function PracovniPage() {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contractType: 'employment', tier: form.tier, notaryUpsell: form.tier !== 'basic', lang: builderLocale, payload: { ...form, contractType: 'employment', lang: builderLocale }, email: form.employerEmail }),
+        body: JSON.stringify({ contractType: 'employment', tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', lang: builderLocale, payload: { ...form, contractType: 'employment', lang: builderLocale }, email: form.employerEmail }),
       });
       const data = await res.json();
       if (!res.ok || !data?.url) throw new Error();

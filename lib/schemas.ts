@@ -234,13 +234,5 @@ export function websiteSchemaLocalized(locale: ExpatLocaleSchemaLocale) {
       ? 'English-guided Czech rental, employment, DPP, sublease, power of attorney and car sale contracts for expats in Czechia.'
       : 'Чеські договори оренди, праці, DPP, піднайму, довіреності та купівлі авто з формою українською для іноземців у Чехії.',
     publisher: { '@id': `${BASE_URL}/#organization` },
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: `${BASE_URL}/blog?q={search_term_string}`,
-      },
-      'query-input': 'required name=search_term_string',
-    },
   };
 }

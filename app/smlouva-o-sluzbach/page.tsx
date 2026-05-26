@@ -14,11 +14,11 @@ export const metadata: Metadata = {
     'smlouva IT služby',
     'smlouva o konzultačních službách',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/smlouva-o-sluzbach' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/smlouva-o-sluzbach' },
   openGraph: {
     title: 'Smlouva o poskytování služeb online 2026 | SmlouvaHned',
     description: 'Smlouva o poskytování služeb pro freelancery a agentury. SLA, IP práva, mlčenlivost. § 1746 OZ. Od 99 Kč.',
-    url: 'https://smlouvahned.cz/smlouva-o-sluzbach',
+    url: 'https://www.smlouvahned.cz/smlouva-o-sluzbach',
   },
 };
 
@@ -50,8 +50,8 @@ export default function SmlouvaOSluzbach() {
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
-            { '@type': 'ListItem', position: 2, name: 'Smlouva o poskytování služeb', item: 'https://smlouvahned.cz/smlouva-o-sluzbach' },
+            { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://www.smlouvahned.cz' },
+            { '@type': 'ListItem', position: 2, name: 'Smlouva o poskytování služeb', item: 'https://www.smlouvahned.cz/smlouva-o-sluzbach' },
           ],
         }).replace(/</g, '\\u003c') }}
       />

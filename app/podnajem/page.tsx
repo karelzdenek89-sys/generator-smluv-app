@@ -120,7 +120,7 @@ export default function PodnajemuPage() {
 
   const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-rose-400';
 
-  const handlePayment = async () => {
+  const handlePayment = async (addOns: string[] = []) => {
     const missing: string[] = [];
     if (!form.landlordName.trim()) missing.push(validationFields.landlordName);
     if (!form.tenantName.trim()) missing.push(validationFields.tenantName);
@@ -157,6 +157,7 @@ export default function PodnajemuPage() {
         body: JSON.stringify({
           contractType: 'sublease',
           tier: form.tier,
+          addOns,
           notaryUpsell: form.tier !== 'basic',
           lang: builderLocale,
           payload: { ...form, contractType: 'sublease', lang: builderLocale },
@@ -349,6 +350,19 @@ export default function PodnajemuPage() {
 
             {/* 09 Výběr balíčku */}
             <section className={cardClass}>
+              <div className="mb-6">
+                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">{fl('disputeResolution', 'Řešení sporů')}</div>
+                <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={handleChange}>
+                  <option value="court">{fl('dispute_court', 'Obecný soud (výchozí)')}</option>
+                  <option value="mediation">{fl('dispute_mediation', 'Mediace (zákon č. 202/2012 Sb.)')}</option>
+                  <option value="arbitration">{fl('dispute_arbitration', 'Rozhodčí řízení (Rozhodčí soud HK ČR)')}</option>
+                </select>
+                {form.disputeResolution === 'arbitration' && (
+                  <p className="mt-2 text-xs text-amber-400 leading-relaxed">
+                    {fl('dispute_arbitration_warning', 'Rozhodčí doložku doporučujeme používat jen ve vztazích, kde je právně vhodná.')}
+                  </p>
+                )}
+              </div>
               <SectionTitle index="09" title={sec('s09', 'Vyberte úroveň zpracování dokumentu').title} subtitle={sec('s09', 'Vyberte úroveň zpracování dokumentu', 'Zvolte variantu, která odpovídá vaší situaci a požadovanému rozsahu dokumentu.').subtitle} />
               <BuilderTierSelector
                 contractType="sublease"

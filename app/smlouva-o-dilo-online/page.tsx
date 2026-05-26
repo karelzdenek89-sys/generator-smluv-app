@@ -10,11 +10,11 @@ export const metadata: Metadata = {
     'smlouva o dílo', 'smlouva o dílo vzor', 'smlouva o dílo online', 'smlouva o dílo 2026',
     'smlouva o dílo PDF', 'smlouva o dílo ke stažení', 'smlouva o dílo freelancer',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/smlouva-o-dilo-online' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/smlouva-o-dilo-online' },
   openGraph: {
     title: 'Smlouva o dílo online 2026 | SmlouvaHned',
     description: 'Smlouva o dílo s termíny, sankcemi a zárukou. § 2586 OZ. Od 99 Kč.',
-    url: 'https://smlouvahned.cz/smlouva-o-dilo-online',
+    url: 'https://www.smlouvahned.cz/smlouva-o-dilo-online',
   },
 };
 
@@ -50,8 +50,8 @@ export default function SmlouvaODiloOnlinePage() {
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
-            { '@type': 'ListItem', position: 2, name: 'Smlouva o dílo online 2026', item: 'https://smlouvahned.cz/smlouva-o-dilo-online' },
+            { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://www.smlouvahned.cz' },
+            { '@type': 'ListItem', position: 2, name: 'Smlouva o dílo online 2026', item: 'https://www.smlouvahned.cz/smlouva-o-dilo-online' },
           ],
         }).replace(/</g, '\\u003c') }}
       />

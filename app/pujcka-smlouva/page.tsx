@@ -14,11 +14,11 @@ export const metadata: Metadata = {
     'smlouva o půjčce vzor',
     'půjčka mezi přáteli smlouva',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/pujcka-smlouva' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/pujcka-smlouva' },
   openGraph: {
     title: 'Smlouva o zápůjčce (půjčka) online 2026 | SmlouvaHned',
     description: 'Smlouva o zápůjčce peněz — splátky, úroky, zajištění. § 2390 OZ. Od 99 Kč.',
-    url: 'https://smlouvahned.cz/pujcka-smlouva',
+    url: 'https://www.smlouvahned.cz/pujcka-smlouva',
   },
 };
 
@@ -50,8 +50,8 @@ export default function PujckaSmlouvaPage() {
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
-            { '@type': 'ListItem', position: 2, name: 'Smlouva o půjčce vzor 2026', item: 'https://smlouvahned.cz/pujcka-smlouva' },
+            { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://www.smlouvahned.cz' },
+            { '@type': 'ListItem', position: 2, name: 'Smlouva o půjčce vzor 2026', item: 'https://www.smlouvahned.cz/pujcka-smlouva' },
           ],
         }).replace(/</g, '\\u003c') }}
       />

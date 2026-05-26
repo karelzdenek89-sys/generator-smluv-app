@@ -6,13 +6,13 @@ export const metadata: Metadata = {
   description:
     'Praktický průvodce k jistotě při pronájmu bytu. Kdy se používá, co uvést do nájemní smlouvy, jak potvrdit převzetí kauce a kdy ji po skončení nájmu vracet.',
   alternates: {
-    canonical: 'https://smlouvahned.cz/blog/kauce-pronajem-bytu-2026',
+    canonical: 'https://www.smlouvahned.cz/blog/kauce-pronajem-bytu-2026',
   },
   openGraph: {
     title: 'Kauce při pronájmu bytu 2026',
     description:
       'Jak pracovat s kaucí při pronájmu bytu, co zachytit do smlouvy a kdy je vhodné mít i potvrzení o převzetí kauce.',
-    url: 'https://smlouvahned.cz/blog/kauce-pronajem-bytu-2026',
+    url: 'https://www.smlouvahned.cz/blog/kauce-pronajem-bytu-2026',
     type: 'article',
   },
 };

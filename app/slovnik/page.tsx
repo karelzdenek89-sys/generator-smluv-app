@@ -9,7 +9,7 @@ import {
 } from '@/lib/glossary';
 import InformativeDisclaimer from '@/app/components/blog/InformativeDisclaimer';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 
 export const metadata: Metadata = {
   title: 'Slovník právních pojmů 2026 | SmlouvaHned',

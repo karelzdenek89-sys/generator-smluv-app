@@ -6,12 +6,12 @@ export const metadata: Metadata = {
   title: 'Balíček pro pronajímatele | SmlouvaHned',
   description:
     'Praktické řešení pro standardní pronájem bytu nebo domu. Nájemní smlouva v komplexní variantě, předávací protokol, potvrzení o převzetí kauce a související podklady k podpisu a předání.',
-  alternates: { canonical: 'https://smlouvahned.cz/balicek-pronajimatel' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/balicek-pronajimatel' },
   openGraph: {
     title: 'Balíček pro pronajímatele | SmlouvaHned',
     description:
       'Tematický balíček pro pronajímatele, kteří chtějí mít hlavní dokument i podklady k předání bytu pohromadě.',
-    url: 'https://smlouvahned.cz/balicek-pronajimatel',
+    url: 'https://www.smlouvahned.cz/balicek-pronajimatel',
     type: 'website',
   },
 };

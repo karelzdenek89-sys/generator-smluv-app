@@ -18,11 +18,11 @@ export const metadata: Metadata = {
     'co musí obsahovat smlouva o půjčce',
     'smlouva o zápůjčce OZ',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/blog/smlouva-o-zapujcce-2026' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/blog/smlouva-o-zapujcce-2026' },
   openGraph: {
     title: 'Smlouva o zápůjčce 2026: Vzor + nejčastější chyby při půjčce peněz',
     description: 'Zákonné náležitosti zápůjčky, úrok, splátkový kalendář, vymáhání. Dle § 2390 OZ, aktuální pro 2026.',
-    url: 'https://smlouvahned.cz/blog/smlouva-o-zapujcce-2026',
+    url: 'https://www.smlouvahned.cz/blog/smlouva-o-zapujcce-2026',
     type: 'article',
   },
 };

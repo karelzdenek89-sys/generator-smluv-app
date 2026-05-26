@@ -9,5 +9,5 @@
 export const CONTENT_AUTHOR = {
   name: 'Karel Zdeněk',
   jobTitle: 'Zakladatel a provozovatel SmlouvaHned',
-  url: 'https://smlouvahned.cz/o-projektu',
+  url: 'https://www.smlouvahned.cz/o-projektu',
 } as const;

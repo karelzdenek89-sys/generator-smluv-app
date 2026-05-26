@@ -15,6 +15,15 @@ export const metadata: Metadata = {
 };
 
 const numberFormatter = new Intl.NumberFormat('cs-CZ');
+const currencyFormatter = new Intl.NumberFormat('cs-CZ', {
+  style: 'currency',
+  currency: 'CZK',
+  maximumFractionDigits: 0,
+});
+const percentFormatter = new Intl.NumberFormat('cs-CZ', {
+  style: 'percent',
+  maximumFractionDigits: 1,
+});
 const dateFormatter = new Intl.DateTimeFormat('cs-CZ', {
   dateStyle: 'medium',
   timeStyle: 'short',
@@ -22,6 +31,14 @@ const dateFormatter = new Intl.DateTimeFormat('cs-CZ', {
 
 function formatNumber(value: number) {
   return numberFormatter.format(value);
+}
+
+function formatCurrency(value: number) {
+  return currencyFormatter.format(value);
+}
+
+function formatPercent(value: number) {
+  return percentFormatter.format(value);
 }
 
 function formatDate(value: string) {
@@ -178,6 +195,29 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
             formatNumber(item.topFunnel),
             formatNumber(item.selection),
             formatNumber(item.checkout),
+          ])}
+        />
+      </Section>
+
+      <Section
+        title={'V\u00fdkon checkout add-on\u016f'}
+        description={
+          'Odd\u011bluje z\u00e1jem v modalu od skute\u010dn\u011b zaplacen\u00fdch dopl\u0148k\u016f, aby bylo vid\u011bt, kter\u00e9 polo\u017eky zvedaj\u00ed hodnotu objedn\u00e1vky bez plo\u0161n\u00e9ho zdra\u017een\u00ed.'
+        }
+      >
+        <Table
+          headers={['Dopln\u011bk', 'Cena', 'Vybr\u00e1no', 'Odebr\u00e1no', 'Zaplaceno', 'Tr\u017eba', 'N\u00e1kup / v\u00fdb\u011br']}
+          rows={data.addOnPerformance.map((item) => [
+            <div key={item.key}>
+              <div className="font-medium text-[#f7f0de]">{item.title}</div>
+              <div className="text-xs text-slate-500">{item.key}</div>
+            </div>,
+            formatCurrency(item.priceCzk),
+            formatNumber(item.selections),
+            formatNumber(item.removals),
+            formatNumber(item.purchases),
+            formatCurrency(item.revenueCzk),
+            formatPercent(item.purchaseRate),
           ])}
         />
       </Section>

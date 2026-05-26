@@ -90,6 +90,7 @@ export type LeaseFormUi = {
       coldWaterSerial: string;
       hotWaterReading: string;
       hotWaterSerial: string;
+      lateVacatePenalty: string;
       equipment: string;
       defects: string;
     };
@@ -367,6 +368,7 @@ const LEASE_FORM_CS: LeaseFormUi = {
       coldWaterSerial: 'Vodoměr studená — číslo měřiče',
       hotWaterReading: 'Vodoměr teplá voda — stav (m³)',
       hotWaterSerial: 'Vodoměr teplá — číslo měřiče',
+      lateVacatePenalty: 'Sankce za pozdní vyklizení, např. jednodenní nájemné',
       equipment: 'Seznam vybavení bytu. Např. kuchyňská linka, trouba, lednice, myčka, postel, skříně...',
       defects: 'Známé vady / poškození / poznámky. Např. oděrky na podlaze, prasklina u umyvadla, chybějící žaluzie...',
     },
@@ -651,6 +653,7 @@ export const LEASE_FORM_EN: LeaseFormUi = {
       coldWaterSerial: 'Cold water meter — serial no.',
       hotWaterReading: 'Hot water meter — reading (m³)',
       hotWaterSerial: 'Hot water meter — serial no.',
+      lateVacatePenalty: 'Late-vacating penalty, e.g. one day of rent',
       equipment: 'List of equipment. E.g. kitchen, oven, fridge, dishwasher, bed, wardrobes...',
       defects: 'Known defects / damage / notes. E.g. floor scratches, cracked sink, missing blinds...',
     },

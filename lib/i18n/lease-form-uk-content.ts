@@ -133,6 +133,7 @@ export const UK_LEASE_FORM_CONTENT = {
       coldWaterSerial: 'Холодна вода — серійний номер',
       hotWaterReading: 'Гаряча вода — показник (м³)',
       hotWaterSerial: 'Гаряча вода — серійний номер',
+      lateVacatePenalty: 'Штраф за несвоєчасне звільнення, напр. денна орендна плата',
       equipment:
         'Перелік обладнання. Напр. кухня, плита, холодильник, посудомийка, ліжко, шафи...',
       defects:

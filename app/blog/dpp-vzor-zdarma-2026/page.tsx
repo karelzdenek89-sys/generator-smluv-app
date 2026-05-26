@@ -18,11 +18,11 @@ export const metadata: Metadata = {
     'dohoda o provedení práce ke stažení',
     'generátor DPP online',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/blog/dpp-vzor-zdarma-2026' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/blog/dpp-vzor-zdarma-2026' },
   openGraph: {
     title: 'DPP vzor zdarma 2026 — co v něm chybí a proč na tom záleží',
     description: 'Volné vzory DPP často postrádají aktuální náležitosti pro rok 2026. Zjistěte, na co si dát pozor.',
-    url: 'https://smlouvahned.cz/blog/dpp-vzor-zdarma-2026',
+    url: 'https://www.smlouvahned.cz/blog/dpp-vzor-zdarma-2026',
     type: 'article',
   },
 };

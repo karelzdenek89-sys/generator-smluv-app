@@ -32,9 +32,11 @@ type FormDataType = {
   carVIN: string;
   carPlate: string;
   carYear: string;
+  carMileage: string;
   propertyAddress: string;
   propertyLV: string;
   propertyCadastre: string;
+  cadastralOffice: string;
   thingDescription: string;
   giftDate: string;
   withReservation: boolean;
@@ -66,9 +68,11 @@ export default function GiftContractPage() {
     carVIN: '',
     carPlate: '',
     carYear: '',
+    carMileage: '',
     propertyAddress: '',
     propertyLV: '',
     propertyCadastre: '',
+    cadastralOffice: '',
     thingDescription: '',
     giftDate: new Date().toISOString().split('T')[0],
     withReservation: false,
@@ -139,7 +143,7 @@ export default function GiftContractPage() {
     }
   }, [formData]);
 
-  const handlePayment = async () => {
+  const handlePayment = async (addOns: string[] = []) => {
     // Validace povinných polí
     const missingFields: string[] = [];
     if (!formData.donorName.trim()) missingFields.push('jméno dárce');
@@ -169,6 +173,7 @@ export default function GiftContractPage() {
         body: JSON.stringify({
           contractType: 'gift',
           tier: formData.tier,
+          addOns,
           notaryUpsell: formData.tier !== 'basic',
           payload,
         }),
@@ -460,6 +465,14 @@ export default function GiftContractPage() {
                     value={formData.carYear}
                     onChange={(e) => updateField('carYear', e.target.value)}
                   />
+                  <input
+                    type="number"
+                    placeholder="Stav tachometru (km)"
+                    aria-label="Stav tachometru"
+                    className={inputClass}
+                    value={formData.carMileage}
+                    onChange={(e) => updateField('carMileage', e.target.value)}
+                  />
                 </div>
               )}
 
@@ -505,6 +518,14 @@ export default function GiftContractPage() {
                       onChange={(e) => updateField('propertyCadastre', e.target.value)}
                     />
                   </div>
+                  <input
+                    type="text"
+                    placeholder="Katastrální úřad"
+                    aria-label="Katastrální úřad"
+                    className={inputClass}
+                    value={formData.cadastralOffice}
+                    onChange={(e) => updateField('cadastralOffice', e.target.value)}
+                  />
                 </div>
               )}
 

@@ -17,6 +17,7 @@ type SuccessStatusResponse = {
   archiveDays?: number;
   contractType?: string;
   contractName?: string;
+  addOns?: string[];
   includedItems?: string[];
 };
 
@@ -39,6 +40,11 @@ function SuccessContent() {
     const tokenQuery = token ? `&token=${encodeURIComponent(token)}` : '';
     return `/api/contracts/download?session_id=${encodedSessionId}${langQuery}${tokenQuery}`;
   }, [encodedSessionId, lang, token]);
+
+  const docxDownloadUrl = useMemo(() => {
+    if (!downloadUrl) return null;
+    return `${downloadUrl}&format=docx`;
+  }, [downloadUrl]);
 
   const purchaseTitle =
     orderMeta?.packageLabel ?? orderMeta?.contractName ?? 'Váš smluvní dokument';
@@ -222,12 +228,22 @@ function SuccessContent() {
           )}
 
           {dlState === 'ready' && (
-            <a
-              href={downloadUrl ?? '#'}
-              className="block w-full rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-400 py-5 text-center text-xl font-black tracking-tight text-black shadow-[0_0_40px_rgba(245,158,11,0.25)] transition-all hover:brightness-110 active:scale-[0.98]"
-            >
-              Stáhnout PDF
-            </a>
+            <div className="space-y-3">
+              <a
+                href={downloadUrl ?? '#'}
+                className="block w-full rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-400 py-5 text-center text-xl font-black tracking-tight text-black shadow-[0_0_40px_rgba(245,158,11,0.25)] transition-all hover:brightness-110 active:scale-[0.98]"
+              >
+                Stáhnout PDF
+              </a>
+              {orderMeta?.addOns?.includes('docx') && docxDownloadUrl ? (
+                <a
+                  href={docxDownloadUrl}
+                  className="block w-full rounded-2xl border border-amber-500/25 bg-amber-500/10 py-4 text-center text-sm font-black uppercase tracking-wide text-amber-300 transition hover:border-amber-500/45 hover:bg-amber-500/15"
+                >
+                  Stáhnout DOCX
+                </a>
+              ) : null}
+            </div>
           )}
 
           {dlState === 'error' && (

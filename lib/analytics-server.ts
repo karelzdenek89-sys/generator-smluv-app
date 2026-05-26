@@ -9,6 +9,12 @@ function compactParams(params?: AnalyticsEventParams) {
   );
 }
 
+function dimensionValue(value: unknown): string | undefined {
+  if (typeof value === 'string' && value) return value;
+  if (typeof value === 'number' && Number.isFinite(value)) return String(value);
+  return undefined;
+}
+
 export async function recordAnalyticsEvent(
   event: AnalyticsEventName,
   params?: AnalyticsEventParams,
@@ -28,17 +34,18 @@ export async function recordAnalyticsEvent(
     await redis.hincrby(`analytics:summary:${day}:events`, event, 1);
 
     const dimensions: Array<[string, string | undefined]> = [
-      ['source', compact.source],
-      ['destination', compact.destination],
-      ['surface', compact.surface],
-      ['article', compact.article_slug],
-      ['situation', compact.situation_key],
-      ['package', compact.package_key],
-      ['contract', compact.contract_type],
-      ['tier', compact.tier],
-      ['price_band', compact.price_band],
-      ['cta_type', compact.cta_type],
-      ['entry_mode', compact.entry_mode],
+      ['source', dimensionValue(compact.source)],
+      ['destination', dimensionValue(compact.destination)],
+      ['surface', dimensionValue(compact.surface)],
+      ['article', dimensionValue(compact.article_slug)],
+      ['situation', dimensionValue(compact.situation_key)],
+      ['package', dimensionValue(compact.package_key)],
+      ['contract', dimensionValue(compact.contract_type)],
+      ['tier', dimensionValue(compact.tier)],
+      ['price_band', dimensionValue(compact.price_band)],
+      ['cta_type', dimensionValue(compact.cta_type)],
+      ['entry_mode', dimensionValue(compact.entry_mode)],
+      ['add_on', dimensionValue(compact.add_on_key)],
     ];
 
     await Promise.all(

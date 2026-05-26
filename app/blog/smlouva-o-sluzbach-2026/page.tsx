@@ -18,11 +18,11 @@ export const metadata: Metadata = {
     'smlouva o službách freelancer',
     'smlouva o poskytování služeb reklamace',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/blog/smlouva-o-sluzbach-2026' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/blog/smlouva-o-sluzbach-2026' },
   openGraph: {
     title: 'Smlouva o poskytování služeb 2026: Vzor, náležitosti a jak se chránit',
     description: 'Náležitosti, rozdíl oproti smlouvě o dílo, reklamace a nejčastější chyby. Aktuální pro 2026.',
-    url: 'https://smlouvahned.cz/blog/smlouva-o-sluzbach-2026',
+    url: 'https://www.smlouvahned.cz/blog/smlouva-o-sluzbach-2026',
     type: 'article',
   },
 };

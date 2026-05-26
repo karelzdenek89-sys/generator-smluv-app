@@ -12,6 +12,7 @@ import PaymentModal from '@/app/components/PaymentModal';
 type FormData = {
   sellerName: string; sellerId: string; sellerAddress: string; sellerEmail: string; sellerPhone: string; sellerBankAccount: string;
   buyerName: string; buyerId: string; buyerAddress: string; buyerEmail: string; buyerPhone: string;
+  buyerType: 'consumer' | 'business';
   itemType: 'general' | 'electronics' | 'car';
   itemDescription: string; serialNumber: string; carMake: string; carModel: string; carVIN: string; carPlate: string; carYear: string; carMileage: string;
   price: string; currency: string; priceWords: string; paymentMethod: 'cash' | 'transfer' | 'escrow'; paymentDays: string; variableSymbol: string;
@@ -48,6 +49,7 @@ export default function KupniPage() {
   const [form, setForm] = useState<FormData>({
     sellerName: '', sellerId: '', sellerAddress: '', sellerEmail: '', sellerPhone: '', sellerBankAccount: '',
     buyerName: '', buyerId: '', buyerAddress: '', buyerEmail: '', buyerPhone: '',
+    buyerType: 'consumer',
     itemType: 'general', itemDescription: '', serialNumber: '', carMake: '', carModel: '', carVIN: '', carPlate: '', carYear: '', carMileage: '',
     price: '', currency: 'Kč', priceWords: '', paymentMethod: 'transfer', paymentDays: '5', variableSymbol: '',
     itemCondition: '', knownDefects: '', handoverDate: '', handoverPlace: '', warrantyMonths: '',
@@ -85,7 +87,7 @@ export default function KupniPage() {
     }
   }, [form]);
 
-  const handlePayment = async () => {
+  const handlePayment = async (addOns: string[] = []) => {
     const missing: string[] = [];
     if (!form.sellerName?.trim()) missing.push('jméno prodávajícího');
     if (!form.buyerName?.trim()) missing.push('jméno kupujícího');
@@ -98,7 +100,7 @@ export default function KupniPage() {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contractType: 'general_sale', tier: form.tier, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'general_sale' }, email: form.buyerEmail || form.sellerEmail }),
+        body: JSON.stringify({ contractType: 'general_sale', tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'general_sale' }, email: form.buyerEmail || form.sellerEmail }),
       });
       const data = await res.json();
       if (!res.ok || !data?.url) throw new Error(data?.error || 'Chyba');
@@ -204,6 +206,12 @@ export default function KupniPage() {
                 <Field label="Adresa / sídlo *"><input className={inputClass} name="buyerAddress" value={form.buyerAddress} onChange={set} placeholder="Ulice 5, Brno" /></Field>
                 <Field label="E-mail"><input className={inputClass} name="buyerEmail" value={form.buyerEmail} onChange={set} type="email" placeholder="marie@email.cz" /></Field>
                 <Field label="Telefon"><input className={inputClass} name="buyerPhone" value={form.buyerPhone} onChange={set} placeholder="+420 700 000 000" /></Field>
+                <Field label="Typ kupujícího">
+                  <select className={inputClass} name="buyerType" value={form.buyerType} onChange={set}>
+                    <option value="consumer">Spotřebitel / nepodnikatel</option>
+                    <option value="business">Podnikatel / firma</option>
+                  </select>
+                </Field>
               </div>
             </section>
 
@@ -289,10 +297,10 @@ export default function KupniPage() {
                   <option value="court">Obecný soud (výchozí)</option>
                   <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                   <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
-                  {form.disputeResolution === 'arbitration' && (
-                    <p className="mt-2 text-xs text-amber-400 leading-relaxed">⚠ Rozhodčí doložka není platná ve smlouvách se spotřebiteli (zákon č. 216/1994 Sb.). Použijte ji pouze pro vztahy B2B.</p>
-                  )}
                 </select>
+                {form.disputeResolution === 'arbitration' && (
+                  <p className="mt-2 text-xs text-amber-400 leading-relaxed">⚠ Rozhodčí doložka není platná ve smlouvách se spotřebiteli (zákon č. 216/1994 Sb.). Použijte ji pouze pro vztahy B2B.</p>
+                )}
               </div>
               {/* === Vyberte úroveň zpracování dokumentu === */}
               <div className="mt-6">

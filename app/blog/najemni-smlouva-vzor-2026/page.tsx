@@ -19,12 +19,12 @@ export const metadata: Metadata = {
     'nájemní smlouva náležitosti',
     'nájemní smlouva podle OZ',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/blog/najemni-smlouva-vzor-2026' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/blog/najemni-smlouva-vzor-2026' },
   openGraph: {
     title: 'Nájemní smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
     description:
       'Průvodce nájemní smlouvou — zákonné náležitosti, chyby pronajímatelů, jak se chránit. Aktuální pro legislativu 2026.',
-    url: 'https://smlouvahned.cz/blog/najemni-smlouva-vzor-2026',
+    url: 'https://www.smlouvahned.cz/blog/najemni-smlouva-vzor-2026',
     type: 'article',
   },
 };

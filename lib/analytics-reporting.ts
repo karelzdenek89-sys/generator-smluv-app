@@ -1,4 +1,9 @@
 import { BLOG_ARTICLES } from '@/lib/blog-articles';
+import {
+  CHECKOUT_ADDON_CONFIG,
+  CHECKOUT_ADDONS,
+  type CheckoutAddonKey,
+} from '@/lib/checkout-addons';
 import { THEMATIC_PACKAGES } from '@/lib/packages';
 import { redis } from '@/lib/redis';
 import { SITUATION_LANDINGS } from '@/lib/situations';
@@ -28,6 +33,16 @@ export type AnalyticsDashboardData = {
     topFunnel: number;
     selection: number;
     checkout: number;
+  }>;
+  addOnPerformance: Array<{
+    key: CheckoutAddonKey;
+    title: string;
+    priceCzk: number;
+    selections: number;
+    removals: number;
+    purchases: number;
+    revenueCzk: number;
+    purchaseRate: number;
   }>;
   articlePerformance: Array<{
     articleSlug: string;
@@ -141,6 +156,30 @@ function increment(record: Map<string, number>, key?: string | null, amount = 1)
   record.set(key, (record.get(key) ?? 0) + amount);
 }
 
+function toCheckoutAddonKey(value?: string): CheckoutAddonKey | null {
+  if (!value) return null;
+  return Object.prototype.hasOwnProperty.call(CHECKOUT_ADDON_CONFIG, value)
+    ? (value as CheckoutAddonKey)
+    : null;
+}
+
+function incrementAddOn(
+  record: Map<CheckoutAddonKey, { selections: number; removals: number; purchases: number; revenueCzk: number }>,
+  key: CheckoutAddonKey | null,
+  field: 'selections' | 'removals' | 'purchases' | 'revenueCzk',
+  amount = 1,
+) {
+  if (!key) return;
+  const current = record.get(key) ?? {
+    selections: 0,
+    removals: 0,
+    purchases: 0,
+    revenueCzk: 0,
+  };
+  current[field] += amount;
+  record.set(key, current);
+}
+
 export async function getAnalyticsDashboardData(windowDays = 7): Promise<AnalyticsDashboardData> {
   const now = new Date();
   const sinceTime = now.getTime() - windowDays * 24 * 60 * 60 * 1000;
@@ -170,6 +209,9 @@ export async function getAnalyticsDashboardData(windowDays = 7): Promise<Analyti
   let checkout299 = 0;
   let upgrades = 0;
   let checkoutClicks = 0;
+  let addOnSelections = 0;
+  let addOnPurchases = 0;
+  let addOnRevenueCzk = 0;
 
   const articleStats = new Map<
     string,
@@ -186,6 +228,10 @@ export async function getAnalyticsDashboardData(windowDays = 7): Promise<Analyti
   const sourceToBuilder = new Map<string, number>();
   const sourceToPackage = new Map<string, number>();
   const ctaStats = new Map<string, number>();
+  const addOnStats = new Map<
+    CheckoutAddonKey,
+    { selections: number; removals: number; purchases: number; revenueCzk: number }
+  >();
 
   for (const event of events) {
     const params = event.params ?? {};
@@ -331,6 +377,31 @@ export async function getAnalyticsDashboardData(windowDays = 7): Promise<Analyti
         if (params.price_band === '299') checkout299 += 1;
         break;
 
+      case 'checkout_addon_selected': {
+        const addOnKey = toCheckoutAddonKey(params.add_on_key);
+        addOnSelections += addOnKey ? 1 : 0;
+        incrementAddOn(addOnStats, addOnKey, 'selections');
+        break;
+      }
+
+      case 'checkout_addon_removed': {
+        const addOnKey = toCheckoutAddonKey(params.add_on_key);
+        incrementAddOn(addOnStats, addOnKey, 'removals');
+        break;
+      }
+
+      case 'checkout_addon_purchased': {
+        const addOnKey = toCheckoutAddonKey(params.add_on_key);
+        const priceCzk = addOnKey
+          ? Number(params.add_on_price_czk) || CHECKOUT_ADDON_CONFIG[addOnKey].priceCzk
+          : 0;
+        addOnPurchases += addOnKey ? 1 : 0;
+        addOnRevenueCzk += priceCzk;
+        incrementAddOn(addOnStats, addOnKey, 'purchases');
+        incrementAddOn(addOnStats, addOnKey, 'revenueCzk', priceCzk);
+        break;
+      }
+
       case 'homepage_pricing_path_click':
         if (params.price_band === '99') homepage99Clicks += 1;
         if (params.price_band === '199') homepage199Clicks += 1;
@@ -380,6 +451,25 @@ export async function getAnalyticsDashboardData(windowDays = 7): Promise<Analyti
     }))
     .sort((a, b) => b.builderEntries - a.builderEntries);
 
+  const addOnPerformance = CHECKOUT_ADDONS.map((addon) => {
+    const stat = addOnStats.get(addon.key) ?? {
+      selections: 0,
+      removals: 0,
+      purchases: 0,
+      revenueCzk: 0,
+    };
+    return {
+      key: addon.key,
+      title: addon.title,
+      priceCzk: addon.priceCzk,
+      selections: stat.selections,
+      removals: stat.removals,
+      purchases: stat.purchases,
+      revenueCzk: stat.revenueCzk,
+      purchaseRate: stat.selections > 0 ? stat.purchases / stat.selections : 0,
+    };
+  }).sort((a, b) => b.revenueCzk - a.revenueCzk || b.purchases - a.purchases || b.selections - a.selections);
+
   return {
     windowDays,
     analyzedEvents: events.length,
@@ -393,6 +483,9 @@ export async function getAnalyticsDashboardData(windowDays = 7): Promise<Analyti
       { key: 'builder_views', label: 'Vstupy do builderu', value: builderViews },
       { key: 'package_entries', label: 'Vstupy do package flow', value: packageFlowEntries },
       { key: 'checkout_clicks', label: 'Checkout kliky', value: checkoutClicks },
+      { key: 'addon_selections', label: 'Výběry add-onů', value: addOnSelections },
+      { key: 'addon_purchases', label: 'Zaplacené add-ony', value: addOnPurchases },
+      { key: 'addon_revenue', label: 'Tržba z add-onů (Kč)', value: addOnRevenueCzk },
     ],
     pricingInterest: [
       {
@@ -414,6 +507,7 @@ export async function getAnalyticsDashboardData(windowDays = 7): Promise<Analyti
         checkout: checkout299,
       },
     ],
+    addOnPerformance,
     articlePerformance,
     situationPerformance,
     packagePerformance,

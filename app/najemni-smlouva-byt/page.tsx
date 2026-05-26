@@ -14,11 +14,11 @@ export const metadata: Metadata = {
     'nájemní smlouva pronajímatel',
     'nájemní smlouva nájemce',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/najemni-smlouva-byt' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/najemni-smlouva-byt' },
   openGraph: {
     title: 'Nájemní smlouva na byt 2026 | SmlouvaHned',
     description: 'Nájemní smlouva na byt nebo dům. Kauce, zvířata, předávací protokol. § 2235 OZ. Od 99 Kč.',
-    url: 'https://smlouvahned.cz/najemni-smlouva-byt',
+    url: 'https://www.smlouvahned.cz/najemni-smlouva-byt',
   },
 };
 
@@ -64,8 +64,8 @@ export default function NajemniSmlouvaBytPage() {
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
-            { '@type': 'ListItem', position: 2, name: 'Nájemní smlouva na byt 2026', item: 'https://smlouvahned.cz/najemni-smlouva-byt' },
+            { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://www.smlouvahned.cz' },
+            { '@type': 'ListItem', position: 2, name: 'Nájemní smlouva na byt 2026', item: 'https://www.smlouvahned.cz/najemni-smlouva-byt' },
           ],
         }).replace(/</g, '\\u003c') }}
       />

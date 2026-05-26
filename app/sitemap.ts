@@ -240,6 +240,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly' as const,
       priority: 0.88,
     },
+    {
+      url: `${BASE_URL}/blog/plna-moc-zastupovani-cizincu-2026`,
+      lastModified: new Date('2026-05-21'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.92,
+    },
+    {
+      url: `${BASE_URL}/blog/prodej-auta-prepis-cizinec-2026`,
+      lastModified: new Date('2026-05-21'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.92,
+    },
+    {
+      url: `${BASE_URL}/blog/podnajem-vs-najem-cizinci-2026`,
+      lastModified: new Date('2026-05-21'),
+      changeFrequency: 'monthly' as const,
+      priority: 0.92,
+    },
     // SEO landing pages
     {
       url: `${BASE_URL}/najemni-smlouva`,

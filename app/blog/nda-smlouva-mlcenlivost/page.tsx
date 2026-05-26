@@ -18,11 +18,11 @@ export const metadata: Metadata = {
     'smlouva o mlčenlivosti chyby',
     'NDA obchodní tajemství',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/blog/nda-smlouva-mlcenlivost' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/blog/nda-smlouva-mlcenlivost' },
   openGraph: {
     title: 'NDA smlouva o mlčenlivosti 2026: Co musí obsahovat a nejčastější chyby',
     description: 'Co chrání NDA, jak vymezit důvěrné informace, smluvní pokuta a nejčastější chyby. Aktuální pro 2026.',
-    url: 'https://smlouvahned.cz/blog/nda-smlouva-mlcenlivost',
+    url: 'https://www.smlouvahned.cz/blog/nda-smlouva-mlcenlivost',
     type: 'article',
   },
 };

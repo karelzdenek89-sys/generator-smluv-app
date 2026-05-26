@@ -14,12 +14,12 @@ export const metadata: Metadata = {
     'smlouva o nájmu bytu',
     'nájemní smlouva na byt 2026',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/najemni-smlouva' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/najemni-smlouva' },
   openGraph: {
     title: 'Nájemní smlouva 2026 online — vzor a generátor, PDF ihned',
     description:
       'Vyplníte formulář a stáhnete hotové PDF. Aktuální vzor dle OZ — kauce, výpovědní doba, předávací protokol. Od 99 Kč.',
-    url: 'https://smlouvahned.cz/najemni-smlouva',
+    url: 'https://www.smlouvahned.cz/najemni-smlouva',
     type: 'website',
   },
 };
@@ -92,8 +92,8 @@ const breadcrumbSchema = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
-    { '@type': 'ListItem', position: 2, name: 'Nájemní smlouva', item: 'https://smlouvahned.cz/najemni-smlouva' },
+    { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://www.smlouvahned.cz' },
+    { '@type': 'ListItem', position: 2, name: 'Nájemní smlouva', item: 'https://www.smlouvahned.cz/najemni-smlouva' },
   ],
 };
 

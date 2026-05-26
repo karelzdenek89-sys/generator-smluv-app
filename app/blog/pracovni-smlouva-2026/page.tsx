@@ -19,12 +19,12 @@ export const metadata: Metadata = {
     'pracovní smlouva zaměstnanec',
     'jak napsat pracovní smlouvu',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/blog/pracovni-smlouva-2026' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/blog/pracovni-smlouva-2026' },
   openGraph: {
     title: 'Pracovní smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
     description:
       'Průvodce pracovní smlouvou — 3 povinné náležitosti, zkušební doba, přesčas, výpovědní lhůta a nejčastější chyby zaměstnavatelů. Aktuální dle zákoníku práce 2026.',
-    url: 'https://smlouvahned.cz/blog/pracovni-smlouva-2026',
+    url: 'https://www.smlouvahned.cz/blog/pracovni-smlouva-2026',
     type: 'article',
   },
 };

@@ -45,7 +45,7 @@ export type ExpatBlogArticle = {
   relatedSlugs: string[];
 };
 
-const BASE = 'https://smlouvahned.cz';
+const BASE = 'https://www.smlouvahned.cz';
 
 function builder(locale: AppLocale, contract: ExpatContractType): string {
   return withLocale(EXPAT_CONTRACT_ROUTES[contract], locale);
@@ -840,6 +840,276 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
       lawyerSuitable: 'Дилер, імпорт, кредит під заставою.',
     },
     relatedSlugs: [HUB_GUIDE_UA, 'power-of-attorney-czech-republic-guide-ua'],
+  }),
+
+  contractArticleEn('power_of_attorney', {
+    slug: 'power-of-attorney-foreigners-2026-guide-en',
+    title: 'Power of Attorney for Foreigners in the Czech Republic 2026: Notarization and Common Pitfalls',
+    excerpt: 'When does a foreigner need a Power of Attorney (Plná moc) in Czechia? Learn about notarization rules, language requirements, and 2026 legal guidelines.',
+    intro: 'Navigating bureaucratic procedures in a foreign country often requires authorizing someone else to act on your behalf. In the Czech Republic, a Power of Attorney (Plná moc) is a standard instrument for this, but specific rules apply to foreigners in 2026.',
+    keywords: ['power of attorney Czechia', 'plna moc foreigners', 'notarized signature Czech Republic'],
+    readTime: '6 min',
+    sections: [
+      {
+        id: 'when-needed',
+        title: 'When is a Power of Attorney necessary for expats?',
+        paragraphs: [
+          'Foreigners in Czechia frequently use a Power of Attorney (Plná moc) for interactions they cannot perform in person. Typical situations include visa filings at the Ministry of the Interior, opening bank accounts, setting up utility contracts, or registering a newly purchased car at the vehicle registry.',
+          'Under the Czech Civil Code, the power of attorney must be in writing if the authorized act itself requires written form. To avoid disputes, it is highly recommended to always use a written document.'
+        ]
+      },
+      {
+        id: 'notarization',
+        title: 'Do you need a certified signature (notarization)?',
+        paragraphs: [
+          'Many Czech institutions, including banks and public registries, will not accept a simple signature. They require a certified signature (úředně ověřený podpis) to verify the principal’s identity.',
+          'You can easily obtain a certified signature at any Czech POINT terminal (located at most Czech Post offices, municipal offices, or notary offices). You must present a valid passport or residence document. SmlouvaHned generates the Czech document, which you can print and sign in front of the clerk.'
+        ]
+      },
+      {
+        id: 'language',
+        title: 'Language requirements and dual-language guidance',
+        paragraphs: [
+          'By law, Czech public authorities and registries conduct business in the Czech language. Therefore, any Power of Attorney submitted to them must be written in Czech.',
+          'Using SmlouvaHned, you can fill in the details using an English-guided interface. The resulting document is generated in proper Czech legal terminology to ensure it is accepted by Czech authorities, while you receive English tooltips and explanations to understand every clause.'
+        ]
+      }
+    ],
+    primaryCta: {
+      title: 'Create a Czech Power of Attorney',
+      body: 'Generate a legally sound Czech power of attorney with English form guidance in minutes.',
+      buttonLabel: 'Open Power of Attorney form (EN) →'
+    },
+    trust: {
+      generatorSuitable: 'Standard representation for public offices, vehicle registry, postal collection, or bank transactions.',
+      lawyerSuitable: 'Representation in court disputes, complex corporate restructurings, or when an apostille/superlegalization is needed for foreign authorities.'
+    },
+    relatedSlugs: [HUB_GUIDE_EN, 'power-of-attorney-czech-republic-guide-en']
+  }),
+
+  contractArticleUa('power_of_attorney', {
+    slug: 'power-of-attorney-foreigners-2026-guide-ua',
+    title: 'Довіреність для іноземців у Чехії 2026: нотаріальне засвідчення та типові помилки',
+    excerpt: 'Коли іноземцю потрібна довіреність (Plná moc) у Чехії? Дізнайтеся про правила завірення підпису, мовні вимоги та юридичні рекомендації на 2026 рік.',
+    intro: 'Вирішення бюрократичних питань в іншій країні часто потребує уповноваження іншої особи діяти від вашого імені. У Чехії для цього використовується довіреність (Plná moc), проте для іноземців у 2026 році діють певні особливості.',
+    keywords: ['довіреність Чехія', 'plna moc для іноземців', 'завірений підпис Чехія'],
+    readTime: '6 хв',
+    sections: [
+      {
+        id: 'when-needed',
+        title: 'Коли іноземцю потрібна довіреність?',
+        paragraphs: [
+          'Іноземці у Чехії часто використовують довіреність (Plná moc) для справ, які не можуть вирішити особисто. Це можуть бути питання проживання в МВС ЧР (OAMP), відкриття банківських рахунків, підключення комунальних послуг або переоформлення автомобіля в реєстрі транспортних засобів.',
+          'Відповідно до Цивільного кодексу Чехії, довіреність має бути письмовою, якщо сама дія потребує письмової форми. Щоб уникнути непорозумінь, завжди рекомендується складати її в письмовій формі.'
+        ]
+      },
+      {
+        id: 'notarization',
+        title: 'Чи потрібен завірений підпис (нотаріальне засвідчення)?',
+        paragraphs: [
+          'Більшість чеських установ та державних органів не приймають звичайний підпис. Вони вимагають офіційно завірений підпис (úředně ověřený podpis) для підтвердження особи довірителя.',
+          'Завірити підпис можна в будь-якому відділенні Czech POINT (вони є на більшості поштових відділень Česká pošta, у муніципалітетах або в нотаріусів). Вам знадобиться закордонний паспорт або посвідка на проживання. Сервіс SmlouvaHned згенерує чеський текст, який ви роздрукуєте і підпишете в присутності працівника пошти чи нотаріуса.'
+        ]
+      },
+      {
+        id: 'language',
+        title: 'Мовні вимоги та форми українською мовою',
+        paragraphs: [
+          'За законом чеські державні органи здійснюють провадження чеською мовою. Тому довіреність, яка подається до офіційних установ, обов’язково має бути чеською.',
+          'За допомогою SmlouvaHned ви можете заповнити форму українською мовою. Згенерований документ міститиме точні формулювання чеською мовою, придатні для подання в установи, а ви матимете пояснення кожної умови українською.'
+        ]
+      }
+    ],
+    primaryCta: {
+      title: 'Створити довіреність',
+      body: 'Створіть довіреність чеською мовою з підказками українською всього за кілька хвилин.',
+      buttonLabel: 'Відкрити форму довіреності (UA) →'
+    },
+    trust: {
+      generatorSuitable: 'Стандартне представництво в державних органах, переоформлення авто, отримання пошти або банківські операції.',
+      lawyerSuitable: 'Представництво в судах, складні корпоративні угоди або випадки, коли потрібен апостиль для використання за кордоном.'
+    },
+    relatedSlugs: [HUB_GUIDE_UA, 'power-of-attorney-czech-republic-guide-ua']
+  }),
+
+  contractArticleEn('car_sale', {
+    slug: 'buying-car-foreigner-czechia-2026-guide-en',
+    title: 'Buying a Car as a Foreigner in Czechia 2026: Purchase Contract and Registration Transfer Guide',
+    excerpt: 'Step-by-step guide to buying a used car in the Czech Republic in 2026. Learn about the statutory 10-day transfer deadline, required documents, and contracts.',
+    intro: 'Buying a used car in Czechia can be straightforward if you follow the legal steps. However, as a foreign buyer, you must navigate specific rules regarding residency verification, liability insurance, and registration transfer deadlines in 2026.',
+    keywords: ['buying car Czech Republic', 'car registration transfer Czechia', 'car purchase contract Prague'],
+    readTime: '7 min',
+    sections: [
+      {
+        id: 'contract-essentials',
+        title: 'Key elements of the car purchase contract',
+        paragraphs: [
+          'The car purchase contract (Kupní smlouva na auto) is the legal foundation of the transaction. Under the Czech Civil Code, it must uniquely identify the vehicle using the VIN (Vehicle Identification Number), current mileage, purchase price, and a detailed list of any known defects.',
+          'A physical handover protocol (Předávací protokol) should always be attached, detailing the exact state of the car, tires, key counts, and documents handed over at the time of sale.'
+        ]
+      },
+      {
+        id: 'transfer-deadline',
+        title: 'The statutory 10-business-day transfer deadline',
+        paragraphs: [
+          'Under Czech law, the application to record the change of ownership in the Road Vehicle Registry (Registr silničních vozidel) must be filed within 10 business days of the ownership transfer, typically when the sale is completed under the contract.',
+          'Failing to complete this transfer on time can lead to a fine of up to 50,000 CZK for both the seller and the buyer. SmlouvaHned provides standard power of attorney templates if one party authorizes the other to handle the registry transfer alone.'
+        ]
+      },
+      {
+        id: 'foreigner-registration',
+        title: 'Registration requirements for foreign nationals',
+        paragraphs: [
+          'To register a vehicle under your name in the Czech Republic, the registry requires proof of links/residence in the country. You must present your passport and a valid temporary or permanent residence permit, a long-term visa, or a lease agreement/work contract proving your ties to Czechia.',
+          'Additionally, mandatory third-party liability insurance (povinné ručení) must be active before the transfer. The registry usually verifies the insurance electronically through the Czech Insurers’ Bureau, or the insurance can be proven in another accepted way.'
+        ]
+      }
+    ],
+    primaryCta: {
+      title: 'Create a Car Purchase Agreement',
+      body: 'Generate a professional Czech vehicle purchase contract with English-guided forms and handover protocol.',
+      buttonLabel: 'Open Car Sale form (EN) →'
+    },
+    trust: {
+      generatorSuitable: 'Private sale of a used car, motorcycle, or trailer between physical persons or small businesses.',
+      lawyerSuitable: 'Complex fleet leases, importing vehicles from outside the EU, or sales involving corporate financing and security liens.'
+    },
+    relatedSlugs: [HUB_GUIDE_EN, 'car-sale-agreement-czech-republic-guide-en']
+  }),
+
+  contractArticleUa('car_sale', {
+    slug: 'buying-car-foreigner-czechia-2026-guide-ua',
+    title: 'Купівля авто іноземцем у Чехії 2026: договір купівлі-продажу та процедура переоформлення',
+    excerpt: 'Покроковий посібник з купівлі вживаного авто в Чехії у 2026 році. Дізнайтеся про обов’язковий 10-денний термін переоформлення, необхідні документи та договори.',
+    intro: 'Купівля вживаного автомобіля в Чехії може бути простою процедурою, якщо дотримуватися закону. Проте, як іноземний покупець, ви маєте врахувати особливості підтвердження права проживання, обов’язкового страхування та строків реєстрації у 2026 році.',
+    keywords: ['купівля авто Чехія', 'переоформлення автомобіля Чехія', 'договір купівлі-продажу авто'],
+    readTime: '7 хв',
+    sections: [
+      {
+        id: 'contract-essentials',
+        title: 'Основні елементи договору купівлі-продажу авто',
+        paragraphs: [
+          'Договір купівлі-продажу автомобіля (Kupní smlouva na auto) є правовою основою угоди. За цивільним кодексом Чехії він має містити точну ідентифікацію автомобіля за VIN-кодом, поточний пробіг, ціну та детальний перелік відомих технічних несправностей.',
+          'До договору обов’язково додається протокол прийому-передачі (Předávací protokol), де фіксується фактичний стан автомобіля, кількість переданих ключів та документів на момент продажу.'
+        ]
+      },
+      {
+        id: 'transfer-deadline',
+        title: 'Обов’язковий термін переоформлення – 10 робочих днів',
+        paragraphs: [
+          'За чеським законодавством заяву про зміну власника в Реєстрі транспортних засобів (Registr silničních vozidel) потрібно подати протягом 10 робочих днів з моменту переходу права власності, зазвичай після завершення продажу за договором.',
+          'Недотримання цього терміну тягне за собою штраф до 50 000 крон для обох сторін угоди. SmlouvaHned надає шаблони довіреності, якщо переоформленням займається лише одна із сторін від імені іншої.'
+        ]
+      },
+      {
+        id: 'foreigner-registration',
+        title: 'Вимоги до реєстрації автомобіля іноземцями',
+        paragraphs: [
+          'Для реєстрації автомобіля на своє ім’я іноземець повинен підтвердити зв’язок із Чеською Республікою. Вам потрібно буде надати паспорт та дійсну посвідку на проживання (тимчасовий або постійний побут, візу тимчасового захисту) або договір оренди чи трудовий договір.',
+          'Крім того, перед переоформленням має діяти обов’язкове страхування цивільної відповідальності (povinné ručení). Реєстр зазвичай перевіряє страхування електронно через Чеське бюро страховиків або іншим прийнятним способом.'
+        ]
+      }
+    ],
+    primaryCta: {
+      title: 'Створити договір купівлі-продажу авто',
+      body: 'Створіть професійний договір чеською мовою з підказками українською та протоколом передачі.',
+      buttonLabel: 'Форма купівлі авто (UA) →'
+    },
+    trust: {
+      generatorSuitable: 'Приватний продаж вживаного автомобіля, мотоцикла або причепа між фізичними особами чи невеликими фірмами.',
+      lawyerSuitable: 'Купівля авто з автосалону з гарантійними зобов’язаннями, імпорт авто з-поза меж ЄС або лізингові угоди.'
+    },
+    relatedSlugs: [HUB_GUIDE_UA, 'car-sale-agreement-czech-republic-guide-ua']
+  }),
+
+  contractArticleEn('lease', {
+    slug: 'sublease-vs-lease-czechia-guide-en',
+    title: 'Sublease vs. Lease for Foreigners in Czechia 2026: Residence Permit Risks and Key Differences',
+    excerpt: 'Learn the critical legal differences between a Lease (nájem) and a Sublease (podnájem) in the Czech Republic. Discover why a sublease could risk your visa or residence permit at the OAMP.',
+    intro: 'Securing housing is the most critical step for expats in Czechia. However, signing a Sublease (Dohoda o podnájmu) instead of a Lease (Nájemní smlouva) carries different legal protections, landlord consent requirements, and potential visa risks with the Ministry of the Interior (OAMP) in 2026.',
+    keywords: ['sublease vs lease Czechia', 'podnajem vs najem foreigners', 'OAMP housing proof Czech Republic'],
+    readTime: '7 min',
+    sections: [
+      {
+        id: 'legal-status',
+        title: 'Lease vs. Sublease: The Legal Framework',
+        paragraphs: [
+          'A lease (nájem) is a contract directly between the owner of the apartment and the tenant. It is heavily protected by the Czech Civil Code, which restricts when a landlord can terminate the agreement and guarantees basic tenant rights.',
+          'A sublease (podnájem) is a contract between the tenant (now acting as the sublandlord) and a subtenant. The subtenant has significantly fewer rights and protections. If the main lease ends, the sublease terminates automatically.'
+        ]
+      },
+      {
+        id: 'landlord-consent',
+        title: 'The Landlord Consent Pitfall',
+        paragraphs: [
+          'Under § 2275 of the Civil Code, if the tenant does not permanently live in the apartment with you, they MUST obtain written consent from the property owner to sublet.',
+          'If you sign a sublease without the owner\'s written consent, it is a severe breach of the main lease, which can lead to immediate eviction for both the tenant and you.'
+        ]
+      },
+      {
+        id: 'visa-oamp-risk',
+        title: 'OAMP Visa and Residence Application Risks',
+        paragraphs: [
+          'The Ministry of the Interior (OAMP) is extremely strict regarding housing proof (Doklad o zajištění ubytování). For a lease, you only need the signed lease agreement or a signature-verified accommodation confirmation.',
+          'For a sublease, the OAMP requires proof that the sublandlord is authorized to sublet. This means you must submit either the written consent of the owner or the main lease showing that subletting is allowed. If this chain is not fully documented and verified, your residence permit or visa application can be rejected.'
+        ]
+      }
+    ],
+    primaryCta: {
+      title: 'Create your Czech Housing Agreement',
+      body: 'English-guided form → Czech PDF. Generate a lease or sublease that meets all OAMP requirements.',
+      buttonLabel: 'Open Rental/Sublease Forms (EN) →'
+    },
+    trust: {
+      generatorSuitable: 'Standard apartment lease (nájem) or sublease of a single room where the main tenant lives with you and owner consent is documented.',
+      lawyerSuitable: 'Subleasing a flat without owner consent, commercial space subleasing, or appealing an OAMP visa rejection due to housing proof issues.'
+    },
+    relatedSlugs: [HUB_GUIDE_EN, 'rental-agreement-czech-republic-guide-en']
+  }),
+
+  contractArticleUa('lease', {
+    slug: 'sublease-vs-lease-czechia-guide-ua',
+    title: 'Піднайм чи оренда для іноземців у Чехії 2026: ризики для візи та основні відмінності',
+    excerpt: 'Дізнайтеся про ключові юридичні відмінності між орендою (nájem) та піднаймом (podnájem) у Чехії. Чому піднайм може загрожувати вашій візі або посвідці на проживання в OAMP.',
+    intro: 'Пошук житла — найважливіший крок для іноземців у Чехії. Проте підписання договору піднайму (Dohoda o podnájmu) замість договору оренди (Nájemní smlouva) несе зовсім інші юридичні права та ризики для проживання в МВС ЧР (OAMP) у 2026 році.',
+    keywords: ['піднайм чи оренда Чехія', 'podnajem vs najem іноземці', 'підтвердження про проживання OAMP'],
+    readTime: '7 хв',
+    sections: [
+      {
+        id: 'legal-status',
+        title: 'Оренда vs. Піднайм: Юридичні основи',
+        paragraphs: [
+          'Договір оренди (nájem) укладається безпосередньо з власником нерухомості. Орендар має сильний захист за Цивільним кодексом Чехії, зокрема щодо обмежень на виселення та підвищення плати.',
+          'Договір піднайму (podnájem) укладається з орендарем квартири (піднаймодавцем). Піднаймач має значно менше права. Якщо припиняється основна оренда, піднайм закінчується автоматично.'
+        ]
+      },
+      {
+        id: 'landlord-consent',
+        title: 'Пастка згоди власника квартири',
+        paragraphs: [
+          'Згідно з § 2275 Цивільного кодексу, якщо орендар сам не проживає в квартирі разом з вами, він ЗОБОВ’ЯЗАНИЙ отримати письмову згоду власника на піднайм.',
+          'Підписання договору піднайму без згоди власника є грубим порушенням оренди, що може призвести до негайного виселення як орендаря, так і вас.'
+        ]
+      },
+      {
+        id: 'visa-oamp-risk',
+        title: 'Ризики для візи та посвідки на проживання в OAMP',
+        paragraphs: [
+          'МВС Чехії (OAMP) дуже суворо перевіряє підтвердження проживання (Doklad o zajištění ubytování). При оренді достатньо надати договір або бланк підтвердження з завіреним підписом власника.',
+          'При піднаймі OAMP вимагає ланцюжок документів — договір піднайму разом із письмовою згодою власника або основним договором оренди, де дозволено піднайм. Відсутність цих документів є частою причиною відмови у візі або продовженні проживання.'
+        ]
+      }
+    ],
+    primaryCta: {
+      title: 'Створити договір оренди або піднайму',
+      body: 'Форма українською → PDF чеською. Створіть юридично чистий договір оренди або піднайму, що відповідає вимогам OAMP.',
+      buttonLabel: 'Форма оренди / піднайму (UA) →'
+    },
+    trust: {
+      generatorSuitable: 'Типовий договір оренди (nájem) або піднайм кімнати, якщо орендар живе з вами і є згода власника.',
+      lawyerSuitable: 'Піднайм без згоди власника, комерційна оренда, або оскарження рішення OAMP про відмову у візі через проживання.'
+    },
+    relatedSlugs: [HUB_GUIDE_UA, 'rental-agreement-czech-republic-guide-ua']
   }),
 ];
 

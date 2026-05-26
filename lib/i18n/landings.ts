@@ -236,7 +236,7 @@ export const LANDINGS: Record<Exclude<Locale, 'cs'>, LandingContent> = {
 import type { Metadata } from 'next';
 import { FOREIGN_LOCALES, LOCALE_META } from './locales';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 
 export function makeLandingMetadata(locale: Exclude<Locale, 'cs'> | 'uk' | 'ru' | 'vn' | 'de'): Metadata {
   const resolved: Exclude<Locale, 'cs'> =

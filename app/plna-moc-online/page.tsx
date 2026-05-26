@@ -14,11 +14,11 @@ export const metadata: Metadata = {
     'plná moc ověřená',
     'plná moc úřad',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/plna-moc-online' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/plna-moc-online' },
   openGraph: {
     title: 'Plná moc online 2026 | SmlouvaHned',
     description: 'Plná moc pro zastoupení před úřadem, bankou nebo v obchodní věci. § 441 OZ. Od 99 Kč.',
-    url: 'https://smlouvahned.cz/plna-moc-online',
+    url: 'https://www.smlouvahned.cz/plna-moc-online',
   },
 };
 
@@ -50,8 +50,8 @@ export default function PlnaMocOnlinePage() {
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
-            { '@type': 'ListItem', position: 2, name: 'Plná moc online 2026', item: 'https://smlouvahned.cz/plna-moc-online' },
+            { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://www.smlouvahned.cz' },
+            { '@type': 'ListItem', position: 2, name: 'Plná moc online 2026', item: 'https://www.smlouvahned.cz/plna-moc-online' },
           ],
         }).replace(/</g, '\\u003c') }}
       />

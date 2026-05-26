@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import ProductSchemas from '@/app/components/seo/ProductSchemas';
 import { getExpatContractHreflangAlternates } from '@/lib/i18n/expat-hreflang';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 
 export const metadata: Metadata = {
   title: 'Pracovní smlouva 2026 — formulář online | SmlouvaHned',

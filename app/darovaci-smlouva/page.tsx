@@ -6,11 +6,11 @@ export const metadata: Metadata = {
   description:
     'Průvodce darovací smlouvou pro rok 2026. Co dokument obvykle obsahuje, pro jaké situace je vhodný a kdy už je lepší řešit věc individuálně.',
   keywords: ['darovací smlouva', 'darovací smlouva vzor', 'darovací smlouva 2026', 'darovací smlouva online'],
-  alternates: { canonical: 'https://smlouvahned.cz/darovaci-smlouva' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/darovaci-smlouva' },
   openGraph: {
     title: 'Darovací smlouva vzor 2026 | SmlouvaHned',
     description: 'Průvodcová stránka k darovací smlouvě pro běžné převody mezi známými nebo rodinnými příslušníky.',
-    url: 'https://smlouvahned.cz/darovaci-smlouva',
+    url: 'https://www.smlouvahned.cz/darovaci-smlouva',
     type: 'website',
   },
 };
@@ -48,8 +48,8 @@ const breadcrumbSchema = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
-    { '@type': 'ListItem', position: 2, name: 'Darovací smlouva', item: 'https://smlouvahned.cz/darovaci-smlouva' },
+    { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://www.smlouvahned.cz' },
+    { '@type': 'ListItem', position: 2, name: 'Darovací smlouva', item: 'https://www.smlouvahned.cz/darovaci-smlouva' },
   ],
 };
 

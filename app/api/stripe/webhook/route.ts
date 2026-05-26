@@ -3,12 +3,18 @@ import Stripe from 'stripe';
 import { redis } from '@/lib/redis';
 import { stripe } from '@/lib/stripe';
 import { ensurePortalAccessToken } from '@/lib/orders-portal';
+import {
+  CHECKOUT_ADDON_CONFIG,
+  getArchiveDaysWithAddons,
+  getCheckoutAddonsTotalCzk,
+  normalizeStoredCheckoutAddons,
+  type CheckoutAddonKey,
+} from '@/lib/checkout-addons';
+import { normalizePricingTier } from '@/lib/pricing';
+import { recordAnalyticsEvent } from '@/lib/analytics-server';
+import type { AnalyticsEventParams } from '@/lib/analytics';
 
 export const runtime = 'nodejs';
-
-const TTL_BASIC         = 60 * 60 * 24 * 7;   // 7 dní
-const TTL_PROFESSIONAL  = 60 * 60 * 24 * 30;  // 30 dní
-const TTL_COMPLETE      = 60 * 60 * 24 * 30;  // 30 dní
 
 export async function POST(req: Request) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -76,18 +82,35 @@ export async function POST(req: Request) {
               : {};
           const tier = String(session.metadata?.tier || existing.tier || 'basic');
           const lang = String(session.metadata?.lang || existing.lang || existingPayload.lang || 'cs');
+          const addOns = normalizeStoredCheckoutAddons(existing.addOns ?? existingPayload.addOns);
+          const contractType = String(
+            session.metadata?.contractType || existing.contractType || existingPayload.contractType || '',
+          );
+          const packageKey = typeof existing.packageKey === 'string' ? existing.packageKey : null;
+          const archiveDays = getArchiveDaysWithAddons(normalizePricingTier(tier), packageKey, addOns);
+          const priceBand: AnalyticsEventParams['price_band'] = packageKey
+            ? '299'
+            : normalizePricingTier(tier) === 'complete'
+              ? '199'
+              : '99';
+          const addonsTotalCzk = getCheckoutAddonsTotalCzk(addOns);
+          const totalPriceCzk =
+            typeof session.amount_total === 'number'
+              ? Math.round(session.amount_total / 100)
+              : undefined;
           const downloadToken =
             typeof session.metadata?.downloadToken === 'string'
               ? session.metadata.downloadToken
               : typeof existing.downloadToken === 'string'
                 ? existing.downloadToken
                 : null;
-          const ttl = tier === 'complete' ? TTL_COMPLETE : tier === 'professional' ? TTL_PROFESSIONAL : TTL_BASIC;
+          const ttl = archiveDays * 60 * 60 * 24;
           await redis.set(
             key,
             {
               ...existing,
               lang,
+              addOns,
               paid: true,
               paidAt: new Date().toISOString(),
               stripeSessionId: session.id,
@@ -100,7 +123,7 @@ export async function POST(req: Request) {
 
           // Reverzní index: session_id → draftId (pro zákaznickou zónu)
           try {
-            await redis.set(`session:draft:${session.id}`, draftId, { ex: TTL_COMPLETE });
+            await redis.set(`session:draft:${session.id}`, draftId, { ex: ttl });
           } catch (revErr) {
             console.warn('[webhook] Reverse index error (non-critical):', revErr);
           }
@@ -112,7 +135,7 @@ export async function POST(req: Request) {
               const normalizedEmail = customerEmailForIndex.toLowerCase().trim();
               const emailKey = `orders:email:${normalizedEmail}`;
               await redis.sadd(emailKey, session.id);
-              await redis.expire(emailKey, TTL_COMPLETE); // index drží 30 dní
+              await redis.expire(emailKey, ttl);
               await ensurePortalAccessToken(normalizedEmail);
             } catch (indexErr) {
               console.warn('[webhook] Email index error (non-critical):', indexErr);
@@ -140,7 +163,30 @@ export async function POST(req: Request) {
               lang,
               portalToken,
               downloadToken,
+              archiveDays,
+              addOns,
             ).catch((err) => console.error('[webhook] E-mail error:', err));
+          }
+
+          if (addOns.length > 0) {
+            await Promise.all(
+              addOns.map((addOnKey) =>
+                recordAnalyticsEvent('checkout_addon_purchased', {
+                  source: 'stripe_webhook',
+                  surface: 'paid_checkout',
+                  contract_type: contractType as AnalyticsEventParams['contract_type'],
+                  tier: normalizePricingTier(tier),
+                  package_key: packageKey as AnalyticsEventParams['package_key'],
+                  price_band: priceBand,
+                  add_on_key: addOnKey,
+                  add_on_price_czk: CHECKOUT_ADDON_CONFIG[addOnKey].priceCzk,
+                  add_on_keys: addOns.join(','),
+                  addons_total_czk: addonsTotalCzk,
+                  total_price_czk: totalPriceCzk,
+                  selected_addons_count: addOns.length,
+                }),
+              ),
+            );
           }
         }
       }
@@ -166,6 +212,8 @@ async function sendDownloadEmail(
   lang: string = 'cs',
   portalToken: string | null = null,
   downloadToken: string | null = null,
+  archiveDays: number = tier === 'basic' ? 7 : 30,
+  addOns: readonly CheckoutAddonKey[] = [],
 ): Promise<void> {
   const contractNames: Record<string, string> = {
     lease: 'Nájemní smlouva',
@@ -188,6 +236,7 @@ async function sendDownloadEmail(
   const langQuery = lang === 'cs' ? '' : `&lang=${encodeURIComponent(lang)}`;
   const tokenQuery = downloadToken ? `&token=${encodeURIComponent(downloadToken)}` : '';
   const downloadUrl = `${baseUrl}/api/contracts/download?session_id=${sessionId}${langQuery}${tokenQuery}`;
+  const docxDownloadUrl = `${downloadUrl}&format=docx`;
   const portalUrl = portalToken
     ? `${baseUrl}/zakaznicka-zona?access=${encodeURIComponent(portalToken)}`
     : `${baseUrl}/zakaznicka-zona`;
@@ -223,12 +272,18 @@ async function sendDownloadEmail(
                style="display:block;text-align:center;background:linear-gradient(135deg,#f59e0b,#eab308);color:#000;font-weight:900;font-size:18px;padding:18px 32px;border-radius:16px;text-decoration:none;margin-bottom:16px;letter-spacing:-0.3px;">
               STÁHNOUT PDF DOKUMENT
             </a>
+            ${addOns.includes('docx') ? `
+            <a href="${docxDownloadUrl}"
+               style="display:block;text-align:center;background:#1f2937;color:#fbbf24;font-weight:800;font-size:14px;padding:14px 24px;border-radius:14px;text-decoration:none;margin-bottom:16px;border:1px solid #92400e;">
+              STÁHNOUT EDITOVATELNÝ DOCX
+            </a>
+            ` : ''}
             <a href="${portalUrl}"
                style="display:block;text-align:center;border:1px solid #334155;color:#cbd5e1;font-weight:700;font-size:14px;padding:12px 24px;border-radius:12px;text-decoration:none;margin-bottom:24px;">
               MOJE DOKUMENTY (bezpečný přístup)
             </a>
             <p style="color:#64748b;font-size:12px;text-align:center;margin:0;">
-              Odkaz ke stažení je platný ${tier === 'basic' ? '7 dní' : '30 dní'} od zaplacení.<br>
+              Odkaz ke stažení je platný ${archiveDays} dní od zaplacení.<br>
               V případě dotazů nás kontaktujte na <a href="mailto:info@smlouvahned.cz" style="color:#f59e0b;">info@smlouvahned.cz</a>
             </p>
           </div>

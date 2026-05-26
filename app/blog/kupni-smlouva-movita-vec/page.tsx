@@ -18,11 +18,11 @@ export const metadata: Metadata = {
     'kupní smlouva chyby',
     'kupní smlouva OZ',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/blog/kupni-smlouva-movita-vec' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/blog/kupni-smlouva-movita-vec' },
   openGraph: {
     title: 'Kupní smlouva na věc 2026: Co musí obsahovat a nejčastější chyby',
     description: 'Zákonné náležitosti kupní smlouvy na movitou věc, odpovědnost za vady, bezpečné předání a chyby. Aktuální pro 2026.',
-    url: 'https://smlouvahned.cz/blog/kupni-smlouva-movita-vec',
+    url: 'https://www.smlouvahned.cz/blog/kupni-smlouva-movita-vec',
     type: 'article',
   },
 };

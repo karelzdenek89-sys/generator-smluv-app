@@ -12,12 +12,12 @@ export const metadata: Metadata = {
     'NDA 2026',
     'smlouva o mlčenlivosti online',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/nda-smlouva' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/nda-smlouva' },
   openGraph: {
     title: 'NDA smlouva vzor 2026 | SmlouvaHned',
     description:
       'Přehledná průvodcová stránka k NDA smlouvě pro běžné situace, kdy potřebujete zachytit mlčenlivost a ochranu důvěrných informací.',
-    url: 'https://smlouvahned.cz/nda-smlouva',
+    url: 'https://www.smlouvahned.cz/nda-smlouva',
     type: 'website',
   },
 };
@@ -55,8 +55,8 @@ const breadcrumbSchema = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
-    { '@type': 'ListItem', position: 2, name: 'NDA smlouva', item: 'https://smlouvahned.cz/nda-smlouva' },
+    { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://www.smlouvahned.cz' },
+    { '@type': 'ListItem', position: 2, name: 'NDA smlouva', item: 'https://www.smlouvahned.cz/nda-smlouva' },
   ],
 };
 

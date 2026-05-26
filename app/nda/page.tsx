@@ -145,7 +145,7 @@ export default function NdaBuilderPage() {
 
   const scoreColor = riskAnalysis.score >= 85 ? 'text-emerald-400' : riskAnalysis.score >= 65 ? 'text-amber-400' : 'text-rose-400';
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (addOns: string[] = []) => {
     if (!formData.disclosingName || !formData.receivingName) {
       alert('Vyplňte prosím jména obou smluvních stran.');
       return;
@@ -162,6 +162,7 @@ export default function NdaBuilderPage() {
         body: JSON.stringify({
           contractType: 'nda',
           tier: formData.tier,
+          addOns,
           notaryUpsell: formData.tier !== 'basic',
           email: formData.disclosingEmail || formData.receivingEmail || undefined,
           payload: formData,

@@ -6,13 +6,13 @@ export const metadata: Metadata = {
   description:
     'Praktický přehled předání bytu nájemci. Co uvést do předávacího protokolu, jak pracovat s odečty měřidel, klíči, vybavením a kdy si připravit i potvrzení o převzetí kauce.',
   alternates: {
-    canonical: 'https://smlouvahned.cz/blog/predani-bytu-najemci-2026',
+    canonical: 'https://www.smlouvahned.cz/blog/predani-bytu-najemci-2026',
   },
   openGraph: {
     title: 'Jak správně předat byt nájemci 2026',
     description:
       'Co si připravit při předání bytu, co zachytit do protokolu a proč nestačí jen samotná nájemní smlouva.',
-    url: 'https://smlouvahned.cz/blog/predani-bytu-najemci-2026',
+    url: 'https://www.smlouvahned.cz/blog/predani-bytu-najemci-2026',
     type: 'article',
   },
 };

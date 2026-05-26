@@ -53,9 +53,11 @@ type CarSaleFormData = {
   vehicleOrigin: string;
 
   priceAmount: string;
+  priceWords: string;
   paymentMethod: PaymentMethod;
   bankAccount: string;
   variableSymbol: string;
+  paymentDueDays: string;
   handoverDate: string;
   handoverPlace: string;
   ownershipTransferMoment: 'payment' | 'handover';
@@ -76,6 +78,10 @@ type CarSaleFormData = {
   buyerInspectedVehicle: boolean;
   testDriveCompleted: boolean;
   mechanicInspectionOffered: boolean;
+  buyerLatePenalty: string;
+  sellerLatePenalty: string;
+  hiddenDefectPenalty: string;
+  declarationPenalty: string;
 
   notaryUpsell: boolean;
   tier: 'basic' | 'complete';
@@ -134,9 +140,11 @@ function CarSaleBuilderContent() {
     vehicleOrigin: 'ČR',
 
     priceAmount: '',
+    priceWords: '',
     paymentMethod: 'transfer',
     bankAccount: '',
     variableSymbol: '',
+    paymentDueDays: '3',
     handoverDate: '',
     handoverPlace: '',
     ownershipTransferMoment: 'payment',
@@ -158,6 +166,10 @@ function CarSaleBuilderContent() {
     buyerInspectedVehicle: true,
     testDriveCompleted: false,
     mechanicInspectionOffered: false,
+    buyerLatePenalty: '0,05',
+    sellerLatePenalty: '',
+    hiddenDefectPenalty: '',
+    declarationPenalty: '',
 
     notaryUpsell: isVehiclePackage,
     tier: isVehiclePackage ? ('complete' as const) : ('basic' as const),
@@ -284,7 +296,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
     }
   }, [formData, packageConfig?.key, builderLocale]);
 
-  async function handlePayment() {
+  async function handlePayment(addOns: string[] = []) {
     if (riskAnalysis.checkoutBlocked) {
       alert(
         builderLocale === 'en'
@@ -325,6 +337,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
           contractType: 'car_sale',
           tier: packageConfig ? packageConfig.defaultTier : formData.tier,
           packageKey: packageConfig?.key ?? null,
+          addOns,
           notaryUpsell: packageConfig ? true : formData.tier !== 'basic',
           lang: builderLocale,
           payload,
@@ -640,14 +653,14 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   name="carMake"
                   value={formData.carMake}
                   onChange={handleChange}
-                  placeholder="Značka"
+                  placeholder={fl('carMake', 'Značka')}
                   className={inputClass}
                 />
                 <input
                   name="carModel"
                   value={formData.carModel}
                   onChange={handleChange}
-                  placeholder="Model"
+                  placeholder={fl('carModel', 'Model')}
                   className={inputClass}
                 />
               </div>
@@ -656,7 +669,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 name="carVIN"
                 value={formData.carVIN}
                 onChange={handleChange}
-                placeholder="VIN (17 znaků)"
+                placeholder={fl('carVIN', 'VIN (17 znaků)')}
                 className={`${inputClass} font-mono tracking-widest mb-4`}
               />
 
@@ -666,7 +679,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   name="carYear"
                   value={formData.carYear}
                   onChange={handleChange}
-                  placeholder="Rok výroby"
+                  placeholder={fl('carYear', 'Rok výroby')}
                   className={inputClass}
                 />
                 <input
@@ -674,14 +687,14 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   name="carMileage"
                   value={formData.carMileage}
                   onChange={handleChange}
-                  placeholder="Nájezd (km)"
+                  placeholder={fl('carMileage', 'Nájezd (km)')}
                   className={inputClass}
                 />
                 <input
                   name="carPlate"
                   value={formData.carPlate}
                   onChange={handleChange}
-                  placeholder="SPZ"
+                  placeholder={fl('carPlate', 'SPZ')}
                   className={inputClass}
                 />
               </div>
@@ -691,21 +704,21 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   name="carColor"
                   value={formData.carColor}
                   onChange={handleChange}
-                  placeholder="Barva"
+                  placeholder={fl('carColor', 'Barva')}
                   className={inputClass}
                 />
                 <input
                   name="fuelType"
                   value={formData.fuelType}
                   onChange={handleChange}
-                  placeholder="Palivo"
+                  placeholder={fl('fuelType', 'Palivo')}
                   className={inputClass}
                 />
                 <input
                   name="carFirstRegistration"
                   value={formData.carFirstRegistration}
                   onChange={handleChange}
-                  placeholder="První registrace"
+                  placeholder={fl('carFirstRegistration', 'První registrace')}
                   className={inputClass}
                 />
               </div>
@@ -715,27 +728,27 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   name="engineCapacity"
                   value={formData.engineCapacity}
                   onChange={handleChange}
-                  placeholder="Objem (cm³)"
+                  placeholder={fl('engineCapacity', 'Objem (cm³)')}
                   className={inputClass}
                 />
                 <input
                   name="powerKW"
                   value={formData.powerKW}
                   onChange={handleChange}
-                  placeholder="Výkon (kW)"
+                  placeholder={fl('powerKW', 'Výkon (kW)')}
                   className={inputClass}
                 />
                 <input
                   name="techCardNumber"
                   value={formData.techCardNumber}
                   onChange={handleChange}
-                  placeholder="Číslo technického průkazu"
+                  placeholder={fl('techCardNumber', 'Číslo technického průkazu')}
                   className={inputClass}
                 />
               </div>
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-[0.10em] text-slate-400 mb-1.5">STK platná do</label>
+                  <label className="block text-xs font-bold uppercase tracking-[0.10em] text-slate-400 mb-1.5">{fl('stkValidUntil', 'STK platná do')}</label>
                   <input
                     type="date"
                     name="stkValidUntil"
@@ -745,7 +758,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-[0.10em] text-slate-400 mb-1.5">Emise platné do</label>
+                  <label className="block text-xs font-bold uppercase tracking-[0.10em] text-slate-400 mb-1.5">{fl('emissionsValidUntil', 'Emise platné do')}</label>
                   <input
                     type="date"
                     name="emissionsValidUntil"
@@ -754,6 +767,23 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     className={inputClass}
                   />
                 </div>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <input
+                  type="number"
+                  name="previousOwnersCount"
+                  value={formData.previousOwnersCount}
+                  onChange={handleChange}
+                  placeholder={fl('previousOwnersCount', 'Počet předchozích vlastníků')}
+                  className={inputClass}
+                />
+                <input
+                  name="vehicleOrigin"
+                  value={formData.vehicleOrigin}
+                  onChange={handleChange}
+                  placeholder={fl('vehicleOrigin', 'Původ vozidla')}
+                  className={inputClass}
+                />
               </div>
             </section>
 
@@ -769,8 +799,15 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   name="priceAmount"
                   value={formData.priceAmount}
                   onChange={handleChange}
-                  placeholder="Kupní cena (Kč)"
+                  placeholder={fl('priceAmount', 'Kupní cena (Kč)')}
                   className={`${inputClass} text-xl font-bold`}
+                />
+                <input
+                  name="priceWords"
+                  value={formData.priceWords}
+                  onChange={handleChange}
+                  placeholder={fl('priceWords', 'Kupní cena slovy')}
+                  className={inputClass}
                 />
                 <select
                   name="paymentMethod"
@@ -778,8 +815,8 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   onChange={handleChange}
                   className={inputClass}
                 >
-                  <option value="transfer">Bankovní převod</option>
-                  <option value="cash">Hotovost</option>
+                  <option value="transfer">{fl('payment_transfer', 'Bankovní převod')}</option>
+                  <option value="cash">{fl('payment_cash', 'Hotovost')}</option>
                 </select>
               </div>
 
@@ -789,20 +826,28 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     name="bankAccount"
                     value={formData.bankAccount}
                     onChange={handleChange}
-                    placeholder="Číslo účtu prodávajícího"
+                    placeholder={fl('bankAccount', 'Číslo účtu prodávajícího')}
                     className={inputClass}
                   />
                   <input
                     name="variableSymbol"
                     value={formData.variableSymbol}
                     onChange={handleChange}
-                    placeholder="Variabilní symbol"
+                    placeholder={fl('variableSymbol', 'Variabilní symbol')}
+                    className={inputClass}
+                  />
+                  <input
+                    type="number"
+                    name="paymentDueDays"
+                    value={formData.paymentDueDays}
+                    onChange={handleChange}
+                    placeholder={fl('paymentDueDays', 'Splatnost převodu (pracovní dny)')}
                     className={inputClass}
                   />
                 </div>
               ) : (
                 <div className="mb-4 rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4 text-sm text-amber-100">
-                  U hotovosti zkontroluj zákonný limit. Nad 270 000 Kč checkout zablokuji.
+                  {fl('cashLimitWarning', 'U hotovosti zkontroluj zákonný limit. Nad 270 000 Kč checkout zablokuji.')}
                 </div>
               )}
 
@@ -812,14 +857,14 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   name="handoverDate"
                   value={formData.handoverDate}
                   onChange={handleChange}
-                  aria-label="Datum předání"
+                  aria-label={fl('handoverDate', 'Datum předání')}
                   className={inputClass}
                 />
                 <input
                   name="handoverPlace"
                   value={formData.handoverPlace}
                   onChange={handleChange}
-                  placeholder="Místo předání"
+                  placeholder={fl('handoverPlace', 'Místo předání')}
                   className={inputClass}
                 />
               </div>
@@ -830,8 +875,8 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 onChange={handleChange}
                 className={inputClass}
               >
-                <option value="payment">Vlastnictví přechází zaplacením</option>
-                <option value="handover">Vlastnictví přechází předáním</option>
+                <option value="payment">{fl('ownershipTransfer_payment', 'Vlastnictví přechází zaplacením')}</option>
+                <option value="handover">{fl('ownershipTransfer_handover', 'Vlastnictví přechází předáním')}</option>
               </select>
             </section>
 
@@ -960,6 +1005,40 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   danger={formData.hasThirdPartyRights}
                 />
               </div>
+
+              <div className="mt-6 grid sm:grid-cols-2 gap-4">
+                <input
+                  name="buyerLatePenalty"
+                  value={formData.buyerLatePenalty}
+                  onChange={handleChange}
+                  placeholder={fl('buyerLatePenalty', 'Pokuta kupujícího za prodlení (% denně)')}
+                  className={inputClass}
+                />
+                <input
+                  type="number"
+                  name="sellerLatePenalty"
+                  value={formData.sellerLatePenalty}
+                  onChange={handleChange}
+                  placeholder={fl('sellerLatePenalty', 'Pokuta prodávajícího za pozdní předání (Kč/den)')}
+                  className={inputClass}
+                />
+                <input
+                  type="number"
+                  name="hiddenDefectPenalty"
+                  value={formData.hiddenDefectPenalty}
+                  onChange={handleChange}
+                  placeholder={fl('hiddenDefectPenalty', 'Pokuta za vědomě zatajenou vadu (Kč)')}
+                  className={inputClass}
+                />
+                <input
+                  type="number"
+                  name="declarationPenalty"
+                  value={formData.declarationPenalty}
+                  onChange={handleChange}
+                  placeholder={fl('declarationPenalty', 'Pokuta za nepravdivá prohlášení (Kč)')}
+                  className={inputClass}
+                />
+              </div>
             </section>
           </div>
 
@@ -1085,15 +1164,19 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
               <div className={cardClass}>
                 {/* Řešení sporů */}
                 <div className="mb-6">
-                  <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
+                  <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">
+                    {fl('disputeResolution', 'Řešení sporů')}
+                  </div>
                   <select className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
-                    <option value="court">Obecný soud (výchozí)</option>
-                    <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
-                    <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
-                </select>
-                {formData.disputeResolution === 'arbitration' && (
-                  <p className="mt-2 text-xs text-amber-400 leading-relaxed">⚠ U spotřebitelských smluv (B2C) bývá rozhodčí doložka neúčinná dle zák. č. 216/1994 Sb. Doporučujeme ji použít pouze ve vztazích mezi podnikateli (B2B).</p>
-                )}
+                    <option value="court">{fl('dispute_court', 'Obecný soud (výchozí)')}</option>
+                    <option value="mediation">{fl('dispute_mediation', 'Mediace (zákon č. 202/2012 Sb.)')}</option>
+                    <option value="arbitration">{fl('dispute_arbitration', 'Rozhodčí řízení (Rozhodčí soud HK ČR)')}</option>
+                  </select>
+                  {formData.disputeResolution === 'arbitration' && (
+                    <p className="mt-2 text-xs text-amber-400 leading-relaxed">
+                      {fl('dispute_arbitration_warning', '⚠ U spotřebitelských smluv (B2C) bývá rozhodčí doložka neúčinná dle zák. č. 216/1994 Sb. Doporučujeme ji použít pouze ve vztazích mezi podnikateli (B2B).')}
+                    </p>
+                  )}
                 </div>
                 {packageConfig ? (
                   <div className="rounded-2xl border border-amber-500/20 bg-amber-500/8 p-5">

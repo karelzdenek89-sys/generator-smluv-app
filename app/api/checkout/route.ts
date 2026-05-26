@@ -19,6 +19,13 @@ import {
   normalizeThematicPackageKeyForContract,
 } from '@/lib/packages';
 import { normalizeLocale } from '@/lib/locale';
+import { normalizePricingTier } from '@/lib/pricing';
+import {
+  CHECKOUT_ADDON_CONFIG,
+  getArchiveDaysWithAddons,
+  getCheckoutAddonMetadata,
+  normalizeCheckoutAddons,
+} from '@/lib/checkout-addons';
 
 export const runtime = 'nodejs';
 
@@ -100,7 +107,7 @@ export async function POST(req: Request) {
       ? rawTier
       : 'basic';
 
-    const paidTier = tier === 'professional' || tier === 'premium' ? 'complete' : tier;
+    const paidTier = normalizePricingTier(tier);
     const notaryUpsell = paidTier !== 'basic';
 
     // email – prázdný string → undefined
@@ -122,6 +129,13 @@ export async function POST(req: Request) {
           ? payload.packageKey
           : null;
     const packageKey = normalizeThematicPackageKeyForContract(rawPackageKey, contractType);
+    const addOns = normalizeCheckoutAddons(
+      body.addOns ?? payload.addOns,
+      contractType,
+      paidTier,
+      packageKey,
+      lang,
+    );
 
     // 3. Price ID
     const priceId = getStripePriceIdForCheckout(paidTier, packageKey);
@@ -137,7 +151,8 @@ export async function POST(req: Request) {
 
     const baseUrl  = process.env.NEXT_PUBLIC_BASE_URL || new URL(req.url).origin;
     const draftId  = randomUUID();
-    const ttl      = paidTier === 'basic' ? 7 * 24 * 3600 : 30 * 24 * 3600;
+    const archiveDays = getArchiveDaysWithAddons(paidTier, packageKey, addOns);
+    const ttl      = archiveDays * 24 * 3600;
 
     // 4. Uložení draftu do Redisu — bez payloadu zákazník nedostane správný PDF výstup.
     const downloadToken = randomUUID();
@@ -148,6 +163,7 @@ export async function POST(req: Request) {
           contractType,
           tier: paidTier,
           packageKey,
+          addOns,
           notaryUpsell,
           downloadToken,
           lang,
@@ -157,6 +173,7 @@ export async function POST(req: Request) {
             contractType,
             tier: paidTier,
             packageKey,
+            addOns,
             notaryUpsell,
             lang,
           },
@@ -181,11 +198,29 @@ export async function POST(req: Request) {
     const successTokenQuery = `&token=${encodeURIComponent(downloadToken)}`;
     const cancelLangQuery = lang === 'cs' ? '' : `?lang=${encodeURIComponent(lang)}`;
 
+    const lineItems = [
+      { price: priceId, quantity: 1 },
+      ...addOns.map((key) => {
+        const addon = CHECKOUT_ADDON_CONFIG[key];
+        return {
+          price_data: {
+            currency: 'czk',
+            unit_amount: addon.priceCzk * 100,
+            product_data: {
+              name: addon.title,
+              description: addon.description,
+            },
+          },
+          quantity: 1,
+        };
+      }),
+    ];
+
     const sessionParams = {
       mode:           'payment' as const,
       customer_email: email,
       locale:         (lang === 'cs' ? 'cs' : 'en') as 'cs' | 'en',
-      line_items:     [{ price: priceId, quantity: 1 }],
+      line_items:     lineItems,
       success_url:    `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}${langQuery}${successTokenQuery}`,
       cancel_url:     `${baseUrl}${cancelPath}${cancelLangQuery}`,
       metadata: {
@@ -195,6 +230,7 @@ export async function POST(req: Request) {
         lang,
         notaryUpsell: String(notaryUpsell),
         downloadToken,
+        addOns: getCheckoutAddonMetadata(addOns),
         ...(packageKey ? { packageKey } : {}),
       },
     };

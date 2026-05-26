@@ -101,7 +101,7 @@ export default function PlnaMocPage() {
     }
   }, [form, builderLocale]);
 
-  const handlePayment = async () => {
+  const handlePayment = async (addOns: string[] = []) => {
     const missing: string[] = [];
     if (!form.principalName?.trim()) missing.push(validationFields.principalName);
     if (!form.agentName?.trim()) missing.push(validationFields.agentName);
@@ -114,7 +114,7 @@ export default function PlnaMocPage() {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contractType: 'power_of_attorney', tier: form.tier, notaryUpsell: form.tier !== 'basic', lang: builderLocale, payload: { ...form, contractType: 'power_of_attorney', lang: builderLocale }, email: form.principalEmail }),
+        body: JSON.stringify({ contractType: 'power_of_attorney', tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', lang: builderLocale, payload: { ...form, contractType: 'power_of_attorney', lang: builderLocale }, email: form.principalEmail }),
       });
       const data = await res.json();
       if (!res.ok || !data?.url) throw new Error();

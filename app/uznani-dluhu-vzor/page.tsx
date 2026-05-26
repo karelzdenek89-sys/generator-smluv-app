@@ -14,11 +14,11 @@ export const metadata: Metadata = {
     'promlčení dluhu',
     'uznání dluhu promlčení',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/uznani-dluhu-vzor' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/uznani-dluhu-vzor' },
   openGraph: {
     title: 'Uznání dluhu online 2026 | SmlouvaHned',
     description: 'Uznání dluhu obnoví promlčecí lhůtu na 10 let. Splátky, smluvní pokuta. § 2053 OZ. Od 99 Kč.',
-    url: 'https://smlouvahned.cz/uznani-dluhu-vzor',
+    url: 'https://www.smlouvahned.cz/uznani-dluhu-vzor',
   },
 };
 
@@ -50,8 +50,8 @@ export default function UznaniDluhuVzorPage() {
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
-            { '@type': 'ListItem', position: 2, name: 'Uznání dluhu vzor 2026', item: 'https://smlouvahned.cz/uznani-dluhu-vzor' },
+            { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://www.smlouvahned.cz' },
+            { '@type': 'ListItem', position: 2, name: 'Uznání dluhu vzor 2026', item: 'https://www.smlouvahned.cz/uznani-dluhu-vzor' },
           ],
         }).replace(/</g, '\\u003c') }}
       />

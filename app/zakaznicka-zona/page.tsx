@@ -11,6 +11,9 @@ type Order = {
   tier: string;
   lang?: string;
   downloadToken?: string | null;
+  archiveDays?: number;
+  addOns?: string[];
+  includedItems?: string[];
 };
 
 type LookupState = 'idle' | 'loading' | 'done' | 'error';
@@ -138,12 +141,13 @@ export default function CustomerZone() {
     } catch { return iso; }
   };
 
-  const downloadUrl = (sessionId: string) => {
+  const downloadUrl = (sessionId: string, format: 'pdf' | 'docx' = 'pdf') => {
     const order = orders.find((item) => item.sessionId === sessionId);
     const lang = downloadLang[sessionId] ?? 'cs';
     const langQuery = lang === 'cs' ? '' : `&lang=${encodeURIComponent(lang)}`;
     const tokenQuery = order?.downloadToken ? `&token=${encodeURIComponent(order.downloadToken)}` : '';
-    return `/api/contracts/download?session_id=${encodeURIComponent(sessionId)}${langQuery}${tokenQuery}`;
+    const formatQuery = format === 'docx' ? '&format=docx' : '';
+    return `/api/contracts/download?session_id=${encodeURIComponent(sessionId)}${langQuery}${tokenQuery}${formatQuery}`;
   };
 
   return (
@@ -224,7 +228,8 @@ export default function CustomerZone() {
               </div>
               {orders.map((order) => {
                 const tierInfo = TIER_LABEL[order.tier] ?? TIER_LABEL.basic;
-                const ttlLabel = TTL_LABEL[order.tier] ?? '7 dní';
+                const ttlLabel = order.archiveDays ? `${order.archiveDays} dní` : TTL_LABEL[order.tier] ?? '7 dní';
+                const hasDocx = order.addOns?.includes('docx') ?? false;
                 return (
                   <div key={order.sessionId}
                     className="bg-[#0c1426] border border-slate-800 rounded-2xl p-5 flex items-center justify-between gap-4 hover:border-amber-500/30 transition">
@@ -238,6 +243,18 @@ export default function CustomerZone() {
                           <span className="text-xs text-slate-500">{formatDate(order.paidAt)}</span>
                         </div>
                         <div className="text-xs text-slate-600 mt-0.5">Platnost odkazu: {ttlLabel} od zaplacení</div>
+                        {order.includedItems && order.includedItems.length > 0 ? (
+                          <div className="mt-1 flex flex-wrap gap-1">
+                            {order.includedItems.map((item) => (
+                              <span
+                                key={item}
+                                className="rounded-full border border-amber-500/15 px-2 py-0.5 text-[10px] text-amber-300/90"
+                              >
+                                {item}
+                              </span>
+                            ))}
+                          </div>
+                        ) : null}
                       </div>
                     </div>
                     <div className="flex flex-shrink-0 items-center gap-2">
@@ -253,8 +270,14 @@ export default function CustomerZone() {
                       </select>
                       <a href={downloadUrl(order.sessionId)}
                         className="px-4 py-2 bg-amber-500/10 border border-amber-500/20 text-amber-400 font-bold text-xs uppercase rounded-xl hover:bg-amber-500 hover:text-black transition">
-                        Stáhnout
+                        PDF
                       </a>
+                      {hasDocx ? (
+                        <a href={downloadUrl(order.sessionId, 'docx')}
+                          className="px-4 py-2 bg-white/5 border border-slate-700 text-slate-300 font-bold text-xs uppercase rounded-xl hover:border-amber-500/30 hover:text-amber-300 transition">
+                          DOCX
+                        </a>
+                      ) : null}
                     </div>
                   </div>
                 );
@@ -269,7 +292,7 @@ export default function CustomerZone() {
           <ul className="space-y-1.5 text-xs text-slate-400">
             <li className="flex items-start gap-2">
               <span className="text-amber-400/60">•</span>
-              <span>Platnost odkazu ke stažení: <strong className="text-slate-300">Základní dokument 7 dní</strong>, <strong className="text-slate-300">Rozšířený dokument 30 dní</strong>, <strong className="text-slate-300">Tematický balíček 30 dní</strong>.</span>
+              <span>Platnost odkazu ke stažení: <strong className="text-slate-300">Základní dokument 7 dní</strong>, <strong className="text-slate-300">rozšířený dokument nebo tematický balíček 30 dní</strong>, případně <strong className="text-slate-300">90 dní s doplňkem archivace</strong>.</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-amber-400/60">•</span>

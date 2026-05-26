@@ -18,11 +18,11 @@ export const metadata: Metadata = {
     'DPP srážková daň',
     'dohoda o provedení práce chyby',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/blog/dpp-dohoda-provedeni-prace' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/blog/dpp-dohoda-provedeni-prace' },
   openGraph: {
     title: 'DPP dohoda o provedení práce 2026: Limity, odvody a jak ji správně napsat',
     description: 'Limit 300 hodin, srážková daň, zdravotní pojištění a nejčastější chyby. Aktuální pro 2026.',
-    url: 'https://smlouvahned.cz/blog/dpp-dohoda-provedeni-prace',
+    url: 'https://www.smlouvahned.cz/blog/dpp-dohoda-provedeni-prace',
     type: 'article',
   },
 };

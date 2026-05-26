@@ -10,11 +10,11 @@ export const metadata: Metadata = {
     'DPP', 'dohoda o provedení práce', 'dohoda o provedení práce vzor', 'DPP 2026',
     'dohoda o provedení práce 2026', 'dohoda o provedení práce online', 'DPP ke stažení', 'brigáda smlouva',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/dohoda-o-provedeni-prace' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/dohoda-o-provedeni-prace' },
   openGraph: {
     title: 'Dohoda o provedení práce 2026 — DPP vzor online',
     description: 'DPP 2026 — aktuální vzor dle zákoníku práce. Max. 300 hod./rok, limit odvodů, IP doložka. Od 99 Kč.',
-    url: 'https://smlouvahned.cz/dohoda-o-provedeni-prace',
+    url: 'https://www.smlouvahned.cz/dohoda-o-provedeni-prace',
   },
 };
 
@@ -64,8 +64,8 @@ export default function DohodaOProvedeniPracePage() {
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
-            { '@type': 'ListItem', position: 2, name: 'Dohoda o provedení práce DPP', item: 'https://smlouvahned.cz/dohoda-o-provedeni-prace' },
+            { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://www.smlouvahned.cz' },
+            { '@type': 'ListItem', position: 2, name: 'Dohoda o provedení práce DPP', item: 'https://www.smlouvahned.cz/dohoda-o-provedeni-prace' },
           ],
         }).replace(/</g, '\\u003c') }}
       />

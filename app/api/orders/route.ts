@@ -4,6 +4,11 @@ import { normalizePricingTier } from '@/lib/pricing';
 import { getThematicPackageConfig } from '@/lib/packages';
 import { normalizeLocale } from '@/lib/locale';
 import { resolveEmailFromPortalToken } from '@/lib/orders-portal';
+import {
+  getArchiveDaysWithAddons,
+  getCheckoutAddonIncludedItems,
+  normalizeStoredCheckoutAddons,
+} from '@/lib/checkout-addons';
 
 export const runtime = 'nodejs';
 
@@ -28,7 +33,8 @@ type DraftData = {
   downloadToken?: string | null;
   customerEmail?: string | null;
   email?: string | null;
-  payload?: { lang?: string };
+  addOns?: unknown;
+  payload?: { lang?: string; addOns?: unknown };
 };
 
 const CONTRACT_NAMES: Record<string, string> = {
@@ -76,15 +82,20 @@ async function listOrdersForEmail(email: string) {
           }
           if (draft?.paid) {
             const packageConfig = getThematicPackageConfig(draft.packageKey);
+            const tier = normalizePricingTier(draft.tier);
+            const addOns = normalizeStoredCheckoutAddons(draft.addOns ?? draft.payload?.addOns);
             return {
               sessionId,
               contractName:
                 CONTRACT_NAMES[draft.contractType ?? ''] ?? 'Právní dokument',
               packageLabel: packageConfig?.title ?? null,
               paidAt: draft.paidAt ?? null,
-              tier: normalizePricingTier(draft.tier),
+              tier,
               lang: normalizeLocale(draft.lang ?? draft.payload?.lang),
               downloadToken: draft.downloadToken ?? null,
+              archiveDays: getArchiveDaysWithAddons(tier, draft.packageKey, addOns),
+              addOns,
+              includedItems: getCheckoutAddonIncludedItems(addOns),
             };
           }
         }
@@ -165,6 +176,8 @@ export async function GET(req: NextRequest) {
       }
 
       const packageConfig = getThematicPackageConfig(draft.packageKey);
+      const tier = normalizePricingTier(draft.tier);
+      const addOns = normalizeStoredCheckoutAddons(draft.addOns ?? draft.payload?.addOns);
       return NextResponse.json({
         orders: [
           {
@@ -172,9 +185,12 @@ export async function GET(req: NextRequest) {
             contractName: CONTRACT_NAMES[draft.contractType ?? ''] ?? 'Právní dokument',
             packageLabel: packageConfig?.title ?? null,
             paidAt: draft.paidAt ?? null,
-            tier: normalizePricingTier(draft.tier),
+            tier,
             lang: normalizeLocale(draft.lang ?? draft.payload?.lang),
             downloadToken: draft.downloadToken ?? null,
+            archiveDays: getArchiveDaysWithAddons(tier, draft.packageKey, addOns),
+            addOns,
+            includedItems: getCheckoutAddonIncludedItems(addOns),
           },
         ],
       });

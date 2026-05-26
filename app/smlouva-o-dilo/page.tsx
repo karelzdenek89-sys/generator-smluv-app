@@ -178,7 +178,7 @@ export default function WorkContractPage() {
     }
   }, [formData]);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (addOns: string[] = []) => {
     const missing: string[] = [];
     if (!formData.clientName?.trim()) missing.push('jméno objednatele');
     if (!formData.contractorName?.trim()) missing.push('jméno zhotovitele');
@@ -200,6 +200,7 @@ export default function WorkContractPage() {
         body: JSON.stringify({
           contractType: 'work_contract',
           tier: formData.tier,
+          addOns,
           notaryUpsell: formData.tier !== 'basic',
           payload,
         }),

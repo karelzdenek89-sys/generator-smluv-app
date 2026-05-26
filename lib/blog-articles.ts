@@ -291,6 +291,39 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
     cluster: 'general',
     href: '/blog/smlouva-o-spolupraci-2026',
   },
+  {
+    slug: 'plna-moc-zastupovani-cizincu-2026',
+    title: 'Plná moc pro zastupování cizinců 2026: Kdy je nutný úředně ověřený podpis a jak se vyhnout chybám',
+    excerpt:
+      'Kdy cizinec potřebuje plnou moc v ČR, rozdíl mezi generální a speciální plnou mocí a jak na úřední ověření podpisu na Czech POINTu.',
+    category: 'Osobní a právní',
+    readTime: '6 min',
+    date: '21. května 2026',
+    cluster: 'general',
+    href: '/blog/plna-moc-zastupovani-cizincu-2026',
+  },
+  {
+    slug: 'prodej-auta-prepis-cizinec-2026',
+    title: 'Kupní smlouva na auto a přepis vozidla cizincem 2026: Průvodce krok za krokem',
+    excerpt:
+      'Jak cizinec kupuje či prodává auto v ČR, jaké doklady a povolení k pobytu potřebuje pro registr a na co si dát pozor při přepisu do 10 pracovních dnů od převodu.',
+    category: 'Vozidla',
+    readTime: '7 min',
+    date: '21. května 2026',
+    cluster: 'vehicle',
+    href: '/blog/prodej-auta-prepis-cizinec-2026',
+  },
+  {
+    slug: 'podnajem-vs-najem-cizinci-2026',
+    title: 'Podnájem vs. nájem bytu pro cizince 2026: Jaké jsou rozdíly a jak se vyhnout zamítnutí víza',
+    excerpt:
+      'Rozdíl mezi nájmem a podnájmem v ČR z pohledu cizince. Kdy hrozí zamítnutí víza na OAMP kvůli chybějícímu souhlasu vlastníka a jaké doklady o ubytování potřebujete.',
+    category: 'Bydlení',
+    readTime: '7 min',
+    date: '21. května 2026',
+    cluster: 'general',
+    href: '/blog/podnajem-vs-najem-cizinci-2026',
+  },
   ...EXPAT_BLOG_META,
 ] as const;
 

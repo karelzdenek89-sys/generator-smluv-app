@@ -19,12 +19,12 @@ export const metadata: Metadata = {
     'kupní smlouva auto vin',
     'kupní smlouva auto náležitosti',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/blog/kupni-smlouva-na-auto-2026' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/blog/kupni-smlouva-na-auto-2026' },
   openGraph: {
     title: 'Kupní smlouva na auto 2026: Co musí obsahovat a jak se chránit',
     description:
       'Zákonné náležitosti kupní smlouvy na auto, jak ověřit vozidlo před koupí a nejčastější chyby při prodeji ojetého vozu.',
-    url: 'https://smlouvahned.cz/blog/kupni-smlouva-na-auto-2026',
+    url: 'https://www.smlouvahned.cz/blog/kupni-smlouva-na-auto-2026',
     type: 'article',
   },
 };

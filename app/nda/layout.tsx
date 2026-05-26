@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import ProductSchemas from '@/app/components/seo/ProductSchemas';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 
 export const metadata: Metadata = {
   title: 'Smlouva o mlčenlivosti (NDA) online 2026 | SmlouvaHned',

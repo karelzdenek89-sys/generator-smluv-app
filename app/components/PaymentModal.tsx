@@ -1,11 +1,20 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { PRICING_TIER_CONFIG } from '@/lib/pricing';
 import { getEffectiveIncludedItems, getThematicPackageConfig } from '@/lib/packages';
 import { getLocalizedPackagePresentation, getLocalizedPricingTier } from '@/lib/i18n/pricing-locale';
 import { LEGAL_NOTICE, normalizeLocale } from '@/lib/locale';
 import type { LeaseFormUi } from '@/lib/i18n/lease-form';
+import { getAnalyticsDefaultsForPathname, trackEvent } from '@/lib/analytics';
+import {
+  CHECKOUT_ADDON_CONFIG,
+  getAvailableCheckoutAddons,
+  getCheckoutAddonIncludedItems,
+  getCheckoutAddonsTotalCzk,
+  type CheckoutAddonKey,
+} from '@/lib/checkout-addons';
 
 interface Section {
   title: string;
@@ -21,7 +30,7 @@ interface PaymentModalProps {
   contractType: string;
   lang?: string;
   paymentCopy?: LeaseFormUi['paymentModal'];
-  onPay: () => void;
+  onPay: (addOns: CheckoutAddonKey[]) => void;
   isProcessing: boolean;
   onClose: () => void;
 }
@@ -39,19 +48,21 @@ export default function PaymentModal({
   isProcessing,
   onClose,
 }: PaymentModalProps) {
+  const pathname = usePathname();
   const [gdprConsent, setGdprConsent] = useState(false);
+  const [selectedAddOns, setSelectedAddOns] = useState<CheckoutAddonKey[]>([]);
   const packageConfig = getThematicPackageConfig(packageKey);
   const locale = normalizeLocale(lang);
   const copy = paymentCopy;
   const includedItems = getEffectiveIncludedItems(contractType, tier, packageKey, locale);
+  const availableAddOns = getAvailableCheckoutAddons(contractType, tier, packageKey, locale);
+  const availableAddonKeys = new Set(availableAddOns.map((addon) => addon.key));
+  const validSelectedAddOns = selectedAddOns.filter((key) => availableAddonKeys.has(key));
+  const selectedAddonItems = getCheckoutAddonIncludedItems(validSelectedAddOns);
   const localizedPackage = packageConfig
     ? getLocalizedPackagePresentation(packageConfig.key, locale)
     : null;
-  const price = packageConfig
-    ? packageConfig.priceLabel
-    : tier === 'complete'
-      ? '199 Kč'
-      : '99 Kč';
+  const price = `${((packageConfig ? packageConfig.priceCzk : PRICING_TIER_CONFIG[tier].priceCzk) + getCheckoutAddonsTotalCzk(validSelectedAddOns)).toLocaleString('cs-CZ')} Kč`;
 
   // Zavření přes Escape
   useEffect(() => {
@@ -65,6 +76,43 @@ export default function PaymentModal({
     document.body.style.overflow = 'hidden';
     return () => { document.body.style.overflow = ''; };
   }, []);
+
+  const basePriceCzk = packageConfig
+    ? packageConfig.priceCzk
+    : PRICING_TIER_CONFIG[tier].priceCzk;
+  const addonsTotalCzk = getCheckoutAddonsTotalCzk(validSelectedAddOns);
+  const totalPriceCzk = basePriceCzk + addonsTotalCzk;
+  const checkoutPrice = `${totalPriceCzk.toLocaleString('cs-CZ')} Kč`;
+  const analyticsDefaults = getAnalyticsDefaultsForPathname(pathname ?? '/');
+  const priceBand = packageConfig ? '299' : tier === 'complete' ? '199' : '99';
+
+  const toggleAddOn = (key: CheckoutAddonKey) => {
+    const wasSelected = selectedAddOns.includes(key);
+    const next = wasSelected
+      ? selectedAddOns.filter((item) => item !== key)
+      : [...selectedAddOns, key];
+    const nextValid = next.filter((item) => availableAddonKeys.has(item));
+    const nextAddonsTotalCzk = getCheckoutAddonsTotalCzk(nextValid);
+
+    trackEvent(wasSelected ? 'checkout_addon_removed' : 'checkout_addon_selected', {
+      ...analyticsDefaults,
+      source: 'checkout_modal',
+      surface: 'checkout_modal',
+      contract_type: analyticsDefaults.contract_type,
+      tier,
+      package_key: packageConfig?.key,
+      price_band: priceBand,
+      add_on_key: key,
+      add_on_price_czk: CHECKOUT_ADDON_CONFIG[key].priceCzk,
+      add_on_keys: nextValid.join(','),
+      addons_total_czk: nextAddonsTotalCzk,
+      base_price_czk: basePriceCzk,
+      total_price_czk: basePriceCzk + nextAddonsTotalCzk,
+      selected_addons_count: nextValid.length,
+    });
+
+    setSelectedAddOns(next);
+  };
 
   const today = new Date().toLocaleDateString('cs-CZ', { day: '2-digit', month: '2-digit', year: 'numeric' });
   const hasSections = sections.length > 0;
@@ -238,13 +286,77 @@ export default function PaymentModal({
             <div className="mb-5 rounded-xl border border-slate-700/50 bg-slate-800/40 px-4 py-3">
               <div className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-500">{copy?.includedHeading ?? 'Součástí je'}</div>
               <ul className="space-y-1.5">
-                {includedItems.map((item) => (
+                {[...includedItems, ...selectedAddonItems].map((item) => (
                   <li key={item} className="flex items-start gap-2 text-xs text-slate-300">
                     <span className="mt-0.5 text-amber-500 flex-shrink-0">✓</span>
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
+            </div>
+
+            {availableAddOns.length > 0 && (
+              <div className="mb-5 space-y-2">
+                <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                  Doplňky k hotovému dokumentu
+                </div>
+                {availableAddOns.map((addon) => {
+                  const isSelected = selectedAddOns.includes(addon.key);
+                  return (
+                    <button
+                      key={addon.key}
+                      type="button"
+                      onClick={() => toggleAddOn(addon.key)}
+                      className={`w-full rounded-2xl border p-4 text-left transition ${
+                        isSelected
+                          ? 'border-amber-500/60 bg-amber-500/10'
+                          : 'border-slate-700/60 bg-white/2 hover:border-slate-600'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex min-w-0 items-start gap-3">
+                          <span
+                            className={`mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md border ${
+                              isSelected ? 'border-amber-400 bg-amber-400 text-black' : 'border-slate-600 text-transparent'
+                            }`}
+                            aria-hidden="true"
+                          >
+                            ✓
+                          </span>
+                          <span>
+                            <span className="block text-sm font-bold text-white">
+                              {addon.title}
+                            </span>
+                            <span className="mt-1 block text-xs leading-relaxed text-slate-400">
+                              {addon.description}
+                            </span>
+                          </span>
+                        </div>
+                        <span className={`flex-shrink-0 text-sm font-black ${isSelected ? 'text-amber-400' : 'text-slate-400'}`}>
+                          {CHECKOUT_ADDON_CONFIG[addon.key].priceLabel}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            <div className="mb-5 rounded-xl border border-white/8 bg-white/3 px-4 py-3">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-slate-400">Dokument</span>
+                <span className="font-semibold text-white">{basePriceCzk.toLocaleString('cs-CZ')} Kč</span>
+              </div>
+              {addonsTotalCzk > 0 ? (
+                <div className="mt-1 flex items-center justify-between text-sm">
+                  <span className="text-slate-400">Vybrané doplňky</span>
+                  <span className="font-semibold text-white">+{addonsTotalCzk.toLocaleString('cs-CZ')} Kč</span>
+                </div>
+              ) : null}
+              <div className="mt-3 flex items-center justify-between border-t border-white/8 pt-3">
+                <span className="text-xs font-black uppercase tracking-widest text-slate-500">Celkem</span>
+                <span className="text-xl font-black text-amber-400">{checkoutPrice}</span>
+              </div>
             </div>
 
             {locale !== 'cs' && (
@@ -285,7 +397,21 @@ export default function PaymentModal({
                     alert(copy?.gdprRequired ?? 'Potvrďte prosím souhlas se zpracováním osobních údajů.');
                     return;
                   }
-                  onPay();
+                  trackEvent('builder_checkout_clicked', {
+                    ...analyticsDefaults,
+                    source: 'checkout_modal',
+                    surface: 'checkout_modal',
+                    contract_type: analyticsDefaults.contract_type,
+                    tier,
+                    package_key: packageConfig?.key,
+                    price_band: priceBand,
+                    add_on_keys: validSelectedAddOns.join(','),
+                    addons_total_czk: addonsTotalCzk,
+                    base_price_czk: basePriceCzk,
+                    total_price_czk: totalPriceCzk,
+                    selected_addons_count: validSelectedAddOns.length,
+                  });
+                  onPay(validSelectedAddOns);
                 }}
                 disabled={isProcessing}
                 className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight disabled:opacity-50 disabled:cursor-not-allowed"

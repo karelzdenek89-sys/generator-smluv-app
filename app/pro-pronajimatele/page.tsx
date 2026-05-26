@@ -8,11 +8,11 @@ const situation = getSituationLandingConfig('landlord');
 export const metadata: Metadata = {
   title: situation.metadataTitle,
   description: situation.metadataDescription,
-  alternates: { canonical: `https://smlouvahned.cz${situation.href}` },
+  alternates: { canonical: `https://www.smlouvahned.cz${situation.href}` },
   openGraph: {
     title: situation.openGraphTitle,
     description: situation.openGraphDescription,
-    url: `https://smlouvahned.cz${situation.href}`,
+    url: `https://www.smlouvahned.cz${situation.href}`,
     type: 'website',
   },
 };

@@ -6,13 +6,13 @@ export const metadata: Metadata = {
   description:
     'Inflační doložka, valorizace nájemného a roční zvyšování nájmu v roce 2026. Co zákon umožňuje, jak klauzuli formulovat a jakým chybám se vyhnout.',
   alternates: {
-    canonical: 'https://smlouvahned.cz/blog/valorizace-najemneho-2026',
+    canonical: 'https://www.smlouvahned.cz/blog/valorizace-najemneho-2026',
   },
   openGraph: {
     title: 'Valorizace nájemného 2026: Jak ji správně sjednat ve smlouvě',
     description:
       'Inflační doložka, valorizace nájemného a roční zvyšování nájmu v roce 2026. Co zákon umožňuje a jak klauzuli formulovat.',
-    url: 'https://smlouvahned.cz/blog/valorizace-najemneho-2026',
+    url: 'https://www.smlouvahned.cz/blog/valorizace-najemneho-2026',
     type: 'article',
   },
 };

@@ -133,14 +133,6 @@ const websiteSchema = {
   name: 'SmlouvaHned',
   url: BASE_URL,
   inLanguage: 'cs',
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: {
-      '@type': 'EntryPoint',
-      urlTemplate: `${BASE_URL}/blog?q={search_term_string}`,
-    },
-    'query-input': 'required name=search_term_string',
-  },
 };
 
 export default async function RootLayout({

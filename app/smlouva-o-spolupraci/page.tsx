@@ -14,11 +14,11 @@ export const metadata: Metadata = {
     'obchodní spolupráce smlouva',
     'smlouva o partnerství',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/smlouva-o-spolupraci' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/smlouva-o-spolupraci' },
   openGraph: {
     title: 'Smlouva o spolupráci online 2026 | SmlouvaHned',
     description: 'Smlouva o spolupráci OSVČ nebo firem. Podíl na výnosech, IP práva, mlčenlivost, exit. § 1746 OZ. Od 99 Kč.',
-    url: 'https://smlouvahned.cz/smlouva-o-spolupraci',
+    url: 'https://www.smlouvahned.cz/smlouva-o-spolupraci',
   },
 };
 
@@ -50,8 +50,8 @@ export default function SmlouvaOSpolupraci() {
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
-            { '@type': 'ListItem', position: 2, name: 'Smlouva o spolupráci vzor 2026', item: 'https://smlouvahned.cz/smlouva-o-spolupraci' },
+            { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://www.smlouvahned.cz' },
+            { '@type': 'ListItem', position: 2, name: 'Smlouva o spolupráci vzor 2026', item: 'https://www.smlouvahned.cz/smlouva-o-spolupraci' },
           ],
         }).replace(/</g, '\\u003c') }}
       />

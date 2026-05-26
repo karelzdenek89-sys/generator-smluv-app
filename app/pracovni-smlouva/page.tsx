@@ -10,11 +10,11 @@ export const metadata: Metadata = {
     'pracovní smlouva', 'pracovní smlouva vzor', 'pracovní smlouva online', 'pracovní smlouva 2026',
     'pracovní smlouva PDF', 'pracovní smlouva ke stažení', 'vzor pracovní smlouvy',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/pracovni-smlouva' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/pracovni-smlouva' },
   openGraph: {
     title: 'Pracovní smlouva online 2026 | SmlouvaHned',
     description: 'Pracovní smlouva dle zákoníku práce 2026. Mzda, zkušební doba, výpověď. Od 99 Kč.',
-    url: 'https://smlouvahned.cz/pracovni-smlouva',
+    url: 'https://www.smlouvahned.cz/pracovni-smlouva',
   },
 };
 
@@ -50,8 +50,8 @@ export default function PracovniSmlouvaPage() {
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://smlouvahned.cz' },
-            { '@type': 'ListItem', position: 2, name: 'Pracovní smlouva vzor 2026', item: 'https://smlouvahned.cz/pracovni-smlouva' },
+            { '@type': 'ListItem', position: 1, name: 'SmlouvaHned', item: 'https://www.smlouvahned.cz' },
+            { '@type': 'ListItem', position: 2, name: 'Pracovní smlouva vzor 2026', item: 'https://www.smlouvahned.cz/pracovni-smlouva' },
           ],
         }).replace(/</g, '\\u003c') }}
       />

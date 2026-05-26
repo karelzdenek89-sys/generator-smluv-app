@@ -10,6 +10,9 @@ export const ANALYTICS_EVENT_NAMES = [
   'builder_tier_selected',
   'builder_upgrade_clicked',
   'builder_checkout_clicked',
+  'checkout_addon_selected',
+  'checkout_addon_removed',
+  'checkout_addon_purchased',
   'homepage_pricing_path_click',
   'homepage_situation_click',
   'homepage_package_click',
@@ -45,6 +48,18 @@ export type AnalyticsEventParams = {
   cta_type?: string;
   price_band?: '99' | '199' | '299';
   entry_mode?: 'single_document' | 'package_flow';
+  add_on_key?:
+    | 'docx'
+    | 'signing_checklist'
+    | 'handover_protocol'
+    | 'extended_archive'
+    | 'bilingual_annex';
+  add_on_keys?: string;
+  add_on_price_czk?: number;
+  addons_total_czk?: number;
+  base_price_czk?: number;
+  total_price_czk?: number;
+  selected_addons_count?: number;
 };
 
 type AnalyticsPayload = {

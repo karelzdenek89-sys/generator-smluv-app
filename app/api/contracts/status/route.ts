@@ -5,9 +5,15 @@ import {
   getThematicPackageConfig,
   normalizeThematicPackageKey,
 } from '@/lib/packages';
-import { normalizePricingTier, getTierArchiveDays, getTierPriceLabel } from '@/lib/pricing';
+import { normalizePricingTier, getTierPriceLabel } from '@/lib/pricing';
 import { stripe } from '@/lib/stripe';
 import { normalizeLocale } from '@/lib/locale';
+import {
+  getArchiveDaysWithAddons,
+  getCheckoutAddonIncludedItems,
+  normalizeStoredCheckoutAddons,
+  type CheckoutAddonKey,
+} from '@/lib/checkout-addons';
 
 export const runtime = 'nodejs';
 
@@ -53,6 +59,11 @@ type DraftRecord = {
   packageKey?: string | null;
   tier?: string;
   lang?: string;
+  addOns?: unknown;
+  payload?: {
+    addOns?: unknown;
+    lang?: string;
+  };
 };
 
 /**
@@ -87,6 +98,7 @@ export async function GET(req: NextRequest) {
     const lang = normalizeLocale(session.metadata?.lang);
     let packageKey = normalizeThematicPackageKey(session.metadata?.packageKey);
     let packageLabel: string | null = null;
+    let addOns: CheckoutAddonKey[] = [];
 
     if (draftId) {
       try {
@@ -94,6 +106,7 @@ export async function GET(req: NextRequest) {
         if (draft?.packageKey) {
           packageKey = normalizeThematicPackageKey(draft.packageKey) ?? packageKey;
         }
+        addOns = normalizeStoredCheckoutAddons(draft?.addOns ?? draft?.payload?.addOns);
       } catch {
         // fail-open: metadata from Stripe is enough for UI
       }
@@ -114,9 +127,11 @@ export async function GET(req: NextRequest) {
       packageKey,
       packageLabel,
       priceLabel,
-      archiveDays: getTierArchiveDays(tier),
+      archiveDays: getArchiveDaysWithAddons(tier, packageKey, addOns),
       contractType,
       contractName: CONTRACT_NAMES[contractType] ?? 'Právní dokument',
+      addOns,
+      includedItems: getCheckoutAddonIncludedItems(addOns),
       lang,
     });
   } catch {

@@ -18,11 +18,11 @@ export const metadata: Metadata = {
     'plná moc notář',
     'plná moc ověřený podpis',
   ],
-  alternates: { canonical: 'https://smlouvahned.cz/blog/plna-moc-2026' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/blog/plna-moc-2026' },
   openGraph: {
     title: 'Plná moc 2026: Kdy ji potřebujete, co musí obsahovat a kdy je nutný notář',
     description: 'Generální vs. speciální plná moc, ověřený podpis, notářské ověření a nejčastější chyby. Aktuální pro 2026.',
-    url: 'https://smlouvahned.cz/blog/plna-moc-2026',
+    url: 'https://www.smlouvahned.cz/blog/plna-moc-2026',
     type: 'article',
   },
 };

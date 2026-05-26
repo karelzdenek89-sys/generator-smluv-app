@@ -9,16 +9,16 @@ export const metadata: Metadata = {
     title: 'O projektu | SmlouvaHned',
     description:
       'Jak vznikly šablony, kdo provozuje nástroj a proč SmlouvaHned.cz neposkytuje právní poradenství.',
-    url: 'https://smlouvahned.cz/o-projektu',
+    url: 'https://www.smlouvahned.cz/o-projektu',
   },
-  alternates: { canonical: 'https://smlouvahned.cz/o-projektu' },
+  alternates: { canonical: 'https://www.smlouvahned.cz/o-projektu' },
 };
 
 const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': 'AboutPage',
   name: 'O projektu SmlouvaHned.cz',
-  url: 'https://smlouvahned.cz/o-projektu',
+  url: 'https://www.smlouvahned.cz/o-projektu',
   inLanguage: 'cs',
   description:
     'Informace o provozovateli, metodice tvorby šablon a povaze softwarového nástroje SmlouvaHned.cz.',
@@ -28,7 +28,7 @@ const organizationSchema = {
     '@type': 'Organization',
     name: 'SmlouvaHned',
     legalName: 'Karel Zdeněk',
-    url: 'https://smlouvahned.cz',
+    url: 'https://www.smlouvahned.cz',
     identifier: { '@type': 'PropertyValue', propertyID: 'ICO', value: '23660295' },
   },
 };

@@ -6,6 +6,7 @@ import {
   LEASE_MINOR_REPAIRS_NOTE,
   LOAN_ASSIGNMENT_CONSUMER_SAFE,
 } from './legal-constants-2026';
+import { hasCheckoutAddon } from './checkout-addons';
 
 export type ContractType =
   | 'lease'
@@ -87,15 +88,21 @@ export type TierFeatures = {
   hasPremiumClauses: boolean;
   /** Zákazník zaplatil za Complete → dostane instrukce + checklist stránky v PDF */
   hasCompletePages: boolean;
-  /** Archivace dokumentu v Redisu: 7 (basic), 14 (professional), 30 (complete) */
-  archiveDays: 7 | 14 | 30;
+  /** Archivace dokumentu v Redisu: 7 (basic), 14 (professional), 30 (complete), 90 (addon) */
+  archiveDays: 7 | 14 | 30 | 90;
 };
 
 export function resolveTierFeatures(d: StoredContractData): TierFeatures {
   const tier = String(d.tier ?? 'basic').toLowerCase() as Tier;
   const hasPremiumClauses = tier === 'professional' || tier === 'complete';
-  const hasCompletePages = tier === 'complete';
-  const archiveDays = tier === 'complete' ? 30 : tier === 'professional' ? 14 : 7;
+  const hasCompletePages = tier === 'complete' || hasCheckoutAddon(d, 'signing_checklist');
+  const archiveDays = hasCheckoutAddon(d, 'extended_archive')
+    ? 90
+    : tier === 'complete'
+      ? 30
+      : tier === 'professional'
+        ? 14
+        : 7;
   return { hasPremiumClauses, hasCompletePages, archiveDays };
 }
 
@@ -502,6 +509,7 @@ function buildWorkContractSections(d: StoredContractData): ContractSection[] {
 // ─────────────────────────────────────────────
 function buildCarContractSections(d: StoredContractData): ContractSection[] {
   const { hasPremiumClauses } = resolveTierFeatures(d);
+  const includeVehicleHandoverProtocol = Boolean(d.packageKey) || hasCheckoutAddon(d, 'handover_protocol');
   // Limit hotovosti dle zák. č. 254/2004 Sb. — při ceně přesahující 270 000 Kč
   // se hotovostní úhrada nesmí použít; PDF na to upozorní v textu.
   const cashOverLimit = d.paymentMethod === 'cash'
@@ -531,6 +539,7 @@ function buildCarContractSections(d: StoredContractData): ContractSection[] {
             d.fuelType ? `palivo ${asText(d.fuelType)}` : '',
             d.engineCapacity ? `objem motoru ${asText(d.engineCapacity)} ccm` : '',
             d.powerKW ? `výkon ${asText(d.powerKW)} kW` : '',
+            d.techCardNumber ? `číslo technického průkazu ${asText(d.techCardNumber)}` : '',
           ].filter(Boolean);
           return parts.length ? `Technické údaje vozidla: ${parts.join(', ')}.` : '';
         })(),
@@ -696,6 +705,23 @@ function buildCarContractSections(d: StoredContractData): ContractSection[] {
     body: [],
   });
 
+  if (includeVehicleHandoverProtocol) {
+    sections.push({
+      title: 'PŘÍLOHA Č. 1 – PŘEDÁVACÍ PROTOKOL K VOZIDLU',
+      body: [
+        `Prodávající předává kupujícímu vozidlo: ${asText(d.carMake)} ${asText(d.carModel)}.`,
+        `VIN: ${asText(d.carVIN)}.`,
+        d.carPlate ? `Registrační značka: ${asText(d.carPlate)}.` : '',
+        d.carMileage ? `Stav tachometru při předání: ${formatAmount(d.carMileage)} km.` : '',
+        d.handoverDate ? `Datum předání: ${formatDate(d.handoverDate)}.` : '',
+        d.handoverPlace ? `Místo předání: ${asText(d.handoverPlace)}.` : '',
+        `Předané klíče a doklady: ${asText(d.keysAndDocs, 'klíče od vozidla a dostupné doklady k vozidlu')}.`,
+        `Zjištěné vady při předání: ${asText(d.knownDefects, 'bez zjevných vad nad rámec běžného opotřebení')}.`,
+        'Smluvní strany potvrzují, že vozidlo, klíče a doklady byly předány ve výše uvedeném stavu.',
+      ].filter(Boolean) as string[],
+    });
+  }
+
   return attachTranslations(sections, buildCarTranslationsBySection(d, hasPremiumClauses));
 }
 
@@ -704,6 +730,7 @@ function buildCarContractSections(d: StoredContractData): ContractSection[] {
 // ─────────────────────────────────────────────
 function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
   const { hasPremiumClauses } = resolveTierFeatures(d);
+  const includeLeaseHandoverProtocol = Boolean(d.packageKey) || hasCheckoutAddon(d, 'handover_protocol');
   const propertyAddress = asText(d.propertyAddress || d.flatAddress);
   const propertyLayout = asText(d.propertyLayout || d.flatLayout, 'neuvedeno');
   const utilitiesAmount = d.utilitiesAmount ?? d.utilityAmount ?? '';
@@ -853,14 +880,25 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
       body: [
         d.keysCount ? `Pronajímatel předá nájemci klíče v počtu ${asText(d.keysCount)} ks (včetně klíčů od vchodových dveří, schránky a dalšího příslušenství dle předávacího protokolu).` : '',
         'Nájemce není oprávněn zhotovovat kopie klíčů bez předchozího souhlasu pronajímatele. V případě ztráty nebo odcizení klíčů je nájemce povinen tuto skutečnost bez zbytečného odkladu písemně oznámit pronajímateli. Náklady na výměnu cylindrické vložky nebo zámku hradí v takovém případě nájemce.',
-        d.electricityMeter ? `Stav elektroměru při předání: ${asText(d.electricityMeter)} kWh.` : '',
-        d.gasMeter ? `Stav plynoměru při předání: ${asText(d.gasMeter)} m³.` : '',
-        d.waterMeter ? `Stav vodoměru při předání: ${asText(d.waterMeter)} m³.` : '',
+        d.electricityMeter
+          ? `Stav elektroměru při předání: ${asText(d.electricityMeter)} kWh${d.electricityMeterSerial ? `, výrobní číslo ${asText(d.electricityMeterSerial)}` : ''}.`
+          : '',
+        d.gasMeter
+          ? `Stav plynoměru při předání: ${asText(d.gasMeter)} m³${d.gasMeterSerial ? `, výrobní číslo ${asText(d.gasMeterSerial)}` : ''}.`
+          : '',
+        d.waterMeter
+          ? `Stav vodoměru při předání: ${asText(d.waterMeter)} m³${d.waterMeterSerial ? `, výrobní číslo ${asText(d.waterMeterSerial)}` : ''}.`
+          : '',
+        d.hotWaterMeter
+          ? `Stav vodoměru teplé vody při předání: ${asText(d.hotWaterMeter)} m³${d.hotWaterMeterSerial ? `, výrobní číslo ${asText(d.hotWaterMeterSerial)}` : ''}.`
+          : '',
         d.equipmentList ? `Inventář předávaného vybavení a zařízení: ${asText(d.equipmentList)}.` : '',
         d.knownDefects
           ? `Pronajímatelem přiznané vady a závady: ${asText(d.knownDefects)}.`
           : 'Byt se předává bez výslovně oznámených vad nad rámec běžného opotřebení.',
-        'Podrobný předávací protokol je přílohou č. 1 této smlouvy a tvoří její nedílnou součást.',
+        includeLeaseHandoverProtocol
+          ? 'Podrobný předávací protokol je přílohou č. 1 této smlouvy a tvoří její nedílnou součást.'
+          : '',
       ].filter(Boolean) as string[],
     },
     {
@@ -900,7 +938,9 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
         'Smlouva je vyhotovena ve dvou stejnopisech; pronajímatel a nájemce obdrží po jednom stejnopisu.',
         'Změny jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků.',
         'Neplatnost jednotlivého ustanovení smlouvy nemá vliv na platnost ostatních ustanovení.',
-        'Přílohou č. 1 smlouvy je předávací protokol, který tvoří nedílnou součást smlouvy.',
+        includeLeaseHandoverProtocol
+          ? 'Přílohou č. 1 smlouvy je předávací protokol, který tvoří nedílnou součást smlouvy.'
+          : '',
         'Změna vlastníka pronajaté věci sama o sobě nájemní vztah neruší; nabyvatel vstupuje do práv a povinností pronajímatele ode dne nabytí vlastnictví (§ 2221 OZ).',
         'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. o zpracování osobních údajů. Osobní údaje uvedené v této smlouvě jsou zpracovávány výhradně za účelem uzavření, plnění a případného vymáhání práv z tohoto smluvního vztahu. Správcem osobních údajů je každá ze smluvních stran v rozsahu údajů, které zpracovává o druhé straně. Každá ze stran má právo na přístup ke svým osobním údajům, jejich opravu nebo výmaz, jakož i právo podat stížnost u Úřadu pro ochranu osobních údajů (www.uoou.cz). Osobní údaje budou uchovávány po dobu trvání smluvního vztahu a dále po dobu stanovenou právními předpisy, zpravidla 10 let od jeho skončení.',
         'Žádná ze smluvních stran neodpovídá za nesplnění nepeněžitých povinností způsobené vyšší mocí (vis maior), tj. událostí mimořádnou, nepředvídatelnou a nepřekonatelnou (§ 2913 odst. 2 OZ). Vyšší moc se nevztahuje na povinnost zaplatit peněžitou částku. Strana postižená vyšší mocí je povinna neprodleně písemně informovat druhou stranu a po odpadnutí překážky neprodleně pokračovat v plnění.',
@@ -915,15 +955,17 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
 
   // Předávací protokol — body je záměrně prázdné.
   // PDF renderer detekuje titul a volá drawLeaseProtocolForm(), která čte data přímo.
-  sections.push({
+  if (includeLeaseHandoverProtocol) {
+    sections.push({
     title: `PŘÍLOHA Č. 1 – PŘEDÁVACÍ PROTOKOL K NÁJEMNÍ SMLOUVĚ`,
     body: [],
-  });
+    });
+  }
 
   // Attach foreign-language translations (EN populated; UK/RU/VN/DE are
   // skeletons waiting for a translator). Index-aligned with each section's
   // post-filter body by construction.
-  const translations = buildLeaseTranslationsBySection(d, hasPremiumClauses);
+  const translations = buildLeaseTranslationsBySection(d, hasPremiumClauses, includeLeaseHandoverProtocol);
   for (let i = 0; i < sections.length; i++) {
     if (translations[i]) sections[i].translations = translations[i];
   }
