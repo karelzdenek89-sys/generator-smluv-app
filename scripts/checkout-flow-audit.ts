@@ -66,6 +66,8 @@ function testCheckoutRouteCoverage() {
   assert.match(read('.env.example'), /STRIPE_PRICE_ID_PACKAGE/);
   assert.match(checkout, /CANCEL_URLS/);
   assert.match(checkout, /downloadToken/);
+  assert.match(checkout, /Neplatný JSON požadavek/);
+  assert.match(checkout, /Neplatný typ dokumentu/);
   assert.match(checkout, /normalizeCheckoutAddons/);
   assert.match(checkout, /price_data/);
   assert.match(checkout, /getCheckoutAddonMetadata/);
@@ -128,13 +130,17 @@ function testWebhookAndDownload() {
   assert.match(status, /ratelimit:contract-status/);
   assert.match(status, /formatStripeAmount/);
   assert.match(status, /session\.amount_total/);
+  assert.match(status, /statusTokenMatches/);
   assert.match(success, /\/api\/contracts\/status/);
+  assert.match(success, /token=.*\/api\/contracts\/status|tokenQuery/);
   assert.match(success, /\/api\/contracts\/download/);
   assert.match(success, /format=docx/);
   assert.match(success, /tokenQuery/);
   assert.match(orders, /downloadToken/);
   assert.match(orders, /addOns/);
   assert.match(orders, /includedItems/);
+  assert.match(webhook, /response\.ok/);
+  assert.match(webhook, /Resend API error/);
   assert.doesNotMatch(
     contracts,
     /legacyPremium|Boolean\(d\.notaryUpsell\)/,

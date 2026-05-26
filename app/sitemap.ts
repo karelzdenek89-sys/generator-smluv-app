@@ -345,6 +345,30 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.93,
     },
     {
+      url: `${BASE_URL}/pro-pronajimatele`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/prodej-vozidla`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
+    {
+      url: `${BASE_URL}/balicek-pronajimatel`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.88,
+    },
+    {
+      url: `${BASE_URL}/balicek-prodej-vozidla`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.88,
+    },
+    {
       url: `${BASE_URL}/o-projektu`,
       lastModified: now,
       changeFrequency: 'yearly',

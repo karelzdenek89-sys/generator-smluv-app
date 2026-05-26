@@ -153,6 +153,13 @@ function main() {
   const sitemap = read('app/sitemap.ts');
   assert.match(sitemap, /DEFAULT_SITEMAP_IMAGE/, 'Sitemap should include the default OG image');
   assert.match(sitemap, /images: entry\.images \?\? \[DEFAULT_SITEMAP_IMAGE\]/, 'Sitemap entries should include image sitemap data');
+  for (const path of ['/pro-pronajimatele', '/prodej-vozidla', '/balicek-pronajimatel', '/balicek-prodej-vozidla']) {
+    assert.match(sitemap, new RegExp(path.replace(/\//g, '\\/')), `Sitemap missing ${path}`);
+  }
+
+  assert.match(read('app/zakaznicka-zona/layout.tsx'), /index: false/, 'Customer zone must be noindex');
+  const proxy = read('proxy.ts');
+  assert.match(proxy, /LOCALIZED_BUILDER_PATHS/, 'Proxy should only reset locale cookies on relevant builder routes');
 
   console.log('Site content audit passed (prices, legal copy, metadata, /najem UX, /slovnik).');
 }

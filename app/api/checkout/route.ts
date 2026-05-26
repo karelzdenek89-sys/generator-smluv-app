@@ -86,20 +86,20 @@ export async function POST(req: Request) {
       );
     }
 
-    // 2. Parsování body – bez přísné validace, chybějící pole = výchozí hodnota
+    // 2. Parsování body – checkout bez jasného contractType nesmí vytvořit default objednávku
     let body: Record<string, unknown> = {};
     try {
       body = (await req.json()) as Record<string, unknown>;
     } catch {
-      // prázdné nebo neplatné JSON body → jedeme s výchozími hodnotami
-      console.warn('[checkout] Failed to parse request body, using defaults');
+      return NextResponse.json({ error: 'Neplatný JSON požadavek.' }, { status: 400 });
     }
 
     // contractType
     const rawType = typeof body.contractType === 'string' ? body.contractType : '';
-    const contractType: ContractType = (VALID_CONTRACT_TYPES as readonly string[]).includes(rawType)
-      ? (rawType as ContractType)
-      : 'lease';
+    if (!(VALID_CONTRACT_TYPES as readonly string[]).includes(rawType)) {
+      return NextResponse.json({ error: 'Neplatný typ dokumentu.' }, { status: 400 });
+    }
+    const contractType = rawType as ContractType;
 
     // tier – akceptujeme basic / professional / complete / premium
     const rawTier = typeof body.tier === 'string' ? body.tier.toLowerCase() : 'basic';
@@ -119,6 +119,9 @@ export async function POST(req: Request) {
       body.payload && typeof body.payload === 'object' && !Array.isArray(body.payload)
         ? (body.payload as Record<string, unknown>)
         : body;
+    if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+      return NextResponse.json({ error: 'Neplatná data dokumentu.' }, { status: 400 });
+    }
 
     const lang = normalizeLocale(body.lang ?? payload.lang);
 

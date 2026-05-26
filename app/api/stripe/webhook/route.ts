@@ -241,7 +241,7 @@ async function sendDownloadEmail(
     ? `${baseUrl}/zakaznicka-zona?access=${encodeURIComponent(portalToken)}`
     : `${baseUrl}/zakaznicka-zona`;
 
-  await fetch('https://api.resend.com/emails', {
+  const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${apiKey}`,
@@ -295,4 +295,9 @@ async function sendDownloadEmail(
       `,
     }),
   });
+
+  if (!response.ok) {
+    const body = await response.text().catch(() => '');
+    throw new Error(`Resend API error ${response.status}: ${body.slice(0, 500)}`);
+  }
 }

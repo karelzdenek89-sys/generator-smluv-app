@@ -12,7 +12,6 @@ Nastav v **Project → Settings → Environment Variables** (Production):
 |---|---|---|
 | 🔴 `STRIPE_SECRET_KEY` | Živý Stripe secret key | dashboard.stripe.com → Developers → API keys |
 | 🔴 `STRIPE_WEBHOOK_SECRET` | Webhook signing secret | Stripe → Webhooks → po vytvoření endpointu |
-| 🔴 `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Živý publishable key | Stripe → API keys |
 | 🔴 `STRIPE_PRICE_ID_BASIC` | Live Price ID — základní dokument (99 Kč) | Stripe → Products → `price_xxx` |
 | 🔴 `STRIPE_PRICE_ID_PRO` | Live Price ID — legacy profesionální (199 Kč), volitelné | Stripe → Products |
 | 🔴 `STRIPE_PRICE_ID_PREMIUM` | Live Price ID — rozšířený dokument / complete (199 Kč) | Stripe → Products |
@@ -20,7 +19,7 @@ Nastav v **Project → Settings → Environment Variables** (Production):
 | 🔴 `UPSTASH_REDIS_REST_URL` | Upstash Redis URL | console.upstash.com |
 | 🔴 `UPSTASH_REDIS_REST_TOKEN` | Upstash Redis token | console.upstash.com |
 | 🔴 `RESEND_API_KEY` | E-mail API klíč | resend.com → API Keys |
-| 🔴 `NEXT_PUBLIC_BASE_URL` | Produkční doména | `https://smlouvahned.cz` |
+| 🔴 `NEXT_PUBLIC_BASE_URL` | Produkční doména | `https://www.smlouvahned.cz` |
 
 > ⚠️ Nikdy nepoužívej `sk_test_` nebo `pk_test_` klíče v produkci.
 
@@ -31,7 +30,7 @@ Nastav v **Project → Settings → Environment Variables** (Production):
 - [ ] V Stripe dashboardu přepnout z **Test mode** na **Live mode**
 - [ ] Aktivovat live secret key + publishable key (bod 1 výše)
 - [ ] Vytvořit produkční **Webhook endpoint**:
-  - URL: `https://smlouvahned.cz/api/stripe/webhook`
+  - URL: `https://www.smlouvahned.cz/api/stripe/webhook`
   - Events: `checkout.session.completed`
   - Zkopírovat **Signing secret** → `STRIPE_WEBHOOK_SECRET`
 - [ ] Ověřit, že Stripe má povoleny platební metody: Karta, Apple Pay, Google Pay
@@ -62,7 +61,7 @@ Nastav v **Project → Settings → Environment Variables** (Production):
 - [ ] Přidat doménu do Vercel → Settings → Domains
 - [ ] Přidat DNS záznamy dle Vercel instrukcí (A record nebo CNAME)
 - [ ] Ověřit HTTPS certifikát (Vercel jej vystaví automaticky)
-- [ ] Nastavit redirect: `www.smlouvahned.cz` → `smlouvahned.cz`
+- [ ] Nastavit redirect: `smlouvahned.cz` → `www.smlouvahned.cz`
 
 ---
 
@@ -70,11 +69,12 @@ Nastav v **Project → Settings → Environment Variables** (Production):
 
 Projdi tento scénář **se skutečnou kartou v živém módu**:
 
-- [ ] Otevřít `https://smlouvahned.cz` — homepage se načte
+- [ ] Otevřít `https://www.smlouvahned.cz` — homepage se načte
 - [ ] Vybrat smlouvu (např. Kupní smlouva), vyplnit formulář
-- [ ] Zaplatit testovací částku — Stripe checkout se otevře a projde
+- [ ] Zaplatit reálnou malou částku v live módu — Stripe checkout se otevře a projde
 - [ ] Success stránka zobrazí progress bar a pak tlačítko „Stáhnout PDF"
 - [ ] PDF se stáhne a je správně vygenerováno
+- [ ] Pokud byl zakoupen DOCX doplněk, stáhne se i editovatelný DOCX
 - [ ] Zkontrolovat e-mailovou schránku — potvrzovací e-mail dorazil s přímým odkazem ke stažení
 - [ ] Zákaznická zóna (`/zakaznicka-zona`) — zadat e-mail z objednávky → objednávka se zobrazí
 - [ ] Stripe dashboard → Payments — platba se eviduje

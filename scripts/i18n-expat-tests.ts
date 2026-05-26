@@ -151,7 +151,8 @@ function testLocalePropagation() {
     assert.match(retiredLayout, /index: false/);
     assert.doesNotMatch(retiredLayout, /makeLandingMetadata/);
   }
-  assert.match(proxy, /Czech canonical URLs reset stale foreign preferences/);
+  assert.match(proxy, /LOCALIZED_BUILDER_PATHS/);
+  assert.match(proxy, /public pages stay cacheable/);
 }
 
 function testNoMisleadingBilingualMarketing() {

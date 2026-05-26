@@ -13,6 +13,16 @@ const RETIRED_LOCALE_REDIRECTS: Record<string, string> = {
   uk: '/ua',
 };
 
+const LOCALIZED_BUILDER_PATHS = new Set([
+  '/najem',
+  '/pracovni',
+  '/dpp',
+  '/podnajem',
+  '/plna-moc',
+  '/auto',
+  '/darovaci',
+]);
+
 function redirectPermanent(request: NextRequest, pathname: string): NextResponse {
   const url = request.nextUrl.clone();
   url.pathname = pathname;
@@ -73,14 +83,16 @@ export function proxy(request: NextRequest) {
     }
   }
 
-  // 2) Czech canonical URLs reset stale foreign preferences. Foreign builders
-  // keep their locale via explicit ?lang=en/ua from localized landing pages.
-  response.cookies.set('preferred-locale', 'cs', {
-    path: '/',
-    maxAge: 60 * 60 * 24 * 30,
-    sameSite: 'lax',
-  });
-  response.headers.set('x-preferred-locale', 'cs');
+  // 2) Czech builder URLs reset stale foreign preferences. Avoid setting
+  // locale cookies on every marketing/blog page so public pages stay cacheable.
+  if (LOCALIZED_BUILDER_PATHS.has(pathname)) {
+    response.cookies.set('preferred-locale', 'cs', {
+      path: '/',
+      maxAge: 60 * 60 * 24 * 30,
+      sameSite: 'lax',
+    });
+    response.headers.set('x-preferred-locale', 'cs');
+  }
 
   return response;
 }

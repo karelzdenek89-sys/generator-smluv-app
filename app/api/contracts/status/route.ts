@@ -64,7 +64,13 @@ type DraftRecord = {
     addOns?: unknown;
     lang?: string;
   };
+  downloadToken?: string | null;
 };
+
+function statusTokenMatches(draft: DraftRecord | null | undefined, token: string): boolean {
+  if (!draft?.downloadToken) return true;
+  return token === draft.downloadToken;
+}
 
 /**
  * Lightweight payment status check — used by the success page before download.
@@ -81,6 +87,7 @@ export async function GET(req: NextRequest) {
     }
 
     const sessionId = req.nextUrl.searchParams.get('session_id');
+    const token = req.nextUrl.searchParams.get('token')?.trim() ?? '';
 
     if (!sessionId) {
       return NextResponse.json({ status: 'error', message: 'Missing session_id' }, { status: 400 });
@@ -99,10 +106,15 @@ export async function GET(req: NextRequest) {
     let packageKey = normalizeThematicPackageKey(session.metadata?.packageKey);
     let packageLabel: string | null = null;
     let addOns: CheckoutAddonKey[] = [];
+    let tokenVerified = false;
 
     if (draftId) {
       try {
         const draft = await redis.get<DraftRecord>(`contract:draft:${draftId}`);
+        if (!statusTokenMatches(draft, token)) {
+          return NextResponse.json({ status: 'paid' });
+        }
+        tokenVerified = true;
         if (draft?.packageKey) {
           packageKey = normalizeThematicPackageKey(draft.packageKey) ?? packageKey;
         }
@@ -110,6 +122,10 @@ export async function GET(req: NextRequest) {
       } catch {
         // fail-open: metadata from Stripe is enough for UI
       }
+    }
+
+    if (!tokenVerified) {
+      return NextResponse.json({ status: 'paid' });
     }
 
     if (packageKey) {

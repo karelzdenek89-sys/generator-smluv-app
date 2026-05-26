@@ -79,7 +79,8 @@ function SuccessContent() {
       setProgress(Math.min(90, Math.round((attemptRef.current / maxAttempts) * 90)));
 
       try {
-        const res = await fetch(`/api/contracts/status?session_id=${encodedSessionId}`, {
+        const tokenQuery = token ? `&token=${encodeURIComponent(token)}` : '';
+        const res = await fetch(`/api/contracts/status?session_id=${encodedSessionId}${tokenQuery}`, {
           cache: 'no-store',
         });
         const data = (await res.json()) as SuccessStatusResponse;
@@ -112,7 +113,7 @@ function SuccessContent() {
     return () => {
       cancelled = true;
     };
-  }, [encodedSessionId]);
+  }, [encodedSessionId, token]);
 
   if (!sessionId) {
     return (
