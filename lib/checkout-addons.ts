@@ -22,6 +22,14 @@ export type CheckoutAddonConfig = {
 };
 
 const HANDOVER_CONTRACTS: readonly ContractType[] = ['lease', 'car_sale'];
+const BILINGUAL_ANNEX_CONTRACTS: readonly ContractType[] = [
+  'lease',
+  'car_sale',
+  'employment',
+  'dpp',
+  'sublease',
+  'power_of_attorney',
+];
 
 export const CHECKOUT_ADDON_CONFIG: Record<CheckoutAddonKey, CheckoutAddonConfig> = {
   docx: {
@@ -65,6 +73,7 @@ export const CHECKOUT_ADDON_CONFIG: Record<CheckoutAddonKey, CheckoutAddonConfig
     priceLabel: '+99 Kč',
     description: 'Vysvětlující cizojazyčná příloha k českému dokumentu pro snazší kontrolu.',
     includedItem: 'Dvojjazyčná vysvětlující příloha k českému dokumentu',
+    contracts: BILINGUAL_ANNEX_CONTRACTS,
     localeMode: 'foreign',
   },
 };
