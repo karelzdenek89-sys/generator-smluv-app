@@ -85,6 +85,15 @@ export default function GdprPage() {
                 <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> 7–30 dní od objednávky podle zakoupeného dokumentu, případně 90 dní s doplňkem archivace, poté automaticky smazáno.</div>
               </div>
               <div className="border border-white/8 rounded-2xl p-5">
+                <div className="font-bold text-white mb-2">Newsletter (tipy a novinky)</div>
+                <p className="text-slate-400 text-xs mb-2">
+                  Pouze pokud se v patičce webu výslovně přihlásíte a zaškrtnete souhlas se zasíláním e-mailů.
+                </p>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Účel:</span> Zasílání praktických tipů k dokumentům a informací o službě SmlouvaHned.</div>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Právní základ:</span> Souhlas (čl. 6 odst. 1 písm. a) GDPR).</div>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> Do odvolání souhlasu nebo odhlášení z odběru (odkaz v každém e-mailu).</div>
+              </div>
+              <div className="border border-white/8 rounded-2xl p-5">
                 <div className="font-bold text-white mb-2">Platební údaje</div>
                 <p className="text-slate-400 text-xs mb-2">Čísla platebních karet a bankovní údaje jsou zpracovávány výhradně platební bránou <strong>Stripe</strong> (Stripe, Inc., USA). Správce k nim nemá přístup.</p>
                 <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Více o Stripe GDPR:</span> <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:underline">stripe.com/privacy</a></div>
@@ -102,11 +111,12 @@ export default function GdprPage() {
             <ul className="space-y-2 text-slate-400">
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Stripe, Inc.</strong> — zpracování plateb. Zpracovatel dle čl. 28 GDPR, certifikace PCI DSS Level 1.</span></li>
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Upstash (Redis)</strong> — dočasné uložení dat formuláře po dobu generování a stažení dokumentu (7–30 dní podle zakoupeného dokumentu, případně 90 dní s doplňkem archivace).</span></li>
-              <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Resend</strong> — zasílání transakčních e-mailů (odkaz ke stažení). Pouze pokud zadáte e-mail.</span></li>
+              <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Resend</strong> — transakční e-maily (odkaz ke stažení) a seznam kontaktů pro newsletter pouze po vašem výslovném souhlasu v patičce webu.</span></li>
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Vercel</strong> — hosting platformy. Údaje jsou zpracovávány v rámci EHP nebo za odpovídajících záruk.</span></li>
             </ul>
             <p className="mt-3 text-xs text-slate-500">
-              Správce neprodává osobní údaje třetím stranám a nepoužívá je pro marketingové účely.
+              Správce neprodává osobní údaje třetím stranám. Marketingové e-maily (newsletter) zasíláme výhradně na základě
+              dobrovolného souhlasu, který můžete kdykoli odvolat.
             </p>
           </section>
 
@@ -148,8 +158,14 @@ export default function GdprPage() {
             <h2 className="text-amber-500 font-black uppercase text-xs tracking-widest mb-4">
               6. Cookies a analytika
             </h2>
-            <p>
+            <p className="mb-3">
               SmlouvaHned nepoužívá marketingové ani profilující cookies třetích stran. Pro základní fungování aplikace mohou být použity technicky nezbytné session cookies. Na webu není nasazena žádná behaviorální reklamní platforma (Facebook Pixel, Google Ads remarketing apod.).
+            </p>
+            <p>
+              Pro anonymizovanou statistiku návštěvnosti používáme{' '}
+              <strong className="text-white">Vercel Web Analytics</strong> (agregované zobrazení stránek, bez
+              identifikace konkrétní osoby). Produktové události (např. vstup do formuláře, klik na checkout) ukládáme
+              interně bez propojení s platební kartou; dokončené platby evidujeme až po potvrzení Stripe.
             </p>
           </section>
 

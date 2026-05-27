@@ -43,6 +43,8 @@ Nastav v **Project → Settings → Environment Variables** (Production):
 - [ ] Ověřit doménu `smlouvahned.cz` v Resend → Domains (přidat DNS záznamy)
 - [ ] Potvrdit, že odesílatel `dokumenty@smlouvahned.cz` je povolen
 - [ ] Otestovat odeslání testovacího e-mailu přes Resend dashboard
+- [ ] Vytvořit segment **Newsletter** (Resend → Segments) a nastavit `RESEND_NEWSLETTER_SEGMENT_ID` ve Vercel
+- [ ] Otestovat přihlášení v patičce webu (checkbox souhlasu + e-mail) a ověřit kontakt v Resend
 
 ---
 
@@ -65,7 +67,17 @@ Nastav v **Project → Settings → Environment Variables** (Production):
 
 ---
 
-## 6. Smoke test po nasazení
+## 6. Statistiky a reporting
+
+- [ ] V **Vercel → Project → Analytics** zapnout **Web Analytics** (návštěvy, stránky, země, zařízení)
+- [ ] Volitelně zapnout **Speed Insights** (Core Web Vitals)
+- [ ] Nastavit `INTERNAL_REPORTING_SECRET` a otevřít `/interni/analytics?secret=<hodnota>` pro produktový funnel
+- [ ] V **Google Search Console** ověřit doménu `www.smlouvahned.cz` a odeslat sitemap (`/sitemap.xml`)
+- [ ] Nastavit `RESEND_NEWSLETTER_SEGMENT_ID` pro přihlášení v patičce (viz sekce 3)
+
+---
+
+## 7. Smoke test po nasazení
 
 Projdi tento scénář **se skutečnou kartou v živém módu**:
 
@@ -81,16 +93,14 @@ Projdi tento scénář **se skutečnou kartou v živém módu**:
 
 ---
 
-## 7. SEO a analytika (doporučeno před spuštěním)
+## 8. SEO (doporučeno před spuštěním)
 
-- [ ] Přidat Google Analytics nebo Vercel Analytics (pro sledování konverzí)
-- [ ] Nastavit Google Search Console a odeslat sitemap (`/sitemap.xml`)
 - [ ] Ověřit Open Graph meta tagy (`/`) — sdílení na sociálních sítích
 - [ ] Zkontrolovat `robots.txt` (`/public/robots.txt`)
 
 ---
 
-## 8. Právní stránky
+## 9. Právní stránky
 
 - [ ] Ověřit `/obchodni-podminky` — obsahuje ceny, TTL dokumentů (7/14/30 dní), reklamační postup
 - [ ] Ověřit `/gdpr` — odpovídá skutečnému zpracování dat
@@ -98,7 +108,7 @@ Projdi tento scénář **se skutečnou kartou v živém módu**:
 
 ---
 
-## 9. Monitoring
+## 10. Monitoring
 
 - [ ] Zapnout **Vercel Email Alerts** pro build failures
 - [ ] Nastavit uptime monitor (např. UptimeRobot — zdarma) na `https://smlouvahned.cz`

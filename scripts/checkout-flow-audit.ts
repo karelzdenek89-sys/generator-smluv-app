@@ -114,6 +114,7 @@ function testWebhookAndDownload() {
   assert.match(webhook, /checkout\.session\.completed/);
   assert.match(webhook, /session\.payment_status !== 'paid'/);
   assert.match(webhook, /downloadToken/);
+  assert.match(webhook, /checkout_completed/);
   assert.match(webhook, /checkout_addon_purchased/);
   assert.match(webhook, /normalizeStoredCheckoutAddons/);
   assert.match(webhook, /contract:draft:/);

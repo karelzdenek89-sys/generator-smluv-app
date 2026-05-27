@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import NewsletterSignup from '@/app/components/NewsletterSignup';
 import { SEO_LANDINGS, FOOTER_GROUPS } from '@/lib/internal-links';
 
 export default function Footer() {
@@ -27,6 +28,7 @@ export default function Footer() {
                 </a>
               </p>
             </div>
+            <NewsletterSignup />
           </div>
 
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4 text-[13px]">

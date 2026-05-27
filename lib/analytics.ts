@@ -16,6 +16,8 @@ export const ANALYTICS_EVENT_NAMES = [
   'homepage_pricing_path_click',
   'homepage_situation_click',
   'homepage_package_click',
+  'checkout_completed',
+  'newsletter_subscribed',
 ] as const;
 
 export type AnalyticsEventName = (typeof ANALYTICS_EVENT_NAMES)[number];

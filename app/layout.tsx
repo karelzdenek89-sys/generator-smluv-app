@@ -6,6 +6,7 @@ import './globals.css';
 import CookiesBanner from '@/app/components/CookiesBanner';
 import Footer from '@/app/components/Footer';
 import ForeignVisitorBanner from '@/app/components/ForeignVisitorBanner';
+import SiteAnalytics from '@/app/components/SiteAnalytics';
 import SiteHeader from '@/app/components/SiteHeader';
 
 const inter = Inter({
@@ -160,6 +161,7 @@ export default async function RootLayout({
         {children}
         <Footer />
         <CookiesBanner />
+        <SiteAnalytics />
       </body>
     </html>
   );

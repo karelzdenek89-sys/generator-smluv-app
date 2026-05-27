@@ -43,8 +43,8 @@ export default function CookiesBanner() {
     >
       <div className="mx-auto flex max-w-5xl flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-xs leading-relaxed text-slate-300 sm:text-sm">
-          Tento web používá pouze technicky nezbytné prostředky pro své fungování. Nepoužíváme marketingové ani
-          profilující cookies.{' '}
+          Tento web používá technicky nezbytné prostředky a anonymizovanou statistiku návštěvnosti (Vercel Analytics).
+          Nepoužíváme marketingové ani profilující cookies třetích stran.{' '}
           <Link href="/gdpr" className="text-amber-400 underline underline-offset-2 transition hover:text-amber-300">
             Více informací
           </Link>

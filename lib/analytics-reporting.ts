@@ -212,6 +212,9 @@ export async function getAnalyticsDashboardData(windowDays = 7): Promise<Analyti
   let addOnSelections = 0;
   let addOnPurchases = 0;
   let addOnRevenueCzk = 0;
+  let purchasesCompleted = 0;
+  let purchaseRevenueCzk = 0;
+  let newsletterSubscriptions = 0;
 
   const articleStats = new Map<
     string,
@@ -402,6 +405,17 @@ export async function getAnalyticsDashboardData(windowDays = 7): Promise<Analyti
         break;
       }
 
+      case 'checkout_completed':
+        purchasesCompleted += 1;
+        if (typeof params.total_price_czk === 'number' && Number.isFinite(params.total_price_czk)) {
+          purchaseRevenueCzk += params.total_price_czk;
+        }
+        break;
+
+      case 'newsletter_subscribed':
+        newsletterSubscriptions += 1;
+        break;
+
       case 'homepage_pricing_path_click':
         if (params.price_band === '99') homepage99Clicks += 1;
         if (params.price_band === '199') homepage199Clicks += 1;
@@ -483,6 +497,9 @@ export async function getAnalyticsDashboardData(windowDays = 7): Promise<Analyti
       { key: 'builder_views', label: 'Vstupy do builderu', value: builderViews },
       { key: 'package_entries', label: 'Vstupy do package flow', value: packageFlowEntries },
       { key: 'checkout_clicks', label: 'Checkout kliky', value: checkoutClicks },
+      { key: 'purchases_completed', label: 'Dokončené platby', value: purchasesCompleted },
+      { key: 'purchase_revenue', label: 'Tržba z plateb (Kč)', value: purchaseRevenueCzk },
+      { key: 'newsletter_subscriptions', label: 'Přihlášení k newsletteru', value: newsletterSubscriptions },
       { key: 'addon_selections', label: 'Výběry add-onů', value: addOnSelections },
       { key: 'addon_purchases', label: 'Zaplacené add-ony', value: addOnPurchases },
       { key: 'addon_revenue', label: 'Tržba z add-onů (Kč)', value: addOnRevenueCzk },
@@ -520,6 +537,8 @@ export async function getAnalyticsDashboardData(windowDays = 7): Promise<Analyti
       { key: 'f6', label: 'Vstupy do package flow', value: packageFlowEntries },
       { key: 'f7', label: 'Upgrade 99 \u2192 199', value: upgrades },
       { key: 'f8', label: 'Checkout kliky', value: checkoutClicks },
+      { key: 'f9', label: 'Dokončené platby', value: purchasesCompleted },
+      { key: 'f10', label: 'Přihlášení k newsletteru', value: newsletterSubscriptions },
     ],
     topSourcesToBuilder: topRows(sourceToBuilder),
     topSourcesToPackage: topRows(sourceToPackage),

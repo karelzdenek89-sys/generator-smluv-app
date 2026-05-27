@@ -91,6 +91,21 @@ function main() {
   const gdpr = read('app/gdpr/page.tsx');
   assertSeoMetadata('app/gdpr/page.tsx');
   assert.match(gdpr, /90 dní s doplňkem archivace/, 'GDPR must mention 90-day archive add-on');
+  assert.match(gdpr, /Newsletter \(tipy a novinky\)/, 'GDPR must document newsletter consent');
+
+  const footer = read('app/components/Footer.tsx');
+  assert.match(footer, /NewsletterSignup/, 'Footer must include newsletter signup');
+  assert.ok(existsSync(join(ROOT, 'app/api/newsletter/subscribe/route.ts')), 'Newsletter API route must exist');
+  const newsletterApi = read('app/api/newsletter/subscribe/route.ts');
+  assert.match(newsletterApi, /consent === true/, 'Newsletter API must require explicit consent');
+  assert.match(read('lib/resend-contacts.ts'), /RESEND_NEWSLETTER_SEGMENT_ID/, 'Resend contacts helper must use segment ID');
+
+  const layout = read('app/layout.tsx');
+  assert.match(layout, /SiteAnalytics/, 'Root layout must include Vercel Analytics');
+  assert.match(read('lib/analytics.ts'), /checkout_completed/, 'Product analytics must track completed purchases');
+  assert.match(read('lib/analytics.ts'), /newsletter_subscribed/, 'Product analytics must track newsletter signups');
+  const gdprCookies = read('app/gdpr/page.tsx');
+  assert.match(gdprCookies, /Vercel Web Analytics/, 'GDPR must mention Vercel Web Analytics');
 
   assertSeoMetadata('app/kontakt/page.tsx');
 

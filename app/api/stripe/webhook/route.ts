@@ -168,6 +168,19 @@ export async function POST(req: Request) {
             ).catch((err) => console.error('[webhook] E-mail error:', err));
           }
 
+          await recordAnalyticsEvent('checkout_completed', {
+            source: 'stripe_webhook',
+            surface: 'paid_checkout',
+            contract_type: contractType as AnalyticsEventParams['contract_type'],
+            tier: normalizePricingTier(tier),
+            package_key: packageKey as AnalyticsEventParams['package_key'],
+            price_band: priceBand,
+            add_on_keys: addOns.join(','),
+            addons_total_czk: addonsTotalCzk,
+            total_price_czk: totalPriceCzk,
+            selected_addons_count: addOns.length,
+          });
+
           if (addOns.length > 0) {
             await Promise.all(
               addOns.map((addOnKey) =>
