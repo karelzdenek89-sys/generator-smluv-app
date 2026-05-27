@@ -1,6 +1,7 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 import { Inter, Playfair_Display } from 'next/font/google';
 import { headers } from 'next/headers';
+import { Analytics } from '@vercel/analytics/next';
 import { detectLocaleFromPath, LOCALE_META } from '@/lib/i18n/locales';
 import './globals.css';
 import CookiesBanner from '@/app/components/CookiesBanner';
@@ -160,6 +161,7 @@ export default async function RootLayout({
         {children}
         <Footer />
         <CookiesBanner />
+        <Analytics />
       </body>
     </html>
   );
