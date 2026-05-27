@@ -10,19 +10,32 @@ export default function NewsletterSignup() {
   const [email, setEmail] = useState('');
   const [consent, setConsent] = useState(false);
   const [company, setCompany] = useState('');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!consent) return;
     setState('sending');
+    setErrorMessage(null);
     try {
       const res = await fetch('/api/newsletter/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, consent: true, company, source: 'footer' }),
       });
-      setState(res.ok ? 'sent' : 'error');
+      if (res.ok) {
+        setState('sent');
+        return;
+      }
+      const data = (await res.json().catch(() => null)) as { error?: string } | null;
+      setErrorMessage(
+        typeof data?.error === 'string'
+          ? data.error
+          : 'Přihlášení se nezdařilo. Zkuste to znovu nebo napište na info@smlouvahned.cz.',
+      );
+      setState('error');
     } catch {
+      setErrorMessage('Přihlášení se nezdařilo. Zkuste to znovu nebo napište na info@smlouvahned.cz.');
       setState('error');
     }
   };
@@ -85,9 +98,9 @@ export default function NewsletterSignup() {
           . Souhlas mohu kdykoli odvolat.
         </span>
       </label>
-      {state === 'error' && (
+      {state === 'error' && errorMessage && (
         <p className="rounded-lg border border-rose-500/20 bg-rose-500/10 px-3 py-2 text-[11px] text-rose-300">
-          Přihlášení se nezdařilo. Zkuste to znovu nebo napište na info@smlouvahned.cz.
+          {errorMessage}
         </p>
       )}
       <button

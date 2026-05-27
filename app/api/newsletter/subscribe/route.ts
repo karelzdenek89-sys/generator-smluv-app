@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { recordAnalyticsEvent } from '@/lib/analytics-server';
+import { recordNewsletterConsent } from '@/lib/newsletter-consent';
 import { subscribeNewsletterContact } from '@/lib/resend-contacts';
 import { redis } from '@/lib/redis';
 
@@ -59,19 +60,34 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Neplatný formát e-mailu.' }, { status: 400 });
   }
 
+  const consentedAt = new Date().toISOString();
   const result = await subscribeNewsletterContact({
     email,
     source,
-    consentedAt: new Date().toISOString(),
+    consentedAt,
   });
 
   if (!result.ok) {
-    if (result.reason === 'missing_config') {
-      console.error('[newsletter] Chybí RESEND_API_KEY nebo RESEND_NEWSLETTER_SEGMENT_ID');
-      return NextResponse.json({ error: 'Odběr není momentálně dostupný.' }, { status: 503 });
+    if (result.reason === 'missing_api_key') {
+      console.error('[newsletter] Chybí RESEND_API_KEY');
+      return NextResponse.json(
+        { error: 'Odběr není momentálně dostupný. Zkuste to prosím později.' },
+        { status: 503 },
+      );
     }
     console.error('[newsletter] Resend API error', result.status, result.body);
-    return NextResponse.json({ error: 'Nepodařilo se přihlásit k odběru. Zkuste to později.' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Nepodařilo se přihlásit k odběru. Zkuste to znovu nebo napište na info@smlouvahned.cz.' },
+      { status: 500 },
+    );
+  }
+
+  await recordNewsletterConsent(email, source, consentedAt);
+
+  if (!result.segmentAssigned) {
+    console.warn(
+      '[newsletter] Kontakt uložen bez segmentu — nastavte RESEND_NEWSLETTER_SEGMENT_ID ve Vercel pro broadcast seznam.',
+    );
   }
 
   await recordAnalyticsEvent('newsletter_subscribed', {

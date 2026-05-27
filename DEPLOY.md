@@ -19,6 +19,7 @@ Nastav v **Project → Settings → Environment Variables** (Production):
 | 🔴 `UPSTASH_REDIS_REST_URL` | Upstash Redis URL | console.upstash.com |
 | 🔴 `UPSTASH_REDIS_REST_TOKEN` | Upstash Redis token | console.upstash.com |
 | 🔴 `RESEND_API_KEY` | E-mail API klíč | resend.com → API Keys |
+| 🟡 `RESEND_NEWSLETTER_SEGMENT_ID` | Segment pro newsletter v patičce | Resend → Segments → ID (`seg_…`) |
 | 🔴 `NEXT_PUBLIC_BASE_URL` | Produkční doména | `https://www.smlouvahned.cz` |
 
 > ⚠️ Nikdy nepoužívej `sk_test_` nebo `pk_test_` klíče v produkci.

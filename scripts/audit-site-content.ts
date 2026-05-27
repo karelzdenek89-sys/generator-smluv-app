@@ -98,7 +98,8 @@ function main() {
   assert.ok(existsSync(join(ROOT, 'app/api/newsletter/subscribe/route.ts')), 'Newsletter API route must exist');
   const newsletterApi = read('app/api/newsletter/subscribe/route.ts');
   assert.match(newsletterApi, /consent === true/, 'Newsletter API must require explicit consent');
-  assert.match(read('lib/resend-contacts.ts'), /RESEND_NEWSLETTER_SEGMENT_ID/, 'Resend contacts helper must use segment ID');
+  assert.match(read('lib/resend-contacts.ts'), /RESEND_NEWSLETTER_SEGMENT_ID/, 'Resend contacts helper must support segment ID');
+  assert.ok(existsSync(join(ROOT, 'lib/newsletter-consent.ts')), 'Newsletter consent audit log must exist');
 
   const layout = read('app/layout.tsx');
   assert.match(layout, /SiteAnalytics/, 'Root layout must include Vercel Analytics');
