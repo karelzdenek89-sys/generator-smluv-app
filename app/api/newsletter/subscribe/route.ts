@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { recordAnalyticsEvent } from '@/lib/analytics-server';
-import { recordNewsletterConsent } from '@/lib/newsletter-consent';
+import { saveNewsletterSubscriber } from '@/lib/newsletter-subscribers';
 import { subscribeNewsletterContact } from '@/lib/resend-contacts';
 import { redis } from '@/lib/redis';
 
@@ -61,33 +61,19 @@ export async function POST(req: NextRequest) {
   }
 
   const consentedAt = new Date().toISOString();
-  const result = await subscribeNewsletterContact({
-    email,
-    source,
-    consentedAt,
-  });
 
-  if (!result.ok) {
-    if (result.reason === 'missing_api_key') {
-      console.error('[newsletter] Chybí RESEND_API_KEY');
-      return NextResponse.json(
-        { error: 'Odběr není momentálně dostupný. Zkuste to prosím později.' },
-        { status: 503 },
-      );
-    }
-    console.error('[newsletter] Resend API error', result.status, result.body);
+  const saved = await saveNewsletterSubscriber(email, source, consentedAt);
+  if (!saved.ok) {
     return NextResponse.json(
-      { error: 'Nepodařilo se přihlásit k odběru. Zkuste to znovu nebo napište na info@smlouvahned.cz.' },
-      { status: 500 },
+      { error: 'Nepodařilo se uložit přihlášení. Zkuste to znovu nebo napište na info@smlouvahned.cz.' },
+      { status: 503 },
     );
   }
 
-  await recordNewsletterConsent(email, source, consentedAt);
-
-  if (!result.segmentAssigned) {
-    console.warn(
-      '[newsletter] Kontakt uložen bez segmentu — nastavte RESEND_NEWSLETTER_SEGMENT_ID ve Vercel pro broadcast seznam.',
-    );
+  // Volitelná synchronizace do Resend — jen pokud máte API klíč (není nutná pro přihlášení).
+  const resend = await subscribeNewsletterContact({ email, source, consentedAt });
+  if (!resend.ok && resend.reason === 'api_error') {
+    console.warn('[newsletter] Resend sync skipped:', resend.status, resend.body);
   }
 
   await recordAnalyticsEvent('newsletter_subscribed', {

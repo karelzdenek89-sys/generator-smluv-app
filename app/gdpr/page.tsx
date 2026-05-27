@@ -111,7 +111,8 @@ export default function GdprPage() {
             <ul className="space-y-2 text-slate-400">
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Stripe, Inc.</strong> — zpracování plateb. Zpracovatel dle čl. 28 GDPR, certifikace PCI DSS Level 1.</span></li>
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Upstash (Redis)</strong> — dočasné uložení dat formuláře po dobu generování a stažení dokumentu (7–30 dní podle zakoupeného dokumentu, případně 90 dní s doplňkem archivace).</span></li>
-              <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Resend</strong> — transakční e-maily (odkaz ke stažení) a seznam kontaktů pro newsletter pouze po vašem výslovném souhlasu v patičce webu.</span></li>
+              <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Resend</strong> — transakční e-maily (odkaz ke stažení), pouze pokud zadáte e-mail při objednávce.</span></li>
+              <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Upstash (Redis)</strong> — uložení e-mailu a záznamu souhlasu při přihlášení k newsletteru v patičce (do odvolání souhlasu).</span></li>
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Vercel</strong> — hosting platformy. Údaje jsou zpracovávány v rámci EHP nebo za odpovídajících záruk.</span></li>
             </ul>
             <p className="mt-3 text-xs text-slate-500">

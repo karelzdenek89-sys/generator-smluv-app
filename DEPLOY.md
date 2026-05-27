@@ -19,7 +19,7 @@ Nastav v **Project → Settings → Environment Variables** (Production):
 | 🔴 `UPSTASH_REDIS_REST_URL` | Upstash Redis URL | console.upstash.com |
 | 🔴 `UPSTASH_REDIS_REST_TOKEN` | Upstash Redis token | console.upstash.com |
 | 🔴 `RESEND_API_KEY` | E-mail API klíč | resend.com → API Keys |
-| 🟡 `RESEND_NEWSLETTER_SEGMENT_ID` | Segment pro newsletter v patičce | Resend → Segments → ID (`seg_…`) |
+| ⚪ `RESEND_NEWSLETTER_SEGMENT_ID` | Volitelně: kopie přihlášení do Resend pro broadcast | Resend → Segments |
 | 🔴 `NEXT_PUBLIC_BASE_URL` | Produkční doména | `https://www.smlouvahned.cz` |
 
 > ⚠️ Nikdy nepoužívej `sk_test_` nebo `pk_test_` klíče v produkci.
@@ -74,7 +74,7 @@ Nastav v **Project → Settings → Environment Variables** (Production):
 - [ ] Volitelně zapnout **Speed Insights** (Core Web Vitals)
 - [ ] Nastavit `INTERNAL_REPORTING_SECRET` a otevřít `/interni/analytics?secret=<hodnota>` pro produktový funnel
 - [ ] V **Google Search Console** ověřit doménu `www.smlouvahned.cz` a odeslat sitemap (`/sitemap.xml`)
-- [ ] Nastavit `RESEND_NEWSLETTER_SEGMENT_ID` pro přihlášení v patičce (viz sekce 3)
+- [ ] Přihlášení v patičce ukládá e-maily do Redis (Upstash) — Resend pro newsletter není nutný
 
 ---
 
