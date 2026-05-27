@@ -1,8 +1,9 @@
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import RelatedContracts from '@/app/components/RelatedContracts';
+import { landingPageMetadata } from '@/lib/seo/landing-page-metadata';
 
-export const metadata: Metadata = {
+export const metadata = landingPageMetadata({
+  path: '/najemni-smlouva-byt',
   title: 'Nájemní smlouva na byt 2026 — vzor online, PDF ihned',
   description:
     'Vzor nájemní smlouvy na byt nebo dům 2026 — vyplníte online a stáhnete PDF. Kauce, zvířata, předávací protokol, Airbnb doložka. Dle § 2235 OZ. Od 99 Kč.',
@@ -14,13 +15,10 @@ export const metadata: Metadata = {
     'nájemní smlouva pronajímatel',
     'nájemní smlouva nájemce',
   ],
-  alternates: { canonical: 'https://www.smlouvahned.cz/najemni-smlouva-byt' },
-  openGraph: {
-    title: 'Nájemní smlouva na byt 2026',
-    description: 'Nájemní smlouva na byt nebo dům. Kauce, zvířata, předávací protokol. § 2235 OZ. Od 99 Kč.',
-    url: 'https://www.smlouvahned.cz/najemni-smlouva-byt',
-  },
-};
+  openGraphTitle: 'Nájemní smlouva na byt 2026',
+  openGraphDescription:
+    'Nájemní smlouva na byt nebo dům. Kauce, zvířata, předávací protokol. § 2235 OZ. Od 99 Kč.',
+});
 
 const faq = [
   {

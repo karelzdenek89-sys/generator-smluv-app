@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -6,28 +6,18 @@ import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
-export const metadata: Metadata = {
-  title: 'Nájemní smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
-  description:
-    'Kompletní průvodce nájemní smlouvou pro rok 2026. Co musí smlouva obsahovat dle OZ, nejčastější chyby pronajímatelů, jak se chránit a kdy nestačí vzor z internetu.',
-  keywords: [
-    'nájemní smlouva vzor 2026',
+export const metadata = blogArticlePageMetadata("najemni-smlouva-vzor-2026", {
+  title: "Nájemní smlouva vzor 2026: Co musí obsahovat a nejčastější chyby",
+  description: "Kompletní průvodce nájemní smlouvou pro rok 2026. Co musí smlouva obsahovat dle OZ, nejčastější chyby pronajímatelů, jak se chránit a kdy nestačí vzor z internetu.",
+  keywords: ['nájemní smlouva vzor 2026',
     'co musí obsahovat nájemní smlouva',
     'nájemní smlouva chyby',
     'nájemní smlouva byt 2026',
     'jak napsat nájemní smlouvu',
     'nájemní smlouva náležitosti',
-    'nájemní smlouva podle OZ',
-  ],
-  alternates: { canonical: 'https://www.smlouvahned.cz/blog/najemni-smlouva-vzor-2026' },
-  openGraph: {
-    title: 'Nájemní smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
-    description:
-      'Průvodce nájemní smlouvou — zákonné náležitosti, chyby pronajímatelů, jak se chránit. Aktuální pro legislativu 2026.',
-    url: 'https://www.smlouvahned.cz/blog/najemni-smlouva-vzor-2026',
-    type: 'article',
-  },
-};
+    'nájemní smlouva podle OZ',],
+});
+
 
 export default function NajemniSmlouvaVzor2026Page() {
   return (

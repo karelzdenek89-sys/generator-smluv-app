@@ -237,6 +237,17 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
     href: '/blog/dpp-dohoda-provedeni-prace',
   },
   {
+    slug: 'dpp-vzor-zdarma-2026',
+    title: 'DPP vzor zdarma 2026 — co v něm chybí a proč na tom záleží',
+    excerpt:
+      'Stáhnete vzor DPP zdarma — ale je správně pro rok 2026? Porovnáme, co volné šablony vynechávají a kdy se vyplatí použít generátor s citacemi zákoníku práce.',
+    category: 'Práce a zaměstnání',
+    readTime: '8 min',
+    date: '20. května 2026',
+    cluster: 'general',
+    href: '/blog/dpp-vzor-zdarma-2026',
+  },
+  {
     slug: 'kupni-smlouva-movita-vec',
     title: 'Kupní smlouva na movitou věc 2026: Kdy stačí obecná kupní smlouva a co má obsahovat',
     excerpt:

@@ -49,8 +49,14 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      { source: '/og-image.png', destination: '/opengraph-image' },
+    ];
+  },
   async redirects() {
     return [
+      { source: '/kupni-smlouva-auto', destination: '/auto', permanent: true },
       { source: '/uk', destination: '/ua', permanent: true },
       { source: '/uk/:path*', destination: '/ua/:path*', permanent: true },
       { source: '/vn', destination: '/en', permanent: true },

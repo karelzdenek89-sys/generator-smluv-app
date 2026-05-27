@@ -1,21 +1,11 @@
-import type { Metadata } from 'next';
+import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 
-export const metadata: Metadata = {
-  title: 'Kauce při pronájmu bytu 2026: Jak ji správně sjednat a potvrdit',
-  description:
-    'Praktický průvodce k jistotě při pronájmu bytu. Kdy se používá, co uvést do nájemní smlouvy, jak potvrdit převzetí kauce a kdy ji po skončení nájmu vracet.',
-  alternates: {
-    canonical: 'https://www.smlouvahned.cz/blog/kauce-pronajem-bytu-2026',
-  },
-  openGraph: {
-    title: 'Kauce při pronájmu bytu 2026',
-    description:
-      'Jak pracovat s kaucí při pronájmu bytu, co zachytit do smlouvy a kdy je vhodné mít i potvrzení o převzetí kauce.',
-    url: 'https://www.smlouvahned.cz/blog/kauce-pronajem-bytu-2026',
-    type: 'article',
-  },
-};
+export const metadata = blogArticlePageMetadata("kauce-pronajem-bytu-2026", {
+  title: "Kauce při pronájmu bytu 2026: Jak ji správně sjednat a potvrdit",
+  description: "Praktický průvodce k jistotě při pronájmu bytu. Kdy se používá, co uvést do nájemní smlouvy, jak potvrdit převzetí kauce a kdy ji po skončení nájmu vracet.",
+});
+
 
 export default function KaucePronajemBytu2026Page() {
   return (

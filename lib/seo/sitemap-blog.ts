@@ -1,0 +1,35 @@
+import type { MetadataRoute } from 'next';
+import { CZECH_BLOG_ARTICLES } from '@/lib/blog-articles';
+import { czechDateToDate } from '@/lib/seo/czech-date';
+import { SITE_URL } from '@/lib/seo/site';
+
+const PILLAR_SLUGS = new Set([
+  'najemni-smlouva-vzor-2026',
+  'valorizace-najemneho-2026',
+  'kupni-smlouva-na-auto-2026',
+  'smlouva-o-dilo-2026',
+  'darovaci-smlouva-2026',
+  'pracovni-smlouva-2026',
+  'kupni-smlouva-movita-vec',
+  'smlouva-o-zapujcce-2026',
+  'nda-smlouva-mlcenlivost',
+  'dpp-dohoda-provedeni-prace',
+  'dpp-vzor-zdarma-2026',
+  'podnajemni-smlouva-2026',
+  'smlouva-o-spolupraci-2026',
+  'plna-moc-2026',
+  'smlouva-o-sluzbach-2026',
+  'uznani-dluhu-2026',
+  'plna-moc-zastupovani-cizincu-2026',
+  'prodej-auta-prepis-cizinec-2026',
+  'podnajem-vs-najem-cizinci-2026',
+]);
+
+export function czechBlogSitemapEntries(): MetadataRoute.Sitemap {
+  return CZECH_BLOG_ARTICLES.map((article) => ({
+    url: `${SITE_URL}${article.href}`,
+    lastModified: czechDateToDate(article.date),
+    changeFrequency: 'monthly' as const,
+    priority: PILLAR_SLUGS.has(article.slug) ? 0.92 : 0.88,
+  }));
+}

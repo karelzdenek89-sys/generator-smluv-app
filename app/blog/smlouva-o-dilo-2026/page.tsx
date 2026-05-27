@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -6,29 +6,19 @@ import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
-export const metadata: Metadata = {
-  title: 'Smlouva o dílo 2026: Co musí obsahovat a nejčastější chyby',
-  description:
-    'Průvodce smlouvou o dílo pro rok 2026. Co musí smlouva obsahovat dle § 2586 OZ, jak se chránit jako objednatel i zhotovitel a kdy nestačí ústní dohoda.',
-  keywords: [
-    'smlouva o dílo 2026',
+export const metadata = blogArticlePageMetadata("smlouva-o-dilo-2026", {
+  title: "Smlouva o dílo 2026: Co musí obsahovat a nejčastější chyby",
+  description: "Průvodce smlouvou o dílo pro rok 2026. Co musí smlouva obsahovat dle § 2586 OZ, jak se chránit jako objednatel i zhotovitel a kdy nestačí ústní dohoda.",
+  keywords: ['smlouva o dílo 2026',
     'co musí obsahovat smlouva o dílo',
     'smlouva o dílo vzor',
     'smlouva o dílo stavební práce',
     'smlouva o dílo rekonstrukce',
     'smlouva o dílo chyby',
     'smlouva o dílo náležitosti',
-    'smlouva o dílo § 2586',
-  ],
-  alternates: { canonical: 'https://www.smlouvahned.cz/blog/smlouva-o-dilo-2026' },
-  openGraph: {
-    title: 'Smlouva o dílo 2026: Co musí obsahovat a nejčastější chyby',
-    description:
-      'Zákonné náležitosti smlouvy o dílo dle § 2586 OZ, jak se chránit jako objednatel i zhotovitel a nejčastější chyby při stavebních a řemeslných pracích.',
-    url: 'https://www.smlouvahned.cz/blog/smlouva-o-dilo-2026',
-    type: 'article',
-  },
-};
+    'smlouva o dílo § 2586',],
+});
+
 
 export default function SmlouvaODiloPage() {
   return (

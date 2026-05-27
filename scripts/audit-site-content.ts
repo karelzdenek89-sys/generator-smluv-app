@@ -170,6 +170,9 @@ function main() {
   const sitemap = read('app/sitemap.ts');
   assert.match(sitemap, /DEFAULT_SITEMAP_IMAGE/, 'Sitemap should include the default OG image');
   assert.match(sitemap, /images: entry\.images \?\? \[DEFAULT_SITEMAP_IMAGE\]/, 'Sitemap entries should include image sitemap data');
+  assert.match(sitemap, /czechBlogSitemapEntries/, 'Sitemap should derive Czech blog URLs from the article registry');
+  assert.match(read('next.config.ts'), /og-image\.png/, 'next.config should rewrite legacy OG image path');
+  assert.match(read('app/opengraph-image.tsx'), /renderBrandOgImage/, 'Root OG image route must exist');
   for (const path of ['/pro-pronajimatele', '/prodej-vozidla', '/balicek-pronajimatel', '/balicek-prodej-vozidla']) {
     assert.match(sitemap, new RegExp(path.replace(/\//g, '\\/')), `Sitemap missing ${path}`);
   }

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -6,26 +6,17 @@ import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
-export const metadata: Metadata = {
-  title: 'Plná moc 2026: Kdy ji potřebujete, co musí obsahovat a kdy je nutný notář',
-  description:
-    'Průvodce plnou mocí pro rok 2026. Co je generální vs. speciální plná moc, kdy vyžaduje úředně ověřený podpis nebo notářské ověření, povinné náležitosti a nejčastější chyby.',
-  keywords: [
-    'plná moc vzor 2026',
+export const metadata = blogArticlePageMetadata("plna-moc-2026", {
+  title: "Plná moc 2026: Kdy ji potřebujete, co musí obsahovat a kdy je nutný notář",
+  description: "Průvodce plnou mocí pro rok 2026. Co je generální vs. speciální plná moc, kdy vyžaduje úředně ověřený podpis nebo notářské ověření, povinné náležitosti a nejčastější chyby.",
+  keywords: ['plná moc vzor 2026',
     'plná moc náležitosti',
     'generální plná moc',
     'speciální plná moc',
     'plná moc notář',
-    'plná moc ověřený podpis',
-  ],
-  alternates: { canonical: 'https://www.smlouvahned.cz/blog/plna-moc-2026' },
-  openGraph: {
-    title: 'Plná moc 2026: Kdy ji potřebujete, co musí obsahovat a kdy je nutný notář',
-    description: 'Generální vs. speciální plná moc, ověřený podpis, notářské ověření a nejčastější chyby. Aktuální pro 2026.',
-    url: 'https://www.smlouvahned.cz/blog/plna-moc-2026',
-    type: 'article',
-  },
-};
+    'plná moc ověřený podpis',],
+});
+
 
 export default function PlnaMoc2026Page() {
   return (

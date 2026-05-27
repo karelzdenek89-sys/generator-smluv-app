@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -6,26 +6,17 @@ import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
-export const metadata: Metadata = {
-  title: 'NDA smlouva o mlčenlivosti 2026: Co musí obsahovat a nejčastější chyby',
-  description:
-    'Průvodce NDA smlouvou o mlčenlivosti pro rok 2026. Co chrání NDA, jak vymezit důvěrné informace, smluvní pokuta, jednostranná vs. vzájemná NDA a nejčastější chyby.',
-  keywords: [
-    'NDA smlouva',
+export const metadata = blogArticlePageMetadata("nda-smlouva-mlcenlivost", {
+  title: "NDA smlouva o mlčenlivosti 2026: Co musí obsahovat a nejčastější chyby",
+  description: "Průvodce NDA smlouvou o mlčenlivosti pro rok 2026. Co chrání NDA, jak vymezit důvěrné informace, smluvní pokuta, jednostranná vs. vzájemná NDA a nejčastější chyby.",
+  keywords: ['NDA smlouva',
     'smlouva o mlčenlivosti',
     'NDA vzor 2026',
     'co chrání NDA',
     'smlouva o mlčenlivosti chyby',
-    'NDA obchodní tajemství',
-  ],
-  alternates: { canonical: 'https://www.smlouvahned.cz/blog/nda-smlouva-mlcenlivost' },
-  openGraph: {
-    title: 'NDA smlouva o mlčenlivosti 2026: Co musí obsahovat a nejčastější chyby',
-    description: 'Co chrání NDA, jak vymezit důvěrné informace, smluvní pokuta a nejčastější chyby. Aktuální pro 2026.',
-    url: 'https://www.smlouvahned.cz/blog/nda-smlouva-mlcenlivost',
-    type: 'article',
-  },
-};
+    'NDA obchodní tajemství',],
+});
+
 
 export default function NdaSmlouvaPage() {
   return (

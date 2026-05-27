@@ -11,10 +11,11 @@ import {
   EXPAT_BUILDER_SITEMAP,
   getExpatSeoPageHreflangAlternates,
 } from '@/lib/i18n/expat-hreflang';
-import { SITE_URL } from '@/lib/seo/site';
+import { czechBlogSitemapEntries } from '@/lib/seo/sitemap-blog';
+import { OG_IMAGE_PATH, SITE_URL } from '@/lib/seo/site';
 
 const BASE_URL = SITE_URL;
-const DEFAULT_SITEMAP_IMAGE = `${BASE_URL}/og-image.png`;
+const DEFAULT_SITEMAP_IMAGE = `${BASE_URL}${OG_IMAGE_PATH}`;
 
 const localeAlternates: Record<string, string> = {
   cs: `${BASE_URL}/`,
@@ -24,15 +25,29 @@ for (const l of FOREIGN_LOCALES) {
   localeAlternates[LOCALE_META[l].htmlLang] = `${BASE_URL}/${LOCALE_META[l].segment}`;
 }
 
+function staticPage(
+  path: string,
+  priority: number,
+  changeFrequency: MetadataRoute.Sitemap[0]['changeFrequency'] = 'monthly',
+): MetadataRoute.Sitemap[0] {
+  return {
+    url: `${BASE_URL}${path}`,
+    lastModified: new Date(),
+    changeFrequency,
+    priority,
+  };
+}
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
-  const foreignEntries: MetadataRoute.Sitemap = FOREIGN_LOCALES.map(l => ({
+  const foreignEntries: MetadataRoute.Sitemap = FOREIGN_LOCALES.map((l) => ({
     url: `${BASE_URL}/${LOCALE_META[l].segment}`,
     lastModified: now,
     changeFrequency: 'weekly' as const,
     priority: 0.9,
     alternates: { languages: localeAlternates },
   }));
+
   const entries: MetadataRoute.Sitemap = [
     {
       url: `${BASE_URL}/`,
@@ -42,368 +57,40 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: { languages: localeAlternates },
     },
     ...foreignEntries,
-    {
-      url: `${BASE_URL}/darovaci`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.9,
-    },
-    {
-      url: `${BASE_URL}/smlouva-o-dilo`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.9,
-    },
-    {
-      url: `${BASE_URL}/pujcka`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.85,
-    },
-    {
-      url: `${BASE_URL}/nda`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.85,
-    },
-    {
-      url: `${BASE_URL}/kupni`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.9,
-    },
-    {
-      url: `${BASE_URL}/sluzby`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.88,
-    },
-    {
-      url: `${BASE_URL}/uznani-dluhu`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.85,
-    },
-    {
-      url: `${BASE_URL}/spoluprace`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.85,
-    },
-    // Blog
-    {
-      url: `${BASE_URL}/blog`,
-      lastModified: now,
-      changeFrequency: 'weekly' as const,
-      priority: 0.8,
-    },
-    {
-      url: `${BASE_URL}/blog/najemni-smlouva-vzor-2026`,
-      lastModified: new Date('2026-03-01'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.92,
-    },
-    {
-      url: `${BASE_URL}/blog/valorizace-najemneho-2026`,
-      lastModified: new Date('2026-05-02'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.92,
-    },
-    {
-      url: `${BASE_URL}/blog/kupni-smlouva-na-auto-2026`,
-      lastModified: new Date('2026-03-15'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.92,
-    },
-    {
-      url: `${BASE_URL}/blog/smlouva-o-dilo-2026`,
-      lastModified: new Date('2026-03-10'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.92,
-    },
-    {
-      url: `${BASE_URL}/blog/darovaci-smlouva-2026`,
-      lastModified: new Date('2026-03-15'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.92,
-    },
-    {
-      url: `${BASE_URL}/blog/pracovni-smlouva-2026`,
-      lastModified: new Date('2026-03-20'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.92,
-    },
-    {
-      url: `${BASE_URL}/blog/kupni-smlouva-movita-vec`,
-      lastModified: new Date('2026-03-25'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.92,
-    },
-    {
-      url: `${BASE_URL}/blog/smlouva-o-zapujcce-2026`,
-      lastModified: new Date('2026-03-28'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.92,
-    },
-    {
-      url: `${BASE_URL}/blog/nda-smlouva-mlcenlivost`,
-      lastModified: new Date('2026-04-01'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.92,
-    },
-    {
-      url: `${BASE_URL}/blog/dpp-dohoda-provedeni-prace`,
-      lastModified: new Date('2026-04-02'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.92,
-    },
-    {
-      url: `${BASE_URL}/blog/podnajemni-smlouva-2026`,
-      lastModified: new Date('2026-04-02'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.92,
-    },
-    {
-      url: `${BASE_URL}/blog/smlouva-o-spolupraci-2026`,
-      lastModified: new Date('2026-04-02'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.92,
-    },
-    {
-      url: `${BASE_URL}/blog/plna-moc-2026`,
-      lastModified: new Date('2026-04-02'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.92,
-    },
-    {
-      url: `${BASE_URL}/blog/smlouva-o-sluzbach-2026`,
-      lastModified: new Date('2026-04-02'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.92,
-    },
-    {
-      url: `${BASE_URL}/blog/uznani-dluhu-2026`,
-      lastModified: new Date('2026-04-02'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.92,
-    },
-    {
-      url: `${BASE_URL}/blog/chyby-pri-pronajmu-bytu-2026`,
-      lastModified: new Date('2026-04-05'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.88,
-    },
-    {
-      url: `${BASE_URL}/blog/doklady-pri-prodeji-auta-2026`,
-      lastModified: new Date('2026-04-05'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.88,
-    },
-    {
-      url: `${BASE_URL}/blog/kauce-pronajem-bytu-2026`,
-      lastModified: new Date('2026-04-05'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.88,
-    },
-    {
-      url: `${BASE_URL}/blog/predani-bytu-najemci-2026`,
-      lastModified: new Date('2026-04-05'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.88,
-    },
-    {
-      url: `${BASE_URL}/blog/predani-vozidla-kupujicimu-2026`,
-      lastModified: new Date('2026-04-05'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.88,
-    },
-    {
-      url: `${BASE_URL}/blog/prepis-vozidla-2026`,
-      lastModified: new Date('2026-04-05'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.88,
-    },
-    {
-      url: `${BASE_URL}/blog/dpp-dpc-porovnani-2026`,
-      lastModified: new Date('2026-04-10'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.88,
-    },
-    {
-      url: `${BASE_URL}/blog/smlouva-o-dilo-cena-a-platby`,
-      lastModified: new Date('2026-04-10'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.88,
-    },
-    {
-      url: `${BASE_URL}/blog/vypoved-z-najmu-bytu-2026`,
-      lastModified: new Date('2026-04-10'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.88,
-    },
-    {
-      url: `${BASE_URL}/blog/plna-moc-zastupovani-cizincu-2026`,
-      lastModified: new Date('2026-05-21'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.92,
-    },
-    {
-      url: `${BASE_URL}/blog/prodej-auta-prepis-cizinec-2026`,
-      lastModified: new Date('2026-05-21'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.92,
-    },
-    {
-      url: `${BASE_URL}/blog/podnajem-vs-najem-cizinci-2026`,
-      lastModified: new Date('2026-05-21'),
-      changeFrequency: 'monthly' as const,
-      priority: 0.92,
-    },
-    // SEO landing pages
-    {
-      url: `${BASE_URL}/najemni-smlouva`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.95,
-    },
-    {
-      url: `${BASE_URL}/smlouva-o-dilo-online`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.95,
-    },
-    {
-      url: `${BASE_URL}/pracovni-smlouva`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.95,
-    },
-    {
-      url: `${BASE_URL}/kupni-smlouva`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.95,
-    },
-    {
-      url: `${BASE_URL}/dohoda-o-provedeni-prace`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.95,
-    },
-    {
-      url: `${BASE_URL}/darovaci-smlouva`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.93,
-    },
-    {
-      url: `${BASE_URL}/nda-smlouva`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.93,
-    },
-    {
-      url: `${BASE_URL}/pujcka-smlouva`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.93,
-    },
-    {
-      url: `${BASE_URL}/podnajemni-smlouva`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.93,
-    },
-    {
-      url: `${BASE_URL}/plna-moc-online`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.93,
-    },
-    {
-      url: `${BASE_URL}/uznani-dluhu-vzor`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.93,
-    },
-    {
-      url: `${BASE_URL}/smlouva-o-sluzbach`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.93,
-    },
-    {
-      url: `${BASE_URL}/smlouva-o-spolupraci`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.93,
-    },
-    {
-      url: `${BASE_URL}/najemni-smlouva-byt`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.93,
-    },
-    {
-      url: `${BASE_URL}/pro-pronajimatele`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.9,
-    },
-    {
-      url: `${BASE_URL}/prodej-vozidla`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.9,
-    },
-    {
-      url: `${BASE_URL}/balicek-pronajimatel`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.88,
-    },
-    {
-      url: `${BASE_URL}/balicek-prodej-vozidla`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.88,
-    },
-    {
-      url: `${BASE_URL}/o-projektu`,
-      lastModified: now,
-      changeFrequency: 'yearly',
-      priority: 0.6,
-    },
-    {
-      url: `${BASE_URL}/faq`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${BASE_URL}/slovnik`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    {
-      url: `${BASE_URL}/kontakt`,
-      lastModified: now,
-      changeFrequency: 'yearly',
-      priority: 0.5,
-    },
-    {
-      url: `${BASE_URL}/obchodni-podminky`,
-      lastModified: now,
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
-      url: `${BASE_URL}/gdpr`,
-      lastModified: now,
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
+    staticPage('/darovaci', 0.9),
+    staticPage('/smlouva-o-dilo', 0.9),
+    staticPage('/pujcka', 0.85),
+    staticPage('/nda', 0.85),
+    staticPage('/kupni', 0.9),
+    staticPage('/sluzby', 0.88),
+    staticPage('/uznani-dluhu', 0.85),
+    staticPage('/spoluprace', 0.85),
+    staticPage('/blog', 0.8, 'weekly'),
+    ...czechBlogSitemapEntries(),
+    staticPage('/najemni-smlouva', 0.95),
+    staticPage('/smlouva-o-dilo-online', 0.95),
+    staticPage('/pracovni-smlouva', 0.95),
+    staticPage('/kupni-smlouva', 0.95),
+    staticPage('/dohoda-o-provedeni-prace', 0.95),
+    staticPage('/darovaci-smlouva', 0.93),
+    staticPage('/nda-smlouva', 0.93),
+    staticPage('/pujcka-smlouva', 0.93),
+    staticPage('/podnajemni-smlouva', 0.93),
+    staticPage('/plna-moc-online', 0.93),
+    staticPage('/uznani-dluhu-vzor', 0.93),
+    staticPage('/smlouva-o-sluzbach', 0.93),
+    staticPage('/smlouva-o-spolupraci', 0.93),
+    staticPage('/najemni-smlouva-byt', 0.85),
+    staticPage('/pro-pronajimatele', 0.9),
+    staticPage('/prodej-vozidla', 0.9),
+    staticPage('/balicek-pronajimatel', 0.88),
+    staticPage('/balicek-prodej-vozidla', 0.88),
+    staticPage('/o-projektu', 0.6, 'yearly'),
+    staticPage('/faq', 0.7),
+    staticPage('/slovnik', 0.6),
+    staticPage('/kontakt', 0.5, 'yearly'),
+    staticPage('/obchodni-podminky', 0.3, 'yearly'),
+    staticPage('/gdpr', 0.3, 'yearly'),
     ...EXPAT_BUILDER_SITEMAP.map(({ path, contractKey }) => ({
       url: `${BASE_URL}${path}`,
       lastModified: now,

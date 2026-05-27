@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -6,26 +6,17 @@ import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
-export const metadata: Metadata = {
-  title: 'Podnájemní smlouva 2026: Co musí obsahovat a souhlas pronajímatele',
-  description:
-    'Průvodce podnájemní smlouvou pro rok 2026. Kdy potřebujete souhlas pronajímatele, co musí smlouva obsahovat, práva podnájemce a nejčastější chyby při podnájmu bytu.',
-  keywords: [
-    'podnájemní smlouva',
+export const metadata = blogArticlePageMetadata("podnajemni-smlouva-2026", {
+  title: "Podnájemní smlouva 2026: Co musí obsahovat a souhlas pronajímatele",
+  description: "Průvodce podnájemní smlouvou pro rok 2026. Kdy potřebujete souhlas pronajímatele, co musí smlouva obsahovat, práva podnájemce a nejčastější chyby při podnájmu bytu.",
+  keywords: ['podnájemní smlouva',
     'podnájem bytu 2026',
     'podnájemní smlouva vzor',
     'souhlas pronajímatele podnájem',
     'podnájem práva podnájemce',
-    'podnájemní smlouva chyby',
-  ],
-  alternates: { canonical: 'https://www.smlouvahned.cz/blog/podnajemni-smlouva-2026' },
-  openGraph: {
-    title: 'Podnájemní smlouva 2026: Co musí obsahovat a souhlas pronajímatele',
-    description: 'Souhlas pronajímatele, práva podnájemce, povinné náležitosti a nejčastější chyby. Aktuální pro 2026.',
-    url: 'https://www.smlouvahned.cz/blog/podnajemni-smlouva-2026',
-    type: 'article',
-  },
-};
+    'podnájemní smlouva chyby',],
+});
+
 
 export default function PodnajemniSmlouvaPage() {
   return (

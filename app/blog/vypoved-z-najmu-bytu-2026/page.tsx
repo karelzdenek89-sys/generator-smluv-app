@@ -1,22 +1,12 @@
-import type { Metadata } from 'next';
+import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 
-export const metadata: Metadata = {
-  title: 'Výpověď z nájmu bytu: výpovědní lhůty, důvody a forma',
-  description:
-    'Kdy a jak může pronajímatel nebo nájemce ukončit nájem výpovědí. Zákonné důvody, tříměsíční lhůta, písemná forma a co mít v nájemní smlouvě předem ošetřeno.',
-  alternates: {
-    canonical: 'https://www.smlouvahned.cz/blog/vypoved-z-najmu-bytu-2026',
-  },
-  openGraph: {
-    title: 'Výpověď z nájmu bytu 2026: výpovědní lhůty, důvody a forma',
-    description:
-      'Přehled pravidel pro ukončení nájmu bytu výpovědí — zákonné důvody, lhůty a písemná forma.',
-    url: 'https://www.smlouvahned.cz/blog/vypoved-z-najmu-bytu-2026',
-    type: 'article',
-  },
-};
+export const metadata = blogArticlePageMetadata("vypoved-z-najmu-bytu-2026", {
+  title: "Výpověď z nájmu bytu: výpovědní lhůty, důvody a forma",
+  description: "Kdy a jak může pronajímatel nebo nájemce ukončit nájem výpovědí. Zákonné důvody, tříměsíční lhůta, písemná forma a co mít v nájemní smlouvě předem ošetřeno.",
+});
+
 
 export default function VypovedZNajmuBytu2026Page() {
   return (

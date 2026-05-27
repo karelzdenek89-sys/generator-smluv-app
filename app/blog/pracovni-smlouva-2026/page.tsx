@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -6,28 +6,18 @@ import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
-export const metadata: Metadata = {
-  title: 'Pracovní smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
-  description:
-    'Kompletní průvodce pracovní smlouvou pro rok 2026. Tři zákonné náležitosti, zkušební doba, co smlouva chránit musí, a nejčastější chyby zaměstnavatelů. Dle zákoníku práce 2026.',
-  keywords: [
-    'pracovní smlouva vzor 2026',
+export const metadata = blogArticlePageMetadata("pracovni-smlouva-2026", {
+  title: "Pracovní smlouva vzor 2026: Co musí obsahovat a nejčastější chyby",
+  description: "Kompletní průvodce pracovní smlouvou pro rok 2026. Tři zákonné náležitosti, zkušební doba, co smlouva chránit musí, a nejčastější chyby zaměstnavatelů. Dle zákoníku práce 2026.",
+  keywords: ['pracovní smlouva vzor 2026',
     'co musí obsahovat pracovní smlouva',
     'pracovní smlouva zákoník práce',
     'pracovní smlouva zkušební doba',
     'pracovní smlouva chyby',
     'pracovní smlouva zaměstnanec',
-    'jak napsat pracovní smlouvu',
-  ],
-  alternates: { canonical: 'https://www.smlouvahned.cz/blog/pracovni-smlouva-2026' },
-  openGraph: {
-    title: 'Pracovní smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
-    description:
-      'Průvodce pracovní smlouvou — 3 povinné náležitosti, zkušební doba, přesčas, výpovědní lhůta a nejčastější chyby zaměstnavatelů. Aktuální dle zákoníku práce 2026.',
-    url: 'https://www.smlouvahned.cz/blog/pracovni-smlouva-2026',
-    type: 'article',
-  },
-};
+    'jak napsat pracovní smlouvu',],
+});
+
 
 export default function PracovniSmlouvaVzor2026Page() {
   return (

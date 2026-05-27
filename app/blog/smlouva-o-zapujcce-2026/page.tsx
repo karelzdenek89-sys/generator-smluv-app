@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -6,26 +6,17 @@ import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
-export const metadata: Metadata = {
-  title: 'Smlouva o zápůjčce 2026: Vzor + nejčastější chyby při půjčce peněz',
-  description:
-    'Průvodce smlouvou o zápůjčce (půjčce) pro rok 2026. Co musí obsahovat dle § 2390 OZ, jak nastavit úrok, splátkový kalendář, co dělat při nesplacení a proč nestačí SMS.',
-  keywords: [
-    'smlouva o zápůjčce',
+export const metadata = blogArticlePageMetadata("smlouva-o-zapujcce-2026", {
+  title: "Smlouva o zápůjčce 2026: Vzor + nejčastější chyby při půjčce peněz",
+  description: "Průvodce smlouvou o zápůjčce (půjčce) pro rok 2026. Co musí obsahovat dle § 2390 OZ, jak nastavit úrok, splátkový kalendář, co dělat při nesplacení a proč nestačí SMS.",
+  keywords: ['smlouva o zápůjčce',
     'smlouva o půjčce vzor 2026',
     'půjčka smlouva',
     'zapůjčka peněz smlouva',
     'co musí obsahovat smlouva o půjčce',
-    'smlouva o zápůjčce OZ',
-  ],
-  alternates: { canonical: 'https://www.smlouvahned.cz/blog/smlouva-o-zapujcce-2026' },
-  openGraph: {
-    title: 'Smlouva o zápůjčce 2026: Vzor + nejčastější chyby při půjčce peněz',
-    description: 'Zákonné náležitosti zápůjčky, úrok, splátkový kalendář, vymáhání. Dle § 2390 OZ, aktuální pro 2026.',
-    url: 'https://www.smlouvahned.cz/blog/smlouva-o-zapujcce-2026',
-    type: 'article',
-  },
-};
+    'smlouva o zápůjčce OZ',],
+});
+
 
 export default function SmlouvaOZapujcce2026Page() {
   return (

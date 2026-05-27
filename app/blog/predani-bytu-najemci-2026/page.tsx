@@ -1,21 +1,11 @@
-import type { Metadata } from 'next';
+import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 
-export const metadata: Metadata = {
-  title: 'Jak správně předat byt nájemci 2026: Co zachytit v protokolu a na co nezapomenout',
-  description:
-    'Praktický přehled předání bytu nájemci. Co uvést do předávacího protokolu, jak pracovat s odečty měřidel, klíči, vybavením a kdy si připravit i potvrzení o převzetí kauce.',
-  alternates: {
-    canonical: 'https://www.smlouvahned.cz/blog/predani-bytu-najemci-2026',
-  },
-  openGraph: {
-    title: 'Jak správně předat byt nájemci 2026',
-    description:
-      'Co si připravit při předání bytu, co zachytit do protokolu a proč nestačí jen samotná nájemní smlouva.',
-    url: 'https://www.smlouvahned.cz/blog/predani-bytu-najemci-2026',
-    type: 'article',
-  },
-};
+export const metadata = blogArticlePageMetadata("predani-bytu-najemci-2026", {
+  title: "Jak správně předat byt nájemci 2026: Co zachytit v protokolu a na co nezapomenout",
+  description: "Praktický přehled předání bytu nájemci. Co uvést do předávacího protokolu, jak pracovat s odečty měřidel, klíči, vybavením a kdy si připravit i potvrzení o převzetí kauce.",
+});
+
 
 export default function PredaniBytuNajemci2026Page() {
   return (

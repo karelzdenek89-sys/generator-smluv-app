@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -6,26 +6,17 @@ import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
-export const metadata: Metadata = {
-  title: 'Smlouva o poskytování služeb 2026: Vzor, náležitosti a jak se chránit',
-  description:
-    'Průvodce smlouvou o poskytování služeb pro rok 2026. Povinné náležitosti, rozdíl oproti smlouvě o dílo, odpovědnost za vady, reklamace, výpovědní podmínky a nejčastější chyby.',
-  keywords: [
-    'smlouva o poskytování služeb',
+export const metadata = blogArticlePageMetadata("smlouva-o-sluzbach-2026", {
+  title: "Smlouva o poskytování služeb 2026: Vzor, náležitosti a jak se chránit",
+  description: "Průvodce smlouvou o poskytování služeb pro rok 2026. Povinné náležitosti, rozdíl oproti smlouvě o dílo, odpovědnost za vady, reklamace, výpovědní podmínky a nejčastější chyby.",
+  keywords: ['smlouva o poskytování služeb',
     'smlouva o službách vzor 2026',
     'smlouva o dílo vs smlouva o službách',
     'smlouva o poskytování služeb náležitosti',
     'smlouva o službách freelancer',
-    'smlouva o poskytování služeb reklamace',
-  ],
-  alternates: { canonical: 'https://www.smlouvahned.cz/blog/smlouva-o-sluzbach-2026' },
-  openGraph: {
-    title: 'Smlouva o poskytování služeb 2026: Vzor, náležitosti a jak se chránit',
-    description: 'Náležitosti, rozdíl oproti smlouvě o dílo, reklamace a nejčastější chyby. Aktuální pro 2026.',
-    url: 'https://www.smlouvahned.cz/blog/smlouva-o-sluzbach-2026',
-    type: 'article',
-  },
-};
+    'smlouva o poskytování služeb reklamace',],
+});
+
 
 export default function SmlouvaOSluzbach2026Page() {
   return (

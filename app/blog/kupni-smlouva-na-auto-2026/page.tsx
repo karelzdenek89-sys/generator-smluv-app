@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -6,28 +6,18 @@ import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
-export const metadata: Metadata = {
-  title: 'Kupní smlouva na auto 2026: Co musí obsahovat a jak se chránit',
-  description:
-    'Průvodce kupní smlouvou na auto pro rok 2026. Co musí smlouva obsahovat, jak ověřit vozidlo, nejčastější chyby prodejců i kupujících a proč nestačí rukou psaná dohoda.',
-  keywords: [
-    'kupní smlouva na auto 2026',
+export const metadata = blogArticlePageMetadata("kupni-smlouva-na-auto-2026", {
+  title: "Kupní smlouva na auto 2026: Co musí obsahovat a jak se chránit",
+  description: "Průvodce kupní smlouvou na auto pro rok 2026. Co musí smlouva obsahovat, jak ověřit vozidlo, nejčastější chyby prodejců i kupujících a proč nestačí rukou psaná dohoda.",
+  keywords: ['kupní smlouva na auto 2026',
     'co musí obsahovat kupní smlouva na auto',
     'kupní smlouva vozidlo vzor',
     'kupní smlouva auto ojetý vůz',
     'jak prodat auto smlouva',
     'kupní smlouva auto vin',
-    'kupní smlouva auto náležitosti',
-  ],
-  alternates: { canonical: 'https://www.smlouvahned.cz/blog/kupni-smlouva-na-auto-2026' },
-  openGraph: {
-    title: 'Kupní smlouva na auto 2026: Co musí obsahovat a jak se chránit',
-    description:
-      'Zákonné náležitosti kupní smlouvy na auto, jak ověřit vozidlo před koupí a nejčastější chyby při prodeji ojetého vozu.',
-    url: 'https://www.smlouvahned.cz/blog/kupni-smlouva-na-auto-2026',
-    type: 'article',
-  },
-};
+    'kupní smlouva auto náležitosti',],
+});
+
 
 
 export default function KupniSmlouvaAutoPage() {

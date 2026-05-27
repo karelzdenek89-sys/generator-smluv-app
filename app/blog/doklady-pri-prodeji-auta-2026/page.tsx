@@ -1,21 +1,11 @@
-import type { Metadata } from 'next';
+import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 
-export const metadata: Metadata = {
-  title: 'Jaké doklady předat při prodeji auta 2026: Přehled pro běžný převod vozidla',
-  description:
-    'Přehled dokladů a podkladů, které se při běžném prodeji auta předávají kupujícímu. Jak pracovat s technickými doklady, klíči a dalšími přílohami převodu.',
-  alternates: {
-    canonical: 'https://www.smlouvahned.cz/blog/doklady-pri-prodeji-auta-2026',
-  },
-  openGraph: {
-    title: 'Jaké doklady předat při prodeji auta 2026',
-    description:
-      'Co při prodeji auta obvykle předat spolu s vozidlem a jak tyto doklady zachytit přehledně a bez zmatku.',
-    url: 'https://www.smlouvahned.cz/blog/doklady-pri-prodeji-auta-2026',
-    type: 'article',
-  },
-};
+export const metadata = blogArticlePageMetadata("doklady-pri-prodeji-auta-2026", {
+  title: "Jaké doklady předat při prodeji auta 2026: Přehled pro běžný převod vozidla",
+  description: "Přehled dokladů a podkladů, které se při běžném prodeji auta předávají kupujícímu. Jak pracovat s technickými doklady, klíči a dalšími přílohami převodu.",
+});
+
 
 export default function DokladyPriProdejiAuta2026Page() {
   return (

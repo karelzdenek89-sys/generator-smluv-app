@@ -1,22 +1,12 @@
-import type { Metadata } from 'next';
+import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 
-export const metadata: Metadata = {
-  title: 'Kupní smlouva na auto a přepis vozidla cizincem 2026: Průvodce',
-  description:
-    'Kompletní průvodce prodejem a koupí auta cizincem v ČR v roce 2026. Jaké doklady potřebujete, jak správně nastavit kupní smlouvu a jak stihnout přepis do 10 pracovních dnů od převodu.',
-  alternates: {
-    canonical: 'https://www.smlouvahned.cz/blog/prodej-auta-prepis-cizinec-2026',
-  },
-  openGraph: {
-    title: 'Kupní smlouva na auto a přepis vozidla cizincem 2026: Průvodce',
-    description:
-      'Koupě nebo prodej auta cizincem v ČR. Právní náležitosti kupní smlouvy na vozidlo, povinnosti při přepisu na registru a tipy, jak se vyhnout vysokým pokutám v roce 2026.',
-    url: 'https://www.smlouvahned.cz/blog/prodej-auta-prepis-cizinec-2026',
-    type: 'article',
-  },
-};
+export const metadata = blogArticlePageMetadata("prodej-auta-prepis-cizinec-2026", {
+  title: "Kupní smlouva na auto a přepis vozidla cizincem 2026: Průvodce",
+  description: "Kompletní průvodce prodejem a koupí auta cizincem v ČR v roce 2026. Jaké doklady potřebujete, jak správně nastavit kupní smlouvu a jak stihnout přepis do 10 pracovních dnů od převodu.",
+});
+
 
 export default function ProdejAutaCizinec2026Page() {
   return (

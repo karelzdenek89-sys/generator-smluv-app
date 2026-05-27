@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -6,26 +6,17 @@ import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
-export const metadata: Metadata = {
-  title: 'DPP dohoda o provedení práce 2026: Limity, odvody a jak ji správně napsat',
-  description:
-    'Průvodce dohodou o provedení práce pro rok 2026. Limit 300 hodin ročně, rozhodný příjem 12 000 Kč, zdravotní pojištění, povinné náležitosti a nejčastější chyby zaměstnavatelů.',
-  keywords: [
-    'DPP dohoda o provedení práce',
+export const metadata = blogArticlePageMetadata("dpp-dohoda-provedeni-prace", {
+  title: "DPP dohoda o provedení práce 2026: Limity, odvody a jak ji správně napsat",
+  description: "Průvodce dohodou o provedení práce pro rok 2026. Limit 300 hodin ročně, rozhodný příjem 12 000 Kč, zdravotní pojištění, povinné náležitosti a nejčastější chyby zaměstnavatelů.",
+  keywords: ['DPP dohoda o provedení práce',
     'dohoda o provedení práce vzor 2026',
     'DPP limit hodin',
     'DPP odvody',
     'DPP srážková daň',
-    'dohoda o provedení práce chyby',
-  ],
-  alternates: { canonical: 'https://www.smlouvahned.cz/blog/dpp-dohoda-provedeni-prace' },
-  openGraph: {
-    title: 'DPP dohoda o provedení práce 2026: Limity, odvody a jak ji správně napsat',
-    description: 'Limit 300 hodin, srážková daň, zdravotní pojištění a nejčastější chyby. Aktuální pro 2026.',
-    url: 'https://www.smlouvahned.cz/blog/dpp-dohoda-provedeni-prace',
-    type: 'article',
-  },
-};
+    'dohoda o provedení práce chyby',],
+});
+
 
 export default function DppPage() {
   return (

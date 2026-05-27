@@ -8,6 +8,7 @@ import Footer from '@/app/components/Footer';
 import ForeignVisitorBanner from '@/app/components/ForeignVisitorBanner';
 import SiteAnalytics from '@/app/components/SiteAnalytics';
 import SiteHeader from '@/app/components/SiteHeader';
+import { OG_IMAGE_PATH, SITE_URL } from '@/lib/seo/site';
 
 const inter = Inter({
   subsets: ['latin', 'latin-ext'],
@@ -21,7 +22,7 @@ const playfair = Playfair_Display({
   display: 'swap',
 });
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
+const BASE_URL = SITE_URL;
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
@@ -43,7 +44,7 @@ export const metadata: Metadata = {
       'Generování smluv online bez právníka. Nájemní smlouva, kupní smlouva, NDA a další — formulář, PDF ihned ke stažení. Dle legislativy 2026.',
     images: [
       {
-        url: '/og-image.png',
+        url: OG_IMAGE_PATH,
         width: 1200,
         height: 630,
         alt: 'SmlouvaHned — Generátor smluv',
@@ -54,7 +55,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'SmlouvaHned | Smluvní dokumenty online',
     description: '14 typů dokumentů. Strukturovaný formulář, PDF ihned a volitelné add-ony podle potřeby.',
-    images: ['/og-image.png'],
+    images: [OG_IMAGE_PATH],
   },
   robots: {
     index: true,
@@ -75,7 +76,7 @@ const organizationSchema = {
   name: 'SmlouvaHned',
   legalName: 'Karel Zdeněk',
   url: BASE_URL,
-  logo: `${BASE_URL}/og-image.png`,
+  logo: `${BASE_URL}${OG_IMAGE_PATH}`,
   description: 'Softwarový nástroj pro automatizovanou tvorbu standardizovaných smluvních dokumentů online — nájemní smlouva, kupní smlouva, smlouva o dílo, NDA a další. Od 99 Kč.',
   inLanguage: 'cs',
   areaServed: 'CZ',

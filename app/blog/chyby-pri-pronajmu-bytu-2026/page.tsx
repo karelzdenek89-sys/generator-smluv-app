@@ -1,21 +1,11 @@
-import type { Metadata } from 'next';
+import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 
-export const metadata: Metadata = {
-  title: 'Nejčastější chyby při pronájmu bytu 2026: Na co si dát pozor před podpisem',
-  description:
-    'Přehled nejčastějších chyb při pronájmu bytu. Nejasná kauce, chybějící předávací protokol, slabá pravidla užívání a další body, které je vhodné řešit písemně.',
-  alternates: {
-    canonical: 'https://www.smlouvahned.cz/blog/chyby-pri-pronajmu-bytu-2026',
-  },
-  openGraph: {
-    title: 'Nejčastější chyby při pronájmu bytu 2026',
-    description:
-      'Na co si dát pozor při pronájmu bytu, co bývá ve smlouvách nejasné a kdy je praktičtější řešit vedle smlouvy i navazující podklady.',
-    url: 'https://www.smlouvahned.cz/blog/chyby-pri-pronajmu-bytu-2026',
-    type: 'article',
-  },
-};
+export const metadata = blogArticlePageMetadata("chyby-pri-pronajmu-bytu-2026", {
+  title: "Nejčastější chyby při pronájmu bytu 2026: Na co si dát pozor před podpisem",
+  description: "Přehled nejčastějších chyb při pronájmu bytu. Nejasná kauce, chybějící předávací protokol, slabá pravidla užívání a další body, které je vhodné řešit písemně.",
+});
+
 
 export default function ChybyPriPronajmuBytu2026Page() {
   return (

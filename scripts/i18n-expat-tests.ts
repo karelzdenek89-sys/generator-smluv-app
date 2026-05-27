@@ -1,5 +1,8 @@
 import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
+import { CZECH_BLOG_ARTICLES } from '../lib/blog-articles';
+import { czechBlogSitemapEntries } from '../lib/seo/sitemap-blog';
+import { SITE_URL } from '../lib/seo/site';
 import {
   EMPLOYMENT_WORK_ELIGIBILITY_NOTICE,
   EN_LEGAL_KEY_TERMS,
@@ -126,6 +129,8 @@ function testLocalePropagation() {
   assert.match(sitemap, /EXPAT_BUILDER_SITEMAP/);
   assert.match(sitemap, /getExpatSeoPageHreflangAlternates/);
   assert.match(sitemap, /expatBlogSitemapEntries/);
+  assert.match(sitemap, /czechBlogSitemapEntries/);
+  assert.match(read('lib/blog-articles.ts'), /dpp-vzor-zdarma-2026/);
   assert.doesNotMatch(sitemap, /cs: `\$\{BASE_URL\}\/`,\s*\n\s*en: `\$\{BASE_URL\}\/en\/\$\{slug\}`/);
   assert.doesNotMatch(sitemap, /\/ru/);
   assert.doesNotMatch(sitemap, /\/de/);
@@ -873,7 +878,17 @@ async function main() {
   await testEmploymentEnPdfTextContent();
   await testDppUaPdfTextContent();
   await testPdfFallback();
+  testCzechBlogSitemapCoverage();
   console.log('i18n expat tests passed');
+}
+
+function testCzechBlogSitemapCoverage() {
+  const urls = new Set(czechBlogSitemapEntries().map((entry) => entry.url));
+  for (const article of CZECH_BLOG_ARTICLES) {
+    const expected = `${SITE_URL}${article.href}`;
+    assert.ok(urls.has(expected), `Sitemap missing Czech blog article: ${article.href}`);
+  }
+  assert.ok(urls.has(`${SITE_URL}/blog/dpp-vzor-zdarma-2026`), 'Sitemap must include dpp-vzor-zdarma-2026');
 }
 
 main().catch((error) => {

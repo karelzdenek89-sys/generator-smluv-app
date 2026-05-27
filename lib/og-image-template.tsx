@@ -99,6 +99,88 @@ export function renderExpatHubOgImage(locale: AppLocale) {
   });
 }
 
+export function renderBrandOgImage() {
+  return new ImageResponse(
+    (
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          padding: '70px 80px',
+          background: 'linear-gradient(135deg, #040c1a 0%, #07111e 60%, #15110d 100%)',
+          color: '#f2e7c8',
+          fontFamily: 'system-ui, sans-serif',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
+          <div
+            style={{
+              width: 56,
+              height: 56,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 12,
+              border: '2px solid #c9a852',
+              background: '#040c1a',
+              color: '#c9a852',
+              fontSize: 22,
+              fontWeight: 800,
+            }}
+          >
+            SH
+          </div>
+          <div
+            style={{
+              fontSize: 22,
+              letterSpacing: 4,
+              textTransform: 'uppercase',
+              color: '#c9a852',
+              fontWeight: 700,
+            }}
+          >
+            SmlouvaHned
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 20, maxWidth: 980 }}>
+          <div
+            style={{
+              fontSize: 58,
+              fontWeight: 900,
+              letterSpacing: -2,
+              lineHeight: 1.05,
+              color: '#ffffff',
+            }}
+          >
+            Generování smluv online 2026
+          </div>
+          <div style={{ fontSize: 28, lineHeight: 1.35, color: '#d8c9ad' }}>
+            Formulář → PDF s citacemi § · Od 99 Kč · Dle legislativy 2026
+          </div>
+        </div>
+
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            color: '#bba98c',
+            fontSize: 22,
+          }}
+        >
+          <div>smlouvahned.cz</div>
+          <div style={{ color: '#d6ac60', fontWeight: 700 }}>14 typů dokumentů</div>
+        </div>
+      </div>
+    ),
+    { ...OG_SIZE },
+  );
+}
+
 export function renderBlogOgImage({
   title,
   kicker = `SmlouvaHned ${DOT} Blog`,

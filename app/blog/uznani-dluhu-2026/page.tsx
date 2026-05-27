@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -6,26 +6,17 @@ import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
-export const metadata: Metadata = {
-  title: 'Uznání dluhu 2026: Co to je, co musí obsahovat a proč je důležité',
-  description:
-    'Průvodce uznáním dluhu pro rok 2026 (§ 2053 OZ). Co je uznání dluhu, jak se liší od smlouvy o půjčce, jaké náležitosti musí mít, jak přerušuje promlčení a nejčastější chyby.',
-  keywords: [
-    'uznání dluhu vzor 2026',
+export const metadata = blogArticlePageMetadata("uznani-dluhu-2026", {
+  title: "Uznání dluhu 2026: Co to je, co musí obsahovat a proč je důležité",
+  description: "Průvodce uznáním dluhu pro rok 2026 (§ 2053 OZ). Co je uznání dluhu, jak se liší od smlouvy o půjčce, jaké náležitosti musí mít, jak přerušuje promlčení a nejčastější chyby.",
+  keywords: ['uznání dluhu vzor 2026',
     'uznání dluhu náležitosti',
     'uznání dluhu promlčení',
     'uznání dluhu § 2053',
     'uznání závazku',
-    'uznání dluhu chyby',
-  ],
-  alternates: { canonical: 'https://www.smlouvahned.cz/blog/uznani-dluhu-2026' },
-  openGraph: {
-    title: 'Uznání dluhu 2026: Co to je, co musí obsahovat a proč je důležité',
-    description: 'Co je uznání dluhu, náležitosti, přerušení promlčení a nejčastější chyby. Aktuální pro 2026.',
-    url: 'https://www.smlouvahned.cz/blog/uznani-dluhu-2026',
-    type: 'article',
-  },
-};
+    'uznání dluhu chyby',],
+});
+
 
 export default function UznaniDluhu2026Page() {
   return (

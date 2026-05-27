@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -6,26 +6,17 @@ import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
-export const metadata: Metadata = {
-  title: 'DPP vzor zdarma 2026 — co v něm chybí a proč na tom záleží',
-  description:
-    'Stáhnete vzor DPP zdarma — ale je správně pro rok 2026? Porovnáme, co volné šablony vynechávají a kdy se vyplatí použít generátor s citacemi zákoníku práce.',
-  keywords: [
-    'DPP vzor zdarma 2026',
+export const metadata = blogArticlePageMetadata("dpp-vzor-zdarma-2026", {
+  title: "DPP vzor zdarma 2026 — co v něm chybí a proč na tom záleží",
+  description: "Stáhnete vzor DPP zdarma — ale je správně pro rok 2026? Porovnáme, co volné šablony vynechávají a kdy se vyplatí použít generátor s citacemi zákoníku práce.",
+  keywords: ['DPP vzor zdarma 2026',
     'vzor dpp 2026',
     'dohoda o provedení práce vzor zdarma',
     'DPP šablona 2026',
     'dohoda o provedení práce ke stažení',
-    'generátor DPP online',
-  ],
-  alternates: { canonical: 'https://www.smlouvahned.cz/blog/dpp-vzor-zdarma-2026' },
-  openGraph: {
-    title: 'DPP vzor zdarma 2026 — co v něm chybí a proč na tom záleží',
-    description: 'Volné vzory DPP často postrádají aktuální náležitosti pro rok 2026. Zjistěte, na co si dát pozor.',
-    url: 'https://www.smlouvahned.cz/blog/dpp-vzor-zdarma-2026',
-    type: 'article',
-  },
-};
+    'generátor DPP online',],
+});
+
 
 export default function DppVzorZdarmaPage() {
   return (

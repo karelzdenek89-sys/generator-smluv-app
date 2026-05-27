@@ -1,21 +1,11 @@
-import type { Metadata } from 'next';
+import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 
-export const metadata: Metadata = {
-  title: 'Jak správně předat vozidlo kupujícímu 2026: Protokol, klíče, doklady a stav vozu',
-  description:
-    'Praktický přehled toho, co řešit při předání vozidla kupujícímu. Stav vozu, klíče, technické doklady, příslušenství a proč je vhodné mít vše zachycené písemně.',
-  alternates: {
-    canonical: 'https://www.smlouvahned.cz/blog/predani-vozidla-kupujicimu-2026',
-  },
-  openGraph: {
-    title: 'Jak správně předat vozidlo kupujícímu 2026',
-    description:
-      'Co si při předání auta potvrdit a jak předejít sporům o stav vozu, klíče a předané doklady.',
-    url: 'https://www.smlouvahned.cz/blog/predani-vozidla-kupujicimu-2026',
-    type: 'article',
-  },
-};
+export const metadata = blogArticlePageMetadata("predani-vozidla-kupujicimu-2026", {
+  title: "Jak správně předat vozidlo kupujícímu 2026: Protokol, klíče, doklady a stav vozu",
+  description: "Praktický přehled toho, co řešit při předání vozidla kupujícímu. Stav vozu, klíče, technické doklady, příslušenství a proč je vhodné mít vše zachycené písemně.",
+});
+
 
 export default function PredaniVozidlaKupujicimu2026Page() {
   return (

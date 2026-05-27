@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -6,28 +6,18 @@ import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
-export const metadata: Metadata = {
-  title: 'Darovací smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
-  description:
-    'Kompletní průvodce darovací smlouvou pro rok 2026. Zákonné náležitosti dle OZ, kdy musí být písemná, daňové dopady, odvolání daru a nejčastější chyby při darování nemovitostí i movitých věcí.',
-  keywords: [
-    'darovací smlouva vzor 2026',
+export const metadata = blogArticlePageMetadata("darovaci-smlouva-2026", {
+  title: "Darovací smlouva vzor 2026: Co musí obsahovat a nejčastější chyby",
+  description: "Kompletní průvodce darovací smlouvou pro rok 2026. Zákonné náležitosti dle OZ, kdy musí být písemná, daňové dopady, odvolání daru a nejčastější chyby při darování nemovitostí i movitých věcí.",
+  keywords: ['darovací smlouva vzor 2026',
     'co musí obsahovat darovací smlouva',
     'darovací smlouva nemovitost',
     'darovací smlouva movitá věc',
     'darovací smlouva chyby',
     'dar daň 2026',
-    'darovací smlouva OZ',
-  ],
-  alternates: { canonical: 'https://www.smlouvahned.cz/blog/darovaci-smlouva-2026' },
-  openGraph: {
-    title: 'Darovací smlouva vzor 2026: Co musí obsahovat a nejčastější chyby',
-    description:
-      'Průvodce darovací smlouvou — zákonné náležitosti, kdy je povinná písemná forma, daňové dopady a kdy lze dar odvolat. Aktuální pro legislativu 2026.',
-    url: 'https://www.smlouvahned.cz/blog/darovaci-smlouva-2026',
-    type: 'article',
-  },
-};
+    'darovací smlouva OZ',],
+});
+
 
 export default function DarovaciSmlouvaVzor2026Page() {
   return (

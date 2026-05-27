@@ -1,21 +1,11 @@
-import type { Metadata } from 'next';
+import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 
-export const metadata: Metadata = {
-  title: 'Valorizace nájemného 2026: Jak ji správně sjednat ve smlouvě',
-  description:
-    'Inflační doložka, valorizace nájemného a roční zvyšování nájmu v roce 2026. Co zákon umožňuje, jak klauzuli formulovat a jakým chybám se vyhnout.',
-  alternates: {
-    canonical: 'https://www.smlouvahned.cz/blog/valorizace-najemneho-2026',
-  },
-  openGraph: {
-    title: 'Valorizace nájemného 2026: Jak ji správně sjednat ve smlouvě',
-    description:
-      'Inflační doložka, valorizace nájemného a roční zvyšování nájmu v roce 2026. Co zákon umožňuje a jak klauzuli formulovat.',
-    url: 'https://www.smlouvahned.cz/blog/valorizace-najemneho-2026',
-    type: 'article',
-  },
-};
+export const metadata = blogArticlePageMetadata("valorizace-najemneho-2026", {
+  title: "Valorizace nájemného 2026: Jak ji správně sjednat ve smlouvě",
+  description: "Inflační doložka, valorizace nájemného a roční zvyšování nájmu v roce 2026. Co zákon umožňuje, jak klauzuli formulovat a jakým chybám se vyhnout.",
+});
+
 
 export default function ValorizaceNajemneho2026Page() {
   return (

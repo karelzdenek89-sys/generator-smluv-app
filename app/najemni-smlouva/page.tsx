@@ -1,7 +1,8 @@
-﻿import type { Metadata } from 'next';
-import GuideLandingPage from '@/app/components/GuideLandingPage';
+﻿import GuideLandingPage from '@/app/components/GuideLandingPage';
+import { landingPageMetadata } from '@/lib/seo/landing-page-metadata';
 
-export const metadata: Metadata = {
+export const metadata = landingPageMetadata({
+  path: '/najemni-smlouva',
   title: 'Nájemní smlouva 2026 online — vzor a generátor, PDF ihned',
   description:
     'Nájemní smlouva 2026 online — vyplníte formulář a stáhnete hotové PDF. Aktuální vzor dle OZ, kauce, výpovědní doba, předávací protokol. Od 99 Kč.',
@@ -14,15 +15,7 @@ export const metadata: Metadata = {
     'smlouva o nájmu bytu',
     'nájemní smlouva na byt 2026',
   ],
-  alternates: { canonical: 'https://www.smlouvahned.cz/najemni-smlouva' },
-  openGraph: {
-    title: 'Nájemní smlouva 2026 online — vzor a generátor, PDF ihned',
-    description:
-      'Vyplníte formulář a stáhnete hotové PDF. Aktuální vzor dle OZ — kauce, výpovědní doba, předávací protokol. Od 99 Kč.',
-    url: 'https://www.smlouvahned.cz/najemni-smlouva',
-    type: 'website',
-  },
-};
+});
 
 const faq = [
   {

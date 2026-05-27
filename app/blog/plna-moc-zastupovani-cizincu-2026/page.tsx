@@ -1,22 +1,12 @@
-import type { Metadata } from 'next';
+import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 
-export const metadata: Metadata = {
-  title: 'Plná moc pro zastupování cizinců 2026: Náležitosti a úřední ověření podpisu',
-  description:
-    'Jak správně sepsat plnou moc pro cizince v České republice v roce 2026. Kdy je potřeba úředně ověřený podpis (Czech POINT) a jak se vyhnout nejčastějším chybám.',
-  alternates: {
-    canonical: 'https://www.smlouvahned.cz/blog/plna-moc-zastupovani-cizincu-2026',
-  },
-  openGraph: {
-    title: 'Plná moc pro zastupování cizinců 2026: Náležitosti a úřední ověření podpisu',
-    description:
-      'Průvodce plnou mocí pro cizince. Kdy stačí prostá písemná forma, kdy je nutné úřední ověření a jaké náležitosti musí dokument obsahovat v roce 2026.',
-    url: 'https://www.smlouvahned.cz/blog/plna-moc-zastupovani-cizincu-2026',
-    type: 'article',
-  },
-};
+export const metadata = blogArticlePageMetadata("plna-moc-zastupovani-cizincu-2026", {
+  title: "Plná moc pro zastupování cizinců 2026: Náležitosti a úřední ověření podpisu",
+  description: "Jak správně sepsat plnou moc pro cizince v České republice v roce 2026. Kdy je potřeba úředně ověřený podpis (Czech POINT) a jak se vyhnout nejčastějším chybám.",
+});
+
 
 export default function PlnaMocCizinci2026Page() {
   return (

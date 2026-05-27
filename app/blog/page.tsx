@@ -1,5 +1,5 @@
-import type { Metadata } from 'next';
 import TrackedLink from '@/app/components/analytics/TrackedLink';
+import { blogIndexMetadata } from '@/lib/seo/blog-page-metadata';
 import ExpatBlogLocalePanel from '@/app/components/blog/ExpatBlogLocalePanel';
 import {
   BLOG_ARTICLES,
@@ -11,36 +11,25 @@ import {
 } from '@/lib/blog-articles';
 import { breadcrumbSchema, jsonLdScript } from '@/lib/schemas';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
+import { SITE_URL } from '@/lib/seo/site';
 
-export const metadata: Metadata = {
-  title: 'Blog | Právní průvodce 2026',
-  description:
-    'Praktické průvodce ke smlouvám a běžným právním situacím. Obecně informační obsah aktuální pro legislativu 2026.',
-  alternates: { canonical: `${BASE_URL}/blog` },
-  openGraph: {
-    title: 'Blog — Právní průvodce 2026',
-    description: 'Praktické průvodce ke smlouvám a běžným právním situacím dle legislativy 2026.',
-    url: `${BASE_URL}/blog`,
-    type: 'website',
-  },
-};
+export const metadata = blogIndexMetadata();
 
 const collectionSchema = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
   name: 'Blog | SmlouvaHned',
-  url: `${BASE_URL}/blog`,
+  url: `${SITE_URL}/blog`,
   inLanguage: 'cs',
   description: 'Praktické průvodce ke smluvním dokumentům a běžným právním situacím (legislativa 2026).',
-  isPartOf: { '@type': 'WebSite', url: BASE_URL, name: 'SmlouvaHned' },
+  isPartOf: { '@type': 'WebSite', url: SITE_URL, name: 'SmlouvaHned' },
   mainEntity: {
     '@type': 'ItemList',
     numberOfItems: BLOG_ARTICLES.length,
     itemListElement: BLOG_ARTICLES.map((a, idx) => ({
       '@type': 'ListItem',
       position: idx + 1,
-      url: `${BASE_URL}${a.href}`,
+      url: `${SITE_URL}${a.href}`,
       name: a.title,
     })),
   },

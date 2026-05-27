@@ -1,21 +1,11 @@
-import type { Metadata } from 'next';
+import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 
-export const metadata: Metadata = {
-  title: 'Přepis vozidla 2026: Na co si dát pozor po podpisu kupní smlouvy',
-  description:
-    'Praktický přehled kroků po podpisu kupní smlouvy na vozidlo. Jak přemýšlet o přepisu, proč je důležité mít jasné předání a jaké podklady se hodí připravit předem.',
-  alternates: {
-    canonical: 'https://www.smlouvahned.cz/blog/prepis-vozidla-2026',
-  },
-  openGraph: {
-    title: 'Přepis vozidla 2026',
-    description:
-      'Co řešit po podpisu kupní smlouvy na vozidlo, jak navázat předání auta na další kroky a proč mít podklady zachycené přehledně.',
-    url: 'https://www.smlouvahned.cz/blog/prepis-vozidla-2026',
-    type: 'article',
-  },
-};
+export const metadata = blogArticlePageMetadata("prepis-vozidla-2026", {
+  title: "Přepis vozidla 2026: Na co si dát pozor po podpisu kupní smlouvy",
+  description: "Praktický přehled kroků po podpisu kupní smlouvy na vozidlo. Jak přemýšlet o přepisu, proč je důležité mít jasné předání a jaké podklady se hodí připravit předem.",
+});
+
 
 export default function PrepisVozidla2026Page() {
   return (

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
@@ -6,26 +6,17 @@ import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
-export const metadata: Metadata = {
-  title: 'Smlouva o spolupráci OSVČ 2026: Co musí obsahovat a jak se chránit',
-  description:
-    'Průvodce smlouvou o spolupráci pro OSVČ a freelancery. Povinné náležitosti, vymezení předmětu spolupráce, honorář, autorská práva, mlčenlivost a jak se chránit před švarcsystémem.',
-  keywords: [
-    'smlouva o spolupráci OSVČ',
+export const metadata = blogArticlePageMetadata("smlouva-o-spolupraci-2026", {
+  title: "Smlouva o spolupráci OSVČ 2026: Co musí obsahovat a jak se chránit",
+  description: "Průvodce smlouvou o spolupráci pro OSVČ a freelancery. Povinné náležitosti, vymezení předmětu spolupráce, honorář, autorská práva, mlčenlivost a jak se chránit před švarcsystémem.",
+  keywords: ['smlouva o spolupráci OSVČ',
     'smlouva o spolupráci vzor 2026',
     'freelancer smlouva',
     'smlouva o spolupráci náležitosti',
     'švarcsystém smlouva',
-    'smlouva o spolupráci autorská práva',
-  ],
-  alternates: { canonical: 'https://www.smlouvahned.cz/blog/smlouva-o-spolupraci-2026' },
-  openGraph: {
-    title: 'Smlouva o spolupráci OSVČ 2026: Co musí obsahovat a jak se chránit',
-    description: 'Povinné náležitosti, honorář, autorská práva, mlčenlivost a ochrana před švarcsystémem. Aktuální pro 2026.',
-    url: 'https://www.smlouvahned.cz/blog/smlouva-o-spolupraci-2026',
-    type: 'article',
-  },
-};
+    'smlouva o spolupráci autorská práva',],
+});
+
 
 export default function SmlouvaOSpolupraci2026Page() {
   return (
