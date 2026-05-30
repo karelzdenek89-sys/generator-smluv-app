@@ -134,7 +134,7 @@ export default async function RootLayout({
         <meta name="theme-color" content="#060912" />
         <meta
           name="seznam-wmt"
-          content="zK8529Fk6nDwr8TdyohYqF2LU7YpQVCf"
+          content="1kRt8NQO2kwavM4MjoHzXWCI6dxVOV"
         />
         {showCzechSiteSchemas ? (
           <>
