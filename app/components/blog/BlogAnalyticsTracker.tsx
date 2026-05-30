@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { trackEvent } from '@/lib/analytics';
+import { rememberTrafficAttribution } from '@/lib/analytics-attribution';
 
 export default function BlogAnalyticsTracker() {
   const pathname = usePathname();
@@ -10,9 +11,19 @@ export default function BlogAnalyticsTracker() {
   useEffect(() => {
     if (!pathname || pathname === '/blog' || !pathname.startsWith('/blog/')) return;
 
+    const articleSlug = pathname.replace('/blog/', '').split('?')[0];
+
+    rememberTrafficAttribution({
+      source: 'blog_article',
+      label: `Článek: ${articleSlug}`,
+      article_slug: articleSlug,
+      pathname,
+    });
+
     trackEvent('blog_article_view', {
       surface: 'blog_article',
       source: 'blog_article',
+      article_slug: articleSlug,
       pathname,
     });
   }, [pathname]);

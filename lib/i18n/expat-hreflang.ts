@@ -3,6 +3,19 @@ import { EXPAT_CONTRACT_ROUTES } from '@/lib/locale';
 import { SITE_URL } from '@/lib/seo/site';
 import { getExpatSeoSlug } from '@/lib/i18n/expat-seo-landings';
 
+/**
+ * Czech SEO landing paths for hreflang `cs` — not builder/form URLs.
+ * Keeps language alternates separate from transactional form pages.
+ */
+export const CZECH_SEO_LANDING_BY_CONTRACT: Record<ExpatContractType, string> = {
+  lease: '/najemni-smlouva',
+  employment: '/pracovni-smlouva',
+  dpp: '/dohoda-o-provedeni-prace',
+  sublease: '/podnajemni-smlouva',
+  power_of_attorney: '/plna-moc-online',
+  car_sale: '/prodej-vozidla',
+};
+
 /** Czech builder URLs with EN/UA SEO landing alternates (sitemap + metadata). */
 export const EXPAT_BUILDER_SITEMAP: { path: string; contractKey: ExpatContractType }[] = [
   { path: EXPAT_CONTRACT_ROUTES.lease, contractKey: 'lease' },
@@ -13,22 +26,52 @@ export const EXPAT_BUILDER_SITEMAP: { path: string; contractKey: ExpatContractTy
   { path: EXPAT_CONTRACT_ROUTES.car_sale, contractKey: 'car_sale' },
 ];
 
-/** hreflang + canonical for Czech builder pages with EN/UA SEO landing alternates. */
-export function getExpatContractHreflangAlternates(contractKey: ExpatContractType) {
-  const czechPath = EXPAT_CONTRACT_ROUTES[contractKey];
+/** Reciprocal hreflang cluster: cs SEO landing + EN/UA SEO landings. */
+export function getExpatHreflangLanguages(contractKey: ExpatContractType): Record<string, string> {
   const slug = getExpatSeoSlug(contractKey);
+  const csPath = CZECH_SEO_LANDING_BY_CONTRACT[contractKey];
+  const cs = `${SITE_URL}${csPath}`;
   return {
-    canonical: `${SITE_URL}${czechPath}`,
-    languages: {
-      cs: `${SITE_URL}${czechPath}`,
-      en: `${SITE_URL}/en/${slug}`,
-      uk: `${SITE_URL}/ua/${slug}`,
-      'x-default': `${SITE_URL}${czechPath}`,
-    },
+    cs,
+    en: `${SITE_URL}/en/${slug}`,
+    uk: `${SITE_URL}/ua/${slug}`,
+    'x-default': cs,
   };
 }
 
-/** Same hreflang cluster as builder pages — use on /en|ua/{seo-slug} and in sitemap. */
+/** Builder/form pages — self canonical only (avoid competing with SEO landings in hreflang). */
+export function getExpatBuilderCanonicalAlternates(contractKey: ExpatContractType) {
+  const czechPath = EXPAT_CONTRACT_ROUTES[contractKey];
+  return {
+    canonical: `${SITE_URL}${czechPath}`,
+  };
+}
+
+/** @deprecated Use getExpatBuilderCanonicalAlternates — kept for existing imports. */
+export function getExpatContractHreflangAlternates(contractKey: ExpatContractType) {
+  return getExpatBuilderCanonicalAlternates(contractKey);
+}
+
+/** Czech SEO landing page metadata alternates. */
+export function getExpatSeoLandingHreflangAlternates(contractKey: ExpatContractType) {
+  const csPath = CZECH_SEO_LANDING_BY_CONTRACT[contractKey];
+  return {
+    canonical: `${SITE_URL}${csPath}`,
+    languages: getExpatHreflangLanguages(contractKey),
+  };
+}
+
+/** EN or UA contract SEO landing — self canonical + full hreflang cluster. */
+export function getExpatSeoPageAlternates(locale: 'en' | 'ua', contractKey: ExpatContractType) {
+  const slug = getExpatSeoSlug(contractKey);
+  const canonical = `${SITE_URL}/${locale}/${slug}`;
+  return {
+    canonical,
+    languages: getExpatHreflangLanguages(contractKey),
+  };
+}
+
+/** Sitemap hreflang languages for /en|ua/{seo-slug} entries. */
 export function getExpatSeoPageHreflangAlternates(contractKey: ExpatContractType) {
-  return getExpatContractHreflangAlternates(contractKey).languages;
+  return getExpatHreflangLanguages(contractKey);
 }

@@ -48,17 +48,13 @@ export default function NajemniSmlouvaVzor2026Page() {
           čeho se vyvarovat a jak smlouvu sestavit tak, aby vás skutečně chránila.
         </p>
 
-        {/* Inline CTA */}
-        <div className="mt-7 rounded-2xl border border-amber-500/20 bg-amber-500/8 p-5">
-          <p className="mb-3 text-sm font-bold text-white">Chcete přeskočit teorii?</p>
-          <p className="mb-4 text-sm text-slate-400">Vytvořte si nájemní smlouvu online — formulář vás provede krok za krokem, hotovo za 5 minut.</p>
-          <Link
-            href="/najemni-smlouva"
-            className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-2.5 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400"
-          >
-            Vytvořit nájemní smlouvu →
-          </Link>
-        </div>
+        <ArticleInlineCta
+          title="Chcete přeskočit teorii?"
+          body="Vytvořte si nájemní smlouvu online — formulář vás provede krok za krokem, hotovo za 5 minut."
+          buttonLabel="Vytvořit nájemní smlouvu"
+          href="/najem"
+          articleSlug="najemni-smlouva-vzor-2026"
+        />
       </header>
 
       {/* Table of contents */}
@@ -167,15 +163,14 @@ export default function NajemniSmlouvaVzor2026Page() {
           </li>
         </ul>
 
-        {/* CTA inline */}
-        <div className="rounded-2xl border border-amber-500/20 bg-amber-500/6 p-5">
-          <p className="mb-3 text-sm text-slate-300">
-            Nájemní smlouva na SmlouvaHned obsahuje všechna povinná i doporučená ustanovení — vyplníte je krok za krokem ve formuláři.
-          </p>
-          <Link href="/najemni-smlouva" className="text-sm font-bold text-amber-400 underline underline-offset-4 hover:text-amber-300 transition">
-            Vytvořit nájemní smlouvu online →
-          </Link>
-        </div>
+        <ArticleInlineCta
+          title="Nájemní smlouva online"
+          body="Nájemní smlouva na SmlouvaHned obsahuje všechna povinná i doporučená ustanovení — vyplníte je krok za krokem ve formuláři."
+          buttonLabel="Vytvořit nájemní smlouvu"
+          href="/najem"
+          variant="subtle"
+          articleSlug="najemni-smlouva-vzor-2026"
+        />
       </section>
 
       {/* ── SECTION 3 ───────────────────────────── */}
@@ -238,6 +233,7 @@ export default function NajemniSmlouvaVzor2026Page() {
         body="Nájemní smlouva na SmlouvaHned pokrývá všechna kritická místa automaticky — kauci, podmínky výpovědi, Airbnb doložku i smluvní pokuty. Vyplníte formulář, stáhnete PDF."
         buttonLabel="Vytvořit nájemní smlouvu"
         href="/najem"
+        articleSlug="najemni-smlouva-vzor-2026"
       />
 
       {/* ── SECTION 4 ───────────────────────────── */}
@@ -381,22 +377,23 @@ export default function NajemniSmlouvaVzor2026Page() {
         lawyerSuitable="Komerční pronájem nebytových prostor, složité podmínky (opční právo, investice nájemce do nemovitosti), probíhající spory nebo velmi vysoká hodnota nájmu."
       />
 
-      {/* ── FINAL CTA ───────────────────────────── */}
-      <div className="rounded-[2rem] border border-amber-500/20 bg-gradient-to-br from-amber-500/10 to-amber-500/3 p-8 text-center">
-        <div className="mb-2 text-[11px] font-black uppercase tracking-widest text-amber-400">Připraveni?</div>
-        <h2 className="mb-4 text-2xl font-black tracking-tight text-white">Vytvořte nájemní smlouvu online</h2>
-        <p className="mx-auto mb-6 max-w-sm text-sm leading-relaxed text-slate-400">
-          Formulář vás provede každou částí smlouvy. Hotovo za méně než 5 minut,
-          PDF ke stažení ihned po zaplacení.
-        </p>
-        <Link
-          href="/najemni-smlouva"
-          className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-8 py-4 text-sm font-black uppercase tracking-tight text-black shadow-[0_0_40px_rgba(245,158,11,0.25)] transition hover:bg-amber-400"
-        >
-          Vytvořit nájemní smlouvu →
-        </Link>
-        <div className="mt-3 text-xs text-slate-600">Od 99 Kč · Dle § 2201 OZ · Platné pro 2026</div>
-      </div>
+      <ArticleInlineCta
+        title="Vytvořte nájemní smlouvu online"
+        body="Formulář vás provede každou částí smlouvy. Hotovo za méně než 5 minut, PDF ke stažení ihned po zaplacení."
+        buttonLabel="Vytvořit nájemní smlouvu"
+        href="/najem"
+        articleSlug="najemni-smlouva-vzor-2026"
+      />
+
+      <ArticleInlineCta
+        title="Potřebujete i předávací protokol a potvrzení o kauci?"
+        body="Balíček pro pronajímatele (299 Kč) kombinuje nájemní smlouvu s podklady k předání bytu — typicky pro nový pronájem od základu."
+        buttonLabel="Otevřít balíček pro pronajímatele"
+        href="/balicek-pronajimatel"
+        variant="subtle"
+        eyebrow="Tematický balíček"
+        articleSlug="najemni-smlouva-vzor-2026"
+      />
 
       {/* ── RELATED ARTICLES ────────────────────── */}
       <div className="mt-12 border-t border-white/8 pt-10">

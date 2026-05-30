@@ -1,8 +1,9 @@
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import RelatedContracts from '@/app/components/RelatedContracts';
+import { landingPageMetadata } from '@/lib/seo/landing-page-metadata';
 
-export const metadata: Metadata = {
+export const metadata = landingPageMetadata({
+  path: '/uznani-dluhu-vzor',
   title: 'Uznání dluhu online 2026 — vzor ke stažení',
   description:
     'Uznání dluhu obnoví promlčecí lhůtu na 10 let. Splátky, smluvní pokuta, exekuční doložka. Dle § 2053 OZ 2026. Od 99 Kč.',
@@ -14,13 +15,10 @@ export const metadata: Metadata = {
     'promlčení dluhu',
     'uznání dluhu promlčení',
   ],
-  alternates: { canonical: 'https://www.smlouvahned.cz/uznani-dluhu-vzor' },
-  openGraph: {
-    title: 'Uznání dluhu online 2026',
-    description: 'Uznání dluhu obnoví promlčecí lhůtu na 10 let. Splátky, smluvní pokuta. § 2053 OZ. Od 99 Kč.',
-    url: 'https://www.smlouvahned.cz/uznani-dluhu-vzor',
-  },
-};
+  openGraphTitle: 'Uznání dluhu online 2026',
+  openGraphDescription:
+    'Uznání dluhu obnoví promlčecí lhůtu na 10 let. Splátky, smluvní pokuta. § 2053 OZ. Od 99 Kč.',
+});
 
 const faq = [
   {
@@ -54,6 +52,20 @@ export default function UznaniDluhuVzorPage() {
             { '@type': 'ListItem', position: 2, name: 'Uznání dluhu vzor 2026', item: 'https://www.smlouvahned.cz/uznani-dluhu-vzor' },
           ],
         }).replace(/</g, '\\u003c') }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: faq.map((item) => ({
+              '@type': 'Question',
+              name: item.q,
+              acceptedAnswer: { '@type': 'Answer', text: item.a },
+            })),
+          }).replace(/</g, '\\u003c'),
+        }}
       />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(239,68,68,0.07),transparent_30%)] pointer-events-none" />
 
@@ -165,6 +177,7 @@ export default function UznaniDluhuVzorPage() {
 
         <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">
           <Link href="/" className="hover:text-slate-300 transition">← Všechny smlouvy</Link>
+          <Link href="/blog/uznani-dluhu-2026" className="hover:text-slate-300 transition">📖 Průvodce uznáním dluhu</Link>
           <Link href="/pujcka-smlouva" className="hover:text-slate-300 transition">Smlouva o zápůjčce</Link>
           <Link href="/kupni-smlouva" className="hover:text-slate-300 transition">Kupní smlouva</Link>
         </div>

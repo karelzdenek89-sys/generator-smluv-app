@@ -32,8 +32,8 @@ export default function DppDpcPorovnani2026Page() {
         primaryAction={{
           title: 'Potřebujete DPP sestavit online?',
           body: 'Formulář pro dohodu o provedení práce — pracovní úkol, rozsah hodin, odměna, volitelná IP doložka. PDF ke stažení od 99 Kč.',
-          buttonLabel: 'Zobrazit DPP online',
-          href: '/dohoda-o-provedeni-prace',
+          buttonLabel: 'Vytvořit DPP online',
+          href: '/dpp',
         }}
         trustBox={{
           generatorSuitable:
@@ -190,6 +190,15 @@ export default function DppDpcPorovnani2026Page() {
             smlouvu.
           </p>
         </section>
+
+        <ArticleInlineCta
+          title="Spolupráce odpovídá plnému úvazku?"
+          body="Pokud by dohoda fakticky nahrazovala pracovní poměr, je vhodnější uzavřít pracovní smlouvu online — včetně zkušební doby a povinných náležitostí."
+          buttonLabel="Vytvořit pracovní smlouvu"
+          href="/pracovni"
+          variant="subtle"
+          articleSlug="dpp-dpc-porovnani-2026"
+        />
 
         <section id="co-musi-obsahovat" className="mb-12 scroll-mt-6">
           <h2 className="mb-4 text-2xl font-black tracking-tight text-white">

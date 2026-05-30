@@ -17,6 +17,8 @@ const eventSchema = z.object({
       source: z.string().optional(),
       destination: z.string().optional(),
       surface: z.string().optional(),
+      traffic_source: z.string().optional(),
+      traffic_label: z.string().optional(),
       article_slug: z.string().optional(),
       situation_key: z.enum(['landlord', 'vehicle_sale']).optional(),
       package_key: z.enum(['landlord', 'vehicle_sale']).optional(),
@@ -69,7 +71,11 @@ export async function POST(req: Request) {
     const event = parsed.data.event as AnalyticsEventName;
     const params = (parsed.data.params ?? {}) as AnalyticsEventParams;
 
-    await recordAnalyticsEvent(event, params);
+    const stored = await recordAnalyticsEvent(event, params);
+
+    if (!stored) {
+      return NextResponse.json({ ok: false, error: 'storage_unavailable' }, { status: 503 });
+    }
 
     return NextResponse.json({ ok: true });
   } catch {

@@ -1,38 +1,25 @@
-﻿import type { Metadata } from 'next';
+﻿import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 
-/**
- * DRAFT — čeká na právní revizi před publikací.
- * - `robots: { index: false, follow: false }` (nepustit do indexu)
- * - NEpřidáno do BLOG_ARTICLES (aby se neobjevoval v RelatedArticles)
- * - NEpřidáno do app/sitemap.ts
- *
- * Po revizi advokátem:
- *   1) Přesunout obsah do `app/blog/flexinovela-zakoniku-prace-2026/page.tsx`
- *   2) Odstranit `robots: { index: false }`
- *   3) Doplnit záznam do `lib/blog-articles.ts` (BLOG_ARTICLES)
- *   4) Přidat do `app/sitemap.ts`
- */
-export const metadata: Metadata = {
+export const metadata = blogArticlePageMetadata('flexinovela-zakoniku-prace-2026', {
   title: 'Flexinovela zákoníku práce 2026: Co se mění u DPP, DPČ a pracovních smluv',
   description:
     'Přehled hlavních změn, které do pracovněprávních vztahů přinesla novela zákoníku práce (tzv. flexinovela) — povinnosti zaměstnavatelů u DPP, nové oznamovací povinnosti, dopady na zaměstnance.',
-  robots: { index: false, follow: false },
-};
+});
 
-export default function DraftFlexinovelaPage() {
+export default function FlexinovelaZakonikuPrace2026Page() {
   return (
     <ArticlePageLayout
       category="Práce a zaměstnání"
       readTime="11 min"
-      dateTime="2026-05-16"
-      dateLabel="16. května 2026"
-      dateModified="2026-05-16"
-      dateModifiedLabel="16. května 2026"
+      dateTime="2026-05-29"
+      dateLabel="29. května 2026"
+      dateModified="2026-05-29"
+      dateModifiedLabel="29. května 2026"
       breadcrumbLabel="Flexinovela zákoníku práce 2026"
-      slug="draft-flexinovela-zakoniku-prace-2026"
+      slug="flexinovela-zakoniku-prace-2026"
       title="Flexinovela zákoníku práce 2026: Co se mění u DPP, DPČ a pracovních smluv"
-      intro="Tzv. flexinovela zákoníku práce přinesla od konce roku 2024 a v průběhu roku 2025 řadu úprav, které se promítají i do roku 2026. Cílem novely byla flexibilita pracovněprávních vztahů — krátkodobé úvazky, dohody mimo pracovní poměr i home office. Tento průvodce shrnuje hlavní změny, kterých se týkají běžné situace u DPP, DPČ a klasické pracovní smlouvy."
+      intro="Novela zákoníku práce známá jako flexinovela nabyla účinnosti 1. června 2025. Některé informační povinnosti, pravidla pro dohodáře a home office ale souvisí i s dřívější transpoziční novelou a postupnými změnami. Pro rok 2026 je praktické sledovat nejen samotnou flexinovelu, ale i navazující pravidla pro DPP, DPČ, evidenci dohod a limity pro odvody. Tento průvodce shrnuje hlavní změny u běžných situací."
       toc={[
         { href: '#proc-flexinovela', label: 'Proč flexinovela vznikla a co řeší' },
         { href: '#dpp-zmeny', label: 'Klíčové změny u DPP' },
@@ -52,7 +39,7 @@ export default function DraftFlexinovelaPage() {
         title: 'Pracovní dokument za 5 minut',
         body: 'Strukturovaný formulář pokryje povinné náležitosti dle zákoníku práce platného v roce 2026.',
         buttonLabel: 'Vytvořit dokument',
-        href: '/',
+        href: '/pracovni',
       }}
       trustBox={{
         generatorSuitable:
@@ -63,6 +50,7 @@ export default function DraftFlexinovelaPage() {
       relatedLinks={[
         { href: '/dpp', label: '⚙️ DPP — formulář online' },
         { href: '/pracovni', label: '👔 Pracovní smlouva — formulář' },
+        { href: '/blog/svarcsystem-osvc-2026', label: '⚠️ Švarcsystém — průvodce' },
         { href: '/blog/dpp-dohoda-provedeni-prace', label: '📘 DPP — průvodce' },
         { href: '/blog/dpp-dpc-porovnani-2026', label: '⚖️ DPP nebo DPČ — porovnání' },
         { href: '/blog/pracovni-smlouva-2026', label: '👔 Pracovní smlouva — průvodce' },
@@ -74,12 +62,17 @@ export default function DraftFlexinovelaPage() {
           1. Proč flexinovela vznikla a co řeší
         </h2>
         <p className="mb-4 leading-relaxed text-slate-400">
-          Novela zákoníku práce, kterou veřejnost zná pod přezdívkou 'flexinovela", reagovala na
-          potřebu modernizace pracovněprávních vztahů a zároveň na povinnost transpozice
-          evropských směrnic — zejména směrnice 2019/1152 o transparentních a předvídatelných
-          pracovních podmínkách a směrnice 2019/1158 o rovnováze mezi pracovním a soukromým
-          životem. Účinnost novely byla rozprostřena postupně, hlavní část se týká přelomu let
-          2024 a 2025; pro rok 2026 už jde o etablovaný právní stav.
+          Novela zákoníku práce, kterou veřejnost zná pod přezdívkou flexinovela, nabyla
+          účinnosti <strong className="text-slate-300">1. června 2025</strong>. Cílem byla
+          flexibilita pracovněprávních vztahů — krátkodobé úvazky, dohody mimo pracovní poměr,
+          home office a předvídatelnost pracovní doby.
+        </p>
+        <p className="mb-4 leading-relaxed text-slate-400">
+          V praxi se ale často míchají dvě vrstvy změn. Samotná flexinovela upravila řadu
+          institutů přímo v zákoníku práce. Část pravidel pro informační povinnosti, dohodáře
+          nebo práci na dálku ale souvisí i s dřívější transpoziční novelou (evropské směrnice
+          2019/1152 a 2019/1158) a s postupnou účinností jednotlivých ustanovení. Pro rok 2026
+          je bezpečnější vycházet z aktuálního znění zákona, ne z obecného označení „flexinovela".
         </p>
         <p className="mb-4 leading-relaxed text-slate-400">
           Pro zaměstnavatele a OSVČ to znamená tři typy změn:
@@ -112,8 +105,9 @@ export default function DraftFlexinovelaPage() {
         </ul>
         <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm leading-relaxed text-slate-400">
           <strong className="text-blue-400">📌 Pozn.:</strong> Tento článek shrnuje obecný stav
-          po flexinovele. Konkrétní paragrafy a lhůty se mohou v detailu lišit podle stavu
-          předpisu k datu, kdy věc řešíte — vždy se vyplatí ověřit aktuální znění na portálu{' '}
+          po flexinovele účinné od 1. 6. 2025 a souvisejících pravidlech pro rok 2026. Konkrétní
+          paragrafy a lhůty se mohou v detailu lišit podle stavu předpisu k datu, kdy věc
+          řešíte — vždy se vyplatí ověřit aktuální znění na portálu{' '}
           <a
             href="https://www.zakonyprolidi.cz/cs/2006-262"
             target="_blank"
@@ -158,12 +152,15 @@ export default function DraftFlexinovelaPage() {
           výpočet vychází z odpracovaných hodin a obecné úpravy dovolené v zákoníku práce.
         </p>
 
-        <h3 className="mb-3 text-lg font-black text-white">Limity příjmu pro zdanění a pojištění</h3>
+        <h3 className="mb-3 text-lg font-black text-white">Limity příjmu pro zdanění a pojištění (2026)</h3>
         <p className="mb-4 leading-relaxed text-slate-400">
-          Pro účast na sociálním a zdravotním pojištění z DPP platí měsíční limit, jehož
-          překročení vede k povinné účasti na pojištění a k odpovídajícím odvodům. Konkrétní
-          částka se v čase mění (vychází z průměrné mzdy) — aktuální hodnotu lze ověřit na
-          stránkách ČSSZ a finanční správy.
+          Pro účast na sociálním a zdravotním pojištění z DPP platí měsíční limit — v roce 2026
+          jde o rozhodnou částku <strong className="text-slate-300">12 000 Kč</strong> hrubého
+          příjmu u jednoho zaměstnavatele. Její překročení obvykle vede k povinné účasti na
+          pojištění a k odpovídajícím odvodům. U klasického zaměstnání platí pro rok 2026
+          obecná rozhodná částka <strong className="text-slate-300">4 500 Kč</strong>.
+          Konkrétní částky se každoročně mění — aktuální hodnoty lze ověřit na stránkách ČSSZ
+          a finanční správy.
         </p>
 
         <div className="rounded-2xl border border-amber-500/20 bg-amber-500/6 p-5">

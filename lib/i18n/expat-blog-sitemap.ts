@@ -21,10 +21,7 @@ export function getExpatBlogHreflangAlternates(slug: string): Record<string, str
     languages[secondaryLang] = getExpatBlogCanonical(alternateSlug);
   }
 
-  languages['x-default'] =
-    article.audience === 'en'
-      ? `${SITE_URL}/en`
-      : `${SITE_URL}/ua`;
+  languages['x-default'] = canonical;
 
   return languages;
 }

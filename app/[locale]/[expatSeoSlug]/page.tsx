@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound, redirect } from 'next/navigation';
 import ExpatContractSeoPage from '@/app/components/seo/ExpatContractSeoPage';
 import { getPublicLocalePath, normalizeLocale } from '@/lib/locale';
-import { getExpatSeoPageHreflangAlternates } from '@/lib/i18n/expat-hreflang';
+import { getExpatSeoPageAlternates } from '@/lib/i18n/expat-hreflang';
 import {
   EXPAT_SEO_LOCALES,
   EXPAT_SEO_SLUGS,
@@ -19,9 +19,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const content = getExpatSeoLandingBySlug(expatSeoSlug, locale);
   if (!content) return { title: 'SmlouvaHned' };
 
-  const languages = getExpatSeoPageHreflangAlternates(content.contractKey);
+  const localeSegment = locale === 'ua' ? 'ua' : 'en';
+  const alternates = getExpatSeoPageAlternates(localeSegment, content.contractKey);
+  const pageUrl = alternates.canonical;
   const ogImage = {
-    url: `${content.canonical}/opengraph-image`,
+    url: `${pageUrl}/opengraph-image`,
     width: 1200,
     height: 630,
     alt: content.metadata.openGraphTitle,
@@ -31,14 +33,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: { absolute: content.metadata.title },
     description: content.metadata.description,
     keywords: content.metadata.keywords,
-    alternates: {
-      canonical: content.canonical,
-      languages,
-    },
+    alternates,
     openGraph: {
       title: content.metadata.openGraphTitle,
       description: content.metadata.openGraphDescription,
-      url: content.canonical,
+      url: pageUrl,
       locale: content.metadata.openGraphLocale,
       type: 'website',
       images: [ogImage],

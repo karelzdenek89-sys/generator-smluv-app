@@ -1,27 +1,23 @@
-﻿import type { Metadata } from 'next';
+﻿import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 
-/**
- * DRAFT — čeká na právní revizi.
- */
-export const metadata: Metadata = {
+export const metadata = blogArticlePageMetadata('autorska-prava-smlouva-o-dilo-2026', {
   title: 'Autorská práva ve smlouvě o dílo a spolupráci 2026: Kdo vlastní výsledek',
   description:
     'Jak ve smlouvě s freelancerem nebo agenturou ošetřit autorská práva k softwaru, designu, textům nebo fotografiím. Licence vs. převod, výhradnost, dílo zaměstnanecké.',
-  robots: { index: false, follow: false },
-};
+});
 
-export default function DraftAutorskaPravaPage() {
+export default function AutorskaPravaSmlouvaODilo2026Page() {
   return (
     <ArticlePageLayout
       category="Podnikání a spolupráce"
       readTime="10 min"
-      dateTime="2026-05-16"
-      dateLabel="16. května 2026"
-      dateModified="2026-05-16"
-      dateModifiedLabel="16. května 2026"
+      dateTime="2026-05-29"
+      dateLabel="29. května 2026"
+      dateModified="2026-05-29"
+      dateModifiedLabel="29. května 2026"
       breadcrumbLabel="Autorská práva ve smlouvě 2026"
-      slug="draft-autorska-prava-smlouva-o-dilo-2026"
+      slug="autorska-prava-smlouva-o-dilo-2026"
       title="Autorská práva ve smlouvě o dílo a spolupráci 2026: Kdo vlastní výsledek"
       intro="Při objednání softwaru, grafiky, webu nebo textu od freelancera nebo agentury vzniká dílo chráněné autorským zákonem. Kdo ho po dokončení vlastní, kdo ho smí používat, šířit, upravovat — to neurčuje fakturace, ale smlouva. Tento průvodce shrnuje rozdíl mezi licencí a převodem, ukazuje typické chyby a vysvětluje, kdy se uplatní režim zaměstnaneckého díla."
       toc={[
@@ -244,6 +240,19 @@ export default function DraftAutorskaPravaPage() {
         <h2 className="mb-4 text-2xl font-black tracking-tight text-white">
           5. Kolektivní dílo a software
         </h2>
+        <p className="mb-4 leading-relaxed text-slate-400">
+          U softwaru je situace zvláštní. Počítačový program vytvořený autorem na objednávku
+          může být podle autorského zákona posuzován obdobně jako zaměstnanecké dílo, pokud
+          jsou splněny zákonné podmínky — zejména jde-li o program vytvořený fyzickou osobou
+          na základě smlouvy o dílo nebo pracovní smlouvy. V praxi je ale stále vhodné mít
+          výslovně upravenou licenci, předání zdrojových kódů, rozsah užití, právo na úpravy,
+          sublicence, open-source komponenty a předání dokumentace.
+        </p>
+        <p className="mb-4 leading-relaxed text-slate-400">
+          Režim se liší podle toho, zda dodavatelem je přímo fyzická osoba–autor, nebo
+          firma či agentura, která zapojuje více autorů. U agentury bývá klíčové, kdo smí
+          poskytnout licenci a zda smlouva pokrývá i díla subdodavatelů.
+        </p>
         <p className="mb-4 leading-relaxed text-slate-400">
           U softwaru autorský zákon stanoví zvláštní pravidla. Software vytvořený několika
           osobami ve společné práci je obvykle <strong className="text-slate-300">

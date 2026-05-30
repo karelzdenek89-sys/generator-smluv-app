@@ -1,6 +1,10 @@
+import { trafficAttributionParams } from './analytics-attribution';
+
 export const ANALYTICS_EVENT_NAMES = [
   'blog_article_view',
   'blog_cta_click',
+  'seo_landing_view',
+  'seo_landing_cta_click',
   'situation_page_view',
   'situation_cta_click',
   'package_page_view',
@@ -27,6 +31,8 @@ export type AnalyticsEventParams = {
   source?: string;
   destination?: string;
   surface?: string;
+  traffic_source?: string;
+  traffic_label?: string;
   article_slug?: string;
   situation_key?: 'landlord' | 'vehicle_sale';
   package_key?: 'landlord' | 'vehicle_sale';
@@ -126,10 +132,18 @@ export function trackEvent(event: AnalyticsEventName, params?: AnalyticsEventPar
   if (typeof window === 'undefined') return;
 
   const pathname = params?.pathname ?? window.location.pathname;
+  const attribution = trafficAttributionParams();
   const payload: AnalyticsPayload = {
     event,
     params: {
       ...getAnalyticsDefaultsForPathname(pathname),
+      ...(attribution
+        ? {
+            traffic_source: attribution.source,
+            traffic_label: attribution.label,
+            article_slug: params?.article_slug ?? attribution.article_slug,
+          }
+        : {}),
       ...params,
       pathname,
     },

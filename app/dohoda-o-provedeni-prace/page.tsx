@@ -1,8 +1,10 @@
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import RelatedContracts from '@/app/components/RelatedContracts';
+import { landingPageMetadata } from '@/lib/seo/landing-page-metadata';
 
-export const metadata: Metadata = {
+export const metadata = landingPageMetadata({
+  path: '/dohoda-o-provedeni-prace',
+  expatContractKey: 'dpp',
   title: 'Dohoda o provedení práce 2026 — DPP vzor online',
   description:
     'Dohoda o provedení práce (DPP) 2026 — aktuální vzor dle zákoníku práce. Max. 300 hod./rok, limit odvodů, IP doložka. PDF ke stažení od 99 Kč.',
@@ -10,13 +12,10 @@ export const metadata: Metadata = {
     'DPP', 'dohoda o provedení práce', 'dohoda o provedení práce vzor', 'DPP 2026',
     'dohoda o provedení práce 2026', 'dohoda o provedení práce online', 'DPP ke stažení', 'brigáda smlouva',
   ],
-  alternates: { canonical: 'https://www.smlouvahned.cz/dohoda-o-provedeni-prace' },
-  openGraph: {
-    title: 'Dohoda o provedení práce 2026 — DPP vzor online',
-    description: 'DPP 2026 — aktuální vzor dle zákoníku práce. Max. 300 hod./rok, limit odvodů, IP doložka. Od 99 Kč.',
-    url: 'https://www.smlouvahned.cz/dohoda-o-provedeni-prace',
-  },
-};
+  openGraphTitle: 'Dohoda o provedení práce 2026 — DPP vzor online',
+  openGraphDescription:
+    'DPP 2026 — aktuální vzor dle zákoníku práce. Max. 300 hod./rok, limit odvodů, IP doložka. Od 99 Kč.',
+});
 
 const faq = [
   {

@@ -50,17 +50,13 @@ export default function SmlouvaODiloPage() {
           a jak se chránit jako objednatel i zhotovitel.
         </p>
 
-        {/* Inline CTA */}
-        <div className="mt-7 rounded-2xl border border-amber-500/20 bg-amber-500/8 p-5">
-          <p className="mb-3 text-sm font-bold text-white">Chcete přeskočit teorii?</p>
-          <p className="mb-4 text-sm text-slate-400">Vytvořte si smlouvu o dílo online — formulář pokryje dílo, cenu, termín, akceptaci i záruky. Hotovo za 5 minut.</p>
-          <Link
-            href="/smlouva-o-dilo"
-            className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-2.5 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400"
-          >
-            Vytvořit smlouvu o dílo →
-          </Link>
-        </div>
+        <ArticleInlineCta
+          title="Chcete přeskočit teorii?"
+          body="Vytvořte si smlouvu o dílo online — formulář pokryje dílo, cenu, termín, akceptaci i záruky. Hotovo za 5 minut."
+          buttonLabel="Vytvořit smlouvu o dílo"
+          href="/smlouva-o-dilo"
+          articleSlug="smlouva-o-dilo-2026"
+        />
       </header>
 
       {/* Table of contents */}
@@ -172,14 +168,14 @@ export default function SmlouvaODiloPage() {
           </li>
         </ul>
 
-        <div className="rounded-2xl border border-amber-500/20 bg-amber-500/6 p-5">
-          <p className="mb-3 text-sm text-slate-300">
-            Smlouva o dílo na SmlouvaHned pokrývá vymezení díla, platební milníky, akceptační postup, smluvní pokuty i záruční podmínky.
-          </p>
-          <Link href="/smlouva-o-dilo" className="text-sm font-bold text-amber-400 underline underline-offset-4 hover:text-amber-300 transition">
-            Vytvořit smlouvu o dílo online →
-          </Link>
-        </div>
+        <ArticleInlineCta
+          title="Smlouva o dílo online"
+          body="Smlouva o dílo na SmlouvaHned pokrývá vymezení díla, platební milníky, akceptační postup, smluvní pokuty i záruční podmínky."
+          buttonLabel="Vytvořit smlouvu o dílo"
+          href="/smlouva-o-dilo"
+          variant="subtle"
+          articleSlug="smlouva-o-dilo-2026"
+        />
       </section>
 
       {/* ── SECTION 3 ───────────────────────────── */}
@@ -336,6 +332,7 @@ export default function SmlouvaODiloPage() {
         body="Smlouva o dílo na SmlouvaHned obsahuje specifikaci díla, platební milníky, akceptační postup, smluvní pokuty i záruky — ve strukturovaném formuláři, který vás provede každým krokem."
         buttonLabel="Vytvořit smlouvu o dílo"
         href="/smlouva-o-dilo"
+        articleSlug="smlouva-o-dilo-2026"
       />
 
       {/* ── SECTION 6 ───────────────────────────── */}
@@ -407,22 +404,13 @@ export default function SmlouvaODiloPage() {
         lawyerSuitable="Velké stavební zakázky (statisíce až miliony Kč), zákazkový vývoj s komplexními autorskými právy, subdodavatelské řetězce nebo situace kde jedna strana odmítá standardní podmínky."
       />
 
-      {/* ── FINAL CTA ───────────────────────────── */}
-      <div className="rounded-[2rem] border border-amber-500/20 bg-gradient-to-br from-amber-500/10 to-amber-500/3 p-8 text-center">
-        <div className="mb-2 text-[11px] font-black uppercase tracking-widest text-amber-400">Připraveni?</div>
-        <h2 className="mb-4 text-2xl font-black tracking-tight text-white">Vytvořte smlouvu o dílo online</h2>
-        <p className="mx-auto mb-6 max-w-sm text-sm leading-relaxed text-slate-400">
-          Formulář pokryje specifikaci díla, cenu, termín, akceptaci, záruky i smluvní pokuty.
-          Hotovo za méně než 5 minut, PDF ke stažení ihned po zaplacení.
-        </p>
-        <Link
-          href="/smlouva-o-dilo"
-          className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-8 py-4 text-sm font-black uppercase tracking-tight text-black shadow-[0_0_40px_rgba(245,158,11,0.25)] transition hover:bg-amber-400"
-        >
-          Vytvořit smlouvu o dílo →
-        </Link>
-        <div className="mt-3 text-xs text-slate-600">Od 99 Kč · Dle § 2586 OZ · Platné pro 2026</div>
-      </div>
+      <ArticleInlineCta
+        title="Vytvořte smlouvu o dílo online"
+        body="Formulář pokryje specifikaci díla, cenu, termín, akceptaci, záruky i smluvní pokuty. Hotovo za méně než 5 minut, PDF ke stažení ihned po zaplacení."
+        buttonLabel="Vytvořit smlouvu o dílo"
+        href="/smlouva-o-dilo"
+        articleSlug="smlouva-o-dilo-2026"
+      />
 
       {/* ── RELATED ARTICLES ────────────────────── */}
       <div className="mt-12 border-t border-white/8 pt-10">

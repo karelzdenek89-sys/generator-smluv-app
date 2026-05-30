@@ -94,11 +94,14 @@ export type TierFeatures = {
 
 export function resolveTierFeatures(d: StoredContractData): TierFeatures {
   const tier = String(d.tier ?? 'basic').toLowerCase() as Tier;
-  const hasPremiumClauses = tier === 'professional' || tier === 'complete';
-  const hasCompletePages = tier === 'complete' || hasCheckoutAddon(d, 'signing_checklist');
+  const isThematicPackage = Boolean(d.packageKey);
+  const hasPremiumClauses =
+    isThematicPackage || tier === 'professional' || tier === 'complete';
+  const hasCompletePages =
+    isThematicPackage || tier === 'complete' || hasCheckoutAddon(d, 'signing_checklist');
   const archiveDays = hasCheckoutAddon(d, 'extended_archive')
     ? 90
-    : tier === 'complete'
+    : isThematicPackage || tier === 'complete'
       ? 30
       : tier === 'professional'
         ? 14

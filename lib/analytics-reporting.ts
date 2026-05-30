@@ -23,11 +23,20 @@ type DashboardRow = {
   tertiary?: number;
 };
 
+export type AnalyticsInsight = {
+  label: string;
+  value: string;
+  hint?: string;
+};
+
 export type AnalyticsDashboardData = {
   windowDays: number;
+  recentWindowDays: number;
   analyzedEvents: number;
   generatedAt: string;
   overview: DashboardRow[];
+  recentOverview: DashboardRow[];
+  insights: AnalyticsInsight[];
   pricingInterest: Array<{
     band: '99' | '199' | '299';
     topFunnel: number;
@@ -70,6 +79,30 @@ export type AnalyticsDashboardData = {
   topSourcesToBuilder: DashboardRow[];
   topSourcesToPackage: DashboardRow[];
   topCtas: DashboardRow[];
+  seoLandingPerformance: Array<{
+    pathname: string;
+    label: string;
+    views: number;
+    toBuilder: number;
+    toPackage: number;
+  }>;
+};
+
+export const ANALYTICS_REPORTING_WINDOW_DAYS = 30;
+export const ANALYTICS_REPORTING_RECENT_DAYS = 7;
+
+const SEO_LANDING_LABELS: Record<string, string> = {
+  '/najemni-smlouva': 'Nájemní smlouva',
+  '/najemni-smlouva-byt': 'Nájemní smlouva na byt',
+  '/kupni-smlouva': 'Kupní smlouva',
+  '/pracovni-smlouva': 'Pracovní smlouva',
+  '/dohoda-o-provedeni-prace': 'DPP',
+  '/podnajemni-smlouva': 'Podnájemní smlouva',
+  '/plna-moc-online': 'Plná moc',
+  '/uznani-dluhu-vzor': 'Uznání dluhu',
+  '/darovaci-smlouva': 'Darovací smlouva',
+  '/nda-smlouva': 'NDA',
+  '/smlouva-o-dilo-online': 'Smlouva o dílo',
 };
 
 const BUILDER_PATHS = new Set([
@@ -106,16 +139,37 @@ const PACKAGE_TITLES = new Map(
 );
 
 function safeParseEvent(raw: unknown): StoredAnalyticsEvent | null {
-  if (typeof raw !== 'string') return null;
+  let parsed: StoredAnalyticsEvent | null = null;
 
-  try {
-    const parsed = JSON.parse(raw) as StoredAnalyticsEvent;
-    if (!parsed || typeof parsed !== 'object') return null;
-    if (typeof parsed.event !== 'string' || typeof parsed.received_at !== 'string') return null;
-    return parsed;
-  } catch {
+  if (typeof raw === 'string') {
+    try {
+      parsed = JSON.parse(raw) as StoredAnalyticsEvent;
+    } catch {
+      return null;
+    }
+  } else if (raw && typeof raw === 'object') {
+    parsed = raw as StoredAnalyticsEvent;
+  } else {
     return null;
   }
+
+  if (!parsed || typeof parsed !== 'object') return null;
+  if (typeof parsed.event !== 'string' || typeof parsed.received_at !== 'string') return null;
+  return parsed;
+}
+
+function resolveArticleSlug(params: AnalyticsEventParams) {
+  if (params.article_slug) return params.article_slug;
+  const pathname = params.pathname;
+  if (pathname?.startsWith('/blog/')) {
+    return pathname.replace('/blog/', '').split('?')[0];
+  }
+  return undefined;
+}
+
+function formatRate(numerator: number, denominator: number) {
+  if (denominator <= 0) return '—';
+  return `${Math.round((numerator / denominator) * 1000) / 10} %`;
 }
 
 function normalizeDestination(destination?: string) {
@@ -180,9 +234,12 @@ function incrementAddOn(
   record.set(key, current);
 }
 
-export async function getAnalyticsDashboardData(windowDays = 7): Promise<AnalyticsDashboardData> {
+export async function getAnalyticsDashboardData(
+  windowDays = ANALYTICS_REPORTING_WINDOW_DAYS,
+): Promise<AnalyticsDashboardData> {
   const now = new Date();
   const sinceTime = now.getTime() - windowDays * 24 * 60 * 60 * 1000;
+  const recentSinceTime = now.getTime() - ANALYTICS_REPORTING_RECENT_DAYS * 24 * 60 * 60 * 1000;
   const rawEvents = ((await redis.lrange('analytics:events', 0, 1999)) ?? []) as unknown[];
   const events = rawEvents
     .map(safeParseEvent)
@@ -215,6 +272,13 @@ export async function getAnalyticsDashboardData(windowDays = 7): Promise<Analyti
   let purchasesCompleted = 0;
   let purchaseRevenueCzk = 0;
   let newsletterSubscriptions = 0;
+  let seoLandingViews = 0;
+  let attributedBuilderEntries = 0;
+
+  let recentBuilderViews = 0;
+  let recentCheckoutClicks = 0;
+  let recentPurchasesCompleted = 0;
+  let recentPurchaseRevenueCzk = 0;
 
   const articleStats = new Map<
     string,
@@ -235,11 +299,16 @@ export async function getAnalyticsDashboardData(windowDays = 7): Promise<Analyti
     CheckoutAddonKey,
     { selections: number; removals: number; purchases: number; revenueCzk: number }
   >();
+  const seoLandingStats = new Map<
+    string,
+    { views: number; toBuilder: number; toPackage: number }
+  >();
 
   for (const event of events) {
     const params = event.params ?? {};
     const destination = normalizeDestination(params.destination);
-    const articleSlug = params.article_slug;
+    const articleSlug = resolveArticleSlug(params);
+    const inRecentWindow = withinWindow(event.received_at, recentSinceTime);
     const situationKey = params.situation_key;
     const packageKey = params.package_key;
 
@@ -261,8 +330,10 @@ export async function getAnalyticsDashboardData(windowDays = 7): Promise<Analyti
         break;
 
       case 'blog_cta_click':
-        if (articleSlug) {
-          const current = articleStats.get(articleSlug) ?? {
+        if (articleSlug || params.pathname?.startsWith('/blog/')) {
+          const slug = articleSlug ?? resolveArticleSlug(params);
+          if (!slug) break;
+          const current = articleStats.get(slug) ?? {
             views: 0,
             toBuilder: 0,
             toSituation: 0,
@@ -272,19 +343,60 @@ export async function getAnalyticsDashboardData(windowDays = 7): Promise<Analyti
           if (isBuilderDestination(destination)) {
             articleToBuilderClicks += 1;
             current.toBuilder += 1;
-            increment(sourceToBuilder, `\u010cl\u00e1nek: ${ARTICLE_TITLES.get(articleSlug) ?? articleSlug}`);
+            increment(sourceToBuilder, `\u010cl\u00e1nek: ${ARTICLE_TITLES.get(slug) ?? slug}`);
           } else if (isSituationDestination(destination)) {
             articleToSituationClicks += 1;
             current.toSituation += 1;
           } else if (isPackageDestination(destination)) {
             articleToPackageClicks += 1;
             current.toPackage += 1;
-            increment(sourceToPackage, `\u010cl\u00e1nek: ${ARTICLE_TITLES.get(articleSlug) ?? articleSlug}`);
+            increment(sourceToPackage, `\u010cl\u00e1nek: ${ARTICLE_TITLES.get(slug) ?? slug}`);
           }
 
-          articleStats.set(articleSlug, current);
+          articleStats.set(slug, current);
         }
         break;
+
+      case 'seo_landing_view': {
+        seoLandingViews += 1;
+        const landingPath = params.pathname;
+        if (landingPath) {
+          const current = seoLandingStats.get(landingPath) ?? {
+            views: 0,
+            toBuilder: 0,
+            toPackage: 0,
+          };
+          current.views += 1;
+          seoLandingStats.set(landingPath, current);
+        }
+        break;
+      }
+
+      case 'seo_landing_cta_click': {
+        const landingPath = params.pathname;
+        if (landingPath) {
+          const current = seoLandingStats.get(landingPath) ?? {
+            views: 0,
+            toBuilder: 0,
+            toPackage: 0,
+          };
+          if (isBuilderDestination(destination)) {
+            current.toBuilder += 1;
+            increment(
+              sourceToBuilder,
+              `SEO: ${SEO_LANDING_LABELS[landingPath] ?? landingPath}`,
+            );
+          } else if (isPackageDestination(destination)) {
+            current.toPackage += 1;
+            increment(
+              sourceToPackage,
+              `SEO: ${SEO_LANDING_LABELS[landingPath] ?? landingPath}`,
+            );
+          }
+          seoLandingStats.set(landingPath, current);
+        }
+        break;
+      }
 
       case 'situation_page_view':
         situationViews += 1;
@@ -349,6 +461,24 @@ export async function getAnalyticsDashboardData(windowDays = 7): Promise<Analyti
 
       case 'builder_view':
         builderViews += 1;
+        if (inRecentWindow) recentBuilderViews += 1;
+        if (params.traffic_label || params.traffic_source) {
+          attributedBuilderEntries += 1;
+          increment(
+            sourceToBuilder,
+            params.traffic_label ?? params.traffic_source ?? 'Neznámý zdroj',
+          );
+        }
+        if (articleSlug) {
+          const current = articleStats.get(articleSlug) ?? {
+            views: 0,
+            toBuilder: 0,
+            toSituation: 0,
+            toPackage: 0,
+          };
+          current.toBuilder += 1;
+          articleStats.set(articleSlug, current);
+        }
         break;
 
       case 'package_flow_entered':
@@ -375,6 +505,7 @@ export async function getAnalyticsDashboardData(windowDays = 7): Promise<Analyti
 
       case 'builder_checkout_clicked':
         checkoutClicks += 1;
+        if (inRecentWindow) recentCheckoutClicks += 1;
         if (params.price_band === '99') checkout99 += 1;
         if (params.price_band === '199') checkout199 += 1;
         if (params.price_band === '299') checkout299 += 1;
@@ -407,8 +538,10 @@ export async function getAnalyticsDashboardData(windowDays = 7): Promise<Analyti
 
       case 'checkout_completed':
         purchasesCompleted += 1;
+        if (inRecentWindow) recentPurchasesCompleted += 1;
         if (typeof params.total_price_czk === 'number' && Number.isFinite(params.total_price_czk)) {
           purchaseRevenueCzk += params.total_price_czk;
+          if (inRecentWindow) recentPurchaseRevenueCzk += params.total_price_czk;
         }
         break;
 
@@ -484,10 +617,67 @@ export async function getAnalyticsDashboardData(windowDays = 7): Promise<Analyti
     };
   }).sort((a, b) => b.revenueCzk - a.revenueCzk || b.purchases - a.purchases || b.selections - a.selections);
 
+  const seoLandingPerformance = [...seoLandingStats.entries()]
+    .map(([pathname, stat]) => ({
+      pathname,
+      label: SEO_LANDING_LABELS[pathname] ?? pathname,
+      views: stat.views,
+      toBuilder: stat.toBuilder,
+      toPackage: stat.toPackage,
+    }))
+    .sort((a, b) => b.views + b.toBuilder - (a.views + a.toBuilder))
+    .slice(0, 12);
+
+  const insights: AnalyticsInsight[] = [
+    {
+      label: 'Builder → checkout',
+      value: formatRate(checkoutClicks, builderViews),
+      hint: 'Podíl návštěv builderu, kde někdo klikl na platbu.',
+    },
+    {
+      label: 'Checkout → platba',
+      value: formatRate(purchasesCompleted, checkoutClicks),
+      hint: 'Tržby a starší platby ověřte ve Stripe (dashboard je limitovaný vzorkem eventů).',
+    },
+    {
+      label: 'Články → builder (kliky)',
+      value: formatRate(articleToBuilderClicks, articleViews),
+      hint: 'Jen měřená CTA; přímé URL do builderu se započítají ve vstupech do builderu.',
+    },
+    {
+      label: 'Builder s atribucí',
+      value: formatRate(attributedBuilderEntries, builderViews),
+      hint: 'Návštěvník přišel z článku nebo SEO landingu v rámci jedné session (30 min).',
+    },
+    {
+      label: `Platby (${ANALYTICS_REPORTING_RECENT_DAYS} dní)`,
+      value: String(recentPurchasesCompleted),
+      hint:
+        recentPurchasesCompleted === 0
+          ? 'Žádná platba v posledním týdnu — u starších prodejů sledujte Stripe.'
+          : `Tržba ${recentPurchaseRevenueCzk} Kč v posledním týdnu (z webhooku).`,
+    },
+  ];
+
+  const recentOverview: DashboardRow[] = [
+    { key: 'recent_builder', label: 'Vstupy do builderu', value: recentBuilderViews },
+    { key: 'recent_checkout', label: 'Checkout kliky', value: recentCheckoutClicks },
+    { key: 'recent_purchases', label: 'Dokončené platby', value: recentPurchasesCompleted },
+    {
+      key: 'recent_revenue',
+      label: 'Tržba z plateb (Kč)',
+      value: recentPurchaseRevenueCzk,
+    },
+  ];
+
   return {
     windowDays,
+    recentWindowDays: ANALYTICS_REPORTING_RECENT_DAYS,
     analyzedEvents: events.length,
     generatedAt: now.toISOString(),
+    insights,
+    recentOverview,
+    seoLandingPerformance,
     overview: [
       { key: 'article_views', label: 'Zobrazen\u00ed \u010dl\u00e1nk\u016f', value: articleViews },
       { key: 'article_to_builder', label: '\u010cl\u00e1nky \u2192 builder', value: articleToBuilderClicks },

@@ -1,8 +1,10 @@
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import RelatedContracts from '@/app/components/RelatedContracts';
+import { landingPageMetadata } from '@/lib/seo/landing-page-metadata';
 
-export const metadata: Metadata = {
+export const metadata = landingPageMetadata({
+  path: '/plna-moc-online',
+  expatContractKey: 'power_of_attorney',
   title: 'Plná moc online 2026 — vzor ke stažení',
   description:
     'Plná moc pro zastoupení před úřadem, bankou nebo v obchodní věci. Obecná, jednorázová nebo ověřená verze. Dle § 441 OZ 2026. Od 99 Kč.',
@@ -14,13 +16,10 @@ export const metadata: Metadata = {
     'plná moc ověřená',
     'plná moc úřad',
   ],
-  alternates: { canonical: 'https://www.smlouvahned.cz/plna-moc-online' },
-  openGraph: {
-    title: 'Plná moc online 2026',
-    description: 'Plná moc pro zastoupení před úřadem, bankou nebo v obchodní věci. § 441 OZ. Od 99 Kč.',
-    url: 'https://www.smlouvahned.cz/plna-moc-online',
-  },
-};
+  openGraphTitle: 'Plná moc online 2026',
+  openGraphDescription:
+    'Plná moc pro zastoupení před úřadem, bankou nebo v obchodní věci. § 441 OZ. Od 99 Kč.',
+});
 
 const faq = [
   {

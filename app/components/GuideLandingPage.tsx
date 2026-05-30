@@ -1,5 +1,10 @@
 import TrackedLink from '@/app/components/analytics/TrackedLink';
-import ProductPathGuide, { type ProductPathGuideItem } from './ProductPathGuide';
+import SeoLandingTracker from '@/app/components/analytics/SeoLandingTracker';
+import type { AnalyticsEventName } from '@/lib/analytics';
+import ProductPathGuide, {
+  type ProductPathGuideItem,
+  type ProductPathGuideTrackingContext,
+} from './ProductPathGuide';
 import SiteFaqSection from './SiteFaqSection';
 import TrustOutputBlock from './TrustOutputBlock';
 import RelatedContracts from './RelatedContracts';
@@ -88,8 +93,11 @@ export default function GuideLandingPage({
   relatedCluster,
   currentHref,
 }: GuideLandingPageProps) {
-  const eventName =
-    trackingContext?.pageType === 'package' ? 'package_cta_click' : 'situation_cta_click';
+  const eventName: AnalyticsEventName = trackingContext
+    ? trackingContext.pageType === 'package'
+      ? 'package_cta_click'
+      : 'situation_cta_click'
+    : 'seo_landing_cta_click';
 
   const trackingParams = trackingContext
     ? trackingContext.pageType === 'package'
@@ -104,7 +112,30 @@ export default function GuideLandingPage({
           surface: 'situation_page',
           situation_key: trackingContext.pageKey,
         }
-    : undefined;
+    : currentHref
+      ? {
+          source: 'seo_landing',
+          surface: 'seo_landing',
+          pathname: currentHref,
+        }
+      : undefined;
+
+  const productPathTracking: ProductPathGuideTrackingContext | undefined =
+    trackingContext && trackingParams
+      ? {
+          eventName,
+          source: trackingParams.source ?? 'landing_page',
+          surface: trackingParams.surface ?? 'landing_page',
+          extraParams: trackingParams,
+        }
+      : currentHref
+        ? {
+            eventName: 'seo_landing_cta_click',
+            source: 'seo_landing',
+            surface: 'seo_landing',
+            extraParams: { pathname: currentHref },
+          }
+        : undefined;
 
   const breadcrumbs = currentHref
     ? breadcrumbSchema([
@@ -115,6 +146,9 @@ export default function GuideLandingPage({
 
   return (
     <main className="site-page">
+      {currentHref && !trackingContext ? (
+        <SeoLandingTracker pathname={currentHref} label={breadcrumbLabel} />
+      ) : null}
       {breadcrumbs ? (
         <script
           type="application/ld+json"
@@ -207,16 +241,7 @@ export default function GuideLandingPage({
             note={decisionGuide.note}
             items={decisionGuide.items}
             compact
-            trackingContext={
-              trackingContext
-                ? {
-                    eventName,
-                    source: trackingParams?.source ?? 'landing_page',
-                    surface: trackingParams?.surface ?? 'landing_page',
-                    extraParams: trackingParams,
-                  }
-                : undefined
-            }
+            trackingContext={productPathTracking}
           />
         ) : null}
 

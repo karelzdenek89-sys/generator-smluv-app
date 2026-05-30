@@ -3,6 +3,7 @@ import { landingPageMetadata } from '@/lib/seo/landing-page-metadata';
 
 export const metadata = landingPageMetadata({
   path: '/najemni-smlouva',
+  expatContractKey: 'lease',
   title: 'Nájemní smlouva 2026 online — vzor a generátor, PDF ihned',
   description:
     'Nájemní smlouva 2026 online — vyplníte formulář a stáhnete hotové PDF. Aktuální vzor dle OZ, kauce, výpovědní doba, předávací protokol. Od 99 Kč.',

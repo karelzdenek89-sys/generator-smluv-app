@@ -7,6 +7,7 @@ interface ArticleInlineCtaProps {
   href: string;
   variant?: 'primary' | 'subtle';
   eyebrow?: string;
+  articleSlug?: string;
 }
 
 export default function ArticleInlineCta({
@@ -16,6 +17,7 @@ export default function ArticleInlineCta({
   href,
   variant = 'primary',
   eyebrow,
+  articleSlug,
 }: ArticleInlineCtaProps) {
   const primary = variant === 'primary';
 
@@ -35,6 +37,7 @@ export default function ArticleInlineCta({
           eventParams={{
             source: 'blog_article',
             surface: 'blog_article',
+            article_slug: articleSlug,
             cta_type: primary ? 'inline_primary' : 'inline_secondary',
           }}
           className={primary ? 'site-button-primary' : 'site-button-secondary'}

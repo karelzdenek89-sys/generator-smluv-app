@@ -27,10 +27,10 @@ export default function ChybyPriPronajmuBytu2026Page() {
           { href: '#jak-zvolit-cestu', label: 'Jak zvolit vhodnou cestu v rámci produktu' },
         ]}
         primaryAction={{
-          title: 'Hledáte přehlednou cestu podle situace?',
-          body: 'Situační stránka pro pronajímatele pomůže rozlišit, kdy stačí samostatný dokument a kdy je praktičtější širší varianta nebo tematický balíček.',
-          buttonLabel: 'Zobrazit dokumenty pro pronajímatele',
-          href: '/pro-pronajimatele',
+          title: 'Připravujete nový pronájem?',
+          body: 'Vytvořte nájemní smlouvu online — formulář pokryje kauci, pravidla užívání i podmínky ukončení. PDF ke stažení od 99 Kč.',
+          buttonLabel: 'Vytvořit nájemní smlouvu',
+          href: '/najem',
         }}
         trustBox={{
           generatorSuitable:

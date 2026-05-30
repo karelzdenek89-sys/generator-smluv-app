@@ -105,6 +105,8 @@ function main() {
   const layout = read('app/layout.tsx');
   assert.match(layout, /SiteAnalytics/, 'Root layout must include Vercel Analytics');
   assert.match(read('lib/analytics.ts'), /checkout_completed/, 'Product analytics must track completed purchases');
+  assert.match(read('lib/analytics.ts'), /seo_landing_view/, 'Product analytics must track SEO landing views');
+  assert.match(read('lib/internal-reporting-auth.ts'), /INTERNAL_REPORTING_COOKIE/, 'Internal reporting must support cookie auth');
   assert.match(read('lib/analytics.ts'), /newsletter_subscribed/, 'Product analytics must track newsletter signups');
   const gdprCookies = read('app/gdpr/page.tsx');
   assert.match(gdprCookies, /Vercel Web Analytics/, 'GDPR must mention Vercel Web Analytics');

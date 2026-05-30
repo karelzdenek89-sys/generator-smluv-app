@@ -1,8 +1,10 @@
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import RelatedContracts from '@/app/components/RelatedContracts';
+import { landingPageMetadata } from '@/lib/seo/landing-page-metadata';
 
-export const metadata: Metadata = {
+export const metadata = landingPageMetadata({
+  path: '/pracovni-smlouva',
+  expatContractKey: 'employment',
   title: 'Pracovní smlouva online 2026 — vzor zdarma ke stažení',
   description:
     'Vygenerujte pracovní smlouvu se všemi zákonnými náležitostmi dle zákoníku práce 2026. Druh práce, místo výkonu, mzda, zkušební doba. PDF ihned od 99 Kč.',
@@ -10,13 +12,9 @@ export const metadata: Metadata = {
     'pracovní smlouva', 'pracovní smlouva vzor', 'pracovní smlouva online', 'pracovní smlouva 2026',
     'pracovní smlouva PDF', 'pracovní smlouva ke stažení', 'vzor pracovní smlouvy',
   ],
-  alternates: { canonical: 'https://www.smlouvahned.cz/pracovni-smlouva' },
-  openGraph: {
-    title: 'Pracovní smlouva online 2026',
-    description: 'Pracovní smlouva dle zákoníku práce 2026. Mzda, zkušební doba, výpověď. Od 99 Kč.',
-    url: 'https://www.smlouvahned.cz/pracovni-smlouva',
-  },
-};
+  openGraphTitle: 'Pracovní smlouva online 2026',
+  openGraphDescription: 'Pracovní smlouva dle zákoníku práce 2026. Mzda, zkušební doba, výpověď. Od 99 Kč.',
+});
 
 const faq = [
   {

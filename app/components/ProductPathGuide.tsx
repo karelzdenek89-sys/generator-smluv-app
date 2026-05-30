@@ -12,6 +12,13 @@ export type ProductPathGuideItem = {
   highlight?: boolean;
 };
 
+export type ProductPathGuideTrackingContext = {
+  eventName: AnalyticsEventName;
+  source: string;
+  surface: string;
+  extraParams?: AnalyticsEventParams;
+};
+
 type ProductPathGuideProps = {
   label: string;
   title: string;
@@ -20,12 +27,7 @@ type ProductPathGuideProps = {
   items: readonly ProductPathGuideItem[];
   className?: string;
   compact?: boolean;
-  trackingContext?: {
-    eventName: AnalyticsEventName;
-    source: string;
-    surface: string;
-    extraParams?: AnalyticsEventParams;
-  };
+  trackingContext?: ProductPathGuideTrackingContext;
 };
 
 export default function ProductPathGuide({

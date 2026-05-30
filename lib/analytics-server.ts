@@ -18,7 +18,7 @@ function dimensionValue(value: unknown): string | undefined {
 export async function recordAnalyticsEvent(
   event: AnalyticsEventName,
   params?: AnalyticsEventParams,
-) {
+): Promise<boolean> {
   try {
     const compact = compactParams(params);
     const now = new Date();
@@ -38,6 +38,7 @@ export async function recordAnalyticsEvent(
       ['destination', dimensionValue(compact.destination)],
       ['surface', dimensionValue(compact.surface)],
       ['article', dimensionValue(compact.article_slug)],
+      ['traffic', dimensionValue(compact.traffic_label ?? compact.traffic_source)],
       ['situation', dimensionValue(compact.situation_key)],
       ['package', dimensionValue(compact.package_key)],
       ['contract', dimensionValue(compact.contract_type)],
@@ -55,7 +56,9 @@ export async function recordAnalyticsEvent(
           redis.hincrby(`analytics:summary:${day}:${dimension}`, String(value), 1),
         ),
     );
+    return true;
   } catch (error) {
     console.warn('[analytics] fail-open', error);
+    return false;
   }
 }

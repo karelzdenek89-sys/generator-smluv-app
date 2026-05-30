@@ -16,6 +16,60 @@ import type { AnalyticsEventParams } from '@/lib/analytics';
 
 export const runtime = 'nodejs';
 
+async function recordPaidCheckoutAnalytics(
+  session: Stripe.Checkout.Session,
+  options: {
+    tier: string;
+    contractType: string;
+    packageKey: string | null;
+    addOns: CheckoutAddonKey[];
+  },
+) {
+  const normalizedTier = normalizePricingTier(options.tier);
+  const priceBand: AnalyticsEventParams['price_band'] = options.packageKey
+    ? '299'
+    : normalizedTier === 'complete'
+      ? '199'
+      : '99';
+  const addonsTotalCzk = getCheckoutAddonsTotalCzk(options.addOns);
+  const totalPriceCzk =
+    typeof session.amount_total === 'number' ? Math.round(session.amount_total / 100) : undefined;
+
+  await recordAnalyticsEvent('checkout_completed', {
+    source: 'stripe_webhook',
+    surface: 'paid_checkout',
+    contract_type: options.contractType as AnalyticsEventParams['contract_type'],
+    tier: normalizedTier,
+    package_key: options.packageKey as AnalyticsEventParams['package_key'],
+    price_band: priceBand,
+    add_on_keys: options.addOns.join(','),
+    addons_total_czk: addonsTotalCzk,
+    total_price_czk: totalPriceCzk,
+    selected_addons_count: options.addOns.length,
+  });
+
+  if (options.addOns.length === 0) return;
+
+  await Promise.all(
+    options.addOns.map((addOnKey) =>
+      recordAnalyticsEvent('checkout_addon_purchased', {
+        source: 'stripe_webhook',
+        surface: 'paid_checkout',
+        contract_type: options.contractType as AnalyticsEventParams['contract_type'],
+        tier: normalizedTier,
+        package_key: options.packageKey as AnalyticsEventParams['package_key'],
+        price_band: priceBand,
+        add_on_key: addOnKey,
+        add_on_price_czk: CHECKOUT_ADDON_CONFIG[addOnKey].priceCzk,
+        add_on_keys: options.addOns.join(','),
+        addons_total_czk: addonsTotalCzk,
+        total_price_czk: totalPriceCzk,
+        selected_addons_count: options.addOns.length,
+      }),
+    ),
+  );
+}
+
 export async function POST(req: Request) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
@@ -70,6 +124,7 @@ export async function POST(req: Request) {
       }
 
       const draftId = session.metadata?.draftId;
+      let checkoutAnalyticsRecorded = false;
 
       if (draftId) {
         const key = `contract:draft:${draftId}`;
@@ -88,16 +143,6 @@ export async function POST(req: Request) {
           );
           const packageKey = typeof existing.packageKey === 'string' ? existing.packageKey : null;
           const archiveDays = getArchiveDaysWithAddons(normalizePricingTier(tier), packageKey, addOns);
-          const priceBand: AnalyticsEventParams['price_band'] = packageKey
-            ? '299'
-            : normalizePricingTier(tier) === 'complete'
-              ? '199'
-              : '99';
-          const addonsTotalCzk = getCheckoutAddonsTotalCzk(addOns);
-          const totalPriceCzk =
-            typeof session.amount_total === 'number'
-              ? Math.round(session.amount_total / 100)
-              : undefined;
           const downloadToken =
             typeof session.metadata?.downloadToken === 'string'
               ? session.metadata.downloadToken
@@ -168,40 +213,29 @@ export async function POST(req: Request) {
             ).catch((err) => console.error('[webhook] E-mail error:', err));
           }
 
-          await recordAnalyticsEvent('checkout_completed', {
-            source: 'stripe_webhook',
-            surface: 'paid_checkout',
-            contract_type: contractType as AnalyticsEventParams['contract_type'],
-            tier: normalizePricingTier(tier),
-            package_key: packageKey as AnalyticsEventParams['package_key'],
-            price_band: priceBand,
-            add_on_keys: addOns.join(','),
-            addons_total_czk: addonsTotalCzk,
-            total_price_czk: totalPriceCzk,
-            selected_addons_count: addOns.length,
+          await recordPaidCheckoutAnalytics(session, {
+            tier,
+            contractType,
+            packageKey,
+            addOns,
           });
-
-          if (addOns.length > 0) {
-            await Promise.all(
-              addOns.map((addOnKey) =>
-                recordAnalyticsEvent('checkout_addon_purchased', {
-                  source: 'stripe_webhook',
-                  surface: 'paid_checkout',
-                  contract_type: contractType as AnalyticsEventParams['contract_type'],
-                  tier: normalizePricingTier(tier),
-                  package_key: packageKey as AnalyticsEventParams['package_key'],
-                  price_band: priceBand,
-                  add_on_key: addOnKey,
-                  add_on_price_czk: CHECKOUT_ADDON_CONFIG[addOnKey].priceCzk,
-                  add_on_keys: addOns.join(','),
-                  addons_total_czk: addonsTotalCzk,
-                  total_price_czk: totalPriceCzk,
-                  selected_addons_count: addOns.length,
-                }),
-              ),
-            );
-          }
+          checkoutAnalyticsRecorded = true;
         }
+      }
+
+      if (!checkoutAnalyticsRecorded) {
+        const tier = String(session.metadata?.tier || 'basic');
+        const contractType = String(session.metadata?.contractType || '');
+        const packageKey =
+          typeof session.metadata?.packageKey === 'string' ? session.metadata.packageKey : null;
+        const addOns = normalizeStoredCheckoutAddons(session.metadata?.addOns);
+
+        await recordPaidCheckoutAnalytics(session, {
+          tier,
+          contractType,
+          packageKey,
+          addOns,
+        });
       }
     }
 

@@ -28,6 +28,72 @@ export type BlogClusterMeta = {
 
 export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   {
+    slug: 'flexinovela-zakoniku-prace-2026',
+    title: 'Flexinovela zákoníku práce 2026: Co se mění u DPP, DPČ a pracovních smluv',
+    excerpt:
+      'Přehled hlavních změn, které do pracovněprávních vztahů přinesla novela zákoníku práce (tzv. flexinovela) — povinnosti zaměstnavatelů u DPP, nové oznamovací povinnosti, dopady na zaměstnance.',
+    category: 'Práce a zaměstnání',
+    readTime: '11 min',
+    date: '29. května 2026',
+    cluster: 'general',
+    href: '/blog/flexinovela-zakoniku-prace-2026',
+  },
+  {
+    slug: 'energeticky-stitek-najemne-2026',
+    title: 'Energetický štítek (PENB) a nájemné 2026: Co potřebujete vědět při pronájmu bytu',
+    excerpt:
+      'Průkaz energetické náročnosti budovy, jeho povinné předložení nájemci, dopad na výši nájemného a vyúčtování energií. Praktický průvodce pro pronajímatele i nájemce.',
+    category: 'Bydlení',
+    readTime: '9 min',
+    date: '29. května 2026',
+    cluster: 'landlord',
+    href: '/blog/energeticky-stitek-najemne-2026',
+  },
+  {
+    slug: 'svarcsystem-osvc-2026',
+    title: 'Švarcsystém v praxi 2026: Kdy hrozí, jaká jsou rizika a jak ho neumožnit',
+    excerpt:
+      'Co je švarcsystém, jaké znaky závislé práce sleduje inspekce práce a v čem se liší skutečná OSVČ od zastřeného zaměstnance. Praktický průvodce pro OSVČ i odběratele.',
+    category: 'Práce a podnikání',
+    readTime: '10 min',
+    date: '29. května 2026',
+    cluster: 'general',
+    href: '/blog/svarcsystem-osvc-2026',
+  },
+  {
+    slug: 'viceprace-smlouva-o-dilo-2026',
+    title: 'Vícepráce a změny díla 2026: Jak je ošetřit, ať nevzniká spor o cenu',
+    excerpt:
+      'Jak ve smlouvě o dílo upravit vícepráce, změnové listy, fixaci ceny a předávací protokol. Praktický průvodce pro objednatele i zhotovitele — stavba, rekonstrukce, software, design.',
+    category: 'Podnikání a zakázky',
+    readTime: '9 min',
+    date: '29. května 2026',
+    cluster: 'general',
+    href: '/blog/viceprace-smlouva-o-dilo-2026',
+  },
+  {
+    slug: 'autorska-prava-smlouva-o-dilo-2026',
+    title: 'Autorská práva ve smlouvě o dílo a spolupráci 2026: Kdo vlastní výsledek',
+    excerpt:
+      'Jak ve smlouvě s freelancerem nebo agenturou ošetřit autorská práva k softwaru, designu, textům nebo fotografiím. Licence vs. převod, výhradnost, dílo zaměstnanecké.',
+    category: 'Podnikání a spolupráce',
+    readTime: '10 min',
+    date: '29. května 2026',
+    cluster: 'general',
+    href: '/blog/autorska-prava-smlouva-o-dilo-2026',
+  },
+  {
+    slug: 'kratkodoby-pronajem-airbnb-2026',
+    title: 'Krátkodobý pronájem bytu a Airbnb 2026: Co sjednat ve smlouvě',
+    excerpt:
+      'Krátkodobé ubytování přes Airbnb nebo Booking — podnájem, ubytovací služba nebo porušení účelu nájmu. Co ve smlouvě výslovně upravit a proč nestačí ústní dohoda.',
+    category: 'Bydlení',
+    readTime: '7 min',
+    date: '29. května 2026',
+    cluster: 'landlord',
+    href: '/blog/kratkodoby-pronajem-airbnb-2026',
+  },
+  {
     slug: 'valorizace-najemneho-2026',
     title: 'Valorizace nájemného 2026: Jak ji správně sjednat ve smlouvě',
     excerpt:

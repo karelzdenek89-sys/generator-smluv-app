@@ -72,7 +72,7 @@ Nastav v **Project → Settings → Environment Variables** (Production):
 
 - [ ] V **Vercel → Project → Analytics** zapnout **Web Analytics** (návštěvy, stránky, země, zařízení)
 - [ ] Volitelně zapnout **Speed Insights** (Core Web Vitals)
-- [ ] Nastavit `INTERNAL_REPORTING_SECRET` a otevřít `/interni/analytics?secret=<hodnota>` pro produktový funnel
+- [ ] Nastavit `INTERNAL_REPORTING_SECRET` a jednou otevřít `/interni/analytics/auth?secret=<URL-encoded hodnota>` (cookie 30 dní); pak stačí `/interni/analytics`. Secret s `+` v URL vždy URL-enkódovat (`%2B`).
 - [ ] V **Google Search Console** ověřit doménu `www.smlouvahned.cz` a odeslat sitemap (`/sitemap.xml`)
 - [ ] Přihlášení v patičce ukládá e-maily do Redis (Upstash) — Resend pro newsletter není nutný
 

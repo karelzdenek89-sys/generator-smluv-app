@@ -1,27 +1,23 @@
-﻿import type { Metadata } from 'next';
+﻿import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 
-/**
- * DRAFT — čeká na právní revizi.
- */
-export const metadata: Metadata = {
+export const metadata = blogArticlePageMetadata('energeticky-stitek-najemne-2026', {
   title: 'Energetický štítek (PENB) a nájemné 2026: Co potřebujete vědět při pronájmu bytu',
   description:
     'Průkaz energetické náročnosti budovy, jeho povinné předložení nájemci, dopad na výši nájemného a vyúčtování energií. Praktický průvodce pro pronajímatele i nájemce.',
-  robots: { index: false, follow: false },
-};
+});
 
-export default function DraftEnergetickyStitekPage() {
+export default function EnergetickyStitekNajemne2026Page() {
   return (
     <ArticlePageLayout
       category="Bydlení"
       readTime="9 min"
-      dateTime="2026-05-16"
-      dateLabel="16. května 2026"
-      dateModified="2026-05-16"
-      dateModifiedLabel="16. května 2026"
+      dateTime="2026-05-29"
+      dateLabel="29. května 2026"
+      dateModified="2026-05-29"
+      dateModifiedLabel="29. května 2026"
       breadcrumbLabel="Energetický štítek a nájemné 2026"
-      slug="draft-energeticky-stitek-najemne-2026"
+      slug="energeticky-stitek-najemne-2026"
       title="Energetický štítek (PENB) a nájemné 2026: Co potřebujete vědět při pronájmu bytu"
       intro="Průkaz energetické náročnosti budovy (PENB) — laicky energetický štítek — se stal v posledních letech standardní součástí inzerce i nájemních smluv. Pro rok 2026 platí jeho povinné zveřejnění v inzerátu a předání nájemci. Tento průvodce shrnuje, kdy je PENB povinný, co znamenají jednotlivé třídy A–G, a jak energetický štítek souvisí s vyúčtováním energií a férovou cenou nájmu."
       toc={[
@@ -46,12 +42,14 @@ export default function DraftEnergetickyStitekPage() {
       }}
       trustBox={{
         generatorSuitable:
-          'Standardní pronájem bytu, kde má pronajímatel k dispozici PENB nebo platnou alternativu (např. vyúčtování energií za posledních 3 roky pro budovy postavené před účinností povinnosti).',
+          'Standardní pronájem bytu, kde má pronajímatel k dispozici PENB nebo platnou alternativu dle zákona (např. vyúčtování energií za poslední tři roky u jednotky, pokud PENB od SVJ nebyl včas poskytnut).',
         lawyerSuitable:
           'Spor o platnost smlouvy z důvodu chybějícího PENB, pokuty od Státní energetické inspekce, komplexní revitalizace s dopadem na klasifikaci, kombinace s podporami a dotacemi.',
       }}
       relatedLinks={[
         { href: '/najem', label: '🏠 Nájemní smlouva — formulář' },
+        { href: '/blog/energeticky-stitek-najemne-2026', label: '⚡ Energetický štítek (PENB)' },
+        { href: '/blog/kratkodoby-pronajem-airbnb-2026', label: '🏠 Krátkodobý pronájem a Airbnb' },
         { href: '/blog/najemni-smlouva-vzor-2026', label: '📘 Nájemní smlouva — průvodce' },
         { href: '/blog/valorizace-najemneho-2026', label: '📈 Valorizace nájemného' },
         { href: '/balicek-pronajimatel', label: '📦 Balíček pro pronajímatele' },
@@ -92,11 +90,13 @@ export default function DraftEnergetickyStitekPage() {
           </li>
         </ul>
         <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm leading-relaxed text-slate-400">
-          <strong className="text-blue-400">📌 Pozn.:</strong> U starších budov, pro které
-          PENB nikdy nebyl zpracován a vlastník ho nemůže získat za přiměřených podmínek,
-          umožňuje zákon nahradit klasifikaci doloženým vyúčtováním energií za období
-          posledních tří let. Tato výjimka je úzká — vyplatí se ji konzultovat s
-          energetickým specialistou.
+          <strong className="text-blue-400">📌 Pozn.:</strong> U bytové jednotky může vlastník
+          v určitých situacích splnit informační povinnost předložením vyúčtování energií za
+          poslední tři roky — zejména pokud si PENB od SVJ nebo společenství vlastníků písemně
+          vyžádal a nedostal jej v zákonem stanovené lhůtě. MPO uvádí také výjimku pro budovy
+          postavené před rokem 1947, pokud se na tom pronajímatel a nájemce písemně dohodnou.
+          Není to obecná náhrada PENB pro „starší budovy" — vždy záleží na typu nemovitosti,
+          jednotky vs. celé budovy a na konkrétních podmínkách zákona.
         </div>
       </section>
 

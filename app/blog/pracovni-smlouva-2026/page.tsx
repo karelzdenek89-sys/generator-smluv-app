@@ -49,17 +49,13 @@ export default function PracovniSmlouvaVzor2026Page() {
           ustanoveními vás jako zaměstnavatele vystavuje zbytečnému riziku.
         </p>
 
-        {/* Inline CTA */}
-        <div className="mt-7 rounded-2xl border border-amber-500/20 bg-amber-500/8 p-5">
-          <p className="mb-3 text-sm font-bold text-white">Chcete přeskočit teorii?</p>
-          <p className="mb-4 text-sm text-slate-400">Vytvořte si pracovní smlouvu online — formulář vás provede krok za krokem, hotovo za 5 minut.</p>
-          <Link
-            href="/pracovni"
-            className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-2.5 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400"
-          >
-            Vytvořit pracovní smlouvu →
-          </Link>
-        </div>
+        <ArticleInlineCta
+          title="Chcete přeskočit teorii?"
+          body="Vytvořte si pracovní smlouvu online — formulář vás provede krok za krokem, hotovo za 5 minut."
+          buttonLabel="Vytvořit pracovní smlouvu"
+          href="/pracovni"
+          articleSlug="pracovni-smlouva-2026"
+        />
       </header>
 
       {/* Table of contents */}
@@ -176,15 +172,14 @@ export default function PracovniSmlouvaVzor2026Page() {
           </li>
         </ul>
 
-        {/* CTA inline */}
-        <div className="rounded-2xl border border-amber-500/20 bg-amber-500/6 p-5">
-          <p className="mb-3 text-sm text-slate-300">
-            Pracovní smlouva na SmlouvaHned pokrývá všechny zákonné náležitosti i doporučená ujednání — mlčenlivost, home office i zkušební dobu.
-          </p>
-          <Link href="/pracovni" className="text-sm font-bold text-amber-400 underline underline-offset-4 hover:text-amber-300 transition">
-            Vytvořit pracovní smlouvu online →
-          </Link>
-        </div>
+        <ArticleInlineCta
+          title="Pracovní smlouva online"
+          body="Pracovní smlouva na SmlouvaHned pokrývá všechny zákonné náležitosti i doporučená ujednání — mlčenlivost, home office i zkušební dobu."
+          buttonLabel="Vytvořit pracovní smlouvu"
+          href="/pracovni"
+          variant="subtle"
+          articleSlug="pracovni-smlouva-2026"
+        />
       </section>
 
       {/* ── SECTION 3 ───────────────────────────── */}
@@ -313,6 +308,7 @@ export default function PracovniSmlouvaVzor2026Page() {
         body="Pracovní smlouva na SmlouvaHned pokrývá tři povinné náležitosti, zkušební dobu, mlčenlivost, home office i výpovědní lhůtu. Formulář vás provede, PDF stáhnete ihned."
         buttonLabel="Vytvořit pracovní smlouvu"
         href="/pracovni"
+        articleSlug="pracovni-smlouva-2026"
       />
 
       {/* ── SECTION 6 ───────────────────────────── */}
@@ -389,22 +385,13 @@ export default function PracovniSmlouvaVzor2026Page() {
         lawyerSuitable="Agenturní zaměstnávání, hromadné propouštění, převod podniku, zaměstnávání cizinců, složité konkurenční doložky nebo spory ze skončení pracovního poměru."
       />
 
-      {/* ── FINAL CTA ───────────────────────────── */}
-      <div className="rounded-[2rem] border border-amber-500/20 bg-gradient-to-br from-amber-500/10 to-amber-500/3 p-8 text-center">
-        <div className="mb-2 text-[11px] font-black uppercase tracking-widest text-amber-400">Připraveni?</div>
-        <h2 className="mb-4 text-2xl font-black tracking-tight text-white">Vytvořte pracovní smlouvu online</h2>
-        <p className="mx-auto mb-6 max-w-sm text-sm leading-relaxed text-slate-400">
-          Formulář vás provede každou částí smlouvy. Hotovo za méně než 5 minut,
-          PDF ke stažení ihned po zaplacení.
-        </p>
-        <Link
-          href="/pracovni"
-          className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-8 py-4 text-sm font-black uppercase tracking-tight text-black shadow-[0_0_40px_rgba(245,158,11,0.25)] transition hover:bg-amber-400"
-        >
-          Vytvořit pracovní smlouvu →
-        </Link>
-        <div className="mt-3 text-xs text-slate-600">Od 99 Kč · Dle zákoníku práce · Platné pro 2026</div>
-      </div>
+      <ArticleInlineCta
+        title="Vytvořte pracovní smlouvu online"
+        body="Formulář vás provede každou částí smlouvy. Hotovo za méně než 5 minut, PDF ke stažení ihned po zaplacení."
+        buttonLabel="Vytvořit pracovní smlouvu"
+        href="/pracovni"
+        articleSlug="pracovni-smlouva-2026"
+      />
 
       {/* ── RELATED ARTICLES ────────────────────── */}
       <div className="mt-12 border-t border-white/8 pt-10">

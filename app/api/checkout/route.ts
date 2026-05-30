@@ -132,16 +132,17 @@ export async function POST(req: Request) {
           ? payload.packageKey
           : null;
     const packageKey = normalizeThematicPackageKeyForContract(rawPackageKey, contractType);
+    const checkoutTier = packageKey ? 'complete' : paidTier;
     const addOns = normalizeCheckoutAddons(
       body.addOns ?? payload.addOns,
       contractType,
-      paidTier,
+      checkoutTier,
       packageKey,
       lang,
     );
 
     // 3. Price ID
-    const priceId = getStripePriceIdForCheckout(paidTier, packageKey);
+    const priceId = getStripePriceIdForCheckout(checkoutTier, packageKey);
     if (!priceId) {
       console.error(
         `[checkout] Chybí Stripe Price ID pro tier=${paidTier} packageKey=${packageKey ?? 'none'}`,
@@ -154,7 +155,7 @@ export async function POST(req: Request) {
 
     const baseUrl  = process.env.NEXT_PUBLIC_BASE_URL || new URL(req.url).origin;
     const draftId  = randomUUID();
-    const archiveDays = getArchiveDaysWithAddons(paidTier, packageKey, addOns);
+    const archiveDays = getArchiveDaysWithAddons(checkoutTier, packageKey, addOns);
     const ttl      = archiveDays * 24 * 3600;
 
     // 4. Uložení draftu do Redisu — bez payloadu zákazník nedostane správný PDF výstup.
@@ -164,20 +165,20 @@ export async function POST(req: Request) {
         `contract:draft:${draftId}`,
         {
           contractType,
-          tier: paidTier,
+          tier: checkoutTier,
           packageKey,
           addOns,
-          notaryUpsell,
+          notaryUpsell: packageKey ? true : notaryUpsell,
           downloadToken,
           lang,
           email: email ?? null,
           payload: {
             ...payload,
             contractType,
-            tier: paidTier,
+            tier: checkoutTier,
             packageKey,
             addOns,
-            notaryUpsell,
+            notaryUpsell: packageKey ? true : notaryUpsell,
             lang,
           },
           paid: false,
@@ -229,9 +230,9 @@ export async function POST(req: Request) {
       metadata: {
         draftId,
         contractType,
-        tier: paidTier,
+        tier: checkoutTier,
         lang,
-        notaryUpsell: String(notaryUpsell),
+        notaryUpsell: String(packageKey ? true : notaryUpsell),
         downloadToken,
         addOns: getCheckoutAddonMetadata(addOns),
         ...(packageKey ? { packageKey } : {}),

@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import TrackedLink from '@/app/components/analytics/TrackedLink';
+import SeoLandingTracker from '@/app/components/analytics/SeoLandingTracker';
 import RelatedContracts from '@/app/components/RelatedContracts';
 import { landingPageMetadata } from '@/lib/seo/landing-page-metadata';
 
@@ -69,6 +71,8 @@ export default function NajemniSmlouvaBytPage() {
       />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(20,184,166,0.07),transparent_30%)] pointer-events-none" />
 
+      <SeoLandingTracker pathname="/najemni-smlouva-byt" label="Nájemní smlouva na byt" />
+
       <div className="relative z-10 mx-auto max-w-4xl px-6 py-16">
         <nav className="mb-8 text-xs text-slate-500">
           <Link href="/" className="hover:text-slate-300 transition">SmlouvaHned</Link>
@@ -95,10 +99,20 @@ export default function NajemniSmlouvaBytPage() {
             Pronajímáte nebo si pronajímáte byt nebo dům? Nájemní smlouva ochrání obě strany — kauce, pravidla, předání bytu a podmínky ukončení.
           </p>
           <div className="flex flex-wrap gap-3 mb-8">
-            <Link href="/najem"
-              className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-6 py-3 text-sm font-black uppercase tracking-tight text-black shadow-[0_0_30px_rgba(245,158,11,0.25)] transition hover:bg-amber-400">
+            <TrackedLink
+              href="/najem"
+              eventName="seo_landing_cta_click"
+              eventParams={{
+                source: 'seo_landing',
+                surface: 'seo_landing',
+                pathname: '/najemni-smlouva-byt',
+                cta_type: 'hero_primary',
+                destination: '/najem',
+              }}
+              className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-6 py-3 text-sm font-black uppercase tracking-tight text-black shadow-[0_0_30px_rgba(245,158,11,0.25)] transition hover:bg-amber-400"
+            >
               Vytvořit nájemní smlouvu →
-            </Link>
+            </TrackedLink>
           </div>
           <div className="text-sm text-slate-500">Od 99 Kč · PDF ke stažení · Dle § 2235 OZ</div>
         </div>
@@ -167,10 +181,20 @@ export default function NajemniSmlouvaBytPage() {
             Formulář pro pronájem bytu či domu — kauce, zvířata, pravidla, PDF ke stažení.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
-            <Link href="/najem"
-              className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-6 py-3 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400">
+            <TrackedLink
+              href="/najem"
+              eventName="seo_landing_cta_click"
+              eventParams={{
+                source: 'seo_landing',
+                surface: 'seo_landing',
+                pathname: '/najemni-smlouva-byt',
+                cta_type: 'footer_primary',
+                destination: '/najem',
+              }}
+              className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-6 py-3 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400"
+            >
               Vytvořit nájemní smlouvu →
-            </Link>
+            </TrackedLink>
           </div>
           <div className="mt-3 text-xs text-slate-600">Od 99 Kč · § 2235 OZ · PDF ke stažení</div>
         </section>

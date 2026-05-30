@@ -1,7 +1,19 @@
 import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
+import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
-import { getAnalyticsDashboardData, type AnalyticsDashboardData } from '@/lib/analytics-reporting';
+import {
+  ANALYTICS_REPORTING_WINDOW_DAYS,
+  getAnalyticsDashboardData,
+  type AnalyticsDashboardData,
+} from '@/lib/analytics-reporting';
+import {
+  createInternalReportingCookieValue,
+  getInternalReportingCookieOptions,
+  INTERNAL_REPORTING_COOKIE,
+  isValidInternalReportingCookie,
+  reportingSecretMatches,
+} from '@/lib/internal-reporting-auth';
 
 export const dynamic = 'force-dynamic';
 
@@ -137,9 +149,13 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
               {'P\u0159ehled v\u00fdkonu funnelu a produktov\u00fdch cest'}
             </h1>
             <p className="mt-4 max-w-3xl text-base leading-7 text-slate-300">
-              {'P\u0159ehled je postaven\u00fd nad first-party eventy z posledn\u00edch '}
+              {
+                'Přehled je postavený nad first-party eventy. Hlavní okno je '
+              }
               {data.windowDays}
-              {' dn\u00ed. C\u00edlem je rychle vid\u011bt, co p\u0159iv\u00e1d\u00ed u\u017eivatele do builderu, co vede do bal\u00ed\u010dk\u016f a jak se rozkl\u00e1d\u00e1 z\u00e1jem mezi 99, 199 a 299 K\u010d.'}
+              {
+                ' dní; u plateb je navíc zvýrazněný poslední týden. Kompletní tržby a starší platby vždy ověřte ve Stripe. Po prvním vstupu s `?secret=` zůstává přístup v prohlížeči 30 dní (cookie).'
+              }
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -160,10 +176,52 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
       </section>
 
       <Section
+        title={`Posledních ${data.recentWindowDays} dní`}
+        description="Rychlý týdenní pohled — vhodné pro kontrolu po nasazení nebo kampani."
+      >
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          {data.recentOverview.map((item) => (
+            <div key={item.key} className="rounded-2xl border border-[#caa45a]/15 bg-[#caa45a]/5 p-5">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                {item.label}
+              </div>
+              <div className="mt-3 text-3xl font-semibold tracking-tight text-[#f7f0de]">
+                {item.key === 'recent_revenue'
+                  ? formatCurrency(item.value)
+                  : formatNumber(item.value)}
+              </div>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section
+        title="Interpretace funnelu"
+        description="Odhadované poměry z eventů v hlavním okně — ne unikátní uživatelé."
+      >
+        <div className="grid gap-4 md:grid-cols-2">
+          {data.insights.map((item) => (
+            <div
+              key={item.label}
+              className="rounded-2xl border border-white/8 bg-[#0a1020]/80 p-5"
+            >
+              <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                {item.label}
+              </div>
+              <div className="mt-3 text-2xl font-semibold tracking-tight text-[#f7f0de]">
+                {item.value}
+              </div>
+              {item.hint ? (
+                <p className="mt-3 text-sm leading-6 text-slate-500">{item.hint}</p>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section
         title={'Hlavn\u00ed metriky'}
-        description={
-          'Rychl\u00fd p\u0159ehled nad nejd\u016fle\u017eit\u011bj\u0161\u00edmi body funnelu, aby bylo hned vid\u011bt, jestli obsah a produktov\u00e9 cesty p\u0159iv\u00e1d\u011bj\u00ed lidi d\u00e1l.'
-        }
+        description={`Souhrn za posledních ${data.windowDays} dní — rychlý přehled nad nejdůležitějšími body funnelu.`}
       >
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {data.overview.map((item) => (
@@ -221,6 +279,26 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
           ])}
         />
       </Section>
+
+      {data.seoLandingPerformance.length > 0 ? (
+        <Section
+          title="SEO landing pages"
+          description="Průvodcové stránky (/najemni-smlouva, /kupni-smlouva…) a jejich přechody do produktu."
+        >
+          <Table
+            headers={['Stránka', 'Views', '→ Builder', '→ Balíček']}
+            rows={data.seoLandingPerformance.map((item) => [
+              <div key={item.pathname}>
+                <div className="font-medium text-[#f7f0de]">{item.label}</div>
+                <div className="text-xs text-slate-500">{item.pathname}</div>
+              </div>,
+              formatNumber(item.views),
+              formatNumber(item.toBuilder),
+              formatNumber(item.toPackage),
+            ])}
+          />
+        </Section>
+      ) : null}
 
       <Section
         title={'Top zdroje do produktu'}
@@ -364,14 +442,27 @@ export default async function InternalAnalyticsPage({
 }) {
   const params = await searchParams;
   const expectedSecret = process.env.INTERNAL_REPORTING_SECRET;
-  if (!expectedSecret || params.secret !== expectedSecret) {
+  const cookieStore = await cookies();
+  const cookieValue = cookieStore.get(INTERNAL_REPORTING_COOKIE)?.value;
+  const secretFromQuery = reportingSecretMatches(expectedSecret, params.secret);
+  const secretFromCookie = isValidInternalReportingCookie(expectedSecret, cookieValue);
+
+  if (!expectedSecret || (!secretFromQuery && !secretFromCookie)) {
     notFound();
+  }
+
+  if (secretFromQuery && !secretFromCookie) {
+    cookieStore.set(
+      INTERNAL_REPORTING_COOKIE,
+      createInternalReportingCookieValue(expectedSecret),
+      getInternalReportingCookieOptions(),
+    );
   }
 
   let data: AnalyticsDashboardData | null = null;
 
   try {
-    data = await getAnalyticsDashboardData(7);
+    data = await getAnalyticsDashboardData(ANALYTICS_REPORTING_WINDOW_DAYS);
   } catch (error) {
     console.warn('[analytics] Failed to fetch dashboard data:', error);
   }

@@ -1,8 +1,10 @@
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import RelatedContracts from '@/app/components/RelatedContracts';
+import { landingPageMetadata } from '@/lib/seo/landing-page-metadata';
 
-export const metadata: Metadata = {
+export const metadata = landingPageMetadata({
+  path: '/podnajemni-smlouva',
+  expatContractKey: 'sublease',
   title: 'Podnájemní smlouva online 2026 — vzor ke stažení',
   description:
     'Podnájemní smlouva se souhlasem pronajímatele. Kauce, pravidla, předávací protokol. Dle § 2274 OZ 2026. PDF ihned ke stažení od 99 Kč.',
@@ -14,13 +16,10 @@ export const metadata: Metadata = {
     'podnájemní smlouva online',
     'podnájem souhlasem',
   ],
-  alternates: { canonical: 'https://www.smlouvahned.cz/podnajemni-smlouva' },
-  openGraph: {
-    title: 'Podnájemní smlouva online 2026',
-    description: 'Podnájemní smlouva se souhlasem pronajímatele. Kauce, pravidla, předávací protokol. § 2274 OZ. Od 99 Kč.',
-    url: 'https://www.smlouvahned.cz/podnajemni-smlouva',
-  },
-};
+  openGraphTitle: 'Podnájemní smlouva online 2026',
+  openGraphDescription:
+    'Podnájemní smlouva se souhlasem pronajímatele. Kauce, pravidla, předávací protokol. § 2274 OZ. Od 99 Kč.',
+});
 
 const faq = [
   {

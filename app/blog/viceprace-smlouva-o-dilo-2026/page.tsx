@@ -1,27 +1,23 @@
-﻿import type { Metadata } from 'next';
+﻿import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 
-/**
- * DRAFT — čeká na právní revizi.
- */
-export const metadata: Metadata = {
+export const metadata = blogArticlePageMetadata('viceprace-smlouva-o-dilo-2026', {
   title: 'Vícepráce a změny díla 2026: Jak je ošetřit, ať nevzniká spor o cenu',
   description:
     'Jak ve smlouvě o dílo upravit vícepráce, změnové listy, fixaci ceny a předávací protokol. Praktický průvodce pro objednatele i zhotovitele — stavba, rekonstrukce, software, design.',
-  robots: { index: false, follow: false },
-};
+});
 
-export default function DraftVypovedNajmuDopl() {
+export default function VicepraceSmlouvaODilo2026Page() {
   return (
     <ArticlePageLayout
       category="Podnikání a zakázky"
       readTime="9 min"
-      dateTime="2026-05-16"
-      dateLabel="16. května 2026"
-      dateModified="2026-05-16"
-      dateModifiedLabel="16. května 2026"
+      dateTime="2026-05-29"
+      dateLabel="29. května 2026"
+      dateModified="2026-05-29"
+      dateModifiedLabel="29. května 2026"
       breadcrumbLabel="Vícepráce a změny díla 2026"
-      slug="draft-viceprace-smlouva-o-dilo-2026"
+      slug="viceprace-smlouva-o-dilo-2026"
       title="Vícepráce a změny díla 2026: Jak je ošetřit, ať nevzniká spor o cenu"
       intro="Vícepráce jsou nejčastější zdroj sporů ve smlouvě o dílo — u stavby, rekonstrukce i u softwaru. Objednatel počítá s pevnou cenou, zhotoviteli během práce přibyly úkoly a obě strany se neumí domluvit na tom, kdo má co platit. Tento průvodce shrnuje, jak vícepráce ve smlouvě předem ošetřit, jaký je rozdíl mezi pevnou cenou a rozpočtem a kdy lze cenu zákonem upravit."
       toc={[
@@ -113,10 +109,13 @@ export default function DraftVypovedNajmuDopl() {
           <div className="rounded-2xl border border-white/8 bg-[#0c1426] p-5">
             <div className="mb-1 text-sm font-black text-white">Cena podle rozpočtu</div>
             <p className="text-sm leading-relaxed text-slate-400">
-              Cena je určena rozpočtem — položkovým seznamem. Tady zákon rozlišuje rozpočet
-              závazný (kompletní, neměnný) a rozpočet nezávazný (orientační, lze upravit
-              podle skutečnosti). Pokud rozpočet není v smlouvě označen jako závazný, je
-              orientační.
+              Cena je určena rozpočtem — položkovým seznamem. Občanský zákoník rozlišuje
+              pevnou cenu, cenu podle rozpočtu, rozpočet s výhradou nezaručené úplnosti a
+              nezávazný rozpočet. Pokud je cena sjednána podle rozpočtu, je důležité výslovně
+              uvést, zda je rozpočet závazný, nezávazný nebo s výhradou nezaručené úplnosti.
+              Bez jasné výhrady nelze automaticky počítat s tím, že zhotovitel bude moci cenu
+              jednostranně navýšit — právě tato kvalifikace rozhoduje, kdy lze žádat zvýšení
+              ceny.
             </p>
           </div>
           <div className="rounded-2xl border border-white/8 bg-[#0c1426] p-5">
@@ -128,6 +127,11 @@ export default function DraftVypovedNajmuDopl() {
               překročení.
             </p>
           </div>
+        </div>
+        <div className="mt-5 rounded-2xl border border-amber-500/20 bg-amber-500/6 p-5 text-sm leading-relaxed text-slate-400">
+          <strong className="text-amber-400">Pozor:</strong> Typ ceny (závazný rozpočet,
+          nezávazný rozpočet, výhrada nezaručené úplnosti) je v praxi důležitější než samotný
+          součet položek. Bez výslovného vymezení hrozí spor, zda zhotovitel smí cenu navýšit.
         </div>
       </section>
 
@@ -261,7 +265,7 @@ export default function DraftVypovedNajmuDopl() {
             },
             {
               t: 'Cena a její režim',
-              d: 'Pevná / podle rozpočtu / hodinová. U rozpočtu uvést, zda je závazný nebo orientační.',
+              d: 'Pevná / podle rozpočtu / hodinová. U rozpočtu výslovně uvést, zda je závazný, nezávazný nebo s výhradou nezaručené úplnosti — od toho závisí, kdy lze cenu měnit.',
             },
             {
               t: 'Postup při změnách rozsahu',

@@ -1,19 +1,23 @@
-import type { Metadata } from 'next';
 import TrackView from '@/app/components/analytics/TrackView';
 import GuideLandingPage from '@/app/components/GuideLandingPage';
+import { getExpatSeoLandingHreflangAlternates } from '@/lib/i18n/expat-hreflang';
 import { getSituationLandingConfig } from '@/lib/situations';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/site';
 
 const situation = getSituationLandingConfig('vehicle_sale');
 
-export const metadata: Metadata = {
+export const metadata = {
   title: situation.metadataTitle,
   description: situation.metadataDescription,
-  alternates: { canonical: `https://www.smlouvahned.cz${situation.href}` },
+  alternates: getExpatSeoLandingHreflangAlternates('car_sale'),
   openGraph: {
     title: situation.openGraphTitle,
     description: situation.openGraphDescription,
     url: `https://www.smlouvahned.cz${situation.href}`,
-    type: 'website',
+    type: 'website' as const,
+    siteName: 'SmlouvaHned',
+    locale: 'cs_CZ',
+    images: [DEFAULT_OG_IMAGE],
   },
 };
 

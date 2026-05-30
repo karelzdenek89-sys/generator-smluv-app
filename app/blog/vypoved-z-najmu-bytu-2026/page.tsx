@@ -31,8 +31,8 @@ export default function VypovedZNajmuBytu2026Page() {
         primaryAction={{
           title: 'Chcete nájemní smlouvu sestavit online?',
           body: 'Standardizovaný dokument pro běžný pronájem bytu — s nastavením doby nájmu, podmínek ukončení a dalších klíčových parametrů.',
-          buttonLabel: 'Zobrazit nájemní smlouvu online',
-          href: '/najemni-smlouva',
+          buttonLabel: 'Vytvořit nájemní smlouvu',
+          href: '/najem',
         }}
         trustBox={{
           generatorSuitable:
@@ -41,10 +41,10 @@ export default function VypovedZNajmuBytu2026Page() {
             'Probíhající spor o platnost výpovědi, spor o vrácení kauce po skončení nájmu nebo situace, kde druhá strana zpochybňuje podmínky nájemní smlouvy.',
         }}
         finalAction={{
-          title: 'Potřebujete nájemní smlouvu s přehledným nastavením podmínek?',
-          body: 'Vyplňte formulář online — výstupem je standardizovaný dokument připravený k podpisu, strukturovaný dle platné legislativy.',
-          buttonLabel: 'Vytvořit nájemní smlouvu',
-          href: '/najem',
+          title: 'Potřebujete kromě smlouvy i podklady k předání bytu?',
+          body: 'Balíček pro pronajímatele kombinuje nájemní smlouvu s předávacím protokolem a potvrzením o převzetí kauce — typicky pro nový pronájem od základu.',
+          buttonLabel: 'Otevřít balíček pro pronajímatele',
+          href: '/balicek-pronajimatel',
         }}
         relatedLinks={[
           { href: '/najemni-smlouva', label: 'Nájemní smlouva — průvodce' },

@@ -1,27 +1,23 @@
-﻿import type { Metadata } from 'next';
+﻿import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 
-/**
- * DRAFT — čeká na právní revizi. Viz draft-flexinovela-zakoniku-prace-2026 pro postup.
- */
-export const metadata: Metadata = {
+export const metadata = blogArticlePageMetadata('svarcsystem-osvc-2026', {
   title: 'Švarcsystém v praxi 2026: Kdy hrozí, jaká jsou rizika a jak ho neumožnit',
   description:
     'Co je švarcsystém, jaké znaky závislé práce sleduje inspekce práce a v čem se liší skutečná OSVČ od zastřeného zaměstnance. Praktický průvodce pro OSVČ i odběratele.',
-  robots: { index: false, follow: false },
-};
+});
 
-export default function DraftSvarcsystemPage() {
+export default function SvarcsystemOsvc2026Page() {
   return (
     <ArticlePageLayout
       category="Práce a podnikání"
       readTime="10 min"
-      dateTime="2026-05-16"
-      dateLabel="16. května 2026"
-      dateModified="2026-05-16"
-      dateModifiedLabel="16. května 2026"
+      dateTime="2026-05-29"
+      dateLabel="29. května 2026"
+      dateModified="2026-05-29"
+      dateModifiedLabel="29. května 2026"
       breadcrumbLabel="Švarcsystém 2026"
-      slug="draft-svarcsystem-osvc-2026"
+      slug="svarcsystem-osvc-2026"
       title="Švarcsystém v praxi 2026: Kdy hrozí, jaká jsou rizika a jak ho neumožnit"
       intro="Pojem švarcsystém se v posledních letech vrátil do středu pozornosti inspekce práce. Jde o zastírání pracovněprávního vztahu fakturací mezi OSVČ a odběratelem — formálně dva podnikatelé, fakticky zaměstnanec a zaměstnavatel. Tento průvodce shrnuje, jaké znaky kontroly sledují, jaká hrozí sankce a jak v praxi rozlišit zdravou B2B spolupráci od zastřeného zaměstnání."
       toc={[
@@ -54,6 +50,7 @@ export default function DraftSvarcsystemPage() {
         { href: '/spoluprace', label: '🤝 Smlouva o spolupráci' },
         { href: '/sluzby', label: '💼 Smlouva o poskytování služeb' },
         { href: '/blog/smlouva-o-spolupraci-2026', label: '📘 Smlouva o spolupráci — průvodce' },
+        { href: '/blog/flexinovela-zakoniku-prace-2026', label: '📘 Flexinovela zákoníku práce' },
         { href: '/blog/dpp-dpc-porovnani-2026', label: '⚖️ DPP nebo DPČ — porovnání' },
         { href: '/slovnik#svarcsystem', label: '📖 Slovník: Švarcsystém' },
       ]}
@@ -107,7 +104,7 @@ export default function DraftSvarcsystemPage() {
             },
             {
               t: 'Jeden hlavní odběratel',
-              d: 'OSVČ pracuje fakticky jen pro jednoho zadavatele a 100 % jeho příjmu pochází z této spolupráce. Jde o velmi silný indicial znak — skutečná OSVČ má obvykle více klientů (i kdyby jeden výrazně převažoval).',
+              d: 'OSVČ pracuje fakticky jen pro jednoho zadavatele a většina příjmu pochází z této spolupráce. Sám o sobě neznamená automaticky švarcsystém, ale patří mezi silné indiciální znaky — inspekce posuzuje vztah v souhrnu, ne podle jediného kritéria.',
             },
             {
               t: 'Zákaz konkurence, výhradní vztah',
@@ -173,7 +170,12 @@ export default function DraftSvarcsystemPage() {
         <ul className="mb-5 space-y-2 text-slate-400">
           <li className="flex items-start gap-2">
             <span className="mt-1 flex-shrink-0 text-red-500">•</span>
-            <span>Pokuty od inspekce práce řádově ve statisících až milionech korun (právnické osoby).</span>
+            <span>
+              Pokuta za umožnění nelegální práce u právnické osoby nebo podnikající fyzické
+              osoby může dosáhnout až <strong className="text-slate-300">10 mil. Kč</strong>,
+              s minimem <strong className="text-slate-300">50 000 Kč</strong>. K tomu hrozí
+              doměrek pojistného, penále a úroky z prodlení.
+            </span>
           </li>
           <li className="flex items-start gap-2">
             <span className="mt-1 flex-shrink-0 text-red-500">•</span>

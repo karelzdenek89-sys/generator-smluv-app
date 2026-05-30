@@ -67,6 +67,14 @@ const nextConfig: NextConfig = {
       { source: '/ru/:path*', destination: '/en/:path*', permanent: true },
       { source: '/de', destination: '/en', permanent: true },
       { source: '/de/:path*', destination: '/en/:path*', permanent: true },
+      { source: '/blog/pracovni-smlouva-2024', destination: '/blog/pracovni-smlouva-2026', permanent: true },
+      { source: '/blog/podnajemni-smlouva-2024', destination: '/blog/podnajemni-smlouva-2026', permanent: true },
+      {
+        source: '/blog/power-of-attorney-czech-republic',
+        destination: '/blog/expat/power-of-attorney-czech-republic-guide-en',
+        permanent: true,
+      },
+      { source: '/sda', destination: '/nda-smlouva', permanent: true },
     ];
   },
 };

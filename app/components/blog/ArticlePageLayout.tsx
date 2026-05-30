@@ -198,6 +198,7 @@ export default function ArticlePageLayout({
               buttonLabel={primaryAction.buttonLabel}
               href={primaryAction.href}
               eyebrow={ui.primaryCtaEyebrow}
+              articleSlug={slug}
             />
           </div>
         ) : null}
@@ -222,6 +223,20 @@ export default function ArticlePageLayout({
 
       {children}
 
+      {primaryAction ? (
+        <div className="my-10">
+          <ArticleInlineCta
+            title={primaryAction.title}
+            body="Pokračujte rovnou do generátoru — údaje vyplníte za pár minut a dokument si stáhnete jako PDF."
+            buttonLabel={primaryAction.buttonLabel}
+            href={primaryAction.href}
+            variant="subtle"
+            eyebrow="Pokračovat k dokumentu"
+            articleSlug={slug}
+          />
+        </div>
+      ) : null}
+
       <ArticleTrustBox
         generatorSuitable={trustBox.generatorSuitable}
         lawyerSuitable={trustBox.lawyerSuitable}
@@ -240,6 +255,7 @@ export default function ArticlePageLayout({
           href={finalAction.href}
           variant="subtle"
           eyebrow={ui.secondaryCtaEyebrow}
+          articleSlug={slug}
         />
       ) : null}
 
@@ -256,6 +272,7 @@ export default function ArticlePageLayout({
               eventParams={{
                 source: 'blog_article',
                 surface: 'blog_article',
+                article_slug: slug,
                 cta_type: 'related_link',
               }}
               className="rounded-xl border border-white/8 bg-white/3 px-4 py-2 text-sm text-slate-400 transition hover:border-white/15 hover:text-white"
