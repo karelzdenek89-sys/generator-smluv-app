@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import ContractGridPremium from '@/app/components/ContractGridPremium';
+import ExpatEntryLinks from '@/app/components/ExpatEntryLinks';
 import LanguageSwitcher from '@/app/components/LanguageSwitcher';
 import { SEO_LANDINGS, CLUSTER_LABELS, type ClusterKey } from '@/lib/internal-links';
 import { FOREIGN_LOCALES, LOCALE_META } from '@/lib/i18n/locales';
@@ -109,20 +110,6 @@ const softwareSchema = {
   },
 };
 
-const languageLinks = FOREIGN_LOCALES.map((locale) => {
-  const meta = LOCALE_META[locale];
-  return {
-    href: `/${meta.segment}`,
-    flag: meta.flag,
-    label: meta.nativeName,
-    ariaLabel:
-      locale === 'en'
-        ? 'Přejít na anglický přehled smluv'
-        : 'Перейти до українського огляду договорів',
-  };
-});
-
-
 export default function Home() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#040c1a] text-slate-200">
@@ -169,6 +156,16 @@ export default function Home() {
             </Link>
             <LanguageSwitcher current="cs" variant="desktop" />
           </div>
+
+          <div className="flex items-center gap-2 md:hidden">
+            <Link
+              href="/blog"
+              className="rounded-lg border border-white/10 px-2.5 py-1.5 text-[11px] font-semibold text-slate-400 hover:text-white"
+            >
+              Blog
+            </Link>
+            <LanguageSwitcher current="cs" variant="desktop" />
+          </div>
         </nav>
 
         <div className="relative z-10 mx-auto w-full max-w-7xl px-6 md:px-10">
@@ -177,19 +174,7 @@ export default function Home() {
               <span className="font-semibold text-white">Potřebujete smlouvu v cizím jazyce?</span>
               <span className="text-slate-400">Потрібен договір іншою мовою?</span>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {languageLinks.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  aria-label={item.ariaLabel}
-                  className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-[#c9a852] transition-colors hover:border-[#c9a852]/50 hover:bg-[#c9a852]/10 hover:text-[#f4df8f]"
-                >
-                  <span className="text-sm leading-none" aria-hidden="true">{item.flag}</span>
-                  {item.label}
-                </Link>
-              ))}
-            </div>
+            <ExpatEntryLinks showBlogLink />
           </div>
         </div>
 
@@ -330,6 +315,24 @@ export default function Home() {
             </p>
           </div>
           <ContractGridPremium />
+
+          <div
+            className="mt-10 rounded-2xl border border-[#c9a852]/25 bg-[#0c1426]/90 p-6 md:p-8"
+            aria-labelledby="expat-catalog-heading"
+          >
+            <p className="site-kicker mb-2">For foreigners · Для іноземців</p>
+            <h3
+              id="expat-catalog-heading"
+              className="font-serif italic text-2xl font-bold text-white md:text-3xl"
+            >
+              Jste cizinec v ČR? Formuláře s nápovědou v angličtině nebo ukrajinštině
+            </h3>
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">
+              Přehled hlavních smluv (nájem, práce, auto, plná moc) s vysvětlením v cizím jazyce.
+              PDF zůstává v češtině; u vybraných smluv může být přiložen orientační překlad (ne úřední).
+            </p>
+            <ExpatEntryLinks className="mt-5 flex flex-wrap gap-2" showBlogLink />
+          </div>
         </section>
 
         <div className="my-20 h-px bg-gradient-to-r from-transparent via-[#c9a852]/20 to-transparent md:my-24" />

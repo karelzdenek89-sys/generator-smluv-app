@@ -47,8 +47,12 @@ export default function SvarcsystemOsvc2026Page() {
           'Probíhající kontrola inspekce práce, hrozící sankce, retrospektivní překvalifikace dlouhodobé spolupráce, řešení dopadů na pojistné a daně. Náročnější otázky kolem řetězení dohod a švarcsystému patří k advokátovi.',
       }}
       relatedLinks={[
-        { href: '/spoluprace', label: '🤝 Smlouva o spolupráci' },
+        { href: '/spoluprace', label: '🤝 Smlouva o spolupráci — formulář' },
         { href: '/sluzby', label: '💼 Smlouva o poskytování služeb' },
+        { href: '/dpp', label: '⚙️ DPP — formulář' },
+        { href: '/pracovni', label: '👔 Pracovní smlouva — formulář' },
+        { href: '/blog/expat/dependent-work-b2b-czechia-2026-guide-en', label: '🇬🇧 English guide (expats)' },
+        { href: '/blog/expat/dependent-work-b2b-czechia-2026-guide-ua', label: '🇺🇦 Український гід' },
         { href: '/blog/smlouva-o-spolupraci-2026', label: '📘 Smlouva o spolupráci — průvodce' },
         { href: '/blog/flexinovela-zakoniku-prace-2026', label: '📘 Flexinovela zákoníku práce' },
         { href: '/blog/dpp-dpc-porovnani-2026', label: '⚖️ DPP nebo DPČ — porovnání' },
@@ -278,7 +282,9 @@ export default function SvarcsystemOsvc2026Page() {
             </span>
             <span>
               <strong className="text-slate-300">Více klientů</strong> — kde to lze, OSVČ
-              ať si udržuje portfolio klientů. Jeden klient přes 80 % příjmů je rizikový.
+              ať si udržuje portfolio klientů. Jeden klient tvořící většinu příjmů není sám
+              o sobě nelegální, ale v kombinaci s pokyny, pevnou pracovní dobou a začleněním
+              do týmu zvyšuje riziko překvalifikace.
             </span>
           </li>
           <li className="flex items-start gap-3">

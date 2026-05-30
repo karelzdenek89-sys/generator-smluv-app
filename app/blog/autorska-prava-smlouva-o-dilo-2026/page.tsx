@@ -36,10 +36,10 @@ export default function AutorskaPravaSmlouvaODilo2026Page() {
         href: '/smlouva-o-dilo',
       }}
       finalAction={{
-        title: 'Dílo s jasnými autorskými právy',
-        body: 'Strukturovaný formulář pokryje licenční ujednání, výhradnost i odměnu.',
-        buttonLabel: 'Vytvořit dokument',
-        href: '/smlouva-o-dilo',
+        title: 'Spolupráce s agenturou nebo týmem?',
+        body: 'Smlouva o spolupráci pokrývá širší B2B vztah s licenčními a autorskými ujednáními.',
+        buttonLabel: 'Vytvořit smlouvu o spolupráci',
+        href: '/spoluprace',
       }}
       trustBox={{
         generatorSuitable:
@@ -48,8 +48,10 @@ export default function AutorskaPravaSmlouvaODilo2026Page() {
           'Vysokohodnotné softwarové projekty, licence na obrázky a hudbu pro masové šíření, sporné nároky autorů na dodatečnou odměnu, mezinárodní distribuce, kolektivní díla a hromadné správce práv (OSA, INTERGRAM, DILIA).',
       }}
       relatedLinks={[
-        { href: '/smlouva-o-dilo', label: '🛠️ Smlouva o dílo' },
-        { href: '/spoluprace', label: '🤝 Smlouva o spolupráci' },
+        { href: '/smlouva-o-dilo', label: '🛠️ Smlouva o dílo — formulář' },
+        { href: '/spoluprace', label: '🤝 Smlouva o spolupráci — formulář' },
+        { href: '/blog/expat/freelancer-copyright-czechia-2026-guide-en', label: '🇬🇧 English guide (expats)' },
+        { href: '/blog/expat/freelancer-copyright-czechia-2026-guide-ua', label: '🇺🇦 Український гід' },
         { href: '/sluzby', label: '💼 Smlouva o poskytování služeb' },
         { href: '/nda', label: '🔐 NDA — smlouva o mlčenlivosti' },
         { href: '/blog/smlouva-o-dilo-2026', label: '📘 Smlouva o dílo — průvodce' },
@@ -254,12 +256,12 @@ export default function AutorskaPravaSmlouvaODilo2026Page() {
           poskytnout licenci a zda smlouva pokrývá i díla subdodavatelů.
         </p>
         <p className="mb-4 leading-relaxed text-slate-400">
-          U softwaru autorský zákon stanoví zvláštní pravidla. Software vytvořený několika
-          osobami ve společné práci je obvykle <strong className="text-slate-300">
-            kolektivním dílem
-          </strong> — jednotlivé příspěvky se obtížně oddělují. Práva k kolektivnímu dílu
-          vykonává osoba, z jejíhož podnětu a pod jejímž vedením dílo vzniklo, typicky
-          firma jako objednatel.
+          U softwaru vytvořeného více osobami může podle okolností jít o kolektivní dílo,
+          zaměstnanecké dílo, dílo na objednávku nebo kombinaci více samostatných autorských
+          příspěvků. Záleží na konkrétním řízení tvorby, oddělitelnosti příspěvků a smluvním
+          nastavení. U agenturního nebo týmového vývoje je proto zásadní, aby smlouva řešila,
+          kdo je oprávněn licenci poskytnout, zda jsou pokryti subdodavatelé a jaká práva
+          objednatel získává ke zdrojovým kódům, dokumentaci a použitým komponentám.
         </p>
         <p className="leading-relaxed text-slate-400">
           U open-source komponent, které freelancer použije při vývoji, se uplatňují licence
@@ -343,7 +345,10 @@ export default function AutorskaPravaSmlouvaODilo2026Page() {
           </li>
           <li className="flex items-start gap-2">
             <span className="mt-1 flex-shrink-0 text-emerald-500">✓</span>
-            <span>Právo uvést dílo v portfoliu (osobnostní právo, ale stojí za výslovnou klauzuli)</span>
+            <span>
+              Právo uvést dílo v portfoliu sjednat výslovně, zejména pokud výstup obsahuje
+              důvěrné informace klienta
+            </span>
           </li>
           <li className="flex items-start gap-2">
             <span className="mt-1 flex-shrink-0 text-emerald-500">✓</span>

@@ -47,7 +47,9 @@ export default function VicepraceSmlouvaODilo2026Page() {
           'Stavby vyšší hodnoty s veřejnoprávními pravidly, dílo s veřejnou zakázkou, mezinárodní dodavatelé, řešení reklamací po dokončení s vysokou hodnotou škody, exkluzivní vývoj softwaru s licenčními koncepty.',
       }}
       relatedLinks={[
-        { href: '/smlouva-o-dilo', label: '🛠️ Smlouva o dílo' },
+        { href: '/smlouva-o-dilo', label: '🛠️ Smlouva o dílo — formulář' },
+        { href: '/blog/expat/work-contract-variations-czechia-2026-guide-en', label: '🇬🇧 English guide (expats)' },
+        { href: '/blog/expat/work-contract-variations-czechia-2026-guide-ua', label: '🇺🇦 Український гід' },
         { href: '/sluzby', label: '💼 Smlouva o poskytování služeb' },
         { href: '/blog/smlouva-o-dilo-2026', label: '📘 Smlouva o dílo — průvodce' },
         { href: '/blog/smlouva-o-dilo-cena-a-platby', label: '💰 Cena a platby ve smlouvě o dílo' },
@@ -147,7 +149,8 @@ export default function VicepraceSmlouvaODilo2026Page() {
             <span className="mt-1 flex-shrink-0 text-amber-500">•</span>
             <span>
               <strong className="text-slate-300">Vyžádané změny rozsahu</strong> — pokud
-              objednatel požaduje rozšíření, zhotovitel má nárok na úpravu ceny i lhůty.
+              objednatel prokazatelně požaduje rozšíření díla nad původní rozsah, měly by se
+              strany dohodnout na úpravě ceny a lhůty před provedením prací.
             </span>
           </li>
           <li className="flex items-start gap-2">

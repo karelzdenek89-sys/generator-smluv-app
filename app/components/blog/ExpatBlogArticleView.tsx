@@ -182,7 +182,12 @@ export default function ExpatBlogArticleView({ article }: Props) {
         title={article.finalCta.title}
         body={article.finalCta.body}
         buttonLabel={article.finalCta.buttonLabel}
-        href={article.contractKey === 'hub' ? article.expatHubHref : article.builderHref}
+        href={
+          article.finalCta.href ??
+          (article.builderHref === '/en' || article.builderHref === '/ua'
+            ? article.expatHubHref
+            : article.builderHref)
+        }
         variant="subtle"
       />
 

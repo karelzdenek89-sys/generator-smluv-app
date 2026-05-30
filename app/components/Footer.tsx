@@ -38,6 +38,18 @@ export default function Footer() {
               </div>
               <div className="flex flex-col gap-2 text-slate-500">
                 <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
+                <Link href="/en" className="hover:text-white transition-colors">
+                  English — for foreigners
+                </Link>
+                <Link href="/ua" className="hover:text-white transition-colors">
+                  Українська — для іноземців
+                </Link>
+                <Link
+                  href="/blog#expat-guides-heading"
+                  className="hover:text-white transition-colors"
+                >
+                  Expat guides (EN / UA)
+                </Link>
                 <Link href="/slovnik" className="hover:text-white transition-colors">Slovník pojmů</Link>
                 <Link href="/faq" className="hover:text-white transition-colors">Časté dotazy</Link>
                 <Link href="/o-projektu" className="hover:text-white transition-colors">O projektu</Link>

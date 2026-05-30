@@ -48,7 +48,8 @@ export default function EnergetickyStitekNajemne2026Page() {
       }}
       relatedLinks={[
         { href: '/najem', label: '🏠 Nájemní smlouva — formulář' },
-        { href: '/blog/energeticky-stitek-najemne-2026', label: '⚡ Energetický štítek (PENB)' },
+        { href: '/blog/expat/energy-certificate-rental-czechia-2026-guide-en', label: '🇬🇧 English guide (expats)' },
+        { href: '/blog/expat/energy-certificate-rental-czechia-2026-guide-ua', label: '🇺🇦 Український гід' },
         { href: '/blog/kratkodoby-pronajem-airbnb-2026', label: '🏠 Krátkodobý pronájem a Airbnb' },
         { href: '/blog/najemni-smlouva-vzor-2026', label: '📘 Nájemní smlouva — průvodce' },
         { href: '/blog/valorizace-najemneho-2026', label: '📈 Valorizace nájemného' },
@@ -113,7 +114,7 @@ export default function EnergetickyStitekNajemne2026Page() {
           {[
             { c: 'A', l: 'Mimořádně úsporná', d: 'Pasivní a nízkoenergetické budovy s rekuperací, kvalitní izolací.' },
             { c: 'B', l: 'Velmi úsporná', d: 'Nové domy s vysokým standardem zateplení a moderním vytápěním.' },
-            { c: 'C', l: 'Úsporná', d: 'Standard nově stavěných domů (požadavek pro novostavby).' },
+            { c: 'C', l: 'Úsporná', d: 'Úsporná třída, často u novějších nebo dobře rekonstruovaných budov; konkrétní zařazení vždy závisí na výpočtu podle aktuální vyhlášky.' },
             { c: 'D', l: 'Méně úsporná', d: 'Starší domy po částečné rekonstrukci, panelové domy po revitalizaci.' },
             { c: 'E', l: 'Nehospodárná', d: 'Starší nezateplené domy, panelové domy v původním stavu.' },
             { c: 'F', l: 'Velmi nehospodárná', d: 'Starší cihlové domy s minimální izolací, nemoderní vytápění.' },
@@ -135,8 +136,9 @@ export default function EnergetickyStitekNajemne2026Page() {
         </div>
         <p className="mt-5 leading-relaxed text-slate-400">
           Pro nájemce má třída zásadní praktický význam — určuje, kolik bude pravděpodobně
-          platit za energie. Mezi třídou B a třídou F může být rozdíl ve výši ročních
-          nákladů na vytápění v řádu desítek tisíc korun.
+          platit za energie. U větších bytů nebo domů může být rozdíl v ročních nákladech na
+          vytápění významný, někdy i v řádu desítek tisíc korun — záleží na velikosti bytu,
+          typu vytápění a cenách energií.
         </p>
       </section>
 

@@ -48,6 +48,8 @@ export default function KratkodobyPronajemAirbnb2026Page() {
       relatedLinks={[
         { href: '/najem', label: 'Nájemní smlouva — formulář' },
         { href: '/podnajem', label: 'Podnájemní smlouva — formulář' },
+        { href: '/blog/expat/short-term-rental-airbnb-czechia-2026-guide-en', label: '🇬🇧 English guide (expats)' },
+        { href: '/blog/expat/short-term-rental-airbnb-czechia-2026-guide-ua', label: '🇺🇦 Український гід' },
         { href: '/blog/najemni-smlouva-vzor-2026', label: 'Nájemní smlouva 2026 — průvodce' },
         { href: '/blog/podnajemni-smlouva-2026', label: 'Podnájemní smlouva — průvodce' },
         { href: '/blog/chyby-pri-pronajmu-bytu-2026', label: 'Chyby při pronájmu bytu' },
@@ -89,9 +91,10 @@ export default function KratkodobyPronajemAirbnb2026Page() {
           2. Proč nestačí ústní dohoda
         </h2>
         <p className="mb-4 leading-relaxed text-slate-400">
-          U nájmu bytu na dobu určitou delší než rok a u nájmu na dobu neurčitou zákon
-          vyžaduje písemnou formu — jinak smlouva nevznikne. I u kratších nájmů je písemná
-          smlouva praktickým standardem, protože bez ní je těžké prokázat, co strany sjednaly.
+          U nájmu bytu zákon vyžaduje písemnou formu. V praxi je písemná smlouva zásadní
+          hlavně kvůli důkazům o tom, co bylo sjednáno — nájemné, doba nájmu, zákaz nebo
+          povolení podnájmu a pravidla užívání bytu. I u kratších nájmů je písemná smlouva
+          praktickým standardem, protože bez ní je těžké prokázat, co strany sjednaly.
         </p>
         <ul className="space-y-2 text-slate-400">
           <li className="flex items-start gap-2">
@@ -215,8 +218,9 @@ export default function KratkodobyPronajemAirbnb2026Page() {
               1
             </span>
             <span>
-              <strong className="text-slate-300">Mlčení smlouvy o podnájmu</strong> — nájemce
-              může tvrdit, že krátkodobé ubytování smí provozovat.
+              <strong className="text-slate-300">Mlčení smlouvy o krátkodobém ubytování</strong>{' '}
+              — vzniká prostor pro spor, zda šlo o dovolené užívání bytu, podnájem, přenechání
+              třetím osobám nebo porušení účelu nájmu.
             </span>
           </li>
           <li className="flex items-start gap-3">

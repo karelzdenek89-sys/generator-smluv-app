@@ -32,7 +32,7 @@ export type ExpatBlogArticle = {
   toc: { href: string; label: string }[];
   sections: ExpatBlogSection[];
   primaryCta: { title: string; body: string; buttonLabel: string };
-  finalCta: { title: string; body: string; buttonLabel: string };
+  finalCta: { title: string; body: string; buttonLabel: string; href?: string };
   trustBox: { generatorSuitable: string; lawyerSuitable: string };
   disclaimer: { heading: string; body: string; lawyerNote: string };
   ui: {

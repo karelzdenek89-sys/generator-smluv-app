@@ -21,6 +21,7 @@ function topicEn(
     seoLandingHref?: string;
     sections: ExpatBlogSection[];
     primaryCta: ExpatBlogArticle['primaryCta'];
+    finalCta?: ExpatBlogArticle['finalCta'];
     trust: ExpatBlogArticle['trustBox'];
     relatedSlugs: string[];
   },
@@ -57,11 +58,12 @@ function topicEn(
     toc: sections.map((s, i) => ({ href: `#${s.id}`, label: `${i + 1}. ${s.title}` })),
     sections,
     primaryCta: opts.primaryCta,
-    finalCta: {
-      title: opts.primaryCta.title,
-      body: 'Open the English-guided form, fill in your details, and download the Czech PDF after payment.',
-      buttonLabel: opts.primaryCta.buttonLabel,
-    },
+    finalCta:
+      opts.finalCta ?? {
+        title: opts.primaryCta.title,
+        body: 'Open the English-guided form, fill in your details, and download the Czech PDF after payment.',
+        buttonLabel: opts.primaryCta.buttonLabel,
+      },
     trustBox: opts.trust,
     disclaimer: {
       heading: 'Informational content — not legal services',
@@ -95,6 +97,7 @@ function topicUa(
     seoLandingHref?: string;
     sections: ExpatBlogSection[];
     primaryCta: ExpatBlogArticle['primaryCta'];
+    finalCta?: ExpatBlogArticle['finalCta'];
     trust: ExpatBlogArticle['trustBox'];
     relatedSlugs: string[];
   },
@@ -131,11 +134,12 @@ function topicUa(
     toc: sections.map((s, i) => ({ href: `#${s.id}`, label: `${i + 1}. ${s.title}` })),
     sections,
     primaryCta: opts.primaryCta,
-    finalCta: {
-      title: opts.primaryCta.title,
-      body: 'Відкрийте форму українською, заповніть дані та завантажте PDF чеською після оплати.',
-      buttonLabel: opts.primaryCta.buttonLabel,
-    },
+    finalCta:
+      opts.finalCta ?? {
+        title: opts.primaryCta.title,
+        body: 'Відкрийте форму українською, заповніть дані та завантажте PDF чеською після оплати.',
+        buttonLabel: opts.primaryCta.buttonLabel,
+      },
     trustBox: opts.trust,
     disclaimer: {
       heading: 'Інформаційний матеріал — не юридичні послуги',
@@ -172,15 +176,15 @@ export const EXPAT_BLOG_TOPICS_2026: ExpatBlogArticle[] = [
       'employment contract Czechia',
     ],
     readTime: '8 min',
-    builderHref: withLocale('/pracovni', 'en'),
+    builderHref: withLocale('/dpp', 'en'),
     seoLandingHref: getExpatSeoHref('en', 'employment'),
     sections: [
       {
         id: 'timeline',
         title: 'What changed and when',
         paragraphs: [
-          'The flexinovela modernised flexible work arrangements — short-term agreements, remote work and broader information duties for employers.',
-          'Parts of the picture come from the flexinovela itself; other parts from earlier transposition of EU directives on transparent working conditions and work–life balance. When you rely on a single label, details can be missed.',
+          'The 2025 flexinovela changed several Labour Code areas. Some remote-work and information-duty rules also stem from earlier EU-transposition changes, so employers should follow the current Labour Code wording rather than the nickname of the reform.',
+          'When you rely on a single label, details can be missed — always verify the statute text as it applies on the date of your agreement.',
         ],
       },
       {
@@ -205,9 +209,15 @@ export const EXPAT_BLOG_TOPICS_2026: ExpatBlogArticle[] = [
       },
     ],
     primaryCta: {
-      title: 'Create an employment contract or DPP',
-      body: 'English-guided forms produce a Czech PDF with mandatory Labour Code elements for 2026.',
-      buttonLabel: 'Open employment form (EN) →',
+      title: 'Create a DPP agreement (agreement to perform work)',
+      body: 'English-guided DPP form — Czech PDF with schedule, limits and 2026 Labour Code elements.',
+      buttonLabel: 'Open DPP form (EN) →',
+    },
+    finalCta: {
+      title: 'Need a standard employment contract instead?',
+      body: 'Full-time or part-time employment — English guidance, Czech PDF output.',
+      buttonLabel: 'Open employment contract form (EN) →',
+      href: withLocale('/pracovni', 'en'),
     },
     trust: {
       generatorSuitable:
@@ -227,15 +237,15 @@ export const EXPAT_BLOG_TOPICS_2026: ExpatBlogArticle[] = [
       'Реформа трудового законодавства Чехії (flexinovela) набула чинності 1 червня 2025 року. Частина правил для договорів поза класичним трудовим наймом і для дистанційної роботи також пов’язана з ранішою транспозицією директив ЄС. На 2026 рік варто стежити і за flexinovela, і за лімітами для DPP/DPČ.',
     keywords: ['flexinovela Чехія', 'трудовий кодекс 2026', 'DPP іноземці', 'трудовий договір Чехія'],
     readTime: '8 хв',
-    builderHref: withLocale('/pracovni', 'ua'),
+    builderHref: withLocale('/dpp', 'ua'),
     seoLandingHref: getExpatSeoHref('ua', 'employment'),
     sections: [
       {
         id: 'timeline',
         title: 'Що змінилося і коли',
         paragraphs: [
-          'Flexinovela модернізувала гнучкі форми праці — короткі договори, віддалену роботу та ширші інформаційні обов’язки роботодавця.',
-          'Не все походить лише з flexinovela: окремі правила вже були в транспозиційних змінах. Орієнтуйтеся на актуальний текст закону на дату угоди.',
+          'Flexinovela 2025 змінила кілька сфер трудового кодексу. Частина правил для віддаленої роботи та інформаційних обов’язків походить також з ранішої транспозиції директив ЄС — орієнтуйтеся на актуальний текст закону, а не лише на назву реформи.',
+          'Якщо покладатися лише на одну назву, легко пропустити деталі — завжди перевіряйте текст закону на дату укладення договору.',
         ],
       },
       {
@@ -260,9 +270,15 @@ export const EXPAT_BLOG_TOPICS_2026: ExpatBlogArticle[] = [
       },
     ],
     primaryCta: {
-      title: 'Створити трудовий договір або DPP',
-      body: 'Форма українською → PDF чеською з обов’язковими елементами за трудовим кодексом.',
-      buttonLabel: 'Форма працевлаштування (UA) →',
+      title: 'Створити DPP (договір про виконання роботи)',
+      body: 'Форма DPP українською → чеський PDF з розкладом, лімітами та елементами трудового кодексу 2026.',
+      buttonLabel: 'Форма DPP (UA) →',
+    },
+    finalCta: {
+      title: 'Потрібен класичний трудовий договір?',
+      body: 'Повна або неповна зайнятість — підказки українською, PDF чеською.',
+      buttonLabel: 'Форма трудового договору (UA) →',
+      href: withLocale('/pracovni', 'ua'),
     },
     trust: {
       generatorSuitable: 'Типовий трудовий договір або DPP для звичайного найму.',
@@ -378,7 +394,7 @@ export const EXPAT_BLOG_TOPICS_2026: ExpatBlogArticle[] = [
       'Invoicing as a sole trader while working like an employee is a long-standing enforcement priority in Czechia. One major client alone is not automatically illegal — inspectors look at the full picture: instructions, schedule, integration into the team, and economic dependence.',
     keywords: ['Schwarz system Czech Republic', 'OSVČ vs employee Czechia', 'dependent work Czech labour law'],
     readTime: '8 min',
-    builderHref: '/en',
+    builderHref: withLocale('/spoluprace', 'en'),
     sections: [
       {
         id: 'what-it-is',
@@ -405,9 +421,15 @@ export const EXPAT_BLOG_TOPICS_2026: ExpatBlogArticle[] = [
       },
     ],
     primaryCta: {
-      title: 'Use the right Czech document type',
-      body: 'Compare employment, DPP and cooperation templates — English guidance, Czech PDF output.',
-      buttonLabel: 'Expat contract overview (EN) →',
+      title: 'Structure B2B cooperation in writing',
+      body: 'Cooperation agreement (smlouva o spolupráci) — scope, deliverables, acceptance and liability in Czech.',
+      buttonLabel: 'Open cooperation agreement form (EN) →',
+    },
+    finalCta: {
+      title: 'Is it actually employment?',
+      body: 'If the relationship looks like dependent work, use an employment contract or DPP instead of invoicing as OSVČ.',
+      buttonLabel: 'Open DPP form (EN) →',
+      href: withLocale('/dpp', 'en'),
     },
     trust: {
       generatorSuitable: 'Clear B2B cooperation with defined outputs; standard employment or DPP where appropriate.',
@@ -425,7 +447,7 @@ export const EXPAT_BLOG_TOPICS_2026: ExpatBlogArticle[] = [
       'Фактування як OSVČ при фактичному режимі найму — пріоритет перевірок у Чехії. Один клієнт сам по собі не означає автоматично порушення; оцінюється сукупність ознак: інструкції, графік, інтеграція в команду, економічна залежність.',
     keywords: ['шварц-система Чехія', 'OSVČ чи найм', 'залежна праця Чехія'],
     readTime: '8 хв',
-    builderHref: '/ua',
+    builderHref: withLocale('/spoluprace', 'ua'),
     sections: [
       {
         id: 'what-it-is',
@@ -452,15 +474,21 @@ export const EXPAT_BLOG_TOPICS_2026: ExpatBlogArticle[] = [
       },
     ],
     primaryCta: {
-      title: 'Обрати правильний тип договору',
-      body: 'Порівняйте трудовий договір, DPP та співпрацю — форма українською, PDF чеською.',
-      buttonLabel: 'Огляд договорів (UA) →',
+      title: 'Оформити B2B співпрацю письмово',
+      body: 'Договір про співпрацю — обсяг, результат, приймання та відповідальність чеською.',
+      buttonLabel: 'Форма договору співпраці (UA) →',
+    },
+    finalCta: {
+      title: 'Це фактично найм?',
+      body: 'Якщо відносини схожі на залежну працю — трудовий договір або DPP замість рахунків OSVČ.',
+      buttonLabel: 'Форма DPP (UA) →',
+      href: withLocale('/dpp', 'ua'),
     },
     trust: {
       generatorSuitable: 'Чітка B2B співпраця з результатом; типовий найм або DPP за потреби.',
       lawyerSuitable: 'Перевірка інспекції, перекваліфікація, великі донарахування.',
     },
-    relatedSlugs: [HUB_UA, 'employment-contract-czech-republic-guide-ua'],
+    relatedSlugs: [HUB_UA, 'employment-contract-czech-republic-guide-ua', 'dpp-agreement-czech-republic-guide-ua'],
   }),
 
   topicEn('hub', {
@@ -500,7 +528,7 @@ export const EXPAT_BLOG_TOPICS_2026: ExpatBlogArticle[] = [
       generatorSuitable: 'Typical freelance or trade projects with a defined deliverable and price model.',
       lawyerSuitable: 'High-value construction, public procurement, major defect claims.',
     },
-    relatedSlugs: [HUB_EN],
+    relatedSlugs: [HUB_EN, 'freelancer-copyright-czechia-2026-guide-en'],
   }),
 
   topicUa('hub', {
@@ -540,7 +568,7 @@ export const EXPAT_BLOG_TOPICS_2026: ExpatBlogArticle[] = [
       generatorSuitable: 'Типовий підряд з визначеним результатом і моделлю ціни.',
       lawyerSuitable: 'Великі будівельні проєкти, публічні закупівлі, серйозні рекламації.',
     },
-    relatedSlugs: [HUB_UA],
+    relatedSlugs: [HUB_UA, 'freelancer-copyright-czechia-2026-guide-ua'],
   }),
 
   topicEn('hub', {
@@ -576,11 +604,17 @@ export const EXPAT_BLOG_TOPICS_2026: ExpatBlogArticle[] = [
       body: 'Use smlouva o dílo for defined deliverables; add cooperation/NDA where needed for broader projects.',
       buttonLabel: 'Open work contract form →',
     },
+    finalCta: {
+      title: 'Agency or ongoing collaboration?',
+      body: 'Cooperation agreement when the relationship is broader than a single deliverable.',
+      buttonLabel: 'Open cooperation agreement form (EN) →',
+      href: withLocale('/spoluprace', 'en'),
+    },
     trust: {
       generatorSuitable: 'Websites, graphics, copy, standard software modules with clear deliverables.',
       lawyerSuitable: 'Mass distribution, music/stock assets, disputes over additional author remuneration.',
     },
-    relatedSlugs: [HUB_EN],
+    relatedSlugs: [HUB_EN, 'work-contract-variations-czechia-2026-guide-en'],
   }),
 
   topicUa('hub', {
@@ -616,11 +650,17 @@ export const EXPAT_BLOG_TOPICS_2026: ExpatBlogArticle[] = [
       body: 'Smlouva o dílo для результату; за потреби — співпраця та NDA для ширших проєктів.',
       buttonLabel: 'Форма договору підряду →',
     },
+    finalCta: {
+      title: 'Співпраця з агентством?',
+      body: 'Договір про співпрацю, коли відносини ширші за один результат.',
+      buttonLabel: 'Форма договору співпраці (UA) →',
+      href: withLocale('/spoluprace', 'ua'),
+    },
     trust: {
       generatorSuitable: 'Сайти, дизайн, тексти, стандартні IT-модулі з чітким результатом.',
       lawyerSuitable: 'Масове поширення, музика/stock, спори про додаткову винагороду автора.',
     },
-    relatedSlugs: [HUB_UA],
+    relatedSlugs: [HUB_UA, 'work-contract-variations-czechia-2026-guide-ua'],
   }),
 
   topicEn('lease', {

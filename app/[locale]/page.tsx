@@ -176,10 +176,17 @@ export default async function LocaleLandingPage({ params }: LocalePageProps) {
   return (
     <main className="min-h-screen bg-[#040c1a] text-slate-200">
       <section className="mx-auto max-w-7xl px-6 py-10 md:px-10 md:py-16">
-        <nav className="mb-16 flex items-center justify-between">
+        <nav className="mb-16 flex flex-wrap items-center justify-between gap-4">
           <Link href="/" className="font-serif italic text-lg font-semibold text-white">
             SmlouvaHned.cz
           </Link>
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              href="/blog#expat-guides-heading"
+              className="text-xs font-semibold text-slate-400 transition hover:text-white"
+            >
+              {locale === 'en' ? 'Blog' : 'Блог'}
+            </Link>
           <div className="flex flex-wrap gap-2 text-xs font-bold uppercase tracking-widest text-slate-500">
             {localeLinks.map((item) => (
               <Link
@@ -197,6 +204,7 @@ export default async function LocaleLandingPage({ params }: LocalePageProps) {
                 {item.label}
               </Link>
             ))}
+          </div>
           </div>
         </nav>
 

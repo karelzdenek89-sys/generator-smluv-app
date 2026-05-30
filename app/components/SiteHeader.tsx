@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import LanguageSwitcher from '@/app/components/LanguageSwitcher';
 
 const navItems = [
   { href: '/#smlouvy', label: 'Smlouvy' },
@@ -34,6 +35,7 @@ export default function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <LanguageSwitcher current="cs" variant="desktop" />
           <Link
             href="/zakaznicka-zona"
             className="hidden rounded-lg border border-[#c9a852]/25 px-3 py-2 text-xs font-semibold text-[#c9a852] transition hover:border-[#c9a852]/55 hover:text-[#f2d58a] sm:inline-flex"

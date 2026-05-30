@@ -50,6 +50,8 @@ export default function FlexinovelaZakonikuPrace2026Page() {
       relatedLinks={[
         { href: '/dpp', label: '⚙️ DPP — formulář online' },
         { href: '/pracovni', label: '👔 Pracovní smlouva — formulář' },
+        { href: '/blog/expat/flexinovela-labor-law-czechia-2026-guide-en', label: '🇬🇧 English guide (expats)' },
+        { href: '/blog/expat/flexinovela-labor-law-czechia-2026-guide-ua', label: '🇺🇦 Український гід' },
         { href: '/blog/svarcsystem-osvc-2026', label: '⚠️ Švarcsystém — průvodce' },
         { href: '/blog/dpp-dohoda-provedeni-prace', label: '📘 DPP — průvodce' },
         { href: '/blog/dpp-dpc-porovnani-2026', label: '⚖️ DPP nebo DPČ — porovnání' },
@@ -179,8 +181,9 @@ export default function FlexinovelaZakonikuPrace2026Page() {
         <p className="mb-4 leading-relaxed text-slate-400">
           Dohoda o pracovní činnosti (DPČ) byla od počátku určena pro vztah, který nedosáhne
           parametrů plného úvazku — typicky do poloviny stanovené týdenní pracovní doby
-          (obvykle 20 hodin týdně v průměru za období nejdéle 52 týdnů). Flexinovela u DPČ
-          posílila informační povinnosti a zarovnala některé instituty s pracovním poměrem.
+          (obvykle 20 hodin týdně v průměru za období nejdéle 52 týdnů). V aktuální úpravě DPČ
+          je potřeba počítat s rozšířenými informačními povinnostmi a s přiblížením některých
+          institutů pracovním poměrům.
         </p>
         <ul className="mb-5 space-y-2 text-slate-400">
           <li className="flex items-start gap-2">
@@ -212,9 +215,9 @@ export default function FlexinovelaZakonikuPrace2026Page() {
         </h2>
         <p className="mb-4 leading-relaxed text-slate-400">
           U klasické pracovní smlouvy zůstává jádro stejné — tři podstatné náležitosti (druh
-          práce, místo výkonu, den nástupu) a písemná forma. Flexinovela ale rozšířila okruh
-          informací, které musí zaměstnavatel zaměstnanci sdělit nejpozději v určené lhůtě od
-          vzniku pracovního poměru.
+          práce, místo výkonu, den nástupu) a písemná forma. V aktuální úpravě pracovního
+          poměru musí zaměstnavatel zaměstnanci sdělit širší okruh informací nejpozději v
+          určené lhůtě od vzniku pracovního poměru.
         </p>
         <h3 className="mb-3 text-lg font-black text-white">Co se rozšířilo</h3>
         <ul className="mb-5 space-y-2 text-slate-400">
@@ -247,10 +250,11 @@ export default function FlexinovelaZakonikuPrace2026Page() {
           5. Home office a práce na dálku
         </h2>
         <p className="mb-4 leading-relaxed text-slate-400">
-          Práce na dálku (home office) je po flexinovele upravena výslovně a vyžaduje
-          písemnou dohodu mezi zaměstnavatelem a zaměstnancem. Dohoda by měla obsahovat
-          místo výkonu práce, způsob komunikace, rozvrh, evidenci docházky, otázku nákladů
-          (typicky paušál) a způsob ukončení režimu.
+          V aktuálním znění zákoníku práce je práce na dálku upravena výslovně a vyžaduje
+          písemnou dohodu mezi zaměstnavatelem a zaměstnancem. Tato oblast souvisí hlavně s
+          dřívější transpoziční novelou, nikoli pouze se samotnou flexinovelou účinnou od
+          1. 6. 2025. Dohoda by měla obsahovat místo výkonu práce, způsob komunikace, rozvrh,
+          evidenci docházky, otázku nákladů (typicky paušál) a způsob ukončení režimu.
         </p>
         <p className="leading-relaxed text-slate-400">
           Některé skupiny zaměstnanců (pečující o dítě do určitého věku, těhotné zaměstnankyně,
