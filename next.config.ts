@@ -1,5 +1,6 @@
 import path from 'path';
 import type { NextConfig } from 'next';
+import { LEGACY_EXPAT_BLOG_REDIRECTS } from './lib/seo/legacy-expat-blog-redirects';
 
 const securityHeaders = [
   { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
@@ -75,6 +76,7 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       { source: '/sda', destination: '/nda-smlouva', permanent: true },
+      ...LEGACY_EXPAT_BLOG_REDIRECTS,
     ];
   },
 };

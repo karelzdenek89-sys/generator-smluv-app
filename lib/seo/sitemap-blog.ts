@@ -23,6 +23,12 @@ const PILLAR_SLUGS = new Set([
   'plna-moc-zastupovani-cizincu-2026',
   'prodej-auta-prepis-cizinec-2026',
   'podnajem-vs-najem-cizinci-2026',
+  'flexinovela-zakoniku-prace-2026',
+  'energeticky-stitek-najemne-2026',
+  'svarcsystem-osvc-2026',
+  'viceprace-smlouva-o-dilo-2026',
+  'autorska-prava-smlouva-o-dilo-2026',
+  'kratkodoby-pronajem-airbnb-2026',
 ]);
 
 export function czechBlogSitemapEntries(): MetadataRoute.Sitemap {
