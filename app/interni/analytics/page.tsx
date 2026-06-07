@@ -1,15 +1,13 @@
 import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import {
   ANALYTICS_REPORTING_WINDOW_DAYS,
   getAnalyticsDashboardData,
   type AnalyticsDashboardData,
 } from '@/lib/analytics-reporting';
 import {
-  createInternalReportingCookieValue,
-  getInternalReportingCookieOptions,
   INTERNAL_REPORTING_COOKIE,
   isValidInternalReportingCookie,
   reportingSecretMatches,
@@ -451,12 +449,8 @@ export default async function InternalAnalyticsPage({
     notFound();
   }
 
-  if (secretFromQuery && !secretFromCookie) {
-    cookieStore.set(
-      INTERNAL_REPORTING_COOKIE,
-      createInternalReportingCookieValue(expectedSecret),
-      getInternalReportingCookieOptions(),
-    );
+  if (secretFromQuery && !secretFromCookie && params.secret) {
+    redirect(`/interni/analytics/auth?secret=${encodeURIComponent(params.secret)}`);
   }
 
   let data: AnalyticsDashboardData | null = null;
