@@ -71,6 +71,8 @@ function testCheckoutRouteCoverage() {
   assert.match(checkout, /normalizeCheckoutAddons/);
   assert.match(checkout, /price_data/);
   assert.match(checkout, /getCheckoutAddonMetadata/);
+  assert.match(checkout, /stripe_checkout_started/);
+  assert.match(checkout, /recordAnalyticsEvent/);
   assert.match(checkout, /Redis draft save failed/);
   assert.doesNotMatch(checkout, /Redis draft save fail-open/);
 }

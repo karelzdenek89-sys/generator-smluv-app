@@ -18,7 +18,6 @@ import {
   isExpatLeaseLocale,
 } from '@/lib/i18n/lease-preview';
 import { getThematicPackageConfig } from '@/lib/packages';
-import { trackEvent } from '@/lib/analytics';
 
 type LeaseFormData = {
   landlordName: string;
@@ -386,19 +385,6 @@ function LeaseBuilderContent() {
       if (!res.ok || !result?.url) {
         throw new Error(result?.error || ui.validation.checkoutError);
       }
-
-      const priceBand = packageConfig ? '299' : formData.tier === 'complete' ? '199' : '99';
-      trackEvent('stripe_checkout_started', {
-        pathname: '/najem',
-        source: 'checkout_modal',
-        surface: 'checkout_modal',
-        contract_type: 'lease',
-        tier: formData.tier,
-        package_key: packageConfig?.key,
-        price_band: priceBand,
-        add_on_keys: addOns.join(','),
-        selected_addons_count: addOns.length,
-      });
 
       window.location.href = result.url;
     } catch (error) {

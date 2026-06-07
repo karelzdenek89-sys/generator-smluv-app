@@ -26,6 +26,7 @@ import {
   getCheckoutAddonMetadata,
   normalizeCheckoutAddons,
 } from '@/lib/checkout-addons';
+import { recordAnalyticsEvent } from '@/lib/analytics-server';
 
 export const runtime = 'nodejs';
 
@@ -71,6 +72,11 @@ async function tryRateLimit(ip: string): Promise<boolean> {
 }
 
 // ── Hlavní handler ────────────────────────────────────────────────────────────
+
+function priceBandForCheckout(tier: 'basic' | 'complete', packageKey?: string | null): '99' | '199' | '299' {
+  if (packageKey) return '299';
+  return tier === 'basic' ? '99' : '199';
+}
 
 export async function POST(req: Request) {
   try {
@@ -245,6 +251,17 @@ export async function POST(req: Request) {
     const session = await stripe.checkout.sessions.create(sessionParams);
 
     if (!session.url) throw new Error('Stripe nevrátil URL pro checkout.');
+
+    await recordAnalyticsEvent('stripe_checkout_started', {
+      source: 'checkout_modal',
+      surface: 'checkout_endpoint',
+      contract_type: contractType,
+      tier: checkoutTier === 'basic' ? 'basic' : 'complete',
+      package_key: packageKey ?? undefined,
+      price_band: priceBandForCheckout(checkoutTier, packageKey),
+      add_on_keys: addOns.join(','),
+      selected_addons_count: addOns.length,
+    });
 
     return NextResponse.json({ url: session.url });
 
