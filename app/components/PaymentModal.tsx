@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { PRICING_TIER_CONFIG } from '@/lib/pricing';
 import { getEffectiveIncludedItems, getThematicPackageConfig } from '@/lib/packages';
@@ -51,6 +51,7 @@ export default function PaymentModal({
   const pathname = usePathname();
   const [gdprConsent, setGdprConsent] = useState(false);
   const [selectedAddOns, setSelectedAddOns] = useState<CheckoutAddonKey[]>([]);
+  const modalOpenTrackedRef = useRef(false);
   const packageConfig = getThematicPackageConfig(packageKey);
   const locale = normalizeLocale(lang);
   const copy = paymentCopy;
@@ -62,7 +63,15 @@ export default function PaymentModal({
   const localizedPackage = packageConfig
     ? getLocalizedPackagePresentation(packageConfig.key, locale)
     : null;
-  const price = `${((packageConfig ? packageConfig.priceCzk : PRICING_TIER_CONFIG[tier].priceCzk) + getCheckoutAddonsTotalCzk(validSelectedAddOns)).toLocaleString('cs-CZ')} Kč`;
+  const basePriceCzk = packageConfig
+    ? packageConfig.priceCzk
+    : PRICING_TIER_CONFIG[tier].priceCzk;
+  const addonsTotalCzk = getCheckoutAddonsTotalCzk(validSelectedAddOns);
+  const totalPriceCzk = basePriceCzk + addonsTotalCzk;
+  const checkoutPrice = `${totalPriceCzk.toLocaleString('cs-CZ')} Kč`;
+  const validAddOnKeys = validSelectedAddOns.join(',');
+  const analyticsDefaults = getAnalyticsDefaultsForPathname(pathname ?? '/');
+  const priceBand = packageConfig ? '299' : tier === 'complete' ? '199' : '99';
 
   // Zavření přes Escape
   useEffect(() => {
@@ -77,14 +86,42 @@ export default function PaymentModal({
     return () => { document.body.style.overflow = ''; };
   }, []);
 
-  const basePriceCzk = packageConfig
-    ? packageConfig.priceCzk
-    : PRICING_TIER_CONFIG[tier].priceCzk;
-  const addonsTotalCzk = getCheckoutAddonsTotalCzk(validSelectedAddOns);
-  const totalPriceCzk = basePriceCzk + addonsTotalCzk;
-  const checkoutPrice = `${totalPriceCzk.toLocaleString('cs-CZ')} Kč`;
-  const analyticsDefaults = getAnalyticsDefaultsForPathname(pathname ?? '/');
-  const priceBand = packageConfig ? '299' : tier === 'complete' ? '199' : '99';
+  useEffect(() => {
+    if (modalOpenTrackedRef.current) return;
+    modalOpenTrackedRef.current = true;
+
+    trackEvent('builder_checkout_modal_open', {
+      ...analyticsDefaults,
+      source: 'builder',
+      surface: 'checkout_modal',
+      contract_type: analyticsDefaults.contract_type,
+      tier,
+      package_key: packageConfig?.key,
+      price_band: priceBand,
+      add_on_keys: validAddOnKeys,
+      addons_total_czk: addonsTotalCzk,
+      base_price_czk: basePriceCzk,
+      total_price_czk: totalPriceCzk,
+      selected_addons_count: validSelectedAddOns.length,
+    });
+  }, [
+    addonsTotalCzk,
+    analyticsDefaults,
+    basePriceCzk,
+    packageConfig?.key,
+    priceBand,
+    tier,
+    totalPriceCzk,
+    validAddOnKeys,
+    validSelectedAddOns.length,
+  ]);
+
+  const instantDownloadNote =
+    locale === 'en'
+      ? 'PDF will be available immediately after payment. No registration and no subscription.'
+      : locale === 'ua'
+        ? 'PDF буде доступний одразу після оплати. Без реєстрації та без підписки.'
+        : 'PDF bude dostupné ihned po zaplacení. Bez registrace a bez předplatného.';
 
   const toggleAddOn = (key: CheckoutAddonKey) => {
     const wasSelected = selectedAddOns.includes(key);
@@ -365,6 +402,13 @@ export default function PaymentModal({
               </div>
             )}
 
+            <div className="mb-5 rounded-xl border border-emerald-400/15 bg-emerald-400/8 px-4 py-3 text-xs leading-6 text-emerald-100">
+              {copy?.secureNote ?? 'Platba probíhá bezpečně přes Stripe. Údaje karty se na naše servery nedostávají.'}
+              <span className="block text-emerald-100/80">
+                {instantDownloadNote}
+              </span>
+            </div>
+
             <div className="mt-auto space-y-4">
               {/* Souhlas s OP + vzdání se odstoupení */}
               <label className="flex cursor-pointer items-start gap-3 group">
@@ -405,7 +449,7 @@ export default function PaymentModal({
                     tier,
                     package_key: packageConfig?.key,
                     price_band: priceBand,
-                    add_on_keys: validSelectedAddOns.join(','),
+                    add_on_keys: validAddOnKeys,
                     addons_total_czk: addonsTotalCzk,
                     base_price_czk: basePriceCzk,
                     total_price_czk: totalPriceCzk,
@@ -422,7 +466,7 @@ export default function PaymentModal({
                     {copy?.processing ?? 'Přesměrování na platbu…'}
                   </span>
                 ) : (
-                  copy ? `${copy.payCtaWithPrice} — ${price} →` : `Odemknout a stáhnout — ${price} →`
+                  copy ? `${copy.payCtaWithPrice} — ${checkoutPrice} →` : `Odemknout a stáhnout — ${checkoutPrice} →`
                 )}
               </button>
 

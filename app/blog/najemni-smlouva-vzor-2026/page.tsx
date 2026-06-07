@@ -79,21 +79,23 @@ export default function NajemniSmlouvaVzor2026Page() {
           nájmu bytu nebo domu. Řídí se zejména ustanoveními <strong className="text-slate-300">§ 2201 a násl. zákona č. 89/2012 Sb. (občanský zákoník)</strong>.
         </p>
         <p className="mb-4 text-slate-400 leading-relaxed">
-          Zákon písemnou formu nájemní smlouvy přímo nevyžaduje — pokud ji nevyžaduje alespoň jedna ze stran.
-          Přesto je písemná smlouva <strong className="text-slate-300">naprosto zásadní</strong>. Bez ní nemáte žádný
-          důkaz o dohodnutých podmínkách: výši nájemného, kauci, pravidlech nebo délce pronájmu.
+          U nájmu bytu nebo domu zákon písemnou formu vyžaduje. Pokud písemná forma chybí,
+          pronajímatel nemůže vůči nájemci namítat neplatnost jen z tohoto důvodu.
+          Písemná smlouva je proto <strong className="text-slate-300">naprosto zásadní</strong> pro obě strany:
+          zachycuje výši nájemného, jistotu, pravidla užívání i délku nájmu.
         </p>
 
         <h3 className="mb-3 mt-6 text-lg font-black text-white">Kdy je písemná forma povinná?</h3>
         <ul className="mb-4 space-y-2 text-slate-400">
-          <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span>Pokud to alespoň jedna ze stran požaduje</li>
-          <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span>Pokud je nájem sjednán na dobu delší než jeden rok</li>
-          <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span>V praxi: vždy — ochrana obou stran to vyžaduje</li>
+          <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span>U nájmu bytu nebo domu podle § 2237 OZ</li>
+          <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span>Vždy, když potřebujete prokazatelně doložit nájemné, jistotu, dobu nájmu a pravidla užívání</li>
+          <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span>V praxi: u každého dlouhodobějšího bydlení</li>
         </ul>
 
         <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm text-slate-400 leading-relaxed">
-          <strong className="text-blue-400">📌 Praktická poznámka:</strong> I při krátkodobém pronájmu, kde zákon písemnou smlouvu nevyžaduje,
-          je písemná dohoda silně doporučena. Ústní dohody jsou v případě sporu téměř neprokazatelné.
+          <strong className="text-blue-400">📌 Praktická poznámka:</strong> U běžného nájmu bytu nebo domu berte písemnou
+          smlouvu jako nutnost. Ústní dohody jsou v případě sporu obtížně prokazatelné a často neobsahují všechny
+          důležité podmínky.
         </div>
       </section>
 
@@ -103,7 +105,7 @@ export default function NajemniSmlouvaVzor2026Page() {
         <p className="mb-6 text-slate-400 leading-relaxed">
           Zákon stanoví povinné náležitosti, bez nichž je smlouva neplatná nebo vymahatelnost
           jejích podmínek sporná. Zároveň existuje řada ustanovení, která zákon nevyžaduje,
-          ale která vás v praxi <strong className="text-slate-300">zásadně chrání</strong>.
+          ale která v praxi <strong className="text-slate-300">výrazně pomáhají předcházet sporům</strong>.
         </p>
 
         <h3 className="mb-3 text-lg font-black text-white">Povinné náležitosti dle OZ</h3>
@@ -130,8 +132,8 @@ export default function NajemniSmlouvaVzor2026Page() {
           <li className="flex items-start gap-3">
             <span className="mt-1 flex-shrink-0 text-amber-500 font-bold">✓</span>
             <div>
-              <strong className="text-slate-300">Kauce a podmínky vrácení</strong> — výše (max. trojnásobek nájemného dle § 2254 OZ),
-              lhůta pro vrácení, na co ji lze použít.
+              <strong className="text-slate-300">Kauce a podmínky vrácení</strong> — výše jistoty a případných smluvních pokut
+              musí v souhrnu respektovat limit trojnásobku měsíčního nájemného dle § 2254 OZ.
             </div>
           </li>
           <li className="flex items-start gap-3">
@@ -145,7 +147,7 @@ export default function NajemniSmlouvaVzor2026Page() {
             <span className="mt-1 flex-shrink-0 text-amber-500 font-bold">✓</span>
             <div>
               <strong className="text-slate-300">Pravidla užívání</strong> — zvířata, kouření, podnájem, Airbnb, maximální počet osob, podnikání v bytě.
-              Bez těchto pravidel nájemce může dělat cokoliv zákon nezakazuje.
+              U zvířat nejde o jednoduchý absolutní zákaz: nájemce je může chovat, pokud tím nepůsobí nepřiměřené obtíže.
             </div>
           </li>
           <li className="flex items-start gap-3">
@@ -157,8 +159,8 @@ export default function NajemniSmlouvaVzor2026Page() {
           <li className="flex items-start gap-3">
             <span className="mt-1 flex-shrink-0 text-amber-500 font-bold">✓</span>
             <div>
-              <strong className="text-slate-300">Smluvní pokuty</strong> — sankce za prodlení s nájmem, porušení pravidel, nevrácení klíčů.
-              Bez smluvní pokuty máte jen zákonné nároky, které jsou těžko vymahatelné.
+              <strong className="text-slate-300">Smluvní pokuty</strong> — sankce za prodlení, porušení pravidel nebo nevrácení klíčů.
+              Musí být přiměřené a u nájmu bytu se spolu s jistotou počítají do limitu podle § 2254 OZ.
             </div>
           </li>
         </ul>
@@ -186,7 +188,7 @@ export default function NajemniSmlouvaVzor2026Page() {
             {
               n: '1',
               title: 'Chybí nebo je nejasná výše kauce',
-              body: 'Mnozí pronajímatelé kauci sjednají, ale zapomínají uvést, za jakých podmínek ji vrátí, na co ji lze použít a v jaké lhůtě. To vede ke sporům po skončení nájmu. Zákon říká, že kauce musí být vrácena do 1 měsíce od skončení nájmu — pokud smlouva nestanoví jinak.',
+              body: 'Mnozí pronajímatelé kauci sjednají, ale zapomínají uvést, za jakých podmínek ji vrátí, na co ji lze použít a jak proběhne vyúčtování. Zákon vyžaduje vrácení jistoty při skončení nájmu, případně započtení řádně specifikovaných dluhů nájemce. Lhůtu a postup vyúčtování je vhodné výslovně upravit ve smlouvě.',
             },
             {
               n: '2',
@@ -230,7 +232,7 @@ export default function NajemniSmlouvaVzor2026Page() {
       {/* ── MID-ARTICLE CTA ─────────────────────── */}
       <ArticleInlineCta
         title="Nechcete chyby řešit dodatečně?"
-        body="Nájemní smlouva na SmlouvaHned pokrývá všechna kritická místa automaticky — kauci, podmínky výpovědi, Airbnb doložku i smluvní pokuty. Vyplníte formulář, stáhnete PDF."
+        body="Nájemní smlouva na SmlouvaHned vás provede kritickými místy — jistotou, podmínkami výpovědi, pravidly užívání, Airbnb doložkou i přiměřenými sankcemi. Vyplníte formulář a po platbě stáhnete PDF."
         buttonLabel="Vytvořit nájemní smlouvu"
         href="/najem"
         articleSlug="najemni-smlouva-vzor-2026"
@@ -244,7 +246,7 @@ export default function NajemniSmlouvaVzor2026Page() {
         <ul className="mb-6 space-y-3 text-slate-400">
           <li className="flex items-start gap-3">
             <span className="mt-1 flex-shrink-0 text-emerald-500">✓</span>
-            <span><strong className="text-slate-300">Vždy požadujte písemnou smlouvu</strong> — i na krátký pronájem. Bez ní nemáte žádnou právní páku.</span>
+            <span><strong className="text-slate-300">Vždy požadujte písemnou smlouvu</strong> — u nájmu bytu nebo domu je zákonem vyžadovaná a zároveň zásadní pro dokazování dohodnutých podmínek.</span>
           </li>
           <li className="flex items-start gap-3">
             <span className="mt-1 flex-shrink-0 text-emerald-500">✓</span>
@@ -256,7 +258,7 @@ export default function NajemniSmlouvaVzor2026Page() {
           </li>
           <li className="flex items-start gap-3">
             <span className="mt-1 flex-shrink-0 text-emerald-500">✓</span>
-            <span><strong className="text-slate-300">Zahrňte smluvní pokuty</strong> — za prodlení s nájmem, za porušení pravidel. Bez sankce je smlouva jen papírem.</span>
+            <span><strong className="text-slate-300">Smluvní pokuty nastavujte přiměřeně</strong> — u nájmu bytu se jejich souhrn spolu s jistotou počítá do limitu dle § 2254 OZ.</span>
           </li>
           <li className="flex items-start gap-3">
             <span className="mt-1 flex-shrink-0 text-emerald-500">✓</span>
@@ -351,15 +353,15 @@ export default function NajemniSmlouvaVzor2026Page() {
       <section id="zaver" className="mb-12 scroll-mt-6">
         <h2 className="mb-4 text-2xl font-black tracking-tight text-white">7. Shrnutí a doporučení</h2>
         <p className="mb-4 text-slate-400 leading-relaxed">
-          Nájemní smlouva je základní dokument každého pronájmu. Správně sestavená vás chrání,
-          špatná nebo neexistující vás může přijít draho.
+          Nájemní smlouva je základní dokument každého pronájmu. Dobře sestavená pomáhá předejít sporům,
+          špatná nebo neexistující může v praxi znamenat zbytečné náklady.
         </p>
         <div className="mb-6 space-y-2">
           {[
             'Vždy uzavírejte písemnou smlouvu — i na krátký pronájem',
             'Nezapomeňte na kauci, podmínky vrácení a pravidla užívání',
             'Vytvořte předávací protokol s fotografiemi při každém předání bytu',
-            'Sjednávejte smluvní pokuty — bez nich smlouva postrádá reálnou vymahatelnost',
+            'Smluvní pokuty sjednávejte přiměřeně a hlídejte souhrnný limit s jistotou',
             'Používejte aktuální smlouvy — legislativa se mění, vzory z roku 2015 nestačí',
             'Pro nestandardní situace (spory, dědictví, komerční pronájem) konzultujte advokáta',
           ].map(t => (

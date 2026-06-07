@@ -276,11 +276,11 @@ const LEASE_FORM_CS: LeaseFormUi = {
       },
       {
         q: 'Je nutná písemná nájemní smlouva?',
-        a: 'Zákon písemnou formu výslovně nevyžaduje, ale silně ji doporučuje. Ústní dohoda je obtížně prokazatelná a v případě sporu může být pro nájemce i pronajímatele nevýhodná.',
+        a: 'U nájmu bytu nebo domu zákon vyžaduje písemnou formu. Pokud písemná forma chybí, pronajímatel nemůže vůči nájemci namítat neplatnost jen z tohoto důvodu. Písemná smlouva je proto zásadní pro obě strany.',
       },
       {
         q: 'Jak vysoká může být kauce?',
-        a: 'Podle § 2254 OZ smí kauce (jistota) činit nejvýše trojnásobek měsíčního nájemného. Pronajímatel ji musí po skončení nájmu vrátit, pokud nájemce nezpůsobil škodu.',
+        a: 'Podle § 2254 OZ nesmí jistota a právo na smluvní pokutu v souhrnu přesáhnout trojnásobek měsíčního nájemného. Po skončení nájmu má pronajímatel jistotu vrátit, případně započíst řádně specifikované dluhy nájemce.',
       },
       {
         q: 'Dostanu dokument ihned po zaplacení?',
@@ -377,7 +377,7 @@ const LEASE_FORM_CS: LeaseFormUi = {
       indefinite: 'Doba neurčitá',
       indefiniteHint: 'U doby neurčité není datum konce potřeba.',
     },
-    depositWarning: '⚠ Přesahuje zákonné maximum 3× měsíční nájemné (§ 2254 OZ).',
+    depositWarning: '⚠ Jistota a případné smluvní pokuty nesmí v souhrnu přesáhnout 3× měsíční nájemné (§ 2254 OZ).',
     paymentSummary: {
       heading: 'Souhrn plateb',
       rent: 'Měsíční nájem',
@@ -385,10 +385,10 @@ const LEASE_FORM_CS: LeaseFormUi = {
       total: 'Celkem',
     },
     toggles: {
-      pets: { label: 'Domácí zvířata', hint: 'Povolení nebo zákaz chovu zvířat v bytě.' },
+      pets: { label: 'Domácí zvířata', hint: 'Nastaví se pravidla odpovědnosti za škody, zvýšené náklady a nepřiměřené obtíže podle § 2258 OZ.' },
       smoking: { label: 'Kouření v bytě', hint: 'Povolení kouření zvyšuje riziko škod.' },
       airbnb: { label: 'Airbnb / krátkodobý podnájem', hint: 'Vysoce rizikové nastavení pro pronajímatele.' },
-      penalties: { label: 'Přísnější smluvní pokuty', hint: 'Doporučená volba. Zvyšuje ochranu při neplacení a nevyklizení.' },
+      penalties: { label: 'Přísnější smluvní pokuty', hint: 'Sankce musí zůstat přiměřené a spolu s jistotou respektovat limit podle § 2254 OZ.' },
       inspection: { label: 'Právo kontroly bytu', hint: 'Pronajímatel může po oznámení zkontrolovat stav bytu.' },
       business: { label: 'Povolit podnikání v bytě', hint: 'Obvykle je lepší nechat byt pouze k bydlení.' },
       indexation: {
@@ -449,11 +449,11 @@ const LEASE_FORM_CS: LeaseFormUi = {
     deposit: 'Doporučená doplnění: Kauce by měla být alespoň dvojnásobek měsíčního nájemného.',
     airbnb: 'Airbnb / krátkodobý podnájem je povolen. Riziko škod, sousedských sporů a obcházení účelu nájmu je vysoké.',
     smoking: 'Kouření v bytě zvyšuje riziko škod a sporů při vrácení kauce.',
-    penalties: 'Doporučujeme zapnout přísnější režim pokut. Smlouva bude silnější při porušení povinností.',
+    penalties: 'Pokuty sjednávejte přiměřeně. U nájmu bytu se jejich souhrn spolu s jistotou počítá do limitu podle § 2254 OZ.',
     inspection: 'Doporučujeme povolit pravidelnou kontrolu bytu. To zvyšuje kontrolu nad stavem nemovitosti.',
     handover: 'Doplňte údaje pro předávací protokol (klíče / vybavení). To usnadňuje dokazování škody.',
     utilities: 'Doporučujeme specifikovat, co přesně zahrnují služby a zálohy.',
-    depositMax: 'Kauce přesahuje zákonné maximum trojnásobku měsíčního nájemného (§ 2254 OZ). Přebytek je nevymahatelný.',
+    depositMax: 'Kauce přesahuje zákonné maximum trojnásobku měsíčního nájemného (§ 2254 OZ). Pokud jsou sjednány i smluvní pokuty, počítají se do stejného limitu.',
   },
   tier: {
     sectionTitle: 'Zvolený produkt',
@@ -465,10 +465,10 @@ const LEASE_FORM_CS: LeaseFormUi = {
     close: 'Zavřít',
     unlockHeading: 'Odemknout dokument',
     readyTitle: 'Váš dokument je připraven',
-    readySubtitle: 'Odemkněte přístup k plnému PDF dokumentu',
+    readySubtitle: 'Po zaplacení získáte PDF ihned ke stažení',
     unlockTitle: 'Nájemní smlouva',
     unlockSubtitleEmpty: 'Doplňte zbývající údaje ve formuláři a vyberte variantu dokumentu.',
-    unlockSubtitleReady: 'Váš dokument je sestavený a připravený ke stažení. Vyberte variantu a dokončete platbu.',
+    unlockSubtitleReady: 'Dokument je sestavený podle vyplněných údajů. Vyberte variantu, zaplaťte přes Stripe a stáhněte PDF ihned.',
     tierHeading: 'Varianta dokumentu',
     includedHeading: 'Součástí je',
     consentLabel:
@@ -477,7 +477,7 @@ const LEASE_FORM_CS: LeaseFormUi = {
     payCtaWithPrice: 'Odemknout a stáhnout',
     processing: 'Přesměrování na platbu…',
     secureNote: 'Platba probíhá bezpečně přes Stripe. Údaje karty se na naše servery nedostávají.',
-    footerSecure: 'Zabezpečená platba přes Stripe · PDF ke stažení ihned',
+    footerSecure: 'Zabezpečená platba přes Stripe · PDF ihned · bez registrace',
     gdprRequired: 'Potvrďte prosím souhlas se zpracováním osobních údajů.',
     tierBasicTitle: 'Základní dokument',
     tierCompleteTitle: 'Rozšířený dokument',
@@ -485,14 +485,14 @@ const LEASE_FORM_CS: LeaseFormUi = {
     tierCompleteDesc: 'Pro situace, kde požadujete širší rozsah a vyšší míru jistoty.',
   },
   checkoutSummary: {
-    title: 'Shrnutí objednávky',
+    title: 'Dokument připraven k odemknutí',
     documentLabel: 'Vybraný dokument',
     packageIncludes: 'Součástí balíčku je',
     variantIncludes: 'Součástí varianty je',
     afterOrder:
-      'Po dokončení objednávky získáte výstup odpovídající tomuto balíčku, připravený k závěrečné kontrole a podpisu.',
+      'Po zaplacení získáte výstup odpovídající tomuto balíčku ihned ke stažení, připravený k závěrečné kontrole a podpisu.',
     afterOrderVariant:
-      'Po dokončení objednávky získáte výstup odpovídající zvolené variantě, připravený k závěrečné kontrole a podpisu.',
+      'Po zaplacení získáte výstup odpovídající zvolené variantě ihned ke stažení, připravený k závěrečné kontrole a podpisu.',
     selectedTier: 'Vybraná varianta',
     upgradeCta: 'Přejít na rozšířenou variantu',
     upgradeTitle: 'Potřebujete širší ochranu?',
@@ -662,7 +662,7 @@ export const LEASE_FORM_EN: LeaseFormUi = {
       indefinite: 'Indefinite term',
       indefiniteHint: 'No end date is required for an indefinite lease.',
     },
-    depositWarning: '⚠ Exceeds the statutory maximum of 3× monthly rent (§ 2254 Civil Code).',
+    depositWarning: '⚠ The deposit and any contractual penalties may not exceed 3× monthly rent in aggregate (§ 2254 Civil Code).',
     paymentSummary: {
       heading: 'Payment summary',
       rent: 'Monthly rent',

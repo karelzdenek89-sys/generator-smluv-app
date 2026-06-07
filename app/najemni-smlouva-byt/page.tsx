@@ -25,15 +25,15 @@ export const metadata = landingPageMetadata({
 const faq = [
   {
     q: 'Jak vysoká může být kauce u nájmu bytu?',
-    a: 'Zákon stanoví maximální výši kauce na trojnásobek měsíčního nájemného (bez poplatků za služby). Vyšší kauce je neplatná v části přesahující zákonný limit. Kauce musí být vrácena do 1 měsíce od skončení nájmu, po odečtení případných pohledávek pronajímatele.',
+    a: 'Podle § 2254 OZ nesmí jistota a případné právo na smluvní pokutu v souhrnu přesáhnout trojnásobek měsíčního nájemného. Po skončení nájmu má pronajímatel jistotu vrátit, případně započíst řádně specifikované dluhy nájemce. Lhůtu a způsob vyúčtování je vhodné sjednat přímo ve smlouvě.',
   },
   {
     q: 'Může pronajímatel zakázat nájemci chovat zvířata?',
-    a: 'Ano. Pronajímatel může zákaz chovu zvířat zahrnout přímo do smlouvy. Obecný zákaz chovu zvířat není považován za nepřiměřeně omezující — jde o věc smluvní svobody. Naopak u smluv bez zákazu nájemce zvíře chovat může, pokud nepoškozuje byt.',
+    a: 'U nájmu bytu nejde o jednoduchý absolutní zákaz. Podle § 2258 OZ může nájemce chovat zvíře, pokud tím nepůsobí pronajímateli nebo ostatním obyvatelům domu obtíže nepřiměřené poměrům. Smlouva má hlavně nastavit odpovědnost za škody, zvýšené náklady a hygienická pravidla.',
   },
   {
     q: 'Jak dlouhá je výpovědní doba u nájmu bytu?',
-    a: 'Pronajímatel může dát výpověď z taxativních zákonných důvodů s tříměsíční výpovědní dobou. Nájemce může dát výpověď bez udání důvodu s tříměsíční lhůtou. U smlouvy na dobu určitou platí odlišná pravidla — doporučujeme smlouvu tomuto přizpůsobit.',
+    a: 'U nájmu na dobu neurčitou může nájemce zpravidla vypovědět nájem s tříměsíční výpovědní dobou. Pronajímatel musí mít zákonný důvod. U nájmu na dobu určitou platí odlišná pravidla a je potřeba vycházet z konkrétního sjednání.',
   },
   {
     q: 'Je nájemní smlouva na dobu neurčitou výhodná pro nájemce nebo pronajímatele?',
@@ -96,7 +96,7 @@ export default function NajemniSmlouvaBytPage() {
             <span className="text-amber-500 italic">vzor 2026</span>
           </h1>
           <p className="text-lg text-slate-400 leading-relaxed max-w-2xl mb-8">
-            Pronajímáte nebo si pronajímáte byt nebo dům? Nájemní smlouva ochrání obě strany — kauce, pravidla, předání bytu a podmínky ukončení.
+            Pronajímáte nebo si pronajímáte byt nebo dům? Nájemní smlouva pomůže přehledně zachytit kauci, pravidla, předání bytu a podmínky ukončení.
           </p>
           <div className="flex flex-wrap gap-3 mb-8">
             <TrackedLink
@@ -121,7 +121,7 @@ export default function NajemniSmlouvaBytPage() {
           <h2 className="text-2xl font-black text-white mb-6">Pro co nájemní smlouva slouží</h2>
           <div className="grid gap-4 md:grid-cols-2">
             {[
-              { icon: '🏠', title: 'Pronájem bytu', desc: 'Ochrana pronajímatele i nájemce — kauce, pravidla, předání bytu.' },
+              { icon: '🏠', title: 'Pronájem bytu', desc: 'Jasné zachycení kauce, pravidel užívání a předání bytu.' },
               { icon: '🏡', title: 'Pronájem rodinného domu', desc: 'Větší rozsah, zahrada, parkování — jasné vymezení užívání pozemku.' },
               { icon: '⏰', title: 'Přechodný nájem', desc: 'Krátkodobý pronájem s jasnou dobou trvání — dohodou obou stran.' },
               { icon: '🔄', title: 'Nájem s opcí na koupi', desc: 'Možnost případného odkoupení — opce v samostatné dohodě.' },
@@ -144,13 +144,13 @@ export default function NajemniSmlouvaBytPage() {
               'Identifikace pronajímatele a nájemce',
               'Adresa a popis bytu nebo domu (dispozice, vybavení)',
               'Výše nájemného a způsob a termín platby',
-              'Kauce — výše (max. 3 měs. nájemné), podmínky vrácení',
-              'Povolení nebo zákaz zvířat',
+              'Kauce — výše, podmínky vrácení a souhrnný limit s pokutami',
+              'Pravidla pro zvířata, škody a zvýšené náklady',
               'Pravidla podnájmu a Airbnb',
               'Povinnosti ohledně oprav a údržby',
               'Podmínky výpovědi a zákonné výpovědní doby',
               'Předávací protokol se stavem bytu a odečty měřičů',
-              'Závěrečná установení a podpisy',
+              'Závěrečná ustanovení a podpisy',
             ].map(item => (
               <div key={item} className="flex items-start gap-2 text-sm text-slate-300">
                 <span className="text-teal-400 flex-shrink-0 mt-0.5">✓</span>

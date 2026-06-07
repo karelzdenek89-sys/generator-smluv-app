@@ -11,6 +11,7 @@ import {
   hasCheckoutAddon,
   normalizeStoredCheckoutAddons,
 } from '@/lib/checkout-addons';
+import { recordAnalyticsEvent } from '@/lib/analytics-server';
 
 export const runtime = 'nodejs';
 
@@ -47,6 +48,19 @@ function normalizePaidTier(value?: string | null): PaidTier {
   if (raw === 'professional') return 'professional';
   if (raw === 'complete' || raw === 'premium') return 'complete';
   return 'basic';
+}
+
+function priceBandForDownload(tier: PaidTier, packageKey?: string | null): '99' | '199' | '299' {
+  if (packageKey) return '299';
+  return tier === 'basic' ? '99' : '199';
+}
+
+async function nextDownloadSequence(draftId: string, existingDownloadCount: number, ttl: number): Promise<number> {
+  const key = `contract:draft:${draftId}:download-sequence`;
+  await redis.set(key, existingDownloadCount, { nx: true, ex: ttl });
+  const sequence = await redis.incr(key);
+  await redis.expire(key, ttl);
+  return sequence;
 }
 
 type DraftRecord = {
@@ -185,16 +199,34 @@ export async function GET(req: NextRequest) {
       resolvedPackageKey,
       addOns,
     ) * 60 * 60 * 24;
+    const nextDownloadCount = await nextDownloadSequence(draftId, draft.downloadCount || 0, ttl);
     await redis.set(
       `contract:draft:${draftId}`,
       {
         ...draft,
         paid: true,
-        downloadCount: (draft.downloadCount || 0) + 1,
+        downloadCount: nextDownloadCount,
         lastDownloadAt: new Date().toISOString(),
       },
       { ex: ttl },
     );
+
+    await recordAnalyticsEvent('document_downloaded', {
+      source: 'success_page',
+      surface: 'download_endpoint',
+      contract_type: resolvedContractType,
+      tier: resolvedTier === 'basic' ? 'basic' : 'complete',
+      package_key: resolvedPackageKey ?? undefined,
+      price_band: priceBandForDownload(resolvedTier, resolvedPackageKey),
+      download_format: format,
+      download_sequence: nextDownloadCount,
+      add_on_keys: addOns.join(','),
+      selected_addons_count: addOns.length,
+      total_price_czk:
+        typeof session.amount_total === 'number'
+          ? Math.round(session.amount_total / 100)
+          : undefined,
+    });
 
     if (format === 'docx') {
       if (!hasCheckoutAddon(fullData, 'docx')) {

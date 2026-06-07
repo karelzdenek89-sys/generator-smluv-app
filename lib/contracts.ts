@@ -770,7 +770,7 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
       title: 'XII. ZVLÁŠTNÍ USTANOVENÍ PŘI SKONČENÍ NÁJMU',
       body: [
         'Smluvní strany si nejpozději 5 pracovních dnů před plánovaným skončením nájmu písemně potvrdí přesný termín a čas protokolárního předání bytu. Nedojde-li k dohodě o termínu, je pronajímatel oprávněn určit termín jednostranně v pracovní době, a to s předstihem alespoň 3 pracovních dnů.',
-        'Pronajímatel je povinen vrátit jistotu nebo její nevyčerpanou část v zákonné lhůtě dle čl. V odst. 3 smlouvy. Součástí vrácení jistoty je vždy písemný výkaz zúčtování, v němž jsou jednotlivé uplatněné pohledávky specifikovány co do důvodu, rozsahu a výše. Bez takového výkazu nelze jistotu nebo její část jednostranně zadržet nad zákonný rámec.',
+        'Pronajímatel je povinen vrátit jistotu nebo její nevyčerpanou část postupem dle čl. V odst. 3 smlouvy. Součástí vrácení jistoty je vždy písemný výkaz zúčtování, v němž jsou jednotlivé uplatněné pohledávky specifikovány co do důvodu, rozsahu a výše. Bez takového výkazu nelze jistotu nebo její část jednostranně zadržet nad zákonný rámec.',
         'Vyžaduje-li stav bytu po skončení nájmu provedení oprav nebo odborného úklidu na náklady nájemce, pronajímatel nájemce o tom písemně vyrozumí před zahájením prací, sdělí mu předpokládané náklady a poskytne mu přiměřenou lhůtu k vyjádření, nejméně 5 pracovních dnů. Tím nejsou dotčena práva pronajímatele při naléhavých nebo havarijních opravách.',
       ],
     },
@@ -852,8 +852,9 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
         ? [
             `Nájemce je povinen před převzetím bytu (nejpozději při podpisu smlouvy) složit pronajímateli peněžitou jistotu ve výši ${formatAmount(d.depositAmount)} Kč${(d.rentAmount && Number(d.rentAmount) > 0) ? ` (tj. ${Math.round(Number(d.depositAmount) / Number(d.rentAmount))}× měsíční nájemné)` : ''}.`,
             'Jistota slouží k zajištění pohledávek pronajímatele vzniklých z nájmu, zejména dlužného nájemného, záloh na služby, náhrady škody a nákladů na odstranění poškození bytu nad rámec obvyklého opotřebení.',
-            'Pronajímatel je povinen vrátit jistotu nebo její nevyčerpanou část nájemci nejpozději do 1 měsíce od skončení nájmu a vyklizení bytu, a to s úroky ve výši zákonné sazby (§ 2254 odst. 2 OZ), po odečtení prokázaných pohledávek pronajímatele.',
+            'Při skončení nájmu je pronajímatel povinen vrátit jistotu nebo její nevyčerpanou část nájemci spolu s úroky ve výši zákonné sazby (§ 2254 odst. 2 OZ), po odečtení prokázaných a řádně specifikovaných pohledávek pronajímatele. Smluvní strany doporučeně sjednávají, že pronajímatel předá vyúčtování jistoty bez zbytečného odkladu po vyklizení bytu a zjištění stavu předávaných prostor.',
             'Pronajímatel je oprávněn z jistoty započíst své splatné a řádně specifikované pohledávky vzniklé z nájmu. O provedeném zápočtu je povinen nájemce bez zbytečného odkladu písemně vyrozumět a připojit přehled započtených položek.',
+            'Peněžitá jistota a případné právo pronajímatele na zaplacení smluvní pokuty nesmí v souhrnu přesáhnout trojnásobek měsíčního nájemného (§ 2254 OZ).',
           ]
         : [
             'Peněžitá jistota (kauce) nebyla mezi smluvními stranami sjednána.',

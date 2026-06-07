@@ -1,9 +1,33 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 
-export const INTERNAL_REPORTING_COOKIE = 'sh_internal_reporting';
+const INTERNAL_REPORTING_COOKIE_BASE = 'sh_internal_reporting';
+const DEFAULT_INTERNAL_REPORTING_COOKIE_VERSION = 'v2';
+
+function reportingCookieVersion() {
+  return (
+    process.env.INTERNAL_REPORTING_COOKIE_VERSION?.trim() ||
+    DEFAULT_INTERNAL_REPORTING_COOKIE_VERSION
+  );
+}
+
+function cookieTokenScope() {
+  const rotationSalt = process.env.INTERNAL_REPORTING_COOKIE_SALT?.trim();
+  return [
+    'smlouvahned-internal-reporting',
+    reportingCookieVersion(),
+    rotationSalt || 'default',
+  ].join(':');
+}
+
+export function getInternalReportingCookieName() {
+  const normalizedVersion = reportingCookieVersion().replace(/[^a-zA-Z0-9_-]/g, '_');
+  return `${INTERNAL_REPORTING_COOKIE_BASE}_${normalizedVersion}`;
+}
+
+export const INTERNAL_REPORTING_COOKIE = getInternalReportingCookieName();
 
 function cookieToken(secret: string) {
-  return createHmac('sha256', secret).update('smlouvahned-internal-reporting-v1').digest('base64url');
+  return createHmac('sha256', secret).update(cookieTokenScope()).digest('base64url');
 }
 
 export function createInternalReportingCookieValue(secret: string) {

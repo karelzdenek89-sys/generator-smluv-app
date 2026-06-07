@@ -265,20 +265,28 @@ export async function getAnalyticsDashboardData(
   let checkout199 = 0;
   let checkout299 = 0;
   let upgrades = 0;
+  let checkoutModalOpens = 0;
   let checkoutClicks = 0;
+  let stripeCheckoutStarts = 0;
   let addOnSelections = 0;
   let addOnPurchases = 0;
   let addOnRevenueCzk = 0;
   let purchasesCompleted = 0;
   let purchaseRevenueCzk = 0;
+  let documentDownloads = 0;
+  let ordersWithDownload = 0;
   let newsletterSubscriptions = 0;
   let seoLandingViews = 0;
   let attributedBuilderEntries = 0;
 
   let recentBuilderViews = 0;
+  let recentCheckoutModalOpens = 0;
   let recentCheckoutClicks = 0;
+  let recentStripeCheckoutStarts = 0;
   let recentPurchasesCompleted = 0;
   let recentPurchaseRevenueCzk = 0;
+  let recentDocumentDownloads = 0;
+  let recentOrdersWithDownload = 0;
 
   const articleStats = new Map<
     string,
@@ -503,12 +511,22 @@ export async function getAnalyticsDashboardData(
         upgrades += 1;
         break;
 
+      case 'builder_checkout_modal_open':
+        checkoutModalOpens += 1;
+        if (inRecentWindow) recentCheckoutModalOpens += 1;
+        break;
+
       case 'builder_checkout_clicked':
         checkoutClicks += 1;
         if (inRecentWindow) recentCheckoutClicks += 1;
         if (params.price_band === '99') checkout99 += 1;
         if (params.price_band === '199') checkout199 += 1;
         if (params.price_band === '299') checkout299 += 1;
+        break;
+
+      case 'stripe_checkout_started':
+        stripeCheckoutStarts += 1;
+        if (inRecentWindow) recentStripeCheckoutStarts += 1;
         break;
 
       case 'checkout_addon_selected': {
@@ -542,6 +560,15 @@ export async function getAnalyticsDashboardData(
         if (typeof params.total_price_czk === 'number' && Number.isFinite(params.total_price_czk)) {
           purchaseRevenueCzk += params.total_price_czk;
           if (inRecentWindow) recentPurchaseRevenueCzk += params.total_price_czk;
+        }
+        break;
+
+      case 'document_downloaded':
+        documentDownloads += 1;
+        if (inRecentWindow) recentDocumentDownloads += 1;
+        if (params.download_sequence === 1) {
+          ordersWithDownload += 1;
+          if (inRecentWindow) recentOrdersWithDownload += 1;
         }
         break;
 
@@ -635,9 +662,19 @@ export async function getAnalyticsDashboardData(
       hint: 'Podíl návštěv builderu, kde někdo klikl na platbu.',
     },
     {
+      label: 'Modal → Stripe',
+      value: formatRate(stripeCheckoutStarts, checkoutModalOpens),
+      hint: 'Podíl otevřených payment modalů, kde aplikace vytvořila Stripe checkout a začala přesměrování.',
+    },
+    {
       label: 'Checkout → platba',
-      value: formatRate(purchasesCompleted, checkoutClicks),
+      value: formatRate(purchasesCompleted, stripeCheckoutStarts || checkoutClicks),
       hint: 'Tržby a starší platby ověřte ve Stripe (dashboard je limitovaný vzorkem eventů).',
+    },
+    {
+      label: 'Platba → stažení',
+      value: formatRate(ordersWithDownload, purchasesCompleted),
+      hint: 'Podíl dokončených plateb, u kterých proběhlo alespoň jedno úspěšné stažení. Opakovaná PDF/DOCX stažení jsou oddělená metrika.',
     },
     {
       label: 'Články → builder (kliky)',
@@ -661,8 +698,12 @@ export async function getAnalyticsDashboardData(
 
   const recentOverview: DashboardRow[] = [
     { key: 'recent_builder', label: 'Vstupy do builderu', value: recentBuilderViews },
+    { key: 'recent_modal_open', label: 'Payment modal open', value: recentCheckoutModalOpens },
     { key: 'recent_checkout', label: 'Checkout kliky', value: recentCheckoutClicks },
+    { key: 'recent_stripe_started', label: 'Stripe checkout start', value: recentStripeCheckoutStarts },
     { key: 'recent_purchases', label: 'Dokončené platby', value: recentPurchasesCompleted },
+    { key: 'recent_orders_downloaded', label: 'Objednávky se stažením', value: recentOrdersWithDownload },
+    { key: 'recent_downloads', label: 'Stažené dokumenty', value: recentDocumentDownloads },
     {
       key: 'recent_revenue',
       label: 'Tržba z plateb (Kč)',
@@ -686,8 +727,12 @@ export async function getAnalyticsDashboardData(
       { key: 'package_views', label: 'Zobrazen\u00ed bal\u00ed\u010dk\u016f', value: packageViews },
       { key: 'builder_views', label: 'Vstupy do builderu', value: builderViews },
       { key: 'package_entries', label: 'Vstupy do package flow', value: packageFlowEntries },
+      { key: 'checkout_modal_opens', label: 'Payment modal open', value: checkoutModalOpens },
       { key: 'checkout_clicks', label: 'Checkout kliky', value: checkoutClicks },
+      { key: 'stripe_checkout_started', label: 'Stripe checkout start', value: stripeCheckoutStarts },
       { key: 'purchases_completed', label: 'Dokončené platby', value: purchasesCompleted },
+      { key: 'orders_with_download', label: 'Objednávky se stažením', value: ordersWithDownload },
+      { key: 'document_downloads', label: 'Stažené dokumenty celkem', value: documentDownloads },
       { key: 'purchase_revenue', label: 'Tržba z plateb (Kč)', value: purchaseRevenueCzk },
       { key: 'newsletter_subscriptions', label: 'Přihlášení k newsletteru', value: newsletterSubscriptions },
       { key: 'addon_selections', label: 'Výběry add-onů', value: addOnSelections },
@@ -726,9 +771,13 @@ export async function getAnalyticsDashboardData(
       { key: 'f5', label: 'Situa\u010dn\u00ed str\u00e1nky \u2192 bal\u00ed\u010dky', value: situationToPackageClicks },
       { key: 'f6', label: 'Vstupy do package flow', value: packageFlowEntries },
       { key: 'f7', label: 'Upgrade 99 \u2192 199', value: upgrades },
-      { key: 'f8', label: 'Checkout kliky', value: checkoutClicks },
-      { key: 'f9', label: 'Dokončené platby', value: purchasesCompleted },
-      { key: 'f10', label: 'Přihlášení k newsletteru', value: newsletterSubscriptions },
+      { key: 'f8', label: 'Payment modal open', value: checkoutModalOpens },
+      { key: 'f9', label: 'Checkout kliky', value: checkoutClicks },
+      { key: 'f10', label: 'Stripe checkout start', value: stripeCheckoutStarts },
+      { key: 'f11', label: 'Dokončené platby', value: purchasesCompleted },
+      { key: 'f12', label: 'Objednávky se stažením', value: ordersWithDownload },
+      { key: 'f13', label: 'Stažené dokumenty celkem', value: documentDownloads },
+      { key: 'f14', label: 'Přihlášení k newsletteru', value: newsletterSubscriptions },
     ],
     topSourcesToBuilder: topRows(sourceToBuilder),
     topSourcesToPackage: topRows(sourceToPackage),

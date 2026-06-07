@@ -46,7 +46,16 @@ export default function BuilderCheckoutSummary({
   const includedItems = getEffectiveIncludedItems(contractType, tier, packageKey, locale);
   const defaults = getAnalyticsDefaultsForPathname(pathname ?? '/');
   const copy = summaryCopy;
-  const resolvedTitle = title ?? copy?.title ?? 'Shrnutí objednávky';
+  const resolvedTitle = title ?? copy?.title ?? 'Dokument připraven k odemknutí';
+  const priceLabel = packageConfig ? packageConfig.priceLabel : PRICING_TIER_CONFIG[tier].priceLabel;
+  const leaseOutputSummary =
+    contractType === 'lease'
+      ? locale === 'en'
+        ? 'The document will include: parties, leased property, rent, services, deposit, handover, house rules, termination and signature section.'
+        : locale === 'ua'
+          ? 'Документ міститиме: сторони, предмет оренди, орендну плату, послуги, завдаток, передачу квартири, правила користування, припинення оренди та блок підписів.'
+          : 'V dokumentu bude obsaženo: smluvní strany, předmět nájmu, nájemné, služby, jistota, předání bytu, pravidla užívání, ukončení nájmu a podpisová část.'
+      : null;
 
   if (packageConfig) {
     return (
@@ -56,7 +65,10 @@ export default function BuilderCheckoutSummary({
         </div>
 
         <div className="mb-4 rounded-2xl border border-white/8 bg-white/3 p-4">
-          <div className="text-base font-semibold text-white">{localizedPackage?.title ?? packageConfig.title}</div>
+          <div className="flex items-start justify-between gap-4">
+            <div className="text-base font-semibold text-white">{localizedPackage?.title ?? packageConfig.title}</div>
+            <div className="shrink-0 text-lg font-black text-amber-300">{priceLabel}</div>
+          </div>
           <div className="mt-2 text-sm leading-relaxed text-slate-400">
             {localizedPackage?.checkoutDescription ?? packageConfig.checkoutDescription}
           </div>
@@ -78,8 +90,23 @@ export default function BuilderCheckoutSummary({
 
         <p className="mt-4 text-xs leading-relaxed text-slate-400">
           {copy?.afterOrder ??
-            'Po dokončení objednávky získáte výstup odpovídající tomuto balíčku, připravený k závěrečné kontrole a podpisu.'}
+            'Po zaplacení získáte výstup odpovídající tomuto balíčku ihned ke stažení, připravený k závěrečné kontrole a podpisu.'}
         </p>
+
+        {leaseOutputSummary ? (
+          <div className="mt-4 rounded-xl border border-amber-400/15 bg-amber-400/8 px-3 py-2 text-xs leading-5 text-amber-100">
+            {leaseOutputSummary}
+          </div>
+        ) : null}
+
+        <div className="mt-4 grid gap-2 text-[11px] leading-5 text-slate-400">
+          <div className="rounded-xl border border-emerald-400/15 bg-emerald-400/8 px-3 py-2 text-emerald-100">
+            Stažení ihned po platbě. Bez registrace a bez předplatného.
+          </div>
+          <div className="rounded-xl border border-slate-700/50 bg-slate-900/40 px-3 py-2">
+            Platební údaje zpracovává Stripe. Dokument je standardizovaný výstup, ne individuální právní poradenství.
+          </div>
+        </div>
       </>
     );
   }
@@ -91,9 +118,19 @@ export default function BuilderCheckoutSummary({
       </div>
 
       <div className="mb-4 rounded-2xl border border-white/8 bg-white/3 p-4">
-        <div className="text-sm font-semibold text-white">{documentLabel}</div>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <div className="text-sm font-semibold text-white">{documentLabel}</div>
+            <div className="mt-1 text-xs text-slate-400">
+              {isComplete ? PRICING_TIER_CONFIG.complete.title : PRICING_TIER_CONFIG.basic.title}
+            </div>
+          </div>
+          <div className="shrink-0 text-lg font-black text-amber-300">{priceLabel}</div>
+        </div>
         {isComplete ? (
-          <div className="mt-1 text-xs text-slate-400">{PRICING_TIER_CONFIG.complete.title}</div>
+          <div className="mt-3 rounded-xl border border-amber-400/15 bg-amber-400/8 px-3 py-2 text-xs leading-5 text-amber-100">
+            Rozšířená varianta přidává širší klauzule, checklist a praktičtější podklady pro kontrolu před podpisem.
+          </div>
         ) : null}
       </div>
 
@@ -143,8 +180,23 @@ export default function BuilderCheckoutSummary({
 
       <p className="mt-4 text-xs leading-relaxed text-slate-400">
         {copy?.afterOrderVariant ??
-          'Po dokončení objednávky získáte výstup odpovídající zvolené variantě, připravený k závěrečné kontrole a podpisu.'}
+          'Po zaplacení získáte výstup odpovídající zvolené variantě ihned ke stažení, připravený k závěrečné kontrole a podpisu.'}
       </p>
+
+      {leaseOutputSummary ? (
+        <div className="mt-4 rounded-xl border border-amber-400/15 bg-amber-400/8 px-3 py-2 text-xs leading-5 text-amber-100">
+          {leaseOutputSummary}
+        </div>
+      ) : null}
+
+      <div className="mt-4 grid gap-2 text-[11px] leading-5 text-slate-400">
+        <div className="rounded-xl border border-emerald-400/15 bg-emerald-400/8 px-3 py-2 text-emerald-100">
+          Stažení ihned po platbě. Bez registrace a bez předplatného.
+        </div>
+        <div className="rounded-xl border border-slate-700/50 bg-slate-900/40 px-3 py-2">
+          Platební údaje zpracovává Stripe. Dokument je standardizovaný výstup, ne individuální právní poradenství.
+        </div>
+      </div>
     </>
   );
 }

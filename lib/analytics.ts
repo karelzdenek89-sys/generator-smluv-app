@@ -13,7 +13,9 @@ export const ANALYTICS_EVENT_NAMES = [
   'package_flow_entered',
   'builder_tier_selected',
   'builder_upgrade_clicked',
+  'builder_checkout_modal_open',
   'builder_checkout_clicked',
+  'stripe_checkout_started',
   'checkout_addon_selected',
   'checkout_addon_removed',
   'checkout_addon_purchased',
@@ -22,6 +24,7 @@ export const ANALYTICS_EVENT_NAMES = [
   'homepage_package_click',
   'checkout_completed',
   'newsletter_subscribed',
+  'document_downloaded',
 ] as const;
 
 export type AnalyticsEventName = (typeof ANALYTICS_EVENT_NAMES)[number];
@@ -68,6 +71,8 @@ export type AnalyticsEventParams = {
   base_price_czk?: number;
   total_price_czk?: number;
   selected_addons_count?: number;
+  download_format?: 'pdf' | 'docx';
+  download_sequence?: number;
 };
 
 type AnalyticsPayload = {
