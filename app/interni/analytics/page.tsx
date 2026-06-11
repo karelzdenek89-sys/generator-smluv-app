@@ -194,8 +194,8 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
       </Section>
 
       <Section
-        title="Interpretace funnelu"
-        description="Odhadované poměry z eventů v hlavním okně — ne unikátní uživatelé."
+        title={`Interpretace funnelu za posledních ${data.windowDays} dní`}
+        description={`Odhadované poměry z hlavního ${data.windowDays}denního okna — ne unikátní uživatelé. Týdenní blok výše je samostatný rychlý přehled.`}
       >
         <div className="grid gap-4 md:grid-cols-2">
           {data.insights.map((item) => (

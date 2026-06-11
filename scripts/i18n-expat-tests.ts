@@ -105,8 +105,10 @@ function testLocalePropagation() {
 
   const homepage = read('app/page.tsx');
   assert.match(homepage, /Potřebujete smlouvu v cizím jazyce/);
-  assert.match(homepage, /nativeName/);
-  assert.match(homepage, /item\.flag/);
+  assert.match(homepage, /LanguageSwitcher current="cs"/);
+  assert.match(homepage, /ExpatEntryLinks/);
+  assert.match(read('lib/i18n/locales.ts'), /nativeName/);
+  assert.match(read('app/components/LanguageSwitcher.tsx'), /m\.flag/);
   assert.match(homepage, /Потрібен договір іншою мовою/);
   assert.doesNotMatch(homepage, /\/vn/);
   assert.doesNotMatch(homepage, /Bạn cần|ngôn ngữ|label: 'VI'/);

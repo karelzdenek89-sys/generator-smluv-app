@@ -129,6 +129,8 @@ export default function NdaSmlouvaGuidePage() {
           { href: '/spoluprace', label: 'Smlouva o spolupráci' },
           { href: '/blog/nda-smlouva-mlcenlivost', label: 'Detailní článek k NDA smlouvě' },
         ]}
+        relatedCluster="b2b"
+        currentHref="/nda-smlouva"
       />
     </>
   );

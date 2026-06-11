@@ -14,7 +14,7 @@ import { ALL_LOCALES, FOREIGN_LOCALES, LOCALE_META, type Locale } from '../lib/i
 const BASE = process.env.TEST_BASE_URL || 'http://localhost:3000';
 // Next.js metadata API resolves alternates against `metadataBase`, which is
 // the production base URL even in dev. Compare against that for hreflang/canonical.
-const PROD_BASE = (process.env.NEXT_PUBLIC_BASE_URL || 'https://smlouvahned.cz').replace(/\/$/, '');
+const PROD_BASE = (process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz').replace(/\/$/, '');
 const failures: string[] = [];
 let total = 0;
 

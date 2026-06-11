@@ -18,8 +18,9 @@ async function checkRateLimit(ip: string): Promise<boolean> {
     const count = await redis.incr(key);
     if (count === 1) await redis.expire(key, 60 * 10);
     return count <= 10;
-  } catch {
-    return true;
+  } catch (err) {
+    console.error('[orders API] Rate-limit unavailable:', err);
+    return false;
   }
 }
 

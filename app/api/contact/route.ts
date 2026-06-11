@@ -11,8 +11,8 @@ async function tryRateLimit(ip: string): Promise<boolean> {
     if (count === 1) await redis.expire(key, 3600);
     return count <= 5;
   } catch (err) {
-    console.error('[contact] Rate-limit fail-open:', err);
-    return true;
+    console.error('[contact] Rate-limit unavailable:', err);
+    return false;
   }
 }
 

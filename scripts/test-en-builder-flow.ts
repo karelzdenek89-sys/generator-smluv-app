@@ -52,7 +52,7 @@ async function run() {
     disputeResolution: 'default',
   } as StoredContractData;
 
-  const pdf = await renderContractPdf({ ...sample, lang: 'en' });
+  const pdf = await renderContractPdf({ ...sample, lang: 'en', addOns: ['bilingual_annex'] });
   check('renderContractPdf(lease, lang=en) produces non-empty PDF', pdf.length > 1024);
   check('PDF starts with %PDF magic header', pdf.subarray(0, 4).toString() === '%PDF');
 

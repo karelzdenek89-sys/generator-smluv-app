@@ -2,6 +2,8 @@ import path from 'path';
 import type { NextConfig } from 'next';
 import { LEGACY_EXPAT_BLOG_REDIRECTS } from './lib/seo/legacy-expat-blog-redirects';
 
+const isDev = process.env.NODE_ENV !== 'production';
+
 const securityHeaders = [
   { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
   { key: 'X-Content-Type-Options', value: 'nosniff' },
@@ -19,7 +21,13 @@ const securityHeaders = [
     key: 'Content-Security-Policy',
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://checkout.stripe.com https://va.vercel-scripts.com",
+      [
+        "script-src 'self' 'unsafe-inline'",
+        isDev ? "'unsafe-eval'" : null,
+        'https://js.stripe.com',
+        'https://checkout.stripe.com',
+        'https://va.vercel-scripts.com',
+      ].filter(Boolean).join(' '),
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https://www.smlouvahned.cz https://smlouvahned.cz https://*.stripe.com",
@@ -28,6 +36,7 @@ const securityHeaders = [
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self' https://checkout.stripe.com",
+      "frame-ancestors 'self'",
     ].join('; '),
   },
 ];

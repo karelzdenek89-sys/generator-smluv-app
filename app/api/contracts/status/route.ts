@@ -68,7 +68,7 @@ type DraftRecord = {
 };
 
 function statusTokenMatches(draft: DraftRecord | null | undefined, token: string): boolean {
-  if (!draft?.downloadToken) return true;
+  if (!draft?.downloadToken) return false;
   return token === draft.downloadToken;
 }
 

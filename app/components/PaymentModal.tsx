@@ -72,13 +72,61 @@ export default function PaymentModal({
   const validAddOnKeys = validSelectedAddOns.join(',');
   const analyticsDefaults = getAnalyticsDefaultsForPathname(pathname ?? '/');
   const priceBand = packageConfig ? '299' : tier === 'complete' ? '199' : '99';
+  const closeModal = (reason: 'button' | 'backdrop' | 'escape') => {
+    trackEvent('builder_checkout_modal_closed', {
+      ...analyticsDefaults,
+      source: 'checkout_modal',
+      surface: 'checkout_modal',
+      contract_type: analyticsDefaults.contract_type,
+      tier,
+      package_key: packageConfig?.key,
+      price_band: priceBand,
+      add_on_keys: validAddOnKeys,
+      addons_total_czk: addonsTotalCzk,
+      base_price_czk: basePriceCzk,
+      total_price_czk: totalPriceCzk,
+      selected_addons_count: validSelectedAddOns.length,
+      cta_type: reason,
+    });
+    onClose();
+  };
 
   // Zavření přes Escape
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return;
+
+      trackEvent('builder_checkout_modal_closed', {
+        ...analyticsDefaults,
+        source: 'checkout_modal',
+        surface: 'checkout_modal',
+        contract_type: analyticsDefaults.contract_type,
+        tier,
+        package_key: packageConfig?.key,
+        price_band: priceBand,
+        add_on_keys: validAddOnKeys,
+        addons_total_czk: addonsTotalCzk,
+        base_price_czk: basePriceCzk,
+        total_price_czk: totalPriceCzk,
+        selected_addons_count: validSelectedAddOns.length,
+        cta_type: 'escape',
+      });
+      onClose();
+    };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [onClose]);
+  }, [
+    addonsTotalCzk,
+    analyticsDefaults,
+    basePriceCzk,
+    onClose,
+    packageConfig?.key,
+    priceBand,
+    tier,
+    totalPriceCzk,
+    validAddOnKeys,
+    validSelectedAddOns.length,
+  ]);
 
   // Zamezit scrollu pod modalem
   useEffect(() => {
@@ -159,13 +207,13 @@ export default function PaymentModal({
       data-testid="lease-checkout-modal"
       className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
       style={{ background: 'rgba(5, 8, 15, 0.92)', backdropFilter: 'blur(8px)' }}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      onClick={(e) => { if (e.target === e.currentTarget) closeModal('backdrop'); }}
     >
       <div className="relative flex w-full max-w-5xl rounded-[2rem] overflow-hidden shadow-[0_40px_120px_rgba(0,0,0,0.8)] max-h-[92vh]">
 
         {/* Zavřít */}
         <button
-          onClick={onClose}
+          onClick={() => closeModal('button')}
           className="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/8 text-slate-400 hover:bg-white/14 hover:text-white transition"
           aria-label={copy?.close ?? 'Zavřít'}
         >
@@ -438,6 +486,21 @@ export default function PaymentModal({
                 data-testid="lease-checkout-pay"
                 onClick={() => {
                   if (!gdprConsent) {
+                    trackEvent('builder_checkout_consent_missing', {
+                      ...analyticsDefaults,
+                      source: 'checkout_modal',
+                      surface: 'checkout_modal',
+                      contract_type: analyticsDefaults.contract_type,
+                      tier,
+                      package_key: packageConfig?.key,
+                      price_band: priceBand,
+                      add_on_keys: validAddOnKeys,
+                      addons_total_czk: addonsTotalCzk,
+                      base_price_czk: basePriceCzk,
+                      total_price_czk: totalPriceCzk,
+                      selected_addons_count: validSelectedAddOns.length,
+                      cta_type: 'pay_without_consent',
+                    });
                     alert(copy?.gdprRequired ?? 'Potvrďte prosím souhlas se zpracováním osobních údajů.');
                     return;
                   }

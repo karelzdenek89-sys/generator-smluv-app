@@ -14,6 +14,8 @@ export const ANALYTICS_EVENT_NAMES = [
   'builder_tier_selected',
   'builder_upgrade_clicked',
   'builder_checkout_modal_open',
+  'builder_checkout_modal_closed',
+  'builder_checkout_consent_missing',
   'builder_checkout_clicked',
   'stripe_checkout_started',
   'checkout_addon_selected',

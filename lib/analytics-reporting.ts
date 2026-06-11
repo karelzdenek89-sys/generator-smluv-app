@@ -266,6 +266,8 @@ export async function getAnalyticsDashboardData(
   let checkout299 = 0;
   let upgrades = 0;
   let checkoutModalOpens = 0;
+  let checkoutModalCloses = 0;
+  let checkoutConsentMissing = 0;
   let checkoutClicks = 0;
   let stripeCheckoutStarts = 0;
   let addOnSelections = 0;
@@ -281,6 +283,8 @@ export async function getAnalyticsDashboardData(
 
   let recentBuilderViews = 0;
   let recentCheckoutModalOpens = 0;
+  let recentCheckoutModalCloses = 0;
+  let recentCheckoutConsentMissing = 0;
   let recentCheckoutClicks = 0;
   let recentStripeCheckoutStarts = 0;
   let recentPurchasesCompleted = 0;
@@ -516,6 +520,16 @@ export async function getAnalyticsDashboardData(
         if (inRecentWindow) recentCheckoutModalOpens += 1;
         break;
 
+      case 'builder_checkout_modal_closed':
+        checkoutModalCloses += 1;
+        if (inRecentWindow) recentCheckoutModalCloses += 1;
+        break;
+
+      case 'builder_checkout_consent_missing':
+        checkoutConsentMissing += 1;
+        if (inRecentWindow) recentCheckoutConsentMissing += 1;
+        break;
+
       case 'builder_checkout_clicked':
         checkoutClicks += 1;
         if (inRecentWindow) recentCheckoutClicks += 1;
@@ -667,6 +681,16 @@ export async function getAnalyticsDashboardData(
       hint: 'Podíl otevřených payment modalů, kde aplikace vytvořila Stripe checkout a začala přesměrování.',
     },
     {
+      label: 'Modal zavřen bez Stripe',
+      value: formatRate(checkoutModalCloses, checkoutModalOpens),
+      hint: 'Podíl otevřených objednávkových modalů, které uživatel zavřel před přesměrováním do Stripe.',
+    },
+    {
+      label: 'Klik bez souhlasu',
+      value: String(checkoutConsentMissing),
+      hint: 'Počet kliků na platební tlačítko bez potvrzení obchodních podmínek a GDPR.',
+    },
+    {
       label: 'Checkout → platba',
       value: formatRate(purchasesCompleted, stripeCheckoutStarts || checkoutClicks),
       hint: 'Tržby a starší platby ověřte ve Stripe (dashboard je limitovaný vzorkem eventů).',
@@ -699,6 +723,8 @@ export async function getAnalyticsDashboardData(
   const recentOverview: DashboardRow[] = [
     { key: 'recent_builder', label: 'Vstupy do builderu', value: recentBuilderViews },
     { key: 'recent_modal_open', label: 'Payment modal open', value: recentCheckoutModalOpens },
+    { key: 'recent_modal_closed', label: 'Modal zavřen bez Stripe', value: recentCheckoutModalCloses },
+    { key: 'recent_consent_missing', label: 'Klik bez souhlasu', value: recentCheckoutConsentMissing },
     { key: 'recent_checkout', label: 'Checkout kliky', value: recentCheckoutClicks },
     { key: 'recent_stripe_started', label: 'Stripe checkout start', value: recentStripeCheckoutStarts },
     { key: 'recent_purchases', label: 'Dokončené platby', value: recentPurchasesCompleted },
@@ -728,6 +754,8 @@ export async function getAnalyticsDashboardData(
       { key: 'builder_views', label: 'Vstupy do builderu', value: builderViews },
       { key: 'package_entries', label: 'Vstupy do package flow', value: packageFlowEntries },
       { key: 'checkout_modal_opens', label: 'Payment modal open', value: checkoutModalOpens },
+      { key: 'checkout_modal_closed', label: 'Modal zavřen bez Stripe', value: checkoutModalCloses },
+      { key: 'checkout_consent_missing', label: 'Klik bez souhlasu', value: checkoutConsentMissing },
       { key: 'checkout_clicks', label: 'Checkout kliky', value: checkoutClicks },
       { key: 'stripe_checkout_started', label: 'Stripe checkout start', value: stripeCheckoutStarts },
       { key: 'purchases_completed', label: 'Dokončené platby', value: purchasesCompleted },
@@ -772,12 +800,14 @@ export async function getAnalyticsDashboardData(
       { key: 'f6', label: 'Vstupy do package flow', value: packageFlowEntries },
       { key: 'f7', label: 'Upgrade 99 \u2192 199', value: upgrades },
       { key: 'f8', label: 'Payment modal open', value: checkoutModalOpens },
-      { key: 'f9', label: 'Checkout kliky', value: checkoutClicks },
-      { key: 'f10', label: 'Stripe checkout start', value: stripeCheckoutStarts },
-      { key: 'f11', label: 'Dokončené platby', value: purchasesCompleted },
-      { key: 'f12', label: 'Objednávky se stažením', value: ordersWithDownload },
-      { key: 'f13', label: 'Stažené dokumenty celkem', value: documentDownloads },
-      { key: 'f14', label: 'Přihlášení k newsletteru', value: newsletterSubscriptions },
+      { key: 'f9', label: 'Modal zavřen bez Stripe', value: checkoutModalCloses },
+      { key: 'f10', label: 'Klik bez souhlasu', value: checkoutConsentMissing },
+      { key: 'f11', label: 'Checkout kliky', value: checkoutClicks },
+      { key: 'f12', label: 'Stripe checkout start', value: stripeCheckoutStarts },
+      { key: 'f13', label: 'Dokončené platby', value: purchasesCompleted },
+      { key: 'f14', label: 'Objednávky se stažením', value: ordersWithDownload },
+      { key: 'f15', label: 'Stažené dokumenty celkem', value: documentDownloads },
+      { key: 'f16', label: 'Přihlášení k newsletteru', value: newsletterSubscriptions },
     ],
     topSourcesToBuilder: topRows(sourceToBuilder),
     topSourcesToPackage: topRows(sourceToPackage),

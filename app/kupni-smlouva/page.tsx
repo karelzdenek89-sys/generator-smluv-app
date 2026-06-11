@@ -119,6 +119,8 @@ export default function KupniSmlouvaPage() {
           { href: '/kupni', label: 'Formulář kupní smlouvy' },
           { href: '/blog/kupni-smlouva-na-auto-2026', label: 'Detailní článek ke kupní smlouvě na auto' },
         ]}
+        relatedCluster="auto"
+        currentHref="/kupni-smlouva"
       />
     </>
   );
