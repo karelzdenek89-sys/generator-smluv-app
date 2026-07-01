@@ -40,10 +40,10 @@ export default function KratkodobyPronajemAirbnb2026Page() {
           'Spory o neoprávněný podnájem, pokuty od správce domu nebo obce, kombinace s podnájemní smlouvou třetí úrovně, komerční pronájmy nebo bytové jednotky v památkových zónách s omezením.',
       }}
       finalAction={{
-        title: 'Potřebujete i předávací protokol a potvrzení o kauci?',
-        body: 'Balíček pro pronajímatele (299 Kč) kombinuje nájemní smlouvu s podklady k předání bytu — typicky pro nový pronájem od základu.',
-        buttonLabel: 'Otevřít balíček pro pronajímatele',
-        href: '/balicek-pronajimatel',
+        title: 'Provozujete krátkodobý podnájem?',
+        body: 'Podnájemní smlouva s pravidly pro hosty, odpovědností za škody a podmínkami ukončení — PDF k podpisu.',
+        buttonLabel: 'Vytvořit podnájemní smlouvu',
+        href: '/podnajem',
       }}
       relatedLinks={[
         { href: '/najem', label: 'Nájemní smlouva — formulář' },

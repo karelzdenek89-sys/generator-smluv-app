@@ -41,15 +41,13 @@ export default function VypovedZNajmuBytu2026Page() {
             'Probíhající spor o platnost výpovědi, spor o vrácení kauce po skončení nájmu nebo situace, kde druhá strana zpochybňuje podmínky nájemní smlouvy.',
         }}
         finalAction={{
-          title: 'Potřebujete kromě smlouvy i podklady k předání bytu?',
-          body: 'Balíček pro pronajímatele kombinuje nájemní smlouvu s předávacím protokolem a potvrzením o převzetí kauce — typicky pro nový pronájem od základu.',
-          buttonLabel: 'Otevřít balíček pro pronajímatele',
-          href: '/balicek-pronajimatel',
+          title: 'Potřebujete novou nájemní smlouvu?',
+          body: 'Formulář nájemní smlouvy s nastavením doby nájmu, podmínek ukončení a smluvní pokuty — PDF k podpisu.',
+          buttonLabel: 'Otevřít formulář nájemní smlouvy',
+          href: '/najem',
         }}
         relatedLinks={[
-          { href: '/najemni-smlouva', label: 'Nájemní smlouva — průvodce' },
-          { href: '/najem', label: 'Formulář nájemní smlouvy' },
-          { href: '/balicek-pronajimatel', label: 'Balíček pro pronajímatele' },
+          { href: '/najem', label: 'Nájemní smlouva — formulář online' },
           { href: '/blog/najemni-smlouva-vzor-2026', label: 'Co musí obsahovat nájemní smlouva' },
           { href: '/blog/kauce-pronajem-bytu-2026', label: 'Kauce při pronájmu bytu' },
         ]}

@@ -27,10 +27,10 @@ export default function PredaniVozidlaKupujicimu2026Page() {
           { href: '#kdy-zvolit-balicek', label: 'Kdy stačí smlouva a kdy je praktičtější balíček' },
         ]}
         primaryAction={{
-          title: 'Řešíte převod vozidla jako celek?',
-          body: 'Situační stránka pro prodej vozidla pomůže rozlišit, kdy stačí samotná kupní smlouva, kdy dává smysl širší varianta a kdy je praktičtější tematický balíček.',
-          buttonLabel: 'Zobrazit podklady pro prodej vozidla',
-          href: '/prodej-vozidla',
+          title: 'Prodáváte nebo kupujete vozidlo?',
+          body: 'Kupní smlouva na vozidlo s VIN, cenou, stavem vozu a datem předání — PDF připravené k podpisu.',
+          buttonLabel: 'Vytvořit kupní smlouvu na auto',
+          href: '/auto',
         }}
         trustBox={{
           generatorSuitable:
@@ -39,15 +39,13 @@ export default function PredaniVozidlaKupujicimu2026Page() {
             'Sporný technický stav, zatajované vady, exekuce, zástavy, leasing nebo situace, kdy se strany neshodnou na rozsahu odpovědnosti za vady.',
         }}
         finalAction={{
-          title: 'Potřebujete vedle smlouvy i podklady k předání?',
-          body: 'Balíček pro prodej vozidla navazuje na kupní smlouvu v komplexní variantě a doplňuje ji o předávací protokol, potvrzení o převzetí a praktické podklady k převodu.',
-          buttonLabel: 'Otevřít balíček pro prodej vozidla',
-          href: '/balicek-prodej-vozidla',
+          title: 'Chcete smlouvu s prvky předávacího protokolu?',
+          body: 'Rozšířená kupní smlouva zachytí stav vozidla, klíče, doklady a datum předání — PDF k podpisu.',
+          buttonLabel: 'Otevřít formulář kupní smlouvy',
+          href: '/auto',
         }}
         relatedLinks={[
-          { href: '/prodej-vozidla', label: 'Podklady pro prodej vozidla' },
-          { href: '/balicek-prodej-vozidla', label: 'Balíček pro prodej vozidla' },
-          { href: '/auto', label: 'Kupní smlouva na vozidlo' },
+          { href: '/auto', label: 'Kupní smlouva na vozidlo — formulář online' },
           { href: '/blog/predavaci-protokol-vzor-2026', label: 'Předávací protokol — průvodce' },
           { href: '/blog/kupni-smlouva-auto-kupujici-2026', label: 'Kupní smlouva pro kupujícího' },
           { href: '/blog/doklady-pri-prodeji-auta-2026', label: 'Jaké doklady předat při prodeji auta' },

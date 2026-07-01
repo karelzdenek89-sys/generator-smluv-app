@@ -27,10 +27,10 @@ export default function KaucePronajemBytu2026Page() {
           { href: '#vraceni-kauce', label: 'Jak přemýšlet o vrácení jistoty' },
         ]}
         primaryAction={{
-          title: 'Řešíte nájem i s kaucí a předáním bytu?',
-          body: 'Na orientační stránce pro pronajímatele uvidíte, kdy stačí samostatná smlouva a kdy je praktičtější balíček s potvrzením o převzetí kauce a dalšími podklady.',
-          buttonLabel: 'Zobrazit dokumenty pro pronajímatele',
-          href: '/pro-pronajimatele',
+          title: 'Sjednáváte kauci v nájemní smlouvě?',
+          body: 'Generátor nájemní smlouvy umožní nastavit jistotu, podmínky vrácení a další náležitosti pronájmu bytu.',
+          buttonLabel: 'Vytvořit nájemní smlouvu',
+          href: '/najem',
         }}
         trustBox={{
           generatorSuitable:
@@ -39,16 +39,15 @@ export default function KaucePronajemBytu2026Page() {
             'Nestandardní režimy plateb, složité započtení více pohledávek, spory o výši škody nebo jiné situace, kde už existuje konflikt mezi stranami.',
         }}
         finalAction={{
-          title: 'Chcete připravit nájem i s navazujícími podklady?',
-          body: 'Balíček pro pronajímatele vedle nájemní smlouvy obsahuje také potvrzení o převzetí kauce a další podklady k předání bytu.',
-          buttonLabel: 'Otevřít balíček pro pronajímatele',
-          href: '/balicek-pronajimatel',
+          title: 'Chcete mít kauci i podmínky vrácení ve smlouvě?',
+          body: 'Nájemní smlouva s jistotou, výší nájemného a pravidly pro ukončení nájmu — PDF připravené k podpisu.',
+          buttonLabel: 'Otevřít formulář nájemní smlouvy',
+          href: '/najem',
         }}
         relatedLinks={[
-          { href: '/pro-pronajimatele', label: 'Dokumenty pro pronajímatele' },
-          { href: '/balicek-pronajimatel', label: 'Balíček pro pronajímatele' },
-          { href: '/najem', label: 'Nájemní smlouva' },
+          { href: '/najem', label: 'Nájemní smlouva — formulář online' },
           { href: '/blog/predani-bytu-najemci-2026', label: 'Jak správně předat byt nájemci' },
+          { href: '/blog/najemni-smlouva-vzor-2026', label: 'Nájemní smlouva 2026 — průvodce' },
         ]}
       >
         <section id="co-je-jistota" className="mb-12 scroll-mt-6">

@@ -53,7 +53,6 @@ export default function EnergetickyStitekNajemne2026Page() {
         { href: '/blog/kratkodoby-pronajem-airbnb-2026', label: '🏠 Krátkodobý pronájem a Airbnb' },
         { href: '/blog/najemni-smlouva-vzor-2026', label: '📘 Nájemní smlouva — průvodce' },
         { href: '/blog/valorizace-najemneho-2026', label: '📈 Valorizace nájemného' },
-        { href: '/balicek-pronajimatel', label: '📦 Balíček pro pronajímatele' },
         { href: '/slovnik#najemni-smlouva', label: '📖 Slovník: Nájemní smlouva' },
       ]}
     >

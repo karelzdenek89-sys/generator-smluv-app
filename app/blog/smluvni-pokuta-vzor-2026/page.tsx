@@ -34,10 +34,10 @@ export default function SmluvniPokutaVzor2026Page() {
           'Vysoké pokuty u spotřebitelských smluv, spory o nepřiměřenost pokuty, komerční nájmy s individuálními podmínkami.',
       }}
       finalAction={{
-        title: 'Potřebujete kompletní nájemní dokumentaci?',
-        body: 'Balíček pro pronajímatele spojuje nájemní smlouvu s kaucí, předávacím protokolem a dalšími podklady.',
-        buttonLabel: 'Balíček pro pronajímatele',
-        href: '/balicek-pronajimatel',
+        title: 'Chcete smluvní pokutu přímo ve smlouvě?',
+        body: 'Rozšířená nájemní smlouva umožňuje sjednat pokutu za prodlení s nájmem nebo jiné porušení povinností.',
+        buttonLabel: 'Vytvořit nájemní smlouvu',
+        href: '/najem',
       }}
       relatedLinks={[
         { href: '/najem', label: 'Nájemní smlouva' },

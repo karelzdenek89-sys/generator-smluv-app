@@ -34,10 +34,10 @@ export default function KupniSmlouvaAutoKupujici2026Page() {
           'Sporný technický stav, podezření na stočený tachometr, zatížené vozidlo nebo prodej od právnické osoby s reklamačními nároky.',
       }}
       finalAction={{
-        title: 'Chcete kompletní podklady k prodeji i koupi?',
-        body: 'Situační stránka pro prodej vozidla popisuje celý postup od smlouvy po předání a přepis.',
-        buttonLabel: 'Podklady pro prodej vozidla',
-        href: '/prodej-vozidla',
+        title: 'Chcete smlouvu připravenou k podpisu?',
+        body: 'Stejný generátor kupní smlouvy použijete jako prodávající i kupující — doplníte role stran a podmínky předání.',
+        buttonLabel: 'Vytvořit kupní smlouvu na auto',
+        href: '/auto',
       }}
       relatedLinks={[
         { href: '/auto', label: 'Kupní smlouva na vozidlo' },

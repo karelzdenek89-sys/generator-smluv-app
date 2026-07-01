@@ -27,10 +27,10 @@ export default function PrepisVozidla2026Page() {
           { href: '#jaky-produkt-zvolit', label: 'Jakou cestu v produktu zvolit' },
         ]}
         primaryAction={{
-          title: 'Potřebujete převod řešit přehledně od podpisu po předání?',
-          body: 'Situační stránka pro prodej vozidla pomůže rozlišit, kdy stačí samostatná kupní smlouva a kdy už je praktičtější širší řešení s navazujícími podklady.',
-          buttonLabel: 'Zobrazit podklady pro prodej vozidla',
-          href: '/prodej-vozidla',
+          title: 'Potřebujete kupní smlouvu na vozidlo?',
+          body: 'Formulář kupní smlouvy s VIN, cenou, datem předání a stavem vozidla — PDF připravené k podpisu.',
+          buttonLabel: 'Vytvořit kupní smlouvu na auto',
+          href: '/auto',
         }}
         trustBox={{
           generatorSuitable:
@@ -39,16 +39,16 @@ export default function PrepisVozidla2026Page() {
             'Spor o vlastnictví, technický stav, nevyřešené závazky k vozidlu nebo jiné nestandardní okolnosti převodu.',
         }}
         finalAction={{
-          title: 'Chcete mít vedle smlouvy i podklady k předání?',
-          body: 'Balíček pro prodej vozidla spojuje kupní smlouvu v komplexní variantě s předávacím protokolem a potvrzením o převzetí klíčů a dokladů.',
-          buttonLabel: 'Otevřít balíček pro prodej vozidla',
-          href: '/balicek-prodej-vozidla',
+          title: 'Potřebujete plnou moc k přepisu?',
+          body: 'Plná moc s konkrétním vozidlem a úkonem — PDF k podpisu, včetně upozornění na ověření podpisu.',
+          buttonLabel: 'Vytvořit plnou moc',
+          href: '/plna-moc',
         }}
         relatedLinks={[
-          { href: '/prodej-vozidla', label: 'Podklady pro prodej vozidla' },
-          { href: '/auto', label: 'Kupní smlouva na vozidlo' },
-          { href: '/balicek-prodej-vozidla', label: 'Balíček pro prodej vozidla' },
+          { href: '/auto', label: 'Kupní smlouva na vozidlo — formulář online' },
+          { href: '/plna-moc', label: 'Plná moc — formulář online' },
           { href: '/blog/predani-vozidla-kupujicimu-2026', label: 'Jak správně předat vozidlo kupujícímu' },
+          { href: '/blog/prepis-auta-online-portal-dopravy-2026', label: 'Přepis auta online — Portál dopravy' },
         ]}
       >
         <section id="co-nasleduje" className="mb-12 scroll-mt-6">

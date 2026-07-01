@@ -34,10 +34,10 @@ export default function ElektronickyPodpisElegalizace2026Page() {
           'Notářsky ověřené právní úkony, katastr nemovitostí, mezinárodní zastoupení nebo spory o platnost podpisu.',
       }}
       finalAction={{
-        title: 'Zastupujete cizince nebo potřebujete ověřený podpis?',
-        body: 'Průvodce plnou mocí pro cizince vysvětluje, kdy stačí běžný podpis a kdy je nutné ověření.',
-        buttonLabel: 'Plná moc pro cizince',
-        href: '/blog/plna-moc-zastupovani-cizincu-2026',
+        title: 'Potřebujete plnou moc pro úřední úkon?',
+        body: 'Generátor plné moci vám připraví dokument s přesným rozsahem oprávnění — vhodný k podpisu nebo ověření.',
+        buttonLabel: 'Vytvořit plnou moc',
+        href: '/plna-moc',
       }}
       relatedLinks={[
         { href: '/plna-moc', label: 'Plná moc online' },

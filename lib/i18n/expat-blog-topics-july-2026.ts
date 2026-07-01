@@ -194,6 +194,12 @@ export const EXPAT_BLOG_TOPICS_JULY_2026: ExpatBlogArticle[] = [
       generatorSuitable: 'Standard DPP or employment for typical hiring in Czechia.',
       lawyerSuitable: 'Labour inspection, multiple employers, pay disputes or reclassification to employment.',
     },
+    finalCta: {
+      title: 'Need a full employment contract instead?',
+      body: 'English-guided employment form — Czech PDF with mandatory Labour Code elements for 2026.',
+      buttonLabel: 'Open employment contract form (EN) →',
+      href: withLocale('/pracovni', 'en'),
+    },
     relatedSlugs: [HUB_EN, 'dpp-agreement-czech-republic-guide-en', 'flexinovela-labor-law-czechia-2026-guide-en'],
   }),
 
@@ -245,6 +251,12 @@ export const EXPAT_BLOG_TOPICS_JULY_2026: ExpatBlogArticle[] = [
     trust: {
       generatorSuitable: 'Типовий DPP або трудовий договір у Чехії.',
       lawyerSuitable: 'Інспекція праці, кілька роботодавців, спори про оплату або перекваліфікація.',
+    },
+    finalCta: {
+      title: 'Потрібен класичний трудовий договір?',
+      body: 'Форма трудового договору українською → чеський PDF з обов’язковими елементами на 2026 рік.',
+      buttonLabel: 'Форма трудового договору (UA) →',
+      href: withLocale('/pracovni', 'ua'),
     },
     relatedSlugs: [HUB_UA, 'dpp-agreement-czech-republic-guide-ua', 'flexinovela-labor-law-czechia-2026-guide-ua'],
   }),
@@ -418,6 +430,12 @@ export const EXPAT_BLOG_TOPICS_JULY_2026: ExpatBlogArticle[] = [
       generatorSuitable: 'Standard POA, private contracts, lease and car sale documents.',
       lawyerSuitable: 'Notarial acts, land registry, contested validity of signature.',
     },
+    finalCta: {
+      title: 'Signing a lease or car contract?',
+      body: 'English-guided rental or car sale form — Czech PDF ready to print and sign.',
+      buttonLabel: 'Open car sale form (EN) →',
+      href: withLocale('/auto', 'en'),
+    },
     relatedSlugs: [HUB_EN, 'power-of-attorney-foreigners-2026-guide-en', 'power-of-attorney-czech-republic-guide-en'],
   }),
 
@@ -470,10 +488,16 @@ export const EXPAT_BLOG_TOPICS_JULY_2026: ExpatBlogArticle[] = [
       generatorSuitable: 'Типова довіреність, приватні договори, оренда та купівля авто.',
       lawyerSuitable: 'Нотаріальні дії, кадастр, спори про дійсність підпису.',
     },
+    finalCta: {
+      title: 'Підписуєте оренду або договір купівлі авто?',
+      body: 'Форма оренди або купівлі авто українською → чеський PDF для друку та підпису.',
+      buttonLabel: 'Форма купівлі авто (UA) →',
+      href: withLocale('/auto', 'ua'),
+    },
     relatedSlugs: [HUB_UA, 'power-of-attorney-foreigners-2026-guide-ua', 'power-of-attorney-czech-republic-guide-ua'],
   }),
 
-  topicEn('hub', {
+  topicEn('lease', {
     slug: 'handover-protocol-czechia-2026-guide-en',
     title: 'Handover Protocol in Czechia 2026: Apartment and Car — What to Put in Writing',
     excerpt:
@@ -483,6 +507,7 @@ export const EXPAT_BLOG_TOPICS_JULY_2026: ExpatBlogArticle[] = [
     keywords: ['handover protocol Czech Republic', 'apartment handover Prague', 'car handover Czechia', 'rental protocol foreigners'],
     readTime: '7 min',
     builderHref: withLocale('/najem', 'en'),
+    seoLandingHref: getExpatSeoHref('en', 'lease'),
     sections: [
       {
         id: 'purpose',
@@ -532,7 +557,7 @@ export const EXPAT_BLOG_TOPICS_JULY_2026: ExpatBlogArticle[] = [
     relatedSlugs: [HUB_EN, 'rental-agreement-czech-republic-guide-en', 'buying-car-foreigner-czechia-2026-guide-en'],
   }),
 
-  topicUa('hub', {
+  topicUa('lease', {
     slug: 'handover-protocol-czechia-2026-guide-ua',
     title: 'Протокол передачі в Чехії 2026: квартира та авто — що зафіксувати письмово',
     excerpt:
@@ -542,6 +567,7 @@ export const EXPAT_BLOG_TOPICS_JULY_2026: ExpatBlogArticle[] = [
     keywords: ['протокол передачі Чехія', 'передача квартири іноземець', 'передача авто', 'оренда протокол'],
     readTime: '7 хв',
     builderHref: withLocale('/najem', 'ua'),
+    seoLandingHref: getExpatSeoHref('ua', 'lease'),
     sections: [
       {
         id: 'purpose',
@@ -755,6 +781,12 @@ export const EXPAT_BLOG_TOPICS_JULY_2026: ExpatBlogArticle[] = [
       body: 'English form — Czech PDF with VIN, price and defect clauses.',
       buttonLabel: 'Open car sale form (EN) →',
     },
+    finalCta: {
+      title: 'Registering the car through a representative?',
+      body: 'Special POA naming the vehicle — Czech PDF with guidance on verified signature.',
+      buttonLabel: 'Open power of attorney form (EN) →',
+      href: withLocale('/plna-moc', 'en'),
+    },
     trust: {
       generatorSuitable: 'Private used-car purchase with standard due diligence.',
       lawyerSuitable: 'Odometer fraud suspicion, encumbrances, dealer warranty disputes.',
@@ -806,6 +838,12 @@ export const EXPAT_BLOG_TOPICS_JULY_2026: ExpatBlogArticle[] = [
       title: 'Створити договір купівлі-продажу авто',
       body: 'Форма українською → чеський PDF з VIN, ціною та вадами.',
       buttonLabel: 'Форма купівлі авто (UA) →',
+    },
+    finalCta: {
+      title: 'Реєструєте авто через представника?',
+      body: 'Спеціальна довіреність з назвою авто — PDF чеською з поясненням ověřením podpisu.',
+      buttonLabel: 'Форма довіреності (UA) →',
+      href: withLocale('/plna-moc', 'ua'),
     },
     trust: {
       generatorSuitable: 'Приватна купівля б/в авто зі стандартною перевіркою.',

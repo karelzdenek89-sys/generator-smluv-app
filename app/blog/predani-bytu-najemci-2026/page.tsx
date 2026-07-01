@@ -27,10 +27,10 @@ export default function PredaniBytuNajemci2026Page() {
           { href: '#kdy-staci-smlouva', label: 'Kdy stačí smlouva a kdy je praktičtější širší řešení' },
         ]}
         primaryAction={{
-          title: 'Řešíte pronájem jako celek?',
-          body: 'Pokud vedle nájemní smlouvy potřebujete i podklady k předání bytu a potvrzení o převzetí kauce, přejděte na orientační stránku pro pronajímatele.',
-          buttonLabel: 'Zobrazit dokumenty pro pronajímatele',
-          href: '/pro-pronajimatele',
+          title: 'Připravujete nový pronájem?',
+          body: 'Nájemní smlouva s možností rozšířené varianty včetně prvků předávacího protokolu a potvrzení o kauci.',
+          buttonLabel: 'Vytvořit nájemní smlouvu',
+          href: '/najem',
         }}
         trustBox={{
           generatorSuitable:
@@ -39,15 +39,13 @@ export default function PredaniBytuNajemci2026Page() {
             'Spory o poškození, vyšší škody, nestandardní ujednání o investicích do bytu nebo situace, kdy se strany neshodnou na průběhu předání.',
         }}
         finalAction={{
-          title: 'Chcete vedle smlouvy i podklady k předání?',
-          body: 'Balíček pro pronajímatele navazuje na nájemní smlouvu v komplexní variantě a doplňuje ji o předávací protokol, potvrzení o převzetí kauce a praktické podklady k podpisu.',
-          buttonLabel: 'Otevřít balíček pro pronajímatele',
-          href: '/balicek-pronajimatel',
+          title: 'Chcete smlouvu s prvky předávacího protokolu?',
+          body: 'Rozšířená nájemní smlouva zachytí stav bytu, měřidla, klíče a podmínky kauce — PDF k podpisu.',
+          buttonLabel: 'Otevřít formulář nájemní smlouvy',
+          href: '/najem',
         }}
         relatedLinks={[
-          { href: '/pro-pronajimatele', label: 'Dokumenty pro pronajímatele' },
-          { href: '/balicek-pronajimatel', label: 'Balíček pro pronajímatele' },
-          { href: '/najem', label: 'Nájemní smlouva' },
+          { href: '/najem', label: 'Nájemní smlouva — formulář online' },
           { href: '/blog/predavaci-protokol-vzor-2026', label: 'Předávací protokol — průvodce' },
           { href: '/blog/kauce-pronajem-bytu-2026', label: 'Kauce při pronájmu bytu' },
         ]}

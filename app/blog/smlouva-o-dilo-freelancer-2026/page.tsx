@@ -34,10 +34,10 @@ export default function SmlouvaODiloFreelancer2026Page() {
           'Velké IT projekty s komplexními licencemi, stavební díla s vysokou hodnotou, spory o švarcsystém nebo mezinárodní B2B smlouvy.',
       }}
       finalAction={{
-        title: 'Chcete detailněji řešit autorská práva?',
-        body: 'Specializovaný průvodce vysvětluje rozdíl mezi licencí a převodem autorských práv u freelancera.',
-        buttonLabel: 'Autorská práva ve smlouvě o dílo',
-        href: '/blog/autorska-prava-smlouva-o-dilo-2026',
+        title: 'Spolupráce bez konkrétního výsledku?',
+        body: 'Pro průběžné služby nebo spolupráci OSVČ zvažte smlouvu o spolupráci nebo smlouvu o poskytování služeb.',
+        buttonLabel: 'Vytvořit smlouvu o spolupráci',
+        href: '/spoluprace',
       }}
       relatedLinks={[
         { href: '/smlouva-o-dilo', label: 'Smlouva o dílo — formulář' },

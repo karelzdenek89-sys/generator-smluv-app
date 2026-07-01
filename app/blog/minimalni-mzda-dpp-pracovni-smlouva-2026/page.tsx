@@ -40,10 +40,10 @@ export default function MinimalniMzdaDppPracovniSmlouva2026Page() {
           'Složité mzdové struktury, více zaměstnavatelů u jednoho dohodáře, spory o doplatek do minimální mzdy nebo kontrola inspekce práce.',
       }}
       finalAction={{
-        title: 'Potřebujete porovnat DPP a DPČ?',
-        body: 'Průvodce rozdíly mezi dohodami pomůže zvolit správný typ dokumentu ještě před podpisem.',
-        buttonLabel: 'DPP nebo DPČ — srovnání',
-        href: '/blog/dpp-dpc-porovnani-2026',
+        title: 'Potřebujete i pracovní smlouvu?',
+        body: 'Pro hlavní pracovní poměr použijte generátor pracovní smlouvy s náležitostmi dle zákoníku práce pro rok 2026.',
+        buttonLabel: 'Vytvořit pracovní smlouvu',
+        href: '/pracovni',
       }}
       relatedLinks={[
         { href: '/dpp', label: 'DPP — formulář online' },

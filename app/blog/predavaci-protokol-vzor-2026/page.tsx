@@ -22,10 +22,10 @@ export default function PredavaciProtokolVzor2026Page() {
         { href: '#chyby', label: 'Nejčastější chyby' },
       ]}
       primaryAction={{
-        title: 'Pronajímáte byt nebo prodáváte auto?',
-        body: 'Balíčky SmlouvaHned spojují smlouvu s předávacím protokolem — nemusíte hledat dva oddělené vzory.',
-        buttonLabel: 'Vybrat balíček',
-        href: '/balicek-pronajimatel',
+        title: 'Pronajímáte byt?',
+        body: 'Nájemní smlouva v generátoru pokrývá předání bytu, kauci a předávací protokol v jednom postupu.',
+        buttonLabel: 'Vytvořit nájemní smlouvu',
+        href: '/najem',
       }}
       trustBox={{
         generatorSuitable:
@@ -34,17 +34,17 @@ export default function PredavaciProtokolVzor2026Page() {
           'Spory o rozsáhlé škody, nefunkční zařízení s vysokou hodnotou, nebo předání s právními vadami, které vyžadují odborné posouzení.',
       }}
       finalAction={{
-        title: 'Prodáváte vozidlo?',
-        body: 'Balíček pro prodej vozidla obsahuje kupní smlouvu, předávací protokol a potvrzení o klíčích a dokladech.',
-        buttonLabel: 'Balíček pro prodej vozidla',
-        href: '/balicek-prodej-vozidla',
+        title: 'Prodáváte nebo kupujete vozidlo?',
+        body: 'Kupní smlouva na auto zachytí VIN, stav tachometru, předání vozidla a dokladů — protokol navazuje na smlouvu.',
+        buttonLabel: 'Vytvořit kupní smlouvu na auto',
+        href: '/auto',
       }}
       relatedLinks={[
+        { href: '/najem', label: 'Nájemní smlouva — formulář' },
+        { href: '/auto', label: 'Kupní smlouva na auto — formulář' },
         { href: '/blog/predani-bytu-najemci-2026', label: 'Předání bytu nájemci' },
         { href: '/blog/predani-vozidla-kupujicimu-2026', label: 'Předání vozidla kupujícímu' },
         { href: '/blog/kauce-pronajem-bytu-2026', label: 'Kauce při pronájmu' },
-        { href: '/najem', label: 'Nájemní smlouva' },
-        { href: '/auto', label: 'Kupní smlouva na auto' },
       ]}
     >
       <section id="co-je" className="mb-12 scroll-mt-6">

@@ -39,16 +39,15 @@ export default function ChybyPriPronajmuBytu2026Page() {
             'Sporné ukončení nájmu, vyšší škody, složitější investice do nemovitosti nebo situace, kdy už mezi stranami vznikl konflikt.',
         }}
         finalAction={{
-          title: 'Řešíte smlouvu i předání bytu v jednom kroku?',
-          body: 'Balíček pro pronajímatele navazuje na nájemní smlouvu v komplexní variantě a doplňuje ji o podklady k předání bytu a práci s kaucí.',
-          buttonLabel: 'Zobrazit balíček pro pronajímatele',
-          href: '/balicek-pronajimatel',
+          title: 'Chcete smlouvu s prvky předávacího protokolu?',
+          body: 'Rozšířená nájemní smlouva zachytí stav bytu, kauci a pravidla užívání — PDF k podpisu.',
+          buttonLabel: 'Otevřít formulář nájemní smlouvy',
+          href: '/najem',
         }}
         relatedLinks={[
-          { href: '/pro-pronajimatele', label: 'Dokumenty pro pronajímatele' },
-          { href: '/najem', label: 'Nájemní smlouva' },
-          { href: '/balicek-pronajimatel', label: 'Balíček pro pronajímatele' },
+          { href: '/najem', label: 'Nájemní smlouva — formulář online' },
           { href: '/blog/najemni-smlouva-vzor-2026', label: 'Co má obsahovat nájemní smlouva' },
+          { href: '/blog/predavaci-protokol-vzor-2026', label: 'Předávací protokol — průvodce' },
         ]}
       >
         <section id="nejasna-smlouva" className="mb-12 scroll-mt-6">

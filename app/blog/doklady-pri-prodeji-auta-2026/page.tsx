@@ -27,10 +27,10 @@ export default function DokladyPriProdejiAuta2026Page() {
           { href: '#kdy-resit-cele-situacne', label: 'Kdy řešit převod jako celek' },
         ]}
         primaryAction={{
-          title: 'Řešíte kromě smlouvy i předání auta?',
-          body: 'Situační stránka pro prodej vozidla pomůže vybrat, kdy stačí kupní smlouva a kdy dává smysl širší řešení s předávacími podklady.',
-          buttonLabel: 'Zobrazit podklady pro prodej vozidla',
-          href: '/prodej-vozidla',
+          title: 'Prodáváte nebo kupujete vozidlo?',
+          body: 'Kupní smlouva na vozidlo s VIN, cenou a seznamem předávaných dokladů — PDF připravené k podpisu.',
+          buttonLabel: 'Vytvořit kupní smlouvu na auto',
+          href: '/auto',
         }}
         trustBox={{
           generatorSuitable:
@@ -39,16 +39,15 @@ export default function DokladyPriProdejiAuta2026Page() {
             'Převod zatíženého vozidla, nejasný původ vozidla, probíhající spor o vlastnictví nebo nestandardní obchodní podmínky mezi stranami.',
         }}
         finalAction={{
-          title: 'Chcete vedle smlouvy i navazující podklady?',
-          body: 'Balíček pro prodej vozidla obsahuje kupní smlouvu v komplexní variantě, předávací protokol i potvrzení o převzetí vozidla, klíčů a dokladů.',
-          buttonLabel: 'Otevřít balíček pro prodej vozidla',
-          href: '/balicek-prodej-vozidla',
+          title: 'Chcete smlouvu s prvky předávacího protokolu?',
+          body: 'Rozšířená kupní smlouva zachytí předané klíče, doklady a stav vozidla — PDF k podpisu.',
+          buttonLabel: 'Otevřít formulář kupní smlouvy',
+          href: '/auto',
         }}
         relatedLinks={[
-          { href: '/prodej-vozidla', label: 'Podklady pro prodej vozidla' },
-          { href: '/balicek-prodej-vozidla', label: 'Balíček pro prodej vozidla' },
-          { href: '/auto', label: 'Kupní smlouva na vozidlo' },
+          { href: '/auto', label: 'Kupní smlouva na vozidlo — formulář online' },
           { href: '/blog/prepis-vozidla-2026', label: 'Přepis vozidla po podpisu smlouvy' },
+          { href: '/blog/predani-vozidla-kupujicimu-2026', label: 'Předání vozidla kupujícímu' },
         ]}
       >
         <section id="proc-na-dokladech-zalezi" className="mb-12 scroll-mt-6">

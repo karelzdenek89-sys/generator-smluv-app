@@ -29,7 +29,13 @@ export default function ExpatBlogArticleView({ article }: Props) {
   const contractLinks = EXPAT_BLOG_CONTRACT_LINKS[locale];
   const hubSlug =
     locale === 'en' ? 'foreigners-czech-contracts-guide-en' : 'foreigners-czech-contracts-guide-ua';
+  const isExpatHubArticle = article.slug === hubSlug;
   const seoLinkLabel = seoLandingLinkLabel(article);
+  const finalCtaHref =
+    article.finalCta.href ??
+    (article.builderHref === '/en' || article.builderHref === '/ua'
+      ? article.expatHubHref
+      : article.builderHref);
 
   return (
     <article className="blog-listing mx-auto max-w-3xl px-6 py-12">
@@ -89,7 +95,7 @@ export default function ExpatBlogArticleView({ article }: Props) {
         </p>
       ) : null}
 
-      {article.contractKey === 'hub' ? (
+      {article.contractKey === 'hub' && isExpatHubArticle ? (
         <section className="site-content-card mb-10 rounded-[1.75rem] p-6">
           <h2 className="text-xl font-semibold text-[#f2e7c8]">{article.ui.contractLinksTitle}</h2>
           <ul className="mt-5 space-y-4">
@@ -182,12 +188,7 @@ export default function ExpatBlogArticleView({ article }: Props) {
         title={article.finalCta.title}
         body={article.finalCta.body}
         buttonLabel={article.finalCta.buttonLabel}
-        href={
-          article.finalCta.href ??
-          (article.builderHref === '/en' || article.builderHref === '/ua'
-            ? article.expatHubHref
-            : article.builderHref)
-        }
+        href={finalCtaHref}
         variant="subtle"
       />
 
@@ -197,6 +198,38 @@ export default function ExpatBlogArticleView({ article }: Props) {
         <section className="mt-12 border-t border-[rgba(166,134,91,0.15)] pt-10">
           <h2 className="site-kicker">{article.ui.relatedHub}</h2>
           <ul className="mt-4 space-y-3">
+            <li>
+              <TrackedLink
+                href={article.builderHref}
+                eventName="blog_cta_click"
+                eventParams={{
+                  source: 'blog_expat_related',
+                  surface: 'contract_link',
+                  article_slug: article.slug,
+                  destination: article.builderHref,
+                }}
+                className="font-semibold text-[#d6ac60] hover:underline"
+              >
+                {article.primaryCta.buttonLabel}
+              </TrackedLink>
+            </li>
+            {finalCtaHref !== article.builderHref ? (
+              <li>
+                <TrackedLink
+                  href={finalCtaHref}
+                  eventName="blog_cta_click"
+                  eventParams={{
+                    source: 'blog_expat_related',
+                    surface: 'contract_link_secondary',
+                    article_slug: article.slug,
+                    destination: finalCtaHref,
+                  }}
+                  className="font-semibold text-[#d6ac60] hover:underline"
+                >
+                  {article.finalCta.buttonLabel}
+                </TrackedLink>
+              </li>
+            ) : null}
             {article.relatedSlugs.map((slug) => {
               const related = getExpatBlogArticle(slug);
               if (!related) return null;

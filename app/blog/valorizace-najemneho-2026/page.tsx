@@ -40,13 +40,13 @@ export default function ValorizaceNajemneho2026Page() {
             'Komerční pronájmy s individuálně vyjednanou cenovou doložkou, dlouhodobé nájmy s atypickou indexací nebo spory o výpočet zvýšení.',
         }}
         finalAction={{
-          title: 'Potřebujete kromě smlouvy i podklady k předání bytu?',
-          body: 'Balíček pro pronajímatele kombinuje rozšířenou nájemní smlouvu s předávacím protokolem a potvrzením o převzetí kauce — typicky pro nový pronájem od základu.',
-          buttonLabel: 'Otevřít balíček pro pronajímatele',
-          href: '/balicek-pronajimatel',
+          title: 'Chcete valorizační doložku přímo ve smlouvě?',
+          body: 'Formulář nájemní smlouvy s inflační nebo pevnou valorizací nájemného — PDF k podpisu.',
+          buttonLabel: 'Otevřít formulář nájemní smlouvy',
+          href: '/najem',
         }}
         relatedLinks={[
-          { href: '/najem', label: 'Nájemní smlouva' },
+          { href: '/najem', label: 'Nájemní smlouva — formulář online' },
           { href: '/blog/najemni-smlouva-vzor-2026', label: 'Nájemní smlouva 2026: vzor a obsah' },
           { href: '/blog/kauce-pronajem-bytu-2026', label: 'Kauce při pronájmu bytu' },
           { href: '/blog/vypoved-z-najmu-bytu-2026', label: 'Výpověď z nájmu bytu' },

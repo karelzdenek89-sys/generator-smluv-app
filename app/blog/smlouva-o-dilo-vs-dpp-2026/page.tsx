@@ -35,10 +35,10 @@ export default function SmlouvaODiloVsDpp2026Page() {
           'Podezření na švarcsystém, řetězení dohod, spory s inspekcí práce, mezinárodní pracovní vztahy nebo složité B2B smlouvy.',
       }}
       finalAction={{
-        title: 'Chcete detailní srovnání DPP a DPČ?',
-        body: 'Samostatný průvodce rozebírá limity hodin, odvody a praktické rozdíly mezi oběma dohodami.',
-        buttonLabel: 'DPP nebo DPČ — srovnání',
-        href: '/blog/dpp-dpc-porovnani-2026',
+        title: 'Jde spíše o dodání konkrétního výsledku?',
+        body: 'Pro projektovou spolupráci s OSVČ použijte smlouvu o dílo — popis díla, cena, termíny a předání.',
+        buttonLabel: 'Vytvořit smlouvu o dílo',
+        href: '/smlouva-o-dilo',
       }}
       relatedLinks={[
         { href: '/dpp', label: 'DPP — formulář' },

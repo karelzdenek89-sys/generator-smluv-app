@@ -34,10 +34,10 @@ export default function PrepisAutaOnlinePortalDopravy2026Page() {
           'Spory o vlastnictví, zatížené vozidlo, neuhrazené poplatky, prodej právnické osoby nebo přeshraniční převod.',
       }}
       finalAction={{
-        title: 'Chcete kompletní balíček pro prodej vozidla?',
-        body: 'Balíček spojuje kupní smlouvu, předávací protokol a potvrzení o převzetí klíčů a dokladů.',
-        buttonLabel: 'Balíček pro prodej vozidla',
-        href: '/balicek-prodej-vozidla',
+        title: 'Prodáváte vozidlo a potřebujete plnou moc k přepisu?',
+        body: 'Speciální plná moc pro zastoupení u registru vozidel — s VIN, RZ a rozsahem oprávnění.',
+        buttonLabel: 'Vytvořit plnou moc',
+        href: '/plna-moc',
       }}
       relatedLinks={[
         { href: '/auto', label: 'Kupní smlouva na vozidlo' },
