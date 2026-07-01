@@ -48,6 +48,8 @@ export default function PredaniVozidlaKupujicimu2026Page() {
           { href: '/prodej-vozidla', label: 'Podklady pro prodej vozidla' },
           { href: '/balicek-prodej-vozidla', label: 'Balíček pro prodej vozidla' },
           { href: '/auto', label: 'Kupní smlouva na vozidlo' },
+          { href: '/blog/predavaci-protokol-vzor-2026', label: 'Předávací protokol — průvodce' },
+          { href: '/blog/kupni-smlouva-auto-kupujici-2026', label: 'Kupní smlouva pro kupujícího' },
           { href: '/blog/doklady-pri-prodeji-auta-2026', label: 'Jaké doklady předat při prodeji auta' },
         ]}
       >

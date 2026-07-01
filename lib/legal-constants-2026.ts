@@ -65,6 +65,13 @@ export const DPP_MAX_HOURS_PER_YEAR = 300;
  */
 export const DPP_MONTHLY_THRESHOLD_2026_CZK = 12000;
 
+/**
+ * Minimální mzda pro rok 2026 (nař. vlády č. 466/2025 Sb.).
+ * Měsíční: 22 400 Kč · hodinová (40h týden): 134,40 Kč.
+ */
+export const MIN_WAGE_MONTHLY_2026_CZK = 22400;
+export const MIN_WAGE_HOURLY_2026_CZK = 134.4;
+
 /** DPČ — rozhodný příjem (§ 7 odst. 2 zák. o nem. pojištění). */
 export const DPC_MONTHLY_THRESHOLD_2026_CZK = 4500;
 

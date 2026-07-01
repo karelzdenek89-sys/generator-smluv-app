@@ -4,6 +4,13 @@ import { czechDateToDate } from '@/lib/seo/czech-date';
 import { SITE_URL } from '@/lib/seo/site';
 
 const PILLAR_SLUGS = new Set([
+  'predavaci-protokol-vzor-2026',
+  'smlouva-o-dilo-freelancer-2026',
+  'smlouva-o-dilo-vs-dpp-2026',
+  'kupni-smlouva-auto-kupujici-2026',
+  'minimalni-mzda-dpp-pracovni-smlouva-2026',
+  'prepis-auta-online-portal-dopravy-2026',
+  'elektronicky-podpis-elegalizace-2026',
   'najemni-smlouva-vzor-2026',
   'valorizace-najemneho-2026',
   'kupni-smlouva-na-auto-2026',

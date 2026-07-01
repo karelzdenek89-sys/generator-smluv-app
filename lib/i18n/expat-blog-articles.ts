@@ -1,6 +1,7 @@
 import type { ExpatContractType } from '@/lib/i18n/expat-locale-copy';
 import { getExpatSeoHref } from '@/lib/i18n/expat-seo-landings';
 import { EXPAT_BLOG_TOPICS_2026 } from '@/lib/i18n/expat-blog-topics-2026';
+import { EXPAT_BLOG_TOPICS_JULY_2026 } from '@/lib/i18n/expat-blog-topics-july-2026';
 import { EXPAT_CONTRACT_ROUTES, withLocale, type AppLocale } from '@/lib/locale';
 
 export type ExpatBlogAudience = 'en' | 'ua';
@@ -1114,6 +1115,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
   }),
 
   ...EXPAT_BLOG_TOPICS_2026,
+  ...EXPAT_BLOG_TOPICS_JULY_2026,
 ];
 
 export const EXPAT_BLOG_CONTRACT_LINKS: Record<

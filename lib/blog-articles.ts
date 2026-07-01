@@ -28,6 +28,94 @@ export type BlogClusterMeta = {
 
 export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   {
+    slug: 'predavaci-protokol-vzor-2026',
+    title: 'Předávací protokol 2026: Co musí obsahovat a proč nestačí jen podpis smlouvy',
+    excerpt:
+      'Praktický průvodce předávacím protokolem při pronájmu bytu, prodeji auta nebo předání movité věci. Co zachytit písemně, aby nevznikl spor o stav nebo rozsah plnění.',
+    category: 'Obecné a praktické',
+    readTime: '8 min',
+    date: '1. července 2026',
+    cluster: 'general',
+    href: '/blog/predavaci-protokol-vzor-2026',
+  },
+  {
+    slug: 'smlouva-o-dilo-freelancer-2026',
+    title: 'Smlouva o dílo pro freelancera 2026: Ochrana před nezaplacením a převod autorských práv',
+    excerpt:
+      'Jak OSVČ nebo freelancer sestaví smlouvu o dílo tak, aby bylo jasné, co se dodává, kdy se platí, kdo vlastní výsledek a jak řešit vícepráce.',
+    category: 'Podnikání a zakázky',
+    readTime: '9 min',
+    date: '1. července 2026',
+    cluster: 'general',
+    href: '/blog/smlouva-o-dilo-freelancer-2026',
+  },
+  {
+    slug: 'smlouva-o-dilo-vs-dpp-2026',
+    title: 'Smlouva o dílo nebo DPP 2026: Kdy co použít a jak se vyhnout švarcsystému',
+    excerpt:
+      'Rozdíl mezi dohodou o provedení práce a smlouvou o dílo z pohledu OSVČ, zaměstnavatele i odběratele. Limity, rizika a praktická rozhodovací logika.',
+    category: 'Práce a podnikání',
+    readTime: '8 min',
+    date: '1. července 2026',
+    cluster: 'general',
+    href: '/blog/smlouva-o-dilo-vs-dpp-2026',
+  },
+  {
+    slug: 'kupni-smlouva-auto-kupujici-2026',
+    title: 'Kupní smlouva na auto pro kupujícího 2026: Na co si dát pozor před podpisem',
+    excerpt:
+      'Průvodce pro kupující ojetého nebo nového vozu — VIN, servisní historie, známé vady, předání dokladů a kroky po podpisu smlouvy.',
+    category: 'Vozidla',
+    readTime: '8 min',
+    date: '1. července 2026',
+    cluster: 'vehicle',
+    href: '/blog/kupni-smlouva-auto-kupujici-2026',
+  },
+  {
+    slug: 'smluvni-pokuta-vzor-2026',
+    title: 'Smluvní pokuta 2026: Jak ji sjednat ve smlouvě a kdy může být neplatná',
+    excerpt:
+      'Co je smluvní pokuta, jak se liší od náhrady škody, jak ji formulovat v nájemní nebo jiné smlouvě a jakým chybám se vyhnout.',
+    category: 'Obecné a praktické',
+    readTime: '7 min',
+    date: '1. července 2026',
+    cluster: 'general',
+    href: '/blog/smluvni-pokuta-vzor-2026',
+  },
+  {
+    slug: 'minimalni-mzda-dpp-pracovni-smlouva-2026',
+    title: 'Minimální mzda 2026 ve smlouvách a DPP: co zkontrolovat před podpisem',
+    excerpt:
+      'Aktuální přehled minimální mzdy v roce 2026, dopadů na DPP a pracovní smlouvy a praktických bodů, které zkontrolovat před podpisem dokumentu.',
+    category: 'Práce a zaměstnání',
+    readTime: '7 min',
+    date: '13. června 2026',
+    cluster: 'general',
+    href: '/blog/minimalni-mzda-dpp-pracovni-smlouva-2026',
+  },
+  {
+    slug: 'prepis-auta-online-portal-dopravy-2026',
+    title: 'Přepis auta online přes Portál dopravy 2026: co připravit před prodejem',
+    excerpt:
+      'Jak v roce 2026 navázat kupní smlouvu, předávací protokol, plnou moc a digitální žádost o změnu vlastníka vozidla.',
+    category: 'Vozidla',
+    readTime: '8 min',
+    date: '13. června 2026',
+    cluster: 'vehicle',
+    href: '/blog/prepis-auta-online-portal-dopravy-2026',
+  },
+  {
+    slug: 'elektronicky-podpis-elegalizace-2026',
+    title: 'Elektronický podpis a eLegalizace 2026: kdy stačí online podpis a kdy ověřit podpis',
+    excerpt:
+      'Praktický přehled elektronického podpisu, eLegalizace a ověřeného podpisu v roce 2026 pro smlouvy, plné moci a úřední úkony.',
+    category: 'Osobní a právní',
+    readTime: '8 min',
+    date: '13. června 2026',
+    cluster: 'general',
+    href: '/blog/elektronicky-podpis-elegalizace-2026',
+  },
+  {
     slug: 'flexinovela-zakoniku-prace-2026',
     title: 'Flexinovela zákoníku práce 2026: Co se mění u DPP, DPČ a pracovních smluv',
     excerpt:

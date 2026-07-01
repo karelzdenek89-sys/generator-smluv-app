@@ -48,6 +48,7 @@ export default function PredaniBytuNajemci2026Page() {
           { href: '/pro-pronajimatele', label: 'Dokumenty pro pronajímatele' },
           { href: '/balicek-pronajimatel', label: 'Balíček pro pronajímatele' },
           { href: '/najem', label: 'Nájemní smlouva' },
+          { href: '/blog/predavaci-protokol-vzor-2026', label: 'Předávací protokol — průvodce' },
           { href: '/blog/kauce-pronajem-bytu-2026', label: 'Kauce při pronájmu bytu' },
         ]}
       >
