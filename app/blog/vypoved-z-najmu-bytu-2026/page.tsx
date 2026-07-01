@@ -3,7 +3,7 @@ import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 
 export const metadata = blogArticlePageMetadata("vypoved-z-najmu-bytu-2026", {
-  title: "Výpověď z nájmu bytu: výpovědní lhůty, důvody a forma",
+  title: "Výpověď z nájmu bytu 2026: výpovědní lhůty, důvody a forma",
   description: "Kdy a jak může pronajímatel nebo nájemce ukončit nájem výpovědí. Zákonné důvody, tříměsíční lhůta, písemná forma a co mít v nájemní smlouvě předem ošetřeno.",
 });
 
@@ -19,7 +19,7 @@ export default function VypovedZNajmuBytu2026Page() {
         dateLabel="15. dubna 2026"
         breadcrumbLabel="Výpověď z nájmu bytu 2026"
         slug="vypoved-z-najmu-bytu-2026"
-        title="Výpověď z nájmu bytu: výpovědní lhůty, důvody a forma"
+        title="Výpověď z nájmu bytu 2026: výpovědní lhůty, důvody a forma"
         intro="Ukončení nájmu výpovědí se řídí poměrně přesně danými pravidly — liší se podle toho, kdo výpověď dává, z jakého důvodu a jak je nastavena samotná smlouva. Tento článek shrnuje základní parametry, které jsou prakticky nejčastěji potřeba."
         toc={[
           { href: '#dva-zpusoby-ukonceni', label: 'Výpověď nebo dohoda o ukončení' },

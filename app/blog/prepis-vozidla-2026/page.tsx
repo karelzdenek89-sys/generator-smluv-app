@@ -18,7 +18,7 @@ export default function PrepisVozidla2026Page() {
         dateLabel="6. dubna 2026"
         breadcrumbLabel="Přepis vozidla 2026"
         slug="prepis-vozidla-2026"
-        title="Přepis vozidla: Na co si dát pozor po podpisu kupní smlouvy"
+        title="Přepis vozidla 2026: Na co si dát pozor po podpisu kupní smlouvy"
         intro="Podpis kupní smlouvy není poslední krok. U běžného převodu vozidla bývá praktické promyslet i návaznost na předání auta, klíčů, dokladů a další administrativní kroky, aby mezi stranami nevznikl zmatek."
         toc={[
           { href: '#co-nasleduje', label: 'Co obvykle následuje po podpisu smlouvy' },

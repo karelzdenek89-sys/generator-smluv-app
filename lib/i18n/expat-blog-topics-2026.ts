@@ -120,7 +120,7 @@ function topicUa(
     slug: opts.slug,
     audience: 'ua',
     contractKey,
-    category: 'Pro cizince (UA)',
+    category: 'Для інозemців (UA)',
     readTime: opts.readTime,
     dateLabel: DATE_UA,
     dateTime: DATE_TIME,

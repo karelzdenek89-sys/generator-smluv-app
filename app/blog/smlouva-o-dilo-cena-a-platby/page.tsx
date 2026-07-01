@@ -3,7 +3,7 @@ import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 
 export const metadata = blogArticlePageMetadata("smlouva-o-dilo-cena-a-platby", {
-  title: "Smlouva o dílo: jak zachytit cenu, zálohy a platební podmínky",
+  title: "Smlouva o dílo 2026: jak zachytit cenu, zálohy a platební podmínky",
   description: "Pevná cena nebo položkový rozpočet, zálohy, platební milníky a vícepráce. Co ve smlouvě o dílo písemně sjednat, aby platební podmínky fungovaly v praxi.",
 });
 
@@ -17,9 +17,9 @@ export default function SmlouvaODiloCenaAPlatbyPage() {
         readTime="7 min"
         dateTime="2026-04-15"
         dateLabel="15. dubna 2026"
-        breadcrumbLabel="Smlouva o dílo: cena a platby"
+        breadcrumbLabel="Smlouva o dílo 2026: cena a platby"
         slug="smlouva-o-dilo-cena-a-platby"
-        title="Smlouva o dílo: jak zachytit cenu, zálohy a platební podmínky"
+        title="Smlouva o dílo 2026: jak zachytit cenu, zálohy a platební podmínky"
         intro="Cena je ve smlouvě o dílo jedním z nejdůležitějších a zároveň nejčastěji nepřesně sjednaných bodů. Zákon nabízí několik způsobů, jak cenu určit — a způsob, který si strany zvolí, výrazně ovlivňuje to, co se stane při zdražení, změně rozsahu nebo překročení odhadovaných nákladů."
         toc={[
           { href: '#pevna-cena-vs-rozpocet', label: 'Pevná cena nebo položkový rozpočet' },

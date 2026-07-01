@@ -46,9 +46,12 @@ export default function BlogArticleSchemas({
     inLanguage,
   });
 
+  const blogLabel =
+    article.audience === 'ua' ? 'Блог' : article.audience === 'en' ? 'Blog' : 'Blog';
+
   const breadcrumb = breadcrumbSchema([
     { label: 'SmlouvaHned', href: '/' },
-    { label: 'Blog', href: '/blog' },
+    { label: blogLabel, href: '/blog' },
     { label: article.title, href: article.href },
   ]);
 

@@ -212,7 +212,7 @@ function contractArticleUa(
     slug: opts.slug,
     audience: 'ua',
     contractKey: contract,
-    category: 'Pro cizince (UA)',
+    category: 'Для інозemців (UA)',
     readTime: opts.readTime,
     dateLabel: '17. května 2026',
     dateTime: '2026-05-17',
@@ -325,7 +325,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
     slug: HUB_GUIDE_UA,
     audience: 'ua',
     contractKey: 'hub',
-    category: 'Pro cizince (UA)',
+    category: 'Для інозemців (UA)',
     readTime: '6 хв',
     dateLabel: '17. května 2026',
     dateTime: '2026-05-17',
@@ -485,7 +485,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
 
   contractArticleEn('employment', {
     slug: 'employment-contract-czech-republic-guide-en',
-    title: 'Employment contract in the Czech Republic for foreign workers',
+    title: 'Employment contract in the Czech Republic for foreign workers (2026)',
     excerpt:
       'Mandatory elements under the Labour Code, probation and working time — plus an English-guided form for a Czech employment PDF.',
     intro:
@@ -525,7 +525,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
 
   contractArticleUa('employment', {
     slug: 'employment-contract-czech-republic-guide-ua',
-    title: 'Трудовий договір у Чехії для іноземних працівників',
+    title: 'Трудовий договір у Чехії для іноземних працівників (2026)',
     excerpt:
       'Обов’язкові елементи за трудовим кодексом і форма українською для чеського PDF.',
     intro:
@@ -564,7 +564,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
 
   contractArticleEn('dpp', {
     slug: 'dpp-agreement-czech-republic-guide-en',
-    title: 'DPP agreement in Czechia: short-term work for foreigners',
+    title: 'DPP agreement in Czechia: short-term work for foreigners (2026)',
     excerpt:
       'When to use a “agreement to perform work” (DPP), hourly limits, and the English-guided Czech form.',
     intro:
@@ -601,7 +601,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
 
   contractArticleUa('dpp', {
     slug: 'dpp-agreement-czech-republic-guide-ua',
-    title: 'Договір DPP у Чехії: короткострокова праця',
+    title: 'Договір DPP у Чехії: короткострокова праця (2026)',
     excerpt: 'Коли використовувати DPP, ліміт годин і форма українською для чеського PDF.',
     intro: 'DPP підходить для випадкової праці, але є річний ліміт годин у одного роботодавця.',
     keywords: ['DPP Чехія', 'договір про виконання роботи'],
@@ -633,7 +633,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
 
   contractArticleEn('sublease', {
     slug: 'sublease-agreement-czech-republic-guide-en',
-    title: 'Sublease in the Czech Republic: room or apartment',
+    title: 'Sublease in the Czech Republic: room or apartment (2026)',
     excerpt:
       'Landlord consent, main lease relationship, and generating a Czech sublease with English form help.',
     intro:
@@ -670,7 +670,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
 
   contractArticleUa('sublease', {
     slug: 'sublease-agreement-czech-republic-guide-ua',
-    title: 'Піднайм у Чехії: кімната чи квартира',
+    title: 'Піднайм у Чехії: кімната чи квартира (2026)',
     excerpt: 'Згода орендодавця, зв’язок з основним договором, форма українською.',
     intro: 'Піднайм потребує уваги до основної оренди та часто письмової згоди орендодавця.',
     keywords: ['піднайм Чехія', 'суборенда квартири'],
@@ -702,7 +702,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
 
   contractArticleEn('power_of_attorney', {
     slug: 'power-of-attorney-czech-republic-guide-en',
-    title: 'Power of attorney in the Czech Republic for foreigners',
+    title: 'Power of attorney in the Czech Republic for foreigners (2026)',
     excerpt:
       'General vs special power of attorney, when a certified signature is needed, and the English-guided Czech form.',
     intro:
@@ -739,7 +739,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
 
   contractArticleUa('power_of_attorney', {
     slug: 'power-of-attorney-czech-republic-guide-ua',
-    title: 'Довіреність у Чехії для іноземців',
+    title: 'Довіреність у Чехії для іноземців (2026)',
     excerpt: 'Загальна чи спеціальна довіреність, засвідчений підпис, форма українською.',
     intro: 'Довіреність дозволяє діяти від вашого імені в органах, банках або угоді. Обсяг має бути точним.',
     keywords: ['довіреність Чехія', 'plná moc'],
@@ -774,7 +774,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
 
   contractArticleEn('car_sale', {
     slug: 'car-sale-agreement-czech-republic-guide-en',
-    title: 'Car purchase agreement in the Czech Republic for foreigners',
+    title: 'Car purchase agreement in the Czech Republic for foreigners (2026)',
     excerpt:
       'VIN, mileage, defects, handover and documents when buying a used car — with an English-guided Czech contract.',
     intro:
@@ -814,7 +814,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
 
   contractArticleUa('car_sale', {
     slug: 'car-sale-agreement-czech-republic-guide-ua',
-    title: 'Купівля авто в Чехії: договір для іноземців',
+    title: 'Купівля авто в Чехії: договір для іноземців (2026)',
     excerpt: 'VIN, пробіг, вади, передача документів — форма українською для чеського PDF.',
     intro: 'Приватний продаж авто — купівельна угода за цивільним кодексом. Перепис — окремо в реєстрі.',
     keywords: ['купівля авто Чехія', 'договір продажу авто'],
