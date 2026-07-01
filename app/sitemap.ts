@@ -115,7 +115,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: getExpatBlogCanonical(slug),
       lastModified: now,
       changeFrequency: 'monthly' as const,
-      priority: slug.includes('foreigners-czech-contracts-guide') ? 0.82 : 0.78,
+      priority: slug.includes('foreigners-czech-contracts-guide')
+        ? 0.82
+        : slug.includes('why-smlouvahned-not-template')
+          ? 0.85
+          : 0.78,
       ...(alternates ? { alternates: { languages: alternates } } : {}),
     })),
   ];

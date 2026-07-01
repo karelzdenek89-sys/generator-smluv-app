@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { O_PROJEKTU_COMPARISON_ROWS } from '@/lib/marketing/differentiation';
 
 export const metadata: Metadata = {
   title: 'O projektu — Jak nástroj vznikl a jak funguje',
@@ -83,6 +84,38 @@ export default function OProjektuPage() {
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* Srovnání s běžnými alternativami */}
+        <section className="mb-10">
+          <div className="text-xs font-black uppercase tracking-[0.18em] text-amber-400 mb-5">
+            Proč ne stažený vzor
+          </div>
+          <h2 className="text-2xl font-black text-white mb-4">
+            Kde je rozdíl oproti běžným alternativám
+          </h2>
+          <p className="text-sm text-slate-400 leading-relaxed mb-6 max-w-2xl">
+            Lidé často začínají u souboru z internetu nebo u generátoru, který jen vypíše text.
+            SmlouvaHned stojí mezi tím a cestou k advokátovi — pokrývá typické případy, kde
+            strany chtějí podmínky zachytit písemně sami.
+          </p>
+          <div className="space-y-4">
+            {O_PROJEKTU_COMPARISON_ROWS.map((row) => (
+              <div
+                key={row.source}
+                className="rounded-2xl border border-white/8 bg-[#0c1426]/60 p-5 md:p-6"
+              >
+                <p className="text-xs font-black uppercase tracking-widest text-slate-500">
+                  {row.source}
+                </p>
+                <p className="mt-2 text-sm text-slate-500 leading-relaxed">{row.problem}</p>
+                <p className="mt-3 text-sm text-slate-300 leading-relaxed">
+                  <span className="text-amber-400 font-semibold">SmlouvaHned: </span>
+                  {row.ours}
+                </p>
+              </div>
+            ))}
           </div>
         </section>
 

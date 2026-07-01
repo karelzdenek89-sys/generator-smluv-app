@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import RelatedContracts from '@/app/components/RelatedContracts';
+import WhyNotGenericBlock from '@/app/components/marketing/WhyNotGenericBlock';
 import { landingPageMetadata } from '@/lib/seo/landing-page-metadata';
 
 export const metadata = landingPageMetadata({
@@ -91,6 +92,11 @@ export default function PracovniSmlouvaPage() {
           </Link>
           <div className="mt-4 text-sm text-slate-500">Od 99 Kč · PDF ihned · Zákoník práce 2026</div>
         </div>
+
+        <WhyNotGenericBlock
+          className="mb-12"
+          documentHint="u pracovní smlouvy"
+        />
 
         <section className="mb-12 rounded-3xl border border-white/8 bg-[#0c1426] p-8">
           <h2 className="text-2xl font-black text-white mb-6">Komu je pracovní smlouva určena</h2>

@@ -8,6 +8,8 @@ import ProductPathGuide, {
 import SiteFaqSection from './SiteFaqSection';
 import TrustOutputBlock from './TrustOutputBlock';
 import RelatedContracts from './RelatedContracts';
+import WhyNotGenericBlock from './marketing/WhyNotGenericBlock';
+import { resolveDocumentHint } from '@/lib/marketing/differentiation';
 import type { ClusterKey } from '@/lib/internal-links';
 import { breadcrumbSchema, jsonLdScript } from '@/lib/schemas';
 
@@ -64,6 +66,9 @@ type GuideLandingPageProps = {
   finalCtaBody?: string;
   relatedCluster?: ClusterKey;
   currentHref?: string;
+  /** Např. „u nájemní smlouvy“ — pro blok odlišení od běžného vzoru */
+  differentiationHint?: string;
+  showDifferentiation?: boolean;
 };
 
 export default function GuideLandingPage({
@@ -92,6 +97,8 @@ export default function GuideLandingPage({
   finalCtaBody = 'Ve formuláři doplníte hlavní údaje a po dokončení objednávky získáte standardizovaný výstup připravený k závěrečné kontrole a podpisu.',
   relatedCluster,
   currentHref,
+  differentiationHint,
+  showDifferentiation = true,
 }: GuideLandingPageProps) {
   const eventName: AnalyticsEventName = trackingContext
     ? trackingContext.pageType === 'package'
@@ -136,6 +143,11 @@ export default function GuideLandingPage({
             extraParams: { pathname: currentHref },
           }
         : undefined;
+
+  const resolvedDocumentHint = resolveDocumentHint({
+    explicit: differentiationHint,
+    seoPath: currentHref,
+  });
 
   const breadcrumbs = currentHref
     ? breadcrumbSchema([
@@ -195,6 +207,10 @@ export default function GuideLandingPage({
                 </div>
               ))}
             </div>
+          ) : null}
+
+          {showDifferentiation ? (
+            <WhyNotGenericBlock className="mt-8" documentHint={resolvedDocumentHint} />
           ) : null}
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">

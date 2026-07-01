@@ -6,6 +6,8 @@ import { usePathname } from 'next/navigation';
 import { getAnalyticsDefaultsForPathname, trackEvent } from '@/lib/analytics';
 import { getBuilderCopy, getContractTypeByPath } from '@/lib/locale';
 import { BuilderLocaleNotice, useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
+import WhyNotGenericBlock from '@/app/components/marketing/WhyNotGenericBlock';
+import { resolveDocumentHint } from '@/lib/marketing/differentiation';
 
 export interface ContractLandingBenefit {
   icon: string;
@@ -38,6 +40,7 @@ export interface ContractLandingSectionProps {
   formId?: string;
   guideHref?: string;
   guideLabel?: string;
+  differentiationHint?: string;
 }
 
 export default function ContractLandingSection({
@@ -55,6 +58,7 @@ export default function ContractLandingSection({
   formId = 'formular',
   guideHref,
   guideLabel = 'Průvodce k tomuto dokumentu',
+  differentiationHint,
 }: ContractLandingSectionProps) {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const pathname = usePathname();
@@ -97,6 +101,11 @@ export default function ContractLandingSection({
     }
   }, [pathname]);
 
+  const resolvedDocumentHint = resolveDocumentHint({
+    explicit: differentiationHint,
+    contractType,
+  });
+
   return (
     <>
       {contractType ? <BuilderLocaleNotice contractType={contractType} /> : null}
@@ -116,6 +125,12 @@ export default function ContractLandingSection({
           <p className="site-body-lg mt-6 max-w-3xl text-[#ddd5c7]">
             {localizedCopy?.description ?? subtitle}
           </p>
+
+          <WhyNotGenericBlock
+            className="mt-8"
+            compact
+            documentHint={resolvedDocumentHint}
+          />
 
           <div className="mt-8 flex flex-wrap gap-4">
             <button onClick={() => scrollTo(formId)} className="site-button-primary">

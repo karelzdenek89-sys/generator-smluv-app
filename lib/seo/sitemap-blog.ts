@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { CZECH_BLOG_ARTICLES } from '@/lib/blog-articles';
+import { getBlogHreflangAlternates } from '@/lib/seo/blog-hreflang-clusters';
 import { czechDateToDate } from '@/lib/seo/czech-date';
 import { SITE_URL } from '@/lib/seo/site';
 
@@ -36,13 +37,18 @@ const PILLAR_SLUGS = new Set([
   'viceprace-smlouva-o-dilo-2026',
   'autorska-prava-smlouva-o-dilo-2026',
   'kratkodoby-pronajem-airbnb-2026',
+  'proc-smlouvahned-misto-vzoru-2026',
 ]);
 
 export function czechBlogSitemapEntries(): MetadataRoute.Sitemap {
-  return CZECH_BLOG_ARTICLES.map((article) => ({
-    url: `${SITE_URL}${article.href}`,
-    lastModified: czechDateToDate(article.date),
-    changeFrequency: 'monthly' as const,
-    priority: PILLAR_SLUGS.has(article.slug) ? 0.92 : 0.88,
-  }));
+  return CZECH_BLOG_ARTICLES.map((article) => {
+    const languages = getBlogHreflangAlternates(article.slug);
+    return {
+      url: `${SITE_URL}${article.href}`,
+      lastModified: czechDateToDate(article.date),
+      changeFrequency: 'monthly' as const,
+      priority: PILLAR_SLUGS.has(article.slug) ? 0.92 : 0.88,
+      ...(languages ? { alternates: { languages } } : {}),
+    };
+  });
 }

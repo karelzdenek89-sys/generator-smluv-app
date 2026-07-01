@@ -28,6 +28,17 @@ export type BlogClusterMeta = {
 
 export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   {
+    slug: 'proc-smlouvahned-misto-vzoru-2026',
+    title: 'Proč zvolit SmlouvaHned místo staženého vzoru smlouvy (2026)',
+    excerpt:
+      'Srovnání staženého vzoru, generického generátoru a SmlouvaHned — paragrafy u klauzulí, upozornění ve formuláři, náhled před stažením PDF. Informativní průvodce pro rok 2026.',
+    category: 'Obecné a praktické',
+    readTime: '9 min',
+    date: '1. července 2026',
+    cluster: 'general',
+    href: '/blog/proc-smlouvahned-misto-vzoru-2026',
+  },
+  {
     slug: 'predavaci-protokol-vzor-2026',
     title: 'Předávací protokol 2026: Co musí obsahovat a proč nestačí jen podpis smlouvy',
     excerpt:

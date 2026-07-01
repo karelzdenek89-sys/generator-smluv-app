@@ -63,6 +63,7 @@ export default function KupniSmlouvaPage() {
       />
       <GuideLandingPage
         breadcrumbLabel="Kupní smlouva"
+        differentiationHint="u kupní smlouvy"
         kicker="Průvodce dokumentem"
         title="Kupní smlouva"
         accent="pro převod vozidla nebo jiné věci"

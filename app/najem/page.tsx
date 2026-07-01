@@ -493,6 +493,7 @@ function LeaseBuilderContent() {
         formId="formular"
         guideHref="/najemni-smlouva"
         guideLabel={ui.landing.guideLabel}
+        differentiationHint="u nájemní smlouvy"
       />
 
       {packageConfig ? (

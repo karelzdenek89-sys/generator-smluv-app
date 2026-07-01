@@ -101,6 +101,7 @@ export default function NajemniSmlouvaPage() {
       />
       <GuideLandingPage
         breadcrumbLabel="Nájemní smlouva"
+        differentiationHint="u nájemní smlouvy"
         kicker="Průvodce dokumentem"
         title="Nájemní smlouva 2026"
         accent="pro běžný pronájem bytu nebo domu"

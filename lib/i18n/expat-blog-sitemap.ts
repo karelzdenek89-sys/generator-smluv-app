@@ -4,10 +4,14 @@ import {
   getExpatBlogArticle,
   getExpatBlogCanonical,
 } from '@/lib/i18n/expat-blog-articles';
+import { getBlogHreflangAlternates } from '@/lib/seo/blog-hreflang-clusters';
 import { SITE_URL } from '@/lib/seo/site';
 
 /** hreflang cluster for paired EN/UA expat blog guides. */
 export function getExpatBlogHreflangAlternates(slug: string): Record<string, string> | undefined {
+  const cluster = getBlogHreflangAlternates(slug);
+  if (cluster) return cluster;
+
   const article = getExpatBlogArticle(slug);
   if (!article) return undefined;
 
