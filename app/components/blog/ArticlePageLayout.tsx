@@ -4,6 +4,7 @@ import TrackedLink from '@/app/components/analytics/TrackedLink';
 import ArticleInlineCta from './ArticleInlineCta';
 import ArticleTrustBox from './ArticleTrustBox';
 import RelatedArticles from './RelatedArticles';
+import WhyUsArticleCallout from '@/app/components/marketing/WhyUsArticleCallout';
 import InformativeDisclaimer from './InformativeDisclaimer';
 import { articleSchema, breadcrumbSchema, jsonLdScript } from '@/lib/schemas';
 import { CONTENT_AUTHOR } from '@/lib/author';
@@ -258,6 +259,8 @@ export default function ArticlePageLayout({
           articleSlug={slug}
         />
       ) : null}
+
+      <WhyUsArticleCallout className="mt-10" currentSlug={slug} compact />
 
       <div className="mt-12 border-t border-white/8 pt-10">
         <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-600">

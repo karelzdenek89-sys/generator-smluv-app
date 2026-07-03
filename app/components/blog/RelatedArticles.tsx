@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { BLOG_ARTICLES, type BlogArticleMeta } from '@/lib/blog-articles';
+import { WHY_US_CZ_SLUG } from '@/lib/marketing/why-us-article';
 
 type Props = {
   currentSlug: string;
@@ -22,7 +23,14 @@ function pickRelated(currentSlug: string, limit: number): BlogArticleMeta[] {
     (a) => a.slug !== currentSlug && a.cluster !== current.cluster,
   );
 
-  return [...sameCluster, ...others].slice(0, limit);
+  const pool = [...sameCluster, ...others];
+  const whyUs = BLOG_ARTICLES.find((a) => a.slug === WHY_US_CZ_SLUG);
+  const withWhyUs =
+    currentSlug !== WHY_US_CZ_SLUG && whyUs && !pool.some((a) => a.slug === WHY_US_CZ_SLUG)
+      ? [whyUs, ...pool]
+      : pool;
+
+  return withWhyUs.slice(0, limit);
 }
 
 export default function RelatedArticles({ currentSlug, limit = 3 }: Props) {

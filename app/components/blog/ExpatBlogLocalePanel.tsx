@@ -2,6 +2,7 @@ import Link from 'next/link';
 import TrackedLink from '@/app/components/analytics/TrackedLink';
 import type { BlogArticleMeta } from '@/lib/blog-articles';
 import { EXPAT_BLOG_CONTRACT_LINKS } from '@/lib/i18n/expat-blog-articles';
+import { WHY_US_EN_HREF, WHY_US_UA_HREF } from '@/lib/marketing/why-us-article';
 import { getExpatSeoLanding } from '@/lib/i18n/expat-seo-landings';
 
 const COPY = {
@@ -16,6 +17,7 @@ const COPY = {
     hubLabel: 'Start with the main guide',
     articlesHeading: 'All English guides',
     seoHeading: 'Contract overview pages (SEO)',
+    whyUsLabel: 'Why SmlouvaHned vs a downloaded template',
   },
   ua: {
     flag: '🇺🇦',
@@ -28,6 +30,7 @@ const COPY = {
     hubLabel: 'Почніть з головного гіда',
     articlesHeading: 'Усі гіди українською',
     seoHeading: 'Оглядові сторінки договорів',
+    whyUsLabel: 'Чому SmlouvaHned, а не шаблон з інternetu',
   },
 } as const;
 
@@ -70,6 +73,19 @@ export default function ExpatBlogLocalePanel({ locale, hub, articles }: Props) {
           className="site-button-primary"
         >
           {copy.overviewLabel}
+        </TrackedLink>
+        <TrackedLink
+          href={locale === 'en' ? WHY_US_EN_HREF : WHY_US_UA_HREF}
+          eventName="blog_cta_click"
+          eventParams={{
+            source: 'blog_index',
+            surface: 'expat_locale_panel',
+            cta_type: 'why_us_article',
+            destination: locale === 'en' ? WHY_US_EN_HREF : WHY_US_UA_HREF,
+          }}
+          className="site-button-secondary"
+        >
+          {copy.whyUsLabel}
         </TrackedLink>
       </div>
 

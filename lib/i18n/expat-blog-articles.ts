@@ -318,6 +318,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
       contractLinksTitle: 'Guides & forms',
     },
     relatedSlugs: [
+      'why-smlouvahned-not-template-2026-guide-en',
       'rental-agreement-czech-republic-guide-en',
       'employment-contract-czech-republic-guide-en',
     ],
@@ -388,6 +389,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
     disclaimer: disclaimerUa(),
     ui: { ...uiUa(), contractLinksTitle: 'Гіди та форми' },
     relatedSlugs: [
+      'why-smlouvahned-not-template-2026-guide-ua',
       'rental-agreement-czech-republic-guide-ua',
       'employment-contract-czech-republic-guide-ua',
     ],

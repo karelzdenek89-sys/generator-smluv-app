@@ -9,6 +9,7 @@ import SiteFaqSection from './SiteFaqSection';
 import TrustOutputBlock from './TrustOutputBlock';
 import RelatedContracts from './RelatedContracts';
 import WhyNotGenericBlock from './marketing/WhyNotGenericBlock';
+import WhyUsArticleCallout from './marketing/WhyUsArticleCallout';
 import { resolveDocumentHint } from '@/lib/marketing/differentiation';
 import type { ClusterKey } from '@/lib/internal-links';
 import { breadcrumbSchema, jsonLdScript } from '@/lib/schemas';
@@ -247,6 +248,8 @@ export default function GuideLandingPage({
             individuální právní poradenství ani o poskytování advokátních služeb.
           </p>
         </section>
+
+        <WhyUsArticleCallout className="mt-8" compact />
 
         {decisionGuide ? (
           <ProductPathGuide

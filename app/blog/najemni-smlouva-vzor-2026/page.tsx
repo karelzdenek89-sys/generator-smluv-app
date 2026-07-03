@@ -403,6 +403,7 @@ export default function NajemniSmlouvaVzor2026Page() {
         <div className="flex flex-wrap gap-3">
           {[
             { href: '/najemni-smlouva', label: '🏠 Nájemní smlouva — landing page' },
+            { href: '/blog/proc-smlouvahned-misto-vzoru-2026', label: '📖 Proč SmlouvaHned místo vzoru z webu' },
             { href: '/podnajem', label: '🏘️ Podnájemní smlouva' },
             { href: '/kupni-smlouva', label: '🛒 Kupní smlouva' },
             { href: '/pracovni-smlouva', label: '💼 Pracovní smlouva' },

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import ContractGridPremium from '@/app/components/ContractGridPremium';
 import DifferentiationSection from '@/app/components/marketing/DifferentiationSection';
+import ProductScopeStrip from '@/app/components/marketing/ProductScopeStrip';
 import ExpatEntryLinks from '@/app/components/ExpatEntryLinks';
 import LanguageSwitcher from '@/app/components/LanguageSwitcher';
 import { SEO_LANDINGS, CLUSTER_LABELS, type ClusterKey } from '@/lib/internal-links';
@@ -239,6 +240,8 @@ export default function Home() {
       <div className="relative z-10 mx-auto max-w-7xl px-6 pb-20 md:px-10">
 
         <DifferentiationSection />
+
+        <ProductScopeStrip className="mt-10" />
 
         <div className="my-20 h-px bg-gradient-to-r from-transparent via-[#c9a852]/20 to-transparent md:my-24" />
 

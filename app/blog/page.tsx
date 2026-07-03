@@ -1,6 +1,7 @@
 import TrackedLink from '@/app/components/analytics/TrackedLink';
 import { blogIndexMetadata } from '@/lib/seo/blog-page-metadata';
 import ExpatBlogLocalePanel from '@/app/components/blog/ExpatBlogLocalePanel';
+import WhyUsArticleCallout from '@/app/components/marketing/WhyUsArticleCallout';
 import {
   BLOG_ARTICLES,
   BLOG_CLUSTERS,
@@ -142,6 +143,8 @@ export default function BlogIndexPage() {
           />
         </div>
       </section>
+
+      <WhyUsArticleCallout className="mt-10" />
 
       <div className="mt-10 grid gap-6">
         {CZECH_BLOG_ARTICLES.map((article) => (
