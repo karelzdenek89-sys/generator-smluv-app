@@ -1,4 +1,5 @@
 import type { ContractType } from '@/lib/contracts';
+import type { AppLocale } from '@/lib/locale';
 
 export type DifferentiationPillar = {
   icon: string;
@@ -138,6 +139,40 @@ export const DOCUMENT_HINT_BY_CONTRACT: Partial<Record<ContractType, string>> = 
   cooperation: 'u smlouvy o spolupráci',
 };
 
+const DOCUMENT_HINT_BY_CONTRACT_EN: Partial<Record<ContractType, string>> = {
+  lease: 'for a rental agreement',
+  sublease: 'for a sublease agreement',
+  employment: 'for an employment contract',
+  dpp: 'for a DPP agreement',
+  power_of_attorney: 'for a power of attorney',
+  car_sale: 'for a vehicle purchase agreement',
+  gift: 'for a gift agreement',
+  work_contract: 'for a work contract',
+  loan: 'for a loan agreement',
+  nda: 'for an NDA',
+  general_sale: 'for a purchase agreement',
+  service: 'for a services agreement',
+  debt_acknowledgment: 'for a debt acknowledgment',
+  cooperation: 'for a cooperation agreement',
+};
+
+const DOCUMENT_HINT_BY_CONTRACT_UA: Partial<Record<ContractType, string>> = {
+  lease: 'договору оренди',
+  sublease: 'договору піднайму',
+  employment: 'трудового договору',
+  dpp: 'угоди DPP',
+  power_of_attorney: 'довіреності',
+  car_sale: 'договору купівлі-продажу авто',
+  gift: 'договору дарування',
+  work_contract: 'договору підряду',
+  loan: 'договору позики',
+  nda: 'NDA',
+  general_sale: 'купівельного договору',
+  service: 'договору про надання послуг',
+  debt_acknowledgment: 'визнання боргу',
+  cooperation: 'договору про співпрацю',
+};
+
 export const SEO_LANDING_DOCUMENT_HINT: Record<string, string> = {
   '/najemni-smlouva': 'u nájemní smlouvy',
   '/najemni-smlouva-byt': 'u nájemní smlouvy',
@@ -159,17 +194,35 @@ export const SEO_LANDING_DOCUMENT_HINT: Record<string, string> = {
   '/balicek-prodej-vozidla': 'při prodeji vozidla',
 };
 
+function contractHintForLocale(
+  contractType: ContractType,
+  locale: AppLocale,
+): string | undefined {
+  if (locale === 'en') return DOCUMENT_HINT_BY_CONTRACT_EN[contractType];
+  if (locale === 'ua') return DOCUMENT_HINT_BY_CONTRACT_UA[contractType];
+  return DOCUMENT_HINT_BY_CONTRACT[contractType];
+}
+
 export function resolveDocumentHint(options: {
   explicit?: string;
   seoPath?: string;
   contractType?: ContractType | null;
+  locale?: AppLocale;
 }): string | undefined {
-  if (options.explicit) return options.explicit;
+  const locale = options.locale ?? 'cs';
+
+  if (options.explicit && locale === 'cs') return options.explicit;
+
+  if (options.contractType) {
+    const localized = contractHintForLocale(options.contractType, locale);
+    if (localized) return localized;
+  }
+
   if (options.seoPath && SEO_LANDING_DOCUMENT_HINT[options.seoPath]) {
     return SEO_LANDING_DOCUMENT_HINT[options.seoPath];
   }
-  if (options.contractType) {
-    return DOCUMENT_HINT_BY_CONTRACT[options.contractType];
-  }
+
+  if (options.explicit) return options.explicit;
+
   return undefined;
 }

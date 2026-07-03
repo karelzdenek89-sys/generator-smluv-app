@@ -493,7 +493,6 @@ function LeaseBuilderContent() {
         formId="formular"
         guideHref="/najemni-smlouva"
         guideLabel={ui.landing.guideLabel}
-        differentiationHint="u nájemní smlouvy"
       />
 
       {packageConfig ? (
@@ -1313,7 +1312,7 @@ function LeaseBuilderContent() {
                 </button>
                 {!canOpenCheckout ? (
                   <p className="mt-3 text-xs leading-relaxed text-amber-200/80">
-                    Nejdřív doplňte: {requiredFieldsMissing.join(', ')}.
+                    {ui.validation.alertPrefix}: {requiredFieldsMissing.join(', ')}.
                   </p>
                 ) : null}
 

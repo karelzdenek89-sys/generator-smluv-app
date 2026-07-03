@@ -460,7 +460,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
         formId="formular"
         guideHref={ui.landing.guideHref}
         guideLabel={ui.landing.guideLabel}
-        differentiationHint="u kupní smlouvy na vozidlo"
       />
 
       {packageConfig ? (

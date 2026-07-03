@@ -10,7 +10,6 @@ import TrustOutputBlock from './TrustOutputBlock';
 import RelatedContracts from './RelatedContracts';
 import WhyNotGenericBlock from './marketing/WhyNotGenericBlock';
 import WhyUsArticleCallout from './marketing/WhyUsArticleCallout';
-import { resolveDocumentHint } from '@/lib/marketing/differentiation';
 import type { ClusterKey } from '@/lib/internal-links';
 import { breadcrumbSchema, jsonLdScript } from '@/lib/schemas';
 
@@ -145,11 +144,6 @@ export default function GuideLandingPage({
           }
         : undefined;
 
-  const resolvedDocumentHint = resolveDocumentHint({
-    explicit: differentiationHint,
-    seoPath: currentHref,
-  });
-
   const breadcrumbs = currentHref
     ? breadcrumbSchema([
         { label: 'SmlouvaHned', href: '/' },
@@ -211,7 +205,11 @@ export default function GuideLandingPage({
           ) : null}
 
           {showDifferentiation ? (
-            <WhyNotGenericBlock className="mt-8" documentHint={resolvedDocumentHint} />
+            <WhyNotGenericBlock
+              className="mt-8"
+              documentHint={differentiationHint}
+              seoPath={currentHref}
+            />
           ) : null}
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">

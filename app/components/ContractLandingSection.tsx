@@ -7,7 +7,6 @@ import { getAnalyticsDefaultsForPathname, trackEvent } from '@/lib/analytics';
 import { getBuilderCopy, getContractTypeByPath } from '@/lib/locale';
 import { BuilderLocaleNotice, useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
 import WhyNotGenericBlock from '@/app/components/marketing/WhyNotGenericBlock';
-import { resolveDocumentHint } from '@/lib/marketing/differentiation';
 
 export interface ContractLandingBenefit {
   icon: string;
@@ -101,11 +100,6 @@ export default function ContractLandingSection({
     }
   }, [pathname]);
 
-  const resolvedDocumentHint = resolveDocumentHint({
-    explicit: differentiationHint,
-    contractType,
-  });
-
   return (
     <>
       {contractType ? <BuilderLocaleNotice contractType={contractType} /> : null}
@@ -129,7 +123,8 @@ export default function ContractLandingSection({
           <WhyNotGenericBlock
             className="mt-8"
             compact
-            documentHint={resolvedDocumentHint}
+            documentHint={differentiationHint}
+            contractType={contractType}
           />
 
           <div className="mt-8 flex flex-wrap gap-4">
