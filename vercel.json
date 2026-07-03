@@ -1,0 +1,10 @@
+{
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "smlouvahned.cz" }],
+      "destination": "https://www.smlouvahned.cz/:path*",
+      "permanent": true
+    }
+  ]
+}

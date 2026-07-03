@@ -23,9 +23,20 @@ const LOCALIZED_BUILDER_PATHS = new Set([
   '/darovaci',
 ]);
 
+/** Apex domain — canonical public host is www (matches sitemap, metadata, robots.txt). */
+const APEX_HOST = 'smlouvahned.cz';
+const CANONICAL_HOST = 'www.smlouvahned.cz';
+
 function redirectPermanent(request: NextRequest, pathname: string): NextResponse {
   const url = request.nextUrl.clone();
   url.pathname = pathname;
+  return NextResponse.redirect(url, 308);
+}
+
+function redirectToCanonicalHost(request: NextRequest): NextResponse {
+  const url = request.nextUrl.clone();
+  url.protocol = 'https:';
+  url.host = CANONICAL_HOST;
   return NextResponse.redirect(url, 308);
 }
 
@@ -38,6 +49,11 @@ function rewritePathSegment(pathname: string, fromSeg: string, toSeg: string): s
 }
 
 export function proxy(request: NextRequest) {
+  const host = request.headers.get('host')?.split(':')[0]?.toLowerCase();
+  if (host === APEX_HOST) {
+    return redirectToCanonicalHost(request);
+  }
+
   const pathname = request.nextUrl.pathname;
 
   // 0) Retired locale segments → canonical /en or /ua (incl. nested paths).
