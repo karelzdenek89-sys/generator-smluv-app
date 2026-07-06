@@ -45,7 +45,9 @@ export default function KaucePronajemBytu2026Page() {
           href: '/najem',
         }}
         relatedLinks={[
-          { href: '/najem', label: 'Nájemní smlouva — formulář online' },
+          { href: '/pro-pronajimatele', label: 'Dokumenty pro pronajímatele' },
+          { href: '/balicek-pronajimatel', label: 'Balíček pro pronajímatele' },
+          { href: '/najem', label: 'Vytvořit nájemní smlouvu online' },
           { href: '/blog/predani-bytu-najemci-2026', label: 'Jak správně předat byt nájemci' },
           { href: '/blog/najemni-smlouva-vzor-2026', label: 'Nájemní smlouva 2026 — průvodce' },
         ]}

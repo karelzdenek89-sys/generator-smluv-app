@@ -15,6 +15,7 @@ export type InternalLink = {
 };
 
 export const SEO_LANDINGS: readonly InternalLink[] = [
+  { href: '/najem', label: 'Nájemní smlouva online', description: 'Generátor nájemní smlouvy — PDF ihned, volitelně DOCX. Byt, dům, kauce, výpověď.', cluster: 'bydleni' },
   { href: '/najemni-smlouva', label: 'Nájemní smlouva 2026', description: 'Vzor a generátor nájemní smlouvy podle OZ — kauce, výpověď, předání bytu.', cluster: 'bydleni' },
   { href: '/najemni-smlouva-byt', label: 'Nájemní smlouva na byt', description: 'Specializovaný vzor pro nájem bytové jednotky.', cluster: 'bydleni' },
   { href: '/podnajemni-smlouva', label: 'Podnájemní smlouva', description: 'Vzor podnájmu se souhlasem pronajímatele.', cluster: 'bydleni' },

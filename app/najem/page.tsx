@@ -4,6 +4,7 @@ import { Suspense, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
+import LeaseBuilderSeoSection from '@/app/components/seo/LeaseBuilderSeoSection';
 import ContractPreview from '@/app/components/ContractPreview';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import PaymentModal from '@/app/components/PaymentModal';
@@ -494,6 +495,8 @@ function LeaseBuilderContent() {
         guideHref="/najemni-smlouva"
         guideLabel={ui.landing.guideLabel}
       />
+
+      <LeaseBuilderSeoSection />
 
       {packageConfig ? (
         <section className="mx-auto max-w-7xl px-4 pb-2 lg:px-8">

@@ -1,4 +1,5 @@
 import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
+import Link from 'next/link';
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 
 export const metadata = blogArticlePageMetadata("predani-bytu-najemci-2026", {
@@ -53,7 +54,11 @@ export default function PredaniBytuNajemci2026Page() {
         <section id="proc-predani-resit" className="mb-12 scroll-mt-6">
           <h2 className="mb-4 text-2xl font-black tracking-tight text-white">1. Proč řešit předání bytu samostatně</h2>
           <p className="mb-4 leading-relaxed text-slate-400">
-            Nájemní smlouva vymezuje právní vztah, ale teprve samotné předání bytu zachycuje jeho faktický stav. Právě v této chvíli se ukazuje, jestli je byt vybavený tak, jak bylo dohodnuto, zda fungují spotřebiče a jaké jsou odečty energií.
+            Nájemní smlouva vymezuje právní vztah, ale teprve samotné předání bytu zachycuje jeho faktický stav. Právě v této chvíli se ukazuje, jestli je byt vybavený tak, jak bylo dohodnuto, zda fungují spotřebiče a jaké jsou odečty energií. Pokud smlouvu ještě nemáte připravenou, můžete ji{' '}
+            <Link href="/najem" className="text-amber-400 hover:text-amber-300 transition">
+              vytvořit nájemní smlouvu online
+            </Link>
+            .
           </p>
           <p className="leading-relaxed text-slate-400">
             Pokud tyto informace zůstanou jen v ústní rovině, bývá po skončení nájmu obtížné prokazovat, co už v bytě bylo poškozené, kolik klíčů bylo předáno nebo z jakého stavu měřidel se mělo vycházet při vyúčtování.

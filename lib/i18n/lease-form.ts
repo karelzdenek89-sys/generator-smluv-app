@@ -2,6 +2,7 @@ import type { AppLocale } from '@/lib/locale';
 import { LEGAL_NOTICE } from '@/lib/locale';
 import { LEASE_USE_NOTICE_CS, LEASE_USE_NOTICE_EN, LEASE_USE_NOTICE_UK } from '@/lib/i18n/safety-copy';
 import { UK_LEASE_FORM_CONTENT } from '@/lib/i18n/lease-form-uk-content';
+import { LEASE_CS_LANDING_FAQ } from '@/lib/seo/lease-builder-seo';
 
 export type LeaseFormUi = {
   isEnglish: boolean;
@@ -236,14 +237,14 @@ const LEASE_FORM_CS: LeaseFormUi = {
   },
   landing: {
     badge: '§ 2235 a násl. občanského zákoníku',
-    h1Main: 'Nájemní smlouva na',
-    h1Accent: 'byt online',
+    h1Main: 'Nájemní smlouva online 2026',
+    h1Accent: '',
     subtitle:
-      'Vytvořte nájemní smlouvu pro pronájem bytu nebo domu rychle a přehledně. Šablona pokrývá klíčová ujednání — od výše nájmu a kauce po pravidla užívání a ukončení nájmu, strukturovaná dle § 2235 a násl. OZ.',
+      'Vytvořte nájemní smlouvu na byt nebo dům online — bez registrace. Vyplníte strany, nájemné, kauci a pravidla užívání a stáhnete hotový dokument ve formátu PDF; volitelně i editovatelný DOCX.',
     benefits: [
       { icon: '⚖️', text: 'Sestaveno dle § 2235–2301 OZ (nájemní smlouva na byt)' },
-      { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },
-      { icon: '🏠', text: 'Pokrývá dobu určitou i neurčitou, kauce a poplatky' },
+      { icon: '📄', text: 'PDF ke stažení ihned po zaplacení, volitelně DOCX' },
+      { icon: '🏠', text: 'Pokrývá dobu určitou i neurčitou, kauci a zálohy na služby' },
       { icon: '🔒', text: 'Vhodné pro pronájem bytu, domu nebo jeho části' },
     ],
     contents: [
@@ -269,28 +270,7 @@ const LEASE_FORM_CS: LeaseFormUi = {
         text: 'Pokud sám jste nájemcem a dáváte byt nebo jeho část do podnájmu.',
       },
     ],
-    faq: [
-      {
-        q: 'Co je rozdíl mezi nájemní a podnájemní smlouvou?',
-        a: 'Nájemní smlouva je uzavírána přímo s vlastníkem nemovitosti. Podnájemní smlouva se používá, pokud nájemce sám dál pronajímá byt nebo jeho část třetí osobě — k tomu zpravidla potřebuje souhlas pronajímatele.',
-      },
-      {
-        q: 'Je nutná písemná nájemní smlouva?',
-        a: 'U nájmu bytu nebo domu zákon vyžaduje písemnou formu. Pokud písemná forma chybí, pronajímatel nemůže vůči nájemci namítat neplatnost jen z tohoto důvodu. Písemná smlouva je proto zásadní pro obě strany.',
-      },
-      {
-        q: 'Jak vysoká může být kauce?',
-        a: 'Podle § 2254 OZ nesmí jistota a právo na smluvní pokutu v souhrnu přesáhnout trojnásobek měsíčního nájemného. Po skončení nájmu má pronajímatel jistotu vrátit, případně započíst řádně specifikované dluhy nájemce.',
-      },
-      {
-        q: 'Dostanu dokument ihned po zaplacení?',
-        a: 'Ano, PDF je k dispozici ke stažení okamžitě po dokončení platby.',
-      },
-      {
-        q: 'Musí smlouvu ověřit notář?',
-        a: 'Pro běžné nájemní smlouvy na byt notářské ověření není vyžadováno. Podpisy obou stran postačují.',
-      },
-    ],
+    faq: [...LEASE_CS_LANDING_FAQ],
     ctaLabel: 'Vytvořit nájemní smlouvu',
     guideLabel: 'Průvodce nájemní smlouvou — co obsahuje, kdy ji použít a nejčastější chyby',
   },

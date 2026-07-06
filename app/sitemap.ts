@@ -67,6 +67,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     staticPage('/spoluprace', 0.85),
     staticPage('/blog', 0.8, 'weekly'),
     ...czechBlogSitemapEntries(),
+    staticPage('/najem', 0.95),
     staticPage('/najemni-smlouva', 0.95),
     staticPage('/smlouva-o-dilo-online', 0.95),
     staticPage('/pracovni-smlouva', 0.95),
