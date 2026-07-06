@@ -4,9 +4,9 @@ import ProductSchemas from '@/app/components/seo/ProductSchemas';
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 
 export const metadata: Metadata = {
-  title: 'Smlouva o zápůjčce (půjčka) online 2026',
+  title: 'Smlouva o zápůjčce online 2026 | PDF ke stažení',
   description:
-    'Smlouva o zápůjčce peněz online. Splátky, úroky, zajištění — vše zachyceno v PDF. Od 99 Kč.',
+    'Vytvořte smlouvu o zápůjčce online během několika minut. Praktický dokument pro půjčku peněz s výstupem PDF a volitelně DOCX.',
   keywords: [
     'smlouva o zápůjčce',
     'půjčka smlouva vzor 2026',
@@ -15,8 +15,9 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: `${BASE_URL}/pujcka` },
   openGraph: {
-    title: 'Smlouva o zápůjčce (půjčka) online 2026',
-    description: 'Zápůjčka peněz se splátkami a úroky. PDF ihned. Od 99 Kč.',
+    title: 'Smlouva o zápůjčce online 2026 | PDF ke stažení',
+    description:
+      'Vytvořte smlouvu o zápůjčce online během několika minut. Praktický dokument pro půjčku peněz s výstupem PDF a volitelně DOCX.',
     url: `${BASE_URL}/pujcka`,
     type: 'website',
     images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'SmlouvaHned - smluvni dokument online' }],

@@ -3,9 +3,9 @@ import Link from 'next/link';
 import RelatedContracts from '@/app/components/RelatedContracts';
 
 export const metadata: Metadata = {
-  title: 'Smlouva o poskytování služeb online 2026',
+  title: 'Smlouva o poskytování služeb vzor 2026 | Co má obsahovat',
   description:
-    'Smlouva o poskytování služeb pro freelancery a agentury. SLA, IP práva, mlčenlivost, smluvní pokuty. Dle § 1746 OZ 2026. Od 99 Kč.',
+    'Praktický průvodce smlouvou o poskytování služeb: rozsah služby, cena, odpovědnost, termíny, ukončení spolupráce a nejčastější chyby.',
   keywords: [
     'smlouva o poskytování služeb',
     'smlouva o službách vzor 2026',
@@ -16,8 +16,9 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: 'https://www.smlouvahned.cz/smlouva-o-sluzbach' },
   openGraph: {
-    title: 'Smlouva o poskytování služeb online 2026',
-    description: 'Smlouva o poskytování služeb pro freelancery a agentury. SLA, IP práva, mlčenlivost. § 1746 OZ. Od 99 Kč.',
+    title: 'Smlouva o poskytování služeb vzor 2026 | Co má obsahovat',
+    description:
+      'Praktický průvodce smlouvou o poskytování služeb: rozsah služby, cena, odpovědnost, termíny, ukončení spolupráce a nejčastější chyby.',
     url: 'https://www.smlouvahned.cz/smlouva-o-sluzbach',
   },
 };

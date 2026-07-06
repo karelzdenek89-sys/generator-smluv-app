@@ -3,9 +3,9 @@ import Link from 'next/link';
 import RelatedContracts from '@/app/components/RelatedContracts';
 
 export const metadata: Metadata = {
-  title: 'Smlouva o zápůjčce (půjčka) online 2026',
+  title: 'Smlouva o zápůjčce vzor 2026 | Průvodce půjčkou',
   description:
-    'Smlouva o zápůjčce peněz — splátky, úroky, zajištění. Dle § 2390 OZ 2026. Ochrana věřitele i dlužníka. PDF ihned ke stažení od 99 Kč.',
+    'Co má obsahovat smlouva o zápůjčce, jak upravit splatnost, úrok, vrácení peněz a na co si dát pozor před podpisem.',
   keywords: [
     'smlouva o zápůjčce',
     'půjčka smlouva vzor 2026',
@@ -16,8 +16,9 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: 'https://www.smlouvahned.cz/pujcka-smlouva' },
   openGraph: {
-    title: 'Smlouva o zápůjčce (půjčka) online 2026',
-    description: 'Smlouva o zápůjčce peněz — splátky, úroky, zajištění. § 2390 OZ. Od 99 Kč.',
+    title: 'Smlouva o zápůjčce vzor 2026 | Průvodce půjčkou',
+    description:
+      'Co má obsahovat smlouva o zápůjčce, jak upravit splatnost, úrok, vrácení peněz a na co si dát pozor před podpisem.',
     url: 'https://www.smlouvahned.cz/pujcka-smlouva',
   },
 };
