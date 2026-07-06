@@ -385,30 +385,50 @@ const POA_UA: LocalePack = {
 
 const CAR_EN: LocalePack = {
   metadata: {
-    title: 'Car Sale Agreement Czech Republic | Kupní smlouva | SmlouvaHned',
+    title: 'Car Sale Agreement in Czech Republic 2026 | PDF Contract',
     description:
-      'Czech car purchase contract between private parties. VIN, mileage, STK, price and handover. English-guided form + Czech PDF with explanatory annex.',
+      'Create a Czech car sale agreement for buying or selling a vehicle in the Czech Republic. Practical contract template for foreigners, with PDF output.',
     keywords: [
       'car sale agreement Czech Republic',
       'kupní smlouva auto English',
       'used car contract Prague',
       'vehicle purchase agreement Czech',
       'VIN contract Czech Republic',
+      'car sale contract Czechia 2026',
     ],
-    openGraphTitle: 'Car Sale Agreement Czech Republic | SmlouvaHned',
-    openGraphDescription: 'English-guided Czech car sale contract.',
+    openGraphTitle: 'Car Sale Agreement in Czech Republic 2026 | SmlouvaHned',
+    openGraphDescription: 'English-guided Czech car sale contract with PDF output for foreigners.',
     openGraphLocale: 'en_US',
   },
   breadcrumbLabel: 'Car sale',
   kicker: 'Buying or selling a car',
   h1: 'Car Sale Agreement in the Czech Republic',
   subtitle:
-    'Private sale of a car, motorcycle or trailer. Document VIN, technical condition, price, handover and ownership transfer.',
+    'Private sale of a car, motorcycle or trailer in Czechia. Document VIN, technical condition, price, handover and what you need for the vehicle transfer.',
   cta: 'Create car sale contract',
   backToExpats: 'All expat contracts',
   faq: [
+    {
+      q: 'Is a written car sale agreement required in Czechia?',
+      a: 'For a standard private sale between individuals, a written kupní smlouva is strongly recommended. It documents price, vehicle details and handover — and you will need it for registration and transfer.',
+    },
+    {
+      q: 'What should be included in a Czech car sale agreement?',
+      a: 'At minimum: seller and buyer details, make and model, VIN, mileage, price, payment terms, handover date, known defects and signatures. Our form guides you through these fields in English.',
+    },
+    {
+      q: 'Who handles the vehicle transfer?',
+      a: 'After signing, the buyer typically registers the vehicle at the traffic inspectorate (obecní/obvodní úřad obce s rozšířenou působností). The signed contract supports the ownership change.',
+    },
+    {
+      q: 'What documents are needed?',
+      a: 'Usually the signed contract, technical certificate (small or large TP), proof of identity, and registration documents. Requirements can vary — check with the local office before your visit.',
+    },
+    {
+      q: 'Can foreigners buy or sell a car in Czechia?',
+      a: 'Yes, if you meet the administrative requirements for registration and have valid identification. The contract itself is in Czech; our English form helps you fill it correctly.',
+    },
     { q: 'Is notarization required?', a: 'Usually not for standard private car sales; signatures of both parties suffice.' },
-    { q: 'What about vehicle registration?', a: 'Buyer registers at the traffic inspectorate (MD) after signing; keep the contract for the transfer.' },
     { q: 'VIN and odometer?', a: 'The form captures VIN, mileage and known defects to reduce disputes.' },
     { q: 'English annex?', a: 'Explanatory only; Czech kupní smlouva prevails.' },
   ],

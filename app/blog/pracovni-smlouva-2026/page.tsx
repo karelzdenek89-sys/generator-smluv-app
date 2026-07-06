@@ -5,10 +5,36 @@ import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
+import { faqPageSchema, jsonLdScript } from '@/lib/schemas';
+
+const faq = [
+  {
+    q: 'Co musí pracovní smlouva obsahovat podle zákona?',
+    a: 'Zákoník práce vyžaduje druh práce, místo výkonu práce a den nástupu. Další podmínky lze uvést ve smlouvě nebo v samostatných dokumentech, například mzdovém výměru.',
+  },
+  {
+    q: 'Kdy použít pracovní smlouvu místo DPP nebo DPČ?',
+    a: 'Pracovní smlouva je vhodná pro pravidelný pracovní poměr s plným rozshem práv a povinností. DPP nebo DPČ se hodí pro krátkodobou nebo příležitostnou práci do zákonných limitů hodin.',
+  },
+  {
+    q: 'Musí být mzda přímo ve smlouvě?',
+    a: 'Ne. Výši mzdy lze uvést v pracovní smlouvě nebo v samostatném mzdovém výměru. Důležité je, aby zaměstnanec měl písemně sjednané mzdové podmínky.',
+  },
+  {
+    q: 'Jak dlouhá může být zkušební doba?',
+    a: 'U běžného zaměstnance maximálně 4 měsíce, u vedoucího zaměstnance 8 měsíců. Musí být sjednána nejpozději v den nástupu do práce.',
+  },
+  {
+    q: 'Nahrazuje online generátor právní poradenství?',
+    a: 'Ne. Generátor připraví standardizovaný dokument podle vámi zadaných údajů. U agenturního zaměstnávání, cizinců nebo složitých konkurenčních doložek je vhodné obrátit se na advokáta.',
+  },
+];
+
+const faqSchema = faqPageSchema(faq.map((item) => ({ question: item.q, answer: item.a })));
 
 export const metadata = blogArticlePageMetadata("pracovni-smlouva-2026", {
-  title: "Pracovní smlouva vzor 2026: Co musí obsahovat a nejčastější chyby",
-  description: "Kompletní průvodce pracovní smlouvou pro rok 2026. Tři zákonné náležitosti, zkušební doba, co smlouva chránit musí, a nejčastější chyby zaměstnavatelů. Dle zákoníku práce 2026.",
+  title: "Pracovní smlouva vzor 2026 | Co musí obsahovat",
+  description: "Co musí obsahovat pracovní smlouva v roce 2026, na co si dát pozor před podpisem a kdy použít pracovní smlouvu místo DPP nebo DPČ.",
   keywords: ['pracovní smlouva vzor 2026',
     'co musí obsahovat pracovní smlouva',
     'pracovní smlouva zákoník práce',
@@ -23,6 +49,10 @@ export default function PracovniSmlouvaVzor2026Page() {
   return (
     <article className="mx-auto max-w-3xl px-6 py-12">
       <BlogArticleSchemas slug="pracovni-smlouva-2026" />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(faqSchema) }}
+      />
 
       {/* Breadcrumb */}
       <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">
@@ -41,7 +71,7 @@ export default function PracovniSmlouvaVzor2026Page() {
           <time className="text-xs text-slate-600" dateTime="2026-03-20">20. března 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
-          Pracovní smlouva vzor 2026: Co musí obsahovat a nejčastější chyby
+          Pracovní smlouva vzor 2026: Co musí obsahovat
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-400">
           Přijímáte nového zaměstnance nebo si nejste jisti, zda vaše pracovní smlouva splňuje zákonné
@@ -68,7 +98,9 @@ export default function PracovniSmlouvaVzor2026Page() {
           <li><a href="#mzda-a-precsas" className="hover:text-amber-400 transition">4. Mzda, přesčas a benefity ve smlouvě</a></li>
           <li><a href="#nejcastejsi-chyby" className="hover:text-amber-400 transition">5. Nejčastější chyby zaměstnavatelů</a></li>
           <li><a href="#vypoved" className="hover:text-amber-400 transition">6. Výpověď a skončení pracovního poměru</a></li>
-          <li><a href="#zaver" className="hover:text-amber-400 transition">7. Shrnutí a doporučení</a></li>
+          <li><a href="#checklist" className="hover:text-amber-400 transition">7. Checklist před podpisem</a></li>
+          <li><a href="#zaver" className="hover:text-amber-400 transition">8. Shrnutí a doporučení</a></li>
+          <li><a href="#faq" className="hover:text-amber-400 transition">9. Časté otázky</a></li>
         </ol>
       </nav>
 
@@ -246,6 +278,23 @@ export default function PracovniSmlouvaVzor2026Page() {
           pokud nejsou zakotveny ve smlouvě nebo interní směrnici zaměstnavatele. Zaměstnanec, který spoléhá
           na ústně přislíbené benefity bez smlouvy, nemá právní nárok na jejich poskytnutí.
         </div>
+
+        <p className="mt-6 text-slate-400 leading-relaxed">
+          Pokud nejde o pravidelný pracovní poměr, ale o krátkodobou práci do zákonných limitů, může být
+          vhodnější{' '}
+          <Link href="/dohoda-o-provedeni-prace" className="text-amber-400 hover:text-amber-300 transition">
+            dohoda o provedení práce
+          </Link>
+          . Rozdíly mezi pracovní smlouvou, DPP a DPČ shrnujeme v{' '}
+          <Link href="/blog/dpp-dpc-porovnani-2026" className="text-amber-400 hover:text-amber-300 transition">
+            porovnání DPP a DPČ
+          </Link>
+          ; k minimální mzdě a odměně u DPP viz{' '}
+          <Link href="/blog/minimalni-mzda-dpp-pracovni-smlouva-2026" className="text-amber-400 hover:text-amber-300 transition">
+            článek o minimální mzdě a DPP
+          </Link>
+          .
+        </p>
       </section>
 
       {/* ── SECTION 5 ───────────────────────────── */}
@@ -355,9 +404,38 @@ export default function PracovniSmlouvaVzor2026Page() {
         </div>
       </section>
 
-      {/* ── SECTION 7: ZÁVĚR ────────────────────── */}
+      {/* ── SECTION 7: CHECKLIST ────────────────── */}
+      <section id="checklist" className="mb-12 scroll-mt-6">
+        <h2 className="mb-4 text-2xl font-black tracking-tight text-white">7. Checklist před podpisem pracovní smlouvy</h2>
+        <p className="mb-5 text-slate-400 leading-relaxed">
+          Než smlouvu podepíšete, projděte si tyto body. U standardní pracovní smlouvy je můžete vyřešit
+          přes{' '}
+          <Link href="/pracovni" className="text-amber-400 hover:text-amber-300 transition">
+            online generátor pracovní smlouvy
+          </Link>
+          ; u složitějších situací doporučujeme konzultaci s odborníkem.
+        </p>
+        <div className="space-y-2">
+          {[
+            'Druh práce je konkrétní, ale ne příliš úzce vymezený',
+            'Místo výkonu práce a den nástupu jsou uvedeny správně',
+            'Zkušební doba je sjednána v den nástupu a nepřesahuje zákonný limit',
+            'Mzdové podmínky jsou písemně sjednány ve smlouvě nebo mzdovém výměru',
+            'Home office, mlčenlivost a konkurenční doložka jsou zakotveny, pokud je potřebujete',
+            'Smlouva je podepsána nejpozději v den nástupu do práce',
+            'Víte, zda potřebujete pracovní smlouvu, nebo spíše DPP či DPČ',
+          ].map((t) => (
+            <div key={t} className="flex items-start gap-2 text-sm text-slate-300">
+              <span className="mt-0.5 flex-shrink-0 text-amber-400 font-bold">✓</span>
+              {t}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── SECTION 8: ZÁVĚR ────────────────────── */}
       <section id="zaver" className="mb-12 scroll-mt-6">
-        <h2 className="mb-4 text-2xl font-black tracking-tight text-white">7. Shrnutí a doporučení</h2>
+        <h2 className="mb-4 text-2xl font-black tracking-tight text-white">8. Shrnutí a doporučení</h2>
         <p className="mb-4 text-slate-400 leading-relaxed">
           Pracovní smlouva je základ každého pracovního vztahu. Správně sestavená chrání zaměstnavatele i
           zaměstnance — a předchází zbytečným sporům.
@@ -375,6 +453,31 @@ export default function PracovniSmlouvaVzor2026Page() {
               <span className="mt-0.5 flex-shrink-0 text-amber-400 font-bold">✓</span>
               {t}
             </div>
+          ))}
+        </div>
+        <p className="mt-6 text-sm text-slate-400 leading-relaxed">
+          Podrobný přehled náležitostí najdete také na stránce{' '}
+          <Link href="/pracovni-smlouva" className="text-amber-400 hover:text-amber-300 transition">
+            pracovní smlouva — průvodce
+          </Link>
+          .
+        </p>
+      </section>
+
+      <section id="faq" className="mb-12 scroll-mt-6">
+        <h2 className="mb-6 text-2xl font-black tracking-tight text-white">9. Časté otázky</h2>
+        <div className="space-y-3">
+          {faq.map((item) => (
+            <details
+              key={item.q}
+              className="group rounded-2xl border border-white/8 bg-[#0c1426] p-5 open:border-amber-500/30"
+            >
+              <summary className="cursor-pointer list-none font-bold text-white text-sm flex items-center justify-between gap-4">
+                <span>{item.q}</span>
+                <span className="text-slate-500 group-open:rotate-45 transition flex-shrink-0">+</span>
+              </summary>
+              <p className="mt-3 text-sm text-slate-400 leading-relaxed">{item.a}</p>
+            </details>
           ))}
         </div>
       </section>
@@ -398,11 +501,11 @@ export default function PracovniSmlouvaVzor2026Page() {
         <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-600">Mohlo by vás zajímat</div>
         <div className="flex flex-wrap gap-3">
           {[
-            { href: '/pracovni-smlouva', label: '👔 Pracovní smlouva — přehled' },
-            { href: '/dpp', label: '📄 Dohoda o provedení práce' },
-            { href: '/smlouva-o-dilo-online', label: '🔨 Smlouva o dílo' },
-            { href: '/blog/smlouva-o-dilo-2026', label: '📖 Smlouva o dílo vzor' },
-            { href: '/', label: '📋 Všechny smlouvy' },
+            { href: '/pracovni', label: '👔 Vytvořit pracovní smlouvu' },
+            { href: '/pracovni-smlouva', label: '📋 Pracovní smlouva — průvodce' },
+            { href: '/dohoda-o-provedeni-prace', label: '📄 Dohoda o provedení práce' },
+            { href: '/blog/dpp-dpc-porovnani-2026', label: '⚖️ DPP vs. DPČ' },
+            { href: '/blog/minimalni-mzda-dpp-pracovni-smlouva-2026', label: '💰 Minimální mzda a DPP' },
           ].map(l => (
             <Link
               key={l.href}

@@ -5,10 +5,36 @@ import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
+import { faqPageSchema, jsonLdScript } from '@/lib/schemas';
+
+const faq = [
+  {
+    q: 'Kdy je darovací smlouva povinně písemná?',
+    a: 'U nemovitostí je písemná forma vždy nutná. U movitých věcí a peněz ji zákon nevyžaduje vždy, ale u darů vyšší hodnoty je písemný záznam prakticky nezbytný.',
+  },
+  {
+    q: 'Jak správně darovat auto?',
+    a: 'Ve smlouvě uveďte přesný popis vozidla včetně VIN, stavu a data předání. U vozidel je vhodné mít písemnou smlouvu i při darování v rodině.',
+  },
+  {
+    q: 'Co zvážit při darování nemovitosti?',
+    a: 'U nemovitostí je nutná písemná smlouva, vklad do katastru a často i daňové a rodinné aspekty. U složitějších případů doporučujeme konzultaci s advokátem a daňovým poradcem.',
+  },
+  {
+    q: 'Platí se daň z daru?',
+    a: 'Darování v přímé linii a mezi manželi je od daně z příjmů osvobozeno. U jiných příbuzenských vztahů nebo cizích osob mohou platit odlišná pravidla — záleží na hodnotě daru a vztahu stran.',
+  },
+  {
+    q: 'Můžu dar po předání odvolat?',
+    a: 'Zákon připouští odvolání jen ve výjimečných situacích, například pro nevděk nebo nouzi dárce. U nemovitostí navíc není návrat vlastnictví automatický.',
+  },
+];
+
+const faqSchema = faqPageSchema(faq.map((item) => ({ question: item.q, answer: item.a })));
 
 export const metadata = blogArticlePageMetadata("darovaci-smlouva-2026", {
-  title: "Darovací smlouva vzor 2026: Co musí obsahovat a nejčastější chyby",
-  description: "Kompletní průvodce darovací smlouvou pro rok 2026. Zákonné náležitosti dle OZ, kdy musí být písemná, daňové dopady, odvolání daru a nejčastější chyby při darování nemovitostí i movitých věcí.",
+  title: "Darovací smlouva vzor 2026 | Auto, peníze i movité věci",
+  description: "Kdy použít darovací smlouvu, co má obsahovat a na co si dát pozor při darování auta, peněz, movitých věcí nebo nemovitosti.",
   keywords: ['darovací smlouva vzor 2026',
     'co musí obsahovat darovací smlouva',
     'darovací smlouva nemovitost',
@@ -23,6 +49,10 @@ export default function DarovaciSmlouvaVzor2026Page() {
   return (
     <article className="mx-auto max-w-3xl px-6 py-12">
       <BlogArticleSchemas slug="darovaci-smlouva-2026" />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(faqSchema) }}
+      />
 
       {/* Breadcrumb */}
       <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">
@@ -41,12 +71,16 @@ export default function DarovaciSmlouvaVzor2026Page() {
           <time className="text-xs text-slate-600" dateTime="2026-03-15">15. března 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
-          Darovací smlouva vzor 2026: Co musí obsahovat a nejčastější chyby
+          Darovací smlouva vzor 2026: Auto, peníze i movité věci
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-400">
           Darujete nemovitost, auto nebo jinou hodnotnou věc? Správná darovací smlouva je základ — bez ní
-          riskujete spory o vlastnictví, daňové komplikace nebo nevymahatelnou dohodu. Tento průvodce vám
-          ukáže, co zákon vyžaduje a čeho se vyvarovat.
+          riskujete spory o vlastnictví, daňové komplikace nebo nevymahatelnou dohodu. Podrobný přehled
+          najdete také na stránce{' '}
+          <Link href="/darovaci-smlouva" className="text-amber-400 hover:text-amber-300 transition">
+            darovací smlouva — průvodce
+          </Link>
+          .
         </p>
 
         {/* Inline CTA */}
@@ -72,7 +106,9 @@ export default function DarovaciSmlouvaVzor2026Page() {
           <li><a href="#dan-z-daru" className="hover:text-amber-400 transition">4. Daň z daru v roce 2026</a></li>
           <li><a href="#nejcastejsi-chyby" className="hover:text-amber-400 transition">5. Nejčastější chyby při darování</a></li>
           <li><a href="#odvolani-daru" className="hover:text-amber-400 transition">6. Kdy lze dar odvolat</a></li>
-          <li><a href="#zaver" className="hover:text-amber-400 transition">7. Shrnutí a doporučení</a></li>
+          <li><a href="#checklist" className="hover:text-amber-400 transition">7. Checklist před podpisem</a></li>
+          <li><a href="#zaver" className="hover:text-amber-400 transition">8. Shrnutí a doporučení</a></li>
+          <li><a href="#faq" className="hover:text-amber-400 transition">9. Časté otázky</a></li>
         </ol>
       </nav>
 
@@ -92,7 +128,7 @@ export default function DarovaciSmlouvaVzor2026Page() {
 
         <h3 className="mb-3 mt-6 text-lg font-black text-white">Typické situace, kdy se darovací smlouva uzavírá</h3>
         <ul className="mb-4 space-y-2 text-slate-400">
-          <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span>Darování nemovitosti (bytu, domu, pozemku) mezi rodinnými příslušníky</li>
+          <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span>Darování nemovitosti (bytu, domu, pozemku) mezi rodinnými příslušníky — u složitějších případů doporučujeme odbornou kontrolu smlouvy</li>
           <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span>Darování vozidla nebo jiné hodnotné movité věci</li>
           <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span>Darování peněz — zejména jako pomoc při koupi nemovitosti</li>
           <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span>Darování obchodního podílu nebo pohledávky</li>
@@ -346,9 +382,38 @@ export default function DarovaciSmlouvaVzor2026Page() {
         </div>
       </section>
 
-      {/* ── SECTION 7: ZÁVĚR ────────────────────── */}
+      {/* ── SECTION 7: CHECKLIST ────────────────── */}
+      <section id="checklist" className="mb-12 scroll-mt-6">
+        <h2 className="mb-4 text-2xl font-black tracking-tight text-white">7. Checklist před podpisem darovací smlouvy</h2>
+        <p className="mb-5 text-slate-400 leading-relaxed">
+          Před podpisem si ověřte, že smlouva pokrývá tyto body. U darování auta, peněz a movitých věcí
+          můžete využít{' '}
+          <Link href="/darovaci" className="text-amber-400 hover:text-amber-300 transition">
+            online generátor darovací smlouvy
+          </Link>
+          ; u nemovitostí doporučujeme odbornou kontrolu.
+        </p>
+        <div className="space-y-2">
+          {[
+            'Dárce i obdarovaný jsou správně identifikováni',
+            'Předmět daru je popsán přesně — u auta VIN, u nemovitosti katastrální údaje',
+            'Smlouva jasně vyjadřuje bezúplatnost daru',
+            'Datum a způsob předání jsou uvedeny',
+            'U nemovitosti je smlouva písemná a připravena pro vklad do katastru',
+            'U darování ze SJM souhlasí oba manželé',
+            'U vyšší hodnoty nebo složitějšího daru zvažte konzultaci advokáta',
+          ].map((t) => (
+            <div key={t} className="flex items-start gap-2 text-sm text-slate-300">
+              <span className="mt-0.5 flex-shrink-0 text-amber-400 font-bold">✓</span>
+              {t}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── SECTION 8: ZÁVĚR ────────────────────── */}
       <section id="zaver" className="mb-12 scroll-mt-6">
-        <h2 className="mb-4 text-2xl font-black tracking-tight text-white">7. Shrnutí a doporučení</h2>
+        <h2 className="mb-4 text-2xl font-black tracking-tight text-white">8. Shrnutí a doporučení</h2>
         <p className="mb-4 text-slate-400 leading-relaxed">
           Darovací smlouva chrání obě strany — dárce i obdarovaného. Správně sestavená předchází
           sporům o vlastnictví, daňovým komplikacím i rodinným nedorozuměním.
@@ -358,7 +423,7 @@ export default function DarovaciSmlouvaVzor2026Page() {
             'Vždy uzavírejte písemnou smlouvu — i při darování movité věci vyšší hodnoty',
             'Popis předmětu daru musí být přesný — u nemovitostí katastrální označení, u vozidel VIN',
             'Při darování ze SJM musí souhlasit oba manželé',
-            'Chcete-li v darované nemovitosti dožít, zakotvte výhradu dožití přímo ve smlouvě',
+            'Chcete-li v darované nemovitosti dožít, zakotvte výhradu dožití přímo ve smlouvě a nechte ji odborně zkontrolovat',
             'Darování v přímé linii a mezi manželi je osvobozeno od daně z příjmů',
             'Pro darování nemovitostí nebo darování v hodnotě nad 500 000 Kč zvažte konzultaci advokáta',
           ].map(t => (
@@ -366,6 +431,24 @@ export default function DarovaciSmlouvaVzor2026Page() {
               <span className="mt-0.5 flex-shrink-0 text-amber-400 font-bold">✓</span>
               {t}
             </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="faq" className="mb-12 scroll-mt-6">
+        <h2 className="mb-6 text-2xl font-black tracking-tight text-white">9. Časté otázky</h2>
+        <div className="space-y-3">
+          {faq.map((item) => (
+            <details
+              key={item.q}
+              className="group rounded-2xl border border-white/8 bg-[#0c1426] p-5 open:border-amber-500/30"
+            >
+              <summary className="cursor-pointer list-none font-bold text-white text-sm flex items-center justify-between gap-4">
+                <span>{item.q}</span>
+                <span className="text-slate-500 group-open:rotate-45 transition flex-shrink-0">+</span>
+              </summary>
+              <p className="mt-3 text-sm text-slate-400 leading-relaxed">{item.a}</p>
+            </details>
           ))}
         </div>
       </section>
@@ -398,11 +481,10 @@ export default function DarovaciSmlouvaVzor2026Page() {
         <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-600">Mohlo by vás zajímat</div>
         <div className="flex flex-wrap gap-3">
           {[
-            { href: '/darovaci-smlouva', label: '🎁 Darovací smlouva — přehled' },
-            { href: '/uznani-dluhu-vzor', label: '⚖️ Uznání dluhu' },
-            { href: '/blog/najemni-smlouva-vzor-2026', label: '🏠 Nájemní smlouva vzor' },
+            { href: '/darovaci', label: '🎁 Vytvořit darovací smlouvu' },
+            { href: '/darovaci-smlouva', label: '📋 Darovací smlouva — průvodce' },
             { href: '/blog/kupni-smlouva-na-auto-2026', label: '🚗 Kupní smlouva na auto' },
-            { href: '/', label: '📋 Všechny smlouvy' },
+            { href: '/blog/najemni-smlouva-vzor-2026', label: '🏠 Nájemní smlouva vzor' },
           ].map(l => (
             <Link
               key={l.href}

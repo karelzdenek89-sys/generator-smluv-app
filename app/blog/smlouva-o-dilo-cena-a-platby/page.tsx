@@ -1,32 +1,68 @@
 import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
+import Link from 'next/link';
+import { faqPageSchema, jsonLdScript } from '@/lib/schemas';
 
-export const metadata = blogArticlePageMetadata("smlouva-o-dilo-cena-a-platby", {
-  title: "Smlouva o dílo 2026: jak zachytit cenu, zálohy a platební podmínky",
-  description: "Pevná cena nebo položkový rozpočet, zálohy, platební milníky a vícepráce. Co ve smlouvě o dílo písemně sjednat, aby platební podmínky fungovaly v praxi.",
+const PAGE_TITLE = 'Smlouva o dílo: cena, záloha a platby 2026 | Praktický návod';
+const PAGE_DESCRIPTION =
+  'Jak správně nastavit cenu, zálohu, splatnost a vícepráce ve smlouvě o dílo. Praktický přehled pro rok 2026 a odkaz na vytvoření smlouvy online.';
+
+const faq = [
+  {
+    q: 'Musí být cena ve smlouvě o dílo vždy pevná?',
+    a: 'Ne. Strany si mohou zvolit pevnou cenu, cenu podle rozpočtu nebo jiný způsob určení dle občanského zákoníku. Pro běžné zakázky bývá přehlednější pevná cena nebo jasně definované milníky.',
+  },
+  {
+    q: 'Jak vysoká může být záloha u smlouvy o dílo?',
+    a: 'Zákon neukládá konkrétní limit. V praxi se často pohybuje mezi 20 a 50 % ceny díla. Důležité je ve smlouvě uvést výši, splatnost a co se stane při odstoupení nebo nezaplacení.',
+  },
+  {
+    q: 'Co když objednatel nezaplatí po dokončení fáze díla?',
+    a: 'Smlouva by měla obsahovat splatnost faktur a postup při prodlení — zákonný úrok z prodlení nebo smluvní pokutu, pokud ji strany sjednají. Bez písemného ujednání se řeší podle obecných pravidel o prodlení s peněžitým dluhem.',
+  },
+  {
+    q: 'Jak ve smlouvě ošetřit vícepráce?',
+    a: 'Doporučuje se písemně sjednat, že vícepráce musí být předem odsouhlaseny s cenou nebo způsobem ocenění. Ústní domluva bývá při sporu obtížně prokazatelná.',
+  },
+  {
+    q: 'Nahrazuje online generátor právní poradenství?',
+    a: 'Ne. Generátor připraví standardizovaný dokument podle vámi zadaných údajů. U složitých platebních režimů nebo vysokohodnotných zakázek je vhodné obrátit se na advokáta.',
+  },
+];
+
+const faqSchema = faqPageSchema(faq.map((item) => ({ question: item.q, answer: item.a })));
+
+export const metadata = blogArticlePageMetadata('smlouva-o-dilo-cena-a-platby', {
+  title: PAGE_TITLE,
+  description: PAGE_DESCRIPTION,
 });
-
 
 export default function SmlouvaODiloCenaAPlatbyPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(faqSchema) }}
+      />
 
       <ArticlePageLayout
         category="Podnikání a zakázky"
-        readTime="7 min"
+        readTime="8 min"
         dateTime="2026-04-15"
         dateLabel="15. dubna 2026"
-        breadcrumbLabel="Smlouva o dílo 2026: cena a platby"
+        breadcrumbLabel="Smlouva o dílo: cena, záloha a platby 2026"
         slug="smlouva-o-dilo-cena-a-platby"
-        title="Smlouva o dílo 2026: jak zachytit cenu, zálohy a platební podmínky"
+        title="Smlouva o dílo: cena, záloha a platby 2026"
         intro="Cena je ve smlouvě o dílo jedním z nejdůležitějších a zároveň nejčastěji nepřesně sjednaných bodů. Zákon nabízí několik způsobů, jak cenu určit — a způsob, který si strany zvolí, výrazně ovlivňuje to, co se stane při zdražení, změně rozsahu nebo překročení odhadovaných nákladů."
         toc={[
           { href: '#pevna-cena-vs-rozpocet', label: 'Pevná cena nebo položkový rozpočet' },
           { href: '#zalohy', label: 'Zálohy a jejich splatnost' },
           { href: '#platebni-milniky', label: 'Platební milníky a průběžné platby' },
           { href: '#viceprace', label: 'Vícepráce a změny zakázky' },
+          { href: '#priklad-plateb', label: 'Praktický příklad platebního nastavení' },
           { href: '#co-zapsat', label: 'Co do smlouvy vždy zapsat' },
+          { href: '#faq', label: 'Časté otázky' },
         ]}
         primaryAction={{
           title: 'Potřebujete smlouvu o dílo sestavit online?',
@@ -49,9 +85,9 @@ export default function SmlouvaODiloCenaAPlatbyPage() {
         relatedLinks={[
           { href: '/smlouva-o-dilo-online', label: 'Smlouva o dílo — průvodce' },
           { href: '/smlouva-o-dilo', label: 'Formulář smlouvy o dílo' },
-          { href: '/smlouva-o-sluzbach', label: 'Smlouva o poskytování služeb' },
           { href: '/blog/smlouva-o-dilo-2026', label: 'Smlouva o dílo: předmět díla a termíny' },
-          { href: '/blog/smlouva-o-sluzbach-2026', label: 'Smlouva o službách 2026' },
+          { href: '/blog/viceprace-smlouva-o-dilo-2026', label: 'Vícepráce ve smlouvě o dílo' },
+          { href: '/smlouva-o-sluzbach', label: 'Smlouva o poskytování služeb' },
         ]}
       >
         <section id="pevna-cena-vs-rozpocet" className="mb-12 scroll-mt-6">
@@ -104,6 +140,7 @@ export default function SmlouvaODiloCenaAPlatbyPage() {
           buttonLabel="Pokračovat ke smlouvě o dílo"
           href="/smlouva-o-dilo"
           variant="subtle"
+          articleSlug="smlouva-o-dilo-cena-a-platby"
         />
 
         <section id="platebni-milniky" className="mb-12 scroll-mt-6">
@@ -136,7 +173,11 @@ export default function SmlouvaODiloCenaAPlatbyPage() {
           <p className="mb-4 leading-relaxed text-slate-400">
             Vícepráce jsou jednou z nejčastějších příčin sporů u smlouvy o dílo. Objednatel
             přidá požadavky v průběhu zakázky, zhotovitel je splní — a pak se strany nemohou
-            dohodnout, zda a za kolik mají být zaplaceny.
+            dohodnout, zda a za kolik mají být zaplaceny. Podrobněji k tomuto tématu píšeme v{' '}
+            <Link href="/blog/viceprace-smlouva-o-dilo-2026" className="text-amber-400 hover:text-amber-300 transition">
+              článku o vícepracích ve smlouvě o dílo
+            </Link>
+            .
           </p>
           <p className="mb-4 leading-relaxed text-slate-400">
             Smlouva by měla jasně definovat, co se za vícepráce považuje a jak se s nimi nakládá.
@@ -148,13 +189,37 @@ export default function SmlouvaODiloCenaAPlatbyPage() {
             Pokud smlouva postup pro vícepráce neřeší, může zhotovitel nárok na odměnu za
             neobjednané práce uplatnit — zákon tuto možnost za určitých okolností připouští.
             Spory o rozsah a cenu víceprací jsou ale časté a zpravidla se jim dá předejít
-            jasným smluvním ujednáním, aniž by bylo nutné se dovolávat zákonných pravidel.
+            jasným smluvním ujednáním.
+          </p>
+        </section>
+
+        <section id="priklad-plateb" className="mb-12 scroll-mt-6">
+          <h2 className="mb-4 text-2xl font-black tracking-tight text-white">
+            5. Praktický příklad platebního nastavení
+          </h2>
+          <p className="mb-4 leading-relaxed text-slate-400">
+            Představte si zakázku na rekonstrukci bytu za pevnou cenu 240 000 Kč. Ve smlouvě o dílo
+            můžete platební podmínky nastavit takto:
+          </p>
+          <div className="mb-4 rounded-2xl border border-white/8 bg-[#0c1426] p-5 text-sm leading-7 text-slate-400">
+            <ul className="space-y-2">
+              <li>• záloha 30 % (72 000 Kč) splatná do 5 dnů od podpisu smlouvy</li>
+              <li>• 40 % (96 000 Kč) po dokončení hrubých stavebních prací a písemném odsouhlasení objednatelem</li>
+              <li>• 30 % (72 000 Kč) po předání díla a podpisu předávacího protokolu</li>
+              <li>• splatnost každé faktury 14 dnů od doručení</li>
+              <li>• vícepráce jen po předchozím písemném souhlasu s cenou</li>
+            </ul>
+          </div>
+          <p className="leading-relaxed text-slate-400">
+            Takové nastavení dává objednateli kontrolu nad průběhem plateb a zhotoviteli jistotu,
+            že nebude financovat celou zakázku bez průběžné úhrady. U menších zakázek stačí často
+            záloha a doplatek po předání — u větších projektů dává smysl více milníků.
           </p>
         </section>
 
         <section id="co-zapsat" className="mb-12 scroll-mt-6">
           <h2 className="mb-4 text-2xl font-black tracking-tight text-white">
-            5. Co do smlouvy vždy zapsat
+            6. Co do smlouvy vždy zapsat
           </h2>
           <p className="mb-4 leading-relaxed text-slate-400">
             Platební ujednání ve smlouvě o dílo by mělo být vždy konkrétní. Základní body,
@@ -168,6 +233,24 @@ export default function SmlouvaODiloCenaAPlatbyPage() {
             jsou tyto klauzule součástí standardního rozsahu; základní dokument pokrývá
             povinné náležitosti bez rozšířených sankcí.
           </p>
+        </section>
+
+        <section id="faq" className="mb-12 scroll-mt-6">
+          <h2 className="mb-6 text-2xl font-black tracking-tight text-white">Časté otázky</h2>
+          <div className="space-y-3">
+            {faq.map((item) => (
+              <details
+                key={item.q}
+                className="group rounded-2xl border border-white/8 bg-[#0c1426] p-5 open:border-amber-500/30"
+              >
+                <summary className="cursor-pointer list-none font-bold text-white text-sm flex items-center justify-between gap-4">
+                  <span>{item.q}</span>
+                  <span className="text-slate-500 group-open:rotate-45 transition flex-shrink-0">+</span>
+                </summary>
+                <p className="mt-3 text-sm text-slate-400 leading-relaxed">{item.a}</p>
+              </details>
+            ))}
+          </div>
         </section>
       </ArticlePageLayout>
     </>

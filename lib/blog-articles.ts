@@ -227,9 +227,9 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   },
   {
     slug: 'smlouva-o-dilo-cena-a-platby',
-    title: 'Smlouva o dílo 2026: jak zachytit cenu, zálohy a platební podmínky',
+    title: 'Smlouva o dílo: cena, záloha a platby 2026 | Praktický návod',
     excerpt:
-      'Pevná cena nebo položkový rozpočet, zálohy, platební milníky a vícepráce. Co ve smlouvě o dílo písemně sjednat, aby platby fungovaly v praxi.',
+      'Jak správně nastavit cenu, zálohu, splatnost a vícepráce ve smlouvě o dílo. Praktický přehled pro rok 2026.',
     category: 'Podnikání a zakázky',
     readTime: '7 min',
     date: '15. dubna 2026',
@@ -381,9 +381,9 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   },
   {
     slug: 'darovaci-smlouva-2026',
-    title: 'Darovací smlouva 2026: Co musí obsahovat a kdy ji sepsat písemně',
+    title: 'Darovací smlouva vzor 2026 | Auto, peníze i movité věci',
     excerpt:
-      'Kdy darovací smlouvu uzavřít písemně, jak popsat předmět daru a proč je vhodné řešit předání a případná omezení.',
+      'Kdy použít darovací smlouvu, co má obsahovat a na co si dát pozor při darování auta, peněz nebo nemovitosti.',
     category: 'Osobní a majetkové',
     readTime: '7 min',
     date: '20. března 2026',
@@ -436,9 +436,9 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   },
   {
     slug: 'pracovni-smlouva-2026',
-    title: 'Pracovní smlouva 2026: Co musí obsahovat a jak ji nastavit přehledně',
+    title: 'Pracovní smlouva vzor 2026 | Co musí obsahovat',
     excerpt:
-      'Základní náležitosti pracovní smlouvy, jak vymezit druh práce, místo výkonu a den nástupu.',
+      'Co musí obsahovat pracovní smlouva v roce 2026, na co si dát pozor před podpisem a kdy použít pracovní smlouvu místo DPP.',
     category: 'Práce a zaměstnání',
     readTime: '8 min',
     date: '12. března 2026',
