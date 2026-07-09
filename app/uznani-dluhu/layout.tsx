@@ -21,6 +21,12 @@ export const metadata: Metadata = {
     type: 'website',
     images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'SmlouvaHned - smluvni dokument online' }],
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Uznání dluhu online 2026',
+    description: 'Uznání dluhu dle § 2053 OZ se splátkovým kalendářem. PDF ihned. Od 99 Kč.',
+    images: ['/og-image.png'],
+  },
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

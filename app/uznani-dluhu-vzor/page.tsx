@@ -4,9 +4,9 @@ import { landingPageMetadata } from '@/lib/seo/landing-page-metadata';
 
 export const metadata = landingPageMetadata({
   path: '/uznani-dluhu-vzor',
-  title: 'Uznání dluhu online 2026 — vzor ke stažení',
+  title: 'Uznání dluhu 2026: promlčení, splátky a náležitosti',
   description:
-    'Uznání dluhu obnoví promlčecí lhůtu na 10 let. Splátky, smluvní pokuta, exekuční doložka. Dle § 2053 OZ 2026. Od 99 Kč.',
+    'Průvodce uznáním dluhu pro rok 2026. Jak ovlivní promlčení, co uvést o důvodu a výši dluhu a jak přemýšlet o splátkách.',
   keywords: [
     'uznání dluhu vzor 2026',
     'uznání dluhu online',
@@ -15,9 +15,9 @@ export const metadata = landingPageMetadata({
     'promlčení dluhu',
     'uznání dluhu promlčení',
   ],
-  openGraphTitle: 'Uznání dluhu online 2026',
+  openGraphTitle: 'Uznání dluhu 2026: promlčení a splátky',
   openGraphDescription:
-    'Uznání dluhu obnoví promlčecí lhůtu na 10 let. Splátky, smluvní pokuta. § 2053 OZ. Od 99 Kč.',
+    'Jak uznání dluhu ovlivní promlčení, splátky a důkazní situaci.',
 });
 
 const faq = [

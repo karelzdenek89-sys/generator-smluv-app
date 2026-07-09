@@ -22,6 +22,12 @@ export const metadata: Metadata = {
     type: 'website',
     images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'SmlouvaHned - smluvni dokument online' }],
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Smlouva o poskytování služeb online 2026 | PDF ke stažení',
+    description: 'Vytvořte smlouvu o poskytování služeb online pro jednorázové i opakované služby.',
+    images: ['/og-image.png'],
+  },
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

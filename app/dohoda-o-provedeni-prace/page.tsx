@@ -5,16 +5,16 @@ import { landingPageMetadata } from '@/lib/seo/landing-page-metadata';
 export const metadata = landingPageMetadata({
   path: '/dohoda-o-provedeni-prace',
   expatContractKey: 'dpp',
-  title: 'Dohoda o provedení práce 2026 — DPP vzor online',
+  title: 'DPP 2026: limit hodin, odvody a povinné náležitosti',
   description:
-    'Dohoda o provedení práce (DPP) 2026 — aktuální vzor dle zákoníku práce. Max. 300 hod./rok, limit odvodů, IP doložka. PDF ke stažení od 99 Kč.',
+    'Průvodce dohodou o provedení práce pro rok 2026. Limit 300 hodin, pravidla odvodů, povinné písemné náležitosti a praktické souvislosti.',
   keywords: [
     'DPP', 'dohoda o provedení práce', 'dohoda o provedení práce vzor', 'DPP 2026',
     'dohoda o provedení práce 2026', 'dohoda o provedení práce online', 'DPP ke stažení', 'brigáda smlouva',
   ],
-  openGraphTitle: 'Dohoda o provedení práce 2026 — DPP vzor online',
+  openGraphTitle: 'DPP 2026: limit hodin a odvody',
   openGraphDescription:
-    'DPP 2026 — aktuální vzor dle zákoníku práce. Max. 300 hod./rok, limit odvodů, IP doložka. Od 99 Kč.',
+    'Přehled pravidel DPP: limit hodin, odvody a povinné písemné náležitosti.',
 });
 
 const faq = [

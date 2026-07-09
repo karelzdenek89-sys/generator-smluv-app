@@ -81,10 +81,10 @@ export const SITUATION_LANDING_CONFIG: Record<
     accent: 'pro standardní pronájem bytu nebo domu',
     description:
       'Situační stránka pro pronajímatele, kteří řeší nejen samotnou nájemní smlouvu, ale i předání bytu, převzetí kauce a navazující podklady. Pomůže vám vybrat správnou cestu podle rozsahu situace.',
-    metadataTitle: 'Dokumenty pro pronajímatele | SmlouvaHned',
+    metadataTitle: 'Dokumenty pro pronajímatele',
     metadataDescription:
       'Přehled řešení pro standardní pronájem bytu nebo domu. Kdy stačí nájemní smlouva, kdy dává smysl širší varianta a kdy je vhodný balíček pro pronajímatele.',
-    openGraphTitle: 'Dokumenty pro pronajímatele | SmlouvaHned',
+    openGraphTitle: 'Dokumenty pro pronajímatele',
     openGraphDescription:
       'Přehledný rozcestník pro pronajímatele: nájemní smlouva, širší varianta i tematický balíček s podklady k předání bytu.',
     summary: [
@@ -225,10 +225,10 @@ export const SITUATION_LANDING_CONFIG: Record<
     accent: 'pro standardní převod a předání vozidla',
     description:
       'Situační stránka pro prodávající i kupující, kteří řeší nejen samotnou kupní smlouvu na vozidlo, ale i předání klíčů, dokladů a navazujících podkladů k převodu.',
-    metadataTitle: 'Podklady pro prodej vozidla | SmlouvaHned',
+    metadataTitle: 'Podklady pro prodej vozidla',
     metadataDescription:
       'Přehled řešení pro standardní převod vozidla. Kdy stačí kupní smlouva na vozidlo, kdy dává smysl širší varianta a kdy je vhodný balíček pro prodej vozidla.',
-    openGraphTitle: 'Podklady pro prodej vozidla | SmlouvaHned',
+    openGraphTitle: 'Podklady pro prodej vozidla',
     openGraphDescription:
       'Přehledný rozcestník pro převod vozidla: kupní smlouva, širší varianta i tematický balíček s podklady k předání.',
     summary: [

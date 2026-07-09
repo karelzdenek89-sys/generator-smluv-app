@@ -6,9 +6,9 @@ import { landingPageMetadata } from '@/lib/seo/landing-page-metadata';
 
 export const metadata = landingPageMetadata({
   path: '/najemni-smlouva-byt',
-  title: 'Nájemní smlouva na byt 2026 — vzor online, PDF ihned',
+  title: 'Nájem bytu 2026: kauce, zvířata a předávací protokol',
   description:
-    'Vzor nájemní smlouvy na byt nebo dům 2026 — vyplníte online a stáhnete PDF. Kauce, zvířata, předávací protokol, Airbnb doložka. Dle § 2235 OZ. Od 99 Kč.',
+    'Průvodce nájmem bytu pro rok 2026. Pravidla pro kauci, chov zvířat, předávací protokol a další ujednání, která je dobré před podpisem promyslet.',
   keywords: [
     'nájemní smlouva byt 2026',
     'nájemní smlouva na byt vzor',
@@ -17,9 +17,9 @@ export const metadata = landingPageMetadata({
     'nájemní smlouva pronajímatel',
     'nájemní smlouva nájemce',
   ],
-  openGraphTitle: 'Nájemní smlouva na byt 2026',
+  openGraphTitle: 'Nájem bytu 2026: kauce a předání',
   openGraphDescription:
-    'Nájemní smlouva na byt nebo dům. Kauce, zvířata, předávací protokol. § 2235 OZ. Od 99 Kč.',
+    'Co řešit před podpisem nájmu bytu: kauci, zvířata, předávací protokol a pravidla užívání.',
 });
 
 const faq = [

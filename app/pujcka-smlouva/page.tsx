@@ -21,6 +21,12 @@ export const metadata: Metadata = {
       'Co má obsahovat smlouva o zápůjčce, jak upravit splatnost, úrok, vrácení peněz a na co si dát pozor před podpisem.',
     url: 'https://www.smlouvahned.cz/pujcka-smlouva',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Smlouva o zápůjčce vzor 2026 | Průvodce půjčkou',
+    description: 'Co má obsahovat smlouva o zápůjčce, jak upravit splatnost, úrok a vrácení peněz.',
+    images: ['/og-image.png'],
+  },
 };
 
 const faq = [

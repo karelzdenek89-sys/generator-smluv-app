@@ -1086,7 +1086,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 <div className="flex justify-between items-start gap-4 mb-4">
                   <div>
                     <h3 className="font-black text-white text-sm uppercase tracking-[0.18em]">
-                      Kontrola úplnosti
+                      Analýza smlouvy
                     </h3>
                     <p className="text-sm text-slate-400 mt-1">{riskAnalysis.label}</p>
                   </div>

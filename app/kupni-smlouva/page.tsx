@@ -13,6 +13,12 @@ export const metadata: Metadata = {
     url: 'https://www.smlouvahned.cz/kupni-smlouva',
     type: 'website',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Kupní smlouva vzor 2026',
+    description: 'Přehledná průvodcová stránka ke kupní smlouvě pro běžné převody movitých věcí a vozidel.',
+    images: ['/og-image.png'],
+  },
 };
 
 const faq = [

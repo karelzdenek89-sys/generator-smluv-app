@@ -5,9 +5,9 @@ import { faqPageSchema, jsonLdScript } from '@/lib/schemas';
 
 const BASE_URL = 'https://www.smlouvahned.cz';
 
-const PAGE_TITLE = 'Smlouva o spolupráci vzor 2026 | PDF/DOCX online';
+const PAGE_TITLE = 'Smlouva o spolupráci 2026: podíl, IP práva a ukončení';
 const PAGE_DESCRIPTION =
-  'Vytvořte smlouvu o spolupráci online. Praktický vzor pro obchodní, externí nebo projektovou spolupráci s výstupem PDF a volitelně DOCX.';
+  'Průvodce smlouvou o spolupráci pro rok 2026. Co promyslet u podílu na výnosech, IP práv, mlčenlivosti, odpovědnosti a ukončení vztahu.';
 
 export const metadata: Metadata = {
   title: PAGE_TITLE,
@@ -26,6 +26,12 @@ export const metadata: Metadata = {
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
     url: `${BASE_URL}/smlouva-o-spolupraci`,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: PAGE_TITLE,
+    description: PAGE_DESCRIPTION,
+    images: ['/og-image.png'],
   },
 };
 

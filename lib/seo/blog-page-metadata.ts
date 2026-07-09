@@ -60,5 +60,11 @@ export function blogIndexMetadata(): Metadata {
       siteName: 'SmlouvaHned',
       locale: 'cs_CZ',
     },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Blog - Právní průvodce 2026',
+      description: 'Praktické průvodce ke smlouvám a běžným právním situacím dle legislativy 2026.',
+      images: [OG_IMAGE_PATH],
+    },
   };
 }

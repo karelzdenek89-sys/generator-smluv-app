@@ -6,15 +6,15 @@ import { landingPageMetadata } from '@/lib/seo/landing-page-metadata';
 export const metadata = landingPageMetadata({
   path: '/pracovni-smlouva',
   expatContractKey: 'employment',
-  title: 'Pracovní smlouva online 2026 — vzor zdarma ke stažení',
+  title: 'Pracovní smlouva 2026: co musí obsahovat a na co dát pozor',
   description:
-    'Vygenerujte pracovní smlouvu se všemi zákonnými náležitostmi dle zákoníku práce 2026. Druh práce, místo výkonu, mzda, zkušební doba. PDF ihned od 99 Kč.',
+    'Průvodce pracovní smlouvou pro rok 2026. Povinné náležitosti, zkušební doba, mzda, pracovní doba a nejčastější chyby při sjednání.',
   keywords: [
     'pracovní smlouva', 'pracovní smlouva vzor', 'pracovní smlouva online', 'pracovní smlouva 2026',
     'pracovní smlouva PDF', 'pracovní smlouva ke stažení', 'vzor pracovní smlouvy',
   ],
-  openGraphTitle: 'Pracovní smlouva online 2026',
-  openGraphDescription: 'Pracovní smlouva dle zákoníku práce 2026. Mzda, zkušební doba, výpověď. Od 99 Kč.',
+  openGraphTitle: 'Pracovní smlouva 2026: povinné náležitosti',
+  openGraphDescription: 'Co řešit v pracovní smlouvě: druh práce, místo výkonu, mzdu a zkušební dobu.',
 });
 
 const faq = [

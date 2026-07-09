@@ -15,6 +15,12 @@ export const metadata: Metadata = {
     url: `https://www.smlouvahned.cz${situation.href}`,
     type: 'website',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: situation.openGraphTitle,
+    description: situation.openGraphDescription,
+    images: ['/og-image.png'],
+  },
 };
 
 const faqSchema = {

@@ -228,7 +228,7 @@ export default function WorkContractPage() {
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500 text-slate-900 font-black text-sm">SH</div>
             <div>
-              <div className="font-bold tracking-tight text-white">SmlouvaHned Builder</div>
+              <div className="font-bold tracking-tight text-white">SmlouvaHned</div>
               <div className="text-[11px] text-slate-500">Smlouva o dílo — § 2586 OZ</div>
             </div>
           </div>

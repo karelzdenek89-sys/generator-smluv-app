@@ -396,7 +396,7 @@ const LEASE_FORM_CS: LeaseFormUi = {
     badgeReady: 'Skoro hotovo',
     badgeGood: 'Dobré',
     badgeFill: 'Doplň údaje',
-    riskTitle: 'Kontrola úplnosti',
+    riskTitle: 'Analýza smlouvy',
     riskOk: 'Smlouva je zatím nastavena velmi dobře. Rizikové prvky nejsou detekovány.',
     riskLabels: { good: 'Dobré nastavení', average: 'Průměrná ochrana', improve: 'Doporučená doplnění' },
     previewTitle: 'Náhled výstupu',

@@ -23,6 +23,12 @@ export const metadata: Metadata = {
     url: `${BASE_URL}/slovnik`,
     type: 'website',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Slovník právních pojmů 2026',
+    description: 'Slovník pojmů ze smluvního práva s odkazy na občanský zákoník a zákoník práce.',
+    images: ['/og-image.png'],
+  },
 };
 
 const categoryOrder: GlossaryCategory[] = [

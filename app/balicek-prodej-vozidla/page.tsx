@@ -14,6 +14,12 @@ export const metadata: Metadata = {
     url: 'https://www.smlouvahned.cz/balicek-prodej-vozidla',
     type: 'website',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Balíček pro prodej vozidla',
+    description: 'Tematický balíček pro standardní převod vozidla včetně podkladů k předání.',
+    images: ['/og-image.png'],
+  },
 };
 
 const faq = [

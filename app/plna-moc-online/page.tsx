@@ -5,9 +5,9 @@ import { landingPageMetadata } from '@/lib/seo/landing-page-metadata';
 export const metadata = landingPageMetadata({
   path: '/plna-moc-online',
   expatContractKey: 'power_of_attorney',
-  title: 'Plná moc online 2026 — vzor ke stažení',
+  title: 'Plná moc 2026: kdy stačí jednoduchá a kdy ověřená',
   description:
-    'Plná moc pro zastoupení před úřadem, bankou nebo v obchodní věci. Obecná, jednorázová nebo ověřená verze. Dle § 441 OZ 2026. Od 99 Kč.',
+    'Průvodce plnou mocí pro rok 2026. Kdy je vhodná obecná nebo jednorázová plná moc a kdy může úřad, banka či katastr vyžadovat ověřený podpis.',
   keywords: [
     'plná moc online',
     'plná moc vzor 2026',
@@ -16,9 +16,9 @@ export const metadata = landingPageMetadata({
     'plná moc ověřená',
     'plná moc úřad',
   ],
-  openGraphTitle: 'Plná moc online 2026',
+  openGraphTitle: 'Plná moc 2026: jednoduchá nebo ověřená',
   openGraphDescription:
-    'Plná moc pro zastoupení před úřadem, bankou nebo v obchodní věci. § 441 OZ. Od 99 Kč.',
+    'Kdy použít obecnou nebo jednorázovou plnou moc a kdy ověřit podpis.',
 });
 
 const faq = [

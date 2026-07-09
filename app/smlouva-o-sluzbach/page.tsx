@@ -21,6 +21,12 @@ export const metadata: Metadata = {
       'Praktický průvodce smlouvou o poskytování služeb: rozsah služby, cena, odpovědnost, termíny, ukončení spolupráce a nejčastější chyby.',
     url: 'https://www.smlouvahned.cz/smlouva-o-sluzbach',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Smlouva o poskytování služeb vzor 2026 | Co má obsahovat',
+    description: 'Praktický průvodce smlouvou o poskytování služeb: rozsah, cena, odpovědnost, termíny a ukončení.',
+    images: ['/og-image.png'],
+  },
 };
 
 const faq = [

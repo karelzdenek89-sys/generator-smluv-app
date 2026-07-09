@@ -22,6 +22,12 @@ export const metadata: Metadata = {
     type: 'website',
     images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'SmlouvaHned - smluvni dokument online' }],
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Smlouva o mlčenlivosti (NDA) online 2026',
+    description: 'Sestavte NDA online. Jednostranná nebo oboustranná, s vymezením rozsahu. PDF ihned. Od 99 Kč.',
+    images: ['/og-image.png'],
+  },
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

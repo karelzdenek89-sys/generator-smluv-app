@@ -14,6 +14,12 @@ export const metadata: Metadata = {
     url: 'https://www.smlouvahned.cz/balicek-pronajimatel',
     type: 'website',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Balíček pro pronajímatele',
+    description: 'Tematický balíček pro standardní pronájem bytu nebo domu včetně podkladů k předání.',
+    images: ['/og-image.png'],
+  },
 };
 
 const faq = [

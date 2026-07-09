@@ -24,6 +24,12 @@ export const metadata: Metadata = {
     type: 'website',
     images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'SmlouvaHned - smluvni dokument online' }],
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Dohoda o provedení práce (DPP) online 2026',
+    description: 'DPP pro brigády do 300 hod./rok. PDF dle zákoníku práce 2026. Od 99 Kč.',
+    images: ['/og-image.png'],
+  },
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

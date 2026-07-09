@@ -4,17 +4,17 @@ import { landingPageMetadata } from '@/lib/seo/landing-page-metadata';
 export const metadata = landingPageMetadata({
   path: '/najemni-smlouva',
   expatContractKey: 'lease',
-  title: 'Nájemní smlouva 2026 online — vzor a generátor, PDF ihned',
+  title: 'Nájemní smlouva 2026 — vzor, obsah a kdy ji použít',
   description:
-    'Nájemní smlouva 2026 online — vyplníte formulář a stáhnete hotové PDF. Aktuální vzor dle OZ, kauce, výpovědní doba, předávací protokol. Od 99 Kč.',
+    'Průvodce nájemní smlouvou pro rok 2026. Co má obsahovat, kdy se hodí standardní vzor a kdy je lepší řešit situaci individuálně.',
   keywords: [
-    'nájemní smlouva',
     'nájemní smlouva vzor',
     'nájemní smlouva 2026',
+    'co musí obsahovat nájemní smlouva',
     'vzor nájemní smlouvy 2026',
-    'nájemní smlouva online',
     'smlouva o nájmu bytu',
-    'nájemní smlouva na byt 2026',
+    'nájemní smlouva na byt vzor',
+    'výpověď z nájemní smlouvy',
   ],
 });
 

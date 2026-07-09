@@ -6,24 +6,24 @@ import { faqPageSchema, jsonLdScript } from '@/lib/schemas';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 
-const PAGE_TITLE = 'Nájemní smlouva online 2026 | PDF/DOCX ke stažení';
+const PAGE_TITLE = 'Nájemní smlouva online 2026 | Formulář a PDF ihned';
 const PAGE_DESCRIPTION =
-  'Vytvořte nájemní smlouvu na byt nebo dům online. Praktický vzor pro rok 2026 s výstupem ve formátu PDF a volitelně DOCX, bez registrace a bez předplatného.';
+  'Vyplňte nájemní smlouvu na byt nebo dům online. Doplníte strany, nájemné, kauci a pravidla, poté stáhnete hotové PDF nebo DOCX bez registrace a předplatného.';
 
 export const metadata: Metadata = {
-  title: 'Nájemní smlouva online 2026 | PDF/DOCX ke stažení',
+  title: PAGE_TITLE,
   description: PAGE_DESCRIPTION,
   keywords: [
-    'nájemní smlouva 2026',
-    'vzor nájemní smlouvy 2026',
-    'nájemní smlouva na byt 2026',
     'nájemní smlouva online',
-    'nájemní smlouva vzor 2026',
-    'nájemní smlouva PDF ke stažení',
-    'nájemní smlouva Word',
-    'vzor nájemní smlouvy',
-    'nájemní smlouva na dům',
+    'nájemní smlouva formulář',
+    'vytvořit nájemní smlouvu',
+    'generátor nájemní smlouvy',
+    'nájemní smlouva PDF',
+    'nájemní smlouva na byt online',
+    'formulář nájemní smlouvy',
+    'nájemní smlouva ihned ke stažení',
     'rental agreement Czech Republic',
+    'lease Prague foreigners',
   ],
   alternates: getExpatContractHreflangAlternates('lease'),
   openGraph: {

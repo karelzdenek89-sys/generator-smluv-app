@@ -24,6 +24,12 @@ export const metadata: Metadata = {
     type: 'website',
     images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'SmlouvaHned - smluvni dokument online' }],
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Pracovní smlouva 2026 - formulář online',
+    description: 'Pracovní smlouva 2026 dle zákoníku práce v PDF ihned. Od 99 Kč.',
+    images: ['/og-image.png'],
+  },
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

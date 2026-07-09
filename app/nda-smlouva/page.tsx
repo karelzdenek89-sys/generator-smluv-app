@@ -20,6 +20,12 @@ export const metadata: Metadata = {
     url: 'https://www.smlouvahned.cz/nda-smlouva',
     type: 'website',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'NDA smlouva vzor 2026',
+    description: 'Průvodcová stránka k NDA smlouvě pro ochranu důvěrných informací.',
+    images: ['/og-image.png'],
+  },
 };
 
 const faq = [

@@ -845,7 +845,7 @@ const POA_LANDING: LocaleTriple<ExpatBuilderLandingBlock> = {
 
 const CAR_LANDING: LocaleTriple<ExpatBuilderLandingBlock> = {
   cs: {
-    guideHref: '/kupni-smlouva-auto',
+    guideHref: '/blog/kupni-smlouva-auto-kupujici-2026',
     benefits: [
       { icon: '⚖️', text: 'Sestaveno dle § 2079 a násl. OZ (kupní smlouva)' },
       { icon: '📄', text: 'PDF ke stažení ihned po platbě' },
@@ -868,7 +868,7 @@ const CAR_LANDING: LocaleTriple<ExpatBuilderLandingBlock> = {
     whenOther: [
       {
         label: 'Smlouva o dílo',
-        href: '/dilo',
+        href: '/smlouva-o-dilo',
         text: 'Pokud jde o opravu vozidla, nikoli jeho prodej.',
       },
     ],
@@ -906,7 +906,7 @@ const CAR_LANDING: LocaleTriple<ExpatBuilderLandingBlock> = {
       'Written contract for authorities and insurance',
     ],
     whenOther: [
-      { label: 'Work contract', href: '/dilo?lang=en', text: 'For vehicle repair, not sale.' },
+      { label: 'Work contract', href: '/smlouva-o-dilo?lang=en', text: 'For vehicle repair, not sale.' },
     ],
     faq: [
       {
@@ -941,7 +941,7 @@ const CAR_LANDING: LocaleTriple<ExpatBuilderLandingBlock> = {
       'Без автосалону',
       'Письмовий договір для органів',
     ],
-    whenOther: [{ label: 'Договір підряду', href: '/dilo?lang=ua', text: 'Для ремонту, не продажу.' }],
+    whenOther: [{ label: 'Договір підряду', href: '/smlouva-o-dilo?lang=ua', text: 'Для ремонту, не продажу.' }],
     faq: [
       { q: 'Що має бути в договорі?', a: 'Сторони, VIN, ціна та передача.' },
       { q: 'Чи потрібне засвідчення підписів?', a: 'Зазвичай ні для приватного продажу.' },

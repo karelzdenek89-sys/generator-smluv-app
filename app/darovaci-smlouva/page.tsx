@@ -13,6 +13,12 @@ export const metadata: Metadata = {
     url: 'https://www.smlouvahned.cz/darovaci-smlouva',
     type: 'website',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Darovací smlouva vzor 2026',
+    description: 'Průvodcová stránka k darovací smlouvě pro běžné převody mezi známými nebo rodinnými příslušníky.',
+    images: ['/og-image.png'],
+  },
 };
 
 const faq = [

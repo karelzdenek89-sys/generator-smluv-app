@@ -19,6 +19,12 @@ export const metadata = {
     locale: 'cs_CZ',
     images: [DEFAULT_OG_IMAGE],
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: situation.openGraphTitle,
+    description: situation.openGraphDescription,
+    images: ['/og-image.png'],
+  },
 };
 
 const faqSchema = {

@@ -21,9 +21,11 @@ function assertNoOldPriceCopy(path: string) {
 }
 
 function assertMetadataTitleHasNoBrand(src: string, path: string) {
-  const match = src.match(/export const metadata[\s\S]*?\n\s*title:\s*['"]([^'"]+)['"]/);
-  assert.ok(match, `${path}: metadata.title not found`);
-  assert.ok(!match[1].includes('| SmlouvaHned'), `${path}: metadata title duplicates root title template brand`);
+  const literalTitle = src.match(/export const metadata[\s\S]*?\n\s*title:\s*['"]([^'"]+)['"]/);
+  const constantTitle = src.match(/const\s+PAGE_TITLE\s*=\s*['"]([^'"]+)['"]/);
+  const title = literalTitle?.[1] ?? constantTitle?.[1];
+  assert.ok(title, `${path}: metadata.title not found`);
+  assert.ok(!title.includes('| SmlouvaHned'), `${path}: metadata title duplicates root title template brand`);
 }
 
 function walkAppFiles(dir = join(ROOT, 'app')): string[] {

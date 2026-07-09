@@ -13,6 +13,12 @@ export const metadata: Metadata = {
     url: 'https://www.smlouvahned.cz/o-projektu',
   },
   alternates: { canonical: 'https://www.smlouvahned.cz/o-projektu' },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'O projektu SmlouvaHned',
+    description: 'Jak vznikly šablony, kdo provozuje nástroj a proč SmlouvaHned neposkytuje právní poradenství.',
+    images: ['/og-image.png'],
+  },
 };
 
 const organizationSchema = {

@@ -257,7 +257,7 @@ function employmentUi(locale: AppLocale): ExpatBuilderFormUi {
   return withLandingAndPage('employment', 'cs', {
     locale: 'cs',
     isLocalized: false,
-    header: { brand: 'SmlouvaHned Builder', docType: 'Pracovní smlouva — § 34 zákoníku práce', close: 'Zavřít' },
+    header: { brand: 'SmlouvaHned', docType: 'Pracovní smlouva — § 34 zákoníku práce', close: 'Zavřít' },
     notices: { legal: LEGAL_NOTICE.cs },
     landing: {
       badge: '§ 33 a násl. zákoníku práce',

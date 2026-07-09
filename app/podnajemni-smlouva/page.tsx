@@ -5,9 +5,9 @@ import { landingPageMetadata } from '@/lib/seo/landing-page-metadata';
 export const metadata = landingPageMetadata({
   path: '/podnajemni-smlouva',
   expatContractKey: 'sublease',
-  title: 'Podnájemní smlouva online 2026 — vzor ke stažení',
+  title: 'Podnájem 2026: souhlas pronajímatele, kauce a pravidla',
   description:
-    'Podnájemní smlouva se souhlasem pronajímatele. Kauce, pravidla, předávací protokol. Dle § 2274 OZ 2026. PDF ihned ke stažení od 99 Kč.',
+    'Průvodce podnájmem pro rok 2026: kdy je nutný souhlas pronajímatele, jak nastavit kauci a na jaká pravidla myslet před podpisem.',
   keywords: [
     'podnájemní smlouva',
     'podnájemní smlouva vzor 2026',
@@ -16,9 +16,9 @@ export const metadata = landingPageMetadata({
     'podnájemní smlouva online',
     'podnájem souhlasem',
   ],
-  openGraphTitle: 'Podnájemní smlouva online 2026',
+  openGraphTitle: 'Podnájem 2026: souhlas pronajímatele a pravidla',
   openGraphDescription:
-    'Podnájemní smlouva se souhlasem pronajímatele. Kauce, pravidla, předávací protokol. § 2274 OZ. Od 99 Kč.',
+    'Co řešit u podnájmu: souhlas pronajímatele, kauci, pravidla a předání bytu.',
 });
 
 const faq = [

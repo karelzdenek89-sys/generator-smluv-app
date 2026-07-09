@@ -3,18 +3,24 @@ import Link from 'next/link';
 import RelatedContracts from '@/app/components/RelatedContracts';
 
 export const metadata: Metadata = {
-  title: 'Smlouva o dílo online 2026 — vzor ke stažení',
+  title: 'Smlouva o dílo 2026: cena, termíny a předání',
   description:
-    'Smlouva o dílo pro řemeslníky, freelancery i objednatele. Termíny, cena, sankce, záruky. Dle § 2586 OZ. PDF ihned od 99 Kč. Vhodné pro standardní zakázky.',
+    'Průvodce smlouvou o dílo pro rok 2026. Jak upravit cenu, termíny, předání výsledku, odpovědnost za vady a změny zakázky.',
   keywords: [
     'smlouva o dílo', 'smlouva o dílo vzor', 'smlouva o dílo online', 'smlouva o dílo 2026',
     'smlouva o dílo PDF', 'smlouva o dílo ke stažení', 'smlouva o dílo freelancer',
   ],
   alternates: { canonical: 'https://www.smlouvahned.cz/smlouva-o-dilo-online' },
   openGraph: {
-    title: 'Smlouva o dílo online 2026',
-    description: 'Smlouva o dílo s termíny, sankcemi a zárukou. § 2586 OZ. Od 99 Kč.',
+    title: 'Smlouva o dílo 2026: cena, termíny a předání',
+    description: 'Co řešit ve smlouvě o dílo: cenu, termíny, předání, vady a změny zakázky.',
     url: 'https://www.smlouvahned.cz/smlouva-o-dilo-online',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Smlouva o dílo 2026: cena, termíny a předání',
+    description: 'Co řešit ve smlouvě o dílo: cenu, termíny, předání, vady a změny zakázky.',
+    images: ['/og-image.png'],
   },
 };
 
