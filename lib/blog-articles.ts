@@ -28,6 +28,39 @@ export type BlogClusterMeta = {
 
 export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   {
+    slug: 'zkusebni-doba-2026',
+    title: 'Zkušební doba 2026: 4 měsíce, 8 měsíců u vedoucích a pravidla prodloužení',
+    excerpt:
+      'Aktuální pravidla pro zkušební dobu po flexinovele zákoníku práce: kdy ji sjednat, jaké platí limity pro dobu určitou a kdy ji lze písemně prodloužit.',
+    category: 'Práce a zaměstnání',
+    readTime: '7 min',
+    date: '9. července 2026',
+    cluster: 'general',
+    href: '/blog/zkusebni-doba-2026',
+  },
+  {
+    slug: 'prodej-auta-prodavjici-2026',
+    title: 'Prodej auta 2026: checklist pro prodávajícího před podpisem a přepisem',
+    excerpt:
+      'Co připravit před prodejem vozidla, co přesně zachytit v kupní smlouvě a předávacím protokolu a jak navázat na zápis změny vlastníka.',
+    category: 'Vozidla',
+    readTime: '8 min',
+    date: '9. července 2026',
+    cluster: 'vehicle',
+    href: '/blog/prodej-auta-prodavjici-2026',
+  },
+  {
+    slug: 'najem-na-dobu-urcitou-neurcitou-2026',
+    title: 'Nájem na dobu určitou nebo neurčitou 2026: co vybrat do smlouvy',
+    excerpt:
+      'Jak se liší nájem na dobu určitou a neurčitou, co uvést do smlouvy a na co myslet u prodloužení nebo budoucího ukončení nájmu.',
+    category: 'Bydlení',
+    readTime: '8 min',
+    date: '9. července 2026',
+    cluster: 'landlord',
+    href: '/blog/najem-na-dobu-urcitou-neurcitou-2026',
+  },
+  {
     slug: 'proc-smlouvahned-misto-vzoru-2026',
     title: 'Proč zvolit SmlouvaHned místo staženého vzoru smlouvy (2026)',
     excerpt:
