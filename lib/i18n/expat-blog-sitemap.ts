@@ -5,7 +5,6 @@ import {
   getExpatBlogCanonical,
 } from '@/lib/i18n/expat-blog-articles';
 import { getBlogHreflangAlternates } from '@/lib/seo/blog-hreflang-clusters';
-import { SITE_URL } from '@/lib/seo/site';
 
 /** hreflang cluster for paired EN/UA expat blog guides. */
 export function getExpatBlogHreflangAlternates(slug: string): Record<string, string> | undefined {
@@ -33,9 +32,15 @@ export function getExpatBlogHreflangAlternates(slug: string): Record<string, str
 export function expatBlogSitemapEntries(): Array<{
   slug: string;
   alternates?: Record<string, string>;
+  lastModified: string;
 }> {
-  return getAllExpatBlogSlugs().map((slug) => ({
-    slug,
-    alternates: getExpatBlogHreflangAlternates(slug),
-  }));
+  return getAllExpatBlogSlugs().flatMap((slug) => {
+    const article = getExpatBlogArticle(slug);
+    if (!article) return [];
+    return [{
+      slug,
+      alternates: getExpatBlogHreflangAlternates(slug),
+      lastModified: article.dateTime,
+    }];
+  });
 }

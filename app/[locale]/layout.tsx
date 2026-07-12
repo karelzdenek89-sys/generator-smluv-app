@@ -14,8 +14,15 @@ export default async function ExpatLocaleLayout({ children, params }: Props) {
   if (locale !== 'en' && locale !== 'ua') notFound();
   if (rawLocale !== publicLocale) notFound();
 
+  const htmlLang = locale === 'ua' ? 'uk' : 'en';
+
   return (
     <>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `document.documentElement.lang=${JSON.stringify(htmlLang)}`,
+        }}
+      />
       <ExpatLocaleSchemas locale={locale} />
       {children}
     </>

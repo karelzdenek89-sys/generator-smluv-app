@@ -496,10 +496,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
         </div>
       ) : (
         <div className="max-w-7xl mx-auto px-4 pt-8 lg:px-8">
-          <Link
-            href="/balicek-prodej-vozidla"
-            className="interactive-card block rounded-[1.75rem] border border-[rgba(197,160,89,0.18)] bg-[rgba(255,255,255,0.035)] p-6 no-underline"
-          >
+          <div className="interactive-card block rounded-[1.75rem] border border-[rgba(197,160,89,0.18)] bg-[rgba(255,255,255,0.035)] p-6">
             <div className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-400">
               Tematický balíček
             </div>
@@ -519,11 +516,14 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   .
                 </p>
               </div>
-              <span className="link-gold-elegant text-sm font-semibold">
+              <Link
+                href="/balicek-prodej-vozidla"
+                className="link-gold-elegant text-sm font-semibold"
+              >
                 Zobrazit balíček →
-              </span>
+              </Link>
             </div>
-          </Link>
+          </div>
         </div>
       )}
 

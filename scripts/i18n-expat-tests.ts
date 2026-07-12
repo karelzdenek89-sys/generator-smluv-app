@@ -151,8 +151,15 @@ function testLocalePropagation() {
   assert.match(read('app/[locale]/opengraph-image.tsx'), /renderExpatHubOgImage/);
   assert.match(read('app/[locale]/opengraph-image.tsx'), /status: 404/);
   assert.match(read('app/[locale]/[expatSeoSlug]/opengraph-image.tsx'), /getExpatSeoLandingBySlug/);
-  assert.match(read('app/layout.tsx'), /showCzechSiteSchemas/);
-  assert.match(read('app/[locale]/layout.tsx'), /ExpatLocaleSchemas/);
+  const rootLayout = read('app/layout.tsx');
+  const localeLayout = read('app/[locale]/layout.tsx');
+  assert.doesNotMatch(rootLayout, /next\/headers/);
+  assert.match(rootLayout, /RouteChrome/);
+  assert.match(read('app/components/RouteChrome.tsx'), /usePathname/);
+  assert.doesNotMatch(read('app/components/ForeignVisitorBanner.tsx'), /next\/headers/);
+  assert.match(read('app/page.tsx'), /organizationSchema/);
+  assert.match(localeLayout, /ExpatLocaleSchemas/);
+  assert.match(localeLayout, /document\.documentElement\.lang/);
   for (const retired of ['de', 'ru', 'vn', 'uk']) {
     const retiredLayout = read(`app/${retired}/layout.tsx`);
     assert.match(retiredLayout, /index: false/);

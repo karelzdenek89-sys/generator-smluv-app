@@ -32,17 +32,14 @@ function staticPage(
 ): MetadataRoute.Sitemap[0] {
   return {
     url: `${BASE_URL}${path}`,
-    lastModified: new Date(),
     changeFrequency,
     priority,
   };
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date();
   const foreignEntries: MetadataRoute.Sitemap = FOREIGN_LOCALES.map((l) => ({
     url: `${BASE_URL}/${LOCALE_META[l].segment}`,
-    lastModified: now,
     changeFrequency: 'weekly' as const,
     priority: 0.9,
     alternates: { languages: localeAlternates },
@@ -51,7 +48,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = [
     {
       url: `${BASE_URL}/`,
-      lastModified: now,
       changeFrequency: 'weekly',
       priority: 1.0,
       alternates: { languages: localeAlternates },
@@ -93,7 +89,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     staticPage('/gdpr', 0.3, 'yearly'),
     ...EXPAT_BUILDER_SITEMAP.map(({ path, contractKey }) => ({
       url: `${BASE_URL}${path}`,
-      lastModified: now,
       changeFrequency: 'monthly' as const,
       priority: 0.9,
       alternates: { languages: getExpatSeoPageHreflangAlternates(contractKey) },
@@ -104,16 +99,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
         const languages = contractKey ? getExpatSeoPageHreflangAlternates(contractKey) : undefined;
         return {
           url: `${BASE_URL}/${locale}/${slug}`,
-          lastModified: now,
           changeFrequency: 'weekly' as const,
           priority: locale === 'en' ? 0.9 : 0.88,
           ...(languages ? { alternates: { languages } } : {}),
         };
       }),
     ),
-    ...expatBlogSitemapEntries().map(({ slug, alternates }) => ({
+    ...expatBlogSitemapEntries().map(({ slug, alternates, lastModified }) => ({
       url: getExpatBlogCanonical(slug),
-      lastModified: now,
+      lastModified,
       changeFrequency: 'monthly' as const,
       priority: slug.includes('foreigners-czech-contracts-guide')
         ? 0.82

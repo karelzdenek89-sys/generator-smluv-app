@@ -1,5 +1,8 @@
-import { cookies, headers } from 'next/headers';
+'use client';
+
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
   getContractTypeByPath,
   getUnsupportedFormNotice,
@@ -8,7 +11,6 @@ import {
   type AppLocale,
 } from '@/lib/locale';
 import { LOCALE_META } from '@/lib/i18n/locales';
-import DismissButtonClient from './ForeignBannerDismissButton';
 
 type ActiveLocale = Exclude<AppLocale, 'cs'>;
 
@@ -69,21 +71,36 @@ function mapCookieToAppLocale(raw: string | undefined): ActiveLocale | null {
   return normalized === 'cs' ? null : normalized;
 }
 
-export default async function ForeignVisitorBanner() {
-  const hdrs = await headers();
-  const pathname = hdrs.get('x-pathname') ?? '';
+function readCookie(name: string): string | undefined {
+  const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const match = document.cookie.match(new RegExp(`(?:^|;\\s*)${escapedName}=([^;]+)`));
+  return match?.[1] ? decodeURIComponent(match[1]) : undefined;
+}
 
-  for (const seg of ['en', 'ua', 'uk', 'ru', 'vn', 'vi', 'de']) {
-    if (pathname === `/${seg}` || pathname.startsWith(`/${seg}/`)) return null;
-  }
+export default function ForeignVisitorBanner() {
+  const pathname = usePathname();
+  const [locale, setLocale] = useState<ActiveLocale | null>(null);
 
-  const cookieStore = await cookies();
-  if (cookieStore.get('foreign-banner-dismissed')?.value === '1') return null;
+  useEffect(() => {
+    const id = window.setTimeout(() => {
+      const isForeignLanding = ['en', 'ua', 'uk', 'ru', 'vn', 'vi', 'de'].some(
+        (seg) => pathname === `/${seg}` || pathname.startsWith(`/${seg}/`),
+      );
+      if (isForeignLanding || readCookie('foreign-banner-dismissed') === '1') {
+        setLocale(null);
+        return;
+      }
 
-  const headerLocale = hdrs.get('x-preferred-locale');
-  const locale =
-    mapCookieToAppLocale(headerLocale ?? undefined) ??
-    mapCookieToAppLocale(cookieStore.get('preferred-locale')?.value);
+      const queryLocale = new URLSearchParams(window.location.search).get('lang') ?? undefined;
+      setLocale(
+        mapCookieToAppLocale(queryLocale) ??
+        mapCookieToAppLocale(readCookie('preferred-locale')),
+      );
+    }, 0);
+
+    return () => window.clearTimeout(id);
+  }, [pathname]);
+
   if (!locale) return null;
 
   const contractType = getContractTypeByPath(pathname);
@@ -98,6 +115,7 @@ export default async function ForeignVisitorBanner() {
       meta={meta}
       copy={copy}
       unsupportedNote={unsupportedNote}
+      onDismiss={() => setLocale(null)}
     />
   );
 }
@@ -106,10 +124,12 @@ function VisitorBannerShell({
   meta,
   copy,
   unsupportedNote,
+  onDismiss,
 }: {
   meta: (typeof LOCALE_META)[ActiveLocale];
   copy: BannerCopy;
   unsupportedNote: string | null;
+  onDismiss: () => void;
 }) {
   return (
     <div
@@ -139,7 +159,16 @@ function VisitorBannerShell({
           >
             {copy.backToLanding}
           </Link>
-          <DismissButtonClient label={copy.dismiss} />
+          <button
+            type="button"
+            onClick={() => {
+              document.cookie = `foreign-banner-dismissed=1; path=/; max-age=${60 * 60 * 24 * 7}; samesite=lax`;
+              onDismiss();
+            }}
+            className="rounded-md border border-amber-400/40 bg-amber-400/10 px-2.5 py-1 text-xs font-medium text-amber-100 transition-colors hover:bg-amber-400/20"
+          >
+            {copy.dismiss}
+          </button>
         </div>
       </div>
     </div>

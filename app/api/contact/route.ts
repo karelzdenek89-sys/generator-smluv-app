@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getClientIp, readFirstPartyJson } from '@/lib/api-security';
 import { redis } from '@/lib/redis';
 
 export const runtime = 'nodejs';
 
-// Rate-limit: 5 zpráv / 1 hodina / IP. Fail-open při výpadku Redisu.
+// Rate-limit: 5 zpráv / 1 hodina / IP. Fail-closed při výpadku Redisu.
 async function tryRateLimit(ip: string): Promise<boolean> {
   try {
     const key = `ratelimit:contact:${ip}`;
@@ -17,9 +18,14 @@ async function tryRateLimit(ip: string): Promise<boolean> {
 }
 
 export async function POST(req: NextRequest) {
+  const json = await readFirstPartyJson(req, 16 * 1024);
+  if (!json.ok) {
+    const status = json.error === 'invalid_origin' ? 403 : json.error === 'payload_too_large' ? 413 : 400;
+    return NextResponse.json({ error: 'Neplatný formát požadavku.' }, { status });
+  }
+
   // 1) Rate-limit per IP
-  const forwarded = req.headers.get('x-forwarded-for');
-  const ip = forwarded ? forwarded.split(',')[0].trim() : 'unknown';
+  const ip = getClientIp(req);
   const allowed = await tryRateLimit(ip);
   if (!allowed) {
     return NextResponse.json(
@@ -29,12 +35,7 @@ export async function POST(req: NextRequest) {
   }
 
   // 2) Parse + základní validace
-  let payload: Record<string, unknown> = {};
-  try {
-    payload = (await req.json()) as Record<string, unknown>;
-  } catch {
-    return NextResponse.json({ error: 'Neplatný formát požadavku.' }, { status: 400 });
-  }
+  const payload = json.data;
 
   const name = typeof payload.name === 'string' ? payload.name.trim() : '';
   const email = typeof payload.email === 'string' ? payload.email.trim() : '';

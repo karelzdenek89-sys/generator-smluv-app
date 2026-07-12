@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getClientIp, readFirstPartyJson } from '@/lib/api-security';
 import { recordAnalyticsEvent } from '@/lib/analytics-server';
 import { saveNewsletterSubscriber } from '@/lib/newsletter-subscribers';
 import { subscribeNewsletterContact } from '@/lib/resend-contacts';
@@ -21,8 +22,13 @@ async function tryRateLimit(ip: string): Promise<boolean> {
 }
 
 export async function POST(req: NextRequest) {
-  const forwarded = req.headers.get('x-forwarded-for');
-  const ip = forwarded ? forwarded.split(',')[0].trim() : 'unknown';
+  const json = await readFirstPartyJson(req, 4 * 1024);
+  if (!json.ok) {
+    const status = json.error === 'invalid_origin' ? 403 : json.error === 'payload_too_large' ? 413 : 400;
+    return NextResponse.json({ error: 'Neplatný formát požadavku.' }, { status });
+  }
+
+  const ip = getClientIp(req);
 
   const allowed = await tryRateLimit(ip);
   if (!allowed) {
@@ -32,12 +38,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  let payload: Record<string, unknown> = {};
-  try {
-    payload = (await req.json()) as Record<string, unknown>;
-  } catch {
-    return NextResponse.json({ error: 'Neplatný formát požadavku.' }, { status: 400 });
-  }
+  const payload = json.data;
 
   const email = typeof payload.email === 'string' ? payload.email.trim().toLowerCase() : '';
   const consent = payload.consent === true;

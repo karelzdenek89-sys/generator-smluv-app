@@ -156,9 +156,11 @@ function main() {
   assert.doesNotMatch(leasePage, /formData\.paymentDay,\s*\n\s*formData\.bankAccount,\s*\n\s*formData\.maxOccupants/, '/najem empty progress must not count default payment day/max occupants');
 
   const rootLayout = read('app/layout.tsx');
+  const routeChrome = read('app/components/RouteChrome.tsx');
   const siteHeader = read('app/components/SiteHeader.tsx');
   assert.doesNotMatch(rootLayout, /alternates:\s*\{[\s\S]*canonical:\s*BASE_URL/, 'Root layout must not force homepage canonical on child pages');
-  assert.match(rootLayout, /<SiteHeader \/>/, 'Non-home public pages should use the shared site header');
+  assert.match(rootLayout, /<RouteChrome \/>/, 'Root layout must render route-aware shared chrome');
+  assert.match(routeChrome, /<SiteHeader \/>/, 'Non-home public pages should use the shared site header');
   for (const label of ['Smlouvy', 'Postup', 'Blog', 'FAQ', 'Moje dokumenty']) {
     assert.match(siteHeader, new RegExp(label), `Shared site header missing ${label}`);
   }

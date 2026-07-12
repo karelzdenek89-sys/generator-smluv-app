@@ -112,11 +112,39 @@ const softwareSchema = {
   },
 };
 
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'SmlouvaHned',
+  legalName: 'Karel Zdeněk',
+  url: HOMEPAGE_BASE_URL,
+  logo: `${HOMEPAGE_BASE_URL}/og-image.png`,
+  description: 'Softwarový nástroj pro automatizovanou tvorbu standardizovaných smluvních dokumentů online.',
+  areaServed: 'CZ',
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer service',
+    email: 'info@smlouvahned.cz',
+    availableLanguage: 'Czech',
+  },
+  taxID: '23660295',
+};
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'SmlouvaHned',
+  url: HOMEPAGE_BASE_URL,
+  inLanguage: 'cs',
+};
+
 export default function Home() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#040c1a] text-slate-200">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c') }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema).replace(/</g, '\\u003c') }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema).replace(/</g, '\\u003c') }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema).replace(/</g, '\\u003c') }} />
 
       {/* ─── HERO ─────────────────────────────────────────────────────────────── */}
       <section className="relative flex min-h-[100svh] flex-col">

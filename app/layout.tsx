@@ -1,13 +1,11 @@
 ﻿import type { Metadata } from 'next';
 import { Inter, Playfair_Display } from 'next/font/google';
-import { headers } from 'next/headers';
-import { detectLocaleFromPath, LOCALE_META } from '@/lib/i18n/locales';
 import './globals.css';
 import CookiesBanner from '@/app/components/CookiesBanner';
 import Footer from '@/app/components/Footer';
 import ForeignVisitorBanner from '@/app/components/ForeignVisitorBanner';
+import RouteChrome from '@/app/components/RouteChrome';
 import SiteAnalytics from '@/app/components/SiteAnalytics';
-import SiteHeader from '@/app/components/SiteHeader';
 import { OG_IMAGE_PATH, SITE_URL } from '@/lib/seo/site';
 
 const inter = Inter({
@@ -70,60 +68,11 @@ export const metadata: Metadata = {
   },
 };
 
-const organizationSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: 'SmlouvaHned',
-  legalName: 'Karel Zdeněk',
-  url: BASE_URL,
-  logo: `${BASE_URL}${OG_IMAGE_PATH}`,
-  description: 'Softwarový nástroj pro automatizovanou tvorbu standardizovaných smluvních dokumentů online — nájemní smlouva, kupní smlouva, smlouva o dílo, NDA a další. Od 99 Kč.',
-  inLanguage: 'cs',
-  areaServed: 'CZ',
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: 'Plzeňská 189',
-    addressLocality: 'Staňkov',
-    postalCode: '345 61',
-    addressCountry: 'CZ',
-  },
-  contactPoint: {
-    '@type': 'ContactPoint',
-    contactType: 'customer service',
-    email: 'info@smlouvahned.cz',
-    availableLanguage: 'Czech',
-  },
-  founder: {
-    '@type': 'Person',
-    name: 'Karel Zdeněk',
-  },
-  taxID: '23660295',
-};
-
-const websiteSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: 'SmlouvaHned',
-  url: BASE_URL,
-  inLanguage: 'cs',
-};
-
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const hdrs = await headers();
-  const pathname = hdrs.get('x-pathname') ?? '';
-  const locale = detectLocaleFromPath(pathname);
-  const lang = LOCALE_META[locale].htmlLang;
-  const showCzechSiteSchemas = locale === 'cs';
-  const showSiteHeader =
-    locale === 'cs' &&
-    pathname !== '' &&
-    pathname !== '/' &&
-    !pathname.startsWith('/success') &&
-    !pathname.startsWith('/api');
   return (
-    <html lang={lang}>
+    <html lang="cs" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -136,29 +85,13 @@ export default async function RootLayout({
           name="seznam-wmt"
           content="1kRt8NQO2kwavM4MjoHzXWCI6dxVOV"
         />
-        {showCzechSiteSchemas ? (
-          <>
-            <script
-              type="application/ld+json"
-              dangerouslySetInnerHTML={{
-                __html: JSON.stringify(organizationSchema).replace(/</g, '\\u003c'),
-              }}
-            />
-            <script
-              type="application/ld+json"
-              dangerouslySetInnerHTML={{
-                __html: JSON.stringify(websiteSchema).replace(/</g, '\\u003c'),
-              }}
-            />
-          </>
-        ) : null}
       </head>
       <body
         className={`${inter.variable} ${playfair.variable} antialiased bg-[#060912] text-[#d7dee8]`}
         style={{ colorScheme: 'dark' }}
       >
         <ForeignVisitorBanner />
-        {showSiteHeader ? <SiteHeader /> : null}
+        <RouteChrome />
         {children}
         <Footer />
         <CookiesBanner />

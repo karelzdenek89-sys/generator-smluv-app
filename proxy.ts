@@ -66,7 +66,11 @@ export function proxy(request: NextRequest) {
   }
 
   const response = NextResponse.next();
-  response.headers.set('x-pathname', pathname);
+  const firstSegment = pathname.split('/')[1] ?? '';
+  response.headers.set(
+    'Content-Language',
+    firstSegment === 'ua' ? 'uk' : firstSegment === 'en' ? 'en' : 'cs',
+  );
 
   const langQuery = request.nextUrl.searchParams.get('lang')?.trim().toLowerCase();
   if (langQuery) {

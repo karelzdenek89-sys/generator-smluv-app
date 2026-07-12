@@ -28,20 +28,28 @@ const securityHeaders = [
         'https://checkout.stripe.com',
         'https://va.vercel-scripts.com',
       ].filter(Boolean).join(' '),
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      [
+        "style-src 'self'",
+        isDev ? "'unsafe-inline'" : null,
+        'https://fonts.googleapis.com',
+      ].filter(Boolean).join(' '),
+      "style-src-attr 'unsafe-inline'",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https://www.smlouvahned.cz https://smlouvahned.cz https://*.stripe.com",
       "connect-src 'self' https://api.stripe.com https://checkout.stripe.com https://*.upstash.io https://api.resend.com https://vitals.vercel-insights.com",
       'frame-src https://js.stripe.com https://hooks.stripe.com https://checkout.stripe.com',
       "object-src 'none'",
+      "script-src-attr 'none'",
       "base-uri 'self'",
       "form-action 'self' https://checkout.stripe.com",
       "frame-ancestors 'self'",
+      ...(isDev ? [] : ['upgrade-insecure-requests']),
     ].join('; '),
   },
 ];
 
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
   turbopack: {
     root: path.resolve(__dirname),
   },

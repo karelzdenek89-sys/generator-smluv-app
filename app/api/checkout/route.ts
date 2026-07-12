@@ -12,6 +12,7 @@
 
 import { randomUUID } from 'node:crypto';
 import { NextResponse } from 'next/server';
+import { getClientIp, isBoundedJsonObject, readFirstPartyJson } from '@/lib/api-security';
 import { redis } from '@/lib/redis';
 import { stripe } from '@/lib/stripe';
 import {
@@ -56,18 +57,17 @@ const CANCEL_URLS: Record<ContractType, string> = {
   cooperation:          '/spoluprace',
 };
 
-// ── Rate limit – FAIL-OPEN ────────────────────────────────────────────────────
+// ── Rate limit ────────────────────────────────────────────────────────────────
 
-async function tryRateLimit(ip: string): Promise<boolean> {
+async function tryRateLimit(ip: string): Promise<'allowed' | 'limited' | 'unavailable'> {
   try {
     const key = `ratelimit:checkout:${ip}`;
     const count = await redis.incr(key);
     if (count === 1) await redis.expire(key, 3600);
-    return count <= 20;
+    return count <= 20 ? 'allowed' : 'limited';
   } catch (err) {
-    // Redis nedostupný → fail-open, platbu neblokujeme
-    console.error('[checkout] Redis rate-limit fail-open:', err);
-    return true;
+    console.error('[checkout] Redis rate-limit unavailable:', err);
+    return 'unavailable';
   }
 }
 
@@ -80,25 +80,29 @@ function priceBandForCheckout(tier: 'basic' | 'complete', packageKey?: string | 
 
 export async function POST(req: Request) {
   try {
+    const json = await readFirstPartyJson(req, 128 * 1024);
+    if (!json.ok) {
+      const status = json.error === 'invalid_origin' ? 403 : json.error === 'payload_too_large' ? 413 : 400;
+      return NextResponse.json({ error: 'Neplatný JSON požadavek.' }, { status });
+    }
 
-    // 1. Rate limit (fail-open)
-    const forwarded = req.headers.get('x-forwarded-for');
-    const ip = forwarded ? forwarded.split(',')[0].trim() : 'unknown';
-    const allowed = await tryRateLimit(ip);
-    if (!allowed) {
+    // 1. Rate limit
+    const rateLimit = await tryRateLimit(getClientIp(req));
+    if (rateLimit === 'limited') {
       return NextResponse.json(
         { error: 'Příliš mnoho požadavků. Zkuste to za chvíli.' },
         { status: 429 },
       );
     }
+    if (rateLimit === 'unavailable') {
+      return NextResponse.json(
+        { error: 'Platbu nyní nelze bezpečně zahájit. Zkuste to prosím znovu.' },
+        { status: 503 },
+      );
+    }
 
     // 2. Parsování body – checkout bez jasného contractType nesmí vytvořit default objednávku
-    let body: Record<string, unknown> = {};
-    try {
-      body = (await req.json()) as Record<string, unknown>;
-    } catch {
-      return NextResponse.json({ error: 'Neplatný JSON požadavek.' }, { status: 400 });
-    }
+    const body = json.data;
 
     // contractType
     const rawType = typeof body.contractType === 'string' ? body.contractType : '';
@@ -118,6 +122,9 @@ export async function POST(req: Request) {
 
     // email – prázdný string → undefined
     const rawEmail = typeof body.email === 'string' ? body.email.trim() : '';
+    if (rawEmail.length > 254 || (rawEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawEmail))) {
+      return NextResponse.json({ error: 'Neplatný formát e-mailu.' }, { status: 400 });
+    }
     const email = rawEmail !== '' ? rawEmail : undefined;
 
     // payload
@@ -127,6 +134,14 @@ export async function POST(req: Request) {
         : body;
     if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
       return NextResponse.json({ error: 'Neplatná data dokumentu.' }, { status: 400 });
+    }
+    if (!isBoundedJsonObject(payload, {
+      maxDepth: 6,
+      maxNodes: 1000,
+      maxArrayLength: 100,
+      maxStringLength: 20_000,
+    })) {
+      return NextResponse.json({ error: 'Data dokumentu překračují povolené limity.' }, { status: 400 });
     }
 
     const lang = normalizeLocale(body.lang ?? payload.lang);
