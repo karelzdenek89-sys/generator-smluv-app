@@ -55,6 +55,13 @@ test('/najem and /auto include SEO heading in prerendered HTML', async ({ reques
   }
 });
 
+test('prices are visible before a customer opens checkout', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.locator('#smlouvy a[href="/najem"]')).toContainText('od 99 Kč');
+  await page.goto('/najem');
+  await expect(page.getByText('99 Kč', { exact: true }).first()).toBeVisible();
+});
+
 test('mobile blog has no horizontal overflow', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await page.goto('/blog');

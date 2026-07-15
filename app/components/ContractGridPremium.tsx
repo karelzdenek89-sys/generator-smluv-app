@@ -147,6 +147,7 @@ function ContractCard({ c, featured }: { c: Contract; featured?: boolean }) {
 
       <div className="mt-5 flex items-center justify-between border-t border-[#c9a852]/10 pt-4">
         <span className="text-xs text-slate-600 font-mono tracking-wide">{c.paragraph}</span>
+        <span className="shrink-0 text-xs font-black text-white">{c.price}</span>
       </div>
 
       {/* Arrow */}
