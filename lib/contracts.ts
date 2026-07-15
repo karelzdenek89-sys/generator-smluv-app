@@ -183,8 +183,6 @@ function disputeClause(d: StoredContractData, isLaborLaw = false): string {
   switch (d.disputeResolution) {
     case 'mediation':
       return 'Smluvní strany se zavazují řešit případné spory nejprve smírnou cestou. Nedojde-li k dohodě, může kterákoli ze stran využít mediaci dle zákona č. 202/2012 Sb., o mediaci, nebo se obrátit na věcně a místně příslušný soud České republiky.';
-    case 'arbitration':
-      return 'Veškeré spory vzniklé z této smlouvy nebo v souvislosti s ní budou s konečnou platností rozhodnuty v rozhodčím řízení před Rozhodčím soudem při Hospodářské komoře České republiky a Agrární komoře České republiky dle jeho Řádu, jedním rozhodcem jmenovaným předsedou Rozhodčího soudu. Místo konání: Praha. Jazyk řízení: český (zákon č. 216/1994 Sb., o rozhodčím řízení). Smluvní strany se vzdávají práva na projednání věci obecným soudem, na které je sjednána tato doložka.';
     default:
       return 'Případné spory budou řešeny přednostně smírnou cestou. Nedojde-li k dohodě, bude spor řešen věcně a místně příslušným soudem České republiky.';
   }
@@ -272,13 +270,13 @@ function buildGiftContractSections(d: StoredContractData): ContractSection[] {
     {
       title: 'V. PODMÍNKY VRÁCENÍ DARU',
       body: [
-        'Dárce má právo požadovat vrácení daru (§ 2068 a násl. OZ) v případě, že se obdarovaný k dárci nebo jeho osobám blízkým (manžel, rodiče, děti, sourozenci, dlouhodobý partner) chová tak, že tím zjevně porušuje dobré mravy a nevděčí dárci za poskytnutý dar (tzv. nevděk obdarovaného).',
+        'Dárce má právo požadovat vrácení daru pro nevděk (§ 2072 a násl. OZ), ublížil-li obdarovaný dárci úmyslně nebo z hrubé nedbalosti tak, že tím zjevně porušil dobré mravy, a dárce mu takové jednání neprominul.',
         'Za zjevné porušení dobrých mravů se zpravidla považuje zejména: úmyslné fyzické napadení dárce nebo osoby jemu blízké, hrubé verbální či veřejné urážky, úmyslné poškozování majetku dárce, zanedbání pomoci v tíživé situaci, jíž je obdarovaný schopen poskytnout, nebo spáchání úmyslného trestného činu vůči dárci či osobě jemu blízké.',
         'Dárce uplatní právo na vrácení daru písemnou výzvou doručenou obdarovanému, s uvedením konkrétního důvodu. Nevyhoví-li obdarovaný výzvě dobrovolně ve lhůtě 30 dnů od doručení, je dárce oprávněn domáhat se vrácení daru soudní cestou.',
         d.withReservation
           ? `Podmínka vázající dar: ${asText(d.reservationDescription)}. Nedojde-li ke splnění podmínky ve lhůtě do ${asText(d.conditionDeadline, 'sjednané smluvními stranami')}, smlouva se od počátku ruší a obdarovaný je povinen předmět daru vrátit.`
           : 'Dar je poskytován bez dalších podmínek a výminek; tím není dotčeno právo dárce na vrácení daru pro nevděk dle předchozích odstavců.',
-        'Právo na vrácení daru se promlčuje ve lhůtě tří let ode dne, kdy se dárce dozvěděl o důvodu pro vrácení (§ 629 odst. 1 OZ).',
+        'Dárce může od darovací smlouvy pro nevděk odstoupit do jednoho roku ode dne, kdy mu obdarovaný ublížil; dozví-li se o důvodu později, běží roční lhůta ode dne, kdy o něm získal vědomost (§ 2075 OZ).',
       ],
     },
   ] : [];
@@ -341,11 +339,10 @@ function buildGiftContractSections(d: StoredContractData): ContractSection[] {
         'Jakékoli změny nebo doplnění smlouvy jsou platné pouze ve formě písemného, číslovaného a podepsaného dodatku.',
         'Neplatnost jednotlivého ustanovení smlouvy nemá vliv na platnost ostatních ustanovení.',
         d.giftType === 'property'
-          ? 'Vlastnické právo k nemovité věci přechází na obdarovaného vkladem do katastru nemovitostí na základě pravomocného rozhodnutí katastrálního úřadu. Upozornění: podpisy obou smluvních stran na darovací smlouvě týkající se nemovitostí musí být úředně ověřeny (notář nebo Czech POINT); bez ověření katastrální úřad návrh na vklad zamítne.'
+          ? 'Vlastnické právo k nemovité věci přechází na obdarovaného vkladem do katastru nemovitostí na základě pravomocného rozhodnutí katastrálního úřadu. Podpisy na vkladové listině mají být úředně ověřeny; nejsou-li, musí navrhovatelé do 30 dnů od podání návrhu prokázat jejich pravost (§ 7 zákona č. 256/2013 Sb.).'
           : d.giftType === 'car'
           ? 'Vlastnické právo k vozidlu přechází na obdarovaného okamžikem podpisu této smlouvy. Smluvní strany jsou povinny do 10 pracovních dnů od přechodu vlastnického práva podat žádost o zápis změny vlastníka příslušnému obecnímu úřadu obce s rozšířenou působností (§ 8 odst. 2 zákona č. 56/2001 Sb.).'
           : 'Vlastnické právo k předmětu daru přechází na obdarovaného okamžikem předání.',
-        'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. o zpracování osobních údajů. Osobní údaje uvedené v této smlouvě jsou zpracovávány výhradně za účelem uzavření, plnění a případného vymáhání práv z tohoto smluvního vztahu. Správcem osobních údajů je každá ze smluvních stran v rozsahu údajů, které zpracovává o druhé straně. Každá ze stran má právo na přístup ke svým osobním údajům, jejich opravu nebo výmaz, jakož i právo podat stížnost u Úřadu pro ochranu osobních údajů (www.uoou.cz). Osobní údaje budou uchovávány po dobu trvání smluvního vztahu a dále po dobu stanovenou právními předpisy, zpravidla 10 let od jeho skončení.',
         'Žádná ze smluvních stran neodpovídá za nesplnění nepeněžitých povinností způsobené vyšší mocí (vis maior), tj. událostí mimořádnou, nepředvídatelnou a nepřekonatelnou (§ 2913 odst. 2 OZ). Vyšší moc se nevztahuje na povinnost zaplatit peněžitou částku. Strana postižená vyšší mocí je povinna neprodleně písemně informovat druhou stranu a po odpadnutí překážky neprodleně pokračovat v plnění.',
       ],
     },
@@ -454,7 +451,7 @@ function buildWorkContractSections(d: StoredContractData): ContractSection[] {
     {
       title: 'V. ODPOVĚDNOST ZA VADY, ZÁRUKA A SMLUVNÍ SANKCE',
       body: [
-        `Záruka za jakost díla: ${asText(d.warrantyMonths, '24')} měsíců od řádného předání a akceptace díla (§ 2619 OZ). Záruční lhůta počíná běžet ode dne podpisu předávacího protokolu. Upozornění: u stavebního díla (stavba, přístavba, nástavba, rekonstrukce) platí zákonná minimální záruční lhůta 5 let — tj. 60 měsíců (§ 2629 OZ); smluvní záruční lhůta nesmí být kratší.`,
+        `Smluvní záruka za jakost díla: ${asText(d.warrantyMonths, '24')} měsíců od řádného předání a akceptace díla (§ 2619 OZ). Záruční doba počíná běžet dnem podpisu předávacího protokolu. U stavebního díla je třeba rozlišovat smluvní záruku od zákonné lhůty k oznámení skryté vady: skrytou vadu stavby je nutné vytknout bez zbytečného odkladu po zjištění, nejpozději do pěti let od převzetí (§ 2629 OZ); jde-li o spotřebitele, vada projevená do dvou let se považuje za existující již při převzetí, neprokáže-li se opak.`,
         `Smluvní pokuta za prodlení zhotovitele s předáním díla: ${asText(d.delayPenaltyPerDay, '0,05')} % z celkové ceny díla za každý den prodlení, max. ${asText(d.maxPenaltyPercent, '15')} % z ceny díla. Smluvní pokuta se neuplatní, bylo-li prodlení způsobeno výlučně okolností vyšší moci nebo prodlením objednatele s poskytnutím součinnosti.`,
         `Smluvní pokuta za prodlení objednatele s úhradou: ${asText(d.clientPenaltyPerDay, '0,05')} % z dlužné částky za každý den prodlení.`,
         `Smluvní pokuta za neodstranění vad v přiměřené lhůtě: ${asText(d.defectPenaltyPercent, '10')} % z ceny díla.`,
@@ -493,7 +490,6 @@ function buildWorkContractSections(d: StoredContractData): ContractSection[] {
         'Smlouva je vyhotovena ve dvou stejnopisech; objednatel a zhotovitel obdrží po jednom stejnopisu.',
         'Změny smlouvy jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků.',
         'Neplatnost jednotlivého ustanovení smlouvy nemá vliv na platnost ostatních ustanovení.',
-        'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. o zpracování osobních údajů. Osobní údaje uvedené v této smlouvě jsou zpracovávány výhradně za účelem uzavření, plnění a případného vymáhání práv z tohoto smluvního vztahu. Správcem osobních údajů je každá ze smluvních stran v rozsahu údajů, které zpracovává o druhé straně. Každá ze stran má právo na přístup ke svým osobním údajům, jejich opravu nebo výmaz, jakož i právo podat stížnost u Úřadu pro ochranu osobních údajů (www.uoou.cz). Osobní údaje budou uchovávány po dobu trvání smluvního vztahu a dále po dobu stanovenou právními předpisy, zpravidla 10 let od jeho skončení.',
         'Za vyšší moc se považuje i plošný výpadek kritické internetové infrastruktury nebo kybernetický útok vedený proti systémům smluvní strany, která prokáže, že měla přijata přiměřená organizační a technická bezpečnostní opatření. Vyšší moc se nevztahuje na povinnost zaplatit peněžitou částku. Strana postižená vyšší mocí je povinna neprodleně písemně informovat druhou stranu a po odpadnutí překážky neprodleně pokračovat v plnění.',
       ],
     },
@@ -571,7 +567,7 @@ function buildCarContractSections(d: StoredContractData): ContractSection[] {
     {
       title: 'VII. SMLUVNÍ POKUTY A ODPOVĚDNOST ZA ZATAJENÉ VADY',
       body: [
-        'Prodávající odpovídá kupujícímu za vady, které měla věc při přechodu nebezpečí škody na kupujícího, i když se projeví až později; u spotřebitelských vztahů se použije i zvláštní právní úprava ochrany spotřebitele.',
+        'Prodávající odpovídá kupujícímu za vady, které měla věc při přechodu nebezpečí škody na kupujícího, i když se projeví až později. Je-li prodávající podnikatelem a kupující spotřebitelem, lze vytknout vadu projevenou do dvou let od převzetí; u použité věci mohou strany tuto dobu zkrátit až na jeden rok. Touto smlouvou nejsou omezena kogentní práva spotřebitele.',
         d.hiddenDefectPenalty && Number(d.hiddenDefectPenalty) > 0
           ? `Zatají-li prodávající vědomě vadu, na niž neupozornil, je povinen zaplatit kupujícímu smluvní pokutu ve výši ${formatAmount(d.hiddenDefectPenalty)} Kč. Zaplacením pokuty není dotčen nárok na náhradu škody ani právo z vad.`
           : 'Zatají-li prodávající vědomě vadu, na niž neupozornil, je povinen nahradit kupujícímu vzniklou škodu v plném rozsahu, včetně nákladů na odstranění vady; tím není dotčeno právo z vadného plnění dle § 1914 a násl. OZ.',
@@ -684,8 +680,8 @@ function buildCarContractSections(d: StoredContractData): ContractSection[] {
       body: [
         'Smluvní strany jsou povinny neprodleně, nejpozději do 10 pracovních dnů od přechodu vlastnického práva, podat žádost o zápis změny vlastníka vozidla příslušnému obecnímu úřadu obce s rozšířenou působností (§ 8 odst. 2 zákona č. 56/2001 Sb.).',
         'Prodávající je povinen kupujícímu předat veškeré doklady od vozidla, klíče a vybavení dle soupisu v této smlouvě.',
-        'Povinná zákonná odpovědnost (POV/povinné ručení) a havarijní pojištění vozidla přecházejí ke dni přechodu vlastnictví na kupujícího; kupující je povinen zajistit nové pojistné smlouvy.',
-        'Kupující je povinen po převzetí vozidla provést jeho přiměřenou prohlídku a zjevné vady oznámit prodávajícímu písemně bez zbytečného odkladu, nejpozději do 5 pracovních dnů od převzetí (§ 2104 OZ). Práva z vad zjistitelných při přiměřené prohlídce, která nebyla řádně a včas oznámena, nemusí soud přiznat.',
+        'Pojistné smlouvy prodávajícího na kupujícího nepřecházejí. Kupující zajistí vlastní pojištění odpovědnosti z provozu vozidla bez časové mezery, nejpozději před jeho provozem nebo zápisem změny; prodávající ukončí a vypořádá své dosavadní pojištění. Havarijní pojištění je dobrovolné.',
+        'Kupující provede po převzetí přiměřenou prohlídku a zjevné vady oznámí prodávajícímu bez zbytečného odkladu (§ 2104 OZ). Je-li kupující spotřebitelem, toto ujednání nezkracuje zákonnou dobu pro vytknutí vady ani jiná kogentní spotřebitelská práva.',
       ],
     },
     ...premiumContent,
@@ -697,7 +693,6 @@ function buildCarContractSections(d: StoredContractData): ContractSection[] {
         'Smlouva je vyhotovena ve dvou stejnopisech; prodávající a kupující obdrží po jednom stejnopisu.',
         'Veškeré změny smlouvy jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků.',
         'Neplatnost jednotlivého ustanovení smlouvy nemá vliv na platnost ostatních ustanovení.',
-        'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. o zpracování osobních údajů. Osobní údaje uvedené v této smlouvě jsou zpracovávány výhradně za účelem uzavření, plnění a případného vymáhání práv z tohoto smluvního vztahu. Správcem osobních údajů je každá ze smluvních stran v rozsahu údajů, které zpracovává o druhé straně. Každá ze stran má právo na přístup ke svým osobním údajům, jejich opravu nebo výmaz, jakož i právo podat stížnost u Úřadu pro ochranu osobních údajů (www.uoou.cz). Osobní údaje budou uchovávány po dobu trvání smluvního vztahu a dále po dobu stanovenou právními předpisy, zpravidla 10 let od jeho skončení.',
         'Žádná ze smluvních stran neodpovídá za nesplnění nepeněžitých povinností způsobené vyšší mocí (vis maior), tj. událostí mimořádnou, nepředvídatelnou a nepřekonatelnou (§ 2913 odst. 2 OZ). Vyšší moc se nevztahuje na povinnost zaplatit peněžitou částku. Strana postižená vyšší mocí je povinna neprodleně písemně informovat druhou stranu a po odpadnutí překážky neprodleně pokračovat v plnění.',
       ],
     },
@@ -818,7 +813,7 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
         d.startDate ? `Počátek nájmu: ${formatDate(d.startDate)}.` : '',
         d.handoverDate ? `Datum fyzického předání bytu: ${formatDate(d.handoverDate)}.` : '',
         isFixedTerm
-          ? 'Nájem skončí uplynutím sjednané doby, nedohodnou-li se smluvní strany písemně jinak. Výpověď nájmu před uplynutím sjednané doby je možná pouze z důvodů stanovených zákonem nebo touto smlouvou. Pokračuje-li nájemce v užívání bytu po dobu delší než tři měsíce po skončení nájmu bez námitek pronajímatele, platí, že byl nájem znovu ujednán na tutéž dobu (max. 2 roky) a za týchž podmínek (§ 2230 OZ).'
+          ? 'Nájem skončí uplynutím sjednané doby, nedohodnou-li se smluvní strany písemně jinak. Výpověď nájmu před uplynutím sjednané doby je možná pouze z důvodů stanovených zákonem nebo touto smlouvou. Pokračuje-li nájemce v užívání bytu alespoň tři měsíce po skončení nájmu a pronajímatel jej v této době písemně nevyzve, aby byt opustil, platí, že byl nájem znovu ujednán na tutéž dobu (max. 2 roky) a za týchž podmínek (§ 2285 OZ).'
           : 'Nájemce může nájem vypovědět s tříměsíční výpovědní dobou bez udání důvodu. Pronajímatel může nájem vypovědět v tříměsíční výpovědní době, a to pouze z důvodů stanovených zákonem (§ 2288 OZ).',
       ].filter(Boolean) as string[],
     },
@@ -912,7 +907,7 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
           ? 'Nájem na dobu neurčitou lze ukončit výpovědí (§ 2231, § 2286 a násl. OZ), dohodou nebo jiným způsobem stanoveným zákonem.'
           : 'Nájem na dobu určitou končí uplynutím sjednané doby. Pronajímatel i nájemce mohou nájem vypovědět z důvodů stanovených zákonem.',
         'Při skončení nájmu je nájemce povinen: (a) vyklidit byt a odstranit veškeré své movité věci, (b) uvést byt do stavu, v jakém jej převzal, s přihlédnutím k obvyklému opotřebení, (c) odevzdat všechny klíče pronajímateli a (d) umožnit provedení protokolárního předání.',
-        `V případě, že nájemce neodevzdá byt řádně a včas, je povinen hradit pronajímateli za každý den prodlení částku ve výši ${asText(d.lateVacatePenalty, 'jednodenního nájemného')}.`,
+        `Neodevzdá-li nájemce byt v den skončení nájmu, má pronajímatel do skutečného odevzdání právo na náhradu ve výši ujednaného nájemného (§ 2295 OZ); za každý den se použije poměrná část měsíčního nájemného. Sjednaná upřesňující částka: ${asText(d.lateVacatePenalty, '1/30 měsíčního nájemného za den')}.`,
       ],
     },
     {
@@ -946,7 +941,6 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
           ? 'Přílohou č. 1 smlouvy je předávací protokol, který tvoří nedílnou součást smlouvy.'
           : '',
         'Změna vlastníka pronajaté věci sama o sobě nájemní vztah neruší; nabyvatel vstupuje do práv a povinností pronajímatele ode dne nabytí vlastnictví (§ 2221 OZ).',
-        'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. o zpracování osobních údajů. Osobní údaje uvedené v této smlouvě jsou zpracovávány výhradně za účelem uzavření, plnění a případného vymáhání práv z tohoto smluvního vztahu. Správcem osobních údajů je každá ze smluvních stran v rozsahu údajů, které zpracovává o druhé straně. Každá ze stran má právo na přístup ke svým osobním údajům, jejich opravu nebo výmaz, jakož i právo podat stížnost u Úřadu pro ochranu osobních údajů (www.uoou.cz). Osobní údaje budou uchovávány po dobu trvání smluvního vztahu a dále po dobu stanovenou právními předpisy, zpravidla 10 let od jeho skončení.',
         'Žádná ze smluvních stran neodpovídá za nesplnění nepeněžitých povinností způsobené vyšší mocí (vis maior), tj. událostí mimořádnou, nepředvídatelnou a nepřekonatelnou (§ 2913 odst. 2 OZ). Vyšší moc se nevztahuje na povinnost zaplatit peněžitou částku. Strana postižená vyšší mocí je povinna neprodleně písemně informovat druhou stranu a po odpadnutí překážky neprodleně pokračovat v plnění.',
       ],
     },
@@ -1120,7 +1114,6 @@ function buildLoanContractSections(d: StoredContractData): ContractSection[] {
           : 'Smlouva je vyhotovena ve dvou stejnopisech; věřitel a vydlužitel obdrží po jednom stejnopisu.',
         'Změny a doplnění smlouvy jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků.',
         'Neplatnost jednotlivého ustanovení smlouvy nemá vliv na platnost ostatních ustanovení.',
-        'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. o zpracování osobních údajů. Osobní údaje uvedené v této smlouvě jsou zpracovávány výhradně za účelem uzavření, plnění a případného vymáhání práv z tohoto smluvního vztahu. Správcem osobních údajů je každá ze smluvních stran v rozsahu údajů, které zpracovává o druhé straně. Každá ze stran má právo na přístup ke svým osobním údajům, jejich opravu nebo výmaz, jakož i právo podat stížnost u Úřadu pro ochranu osobních údajů (www.uoou.cz). Osobní údaje budou uchovávány po dobu trvání smluvního vztahu a dále po dobu stanovenou právními předpisy, zpravidla 10 let od jeho skončení.',
         'Žádná ze smluvních stran neodpovídá za nesplnění nepeněžitých povinností způsobené vyšší mocí (vis maior), tj. událostí mimořádnou, nepředvídatelnou a nepřekonatelnou (§ 2913 odst. 2 OZ). Vyšší moc se nevztahuje na povinnost zaplatit peněžitou částku. Strana postižená vyšší mocí je povinna neprodleně písemně informovat druhou stranu a po odpadnutí překážky neprodleně pokračovat v plnění.',
       ],
     },
@@ -1271,7 +1264,6 @@ function buildNdaContractSections(d: StoredContractData): ContractSection[] {
         'Smlouva je vyhotovena ve dvou stejnopisech; Poskytující strana a Přijímající strana obdrží po jednom stejnopisu.',
         'Změny jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků.',
         'Je-li jakékoli ustanovení smlouvy neplatné nebo nevymahatelné, ostatní ustanovení zůstávají v plné platnosti a účinnosti.',
-        'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. o zpracování osobních údajů. Osobní údaje uvedené v této smlouvě jsou zpracovávány výhradně za účelem uzavření, plnění a případného vymáhání práv z tohoto smluvního vztahu. Správcem osobních údajů je každá ze smluvních stran v rozsahu údajů, které zpracovává o druhé straně. Každá ze stran má právo na přístup ke svým osobním údajům, jejich opravu nebo výmaz, jakož i právo podat stížnost u Úřadu pro ochranu osobních údajů (www.uoou.cz). Osobní údaje budou uchovávány po dobu trvání smluvního vztahu a dále po dobu stanovenou právními předpisy, zpravidla 10 let od jeho skončení.',
         'Žádná ze smluvních stran neodpovídá za nesplnění nepeněžitých povinností způsobené vyšší mocí (vis maior), tj. událostí mimořádnou, nepředvídatelnou a nepřekonatelnou (§ 2913 odst. 2 OZ). Vyšší moc se nevztahuje na povinnost zaplatit peněžitou částku. Strana postižená vyšší mocí je povinna neprodleně písemně informovat druhou stranu a po odpadnutí překážky neprodleně pokračovat v plnění.',
       ],
     },
@@ -1330,7 +1322,7 @@ function buildGeneralSaleContractSections(d: StoredContractData): ContractSectio
     ? `Prodávající poskytuje kupujícímu smluvní záruku za jakost v délce ${asText(d.warrantyMonths)} měsíců ode dne předání, přesahující zákonný rámec. V záruční době odpovídá prodávající za to, že předmět prodeje bude mít vlastnosti sjednané touto smlouvou.`
     : d.buyerType === 'business'
     ? 'Na předmět prodeje se ve vztazích mezi podnikateli uplatní obecná úprava práv z vadného plnění podle § 2099 a násl. OZ; kupující je povinen věc prohlédnout co nejdříve po přechodu nebezpečí škody a zjištěné vady vytknout bez zbytečného odkladu.'
-    : 'Je-li kupující spotřebitelem, použije se vedle obecné úpravy i zvláštní právní úprava spotřebitelské koupě; kupující je oprávněn vytknout vadu, která se projeví do 24 měsíců od převzetí věci, bez dotčení povinnosti oznámit zjištěnou vadu bez zbytečného odkladu.';
+    : 'Je-li kupující spotřebitelem, použije se vedle obecné úpravy i zvláštní právní úprava spotřebitelské koupě; kupující je oprávněn vytknout vadu, která se projeví do 24 měsíců od převzetí věci (§ 2165 OZ).';
 
   const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
@@ -1408,7 +1400,7 @@ function buildGeneralSaleContractSections(d: StoredContractData): ContractSectio
         d.itemType === 'car'
           ? 'Kupující prohlašuje, že před podpisem smlouvy měl možnost vozidlo prohlédnout a případně nechat posoudit znalcem nebo autorizovaným servisem. Vady zjistitelné při přiměřené prohlídce nelze uplatnit jako vady skryté (§ 2104 OZ).'
           : 'Kupující prohlašuje, že před podpisem smlouvy měl možnost předmět prodeje prohlédnout. Vady zjistitelné při přiměřené prohlídce nelze uplatnit jako vady skryté (§ 2104 OZ).',
-        'Kupující je povinen předmět při převzetí zkontrolovat a zjevné vady oznámit prodávajícímu bez zbytečného odkladu (§ 2104 OZ).',
+        'Mimo spotřebitelskou koupi je kupující povinen předmět při převzetí zkontrolovat a zjevné vady oznámit prodávajícímu bez zbytečného odkladu (§ 2104 OZ). U spotřebitelské koupě se použijí zvláštní pravidla § 2158 a násl. OZ.',
         defectsClause,
         warrantyClause,
       ],
@@ -1422,7 +1414,6 @@ function buildGeneralSaleContractSections(d: StoredContractData): ContractSectio
         'Smlouva je vyhotovena ve dvou stejnopisech; prodávající a kupující obdrží po jednom stejnopisu.',
         'Jakékoli změny jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků.',
         'Neplatnost jednotlivého ustanovení smlouvy nemá vliv na platnost ostatních ustanovení.',
-        'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. o zpracování osobních údajů. Osobní údaje uvedené v této smlouvě jsou zpracovávány výhradně za účelem uzavření, plnění a případného vymáhání práv z tohoto smluvního vztahu. Správcem osobních údajů je každá ze smluvních stran v rozsahu údajů, které zpracovává o druhé straně. Každá ze stran má právo na přístup ke svým osobním údajům, jejich opravu nebo výmaz, jakož i právo podat stížnost u Úřadu pro ochranu osobních údajů (www.uoou.cz). Osobní údaje budou uchovávány po dobu trvání smluvního vztahu a dále po dobu stanovenou právními předpisy, zpravidla 10 let od jeho skončení.',
         'Žádná ze smluvních stran neodpovídá za nesplnění nepeněžitých povinností způsobené vyšší mocí (vis maior), tj. událostí mimořádnou, nepředvídatelnou a nepřekonatelnou (§ 2913 odst. 2 OZ). Vyšší moc se nevztahuje na povinnost zaplatit peněžitou částku. Strana postižená vyšší mocí je povinna neprodleně písemně informovat druhou stranu a po odpadnutí překážky neprodleně pokračovat v plnění.',
       ],
     },
@@ -1437,6 +1428,10 @@ function buildGeneralSaleContractSections(d: StoredContractData): ContractSectio
 // ─────────────────────────────────────────────
 function buildEmploymentContractSections(d: StoredContractData): ContractSection[] {
   const { hasPremiumClauses } = resolveTierFeatures(d);
+  const requestedNoticeMonths = Number(d.noticePeriod || 2);
+  const effectiveNoticeMonths = Number.isFinite(requestedNoticeMonths)
+    ? Math.max(2, requestedNoticeMonths)
+    : 2;
   const leadershipRole = /vedouc|ředitel|manager|director/i.test(String(d.jobTitle ?? '')) || Boolean(d.isManager || d.isExecutive || d.isLeader);
   const requestedTrialMonths = Number(d.trialPeriodMonths || 0);
   // § 35 zákoníku práce ve znění novely č. 120/2025 Sb. (flexinovela, účinnost 1. 6. 2025):
@@ -1552,7 +1547,7 @@ function buildEmploymentContractSections(d: StoredContractData): ContractSection
       title: 'VII. SKONČENÍ PRACOVNÍHO POMĚRU',
       body: [
         'Pracovní poměr může být ukončen: dohodou, výpovědí, okamžitým zrušením nebo uplynutím sjednané doby (§ 48 ZP).',
-        `Výpovědní doba v souladu s § 51 ZP činí ${asText(d.noticePeriod, '2')} měsíce. Výpovědní doba počíná prvním dnem kalendářního měsíce následujícího po doručení výpovědi.`,
+        `Výpovědní doba činí ${pluralMonths(effectiveNoticeMonths)} a začíná dnem doručení výpovědi druhé straně; končí dnem, který se číslem shoduje s tímto dnem, případně posledním dnem měsíce (§ 51 ZP). U výpovědi dané zaměstnavatelem z důvodů podle § 52 písm. f) až h) ZP činí nejméně jeden měsíc. Odlišný běh nebo délku lze sjednat jen písemně a za stejných podmínek pro obě strany, s výjimkou zákonem dovoleného zvýhodnění zaměstnance.`,
         'Výpověď ze strany zaměstnavatele musí být odůvodněna (§ 52 ZP). Výpověď ze strany zaměstnance může být dána z jakéhokoli důvodu nebo bez uvedení důvodu.',
       ],
     },
@@ -1561,12 +1556,11 @@ function buildEmploymentContractSections(d: StoredContractData): ContractSection
       title: `${hasPremiumClauses ? 'X' : 'VIII'}. ZÁVĚREČNÁ USTANOVENÍ`,
       body: [
         'Pracovní smlouva se řídí zákonem č. 262/2006 Sb., zákoník práce, ve znění pozdějších předpisů, a subsidiárně zákonem č. 89/2012 Sb., občanský zákoník.',
-        'Zaměstnavatel je povinen uzavřít pracovní smlouvu před nástupem zaměstnance do práce (§ 34 odst. 3 ZP). Zaměstnanec nesmí nastoupit do práce, dokud nebyla smlouva podepsána.',
+        'Pracovní smlouva musí být písemná a každá smluvní strana musí obdržet jedno vyhotovení (§ 34 odst. 2 a 5 ZP). Strany ji uzavírají nejpozději v den sjednaného nástupu do práce.',
         disputeClause(d, true),
-        'Smlouva je vyhotovena ve dvou stejnopisech; zaměstnavatel a zaměstnanec obdrží po jednom stejnopisu (§ 37 ZP).',
+        'Smlouva je vyhotovena ve dvou stejnopisech; zaměstnavatel a zaměstnanec obdrží po jednom stejnopisu (§ 34 odst. 5 ZP).',
         'Změny pracovní smlouvy jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků (§ 564 OZ).',
         'Neplatnost jednotlivého ustanovení smlouvy nemá vliv na platnost ostatních ustanovení.',
-        'Zpracování osobních údajů zaměstnance probíhá v souladu s nařízením EU 2016/679 (GDPR), zákonem č. 110/2019 Sb. a § 316 zákoníku práce. Osobní údaje jsou zpracovávány za účelem vzniku, trvání, změny a skončení pracovněprávního vztahu, plnění zákonných povinností zaměstnavatele (mzdy, pojistné, daně) a ochrany oprávněných zájmů zaměstnavatele. Zaměstnanec má právo na přístup ke svým osobním údajům, jejich opravu, výmaz nebo omezení zpracování v rozsahu stanoveném právními předpisy, a právo podat stížnost u ÚOOÚ (www.uoou.cz). Osobní údaje budou uchovávány po dobu pracovněprávního vztahu a dále po dobu stanovenou zákonem (zejm. zákon č. 582/1991 Sb., zákon č. 235/2004 Sb.).',
         'Žádná ze smluvních stran neodpovídá za nesplnění nepeněžitých povinností způsobené vyšší mocí (vis maior), tj. událostí mimořádnou, nepředvídatelnou a nepřekonatelnou (§ 2913 odst. 2 OZ). Vyšší moc se nevztahuje na povinnost zaplatit peněžitou částku. Strana postižená vyšší mocí je povinna neprodleně písemně informovat druhou stranu a po odpadnutí překážky neprodleně pokračovat v plnění.',
       ],
     },
@@ -1587,7 +1581,7 @@ function buildDppContractSections(d: StoredContractData): ContractSection[] {
     ? `Sjednaná odměna za provedení celého úkolu/práce činí ${formatAmount(d.totalRemuneration)} Kč. Odměna bude vyplacena po splnění sjednaného úkolu.`
     : 'Výše odměny bude stanovena dohodou smluvních stran před zahájením práce a bude uvedena v písemném dodatku k této dohodě.';
 
-  const taxNote = `Odměna z dohody o provedení práce nepodléhá odvodům na sociální a zdravotní pojištění, pokud u jednoho zaměstnavatele v kalendářním měsíci nepřesáhne zákonem stanovenou rozhodnou částku pro účast na pojištění. ${DPP_THRESHOLD_NOTE} Zaměstnavatel současně vykazuje zaměstnance na DPP v pravidelném měsíčním hlášení dle aktuální metodiky ČSSZ.`;
+  const taxNote = `Účast na nemocenském a důchodovém pojištění u DPP vzniká při dosažení rozhodného příjmu u jednoho zaměstnavatele v kalendářním měsíci. ${DPP_THRESHOLD_NOTE} V roce 2026 tedy příjem bez vzniku účasti nedosahuje 12 000 Kč (nejvýše 11 999 Kč). Zaměstnavatel plní evidenční a odvodové povinnosti prostřednictvím Jednotného měsíčního hlášení zaměstnavatele podle aktuální metodiky ČSSZ.`;
 
   const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
@@ -1665,7 +1659,7 @@ function buildDppContractSections(d: StoredContractData): ContractSection[] {
       title: 'V. PODMÍNKY VÝKONU PRÁCE',
       body: [
         'Zaměstnanec je povinen vykonávat sjednané práce osobně, řádně a v souladu s pokyny zaměstnavatele.',
-        `Na dohodu o provedení práce se v základním rozsahu nevztahují ustanovení zákoníku práce o pracovní době, odstupném a dalších nárocích typických pro hlavní pracovní poměr (§ 77 odst. 2 ZP). ${DPP_VACATION_NOTE}`,
+        `Na práci na DPP se vztahují pravidla pracovní doby a odpočinku, rozvrhu směn, překážek v práci a příplatků v rozsahu zákoníku práce. Nevztahují se jen instituty výslovně vyjmenované v § 77 odst. 2 ZP, zejména převedení na jinou práci, dočasné přidělení a odstupné. ${DPP_VACATION_NOTE}`,
         'Zaměstnavatel je povinen předem rozvrhnout pracovní dobu zaměstnance v písemném rozvrhu směn a seznámit s ním zaměstnance nejpozději 3 dny před začátkem směny nebo období, na které je pracovní doba rozvržena, pokud se strany písemně nedohodnou na jiné době seznámení.',
         'Práce může být vykonávána v sídle zaměstnavatele, na sjednaném místě výkonu práce dle čl. II nebo vzdáleně z místa zvoleného zaměstnancem, pokud to povaha úkolu umožňuje a pokud zaměstnanec dodrží požadavky zaměstnavatele na ochranu důvěrných informací, bezpečnost dat a předávání výstupů.',
         d.toolsProvided === 'employer'
@@ -1684,7 +1678,6 @@ function buildDppContractSections(d: StoredContractData): ContractSection[] {
         'Dohoda je vyhotovena ve dvou stejnopisech; zaměstnavatel a zaměstnanec obdrží po jednom stejnopisu (§ 77 odst. 1 ZP).',
         'Změny dohody jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků.',
         'Neplatnost jednotlivého ustanovení nemá vliv na platnost ostatních ustanovení dohody.',
-        'Zpracování osobních údajů pracovníka probíhá v souladu s nařízením EU 2016/679 (GDPR), zákonem č. 110/2019 Sb. a § 316 zákoníku práce. Osobní údaje jsou zpracovávány za účelem uzavření a plnění dohody o provedení práce, plnění zákonných povinností zaměstnavatele (odvod daně, sociální a zdravotní pojistné) a ochrany oprávněných zájmů stran. Pracovník má právo na přístup ke svým osobním údajům, jejich opravu nebo výmaz, a právo podat stížnost u ÚOOÚ (www.uoou.cz).',
         'Žádná ze smluvních stran neodpovídá za nesplnění nepeněžitých povinností způsobené vyšší mocí (vis maior), tj. událostí mimořádnou, nepředvídatelnou a nepřekonatelnou (§ 2913 odst. 2 OZ). Vyšší moc se nevztahuje na povinnost zaplatit peněžitou částku. Strana postižená vyšší mocí je povinna neprodleně písemně informovat druhou stranu a po odpadnutí překážky neprodleně pokračovat v plnění.',
       ],
     },
@@ -1832,7 +1825,6 @@ function buildServiceContractSections(d: StoredContractData): ContractSection[] 
         'Smlouva je vyhotovena ve dvou stejnopisech; poskytovatel a objednatel obdrží po jednom stejnopisu.',
         'Změny jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků.',
         'Neplatnost jednotlivého ustanovení smlouvy nemá vliv na platnost ostatních ustanovení.',
-        'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. o zpracování osobních údajů. Osobní údaje uvedené v této smlouvě jsou zpracovávány výhradně za účelem uzavření, plnění a případného vymáhání práv z tohoto smluvního vztahu. Správcem osobních údajů je každá ze smluvních stran v rozsahu údajů, které zpracovává o druhé straně. Každá ze stran má právo na přístup ke svým osobním údajům, jejich opravu nebo výmaz, jakož i právo podat stížnost u Úřadu pro ochranu osobních údajů (www.uoou.cz). Osobní údaje budou uchovávány po dobu trvání smluvního vztahu a dále po dobu stanovenou právními předpisy, zpravidla 10 let od jeho skončení.',
         'Za vyšší moc se považuje i plošný výpadek kritické internetové infrastruktury nebo kybernetický útok vedený proti systémům smluvní strany, která prokáže, že měla přijata přiměřená organizační a technická bezpečnostní opatření. Vyšší moc se nevztahuje na povinnost zaplatit peněžitou částku. Strana postižená vyšší mocí je povinna neprodleně písemně informovat druhou stranu a po odpadnutí překážky neprodleně pokračovat v plnění.',
       ],
     },
@@ -1867,10 +1859,7 @@ function buildSubleaseContractSections(d: StoredContractData): ContractSection[]
     {
       title: 'X. SMLUVNÍ POKUTY A SANKCE',
       body: [
-        `Prodlení podnájemce s úhradou podnájemného: smluvní pokuta ve výši 0,1 % z dlužné částky za každý den prodlení${d.minLatePenalty && Number(d.minLatePenalty) > 0 ? ` (min. ${formatAmount(d.minLatePenalty)} Kč/den)` : ''}.`,
-        (Number(d.rentAmount) || 0) > 0
-          ? `Prodlení podnájemce s vyklizením po skončení podnájmu: smluvní pokuta ve výši odpovídající 1/15 měsíčního podnájemného (tj. ${formatAmount(Math.round(Number(d.rentAmount) * 2 / 30))} Kč) za každý den prodlení.`
-          : 'Prodlení podnájemce s vyklizením po skončení podnájmu: smluvní pokuta ve výši 1/15 měsíčního podnájemného za každý den prodlení.',
+        `Prodlení podnájemce s úhradou podnájemného: smluvní pokuta ve výši 0,05 % z dlužné částky za každý den prodlení, nejvýše však v souhrnu 15 % z dlužné částky${d.minLatePenalty && Number(d.minLatePenalty) > 0 ? `; sjednané minimum ${formatAmount(d.minLatePenalty)} Kč/den se uplatní jen v mezích tohoto celkového stropu` : ''}.`,
         d.damagePenalty && Number(d.damagePenalty) > 0
           ? `Neoprávněná změna nebo poškození prostor bez souhlasu nájemce: smluvní pokuta ${formatAmount(d.damagePenalty)} Kč a náhrada skutečné škody.`
           : 'Neoprávněná změna nebo poškození prostor bez souhlasu nájemce: podnájemce odpovídá za škodu v plném rozsahu a je povinen uvést prostory do původního stavu na vlastní náklady.',
@@ -1985,7 +1974,6 @@ function buildSubleaseContractSections(d: StoredContractData): ContractSection[]
         'Smlouva je vyhotovena ve dvou stejnopisech; podnajímatel a podnájemce obdrží po jednom stejnopisu.',
         'Veškeré změny jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků.',
         'Neplatnost jednotlivého ustanovení smlouvy nemá vliv na platnost ostatních ustanovení.',
-        'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. o zpracování osobních údajů. Osobní údaje uvedené v této smlouvě jsou zpracovávány výhradně za účelem uzavření, plnění a případného vymáhání práv z tohoto smluvního vztahu. Správcem osobních údajů je každá ze smluvních stran v rozsahu údajů, které zpracovává o druhé straně. Každá ze stran má právo na přístup ke svým osobním údajům, jejich opravu nebo výmaz, jakož i právo podat stížnost u Úřadu pro ochranu osobních údajů (www.uoou.cz). Osobní údaje budou uchovávány po dobu trvání smluvního vztahu a dále po dobu stanovenou právními předpisy, zpravidla 10 let od jeho skončení.',
         'Žádná ze smluvních stran neodpovídá za nesplnění nepeněžitých povinností způsobené vyšší mocí (vis maior), tj. událostí mimořádnou, nepředvídatelnou a nepřekonatelnou (§ 2913 odst. 2 OZ). Vyšší moc se nevztahuje na povinnost zaplatit peněžitou částku. Strana postižená vyšší mocí je povinna neprodleně písemně informovat druhou stranu a po odpadnutí překážky neprodleně pokračovat v plnění.',
       ],
     },
@@ -2003,9 +1991,9 @@ function buildPowerOfAttorneyContractSections(d: StoredContractData): ContractSe
   const scopeDesc = () => {
     switch (d.poaType) {
       case 'property':
-        return `veškeré právní jednání ve věci převodu, koupě, prodeje, pronájmu nebo jiného nakládání s nemovitou věcí na adrese/v katastrálním území: ${asText(d.propertyAddress, 'neuvedeno')}, zejména: podpis kupní smlouvy, smlouvy o smlouvě budoucí, nájemní smlouvy, darovací smlouvy; zastupování před katastrem nemovitostí, finančními institucemi a orgány veřejné moci. UPOZORNĚNÍ: Tato plná moc vyžaduje úředně ověřený podpis zmocnitele (notář nebo Czech POINT). Bez ověřeného podpisu nebude akceptována katastrem nemovitostí ani finančními institucemi.`;
+        return `veškeré právní jednání ve věci převodu, koupě, prodeje, pronájmu nebo jiného nakládání s nemovitou věcí na adrese/v katastrálním území: ${asText(d.propertyAddress, 'neuvedeno')}, zejména: podpis kupní smlouvy, smlouvy o smlouvě budoucí, nájemní smlouvy, darovací smlouvy; zastupování před katastrem nemovitostí, finančními institucemi a orgány veřejné moci. Pro zastupování v katastrálním řízení je třeba plná moc s úředně ověřeným podpisem zmocnitele; pro podpis konkrétní vkladové listiny musí plná moc splnit také formu vyžadovanou § 441 odst. 2 OZ. Banka nebo jiný příjemce může požadovat vlastní formulář.`;
       case 'court':
-        return `zastupování zmocnitele ve věci vedené u ${asText(d.courtName, 'neuvedeno')}, sp. zn. ${asText(d.caseNumber, 'neuvedeno')}, včetně přijímání zásilek, podávání opravných prostředků a uzavírání smírů. UPOZORNĚNÍ: Plná moc pro zastoupení v soudním řízení doporučujeme opatřit úředně ověřeným podpisem. V řízeních, kde je povinné zastoupení advokátem (§ 27 OSŘ), musí být zmocněncem advokát.`;
+        return `zastupování zmocnitele ve věci vedené u ${asText(d.courtName, 'neuvedeno')}, sp. zn. ${asText(d.caseNumber, 'neuvedeno')}, včetně přijímání zásilek, podávání opravných prostředků a uzavírání smírů. Pro běžnou procesní plnou moc se úředně ověřený podpis zpravidla nevyžaduje; zvláštní řízení nebo opravné prostředky však mohou vyžadovat zastoupení advokátem či notářem podle příslušného procesního předpisu.`;
       case 'company':
         return `zastupování zmocnitele jako společníka/jednatele/akcionáře společnosti ${asText(d.companyName, 'neuvedeno')}, IČO ${asText(d.companyIco, 'neuvedeno')}, v rámci těchto jednání: ${asText(d.companyScope, 'valná hromada, jednání s orgány státní správy, obchodní jednání')}`;
       case 'bank':
@@ -2074,7 +2062,7 @@ function buildPowerOfAttorneyContractSections(d: StoredContractData): ContractSe
         'a) uděluje tuto plnou moc svobodně, vážně a bez donucení,',
         'b) je plně způsobilý k právnímu jednání,',
         'c) si je vědom rozsahu udělených oprávnění a jejich právních důsledků.',
-        hasPremiumClauses ? 'Pravost podpisu zmocnitele je ověřena notářem nebo v systému Czech POINT. Úřední ověření podpisu významně zvyšuje použitelnost plné moci vůči třetím osobám; některé instituce však mohou i přesto vyžadovat vlastní formulář nebo splnění dalších podmínek podle zvláštních předpisů či interních pravidel.' : '',
+        hasPremiumClauses ? 'Je-li pro zamýšlené jednání vyžadován úředně ověřený podpis, nechá zmocnitel podpis ověřit u notáře, na Czech POINTu nebo na matrice. Některé instituce mohou požadovat vlastní formulář nebo další podmínky podle zvláštních předpisů či interních pravidel.' : '',
         'd) zmocněnec je povinen jednat s péčí řádného hospodáře a v nejlepším zájmu zmocnitele; o každém právním jednání učiněném v rámci zmocnění je zmocněnec povinen zmocnitele bez zbytečného odkladu informovat.',
         'e) zmocnitel může tuto plnou moc kdykoli písemně odvolat; odvolání je účinné okamžikem, kdy se o něm zmocněnec dozví (§ 448 odst. 1 OZ). Zmocněnec je povinen po odvolání neprodleně vrátit originál plné moci zmocniteli.',
       ].filter(Boolean) as string[],
@@ -2085,7 +2073,7 @@ function buildPowerOfAttorneyContractSections(d: StoredContractData): ContractSe
     {
       title: 'VI. ÚŘEDNÍ OVĚŘENÍ PODPISU A PRÁVNÍ ÚČINKY VŮČI TŘETÍM STRANÁM',
       body: [
-        'Úřední ověření podpisu zmocnitele provede notář, kontaktní místo Czech POINT nebo matrika obecního úřadu pověřeného vedením matrik. Ověření je povinné zejména pro: právní jednání týkající se nemovitostí zapisovaných do katastru nemovitostí (§ 6 zák. č. 256/2013 Sb.), zastupování v řízení před soudy a orgány veřejné moci, nakládání s bankovními účty a finančními prostředky.',
+        'Podle § 441 odst. 2 OZ musí mít plná moc stejnou zvláštní formu jako zastoupené právní jednání; vyžaduje-li zákon veřejnou listinu, postačí zpravidla písemná plná moc s úředně ověřeným podpisem. Ověření podpisu lze provést u notáře, na Czech POINTu nebo na matrice. Nad rámec zákona může konkrétní soud, úřad, banka nebo jiný příjemce požadovat vlastní formulář či další náležitosti.',
         'Originál plné moci uchovává zmocnitel. Zmocněnec je oprávněn předkládat třetím osobám originál nebo úředně ověřenou kopii; po skončení zmocnění nebo na výzvu zmocnitele je povinen originál bez zbytečného odkladu vrátit a všechny své kopie zničit.',
         'Zmocnitel je oprávněn plnou moc kdykoli odvolat; odvolání nabývá účinků vůči zmocněnci dnem doručení a vůči třetím osobám okamžikem, kdy se o něm dozvěděly. Pro vyloučení pochybností doporučujeme oznámit odvolání plné moci písemně i třetím osobám, u kterých byla plná moc dříve uplatněna.',
         'Tato plná moc je sepsána ve dvou stejnopisech; jeden si ponechá zmocnitel, druhý obdrží zmocněnec jako průkazní listinu. Zmocnitel je oprávněn pořídit další úředně ověřené stejnopisy podle potřeby.',
@@ -2113,7 +2101,6 @@ function buildPowerOfAttorneyContractSections(d: StoredContractData): ContractSe
       'Zmocnitel může tuto plnou moc kdykoli písemně odvolat doručením odvolání zmocněnci. Odvolání je účinné okamžikem, kdy se o něm zmocněnec dozví.',
       'Omezení nebo rozšíření rozsahu zmocnění je platné pouze písemnou formou.',
       'Neplatnost jednotlivého ustanovení nemá vliv na platnost ostatních ustanovení.',
-      'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. Osobní údaje jsou zpracovávány výhradně za účelem udělení a plnění zmocnění.',
     ],
   });
   sections.push({ title: `${hasPremiumClauses ? 'IX' : 'VII'}. PODPISY`, body: [] });
@@ -2159,7 +2146,7 @@ function buildDebtAcknowledgmentSections(d: StoredContractData): ContractSection
       title: 'PREAMBULE',
       body: [
         'Toto uznání dluhu (dále jen „listina") je sepsáno podle § 2053 zákona č. 89/2012 Sb., občanský zákoník (dále jen „OZ").',
-        'Uznáním dluhu se promlčecí doba obnovuje a počíná běžet nová desetiletá promlčecí lhůta ode dne uznání (§ 639 OZ).',
+        'Uznáním dluhu začíná běžet desetiletá promlčecí lhůta; je-li v uznání určena doba plnění, běží od posledního dne této doby (§ 639 OZ). U jednotlivých splátek běží desetiletá lhůta od jejich splatnosti; stane-li se pro nesplnění některé splátky splatný celý dluh, běží pro celý dluh ode dne splatnosti nesplněné splátky (§ 641 OZ).',
         `Datum sepsání listiny: ${d.contractDate ? formatDate(d.contractDate) : today()}`,
       ],
     },
@@ -2188,7 +2175,7 @@ function buildDebtAcknowledgmentSections(d: StoredContractData): ContractSection
         d.bankAccount ? `Platby budou zasílány na bankovní účet věřitele č. ${asText(d.bankAccount)}, VS: ${asText(d.variableSymbol, '—')}.` : '',
         d.repaymentType === 'installments' ? 'Každá splátka se použije nejprve na úhradu splatných příslušenství (úroku z prodlení, smluvní pokuty) a teprve zbývající část na snížení jistiny (§ 1932 OZ).' : '',
         `Při prodlení s úhradou sjednané splátky nebo celkové dlužné částky je dlužník povinen zaplatit věřiteli smluvní pokutu ve výši ${asText(d.latePenalty, '0,05')} % z dlužné částky za každý den prodlení.`,
-        'Věřitel je oprávněn prohlásit celý zbývající dluh za okamžitě splatný, prodlí-li dlužník s úhradou déle než 30 dnů.',
+        'Věřitel je oprávněn písemným oznámením požadovat zaplacení celého zbývajícího dluhu, prodlí-li dlužník se splátkou déle než 30 dnů; toto právo musí uplatnit nejpozději do splatnosti nejbližší následující splátky (§ 1931 OZ).',
       ].filter(Boolean) as string[],
     },
     ...premiumContent,
@@ -2200,7 +2187,6 @@ function buildDebtAcknowledgmentSections(d: StoredContractData): ContractSection
         'Listina je vyhotovena ve dvou stejnopisech; věřitel a dlužník obdrží po jednom stejnopisu.',
         'Tato listina je sama o sobě závazná a není podmíněna splněním žádné jiné podmínky. Dílčí plnění dluhu tuto listinu neruší a nemá vliv na platnost uznání zbývající části dluhu.',
         'Neplatnost jednotlivého ustanovení nemá vliv na platnost ostatních ustanovení listiny.',
-        'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. o zpracování osobních údajů. Osobní údaje uvedené v této smlouvě jsou zpracovávány výhradně za účelem uzavření, plnění a případného vymáhání práv z tohoto smluvního vztahu. Správcem osobních údajů je každá ze smluvních stran v rozsahu údajů, které zpracovává o druhé straně. Každá ze stran má právo na přístup ke svým osobním údajům, jejich opravu nebo výmaz, jakož i právo podat stížnost u Úřadu pro ochranu osobních údajů (www.uoou.cz). Osobní údaje budou uchovávány po dobu trvání smluvního vztahu a dále po dobu stanovenou právními předpisy, zpravidla 10 let od jeho skončení.',
         'Platební neschopnost ani finanční obtíže dlužníka nepředstavují okolnost vyšší moci a nezbavují dlužníka povinnosti uhradit uznaný dluh.',
         'Změny a doplnění této listiny jsou platné pouze ve formě písemného, číslovaného a oběma stranami podepsaného dodatku.',
       ],
@@ -2244,9 +2230,7 @@ function buildCooperationContractSections(d: StoredContractData): ContractSectio
       body: [
         '1. stupeň — eskalace na statutární zástupce: vznikne-li mezi stranami spor, oznámí jej strana písemně druhé straně; statutární zástupci obou stran (nebo jimi pověřené osoby s rozhodovací pravomocí) jsou povinni do 15 pracovních dnů od oznámení vyvinout úsilí o smírné vyřešení.',
         '2. stupeň — mediace nebo soudní řízení: nedojde-li ke smírnému vyřešení v rámci 1. stupně do 30 dnů od oznámení sporu, mohou strany využít mediaci dle zákona č. 202/2012 Sb. nebo se obrátit na věcně a místně příslušný soud České republiky.',
-        d.disputeResolution === 'arbitration'
-          ? 'Strany výslovně sjednaly, že spory mohou být alternativně rozhodnuty v rozhodčím řízení dle disputeClause v závěrečných ustanoveních; tato rozhodčí doložka byla sjednána individuálně a svobodně.'
-          : 'Tímto ujednáním není dotčeno právo kterékoli strany domáhat se předběžných opatření u soudu, je-li to potřebné k ochraně jejích práv.',
+        'Tímto ujednáním není dotčeno právo kterékoli strany domáhat se předběžných opatření u soudu, je-li to potřebné k ochraně jejích práv.',
       ],
     },
   ] : [];
@@ -2327,7 +2311,6 @@ function buildCooperationContractSections(d: StoredContractData): ContractSectio
         'Smlouva je vyhotovena ve dvou stejnopisech; Strana A a Strana B obdrží po jednom stejnopisu.',
         'Veškeré změny jsou platné pouze ve formě písemných, číslovaných a podepsaných dodatků.',
         'Je-li jakékoli ustanovení smlouvy neplatné nebo nevymahatelné, ostatní ustanovení zůstávají v plné platnosti a účinnosti.',
-        'Zpracování osobních údajů probíhá v souladu s nařízením EU 2016/679 (GDPR) a zákonem č. 110/2019 Sb. o zpracování osobních údajů. Osobní údaje uvedené v této smlouvě jsou zpracovávány výhradně za účelem uzavření, plnění a případného vymáhání práv z tohoto smluvního vztahu. Správcem osobních údajů je každá ze smluvních stran v rozsahu údajů, které zpracovává o druhé straně. Každá ze stran má právo na přístup ke svým osobním údajům, jejich opravu nebo výmaz, jakož i právo podat stížnost u Úřadu pro ochranu osobních údajů (www.uoou.cz). Osobní údaje budou uchovávány po dobu trvání smluvního vztahu a dále po dobu stanovenou právními předpisy, zpravidla 10 let od jeho skončení.',
         'Za vyšší moc se považuje i plošný výpadek kritické internetové infrastruktury nebo kybernetický útok vedený proti systémům smluvní strany, která prokáže, že měla přijata přiměřená organizační a technická bezpečnostní opatření. Vyšší moc se nevztahuje na povinnost zaplatit peněžitou částku. Strana postižená vyšší mocí je povinna neprodleně písemně informovat druhou stranu a po odpadnutí překážky neprodleně pokračovat v plnění.',
       ],
     },

@@ -21,7 +21,7 @@ type FormData = {
   contractDate: string;
   notaryUpsell: boolean;
   tier: 'basic' | 'complete';
-  disputeResolution: 'court' | 'mediation' | 'arbitration';
+  disputeResolution: 'court' | 'mediation';
 };
 
 const inputClass = 'w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition';
@@ -297,11 +297,7 @@ export default function KupniPage() {
                 <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set} aria-label="Řešení sporů">
                   <option value="court">Obecný soud (výchozí)</option>
                   <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
-                  <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
                 </select>
-                {form.disputeResolution === 'arbitration' && (
-                  <p className="mt-2 text-xs text-amber-400 leading-relaxed">⚠ Rozhodčí doložka není platná ve smlouvách se spotřebiteli (zákon č. 216/1994 Sb.). Použijte ji pouze pro vztahy B2B.</p>
-                )}
               </div>
               {/* === Vyberte úroveň zpracování dokumentu === */}
               <div className="mt-6">

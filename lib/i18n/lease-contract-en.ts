@@ -35,8 +35,6 @@ function disputeClauseEn(d: StoredContractData): string {
   switch (d.disputeResolution) {
     case 'mediation':
       return 'The parties shall first seek an amicable settlement. If no agreement is reached, either party may use mediation under Act No. 202/2012 Coll. on mediation, or bring the dispute before the competent court of the Czech Republic.';
-    case 'arbitration':
-      return 'Any dispute arising from this agreement shall be finally resolved by arbitration before the Arbitration Court attached to the Czech Chamber of Commerce and the Agrarian Chamber of the Czech Republic, under its Rules, by a sole arbitrator appointed by the President of the Arbitration Court. Seat: Prague. Language: Czech (Act No. 216/1994 Coll.). The parties waive the right to have the dispute heard by a general court to which this clause applies.';
     default:
       return 'Disputes shall first be resolved amicably. If no agreement is reached, the dispute shall be decided by the competent court of the Czech Republic.';
   }
@@ -255,7 +253,6 @@ export function buildLeaseContractSectionsEn(d: StoredContractData): ContractSec
         'Invalidity of one provision does not affect the rest.',
         'Annex No. 1 is the handover protocol.',
         'Change of ownership does not terminate the lease; the acquirer steps into the landlord’s position (Section 2221 Civil Code).',
-        'Personal data are processed under GDPR and Act No. 110/2019 Coll. for conclusion, performance and enforcement of this Agreement.',
         'Neither party is liable for non-monetary failure caused by force majeure (Section 2913(2) Civil Code); monetary obligations remain due.',
       ],
     },

@@ -84,10 +84,13 @@ export default function TermsPage() {
               02. Předmět služby
             </h2>
             <p className="mb-3">
-              Předmětem služby je umožnění Zákazníkovi sestavit strukturovaný smluvní dokument na základě údajů vložených do online formuláře. Platforma funguje jako softwarový nástroj (SaaS) pro automatizovanou tvorbu standardizovaných dokumentů — neposkytuje právní poradenství ani právní zastoupení. Výstupem je soubor ve formátu PDF určený k závěrečné kontrole a podpisu.
+              Předmětem služby je umožnění Zákazníkovi sestavit strukturovaný smluvní dokument na základě údajů vložených do online formuláře. Platforma funguje jako softwarový nástroj (SaaS) pro automatizovanou tvorbu standardizovaných dokumentů — neposkytuje právní poradenství ani právní zastoupení. Výstupem je soubor ve formátu PDF a, pokud si jej Zákazník objedná, také editovatelný DOCX nebo související příloha či checklist, určené k závěrečné kontrole a podpisu.
             </p>
             <p>
               Aktuálně dostupné typy dokumentů: Nájemní smlouva, Podnájemní smlouva, Kupní smlouva, Kupní smlouva na vozidlo, Darovací smlouva, Smlouva o dílo, Smlouva o zápůjčce, Smlouva o mlčenlivosti (NDA), Pracovní smlouva, Dohoda o provedení práce (DPP), Smlouva o poskytování služeb, Smlouva o spolupráci, Plná moc, Uznání dluhu.
+            </p>
+            <p className="mt-3 text-slate-400 text-xs">
+              PDF lze otevřít v běžné aktuální čtečce PDF a vytisknout na formát A4. Volitelný DOCX je určen pro aktuální Microsoft Word, LibreOffice nebo jiný editor podporující formát Office Open XML; vzhled se může mezi editory nepatrně lišit. Soubory nejsou chráněny DRM a k jejich použití není potřeba účet ani předplatné.
             </p>
           </section>
 
@@ -137,7 +140,7 @@ export default function TermsPage() {
               05. Dostupnost dokumentu ke stažení
             </h2>
             <p>
-              Odkaz ke stažení PDF dokumentu je aktivní po dobu <strong className="text-white">{BASIC_ARCHIVE_DAYS} dní</strong> ({PRICING_TIER_CONFIG.basic.title}) nebo <strong className="text-white">{COMPLETE_ARCHIVE_DAYS} dní</strong> ({PRICING_TIER_CONFIG.complete.title} a tematický balíček) od okamžiku zaplacení. Pokud si Zákazník zakoupí doplněk Dostupnost 90 dní, je odkaz dostupný <strong className="text-white">90 dní</strong> od zaplacení. Po uplynutí této doby může být dokument nedostupný z důvodu automatického mazání dočasného úložiště. Zákazníkovi doporučujeme dokument ihned po stažení uložit na bezpečném místě. V případě problémů nás kontaktujte na <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">info@smlouvahned.cz</a>.
+              Odkaz ke stažení dokumentu a objednaných doplňků je aktivní po dobu <strong className="text-white">{BASIC_ARCHIVE_DAYS} dní</strong> ({PRICING_TIER_CONFIG.basic.title}) nebo <strong className="text-white">{COMPLETE_ARCHIVE_DAYS} dní</strong> ({PRICING_TIER_CONFIG.complete.title} a tematický balíček) od okamžiku zaplacení. Pokud si Zákazník zakoupí doplněk Dostupnost 90 dní, je odkaz dostupný <strong className="text-white">90 dní</strong> od zaplacení. Po uplynutí této doby může být dokument nedostupný z důvodu automatického mazání dočasného úložiště. Zákazníkovi doporučujeme dokument ihned po stažení uložit na bezpečném místě. V případě problémů nás kontaktujte na <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">info@smlouvahned.cz</a>.
             </p>
           </section>
 

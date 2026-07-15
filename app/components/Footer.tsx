@@ -16,8 +16,7 @@ export default function Footer() {
               </div>
             </div>
             <p className="mt-4 text-xs leading-relaxed text-slate-500">
-              Softwarový nástroj pro automatizovanou tvorbu standardizovaných smluvních dokumentů.
-              Není advokátní kanceláří a neposkytuje právní poradenství.
+              Sestaví standardizovaný smluvní dokument z údajů, které vyplníte v průvodci.
             </p>
             <div className="mt-3 space-y-0.5 text-[11px] text-slate-600">
               <p>Provozovatel: Karel Zdeněk</p>
@@ -144,7 +143,7 @@ export default function Footer() {
           </div>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between text-[11px] text-slate-600">
             <p>
-              © 2024–{new Date().getFullYear()} Karel Zdeněk, IČO: 23660295 · SmlouvaHned.cz je softwarový nástroj pro tvorbu dokumentů, nikoli advokátní kancelář.
+              © 2024–{new Date().getFullYear()} Karel Zdeněk, IČO: 23660295 · SmlouvaHned.cz
             </p>
             <div className="flex flex-wrap gap-4">
               <Link href="/obchodni-podminky" className="hover:text-slate-400 transition-colors">Obchodní podmínky</Link>

@@ -821,7 +821,7 @@ async function testDppUaPdfTextContent() {
   assert.ok(!/40,000/.test(text), 'amounts must use Czech spacing, not comma thousands');
   assert.match(text, /1\.\s*6\.\s*2026/);
   assert.ok(!/\b1\/6\/2026\b/.test(text), 'dates must not use slash format in UA annex');
-  assert.match(text, /hlavní pracovní poměr|основна робота/i);
+  assert.match(text, /робочого часу|відпочинку|розкладу змін/i);
 }
 
 async function testPdfFallback() {

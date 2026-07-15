@@ -85,7 +85,7 @@ type CarSaleFormData = {
 
   notaryUpsell: boolean;
   tier: 'basic' | 'complete';
-  disputeResolution: 'court' | 'mediation' | 'arbitration';
+  disputeResolution: 'court' | 'mediation';
 };
 
 const inputClass = 'site-input';
@@ -1177,16 +1177,10 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">
                     {fl('disputeResolution', 'Řešení sporů')}
                   </div>
-                  <select className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))} aria-label={fl('disputeResolution', 'Řešení sporů')}>
+                  <select className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' }))} aria-label={fl('disputeResolution', 'Řešení sporů')}>
                     <option value="court">{fl('dispute_court', 'Obecný soud (výchozí)')}</option>
                     <option value="mediation">{fl('dispute_mediation', 'Mediace (zákon č. 202/2012 Sb.)')}</option>
-                    <option value="arbitration">{fl('dispute_arbitration', 'Rozhodčí řízení (Rozhodčí soud HK ČR)')}</option>
                   </select>
-                  {formData.disputeResolution === 'arbitration' && (
-                    <p className="mt-2 text-xs text-amber-400 leading-relaxed">
-                      {fl('dispute_arbitration_warning', '⚠ U spotřebitelských smluv (B2C) bývá rozhodčí doložka neúčinná dle zák. č. 216/1994 Sb. Doporučujeme ji použít pouze ve vztazích mezi podnikateli (B2B).')}
-                    </p>
-                  )}
                 </div>
                 {packageConfig ? (
                   <div className="rounded-2xl border border-amber-500/20 bg-amber-500/8 p-5">

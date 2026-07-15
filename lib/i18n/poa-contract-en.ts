@@ -5,7 +5,7 @@ import { asText, disputeClauseEn, formatDate, today } from '@/lib/i18n/expat-con
 function scopeDescEn(d: StoredContractData): string {
   switch (d.poaType) {
     case 'property':
-      return `legal acts regarding property at / in cadastral area: ${asText(d.propertyAddress, 'not stated')}, including purchase, lease and filings with the land registry. Note: property powers of attorney often require a notarised signature.`;
+      return `legal acts regarding property at / in cadastral area: ${asText(d.propertyAddress, 'not stated')}, including purchase, lease and filings with the land registry. Representation in Czech land-registry proceedings requires the principal’s officially certified signature; the authority for a specific instrument must also satisfy Section 441(2) of the Civil Code.`;
     case 'court':
       return `representation in proceedings at ${asText(d.courtName, 'not stated')}, file no. ${asText(d.caseNumber, 'not stated')}, including submissions and settlements. Court representation may require a lawyer where mandatory under Czech law.`;
     case 'company':
@@ -32,7 +32,7 @@ export function buildPowerOfAttorneyContractSectionsEn(d: StoredContractData): C
       body: [
         'This power of attorney is granted under Act No. 89/2012 Coll., the Civil Code (Sections 441–449).',
         `Date: ${d.contractDate ? formatDate(d.contractDate) : today()}`,
-        'This is a software-generated template; authorities may require notarisation or a specific form.',
+        'This is a software-generated template; a recipient may require official signature certification or its own form where the law or its acceptance rules so provide.',
       ],
     },
     {
@@ -68,7 +68,6 @@ export function buildPowerOfAttorneyContractSectionsEn(d: StoredContractData): C
         'Governed by the Civil Code of the Czech Republic.',
         disputeClauseEn(d),
         'Two copies; amendments in writing.',
-        'Personal data under GDPR.',
       ],
     },
     { title: `${hasPremiumClauses ? 'VII' : 'VI'}. SIGNATURES`, body: [] },

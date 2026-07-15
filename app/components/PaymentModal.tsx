@@ -631,7 +631,7 @@ export default function PaymentModal({
                     {copy?.processing ?? 'Přesměrování na platbu…'}
                   </span>
                 ) : (
-                  copy ? `${copy.payCtaWithPrice} — ${checkoutPrice} →` : `Odemknout a stáhnout — ${checkoutPrice} →`
+                  copy ? `${copy.payCtaWithPrice} — ${checkoutPrice} →` : `Zaplatit a stáhnout — ${checkoutPrice} →`
                 )}
               </button>
 

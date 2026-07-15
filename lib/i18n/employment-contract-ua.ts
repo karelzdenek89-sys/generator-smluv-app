@@ -15,6 +15,10 @@ import { formatRemoteWorkForContract } from '@/lib/i18n/employment-remote-work';
 /** Пояснювальний український переклад чеського трудового договору — не офіційний. */
 export function buildEmploymentContractSectionsUa(d: StoredContractData): ContractSection[] {
   const { hasPremiumClauses } = resolveTierFeatures(d);
+  const requestedNoticeMonths = Number(d.noticePeriod || 2);
+  const effectiveNoticeMonths = Number.isFinite(requestedNoticeMonths)
+    ? Math.max(2, requestedNoticeMonths)
+    : 2;
   const leadershipRole =
     /vedouc|ředitel|manager|director/i.test(String(d.jobTitle ?? '')) ||
     Boolean(d.isManager || d.isExecutive || d.isLeader);
@@ -139,7 +143,7 @@ export function buildEmploymentContractSectionsUa(d: StoredContractData): Contra
       title: 'VII. ПРИПИНЕННЯ',
       body: [
         'Припинення: за згодою, з попередженням, негайно або зі спливом строку (§ 48).',
-        `Строк попередження: ${asText(d.noticePeriod, '2')} місяці з першого дня місяця після вручення (§ 51).`,
+        `Строк попередження становить ${effectiveNoticeMonths} місяці та починається в день вручення; закінчується у день з відповідним числом або в останній день місяця (§ 51). Для повідомлення роботодавця за § 52(f)–(h) законний мінімум становить один місяць. Інший строк або порядок перебігу погоджується письмово лише в межах закону.`,
         'Попередження роботодавця — з підставами (§ 52); працівника — з будь-якої причини або без неї.',
       ],
     },
@@ -148,12 +152,11 @@ export function buildEmploymentContractSectionsUa(d: StoredContractData): Contra
       title: `${hasPremiumClauses ? 'X' : 'VIII'}. ЗАКЛЮЧНІ ПОЛОЖЕННЯ`,
       body: [
         'Договір регулюється трудовим кодексом ЧР та субсидіарно цивільним кодексом.',
-        'Договір має бути укладений до початку роботи (§ 34(3)).',
+        'Договір укладається письмово не пізніше погодженого дня виходу; кожна сторона отримує один примірник (§ 34).',
         disputeClauseLaborUa(),
-        'Два примірники — по одному кожній стороні (§ 37).',
+        'Два примірники — по одному кожній стороні (§ 34(5)).',
         'Зміни лише письмово, з нумерацією та підписами (§ 564 OZ).',
         'Недійсність окремого положення не впливає на решту.',
-        'Персональні дані — GDPR, закон № 110/2019 Зб., § 316 трудового кодексу.',
         'Форс-мажор (§ 2913(2) OZ) — без відповідальності за негрошові зобов’язання; грошові залишаються.',
       ],
     },

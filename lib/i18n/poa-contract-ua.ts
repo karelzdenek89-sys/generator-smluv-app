@@ -5,7 +5,7 @@ import { asText, disputeClauseUa, formatDateCs, today } from '@/lib/i18n/expat-c
 function scopeDescUa(d: StoredContractData): string {
   switch (d.poaType) {
     case 'property':
-      return `правові дії щодо нерухомості: ${asText(d.propertyAddress, 'не вказано')}, включно з купівлею, орендою та кадастром. Увага: часто потрібен нотаріальний підпис.`;
+      return `правові дії щодо нерухомості: ${asText(d.propertyAddress, 'не вказано')}, включно з купівлею, орендою та кадастром. Для представництва в кадастровому провадженні потрібен офіційно засвідчений підпис довірителя; повноваження на конкретний акт має також відповідати § 441(2) ЦК.`;
     case 'court':
       return `представництво у справі ${asText(d.courtName, '—')}, справа ${asText(d.caseNumber, '—')}. У процесах з обов’язковим адвокатом — лише advokát.`;
     case 'company':
@@ -32,7 +32,7 @@ export function buildPowerOfAttorneyContractSectionsUa(d: StoredContractData): C
       body: [
         'Довіреність за § 441–449 цивільного кодексу ЧР № 89/2012 Зб.',
         `Дата: ${d.contractDate ? formatDateCs(d.contractDate) : today()}`,
-        'Шаблон з генератора; органи можуть вимагати нотаріальний підпис або офіційну форму.',
+        'Шаблон з генератора; адресат може вимагати офіційне засвідчення підпису або власну форму, якщо це передбачено законом чи правилами прийняття.',
       ],
     },
     {
@@ -62,7 +62,7 @@ export function buildPowerOfAttorneyContractSectionsUa(d: StoredContractData): C
     },
     {
       title: `${hasPremiumClauses ? 'VI' : 'V'}. ЗАКЛЮЧНІ ПОЛОЖЕННЯ`,
-      body: ['Право Чехії.', disputeClauseUa(d), 'Два примірники.', 'GDPR.'],
+      body: ['Право Чехії.', disputeClauseUa(d), 'Два примірники.'],
     },
     { title: `${hasPremiumClauses ? 'VII' : 'VI'}. ПІДПИСИ`, body: [] },
   ];

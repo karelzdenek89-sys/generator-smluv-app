@@ -53,7 +53,7 @@ type LoanFormData = {
 
   notaryUpsell: boolean;
   tier: 'basic' | 'complete';
-  disputeResolution: 'court' | 'mediation' | 'arbitration';
+  disputeResolution: 'court' | 'mediation';
 };
 
 const inputClass =
@@ -502,14 +502,10 @@ export default function LoanBuilderPage() {
               <section className={cardClass}>
                 <div className="mb-4">
                   <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
-                  <select aria-label="Obecný soud (výchozí)" className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
+                  <select aria-label="Obecný soud (výchozí)" className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' }))}>
                     <option value="court">Obecný soud (výchozí)</option>
                     <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
-                    <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
-                </select>
-                {formData.disputeResolution === 'arbitration' && (
-                  <p className="mt-2 text-xs text-amber-400 leading-relaxed">⚠ U spotřebitelských smluv (B2C) bývá rozhodčí doložka neúčinná dle zák. č. 216/1994 Sb. Doporučujeme ji použít pouze ve vztazích mezi podnikateli (B2B).</p>
-                )}
+                  </select>
                 </div>
               </section>
 

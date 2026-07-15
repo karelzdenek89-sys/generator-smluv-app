@@ -246,7 +246,7 @@ export default function PracovniPage() {
                       <p className="mt-1.5 text-xs text-rose-400 font-medium">⚠ {ui.page.hints.trialMaxWarning(form.isManager ? 8 : 4)}</p>
                     )}
                   </Field>
-                  <Field label={ui.fields.noticePeriod}><input className={inputClass} name="noticePeriod" value={form.noticePeriod} onChange={set} type="number" min="1" max="6" /></Field>
+                  <Field label={ui.fields.noticePeriod}><input className={inputClass} name="noticePeriod" value={form.noticePeriod} onChange={set} type="number" min="2" max="6" /></Field>
                   <label className={`col-span-2 flex items-start gap-3 rounded-2xl border p-4 cursor-pointer transition ${form.isManager ? 'border-amber-500/70 bg-amber-500/10' : 'border-slate-700/80 bg-[#111c31]'}`}>
                     <input type="checkbox" name="isManager" checked={form.isManager} onChange={set} className="mt-1 h-5 w-5 accent-amber-500" />
                     <div>

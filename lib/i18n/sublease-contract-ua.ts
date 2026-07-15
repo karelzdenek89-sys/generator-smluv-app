@@ -81,7 +81,6 @@ export function buildSubleaseContractSectionsUa(d: StoredContractData): Contract
         'Право Чехії, цивільний кодекс.',
         disputeClauseUa(d),
         'Два примірники; зміни письмово.',
-        'Персональні дані — GDPR.',
         'Форс-мажор — § 2913(2) OZ.',
       ],
     },

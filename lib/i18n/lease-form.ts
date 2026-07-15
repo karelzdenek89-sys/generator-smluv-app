@@ -402,7 +402,7 @@ const LEASE_FORM_CS: LeaseFormUi = {
     previewTitle: 'Náhled výstupu',
     previewHint: 'Tady se okamžitě propisují všechny změny z formuláře.',
     protocolTitle: 'Předávací protokol',
-    protocolHint: 'Automaticky generovaná příloha ke smlouvě.',
+    protocolHint: 'Volitelná vyplněná příloha dostupná v objednávce.',
     generateCta: 'Vygenerovat smlouvu →',
     generateHint: 'Zobrazí se náhled dokumentu připraveného k odemčení',
     documentTitle: 'Nájemní smlouva',
@@ -454,7 +454,7 @@ const LEASE_FORM_CS: LeaseFormUi = {
     consentLabel:
       'Přijímám obchodní podmínky a beru na vědomí zásady ochrany osobních údajů. Výslovně souhlasím s okamžitým dodáním digitálního obsahu před uplynutím lhůty pro odstoupení a beru na vědomí, že jeho úplným dodáním ztrácím právo odstoupit dle § 1837 písm. l) OZ.',
     payCta: 'Zaplatit a stáhnout PDF',
-    payCtaWithPrice: 'Odemknout a stáhnout',
+    payCtaWithPrice: 'Zaplatit a stáhnout',
     processing: 'Přesměrování na platbu…',
     secureNote: 'Platba probíhá bezpečně přes Stripe. Údaje karty se na naše servery nedostávají.',
     footerSecure: 'Zabezpečená platba přes Stripe · PDF ihned · bez registrace',
@@ -746,7 +746,7 @@ export const LEASE_FORM_EN: LeaseFormUi = {
     consentLabel:
       'I accept the Terms and acknowledge the Privacy Policy. I expressly consent to immediate delivery of the digital content before the withdrawal period ends and acknowledge that, once fully delivered, I lose the right of withdrawal under § 1837(l) of the Czech Civil Code.',
     payCta: 'Pay and download PDF',
-    payCtaWithPrice: 'Unlock and download',
+    payCtaWithPrice: 'Pay and download',
     processing: 'Redirecting to payment…',
     secureNote: 'Payment is processed securely by Stripe. Card details are not stored on our servers.',
     footerSecure: 'Secure payment via Stripe · PDF available immediately',

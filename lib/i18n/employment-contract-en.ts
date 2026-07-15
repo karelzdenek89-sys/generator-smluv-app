@@ -15,6 +15,10 @@ import { formatRemoteWorkForContract } from '@/lib/i18n/employment-remote-work';
 /** Explanatory English translation of the Czech employment contract — not certified or official. */
 export function buildEmploymentContractSectionsEn(d: StoredContractData): ContractSection[] {
   const { hasPremiumClauses } = resolveTierFeatures(d);
+  const requestedNoticeMonths = Number(d.noticePeriod || 2);
+  const effectiveNoticeMonths = Number.isFinite(requestedNoticeMonths)
+    ? Math.max(2, requestedNoticeMonths)
+    : 2;
   const leadershipRole =
     /vedouc|ředitel|manager|director/i.test(String(d.jobTitle ?? '')) ||
     Boolean(d.isManager || d.isExecutive || d.isLeader);
@@ -139,7 +143,7 @@ export function buildEmploymentContractSectionsEn(d: StoredContractData): Contra
       title: 'VII. TERMINATION',
       body: [
         'Employment may end by agreement, notice, immediate termination or expiry of the agreed term (Section 48 LC).',
-        `Notice period under Section 51 LC: ${asText(d.noticePeriod, '2')} months, starting the first day of the month following delivery of notice.`,
+        `The notice period is ${effectiveNoticeMonths} months and starts on the day notice is delivered; it ends on the corresponding numbered day, or on the last day of the month if there is no such day (Section 51 LC). For employer notice under Section 52(f)–(h), the statutory minimum is one month. Any different duration or running of the period must be agreed in writing under the statutory conditions.`,
         'Employer’s notice must be justified (Section 52 LC). Employee’s notice may be given for any or no stated reason.',
       ],
     },
@@ -148,12 +152,11 @@ export function buildEmploymentContractSectionsEn(d: StoredContractData): Contra
       title: `${hasPremiumClauses ? 'X' : 'VIII'}. FINAL PROVISIONS`,
       body: [
         'This Contract is governed by Act No. 262/2006 Coll., the Labour Code, and subsidiarily by the Civil Code.',
-        'The employer must conclude the Contract before the employee starts work (Section 34(3) LC).',
+        'The Contract must be in writing and each party receives one copy; it is concluded no later than the agreed start date (Section 34 LC).',
         disputeClauseLaborEn(),
-        'The Contract is executed in two copies; each party receives one (Section 37 LC).',
+        'The Contract is executed in two copies; each party receives one (Section 34(5) LC).',
         'Amendments must be in writing, numbered and signed (Section 564 Civil Code).',
         'Invalidity of one provision does not affect the rest.',
-        'Personal data are processed under GDPR, Act No. 110/2019 Coll. and Section 316 LC for the employment relationship and legal obligations.',
         'Neither party is liable for non-monetary failure due to force majeure (Section 2913(2) Civil Code); monetary obligations remain due.',
       ],
     },

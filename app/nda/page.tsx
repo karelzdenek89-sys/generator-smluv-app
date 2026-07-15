@@ -35,7 +35,7 @@ type NdaFormData = {
   specialInfoCategories: string;
   notaryUpsell: boolean;
   tier: 'basic' | 'complete';
-  disputeResolution: 'court' | 'mediation' | 'arbitration';
+  disputeResolution: 'court' | 'mediation';
 };
 
 const inputClass =
@@ -405,13 +405,9 @@ export default function NdaBuilderPage() {
               <section className={cardClass}>
                 <div className="mb-4">
                   <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
-                  <select aria-label="Obecný soud (výchozí)" className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
+                  <select aria-label="Obecný soud (výchozí)" className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' }))}>
                     <option value="court">Obecný soud (výchozí)</option>
                     <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
-                    <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
-                  {formData.disputeResolution === 'arbitration' && (
-                    <p className="mt-2 text-xs text-amber-400 leading-relaxed">⚠ Rozhodčí doložka není platná ve smlouvách se spotřebiteli (zákon č. 216/1994 Sb.). Použijte ji pouze pro vztahy B2B.</p>
-                  )}
                   </select>
                 </div>
               </section>

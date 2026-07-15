@@ -12,7 +12,7 @@ import pdfParse from 'pdf-parse/lib/pdf-parse.js';
 import { renderContractPdf } from '../lib/pdf';
 import { renderContractDocx } from '../lib/docx';
 import { extractPdfText } from '../lib/pdf-text';
-import type { ContractType, StoredContractData, Tier } from '../lib/contracts';
+import { buildContractSections, type ContractType, type StoredContractData, type Tier } from '../lib/contracts';
 
 const CONTRACT_TYPES: ContractType[] = [
   'lease',
@@ -140,6 +140,25 @@ function assertNoForbidden(text: string, label: string) {
   }
 }
 
+function docxXmlToText(xml: string): string {
+  return xml
+    .replace(/<w:tab\s*\/>/g, ' ')
+    .replace(/<w:br\s*\/>/g, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .replace(/\u00a0/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function normalizeComparableText(value: string): string {
+  return value.replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
 async function auditPdf(data: StoredContractData, label: string) {
   const pdf = await renderContractPdf(data);
   assert.ok(pdf.subarray(0, 5).toString('ascii') === '%PDF-', `${label}: invalid PDF header`);
@@ -153,6 +172,13 @@ async function auditPdf(data: StoredContractData, label: string) {
   assert.ok(text.length > 600, `${label}: extracted PDF text too short`);
   assert.match(text, TITLE_MARKERS[data.contractType], `${label}: missing document title marker`);
   assertNoForbidden(text, label);
+  for (const match of text.matchAll(/str\.\s+(\d+)/gi)) {
+    const referencedPage = Number(match[1]);
+    assert.ok(
+      referencedPage >= 1 && referencedPage <= parsed.numpages,
+      `${label}: table of contents references nonexistent page ${referencedPage}/${parsed.numpages}`,
+    );
+  }
   return { bytes: pdf.length, pages: parsed.numpages };
 }
 
@@ -168,9 +194,24 @@ async function auditDocx(data: StoredContractData, label: string) {
   assert.match(documentXml, /<w:tbl>/, `${label}: DOCX should contain structured tables`);
   assert.match(documentXml, /SmlouvaHned\.cz/, `${label}: missing generator footer/notice`);
 
-  const text = documentXml.replace(/<[^>]+>/g, ' ');
+  const text = docxXmlToText(documentXml);
   assert.match(text, TITLE_MARKERS[data.contractType], `${label}: missing DOCX title marker`);
   assertNoForbidden(text, label);
+
+  const comparableText = normalizeComparableText(text);
+  for (const section of buildContractSections(data)) {
+    const title = normalizeComparableText(section.title);
+    assert.ok(comparableText.includes(title), `${label}: DOCX missing section title "${title}"`);
+
+    for (const paragraph of section.body) {
+      const expected = normalizeComparableText(paragraph);
+      if (!expected) continue;
+      assert.ok(
+        comparableText.includes(expected),
+        `${label}: DOCX missing generated paragraph from section "${title}": ${expected.slice(0, 100)}`,
+      );
+    }
+  }
   return { bytes: docx.length };
 }
 

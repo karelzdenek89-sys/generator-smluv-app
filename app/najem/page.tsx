@@ -81,7 +81,7 @@ type LeaseFormData = {
 
   notaryUpsell: boolean;
   tier: 'basic' | 'complete';
-  disputeResolution: 'court' | 'mediation' | 'arbitration';
+  disputeResolution: 'court' | 'mediation';
 };
 
 type RiskLevel = 'low' | 'medium' | 'high';
@@ -1079,14 +1079,10 @@ function LeaseBuilderContent() {
             <section className={cardClass}>
               <div className="mb-2">
                 <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">{ui.form.labels.dispute}</div>
-                <select className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))} aria-label={ui.form.labels.dispute}>
+                <select className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' }))} aria-label={ui.form.labels.dispute}>
                   <option value="court">{ui.form.dispute.court}</option>
                   <option value="mediation">{ui.form.dispute.mediation}</option>
-                  <option value="arbitration">{ui.form.dispute.arbitration}</option>
                 </select>
-                {formData.disputeResolution === 'arbitration' && (
-                  <p className="mt-2 text-xs text-amber-400 leading-relaxed">{ui.form.dispute.arbitrationWarning}</p>
-                )}
               </div>
             </section>
 

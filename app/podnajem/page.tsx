@@ -29,7 +29,7 @@ type FormData = {
   handoverDate: string; keysCount: string; equipmentList: string; knownDefects: string;
   contractDate: string; notaryUpsell: boolean;
   tier: 'basic' | 'complete';
-  disputeResolution: 'court' | 'mediation' | 'arbitration';
+  disputeResolution: 'court' | 'mediation';
 };
 
 const inputClass = 'w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition';
@@ -357,13 +357,7 @@ export default function PodnajemuPage() {
                 <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={handleChange} aria-label={fl('disputeResolution', 'Řešení sporů')}>
                   <option value="court">{fl('dispute_court', 'Obecný soud (výchozí)')}</option>
                   <option value="mediation">{fl('dispute_mediation', 'Mediace (zákon č. 202/2012 Sb.)')}</option>
-                  <option value="arbitration">{fl('dispute_arbitration', 'Rozhodčí řízení (Rozhodčí soud HK ČR)')}</option>
                 </select>
-                {form.disputeResolution === 'arbitration' && (
-                  <p className="mt-2 text-xs text-amber-400 leading-relaxed">
-                    {fl('dispute_arbitration_warning', 'Rozhodčí doložku doporučujeme používat jen ve vztazích, kde je právně vhodná.')}
-                  </p>
-                )}
               </div>
               <SectionTitle index="09" title={sec('s09', 'Vyberte úroveň zpracování dokumentu').title} subtitle={sec('s09', 'Vyberte úroveň zpracování dokumentu', 'Zvolte variantu, která odpovídá vaší situaci a požadovanému rozsahu dokumentu.').subtitle} />
               <BuilderTierSelector

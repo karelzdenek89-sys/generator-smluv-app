@@ -57,8 +57,6 @@ export function disputeClauseEn(d: StoredContractData): string {
   switch (d.disputeResolution) {
     case 'mediation':
       return 'The parties shall first seek an amicable settlement. If no agreement is reached, either party may use mediation under Act No. 202/2012 Coll. on mediation, or bring the dispute before the competent court of the Czech Republic.';
-    case 'arbitration':
-      return 'Any dispute arising from this agreement shall be finally resolved by arbitration before the Arbitration Court attached to the Czech Chamber of Commerce and the Agrarian Chamber of the Czech Republic, under its Rules, by a sole arbitrator appointed by the President of the Arbitration Court. Seat: Prague. Language: Czech (Act No. 216/1994 Coll.). The parties waive the right to have the dispute heard by a general court to which this clause applies.';
     default:
       return 'Disputes shall first be resolved amicably. If no agreement is reached, the dispute shall be decided by the competent court of the Czech Republic.';
   }
@@ -68,8 +66,6 @@ export function disputeClauseUa(d: StoredContractData): string {
   switch (d.disputeResolution) {
     case 'mediation':
       return 'Сторони спочатку намагаються вирішити спір мирно. За відсутності згоди — медіація за законом ЧР № 202/2012 Зб. про медіацію або компетентний суд Чехії.';
-    case 'arbitration':
-      return 'Спори з цього договору остаточно вирішуються в арбітражі при Господарській коморі ЧР та Agrární komoře ČR за її правилами, одним арбітром. Місце: Прага. Мова: чеська (закон № 216/1994 Зб.). Сторони відмовляються від загального суду в межах цієї договірної дільниці.';
     default:
       return 'Спори спочатку вирішуються мирно. За відсутності згоди — компетентний суд Чехії.';
   }
@@ -83,9 +79,9 @@ export function disputeClauseLaborUa(): string {
   return 'Трудові спори вирішує компетентний суд відповідно до § 9(1) закону ЧР № 99/1963 Зб. (OSŘ). Сторони зобов’язуються спочатку намагатися вирішити спір мирно.';
 }
 
-export const DPP_THRESHOLD_NOTE_EN = `For 2026, decisive monthly gross income for social insurance on a work-performance agreement (DPP) with one employer is CZK ${DPP_MONTHLY_THRESHOLD_2026_CZK.toLocaleString('cs-CZ')}. When reached or exceeded, insurance participation and related employer obligations arise. The employer reports the worker in regular monthly filings to the Czech Social Security Administration (ČSSZ).`;
+export const DPP_THRESHOLD_NOTE_EN = `For 2026, decisive monthly gross income for insurance participation on a work-performance agreement (DPP) with one employer is CZK ${DPP_MONTHLY_THRESHOLD_2026_CZK.toLocaleString('cs-CZ')}. When reached or exceeded, insurance participation and related employer obligations arise; below the threshold the maximum is therefore CZK 11,999. The employer fulfils reporting duties through the Single Monthly Employer Report (JMHZ) under current ČSSZ guidance.`;
 
-export const DPP_THRESHOLD_NOTE_UA = `У 2026 році вирішальний місячний брутто-дохід для участі в соціальному страхуванні за DPP у одного роботодавця становить ${DPP_MONTHLY_THRESHOLD_2026_CZK.toLocaleString('cs-CZ')} Kč. Після досягнення цієї суми виникають зобов’язання зі страхування та пов’язані обов’язки роботодавця. Роботодавець подає звітність до ČSSZ щомісяця.`;
+export const DPP_THRESHOLD_NOTE_UA = `У 2026 році вирішальний місячний брутто-дохід для участі у страхуванні за DPP у одного роботодавця становить ${DPP_MONTHLY_THRESHOLD_2026_CZK.toLocaleString('cs-CZ')} Kč. Після досягнення цієї суми виникають страхування та пов’язані обов’язки; нижче порогу максимум становить 11 999 Kč. Роботодавець виконує звітні обов’язки через Єдиний місячний звіт роботодавця (JMHZ) за актуальними правилами ČSSZ.`;
 
 export const DPP_HOURS_LIMIT_EN = `Work under a DPP must not exceed ${DPP_MAX_HOURS_PER_YEAR} hours per calendar year with one employer (Section 75(2) of the Labour Code).`;
 

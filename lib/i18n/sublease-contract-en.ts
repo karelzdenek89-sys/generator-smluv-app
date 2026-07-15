@@ -98,7 +98,6 @@ export function buildSubleaseContractSectionsEn(d: StoredContractData): Contract
         'Governed by the Civil Code of the Czech Republic.',
         disputeClauseEn(d),
         'Two copies; amendments in writing, numbered and signed.',
-        'Personal data under GDPR and Act No. 110/2019 Coll.',
         'Force majeure under Section 2913(2) Civil Code; monetary obligations remain due.',
       ],
     },

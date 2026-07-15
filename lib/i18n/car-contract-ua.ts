@@ -54,7 +54,7 @@ export function buildCarContractSectionsUa(d: StoredContractData): ContractSecti
       title: 'IV. ПЕРЕДАЧА',
       body: [
         `Дата: ${formatDateCs(d.handoverDate, 'при підписі')}.`,
-        'Покупець реєструє авто та страхує після переходу власності.',
+        'Сторони подають заяву про зміну власника протягом 10 робочих днів. Покупець без перерви оформлює власне обов’язкове страхування до використання або реєстрації авто; страхування продавця не переходить.',
       ],
     },
     {
@@ -64,7 +64,6 @@ export function buildCarContractSectionsUa(d: StoredContractData): ContractSecti
         disputeClauseUa(d),
         'Два примірники.',
         'Продавець заявляє про відсутність застави/виконавчого провадження.',
-        'GDPR.',
         'Форс-мажор § 2913(2) OZ.',
       ],
     },

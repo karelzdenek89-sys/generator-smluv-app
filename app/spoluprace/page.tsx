@@ -23,7 +23,7 @@ type FormData = {
   nonCompete: boolean; nonCompetePeriod: string; ndaPenalty: string;
   contractDate: string; notaryUpsell: boolean;
   tier: 'basic' | 'complete';
-  disputeResolution: 'court' | 'mediation' | 'arbitration';
+  disputeResolution: 'court' | 'mediation';
 };
 
 const inputClass = 'site-input';
@@ -281,11 +281,7 @@ export default function SpolupraceePage() {
                   <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set} aria-label="Řešení sporů">
                     <option value="court">Obecný soud (výchozí)</option>
                     <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
-                    <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
                 </select>
-                {form.disputeResolution === 'arbitration' && (
-                  <p className="mt-2 text-xs text-amber-400 leading-relaxed">⚠ U spotřebitelských smluv (B2C) bývá rozhodčí doložka neúčinná dle zák. č. 216/1994 Sb. Doporučujeme ji použít pouze ve vztazích mezi podnikateli (B2B).</p>
-                )}
                 </div>
                 <div className="mt-6">
                   <BuilderTierSelector

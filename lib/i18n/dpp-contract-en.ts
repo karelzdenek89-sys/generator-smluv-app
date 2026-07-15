@@ -104,7 +104,7 @@ export function buildDppContractSectionsEn(d: StoredContractData): ContractSecti
       title: 'IV. REMUNERATION',
       body: [
         remunerationDesc,
-        'DPP remuneration is generally exempt from social and health insurance if monthly income with one employer stays below the statutory threshold.',
+        'Insurance participation does not arise if monthly income with one employer remains below the statutory threshold.',
         DPP_THRESHOLD_NOTE_EN,
         d.paymentAccount
           ? `Payment to account ${asText(d.paymentAccount)} within ${asText(d.paymentDays, '15')} days after completion / month-end.`
@@ -115,7 +115,7 @@ export function buildDppContractSectionsEn(d: StoredContractData): ContractSecti
       title: 'V. PERFORMANCE CONDITIONS',
       body: [
         'The worker shall perform work personally, properly and follow the employer’s instructions.',
-        'Standard full-time working-time rules apply only to a limited extent (Section 77(2) LC).',
+        'Working-time, rest-period, shift-schedule, work-obstacle and premium-pay rules apply to DPP as provided by the Labour Code. Only the institutions expressly excluded by Section 77(2), including transfer, temporary assignment and severance, do not apply.',
         'Holiday entitlement may arise under Section 77a LC if the agreement lasts at least 4 weeks with the same employer and the worker performs at least 20 hours (four times the fictitious weekly working time); calculation under Sections 213 and 77a.',
         'The employer must draw up a written shift schedule and inform the worker at least 3 days before a shift unless otherwise agreed in writing.',
         'Work may be performed on site, at the agreed place or remotely if the task allows and confidentiality and data security are protected.',
@@ -131,7 +131,6 @@ export function buildDppContractSectionsEn(d: StoredContractData): ContractSecti
         'Two copies; each party receives one (Section 77(1) LC).',
         'Amendments in writing, numbered and signed.',
         'Invalidity of one clause does not affect the rest of the agreement.',
-        'Personal data processed under GDPR, Act No. 110/2019 Coll. and Section 316 LC; the worker has access, rectification, erasure and complaint rights to the Office for Personal Data Protection (uoou.cz).',
         'Force majeure under Section 2913(2) Civil Code excuses non-monetary breach; monetary obligations remain. The affected party must notify the other in writing without delay.',
       ],
     },

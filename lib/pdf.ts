@@ -281,7 +281,10 @@ function drawFooter(doc: jsPDF, docId?: string, hash?: string): void {
     // muted color keeps it decent and non-intrusive.
     doc.setFont('Roboto', 'normal');
     doc.setFontSize(5.5);
-    const disclaimerLines = doc.splitTextToSize(LEGAL_STATE_DISCLAIMER, textWidth);
+    const footerNotice = i === 1
+      ? LEGAL_STATE_DISCLAIMER
+      : 'Dokument byl vytvořen automatizovaně podle údajů zadaných uživatelem.';
+    const disclaimerLines = doc.splitTextToSize(footerNotice, textWidth);
     const firstLine = Array.isArray(disclaimerLines) ? disclaimerLines[0] : String(disclaimerLines);
     doc.text(firstLine, pageWidth / 2, pageHeight - 4, { align: 'center' });
 
@@ -650,76 +653,6 @@ function renderExpatTranslationAnnex(
 //  TABLE OF CONTENTS
 // ─────────────────────────────────────────────
 
-async function measureSectionPages(
-  data: StoredContractData,
-  sections: ReturnType<typeof buildContractSections>,
-  meta: ReturnType<typeof getContractMeta>,
-  labelLeft: string,
-  labelRight: string,
-  extraSigLabel?: string,
-  extraSigName?: string,
-): Promise<Map<string, number>> {
-  const scratch = new jsPDF({ unit: 'mm', format: 'a4', compress: false });
-  await ensurePdfFonts(scratch);
-
-  const pageWidth = scratch.internal.pageSize.getWidth();
-  const contentWidth = pageWidth - MARGIN * 2;
-  const pageMap = new Map<string, number>();
-
-  drawHeader(scratch, meta.title, true);
-  let y = 40;
-  y = drawSummaryBox(scratch, data, data.contractType, y);
-  let inProtocol = false;
-
-  for (const section of sections) {
-    if (isProtocolSection(section.title) && !inProtocol) {
-      inProtocol = true;
-      scratch.addPage();
-      drawHeader(scratch, meta.title, false);
-      y = 22;
-    }
-
-    if (isSignatureSection(section.title)) {
-      y = drawSignatureSection(scratch, section.title, labelLeft, labelRight, y, meta.title, extraSigLabel, extraSigName);
-      continue;
-    }
-
-    const orphanBuffer = section.body.length > 0 ? 32 : 20;
-    if (y + orphanBuffer > 272) {
-      scratch.addPage();
-      drawHeader(scratch, meta.title, false);
-      y = 22;
-    }
-
-    y += 4;
-    pageMap.set(
-      section.title,
-      (scratch.internal as unknown as { getCurrentPageInfo: () => { pageNumber: number } }).getCurrentPageInfo().pageNumber,
-    );
-
-    y = drawSectionTitle(scratch, section.title, y, contentWidth, inProtocol);
-
-    const bodyLines = section.body.slice(0, 80);
-    for (let i = 0; i < bodyLines.length; i++) {
-      const raw = bodyLines[i] != null ? String(bodyLines[i]) : '';
-      const safe = raw.length > 800 ? raw.substring(0, 800) + '…' : (raw.trim() || ' ');
-      const split = scratch.splitTextToSize(safe, contentWidth);
-      const lh = split.length * BODY_LEAD + 2;
-      const isLast = i === bodyLines.length - 1;
-      if (isLast ? y + lh > 272 : y + lh + 8 > 272) {
-        scratch.addPage();
-        drawHeader(scratch, meta.title, false);
-        y = 22;
-      }
-      scratch.text(split, MARGIN, y, { align: 'justify', maxWidth: contentWidth });
-      y += lh;
-    }
-    y += SECTION_GAP;
-  }
-
-  return pageMap;
-}
-
 function drawTableOfContents(
   doc: jsPDF,
   sections: { title: string }[],
@@ -728,6 +661,7 @@ function drawTableOfContents(
   pageMap?: Map<string, number>,
   tocOffset = 0,
   startY?: number,
+  useCurrentPage = false,
 ): number {
   const pageWidth = doc.internal.pageSize.getWidth();
   const contentWidth = pageWidth - MARGIN * 2;
@@ -739,6 +673,8 @@ function drawTableOfContents(
     doc.setDrawColor(RULE_R, RULE_G, RULE_B);
     doc.setLineWidth(0.2);
     doc.line(MARGIN, y - 3, MARGIN + contentWidth, y - 3);
+  } else if (useCurrentPage) {
+    y = 22;
   } else {
     doc.addPage();
     drawHeader(doc, title, false, docId);
@@ -968,7 +904,7 @@ function drawLoanSchedule(
   y += 8;
 
   // Tabulka hlavička
-  const colX = [MARGIN, MARGIN + 14, MARGIN + 50, MARGIN + 85, MARGIN + 120, MARGIN + 150];
+  const colX = [MARGIN, MARGIN + 14, MARGIN + 50, MARGIN + 85, MARGIN + 110];
   doc.setFont('Roboto', 'bold');
   doc.setFontSize(8);
   doc.setTextColor(INK_R, INK_G, INK_B);
@@ -2018,19 +1954,19 @@ function getSigningInstructions(contractType: ContractType): string[] {
     '• Datum a místo podpisu vyplňte v den skutečného podpisu.',
     '',
     '3. ÚŘEDNÍ OVĚŘENÍ (VOLITELNÉ)',
-    '• U smluv s vyšší hodnotou (nad 50 000 Kč) zvažte ověření podpisů na Czech POINTu nebo u notáře.',
-    '• Ověření zvyšuje důkazní hodnotu dokumentu. Cena: přibližně 30 Kč za podpis na Czech POINTu.',
+    '• Ověření podpisu zvažte tam, kde je důležitá jistota totožnosti nebo to vyžaduje zákon, úřad či protistrana.',
+    '• Legalizaci podpisu zajišťuje například Czech POINT nebo notář; ověřte požadavky pro konkrétní úkon.',
     '',
     '4. ARCHIVACE',
-    '• Originál uchovejte po celou dobu platnosti smlouvy a nejméně 3 roky po jejím skončení (§ 629 OZ).',
+    '• Originál uchovejte po celou dobu plnění a alespoň po dobu, kdy mohou být uplatněny nároky; obecná promlčecí lhůta je 3 roky, u některých nároků je delší.',
     '• Pořiďte si digitální zálohu (scan nebo fotografie).',
     '',
     '5. ELEKTRONICKÝ PODPIS',
     '• Smlouvu lze podepsat elektronicky dle nařízení EU č. 910/2014 (eIDAS) a zák. č. 297/2016 Sb.',
-    '• Kvalifikovaný elektronický podpis (QES) má účinky vlastnoručního podpisu; je plně uznáván soudy i orgány EU.',
-    '• Zaručený elektronický podpis (AES) je platný, avšak jeho důkazní síla v případě sporu je nižší než u QES.',
-    '• Poskytovatelé: Signi.cz, iSmlouva.cz, DocuSign, Adobe Sign — ověřte soulad s eIDAS.',
-    '• Smlouvy vyžadující notářsky ověřený podpis (nemovitosti, katastrální vklad) je elektronicky možné uzavřít pouze s QES.',
+    '• Kvalifikovaný elektronický podpis (QES) má podle eIDAS účinek rovnocenný vlastnoručnímu podpisu.',
+    '• Jinému elektronickému podpisu nelze upřít právní účinek jen proto, že je elektronický; jeho důkazní síla závisí na způsobu identifikace, integritě dokumentu a auditní stopě.',
+    '• Pokud je vyžadován úředně ověřený podpis, ověřte zvláštní podmínky pro jeho elektronické nahrazení; samotný běžný elektronický podpis nemusí stačit.',
+    '• U listin pro katastr nemovitostí postupujte podle aktuálních technických a podpisových požadavků ČÚZK.',
   ];
 
   const specific: Record<string, string[]> = {
@@ -2132,7 +2068,7 @@ function getSigningInstructions(contractType: ContractType): string[] {
     gift: [
       '',
       '6. ZVLÁŠTNÍ POKYNY PRO DAROVACÍ SMLOUVU',
-      '• NEMOVITOST: Podpisy obou stran musí být úředně ověřeny (notář nebo Czech POINT). Bez ověření katastr vklad zamítne.',
+      '• NEMOVITOST: Podpisy na vkladové listině se standardně úředně ověřují. Pokud ověřeny nejsou, může být nutné jejich pravost dodatečně prokázat podle požadavků katastru.',
       '• U movitých věcí a peněz dochází k převodu vlastnictví předáním nebo převodem na účet.',
       '• Obdarovaný může být povinen uvést dar v daňovém přiznání; ověřte podmínky osvobození.',
     ],
@@ -2446,12 +2382,15 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
 
   let inProtocol   = false;
   let endOfTextDrawn = false;
+  const sectionPageMap = hasPremiumClauses ? new Map<string, number>() : undefined;
+  const currentPageNumber = () => (
+    doc.internal as unknown as { getCurrentPageInfo: () => { pageNumber: number } }
+  ).getCurrentPageInfo().pageNumber;
 
   // ── TOC (premium tiers) — page 2 standalone; content starts page 3 ──
   if (hasPremiumClauses) {
-    const sectionPageMap = await measureSectionPages(data, sections, meta, labelLeft, labelRight, extraSigLabel, extraSigName);
-    // tocOffset=2: scratch content starts at scratch-page 1; real content starts at page 3 → offset by 2
-    drawTableOfContents(doc, sections, meta.title, docId, sectionPageMap, 2);
+    doc.addPage();
+    drawHeader(doc, meta.title, false, docId);
     doc.addPage();
     drawHeader(doc, meta.title, false, docId);
     y = 22;
@@ -2461,6 +2400,7 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
   for (const section of sections) {
     // Lease handover protocol → custom form renderer (replaces generic body)
     if (isLeaseProtocol(section.title)) {
+      sectionPageMap?.set(section.title, currentPageNumber() + 1);
       drawLeaseProtocolForm(doc, data, meta.title, docId);
       inProtocol = true;
       continue;
@@ -2468,6 +2408,7 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
 
     // Loan cash-handover receipt → custom form renderer (Complete + hotovost)
     if (isLoanCashReceipt(section.title)) {
+      sectionPageMap?.set(section.title, currentPageNumber() + 1);
       drawLoanCashReceipt(doc, data, meta.title, docId);
       inProtocol = true;
       continue;
@@ -2476,6 +2417,7 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
     // Loan amortization schedule → custom table renderer (Complete + úročené splátky)
     if (isLoanSchedule(section.title)) {
       const annexNumber = data.transferMethod !== 'transfer' ? 2 : 1;
+      sectionPageMap?.set(section.title, currentPageNumber() + 1);
       drawLoanSchedule(doc, data, meta.title, docId, annexNumber);
       inProtocol = true;
       continue;
@@ -2483,6 +2425,7 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
 
     // DPP delivery and acceptance protocol → custom form (Professional+)
     if (isDppDeliveryProtocol(section.title)) {
+      sectionPageMap?.set(section.title, currentPageNumber() + 1);
       drawDppDeliveryProtocol(doc, data, meta.title, docId);
       inProtocol = true;
       continue;
@@ -2521,6 +2464,7 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
       doc.setTextColor(BODY_R, BODY_G, BODY_B);
     }
 
+    sectionPageMap?.set(section.title, currentPageNumber());
     y += 4;
     y = drawSectionTitle(doc, section.title, y, contentWidth, inProtocol);
 
@@ -2569,6 +2513,13 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
   // ── Complete-tier appendix pages ──
   if (hasCompletePages) {
     drawCompleteTierPages(doc, data.contractType, contentWidth, meta.title, docId, normalizeLocale(data.lang));
+  }
+
+  if (sectionPageMap) {
+    const finalPage = currentPageNumber();
+    doc.setPage(2);
+    drawTableOfContents(doc, sections, meta.title, docId, sectionPageMap, 0, undefined, true);
+    doc.setPage(finalPage);
   }
 
   // ── Footers (post-processing pass) ──

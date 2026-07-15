@@ -122,7 +122,7 @@ export default function SmlouvaOZapujcce2026Page() {
         <h3 className="mb-3 text-lg font-black text-white">Doporučená ujednání navíc</h3>
         <ul className="mb-4 space-y-2 text-slate-400">
           <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">✓</span><span><strong className="text-slate-300">Smluvní pokuta za prodlení</strong> — jinak máte nárok pouze na zákonný úrok z prodlení</span></li>
-          <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">✓</span><span><strong className="text-slate-300">Rozhodčí nebo soudní doložka</strong> — jak se řeší spory</span></li>
+          <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">✓</span><span><strong className="text-slate-300">Soudní doložka</strong> — jak se řeší spory</span></li>
           <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">✓</span><span><strong className="text-slate-300">Uznání závazku</strong> — dlužník výslovně potvrdí, že dluh existuje a ve výše uvedené výši</span></li>
         </ul>
 

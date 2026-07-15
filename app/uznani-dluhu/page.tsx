@@ -22,7 +22,7 @@ type FormData = {
   bankAccount: string; variableSymbol: string; latePenalty: string;
   contractDate: string; notaryUpsell: boolean;
   tier: 'basic' | 'complete';
-  disputeResolution: 'court' | 'mediation' | 'arbitration';
+  disputeResolution: 'court' | 'mediation';
 };
 
 const inputClass = 'site-input';
@@ -240,11 +240,7 @@ export default function UznanidluhuPage() {
                 <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set} aria-label="Řešení sporů">
                   <option value="court">Obecný soud (výchozí)</option>
                   <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
-                  <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
                 </select>
-                {form.disputeResolution === 'arbitration' && (
-                  <p className="mt-2 text-xs text-amber-400 leading-relaxed">⚠ Rozhodčí doložka není platná ve smlouvách se spotřebiteli (zákon č. 216/1994 Sb.). Použijte ji pouze pro vztahy B2B.</p>
-                )}
               </div>
               {/* === Vyberte úroveň zpracování dokumentu === */}
               <div className="mt-6">

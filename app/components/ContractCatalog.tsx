@@ -54,7 +54,7 @@ const groups: ContractGroup[] = [
         href:        '/najem',
         price:       'od 99 Kč',
         accentKey:   'lease',
-        highlight:   'Předávací protokol v ceně',
+        highlight:   'Předání a stav bytu',
         paragraph:   '§ 2201 a násl. OZ',
         popular:     true,
       },
@@ -189,7 +189,7 @@ const groups: ContractGroup[] = [
       },
       {
         title:       'Uznání dluhu',
-        description: 'Pro písemné uznání závazku dlužníkem. Obnovuje promlčecí lhůtu na 10 let a posiluje pozici věřitele.',
+        description: 'Pro písemné uznání závazku dlužníkem. Zakládá zpravidla desetiletou promlčecí dobu a posiluje pozici věřitele.',
         href:        '/uznani-dluhu',
         price:       'od 99 Kč',
         accentKey:   'debt',
@@ -202,7 +202,7 @@ const groups: ContractGroup[] = [
         href:        '/plna-moc',
         price:       'od 99 Kč',
         accentKey:   'poa',
-        highlight:   'Ověřená verze pro úřady',
+        highlight:   'Pokyny k ověření podpisu',
         paragraph:   '§ 441 OZ',
       },
     ],
@@ -241,7 +241,10 @@ function ContractCard({ contract }: { contract: ContractItem }) {
           {contract.description}
         </p>
 
-        <div className="mt-auto border-t border-white/8 pt-3 flex items-center justify-end">
+        <div className="mt-auto border-t border-white/8 pt-3 flex items-center justify-between gap-3">
+          <span className="text-xs font-black text-white">
+            {contract.price}
+          </span>
           <span className="text-xs font-bold uppercase tracking-[0.12em] text-amber-400 transition group-hover:text-amber-300 flex items-center gap-1">
             Vytvořit
             <span className="transition group-hover:translate-x-0.5">→</span>

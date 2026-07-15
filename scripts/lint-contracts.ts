@@ -45,6 +45,26 @@ const FORBIDDEN_PATTERNS: Array<{ rule: string; pattern: RegExp; whitelist?: Reg
     pattern: /\bd\.\w+(?:Penalty|Fee|Damage)\w*\s*\|\|\s*\d{3,}/,
     whitelist: [/Math\.(round|max|min)/],
   },
+  {
+    rule: 'consumer-arbitration-clause',
+    pattern: /case ['"]arbitration['"]|vzdávají práva na projednání věci obecným soudem/,
+  },
+  {
+    rule: 'stale-five-year-work-warranty',
+    pattern: /zákonná minimální záruční lhůta 5 let/,
+  },
+  {
+    rule: 'stale-gift-revocation-period',
+    pattern: /Právo na vrácení daru se promlčuje ve lhůtě tří let/,
+  },
+  {
+    rule: 'stale-employment-notice-start',
+    pattern: /Výpovědní doba počíná prvním dnem kalendářního měsíce/,
+  },
+  {
+    rule: 'false-insurance-transfer',
+    pattern: /pojištění vozidla přecházejí ke dni přechodu vlastnictví/,
+  },
 ];
 
 function lintSource(file: string): Finding[] {

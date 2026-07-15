@@ -61,7 +61,7 @@ export function buildCarContractSectionsEn(d: StoredContractData): ContractSecti
       body: [
         `Handover date: ${formatDate(d.handoverDate, 'on signing')}.`,
         d.keysCount ? `Keys: ${asText(d.keysCount)}.` : '',
-        'Buyer shall register the vehicle and arrange compulsory insurance after title passes.',
+        'The parties shall apply for registration of the ownership change within 10 working days. The buyer shall arrange compulsory liability insurance without any coverage gap before using or registering the vehicle; the seller’s insurance does not transfer.',
       ].filter(Boolean) as string[],
     },
     {
@@ -71,7 +71,6 @@ export function buildCarContractSectionsEn(d: StoredContractData): ContractSecti
         disputeClauseEn(d),
         'Two copies; amendments in writing.',
         'Seller declares no execution, lien or disposition restriction known to them.',
-        'Personal data under GDPR.',
         'Force majeure under Section 2913(2) Civil Code.',
       ],
     },
