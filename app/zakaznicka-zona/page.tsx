@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 
 type Order = {
   sessionId: string;
@@ -39,8 +38,7 @@ const TTL_LABEL: Record<string, string> = {
 };
 
 export default function CustomerZone() {
-  const searchParams = useSearchParams();
-  const portalAccess = searchParams.get('access')?.trim() ?? '';
+  const [portalAccess, setPortalAccess] = useState('');
 
   const [email, setEmail] = useState('');
   const [sessionId, setSessionId] = useState('');
@@ -50,6 +48,23 @@ export default function CustomerZone() {
   const [errorMsg, setErrorMsg] = useState('');
   const [resolvedEmail, setResolvedEmail] = useState('');
   const autoFetchedAccess = useRef('');
+
+  useEffect(() => {
+    const currentUrl = new URL(window.location.href);
+    const hashAccess = new URLSearchParams(currentUrl.hash.replace(/^#/, '')).get('access')?.trim() ?? '';
+    const legacyAccess = currentUrl.searchParams.get('access')?.trim() ?? '';
+    const access = hashAccess || legacyAccess;
+    let accessTimer: number | null = null;
+    if (access) {
+      accessTimer = window.setTimeout(() => setPortalAccess(access), 0);
+      currentUrl.searchParams.delete('access');
+      currentUrl.hash = '';
+      window.history.replaceState(null, '', `${currentUrl.pathname}${currentUrl.search}`);
+    }
+    return () => {
+      if (accessTimer !== null) window.clearTimeout(accessTimer);
+    };
+  }, []);
 
   const applyOrders = useCallback((nextOrders: Order[], displayEmail = '') => {
     setOrders(nextOrders);
@@ -65,7 +80,12 @@ export default function CustomerZone() {
       setState('loading');
       setErrorMsg('');
       try {
-        const res = await fetch(`/api/orders?access=${encodeURIComponent(access)}`, { cache: 'no-store' });
+        const res = await fetch('/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          cache: 'no-store',
+          body: JSON.stringify({ access }),
+        });
         if (res.status === 429) {
           setErrorMsg('Příliš mnoho dotazů. Zkuste to za chvíli.');
           setState('error');
@@ -109,8 +129,12 @@ export default function CustomerZone() {
     setState('loading');
     setErrorMsg('');
     try {
-      const qs = new URLSearchParams({ email: trimmedEmail, session_id: trimmedSession });
-      const res = await fetch(`/api/orders?${qs.toString()}`, { cache: 'no-store' });
+      const res = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        cache: 'no-store',
+        body: JSON.stringify({ email: trimmedEmail, sessionId: trimmedSession }),
+      });
       if (res.status === 429) {
         setErrorMsg('Příliš mnoho dotazů. Zkuste to za chvíli.');
         setState('error');
@@ -145,9 +169,9 @@ export default function CustomerZone() {
     const order = orders.find((item) => item.sessionId === sessionId);
     const lang = downloadLang[sessionId] ?? 'cs';
     const langQuery = lang === 'cs' ? '' : `&lang=${encodeURIComponent(lang)}`;
-    const tokenQuery = order?.downloadToken ? `&token=${encodeURIComponent(order.downloadToken)}` : '';
+    const tokenFragment = order?.downloadToken ? `#token=${encodeURIComponent(order.downloadToken)}` : '';
     const formatQuery = format === 'docx' ? '&format=docx' : '';
-    return `/api/contracts/download?session_id=${encodeURIComponent(sessionId)}${langQuery}${tokenQuery}${formatQuery}`;
+    return `/stahnout?session_id=${encodeURIComponent(sessionId)}${langQuery}${formatQuery}${tokenFragment}`;
   };
 
   return (

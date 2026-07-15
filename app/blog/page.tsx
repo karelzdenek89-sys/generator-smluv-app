@@ -130,7 +130,7 @@ export default function BlogIndexPage() {
         <h2 id="expat-guides-heading" className="sr-only">
           Guides for foreigners in English and Ukrainian
         </h2>
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="grid min-w-0 gap-6 lg:grid-cols-2 [&>*]:min-w-0">
           <ExpatBlogLocalePanel
             locale="en"
             hub={EXPAT_BLOG_HUB_EN}

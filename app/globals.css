@@ -495,7 +495,8 @@ body {
   transition: border-color 150ms, box-shadow 150ms;
 }
 .site-input::placeholder {
-  color: rgba(100, 116, 139, 0.5);
+  color: #94a3b8;
+  opacity: 1;
 }
 .site-input:focus {
   border-color: rgba(245, 158, 11, 0.6);
@@ -516,7 +517,13 @@ body {
   transition: border-color 150ms, box-shadow 150ms;
 }
 .site-textarea::placeholder {
-  color: rgba(100, 116, 139, 0.5);
+  color: #94a3b8;
+  opacity: 1;
+}
+
+.contract-builder :is(input, textarea)::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1;
 }
 .site-textarea:focus {
   border-color: rgba(245, 158, 11, 0.6);

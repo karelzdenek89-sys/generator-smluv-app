@@ -1,12 +1,13 @@
 ﻿'use client';
 
 import { useMemo, useState } from 'react';
+import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import type { StoredContractData } from '@/lib/contracts';
-import PaymentModal from '@/app/components/PaymentModal';
+import PaymentModal from '@/app/components/LazyPaymentModal';
 import { BuilderLocaleNotice, useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
 import { getEmploymentFormUi } from '@/lib/i18n/expat-builder-forms';
 import { employmentRiskWarnings, employmentValidationFields } from '@/lib/i18n/expat-builder-risk';
@@ -113,7 +114,7 @@ export default function PracovniPage() {
     }
   }, [form, builderLocale]);
 
-  const handlePayment = async (addOns: string[] = []) => {
+  const handlePayment = async (addOns: string[], authorization: CheckoutAuthorization) => {
     // Validace § 34 ZP — pracovní smlouva BEZ druhu práce, místa a dne nástupu
     // je ze zákona neplatná. Tato pole jsou zde tvrdě povinná.
     const missing: string[] = [];
@@ -131,7 +132,7 @@ export default function PracovniPage() {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contractType: 'employment', tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', lang: builderLocale, payload: { ...form, contractType: 'employment', lang: builderLocale }, email: form.employerEmail }),
+        body: JSON.stringify({ contractType: 'employment', deliveryEmail: authorization.deliveryEmail, consent: authorization.consent, tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', lang: builderLocale, payload: { ...form, contractType: 'employment', lang: builderLocale } }),
       });
       const data = await res.json();
       if (!res.ok || !data?.url) throw new Error();
@@ -190,7 +191,7 @@ export default function PracovniPage() {
               <section className={cardClass}>
                 <SectionTitle index="01" title={ui.sections.employer.title} subtitle={ui.sections.employer.subtitle} />
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label={ui.fields.employerName}><input className={inputClass} name="employerName" value={form.employerName} onChange={set} placeholder={ui.page.placeholders.employerName} /></Field>
+                  <Field label={ui.fields.employerName}><input className={inputClass} name="employerName" value={form.employerName} onChange={set} placeholder={ui.page.placeholders.employerName} required /></Field>
                   <Field label={ui.fields.employerIco}><input className={inputClass} name="employerIco" value={form.employerIco} onChange={set} placeholder={ui.page.placeholders.employerIco} /></Field>
                   <Field label={ui.fields.employerAddress}><input className={inputClass} name="employerAddress" value={form.employerAddress} onChange={set} placeholder={ui.page.placeholders.employerAddress} /></Field>
                   <Field label={ui.fields.employerEmail}><input className={inputClass} name="employerEmail" value={form.employerEmail} onChange={set} type="email" placeholder={ui.page.placeholders.employerEmail} /></Field>
@@ -200,7 +201,7 @@ export default function PracovniPage() {
               <section className={cardClass}>
                 <SectionTitle index="02" title={ui.sections.employee.title} />
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label={ui.fields.employeeName}><input className={inputClass} name="employeeName" value={form.employeeName} onChange={set} placeholder={ui.page.placeholders.employeeName} /></Field>
+                  <Field label={ui.fields.employeeName}><input className={inputClass} name="employeeName" value={form.employeeName} onChange={set} placeholder={ui.page.placeholders.employeeName} required /></Field>
                   <Field label={ui.fields.employeeBirth}><input className={inputClass} name="employeeBirth" value={form.employeeBirth} onChange={set} placeholder={ui.page.placeholders.employeeBirth} /></Field>
                   <Field label={ui.fields.employeeAddress}><input className={inputClass} name="employeeAddress" value={form.employeeAddress} onChange={set} placeholder={ui.page.placeholders.employeeAddress} /></Field>
                   <Field label={ui.fields.employeeEmail}><input className={inputClass} name="employeeEmail" value={form.employeeEmail} onChange={set} type="email" placeholder={ui.page.placeholders.employeeEmail} /></Field>
@@ -210,8 +211,8 @@ export default function PracovniPage() {
               <section className={cardClass}>
                 <SectionTitle index="03" title={ui.sections.job.title} subtitle={ui.sections.job.subtitle} />
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label={ui.fields.jobTitle}><input className={inputClass} name="jobTitle" value={form.jobTitle} onChange={set} placeholder={ui.page.placeholders.jobTitle} /></Field>
-                  <Field label={ui.fields.workPlace}><input className={inputClass} name="workPlace" value={form.workPlace} onChange={set} placeholder={ui.page.placeholders.workPlace} /></Field>
+                  <Field label={ui.fields.jobTitle}><input className={inputClass} name="jobTitle" value={form.jobTitle} onChange={set} placeholder={ui.page.placeholders.jobTitle} required /></Field>
+                  <Field label={ui.fields.workPlace}><input className={inputClass} name="workPlace" value={form.workPlace} onChange={set} placeholder={ui.page.placeholders.workPlace} required /></Field>
                   <div className="sm:col-span-2">
                     <Field label={ui.fields.jobDescription}>
                       <textarea className="w-full min-h-[80px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="jobDescription" value={form.jobDescription} onChange={set} placeholder={ui.page.placeholders.jobDescription} />
@@ -237,7 +238,7 @@ export default function PracovniPage() {
                       <option value="fixed">{ui.options.fixed}</option>
                     </select>
                   </Field>
-                  <Field label={ui.fields.startDate}><input className={inputClass} name="startDate" value={form.startDate} onChange={set} type="date" /></Field>
+                  <Field label={ui.fields.startDate}><input className={inputClass} name="startDate" value={form.startDate} onChange={set} type="date" required /></Field>
                   {form.employmentType === 'fixed' && <Field label={ui.fields.endDate}><input className={inputClass} name="endDate" value={form.endDate} onChange={set} type="date" /></Field>}
                   <Field label={ui.fields.trialMonths}>
                     <input className={inputClass} name="trialPeriodMonths" value={form.trialPeriodMonths} onChange={set} type="number" min="0" max="8" />

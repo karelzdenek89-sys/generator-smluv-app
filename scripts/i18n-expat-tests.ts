@@ -221,7 +221,9 @@ function testOrdersApiSecurity() {
   );
   const customerZone = read('app/zakaznicka-zona/page.tsx');
   assert.doesNotMatch(customerZone, /\/api\/orders\?email=/);
-  assert.match(customerZone, /access=/);
+  assert.match(customerZone, /hash\.replace/);
+  assert.match(customerZone, /JSON\.stringify\(\{ access \}\)/);
+  assert.match(ordersRoute, /export async function POST/);
 }
 
 function testUnsupportedContracts() {

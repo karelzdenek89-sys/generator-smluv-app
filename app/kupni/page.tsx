@@ -1,13 +1,14 @@
 ﻿'use client';
 
 import { useMemo, useState } from 'react';
+import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
-import PaymentModal from '@/app/components/PaymentModal';
+import PaymentModal from '@/app/components/LazyPaymentModal';
 
 type FormData = {
   sellerName: string; sellerId: string; sellerAddress: string; sellerEmail: string; sellerPhone: string; sellerBankAccount: string;
@@ -37,10 +38,10 @@ function SectionTitle({ index, title, subtitle }: { index: string; title: string
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div>
-      <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</label>
+    <label className="block">
+      <span className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</span>
       {children}
-    </div>
+    </label>
   );
 }
 
@@ -87,7 +88,7 @@ export default function KupniPage() {
     }
   }, [form]);
 
-  const handlePayment = async (addOns: string[] = []) => {
+  const handlePayment = async (addOns: string[], authorization: CheckoutAuthorization) => {
     const missing: string[] = [];
     if (!form.sellerName?.trim()) missing.push('jméno prodávajícího');
     if (!form.buyerName?.trim()) missing.push('jméno kupujícího');
@@ -100,7 +101,7 @@ export default function KupniPage() {
       const res = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contractType: 'general_sale', tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'general_sale' }, email: form.buyerEmail || form.sellerEmail }),
+        body: JSON.stringify({ contractType: 'general_sale', deliveryEmail: authorization.deliveryEmail, consent: authorization.consent, tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'general_sale' } }),
       });
       const data = await res.json();
       if (!res.ok || !data?.url) throw new Error(data?.error || 'Chyba');
@@ -188,7 +189,7 @@ export default function KupniPage() {
             <section className={cardClass}>
               <SectionTitle index="01" title="Prodávající" subtitle="Přesná identifikace zajišťuje vymahatelnost smlouvy." />
               <div className="grid sm:grid-cols-2 gap-4">
-                <Field label="Jméno / název firmy *"><input className={inputClass} name="sellerName" value={form.sellerName} onChange={set} placeholder="Jan Novák" /></Field>
+                <Field label="Jméno / název firmy *"><input className={inputClass} name="sellerName" value={form.sellerName} onChange={set} placeholder="Jan Novák" required /></Field>
                 <Field label="Datum nar. / IČO *"><input className={inputClass} name="sellerId" value={form.sellerId} onChange={set} placeholder="01.01.1980 nebo 12345678" /></Field>
                 <Field label="Adresa / sídlo *"><input className={inputClass} name="sellerAddress" value={form.sellerAddress} onChange={set} placeholder="Ulice 1, Praha 1" /></Field>
                 <Field label="E-mail"><input className={inputClass} name="sellerEmail" value={form.sellerEmail} onChange={set} type="email" placeholder="jan@email.cz" /></Field>
@@ -201,7 +202,7 @@ export default function KupniPage() {
             <section className={cardClass}>
               <SectionTitle index="02" title="Kupující" />
               <div className="grid sm:grid-cols-2 gap-4">
-                <Field label="Jméno / název firmy *"><input className={inputClass} name="buyerName" value={form.buyerName} onChange={set} placeholder="Marie Svobodová" /></Field>
+                <Field label="Jméno / název firmy *"><input className={inputClass} name="buyerName" value={form.buyerName} onChange={set} placeholder="Marie Svobodová" required /></Field>
                 <Field label="Datum nar. / IČO *"><input className={inputClass} name="buyerId" value={form.buyerId} onChange={set} placeholder="01.01.1985 nebo 87654321" /></Field>
                 <Field label="Adresa / sídlo *"><input className={inputClass} name="buyerAddress" value={form.buyerAddress} onChange={set} placeholder="Ulice 5, Brno" /></Field>
                 <Field label="E-mail"><input className={inputClass} name="buyerEmail" value={form.buyerEmail} onChange={set} type="email" placeholder="marie@email.cz" /></Field>
@@ -228,7 +229,7 @@ export default function KupniPage() {
                 </Field>
                 {form.itemType !== 'car' && (
                   <>
-                    <Field label="Popis předmětu *"><textarea className="w-full min-h-[90px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="itemDescription" value={form.itemDescription} onChange={set} placeholder="Např. Dřevěná zahradní lavička, hnědá, rozměry 180×60 cm, rok výroby 2022" /></Field>
+                    <Field label="Popis předmětu *"><textarea className="w-full min-h-[90px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="itemDescription" value={form.itemDescription} onChange={set} placeholder="Např. Dřevěná zahradní lavička, hnědá, rozměry 180×60 cm, rok výroby 2022" required /></Field>
                     {form.itemType === 'electronics' && <Field label="Výrobní / sériové číslo"><input className={inputClass} name="serialNumber" value={form.serialNumber} onChange={set} placeholder="SN1234567890" /></Field>}
                   </>
                 )}
@@ -262,7 +263,7 @@ export default function KupniPage() {
             <section className={cardClass}>
               <SectionTitle index="04" title="Kupní cena a platba" />
               <div className="grid sm:grid-cols-2 gap-4">
-                <Field label="Kupní cena *"><input className={inputClass} name="price" value={form.price} onChange={set} type="number" placeholder="15000" /></Field>
+                <Field label="Kupní cena *"><input className={inputClass} name="price" value={form.price} onChange={set} type="number" placeholder="15000" required /></Field>
                 <Field label="Měna"><select className={inputClass} name="currency" value={form.currency} onChange={set}><option>Kč</option><option>EUR</option></select></Field>
                 <Field label="Cena slovy"><input className={inputClass} name="priceWords" value={form.priceWords} onChange={set} placeholder="patnáct tisíc korun českých" /></Field>
                 <Field label="Způsob úhrady">
@@ -293,7 +294,7 @@ export default function KupniPage() {
               {/* Řešení sporů */}
               <div className="mb-6">
                 <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
-                <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set}>
+                <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set} aria-label="Řešení sporů">
                   <option value="court">Obecný soud (výchozí)</option>
                   <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                   <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>

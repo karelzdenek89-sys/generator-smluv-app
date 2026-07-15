@@ -41,7 +41,7 @@ export default function GdprPage() {
           Ochrana osobních <span className="text-amber-500">údajů</span>
         </h1>
         <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.25em] mb-12">
-          Platné od 1. 1. 2026 • Dle nařízení EU 2016/679 (GDPR)
+          Verze 2026-07-15 • Dle nařízení EU 2016/679 (GDPR)
         </p>
 
         <div className="space-y-10 text-sm leading-relaxed">
@@ -79,15 +79,22 @@ export default function GdprPage() {
               </div>
               <div className="border border-white/8 rounded-2xl p-5">
                 <div className="font-bold text-white mb-2">E-mailová adresa</div>
-                <p className="text-slate-400 text-xs mb-2">Pokud ji dobrovolně zadáte při objednávce.</p>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Účel:</span> Zaslání odkazu ke stažení hotového dokumentu.</div>
+                <p className="text-slate-400 text-xs mb-2">E-mail pro doručení dokumentu zadává objednatel před přechodem k platbě.</p>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Účel:</span> Zaslání odkazu ke stažení, potvrzení objednávky a zabezpečeného přístupu do zákaznické zóny.</div>
                 <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Právní základ:</span> Plnění smlouvy + oprávněný zájem (čl. 6 odst. 1 písm. b) a f) GDPR).</div>
                 <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> 7–30 dní od objednávky podle zakoupeného dokumentu, případně 90 dní s doplňkem archivace, poté automaticky smazáno.</div>
               </div>
               <div className="border border-white/8 rounded-2xl p-5">
+                <div className="font-bold text-white mb-2">Kontaktní formulář</div>
+                <p className="text-slate-400 text-xs mb-2">Jméno, e-mail, předmět a obsah zprávy, které odešlete na stránce Kontakt.</p>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Účel:</span> Vyřízení dotazu, reklamace nebo žádosti zákazníka.</div>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Právní základ:</span> Jednání o smlouvě, plnění smlouvy nebo oprávněný zájem na zákaznické podpoře (čl. 6 odst. 1 písm. b) a f) GDPR).</div>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> Po dobu vyřízení požadavku, nejdéle 12 měsíců od poslední komunikace; déle pouze vyžaduje-li to právní předpis nebo ochrana právních nároků.</div>
+              </div>
+              <div className="border border-white/8 rounded-2xl p-5">
                 <div className="font-bold text-white mb-2">Newsletter (tipy a novinky)</div>
                 <p className="text-slate-400 text-xs mb-2">
-                  Pouze pokud se v patičce webu výslovně přihlásíte a zaškrtnete souhlas se zasíláním e-mailů.
+                  Pouze pokud se v patičce webu výslovně přihlásíte, zaškrtnete souhlas a následně odběr potvrdíte odkazem zaslaným na uvedený e-mail (double opt-in).
                 </p>
                 <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Účel:</span> Zasílání praktických tipů k dokumentům a informací o službě SmlouvaHned.</div>
                 <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Právní základ:</span> Souhlas (čl. 6 odst. 1 písm. a) GDPR).</div>
@@ -111,8 +118,8 @@ export default function GdprPage() {
             <ul className="space-y-2 text-slate-400">
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Stripe, Inc.</strong> — zpracování plateb. Zpracovatel dle čl. 28 GDPR, certifikace PCI DSS Level 1.</span></li>
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Upstash (Redis)</strong> — dočasné uložení dat formuláře po dobu generování a stažení dokumentu (7–30 dní podle zakoupeného dokumentu, případně 90 dní s doplňkem archivace).</span></li>
-              <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Resend</strong> — transakční e-maily (odkaz ke stažení), pouze pokud zadáte e-mail při objednávce.</span></li>
-              <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Upstash (Redis)</strong> — uložení e-mailu a záznamu souhlasu při přihlášení k newsletteru v patičce (do odvolání souhlasu).</span></li>
+              <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Resend</strong> — transakční e-maily, doručení odkazu k dokumentu, přenos zpráv z kontaktního formuláře a rozesílání newsletteru potvrzeným odběratelům.</span></li>
+              <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Upstash (Redis)</strong> — dočasná evidence nepotvrzeného newsletteru po dobu 24 hodin a evidence potvrzeného souhlasu po dobu odběru.</span></li>
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Vercel</strong> — hosting platformy. Údaje jsou zpracovávány v rámci EHP nebo za odpovídajících záruk.</span></li>
             </ul>
             <p className="mt-3 text-xs text-slate-500">

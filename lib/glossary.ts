@@ -150,7 +150,7 @@ export const GLOSSARY: readonly GlossaryEntry[] = [
     term: 'Zkušební doba',
     category: 'prace',
     definition:
-      'Období na začátku pracovního poměru, ve kterém může kterákoli ze stran rozvázat pracovní poměr bez uvedení důvodu, písemně. Délka maximálně tři měsíce ode dne nástupu, u vedoucích zaměstnanců šest měsíců. Musí být sjednána písemně, jinak je neplatná.',
+      'Období na začátku pracovního poměru, ve kterém může kterákoli ze stran rozvázat pracovní poměr bez uvedení důvodu, písemně. Od 1. června 2025 činí maximálně čtyři měsíce, u vedoucích zaměstnanců osm měsíců; u pracovního poměru na dobu určitou zároveň nejvýše polovinu sjednané doby. Musí být sjednána písemně, jinak je neplatná.',
     legalReference: '§ 35 zákona č. 262/2006 Sb.',
     relatedHref: '/blog/pracovni-smlouva-2026',
     relatedLabel: 'Pracovní smlouva — průvodce',

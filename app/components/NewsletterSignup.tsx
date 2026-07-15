@@ -43,9 +43,9 @@ export default function NewsletterSignup() {
   if (state === 'sent') {
     return (
       <div className="mt-5 rounded-xl border border-emerald-500/20 bg-emerald-500/5 px-4 py-3">
-        <p className="text-xs font-semibold text-emerald-300">Děkujeme, jste přihlášeni.</p>
+        <p className="text-xs font-semibold text-emerald-300">Zkontrolujte prosím svůj e-mail.</p>
         <p className="mt-1 text-[11px] leading-relaxed text-slate-500">
-          Občas pošleme tipy k dokumentům a novinky o SmlouvaHned. Odhlášení je kdykoli v každém e-mailu.
+          Odběr začne až po kliknutí na potvrzovací odkaz. Pokud už odběr máte aktivní, není potřeba nic dalšího dělat.
         </p>
       </div>
     );

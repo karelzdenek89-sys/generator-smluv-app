@@ -1,6 +1,7 @@
 ﻿'use client';
 
 import Link from 'next/link';
+import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import { useState, useMemo } from 'react';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
@@ -8,7 +9,7 @@ import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
-import PaymentModal from '@/app/components/PaymentModal';
+import PaymentModal from '@/app/components/LazyPaymentModal';
 
 type RepaymentType = 'lump_sum' | 'installments';
 
@@ -165,7 +166,7 @@ export default function LoanBuilderPage() {
 
   const scoreColor = riskScore.score >= 80 ? 'text-emerald-400' : riskScore.score >= 50 ? 'text-amber-400' : 'text-rose-400';
 
-  const handleSubmit = async (addOns: string[] = []) => {
+  const handleSubmit = async (addOns: string[], authorization: CheckoutAuthorization) => {
     const missing: string[] = [];
     if (!formData.lenderName?.trim()) missing.push('jméno věřitele');
     if (!formData.borrowerName?.trim()) missing.push('jméno vydlužitele');
@@ -181,10 +182,11 @@ export default function LoanBuilderPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contractType: 'loan',
+          deliveryEmail: authorization.deliveryEmail,
+          consent: authorization.consent,
           tier: formData.tier,
           addOns,
           notaryUpsell: formData.tier !== 'basic',
-          email: formData.borrowerEmail || formData.lenderEmail || undefined,
           payload: formData,
         }),
       });

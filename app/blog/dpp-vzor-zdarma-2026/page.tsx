@@ -154,7 +154,7 @@ export default function DppVzorZdarmaPage() {
                 ['Pojistné a daň', 'Pro rok 2026 sledujte rozhodný příjem 12 000 Kč/měsíc; daňový režim závisí na prohlášení poplatníka a konkrétní situaci'],
                 ['Zdravotní pojištění', 'Odvod od příjmu 4 500 Kč/měsíc — zaměstnavatel musí sledovat kumulaci u více DPP'],
                 ['Oznamovací povinnost', 'Zaměstnavatel hlásí DPP na ČSSZ do 8 dnů od nástupu'],
-                ['Minimální odměna', 'Hodinová odměna nesmí být nižší než minimální mzda (20 800 Kč/měs. → 124 Kč/hod.)'],
+                ['Minimální odměna', 'Hodinová odměna nesmí být nižší než minimální mzda pro rok 2026 (22 400 Kč/měs. → 134,40 Kč/hod.)'],
               ].map(([oblast, pravidlo]) => (
                 <tr key={oblast} className="bg-[#080f1e]">
                   <td className="px-5 py-3 text-xs font-bold text-white">{oblast}</td>
@@ -241,7 +241,7 @@ export default function DppVzorZdarmaPage() {
               'Jméno, adresa a rodné číslo / datum narození obou stran',
               'Přesný druh práce nebo popis pracovního úkolu',
               'Místo nebo oblast výkonu práce',
-              'Výše odměny — hodinová nebo úkolová sazba (min. 124 Kč/hod.)',
+              'Výše odměny — hodinová nebo úkolová sazba (min. 134,40 Kč/hod. v roce 2026)',
               'Maximální rozsah práce — ideálně s odkazem na limit 300 hodin ročně (§ 75 ZP)',
               'Způsob a termín vyplacení odměny',
               'Datum uzavření dohody a podpisy obou stran',

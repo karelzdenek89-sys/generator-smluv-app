@@ -1,13 +1,14 @@
 ﻿'use client';
 
 import { useState, useMemo } from 'react';
+import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
-import PaymentModal from '@/app/components/PaymentModal';
+import PaymentModal from '@/app/components/LazyPaymentModal';
 
 type PaymentType = 'after_completion' | 'with_deposit' | 'milestones';
 
@@ -178,7 +179,7 @@ export default function WorkContractPage() {
     }
   }, [formData]);
 
-  const handleSubmit = async (addOns: string[] = []) => {
+  const handleSubmit = async (addOns: string[], authorization: CheckoutAuthorization) => {
     const missing: string[] = [];
     if (!formData.clientName?.trim()) missing.push('jméno objednatele');
     if (!formData.contractorName?.trim()) missing.push('jméno zhotovitele');
@@ -199,6 +200,8 @@ export default function WorkContractPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contractType: 'work_contract',
+          deliveryEmail: authorization.deliveryEmail,
+          consent: authorization.consent,
           tier: formData.tier,
           addOns,
           notaryUpsell: formData.tier !== 'basic',

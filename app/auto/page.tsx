@@ -1,8 +1,8 @@
 ﻿'use client';
 
-import { Suspense, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
@@ -15,7 +15,7 @@ import {
   buildExpatPreviewSections,
   getExpatPreviewLabels,
 } from '@/lib/i18n/expat-contract-preview';
-import PaymentModal from '@/app/components/PaymentModal';
+import PaymentModal from '@/app/components/LazyPaymentModal';
 import { BuilderLocaleNotice, useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
 
 type PaymentMethod = 'cash' | 'transfer';
@@ -95,7 +95,7 @@ const textareaClass = 'site-textarea';
 const cardClass = 'builder-card p-6';
 
 function CarSaleBuilderContent() {
-  const searchParams = useSearchParams();
+  const [packageKeyFromUrl, setPackageKeyFromUrl] = useState<string | null>(null);
   const builderLocale = useBuilderLocale();
   const ui = useMemo(() => getCarFormUi(builderLocale), [builderLocale]);
   const fl = (k: string, cs: string) => ui.fields[k] ?? cs;
@@ -104,8 +104,12 @@ function CarSaleBuilderContent() {
     return { title: s?.title ?? title, subtitle: s?.subtitle ?? subtitle };
   };
   const previewLabels = useMemo(() => getExpatPreviewLabels(builderLocale), [builderLocale]);
-  const packageConfig = getThematicPackageConfig(searchParams.get('package'));
+  const packageConfig = getThematicPackageConfig(packageKeyFromUrl);
   const isVehiclePackage = packageConfig?.key === 'vehicle_sale';
+
+  useEffect(() => {
+    setPackageKeyFromUrl(new URLSearchParams(window.location.search).get('package'));
+  }, []);
 
   const [formData, setFormData] = useState<CarSaleFormData>({
     sellerName: '',
@@ -296,7 +300,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
     }
   }, [formData, packageConfig?.key, builderLocale]);
 
-  async function handlePayment(addOns: string[] = []) {
+  async function handlePayment(addOns: string[], authorization: CheckoutAuthorization) {
     if (riskAnalysis.checkoutBlocked) {
       alert(
         builderLocale === 'en'
@@ -335,6 +339,8 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contractType: 'car_sale',
+          deliveryEmail: authorization.deliveryEmail,
+          consent: authorization.consent,
           tier: packageConfig ? packageConfig.defaultTier : formData.tier,
           packageKey: packageConfig?.key ?? null,
           addOns,
@@ -547,14 +553,14 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.sellerName}
                   onChange={handleChange}
                   placeholder={fl('sellerName', 'Prodávající – celé jméno')}
-                  className={inputClass}
+                  className={inputClass} aria-label={fl('sellerName', 'Prodávající – celé jméno')} required
                 />
                 <input
                   name="sellerId"
                   value={formData.sellerId}
                   onChange={handleChange}
                   placeholder={fl('sellerId', 'Prodávající – RČ / datum narození')}
-                  className={inputClass}
+                  className={inputClass} aria-label={fl('sellerId', 'Prodávající – RČ / datum narození')}
                 />
               </div>
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
@@ -563,30 +569,31 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.sellerAddress}
                   onChange={handleChange}
                   placeholder={fl('sellerAddress', 'Prodávající – adresa')}
-                  className={inputClass}
+                  className={inputClass} aria-label={fl('sellerAddress', 'Prodávající – adresa')}
                 />
                 <input
                   name="sellerOP"
                   value={formData.sellerOP}
                   onChange={handleChange}
                   placeholder={fl('sellerOP', 'Prodávající – číslo OP')}
-                  className={inputClass}
+                  className={inputClass} aria-label={fl('sellerOP', 'Prodávající – číslo OP')}
                 />
               </div>
               <div className="grid sm:grid-cols-2 gap-4 mb-6">
                 <input
+                  type="email"
                   name="sellerEmail"
                   value={formData.sellerEmail}
                   onChange={handleChange}
                   placeholder={fl('sellerEmail', 'Prodávající – e-mail (volitelné)')}
-                  className={inputClass}
+                  className={inputClass} aria-label={fl('sellerEmail', 'Prodávající – e-mail (volitelné)')}
                 />
                 <input
                   name="sellerPhone"
                   value={formData.sellerPhone}
                   onChange={handleChange}
                   placeholder={fl('sellerPhone', 'Prodávající – telefon (volitelné)')}
-                  className={inputClass}
+                  className={inputClass} aria-label={fl('sellerPhone', 'Prodávající – telefon (volitelné)')}
                 />
               </div>
 
@@ -597,14 +604,14 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     value={formData.buyerName}
                     onChange={handleChange}
                     placeholder={fl('buyerName', 'Kupující – celé jméno')}
-                    className={inputClass}
+                    className={inputClass} aria-label={fl('buyerName', 'Kupující – celé jméno')} required
                   />
                   <input
                     name="buyerId"
                     value={formData.buyerId}
                     onChange={handleChange}
                     placeholder={fl('buyerId', 'Kupující – RČ / datum narození')}
-                    className={inputClass}
+                    className={inputClass} aria-label={fl('buyerId', 'Kupující – RČ / datum narození')}
                   />
                 </div>
                 <div className="grid sm:grid-cols-2 gap-4 mb-4">
@@ -613,30 +620,31 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     value={formData.buyerAddress}
                     onChange={handleChange}
                     placeholder={fl('buyerAddress', 'Kupující – adresa')}
-                    className={inputClass}
+                    className={inputClass} aria-label={fl('buyerAddress', 'Kupující – adresa')}
                   />
                   <input
                     name="buyerOP"
                     value={formData.buyerOP}
                     onChange={handleChange}
                     placeholder={fl('buyerOP', 'Kupující – číslo OP')}
-                    className={inputClass}
+                    className={inputClass} aria-label={fl('buyerOP', 'Kupující – číslo OP')}
                   />
                 </div>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <input
+                    type="email"
                     name="buyerEmail"
                     value={formData.buyerEmail}
                     onChange={handleChange}
                     placeholder={fl('buyerEmail', 'Kupující – e-mail (volitelné)')}
-                    className={inputClass}
+                    className={inputClass} aria-label={fl('buyerEmail', 'Kupující – e-mail (volitelné)')}
                   />
                   <input
                     name="buyerPhone"
                     value={formData.buyerPhone}
                     onChange={handleChange}
                     placeholder={fl('buyerPhone', 'Kupující – telefon (volitelné)')}
-                    className={inputClass}
+                    className={inputClass} aria-label={fl('buyerPhone', 'Kupující – telefon (volitelné)')}
                   />
                 </div>
               </div>
@@ -654,14 +662,14 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.carMake}
                   onChange={handleChange}
                   placeholder={fl('carMake', 'Značka')}
-                  className={inputClass}
+                  className={inputClass} aria-label={fl('carMake', 'Značka')} required
                 />
                 <input
                   name="carModel"
                   value={formData.carModel}
                   onChange={handleChange}
                   placeholder={fl('carModel', 'Model')}
-                  className={inputClass}
+                  className={inputClass} aria-label={fl('carModel', 'Model')}
                 />
               </div>
 
@@ -670,7 +678,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 value={formData.carVIN}
                 onChange={handleChange}
                 placeholder={fl('carVIN', 'VIN (17 znaků)')}
-                className={`${inputClass} font-mono tracking-widest mb-4`}
+                className={`${inputClass} font-mono tracking-widest mb-4`} aria-label={fl('carVIN', 'VIN (17 znaků)')} required
               />
 
               <div className="grid sm:grid-cols-3 gap-4 mb-4">
@@ -680,7 +688,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.carYear}
                   onChange={handleChange}
                   placeholder={fl('carYear', 'Rok výroby')}
-                  className={inputClass}
+                  className={inputClass} aria-label={fl('carYear', 'Rok výroby')}
                 />
                 <input
                   type="number"
@@ -688,14 +696,14 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.carMileage}
                   onChange={handleChange}
                   placeholder={fl('carMileage', 'Nájezd (km)')}
-                  className={inputClass}
+                  className={inputClass} aria-label={fl('carMileage', 'Nájezd (km)')}
                 />
                 <input
                   name="carPlate"
                   value={formData.carPlate}
                   onChange={handleChange}
                   placeholder={fl('carPlate', 'SPZ')}
-                  className={inputClass}
+                  className={inputClass} aria-label={fl('carPlate', 'SPZ')}
                 />
               </div>
 
@@ -705,21 +713,21 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.carColor}
                   onChange={handleChange}
                   placeholder={fl('carColor', 'Barva')}
-                  className={inputClass}
+                  className={inputClass} aria-label={fl('carColor', 'Barva')}
                 />
                 <input
                   name="fuelType"
                   value={formData.fuelType}
                   onChange={handleChange}
                   placeholder={fl('fuelType', 'Palivo')}
-                  className={inputClass}
+                  className={inputClass} aria-label={fl('fuelType', 'Palivo')}
                 />
                 <input
                   name="carFirstRegistration"
                   value={formData.carFirstRegistration}
                   onChange={handleChange}
                   placeholder={fl('carFirstRegistration', 'První registrace')}
-                  className={inputClass}
+                  className={inputClass} aria-label={fl('carFirstRegistration', 'První registrace')}
                 />
               </div>
 
@@ -729,21 +737,21 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.engineCapacity}
                   onChange={handleChange}
                   placeholder={fl('engineCapacity', 'Objem (cm³)')}
-                  className={inputClass}
+                  className={inputClass} aria-label={fl('engineCapacity', 'Objem (cm³)')}
                 />
                 <input
                   name="powerKW"
                   value={formData.powerKW}
                   onChange={handleChange}
                   placeholder={fl('powerKW', 'Výkon (kW)')}
-                  className={inputClass}
+                  className={inputClass} aria-label={fl('powerKW', 'Výkon (kW)')}
                 />
                 <input
                   name="techCardNumber"
                   value={formData.techCardNumber}
                   onChange={handleChange}
                   placeholder={fl('techCardNumber', 'Číslo technického průkazu')}
-                  className={inputClass}
+                  className={inputClass} aria-label={fl('techCardNumber', 'Číslo technického průkazu')}
                 />
               </div>
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
@@ -754,7 +762,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     name="stkValidUntil"
                     value={formData.stkValidUntil}
                     onChange={handleChange}
-                    className={inputClass}
+                    className={inputClass} aria-label="Stk Valid Until"
                   />
                 </div>
                 <div>
@@ -764,7 +772,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     name="emissionsValidUntil"
                     value={formData.emissionsValidUntil}
                     onChange={handleChange}
-                    className={inputClass}
+                    className={inputClass} aria-label="Emissions Valid Until"
                   />
                 </div>
               </div>
@@ -775,14 +783,14 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.previousOwnersCount}
                   onChange={handleChange}
                   placeholder={fl('previousOwnersCount', 'Počet předchozích vlastníků')}
-                  className={inputClass}
+                  className={inputClass} aria-label={fl('previousOwnersCount', 'Počet předchozích vlastníků')}
                 />
                 <input
                   name="vehicleOrigin"
                   value={formData.vehicleOrigin}
                   onChange={handleChange}
                   placeholder={fl('vehicleOrigin', 'Původ vozidla')}
-                  className={inputClass}
+                  className={inputClass} aria-label={fl('vehicleOrigin', 'Původ vozidla')}
                 />
               </div>
             </section>
@@ -800,20 +808,21 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.priceAmount}
                   onChange={handleChange}
                   placeholder={fl('priceAmount', 'Kupní cena (Kč)')}
-                  className={`${inputClass} text-xl font-bold`}
+                  className={`${inputClass} text-xl font-bold`} aria-label={fl('priceAmount', 'Kupní cena (Kč)')} required
                 />
                 <input
                   name="priceWords"
                   value={formData.priceWords}
                   onChange={handleChange}
                   placeholder={fl('priceWords', 'Kupní cena slovy')}
-                  className={inputClass}
+                  className={inputClass} aria-label={fl('priceWords', 'Kupní cena slovy')}
                 />
                 <select
                   name="paymentMethod"
                   value={formData.paymentMethod}
                   onChange={handleChange}
                   className={inputClass}
+                  aria-label={fl('paymentMethod', 'Způsob úhrady')}
                 >
                   <option value="transfer">{fl('payment_transfer', 'Bankovní převod')}</option>
                   <option value="cash">{fl('payment_cash', 'Hotovost')}</option>
@@ -827,14 +836,14 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     value={formData.bankAccount}
                     onChange={handleChange}
                     placeholder={fl('bankAccount', 'Číslo účtu prodávajícího')}
-                    className={inputClass}
+                    className={inputClass} aria-label={fl('bankAccount', 'Číslo účtu prodávajícího')}
                   />
                   <input
                     name="variableSymbol"
                     value={formData.variableSymbol}
                     onChange={handleChange}
                     placeholder={fl('variableSymbol', 'Variabilní symbol')}
-                    className={inputClass}
+                    className={inputClass} aria-label={fl('variableSymbol', 'Variabilní symbol')}
                   />
                   <input
                     type="number"
@@ -842,7 +851,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     value={formData.paymentDueDays}
                     onChange={handleChange}
                     placeholder={fl('paymentDueDays', 'Splatnost převodu (pracovní dny)')}
-                    className={inputClass}
+                    className={inputClass} aria-label={fl('paymentDueDays', 'Splatnost převodu (pracovní dny)')}
                   />
                 </div>
               ) : (
@@ -865,7 +874,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.handoverPlace}
                   onChange={handleChange}
                   placeholder={fl('handoverPlace', 'Místo předání')}
-                  className={inputClass}
+                  className={inputClass} aria-label={fl('handoverPlace', 'Místo předání')}
                 />
               </div>
 
@@ -874,6 +883,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 value={formData.ownershipTransferMoment}
                 onChange={handleChange}
                 className={inputClass}
+                aria-label={fl('ownershipTransferMoment', 'Okamžik přechodu vlastnictví')}
               >
                 <option value="payment">{fl('ownershipTransfer_payment', 'Vlastnictví přechází zaplacením')}</option>
                 <option value="handover">{fl('ownershipTransfer_handover', 'Vlastnictví přechází předáním')}</option>
@@ -893,14 +903,14 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.keysCount}
                   onChange={handleChange}
                   placeholder="Počet klíčů"
-                  className={inputClass}
+                  className={inputClass} aria-label="Počet klíčů"
                 />
                 <input
                   name="tiresInfo"
                   value={formData.tiresInfo}
                   onChange={handleChange}
                   placeholder="Pneumatiky / kola"
-                  className={inputClass}
+                  className={inputClass} aria-label="Pneumatiky / kola"
                 />
               </div>
 
@@ -910,7 +920,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.knownDefects}
                   onChange={handleChange}
                   placeholder="Popiš všechny známé vady: lak, koroze, motor, převodovka, podvozek, elektronika, klima, interiér..."
-                  className={textareaClass}
+                  className={textareaClass} aria-label="Popiš všechny známé vady: lak, koroze, motor, převodovka, podvozek, elektronika, klima, interiér..."
                 />
               </div>
 
@@ -920,7 +930,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.documentsIncluded}
                   onChange={handleChange}
                   placeholder="Předané doklady"
-                  className={textareaClass}
+                  className={textareaClass} aria-label="Předané doklady"
                 />
               </div>
 
@@ -929,7 +939,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 value={formData.equipmentIncluded}
                 onChange={handleChange}
                 placeholder="Předané příslušenství a výbava: sada kol, rezervní klíč, střešní nosič, rádio, zimní pneu..."
-                className={textareaClass}
+                className={textareaClass} aria-label="Předané příslušenství a výbava: sada kol, rezervní klíč, střešní nosič, rádio, zimní pneu..."
               />
             </section>
 
@@ -1012,7 +1022,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.buyerLatePenalty}
                   onChange={handleChange}
                   placeholder={fl('buyerLatePenalty', 'Pokuta kupujícího za prodlení (% denně)')}
-                  className={inputClass}
+                  className={inputClass} aria-label={fl('buyerLatePenalty', 'Pokuta kupujícího za prodlení (% denně)')}
                 />
                 <input
                   type="number"
@@ -1020,7 +1030,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.sellerLatePenalty}
                   onChange={handleChange}
                   placeholder={fl('sellerLatePenalty', 'Pokuta prodávajícího za pozdní předání (Kč/den)')}
-                  className={inputClass}
+                  className={inputClass} aria-label={fl('sellerLatePenalty', 'Pokuta prodávajícího za pozdní předání (Kč/den)')}
                 />
                 <input
                   type="number"
@@ -1028,7 +1038,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.hiddenDefectPenalty}
                   onChange={handleChange}
                   placeholder={fl('hiddenDefectPenalty', 'Pokuta za vědomě zatajenou vadu (Kč)')}
-                  className={inputClass}
+                  className={inputClass} aria-label={fl('hiddenDefectPenalty', 'Pokuta za vědomě zatajenou vadu (Kč)')}
                 />
                 <input
                   type="number"
@@ -1036,7 +1046,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   value={formData.declarationPenalty}
                   onChange={handleChange}
                   placeholder={fl('declarationPenalty', 'Pokuta za nepravdivá prohlášení (Kč)')}
-                  className={inputClass}
+                  className={inputClass} aria-label={fl('declarationPenalty', 'Pokuta za nepravdivá prohlášení (Kč)')}
                 />
               </div>
             </section>
@@ -1167,7 +1177,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">
                     {fl('disputeResolution', 'Řešení sporů')}
                   </div>
-                  <select className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
+                  <select className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))} aria-label={fl('disputeResolution', 'Řešení sporů')}>
                     <option value="court">{fl('dispute_court', 'Obecný soud (výchozí)')}</option>
                     <option value="mediation">{fl('dispute_mediation', 'Mediace (zákon č. 202/2012 Sb.)')}</option>
                     <option value="arbitration">{fl('dispute_arbitration', 'Rozhodčí řízení (Rozhodčí soud HK ČR)')}</option>
@@ -1262,10 +1272,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
 }
 
 export default function CarSaleBuilderPage() {
-  return (
-    <Suspense fallback={<main className="site-page contract-builder min-h-screen pb-24" />}>
-      <CarSaleBuilderContent />
-    </Suspense>
-  );
+  return <CarSaleBuilderContent />;
 }
 

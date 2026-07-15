@@ -17,4 +17,4 @@ export const CURRENT_YEAR = 2026;
 export const CURRENT_YEAR_LABEL = `${CURRENT_YEAR}`;
 
 /** Datum, ke kterému je obsah revidován (ISO). Aktualizovat při větší legislativní novele. */
-export const LAST_CONTENT_REVISION_ISO = '2026-05-16';
+export const LAST_CONTENT_REVISION_ISO = '2026-07-15';

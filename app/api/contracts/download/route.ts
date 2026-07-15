@@ -12,6 +12,8 @@ import {
   normalizeStoredCheckoutAddons,
 } from '@/lib/checkout-addons';
 import { recordAnalyticsEvent } from '@/lib/analytics-server';
+import { takeRateLimit } from '@/lib/rate-limit';
+import { readFirstPartyJson } from '@/lib/api-security';
 
 export const runtime = 'nodejs';
 
@@ -27,12 +29,7 @@ function getTtlForTier(tier?: string): number {
 // Chrání před scrapingem při úniku session_id; legitimní zákazník stáhne 1–3×
 async function checkDownloadRateLimit(sessionId: string): Promise<boolean> {
   try {
-    const key = `ratelimit:download:${sessionId}`;
-    const count = await redis.incr(key);
-    if (count === 1) {
-      await redis.expire(key, TTL_COMPLETE); // use longest TTL for rate limit key
-    }
-    return count <= 20;
+    return (await takeRateLimit(`ratelimit:download:${sessionId}`, 20, TTL_COMPLETE)).allowed;
   } catch (err) {
     console.error('Download rate limit Redis error:', err);
     // fail-open pro download: zákazník by jinak nemohl stáhnout dokument
@@ -72,6 +69,7 @@ type DraftRecord = {
   paid: boolean;
   createdAt: string;
   paidAt?: string;
+  expiresAt?: string;
   stripeSessionId?: string;
   paymentStatus?: string;
   downloadCount?: number;
@@ -131,9 +129,16 @@ export async function GET(req: NextRequest) {
       // Failsafe: zkusit aktualizovat Redis pokud Stripe říká paid
       if (session.payment_status === 'paid' && !draft.paid) {
         const failsafeTtl = getTtlForTier(draft.tier);
+        const paidAt = new Date().toISOString();
         await redis.set(
           `contract:draft:${draftId}`,
-          { ...draft, paid: true, paidAt: new Date().toISOString(), paymentStatus: 'paid' },
+          {
+            ...draft,
+            paid: true,
+            paidAt,
+            expiresAt: new Date(Date.parse(paidAt) + failsafeTtl * 1000).toISOString(),
+            paymentStatus: 'paid',
+          },
           { ex: failsafeTtl },
         );
         // Pokračuj s generováním
@@ -193,22 +198,36 @@ export async function GET(req: NextRequest) {
 
     const meta = getContractMeta(fullData.contractType);
 
-    // Počítač stažení + obnovit TTL (7 dní basic, 30 dní ostatní)
-    const ttl = getArchiveDaysWithAddons(
+    // Počítat stažení bez prodlužování pevné retenční lhůty od zaplacení.
+    const archiveTtl = getArchiveDaysWithAddons(
       resolvedTier === 'professional' ? 'complete' : resolvedTier,
       resolvedPackageKey,
       addOns,
     ) * 60 * 60 * 24;
-    const nextDownloadCount = await nextDownloadSequence(draftId, draft.downloadCount || 0, ttl);
+    const paidAtMs = draft.paidAt ? Date.parse(draft.paidAt) : Date.now();
+    const storedExpiresAtMs = draft.expiresAt ? Date.parse(draft.expiresAt) : NaN;
+    const expiresAtMs = Number.isFinite(storedExpiresAtMs)
+      ? storedExpiresAtMs
+      : paidAtMs + archiveTtl * 1000;
+    if (expiresAtMs <= Date.now()) {
+      return NextResponse.json(
+        { error: 'Platnost dokumentu od zaplacení již vypršela.' },
+        { status: 410 },
+      );
+    }
+    const remainingTtl = Math.max(60, Math.ceil((expiresAtMs - Date.now()) / 1000));
+    const nextDownloadCount = await nextDownloadSequence(draftId, draft.downloadCount || 0, remainingTtl);
     await redis.set(
       `contract:draft:${draftId}`,
       {
         ...draft,
         paid: true,
+        paidAt: draft.paidAt ?? new Date(paidAtMs).toISOString(),
+        expiresAt: new Date(expiresAtMs).toISOString(),
         downloadCount: nextDownloadCount,
         lastDownloadAt: new Date().toISOString(),
       },
-      { ex: ttl },
+      { ex: remainingTtl },
     );
 
     await recordAnalyticsEvent('document_downloaded', {
@@ -264,4 +283,24 @@ export async function GET(req: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+export async function POST(req: NextRequest) {
+  const json = await readFirstPartyJson(req, 4 * 1024);
+  if (!json.ok) {
+    const status = json.error === 'invalid_origin' ? 403 : json.error === 'payload_too_large' ? 413 : 400;
+    return NextResponse.json({ error: 'Neplatný požadavek.' }, { status });
+  }
+
+  const url = req.nextUrl.clone();
+  const sessionId = typeof json.data.sessionId === 'string' ? json.data.sessionId.trim() : '';
+  const token = typeof json.data.token === 'string' ? json.data.token.trim() : '';
+  const lang = typeof json.data.lang === 'string' ? json.data.lang.trim() : '';
+  const format = json.data.format === 'docx' ? 'docx' : 'pdf';
+  if (sessionId) url.searchParams.set('session_id', sessionId);
+  if (token) url.searchParams.set('token', token);
+  if (lang) url.searchParams.set('lang', lang);
+  if (format === 'docx') url.searchParams.set('format', format);
+
+  return GET(new NextRequest(url, { headers: req.headers }));
 }

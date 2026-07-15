@@ -45,7 +45,12 @@ export function reportingSecretMatches(
   provided: string | undefined,
 ) {
   if (!expected || !provided) return false;
-  return normalizeReportingSecretParam(provided) === expected;
+  const normalized = normalizeReportingSecretParam(provided);
+  if (!normalized) return false;
+  const a = Buffer.from(normalized);
+  const b = Buffer.from(expected);
+  if (a.length !== b.length) return false;
+  return timingSafeEqual(a, b);
 }
 
 export function isValidInternalReportingCookie(secret: string | undefined, value: string | undefined) {

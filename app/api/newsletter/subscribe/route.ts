@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getClientIp, readFirstPartyJson } from '@/lib/api-security';
-import { recordAnalyticsEvent } from '@/lib/analytics-server';
-import { saveNewsletterSubscriber } from '@/lib/newsletter-subscribers';
-import { subscribeNewsletterContact } from '@/lib/resend-contacts';
-import { redis } from '@/lib/redis';
+import { createNewsletterConfirmation } from '@/lib/newsletter-subscribers';
+import { takeRateLimit } from '@/lib/rate-limit';
 
 export const runtime = 'nodejs';
 
@@ -11,10 +9,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 async function tryRateLimit(ip: string): Promise<boolean> {
   try {
-    const key = `ratelimit:newsletter:${ip}`;
-    const count = await redis.incr(key);
-    if (count === 1) await redis.expire(key, 3600);
-    return count <= 5;
+    return (await takeRateLimit(`ratelimit:newsletter:${ip}`, 5, 3600)).allowed;
   } catch (err) {
     console.error('[newsletter] Rate-limit unavailable:', err);
     return false;
@@ -61,26 +56,51 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Neplatný formát e-mailu.' }, { status: 400 });
   }
 
-  const consentedAt = new Date().toISOString();
-
-  const saved = await saveNewsletterSubscriber(email, source, consentedAt);
-  if (!saved.ok) {
+  const requestedAt = new Date().toISOString();
+  let confirmation: { token: string; alreadySubscribed: boolean };
+  try {
+    confirmation = await createNewsletterConfirmation(email, source, requestedAt);
+  } catch (error) {
+    console.error('[newsletter] Confirmation storage failed:', error);
     return NextResponse.json(
-      { error: 'Nepodařilo se uložit přihlášení. Zkuste to znovu nebo napište na info@smlouvahned.cz.' },
+      { error: 'Nepodařilo se připravit potvrzení. Zkuste to znovu nebo napište na info@smlouvahned.cz.' },
       { status: 503 },
     );
   }
 
-  // Volitelná synchronizace do Resend — jen pokud máte API klíč (není nutná pro přihlášení).
-  const resend = await subscribeNewsletterContact({ email, source, consentedAt });
-  if (!resend.ok && resend.reason === 'api_error') {
-    console.warn('[newsletter] Resend sync skipped:', resend.status, resend.body);
+  if (!confirmation.alreadySubscribed) {
+    const resendKey = process.env.RESEND_API_KEY?.trim();
+    if (!resendKey) {
+      return NextResponse.json(
+        { error: 'Potvrzovací e-mail nyní nelze odeslat. Zkuste to prosím později.' },
+        { status: 503 },
+      );
+    }
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || new URL(req.url).origin;
+    const confirmUrl = `${baseUrl.replace(/\/+$/, '')}/newsletter/potvrdit#token=${confirmation.token}`;
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${resendKey}`,
+        'Content-Type': 'application/json',
+        'Idempotency-Key': `newsletter-confirm-${confirmation.token}`,
+      },
+      body: JSON.stringify({
+        from: 'SmlouvaHned <dokumenty@smlouvahned.cz>',
+        to: [email],
+        subject: 'Potvrďte odběr tipů SmlouvaHned',
+        html: `<p>Dobrý den,</p><p>potvrďte prosím, že chcete dostávat praktické tipy a novinky služby SmlouvaHned.</p><p><a href="${confirmUrl}" style="display:inline-block;padding:12px 18px;background:#f59e0b;color:#111827;text-decoration:none;border-radius:10px;font-weight:700">Potvrdit odběr</a></p><p>Odkaz je platný 24 hodin. Pokud jste o odběr nežádali, tento e-mail ignorujte.</p>`,
+      }),
+    });
+    if (!response.ok) {
+      const responseBody = await response.text().catch(() => '');
+      console.error('[newsletter] Confirmation email failed:', response.status, responseBody.slice(0, 300));
+      return NextResponse.json(
+        { error: 'Potvrzovací e-mail se nepodařilo odeslat. Zkuste to prosím později.' },
+        { status: 503 },
+      );
+    }
   }
 
-  await recordAnalyticsEvent('newsletter_subscribed', {
-    source,
-    surface: 'newsletter_form',
-  });
-
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, confirmationRequired: !confirmation.alreadySubscribed });
 }

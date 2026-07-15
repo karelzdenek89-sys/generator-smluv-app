@@ -24,7 +24,7 @@ const faq = [
   },
   {
     q: 'Jak dlouhá může být zkušební doba?',
-    a: 'U řadových zaměstnanců maximálně 3 měsíce, u vedoucích zaměstnanců maximálně 6 měsíců. Zkušební doba nesmí přesáhnout polovinu sjednané doby trvání pracovního poměru.',
+    a: 'U řadových zaměstnanců maximálně 4 měsíce, u vedoucích zaměstnanců maximálně 8 měsíců. U pracovního poměru na dobu určitou nesmí zkušební doba přesáhnout polovinu sjednané doby trvání pracovního poměru.',
   },
   {
     q: 'Jaká je výpovědní doba?',
@@ -128,7 +128,7 @@ export default function PracovniSmlouvaPage() {
               'Den nástupu do práce',
               'Mzda nebo plat a způsob odměňování',
               'Délka pracovní doby a rozvrh směn',
-              'Délka zkušební doby (max. 3 měsíce)',
+              'Délka zkušební doby (max. 4 měsíce, u vedoucích zaměstnanců 8 měsíců)',
               'Výpovědní doba (zákonná minimum 2 měsíce)',
               'Dovolená — zákonný nárok 4 týdny',
               'Druh pracovního poměru — na dobu určitou / neurčitou',

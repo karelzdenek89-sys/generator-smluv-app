@@ -3,6 +3,8 @@ Allow: /
 
 Disallow: /api/
 Disallow: /success
+Disallow: /stahnout
+Disallow: /newsletter/
 Disallow: /interni/
 Disallow: /navrh-redesignu
 Disallow: /zakaznicka-zona

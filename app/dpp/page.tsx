@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
@@ -11,7 +12,7 @@ import {
   buildExpatPreviewSections,
 } from '@/lib/i18n/expat-contract-preview';
 import type { StoredContractData } from '@/lib/contracts';
-import PaymentModal from '@/app/components/PaymentModal';
+import PaymentModal from '@/app/components/LazyPaymentModal';
 import { BuilderLocaleNotice, useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
 
 type FormData = {
@@ -32,10 +33,10 @@ const cardClass = 'builder-card p-6';
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div>
-      <label className="site-form-label">{label}</label>
+    <label className="block">
+      <span className="site-form-label">{label}</span>
       {children}
-    </div>
+    </label>
   );
 }
 
@@ -95,7 +96,7 @@ export default function DppPage() {
     }
   }, [form, builderLocale]);
 
-  const handlePayment = async (addOns: string[] = []) => {
+  const handlePayment = async (addOns: string[], authorization: CheckoutAuthorization) => {
     // Validace ? 75 ZP ? DPP mus? m?t druh pr?ce, m?sto, dobu a odm?nu.
     const missing: string[] = [];
     if (!form.employerName?.trim()) missing.push(validationFields.employerName);
@@ -113,7 +114,7 @@ export default function DppPage() {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contractType: 'dpp', tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', lang: builderLocale, payload: { ...form, contractType: 'dpp', lang: builderLocale }, email: form.employerEmail }),
+        body: JSON.stringify({ contractType: 'dpp', deliveryEmail: authorization.deliveryEmail, consent: authorization.consent, tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', lang: builderLocale, payload: { ...form, contractType: 'dpp', lang: builderLocale } }),
       });
       const data = await res.json();
       if (!res.ok || !data?.url) throw new Error();
@@ -172,7 +173,7 @@ export default function DppPage() {
               <section className={cardClass}>
                 <SectionTitle index="01" title={ui.sections.employer.title} />
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label={ui.fields.employerName}><input className={inputClass} name="employerName" value={form.employerName} onChange={set} placeholder={ui.page.placeholders.employerName} /></Field>
+                  <Field label={ui.fields.employerName}><input className={inputClass} name="employerName" value={form.employerName} onChange={set} placeholder={ui.page.placeholders.employerName} required /></Field>
                   <Field label={ui.fields.employerIco}><input className={inputClass} name="employerIco" value={form.employerIco} onChange={set} placeholder={ui.page.placeholders.employerIco} /></Field>
                   <Field label={ui.fields.employerAddress}><input className={inputClass} name="employerAddress" value={form.employerAddress} onChange={set} placeholder={ui.page.placeholders.employerAddress} /></Field>
                   <Field label={ui.fields.employerEmail}><input className={inputClass} name="employerEmail" value={form.employerEmail} onChange={set} type="email" placeholder={ui.page.placeholders.employerEmail} /></Field>
@@ -182,7 +183,7 @@ export default function DppPage() {
               <section className={cardClass}>
                 <SectionTitle index="02" title={ui.sections.employee.title} />
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label={ui.fields.employeeName}><input className={inputClass} name="employeeName" value={form.employeeName} onChange={set} placeholder={ui.page.placeholders.employeeName} /></Field>
+                  <Field label={ui.fields.employeeName}><input className={inputClass} name="employeeName" value={form.employeeName} onChange={set} placeholder={ui.page.placeholders.employeeName} required /></Field>
                   <Field label={ui.fields.employeeBirth}><input className={inputClass} name="employeeBirth" value={form.employeeBirth} onChange={set} placeholder={ui.page.placeholders.employeeBirth} /></Field>
                   <Field label={ui.fields.employeeAddress}><input className={inputClass} name="employeeAddress" value={form.employeeAddress} onChange={set} placeholder={ui.page.placeholders.employeeAddress} /></Field>
                   <Field label={ui.fields.employeeEmail}><input className={inputClass} name="employeeEmail" value={form.employeeEmail} onChange={set} type="email" placeholder={ui.page.placeholders.employeeEmail} /></Field>
@@ -193,13 +194,13 @@ export default function DppPage() {
                 <SectionTitle index="03" title={ui.sections.task.title} subtitle={ui.sections.task.subtitle} />
                 <div className="space-y-4">
                   <Field label={ui.fields.taskDescription}>
-                    <input className={inputClass} name="taskDescription" value={form.taskDescription} onChange={set} placeholder={ui.page.placeholders.taskDescription} />
+                    <input className={inputClass} name="taskDescription" value={form.taskDescription} onChange={set} placeholder={ui.page.placeholders.taskDescription} required />
                   </Field>
                   <Field label={ui.fields.taskDetails}>
                     <textarea className="w-full min-h-[80px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="taskDetails" value={form.taskDetails} onChange={set} placeholder={ui.page.placeholders.taskDetails} />
                   </Field>
                   <div className="grid sm:grid-cols-2 gap-4">
-                    <Field label={ui.fields.workPlace}><input className={inputClass} name="workPlace" value={form.workPlace} onChange={set} placeholder={ui.page.placeholders.workPlace} /></Field>
+                    <Field label={ui.fields.workPlace}><input className={inputClass} name="workPlace" value={form.workPlace} onChange={set} placeholder={ui.page.placeholders.workPlace} required /></Field>
                     <Field label={ui.fields.estimatedHours}>
                       <input className={inputClass} name="estimatedHours" value={form.estimatedHours} onChange={set} type="number" placeholder={ui.page.placeholders.estimatedHours} />
                     </Field>

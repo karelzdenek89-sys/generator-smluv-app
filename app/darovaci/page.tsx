@@ -1,13 +1,14 @@
 ﻿'use client';
 
 import { useState, useMemo } from 'react';
+import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
-import PaymentModal from '@/app/components/PaymentModal';
+import PaymentModal from '@/app/components/LazyPaymentModal';
 
 type GiftType = 'money' | 'car' | 'property' | 'thing';
 type TransferMethod = 'cash' | 'transfer';
@@ -143,7 +144,7 @@ export default function GiftContractPage() {
     }
   }, [formData]);
 
-  const handlePayment = async (addOns: string[] = []) => {
+  const handlePayment = async (addOns: string[], authorization: CheckoutAuthorization) => {
     // Validace povinných polí
     const missingFields: string[] = [];
     if (!formData.donorName.trim()) missingFields.push('jméno dárce');
@@ -172,6 +173,8 @@ export default function GiftContractPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contractType: 'gift',
+          deliveryEmail: authorization.deliveryEmail,
+          consent: authorization.consent,
           tier: formData.tier,
           addOns,
           notaryUpsell: formData.tier !== 'basic',
@@ -547,6 +550,7 @@ export default function GiftContractPage() {
                 </label>
                 <input
                   type="date"
+                  aria-label="Datum darování"
                   className={inputClass}
                   value={formData.giftDate}
                   onChange={(e) => updateField('giftDate', e.target.value)}

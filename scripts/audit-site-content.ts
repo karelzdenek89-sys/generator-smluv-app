@@ -92,6 +92,8 @@ function main() {
 
   const gdpr = read('app/gdpr/page.tsx');
   assertSeoMetadata('app/gdpr/page.tsx');
+  assert.match(gdpr, /double opt-in/, 'GDPR must document newsletter double opt-in');
+  assert.match(gdpr, /Kontaktní formulář/, 'GDPR must document contact-form processing');
   assert.match(gdpr, /90 dní s doplňkem archivace/, 'GDPR must mention 90-day archive add-on');
   assert.match(gdpr, /Newsletter \(tipy a novinky\)/, 'GDPR must document newsletter consent');
 
@@ -102,7 +104,14 @@ function main() {
   assert.match(newsletterApi, /consent === true/, 'Newsletter API must require explicit consent');
   assert.match(read('lib/resend-contacts.ts'), /RESEND_NEWSLETTER_SEGMENT_ID/, 'Resend contacts helper must support segment ID');
   assert.ok(existsSync(join(ROOT, 'lib/newsletter-subscribers.ts')), 'Newsletter Redis storage must exist');
-  assert.match(read('app/api/newsletter/subscribe/route.ts'), /saveNewsletterSubscriber/, 'Newsletter must save to Redis first');
+  assert.match(newsletterApi, /createNewsletterConfirmation/, 'Newsletter must create a pending double-opt-in record first');
+  assert.ok(existsSync(join(ROOT, 'app/api/newsletter/confirm/route.ts')), 'Newsletter confirmation route must exist');
+  assert.ok(existsSync(join(ROOT, 'app/newsletter/potvrdit/page.tsx')), 'Newsletter confirmation page must exist');
+  const newsletterConfirm = read('app/api/newsletter/confirm/route.ts');
+  assert.match(newsletterConfirm, /saveNewsletterSubscriber/, 'Newsletter must save consent only after confirmation');
+  assert.match(newsletterConfirm, /subscribeNewsletterContact/, 'Newsletter must sync to Resend only after confirmation');
+  assert.match(newsletterConfirm, /export async function POST/, 'Newsletter confirmation must require POST');
+  assert.match(read('app/newsletter/potvrdit/page.tsx'), /url\.hash/, 'Newsletter token must be read from a URL fragment');
 
   const layout = read('app/layout.tsx');
   assert.match(layout, /SiteAnalytics/, 'Root layout must include Vercel Analytics');

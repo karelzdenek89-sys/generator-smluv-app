@@ -1,6 +1,7 @@
 ﻿'use client';
 
 import Link from 'next/link';
+import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import { useMemo, useState } from 'react';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
@@ -13,7 +14,7 @@ import {
   buildExpatPreviewSections,
   getExpatPreviewLabels,
 } from '@/lib/i18n/expat-contract-preview';
-import PaymentModal from '@/app/components/PaymentModal';
+import PaymentModal from '@/app/components/LazyPaymentModal';
 import { BuilderLocaleNotice, useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
 
 type FormData = {
@@ -120,7 +121,7 @@ export default function PodnajemuPage() {
 
   const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-rose-400';
 
-  const handlePayment = async (addOns: string[] = []) => {
+  const handlePayment = async (addOns: string[], authorization: CheckoutAuthorization) => {
     const missing: string[] = [];
     if (!form.landlordName.trim()) missing.push(validationFields.landlordName);
     if (!form.tenantName.trim()) missing.push(validationFields.tenantName);
@@ -156,12 +157,13 @@ export default function PodnajemuPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contractType: 'sublease',
+          deliveryEmail: authorization.deliveryEmail,
+          consent: authorization.consent,
           tier: form.tier,
           addOns,
           notaryUpsell: form.tier !== 'basic',
           lang: builderLocale,
           payload: { ...form, contractType: 'sublease', lang: builderLocale },
-          email: form.landlordEmail || form.tenantEmail || undefined,
         }),
       });
       const data = await res.json();
@@ -216,7 +218,7 @@ export default function PodnajemuPage() {
             <section className={cardClass}>
               <SectionTitle index="01" title={sec('s01', 'Podnajímatel').title} subtitle={sec('s01', 'Podnajímatel', 'Osoba, která podnajímá byt (nájemce z hlavní nájemní smlouvy).').subtitle} />
               <div className="grid sm:grid-cols-2 gap-4">
-                <Field label={fl('landlordName', 'Jméno a příjmení *')}><input name="landlordName" value={form.landlordName} onChange={handleChange} placeholder="Jan Novák" className={inputClass} /></Field>
+                <Field label={fl('landlordName', 'Jméno a příjmení *')}><input name="landlordName" value={form.landlordName} onChange={handleChange} placeholder="Jan Novák" className={inputClass} required /></Field>
                 <Field label={fl('landlordId', 'Rodné číslo / datum nar.')}><input name="landlordId" value={form.landlordId} onChange={handleChange} placeholder="850101/1234" className={inputClass} /></Field>
                 <Field label={fl('landlordAddress', 'Trvalé bydliště')}><input name="landlordAddress" value={form.landlordAddress} onChange={handleChange} placeholder="Náměstí Míru 1, Praha 2" className={inputClass} /></Field>
                 <Field label={fl('landlordEmail', 'E-mail')}><input name="landlordEmail" type="email" value={form.landlordEmail} onChange={handleChange} placeholder="jan.novak@email.cz" className={inputClass} /></Field>
@@ -227,7 +229,7 @@ export default function PodnajemuPage() {
             <section className={cardClass}>
               <SectionTitle index="02" title={sec('s02', 'Podnájemce').title} subtitle={sec('s02', 'Podnájemce', 'Osoba, která si byt pronajímá od podnajímatele.').subtitle} />
               <div className="grid sm:grid-cols-2 gap-4">
-                <Field label={fl('tenantName', 'Jméno a příjmení *')}><input name="tenantName" value={form.tenantName} onChange={handleChange} placeholder="Petra Svobodová" className={inputClass} /></Field>
+                <Field label={fl('tenantName', 'Jméno a příjmení *')}><input name="tenantName" value={form.tenantName} onChange={handleChange} placeholder="Petra Svobodová" className={inputClass} required /></Field>
                 <Field label={fl('tenantId', 'Rodné číslo / datum nar.')}><input name="tenantId" value={form.tenantId} onChange={handleChange} placeholder="900315/5678" className={inputClass} /></Field>
                 <Field label={fl('tenantAddress', 'Trvalé bydliště')}><input name="tenantAddress" value={form.tenantAddress} onChange={handleChange} placeholder="Dlouhá 5, Brno" className={inputClass} /></Field>
                 <Field label={fl('tenantEmail', 'E-mail')}><input name="tenantEmail" type="email" value={form.tenantEmail} onChange={handleChange} placeholder="petra@email.cz" className={inputClass} /></Field>
@@ -238,7 +240,7 @@ export default function PodnajemuPage() {
             <section className={cardClass}>
               <SectionTitle index="03" title={sec('s03', 'Předmět podnájmu').title} subtitle={sec('s03', 'Předmět podnájmu', 'Přesná identifikace bytu dle katastru nemovitostí.').subtitle} />
               <div className="space-y-4">
-                <Field label={fl('flatAddress', 'Adresa bytu *')}><input name="flatAddress" value={form.flatAddress} onChange={handleChange} placeholder="Václavské náměstí 10, Praha 1, PSČ 110 00" className={inputClass} /></Field>
+                <Field label={fl('flatAddress', 'Adresa bytu *')}><input name="flatAddress" value={form.flatAddress} onChange={handleChange} placeholder="Václavské náměstí 10, Praha 1, PSČ 110 00" className={inputClass} required /></Field>
                 <div className="grid sm:grid-cols-3 gap-4">
                   <Field label={fl('flatLayout', 'Dispozice')}><input name="flatLayout" value={form.flatLayout} onChange={handleChange} placeholder="2+1" className={inputClass} /></Field>
                   <Field label={fl('flatUnitNumber', 'Číslo jednotky')}><input name="flatUnitNumber" value={form.flatUnitNumber} onChange={handleChange} placeholder="10/3" className={inputClass} /></Field>
@@ -289,7 +291,7 @@ export default function PodnajemuPage() {
                   <Field label={fl('noticePeriod', 'Výpovědní lhůta (měsíce)')}><input name="noticePeriod" type="number" min="1" value={form.noticePeriod} onChange={handleChange} placeholder="3" className={inputClass} /></Field>
                 </div>
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label={fl('startDate', 'Začátek podnájmu *')}><input name="startDate" type="date" value={form.startDate} onChange={handleChange} className={inputClass} /></Field>
+                  <Field label={fl('startDate', 'Začátek podnájmu *')}><input name="startDate" type="date" value={form.startDate} onChange={handleChange} className={inputClass} required /></Field>
                   {form.duration === 'fixed' && (
                     <Field label={fl('endDate', 'Konec podnájmu *')}><input name="endDate" type="date" value={form.endDate} onChange={handleChange} className={inputClass} /></Field>
                   )}
@@ -302,7 +304,7 @@ export default function PodnajemuPage() {
             <section className={cardClass}>
               <SectionTitle index="06" title={sec('s06', 'Nájemné a platby').title} />
               <div className="grid sm:grid-cols-2 gap-4">
-                <Field label={fl('rentAmount', 'Nájemné (Kč/měsíc) *')}><input name="rentAmount" type="number" value={form.rentAmount} onChange={handleChange} placeholder="12 000" className={inputClass} /></Field>
+                <Field label={fl('rentAmount', 'Nájemné (Kč/měsíc) *')}><input name="rentAmount" type="number" value={form.rentAmount} onChange={handleChange} placeholder="12 000" className={inputClass} required /></Field>
                 <Field label={fl('utilityAmount', 'Zálohy na služby (Kč/měsíc)')}><input name="utilityAmount" type="number" value={form.utilityAmount} onChange={handleChange} placeholder="2 000" className={inputClass} /></Field>
                 <Field label={fl('depositAmount', 'Kauce (Kč)')}><input name="depositAmount" type="number" value={form.depositAmount} onChange={handleChange} placeholder="24 000" className={inputClass} /></Field>
                 <Field label={fl('paymentDay', 'Den splatnosti (1–31)')}><input name="paymentDay" type="number" min="1" max="31" value={form.paymentDay} onChange={handleChange} placeholder="15" className={inputClass} /></Field>
@@ -352,7 +354,7 @@ export default function PodnajemuPage() {
             <section className={cardClass}>
               <div className="mb-6">
                 <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">{fl('disputeResolution', 'Řešení sporů')}</div>
-                <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={handleChange}>
+                <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={handleChange} aria-label={fl('disputeResolution', 'Řešení sporů')}>
                   <option value="court">{fl('dispute_court', 'Obecný soud (výchozí)')}</option>
                   <option value="mediation">{fl('dispute_mediation', 'Mediace (zákon č. 202/2012 Sb.)')}</option>
                   <option value="arbitration">{fl('dispute_arbitration', 'Rozhodčí řízení (Rozhodčí soud HK ČR)')}</option>

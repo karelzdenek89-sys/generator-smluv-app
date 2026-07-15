@@ -1,13 +1,13 @@
 ﻿'use client';
 
-import { Suspense, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import LeaseBuilderSeoSection from '@/app/components/seo/LeaseBuilderSeoSection';
 import ContractPreview from '@/app/components/ContractPreview';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
-import PaymentModal from '@/app/components/PaymentModal';
+import PaymentModal from '@/app/components/LazyPaymentModal';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
 import { getLeaseFormUi } from '@/lib/i18n/lease-form';
@@ -93,11 +93,15 @@ const textareaClass = 'site-textarea';
 const cardClass = 'builder-card p-6';
 
 function LeaseBuilderContent() {
-  const searchParams = useSearchParams();
+  const [packageKeyFromUrl, setPackageKeyFromUrl] = useState<string | null>(null);
   const builderLocale = useBuilderLocale();
   const ui = useMemo(() => getLeaseFormUi(builderLocale), [builderLocale]);
-  const packageConfig = getThematicPackageConfig(searchParams.get('package'));
+  const packageConfig = getThematicPackageConfig(packageKeyFromUrl);
   const isLandlordPackage = packageConfig?.key === 'landlord';
+
+  useEffect(() => {
+    setPackageKeyFromUrl(new URLSearchParams(window.location.search).get('package'));
+  }, []);
 
   const [formData, setFormData] = useState<LeaseFormData>({
     landlordName: '',
@@ -343,7 +347,7 @@ function LeaseBuilderContent() {
 
   const previewDateLocale = builderLocale === 'ua' ? 'uk-UA' : builderLocale === 'en' ? 'en-GB' : 'cs-CZ';
 
-  const handlePayment = async (addOns: string[] = []) => {
+  const handlePayment = async (addOns: string[], authorization: CheckoutAuthorization) => {
     // Validace povinných polí
     const missingFields: string[] = [];
     if (!formData.landlordName.trim()) missingFields.push(ui.validation.fields.landlordName);
@@ -372,6 +376,8 @@ function LeaseBuilderContent() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contractType: 'lease',
+          deliveryEmail: authorization.deliveryEmail,
+          consent: authorization.consent,
           tier: formData.tier,
           packageKey: packageConfig?.key ?? null,
           addOns,
@@ -574,14 +580,14 @@ function LeaseBuilderContent() {
                   name="landlordName"
                   data-testid="lease-landlord-name"
                   placeholder={ui.form.placeholders.fullName}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.fullName} required
                 />
                 <input
                   value={formData.landlordId}
                   onChange={handleChange}
                   name="landlordId"
                   placeholder={ui.form.placeholders.birthId}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.birthId}
                 />
               </div>
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
@@ -590,30 +596,31 @@ function LeaseBuilderContent() {
                   onChange={handleChange}
                   name="landlordAddress"
                   placeholder={ui.form.placeholders.address}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.address}
                 />
                 <input
                   value={formData.landlordOP}
                   onChange={handleChange}
                   name="landlordOP"
                   placeholder={ui.form.placeholders.idCard}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.idCard}
                 />
               </div>
               <div className="grid sm:grid-cols-2 gap-4">
                 <input
+                  type="email"
                   value={formData.landlordEmail}
                   onChange={handleChange}
                   name="landlordEmail"
                   placeholder={ui.form.placeholders.emailOptional}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.emailOptional}
                 />
                 <input
                   value={formData.landlordPhone}
                   onChange={handleChange}
                   name="landlordPhone"
                   placeholder={ui.form.placeholders.phoneOptional}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.phoneOptional}
                 />
               </div>
             </section>
@@ -631,14 +638,14 @@ function LeaseBuilderContent() {
                   name="tenantName"
                   data-testid="lease-tenant-name"
                   placeholder={ui.form.placeholders.fullName}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.fullName} required
                 />
                 <input
                   value={formData.tenantId}
                   onChange={handleChange}
                   name="tenantId"
                   placeholder={ui.form.placeholders.birthId}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.birthId}
                 />
               </div>
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
@@ -647,30 +654,31 @@ function LeaseBuilderContent() {
                   onChange={handleChange}
                   name="tenantAddress"
                   placeholder={ui.form.placeholders.address}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.address}
                 />
                 <input
                   value={formData.tenantOP}
                   onChange={handleChange}
                   name="tenantOP"
                   placeholder={ui.form.placeholders.idCard}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.idCard}
                 />
               </div>
               <div className="grid sm:grid-cols-2 gap-4">
                 <input
+                  type="email"
                   value={formData.tenantEmail}
                   onChange={handleChange}
                   name="tenantEmail"
                   placeholder={ui.form.placeholders.emailOptional}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.emailOptional}
                 />
                 <input
                   value={formData.tenantPhone}
                   onChange={handleChange}
                   name="tenantPhone"
                   placeholder={ui.form.placeholders.phoneOptional}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.phoneOptional}
                 />
               </div>
             </section>
@@ -688,14 +696,14 @@ function LeaseBuilderContent() {
                   name="flatAddress"
                   data-testid="lease-flat-address"
                   placeholder={ui.form.placeholders.flatAddress}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.flatAddress} required
                 />
                 <input
                   value={formData.flatLayout}
                   onChange={handleChange}
                   name="flatLayout"
                   placeholder={ui.form.placeholders.layout}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.layout}
                 />
               </div>
               <div className="grid sm:grid-cols-3 gap-4 mb-4">
@@ -704,21 +712,21 @@ function LeaseBuilderContent() {
                   onChange={handleChange}
                   name="flatUnitNumber"
                   placeholder={ui.form.placeholders.unitNumber}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.unitNumber}
                 />
                 <input
                   value={formData.flatArea}
                   onChange={handleChange}
                   name="flatArea"
                   placeholder={ui.form.placeholders.area}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.area}
                 />
                 <input
                   value={formData.floor}
                   onChange={handleChange}
                   name="floor"
                   placeholder={ui.form.placeholders.floor}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.floor}
                 />
               </div>
               <div className="grid sm:grid-cols-3 gap-4 mb-4">
@@ -727,21 +735,21 @@ function LeaseBuilderContent() {
                   onChange={handleChange}
                   name="ownershipSheet"
                   placeholder={ui.form.placeholders.ownershipSheet}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.ownershipSheet}
                 />
                 <input
                   value={formData.cadastralArea}
                   onChange={handleChange}
                   name="cadastralArea"
                   placeholder={ui.form.placeholders.cadastral}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.cadastral}
                 />
                 <input
                   value={formData.parcelNumber}
                   onChange={handleChange}
                   name="parcelNumber"
                   placeholder={ui.form.placeholders.parcelOptional}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.parcelOptional}
                 />
               </div>
             </section>
@@ -763,7 +771,7 @@ function LeaseBuilderContent() {
                     type="date"
                     name="startDate"
                     data-testid="lease-start-date"
-                    className={inputClass}
+                    className={inputClass} aria-label="Start Date" required
                   />
                 </div>
                 <div>
@@ -775,7 +783,7 @@ function LeaseBuilderContent() {
                     onChange={handleChange}
                     type="date"
                     name="handoverDate"
-                    className={inputClass}
+                    className={inputClass} aria-label="Handover Date"
                   />
                 </div>
               </div>
@@ -786,6 +794,7 @@ function LeaseBuilderContent() {
                   onChange={handleChange}
                   name="duration"
                   className={inputClass}
+                  aria-label={ui.form.sections.term.title}
                 >
                   <option value="fixed">{ui.form.duration.fixed}</option>
                   <option value="indefinite">{ui.form.duration.indefinite}</option>
@@ -798,7 +807,7 @@ function LeaseBuilderContent() {
                     type="date"
                     name="endDate"
                     data-testid="lease-end-date"
-                    className={inputClass}
+                    className={inputClass} aria-label="End Date"
                   />
                 ) : (
                   <div className="rounded-xl border border-dashed border-slate-700 px-4 py-3 text-sm text-slate-500 bg-[#111c31]">
@@ -815,7 +824,7 @@ function LeaseBuilderContent() {
                   name="rentAmount"
                   data-testid="lease-rent-amount"
                   placeholder={ui.form.placeholders.rent}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.rent} required
                 />
                 <input
                   value={formData.utilityAmount}
@@ -823,7 +832,7 @@ function LeaseBuilderContent() {
                   type="number"
                   name="utilityAmount"
                   placeholder={ui.form.placeholders.utilities}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.utilities}
                 />
                 <div>
                   <input
@@ -832,7 +841,7 @@ function LeaseBuilderContent() {
                     type="number"
                     name="depositAmount"
                     placeholder={ui.form.placeholders.deposit}
-                    className={inputClass}
+                    className={inputClass} aria-label={ui.form.placeholders.deposit}
                   />
                   {Number(formData.rentAmount) > 0 &&
                     Number(formData.depositAmount) > 0 &&
@@ -848,7 +857,7 @@ function LeaseBuilderContent() {
                   onChange={handleChange}
                   name="bankAccount"
                   placeholder={ui.form.placeholders.bankAccount}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.bankAccount}
                 />
                 <input
                   value={formData.paymentDay}
@@ -856,14 +865,14 @@ function LeaseBuilderContent() {
                   type="number"
                   name="paymentDay"
                   placeholder={ui.form.placeholders.paymentDay}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.paymentDay}
                 />
                 <input
                   value={formData.variableSymbol}
                   onChange={handleChange}
                   name="variableSymbol"
                   placeholder={ui.form.placeholders.variableSymbol}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.variableSymbol}
                 />
               </div>
 
@@ -872,7 +881,7 @@ function LeaseBuilderContent() {
                 onChange={handleChange}
                 name="utilitiesIncludedText"
                 placeholder={ui.form.placeholders.utilitiesDetail}
-                className={textareaClass}
+                className={textareaClass} aria-label={ui.form.placeholders.utilitiesDetail}
               />
 
               <div className="mt-4 rounded-2xl border border-emerald-500/15 bg-emerald-500/5 p-4">
@@ -900,7 +909,7 @@ function LeaseBuilderContent() {
                   type="number"
                   name="keysCount"
                   placeholder={ui.form.placeholders.keysCount}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.keysCount}
                 />
               </div>
               <p className="text-xs font-bold uppercase tracking-[0.10em] text-slate-400 mb-2">{ui.form.labels.metersHeading}</p>
@@ -910,14 +919,14 @@ function LeaseBuilderContent() {
                   onChange={handleChange}
                   name="electricityMeter"
                   placeholder={ui.form.placeholders.electricityReading}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.electricityReading}
                 />
                 <input
                   value={formData.electricityMeterSerial}
                   onChange={handleChange}
                   name="electricityMeterSerial"
                   placeholder={ui.form.placeholders.electricitySerial}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.electricitySerial}
                 />
               </div>
               <div className="grid sm:grid-cols-2 gap-3 mb-2">
@@ -926,14 +935,14 @@ function LeaseBuilderContent() {
                   onChange={handleChange}
                   name="gasMeter"
                   placeholder={ui.form.placeholders.gasReading}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.gasReading}
                 />
                 <input
                   value={formData.gasMeterSerial}
                   onChange={handleChange}
                   name="gasMeterSerial"
                   placeholder={ui.form.placeholders.gasSerial}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.gasSerial}
                 />
               </div>
               <div className="grid sm:grid-cols-2 gap-3 mb-2">
@@ -942,14 +951,14 @@ function LeaseBuilderContent() {
                   onChange={handleChange}
                   name="waterMeter"
                   placeholder={ui.form.placeholders.coldWaterReading}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.coldWaterReading}
                 />
                 <input
                   value={formData.waterMeterSerial}
                   onChange={handleChange}
                   name="waterMeterSerial"
                   placeholder={ui.form.placeholders.coldWaterSerial}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.coldWaterSerial}
                 />
               </div>
               <div className="grid sm:grid-cols-2 gap-3 mb-4">
@@ -958,14 +967,14 @@ function LeaseBuilderContent() {
                   onChange={handleChange}
                   name="hotWaterMeter"
                   placeholder={ui.form.placeholders.hotWaterReading}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.hotWaterReading}
                 />
                 <input
                   value={formData.hotWaterMeterSerial}
                   onChange={handleChange}
                   name="hotWaterMeterSerial"
                   placeholder={ui.form.placeholders.hotWaterSerial}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.hotWaterSerial}
                 />
               </div>
 
@@ -975,7 +984,7 @@ function LeaseBuilderContent() {
                   onChange={handleChange}
                   name="equipmentList"
                   placeholder={ui.form.placeholders.equipment}
-                  className={textareaClass}
+                  className={textareaClass} aria-label={ui.form.placeholders.equipment}
                 />
               </div>
 
@@ -984,7 +993,7 @@ function LeaseBuilderContent() {
                 onChange={handleChange}
                 name="knownDefects"
                 placeholder={ui.form.placeholders.defects}
-                className={textareaClass}
+                className={textareaClass} aria-label={ui.form.placeholders.defects}
               />
             </section>
 
@@ -1051,7 +1060,7 @@ function LeaseBuilderContent() {
                   onChange={handleChange}
                   type="number"
                   name="maxOccupants"
-                  className="bg-transparent w-24 text-2xl font-black text-white outline-none"
+                  className="bg-transparent w-24 text-2xl font-black text-white outline-none" aria-label="Max Occupants"
                 />
               </div>
 
@@ -1061,7 +1070,7 @@ function LeaseBuilderContent() {
                   onChange={handleChange}
                   name="lateVacatePenalty"
                   placeholder={ui.form.placeholders.lateVacatePenalty}
-                  className={inputClass}
+                  className={inputClass} aria-label={ui.form.placeholders.lateVacatePenalty}
                 />
               </div>
             </section>
@@ -1070,7 +1079,7 @@ function LeaseBuilderContent() {
             <section className={cardClass}>
               <div className="mb-2">
                 <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">{ui.form.labels.dispute}</div>
-                <select className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))}>
+                <select className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' | 'arbitration' }))} aria-label={ui.form.labels.dispute}>
                   <option value="court">{ui.form.dispute.court}</option>
                   <option value="mediation">{ui.form.dispute.mediation}</option>
                   <option value="arbitration">{ui.form.dispute.arbitration}</option>
@@ -1349,11 +1358,7 @@ function LeaseBuilderContent() {
 }
 
 export default function LeaseBuilderPage() {
-  return (
-    <Suspense fallback={<main className="site-page contract-builder min-h-screen pb-24" />}>
-      <LeaseBuilderContent />
-    </Suspense>
-  );
+  return <LeaseBuilderContent />;
 }
 
 

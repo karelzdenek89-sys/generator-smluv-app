@@ -50,8 +50,9 @@ const EXPAT_BUILDERS = ['najem', 'pracovni', 'dpp', 'podnajem', 'plna-moc', 'aut
 
 function testCheckoutRouteCoverage() {
   const checkout = read('app/api/checkout/route.ts');
+  const checkoutValidation = read('lib/checkout-validation.ts');
   for (const type of CHECKOUT_TYPES) {
-    assert.match(checkout, new RegExp(`'${type}'`), `checkout missing contract type ${type}`);
+    assert.match(checkoutValidation, new RegExp(`'${type}'`), `checkout validation missing contract type ${type}`);
   }
   assert.match(checkout, /packageKey/);
   assert.match(checkout, /getStripePriceIdForCheckout/);
@@ -75,6 +76,10 @@ function testCheckoutRouteCoverage() {
   assert.match(checkout, /recordAnalyticsEvent/);
   assert.match(checkout, /Redis draft save failed/);
   assert.doesNotMatch(checkout, /Redis draft save fail-open/);
+  assert.match(checkout, /validateContractPayload/);
+  assert.match(checkout, /deliveryEmail/);
+  assert.match(checkout, /CHECKOUT_TERMS_VERSION/);
+  assert.doesNotMatch(checkout, /const rawEmail = typeof body\.email/);
 }
 
 function testBuilderPayloads() {
@@ -88,6 +93,8 @@ function testBuilderPayloads() {
     assert.match(src, /fetch\('\/api\/checkout'/, `${page} must call /api/checkout`);
     assert.match(src, /tier:/, `${page} must send tier`);
     assert.match(src, /addOns/, `${page} must pass selected checkout add-ons`);
+    assert.match(src, /deliveryEmail:\s*authorization\.deliveryEmail/, `${page} must send delivery email`);
+    assert.match(src, /consent:\s*authorization\.consent/, `${page} must send consent proof`);
     if (hasLang) {
       assert.match(src, /lang:\s*builderLocale/, `${page} must pass builderLocale as lang`);
     }
@@ -111,20 +118,31 @@ function testWebhookAndDownload() {
   const status = read('app/api/contracts/status/route.ts');
   const success = read('app/success/page.tsx');
   const orders = read('app/api/orders/route.ts');
+  const secureDownload = read('app/stahnout/page.tsx');
+  const portal = read('lib/orders-portal.ts');
   const contracts = read('lib/contracts.ts');
 
   assert.match(webhook, /checkout\.session\.completed/);
+  assert.match(webhook, /checkout\.session\.async_payment_succeeded/);
   assert.match(webhook, /session\.payment_status !== 'paid'/);
   assert.match(webhook, /downloadToken/);
   assert.match(webhook, /checkout_completed/);
   assert.match(webhook, /checkout_addon_purchased/);
   assert.match(webhook, /normalizeStoredCheckoutAddons/);
   assert.match(webhook, /contract:draft:/);
+  assert.match(webhook, /webhook:fulfilled:/);
+  assert.match(webhook, /webhook:fulfillment-lock:/);
+  assert.match(webhook, /RELEASE_LOCK_IF_OWNER/);
+  assert.match(webhook, /customer_details\?\.email/);
+  assert.match(webhook, /Idempotency-Key/);
+  assert.doesNotMatch(webhook, /webhook:paid:/);
   assert.match(download, /session\.metadata\?\.draftId/);
   assert.match(download, /payment_status === 'paid'/);
   assert.match(download, /format.*docx/);
   assert.match(download, /hasCheckoutAddon\(fullData, 'docx'\)/);
   assert.match(download, /Neplatný nebo chybějící bezpečnostní token/);
+  assert.match(download, /expiresAt/);
+  assert.match(download, /remainingTtl/);
   assert.doesNotMatch(download, /reconstructing from Stripe metadata/);
   assert.match(status, /addOns/);
   assert.match(status, /includedItems/);
@@ -135,15 +153,23 @@ function testWebhookAndDownload() {
   assert.match(status, /session\.amount_total/);
   assert.match(status, /statusTokenMatches/);
   assert.match(success, /\/api\/contracts\/status/);
-  assert.match(success, /token=.*\/api\/contracts\/status|tokenQuery/);
-  assert.match(success, /\/api\/contracts\/download/);
+  assert.match(success, /method:\s*'POST'/);
+  assert.match(success, /\/stahnout\?/);
   assert.match(success, /format=docx/);
-  assert.match(success, /tokenQuery/);
+  assert.doesNotMatch(success, /\/api\/contracts\/download\?/);
+  assert.match(secureDownload, /fetch\('\/api\/contracts\/download'/);
+  assert.match(secureDownload, /method:\s*'POST'/);
+  assert.match(secureDownload, /token:\s*request\.token/);
+  assert.match(secureDownload, /window\.history\.replaceState/);
   assert.match(orders, /downloadToken/);
+  assert.match(orders, /export async function POST/);
   assert.match(orders, /addOns/);
   assert.match(orders, /includedItems/);
   assert.match(webhook, /response\.ok/);
   assert.match(webhook, /Resend API error/);
+  assert.match(portal, /ttlSeconds/);
+  assert.doesNotMatch(portal, /orders:portal:email:/);
+  assert.doesNotMatch(portal, /PORTAL_TTL_SEC\s*=\s*60 \* 60 \* 24 \* 30/);
   assert.doesNotMatch(
     contracts,
     /legacyPremium|Boolean\(d\.notaryUpsell\)/,

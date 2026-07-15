@@ -6,7 +6,7 @@
  *  - Draft payload musí být uložen před vytvořením platby
  *  - Tematické balíčky (299 Kč) → STRIPE_PRICE_ID_PACKAGE
  *  - Tier „complete"/„premium" → STRIPE_PRICE_ID_PREMIUM (199 Kč)
- *  - Žádné přísné Zod schema – chybějící pole dostane výchozí hodnotu
+ *  - Payload každého typu smlouvy musí projít serverovým schématem
  *  - automatic_payment_methods → Google Pay, Apple Pay, karty atd.
  */
 
@@ -28,17 +28,22 @@ import {
   normalizeCheckoutAddons,
 } from '@/lib/checkout-addons';
 import { recordAnalyticsEvent } from '@/lib/analytics-server';
+import { takeRateLimit } from '@/lib/rate-limit';
+import {
+  CHECKOUT_CONSENT_TEXT_VERSION,
+  CHECKOUT_PRIVACY_VERSION,
+  CHECKOUT_TERMS_VERSION,
+  type CheckoutConsent,
+} from '@/lib/checkout-authorization';
+import {
+  CONTRACT_TYPES,
+  validateContractPayload,
+  type ContractType,
+} from '@/lib/checkout-validation';
 
 export const runtime = 'nodejs';
 
 // ── Typy smluv ────────────────────────────────────────────────────────────────
-
-const VALID_CONTRACT_TYPES = [
-  'lease', 'car_sale', 'gift', 'work_contract', 'loan', 'nda',
-  'general_sale', 'employment', 'dpp', 'service', 'sublease',
-  'power_of_attorney', 'debt_acknowledgment', 'cooperation',
-] as const;
-type ContractType = (typeof VALID_CONTRACT_TYPES)[number];
 
 const CANCEL_URLS: Record<ContractType, string> = {
   lease:                '/najem',
@@ -61,10 +66,8 @@ const CANCEL_URLS: Record<ContractType, string> = {
 
 async function tryRateLimit(ip: string): Promise<'allowed' | 'limited' | 'unavailable'> {
   try {
-    const key = `ratelimit:checkout:${ip}`;
-    const count = await redis.incr(key);
-    if (count === 1) await redis.expire(key, 3600);
-    return count <= 20 ? 'allowed' : 'limited';
+    const result = await takeRateLimit(`ratelimit:checkout:${ip}`, 20, 3600);
+    return result.allowed ? 'allowed' : 'limited';
   } catch (err) {
     console.error('[checkout] Redis rate-limit unavailable:', err);
     return 'unavailable';
@@ -106,7 +109,7 @@ export async function POST(req: Request) {
 
     // contractType
     const rawType = typeof body.contractType === 'string' ? body.contractType : '';
-    if (!(VALID_CONTRACT_TYPES as readonly string[]).includes(rawType)) {
+    if (!(CONTRACT_TYPES as readonly string[]).includes(rawType)) {
       return NextResponse.json({ error: 'Neplatný typ dokumentu.' }, { status: 400 });
     }
     const contractType = rawType as ContractType;
@@ -120,12 +123,43 @@ export async function POST(req: Request) {
     const paidTier = normalizePricingTier(tier);
     const notaryUpsell = paidTier !== 'basic';
 
-    // email – prázdný string → undefined
-    const rawEmail = typeof body.email === 'string' ? body.email.trim() : '';
-    if (rawEmail.length > 254 || (rawEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(rawEmail))) {
-      return NextResponse.json({ error: 'Neplatný formát e-mailu.' }, { status: 400 });
+    // Doručovací e-mail je samostatný údaj plátce. Nikdy jej neodvozujeme ze smluvních stran.
+    const deliveryEmail = typeof body.deliveryEmail === 'string'
+      ? body.deliveryEmail.trim().toLowerCase()
+      : '';
+    if (
+      deliveryEmail.length > 254 ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(deliveryEmail)
+    ) {
+      return NextResponse.json({ error: 'Zadejte platný e-mail pro doručení dokumentu.' }, { status: 400 });
     }
-    const email = rawEmail !== '' ? rawEmail : undefined;
+
+    const consentCandidate = body.consent;
+    if (!consentCandidate || typeof consentCandidate !== 'object' || Array.isArray(consentCandidate)) {
+      return NextResponse.json({ error: 'Chybí povinný souhlas s digitálním plněním.' }, { status: 400 });
+    }
+    const consentRecord = consentCandidate as Record<string, unknown>;
+    const acceptedAt = typeof consentRecord.acceptedAt === 'string' ? consentRecord.acceptedAt : '';
+    const acceptedAtMs = Date.parse(acceptedAt);
+    const now = Date.now();
+    if (
+      consentRecord.accepted !== true ||
+      consentRecord.termsVersion !== CHECKOUT_TERMS_VERSION ||
+      consentRecord.privacyVersion !== CHECKOUT_PRIVACY_VERSION ||
+      consentRecord.textVersion !== CHECKOUT_CONSENT_TEXT_VERSION ||
+      !Number.isFinite(acceptedAtMs) ||
+      acceptedAtMs > now + 5 * 60_000 ||
+      acceptedAtMs < now - 24 * 60 * 60_000
+    ) {
+      return NextResponse.json({ error: 'Souhlas je neplatný nebo zastaralý. Obnovte stránku a zkuste to znovu.' }, { status: 400 });
+    }
+    const consent: CheckoutConsent = {
+      accepted: true,
+      acceptedAt: new Date(now).toISOString(),
+      termsVersion: CHECKOUT_TERMS_VERSION,
+      privacyVersion: CHECKOUT_PRIVACY_VERSION,
+      textVersion: CHECKOUT_CONSENT_TEXT_VERSION,
+    };
 
     // payload
     const payload =
@@ -142,6 +176,17 @@ export async function POST(req: Request) {
       maxStringLength: 20_000,
     })) {
       return NextResponse.json({ error: 'Data dokumentu překračují povolené limity.' }, { status: 400 });
+    }
+    const payloadValidation = validateContractPayload(contractType, payload);
+    if (!payloadValidation.success) {
+      const firstIssue = payloadValidation.error.issues[0];
+      return NextResponse.json(
+        {
+          error: 'Dokument neobsahuje všechny povinné údaje.',
+          field: firstIssue?.path.join('.') || undefined,
+        },
+        { status: 400 },
+      );
     }
 
     const lang = normalizeLocale(body.lang ?? payload.lang);
@@ -192,7 +237,8 @@ export async function POST(req: Request) {
           notaryUpsell: packageKey ? true : notaryUpsell,
           downloadToken,
           lang,
-          email: email ?? null,
+          deliveryEmail,
+          consent,
           payload: {
             ...payload,
             contractType,
@@ -220,7 +266,7 @@ export async function POST(req: Request) {
     // Stripe v20 typy tuto prop ještě neznají → přetypujeme přes unknown
     const cancelPath = CANCEL_URLS[contractType] ?? '/';
     const langQuery = lang === 'cs' ? '' : `&lang=${encodeURIComponent(lang)}`;
-    const successTokenQuery = `&token=${encodeURIComponent(downloadToken)}`;
+    const successTokenFragment = `#token=${encodeURIComponent(downloadToken)}`;
     const cancelLangQuery = lang === 'cs' ? '' : `?lang=${encodeURIComponent(lang)}`;
 
     const lineItems = [
@@ -243,10 +289,10 @@ export async function POST(req: Request) {
 
     const sessionParams = {
       mode:           'payment' as const,
-      customer_email: email,
+      customer_email: deliveryEmail,
       locale:         (lang === 'cs' ? 'cs' : 'en') as 'cs' | 'en',
       line_items:     lineItems,
-      success_url:    `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}${langQuery}${successTokenQuery}`,
+      success_url:    `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}${langQuery}${successTokenFragment}`,
       cancel_url:     `${baseUrl}${cancelPath}${cancelLangQuery}`,
       metadata: {
         draftId,

@@ -14,15 +14,14 @@ import {
   normalizeStoredCheckoutAddons,
   type CheckoutAddonKey,
 } from '@/lib/checkout-addons';
+import { readFirstPartyJson } from '@/lib/api-security';
+import { takeRateLimit } from '@/lib/rate-limit';
 
 export const runtime = 'nodejs';
 
 async function checkStatusRateLimit(ip: string): Promise<boolean> {
   try {
-    const key = `ratelimit:contract-status:${ip}`;
-    const count = await redis.incr(key);
-    if (count === 1) await redis.expire(key, 60 * 10);
-    return count <= 60;
+    return (await takeRateLimit(`ratelimit:contract-status:${ip}`, 60, 60 * 10)).allowed;
   } catch {
     return true;
   }
@@ -153,4 +152,18 @@ export async function GET(req: NextRequest) {
   } catch {
     return NextResponse.json({ status: 'error' }, { status: 500 });
   }
+}
+
+export async function POST(req: NextRequest) {
+  const json = await readFirstPartyJson(req, 4 * 1024);
+  if (!json.ok) {
+    const status = json.error === 'invalid_origin' ? 403 : json.error === 'payload_too_large' ? 413 : 400;
+    return NextResponse.json({ status: 'error' }, { status });
+  }
+  const sessionId = typeof json.data.sessionId === 'string' ? json.data.sessionId.trim() : '';
+  const token = typeof json.data.token === 'string' ? json.data.token.trim() : '';
+  const url = req.nextUrl.clone();
+  if (sessionId) url.searchParams.set('session_id', sessionId);
+  if (token) url.searchParams.set('token', token);
+  return GET(new NextRequest(url, { headers: req.headers }));
 }

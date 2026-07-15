@@ -9,15 +9,14 @@ import {
   getCheckoutAddonIncludedItems,
   normalizeStoredCheckoutAddons,
 } from '@/lib/checkout-addons';
+import { readFirstPartyJson } from '@/lib/api-security';
+import { takeRateLimit } from '@/lib/rate-limit';
 
 export const runtime = 'nodejs';
 
 async function checkRateLimit(ip: string): Promise<boolean> {
   try {
-    const key = `ratelimit:orders-lookup:${ip}`;
-    const count = await redis.incr(key);
-    if (count === 1) await redis.expire(key, 60 * 10);
-    return count <= 10;
+    return (await takeRateLimit(`ratelimit:orders-lookup:${ip}`, 10, 60 * 10)).allowed;
   } catch (err) {
     console.error('[orders API] Rate-limit unavailable:', err);
     return false;
@@ -33,6 +32,7 @@ type DraftData = {
   lang?: string;
   downloadToken?: string | null;
   customerEmail?: string | null;
+  deliveryEmail?: string | null;
   email?: string | null;
   addOns?: unknown;
   payload?: { lang?: string; addOns?: unknown };
@@ -56,7 +56,7 @@ const CONTRACT_NAMES: Record<string, string> = {
 };
 
 function draftEmail(draft: DraftData | null | undefined): string | null {
-  const raw = draft?.customerEmail ?? draft?.email;
+  const raw = draft?.customerEmail ?? draft?.deliveryEmail ?? draft?.email;
   if (!raw || typeof raw !== 'string') return null;
   const normalized = raw.toLowerCase().trim();
   return normalized.includes('@') ? normalized : null;
@@ -220,4 +220,22 @@ export async function GET(req: NextRequest) {
     console.error('[orders API] Error:', err);
     return NextResponse.json({ error: 'Chyba serveru.' }, { status: 500 });
   }
+}
+
+export async function POST(req: NextRequest) {
+  const json = await readFirstPartyJson(req, 4 * 1024);
+  if (!json.ok) {
+    const status = json.error === 'invalid_origin' ? 403 : json.error === 'payload_too_large' ? 413 : 400;
+    return NextResponse.json({ error: 'Neplatný požadavek.' }, { status });
+  }
+
+  const url = req.nextUrl.clone();
+  const access = typeof json.data.access === 'string' ? json.data.access.trim() : '';
+  const email = typeof json.data.email === 'string' ? json.data.email.trim() : '';
+  const sessionId = typeof json.data.sessionId === 'string' ? json.data.sessionId.trim() : '';
+  if (access) url.searchParams.set('access', access);
+  if (email) url.searchParams.set('email', email);
+  if (sessionId) url.searchParams.set('session_id', sessionId);
+
+  return GET(new NextRequest(url, { headers: req.headers }));
 }

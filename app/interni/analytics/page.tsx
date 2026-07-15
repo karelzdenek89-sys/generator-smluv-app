@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
-import { notFound, redirect } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import {
   ANALYTICS_REPORTING_WINDOW_DAYS,
   getAnalyticsDashboardData,
@@ -10,7 +10,6 @@ import {
 import {
   INTERNAL_REPORTING_COOKIE,
   isValidInternalReportingCookie,
-  reportingSecretMatches,
 } from '@/lib/internal-reporting-auth';
 
 export const dynamic = 'force-dynamic';
@@ -152,7 +151,7 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
               }
               {data.windowDays}
               {
-                ' dní; u plateb je navíc zvýrazněný poslední týden. Kompletní tržby a starší platby vždy ověřte ve Stripe. Po prvním vstupu s `?secret=` zůstává přístup v prohlížeči 30 dní (cookie).'
+                ' dní; u plateb je navíc zvýrazněný poslední týden. Kompletní tržby a starší platby vždy ověřte ve Stripe. Po přihlášení zůstává přístup v prohlížeči 30 dní v zabezpečené HttpOnly cookie.'
               }
             </p>
           </div>
@@ -433,24 +432,14 @@ function DashboardError() {
   );
 }
 
-export default async function InternalAnalyticsPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ secret?: string }>;
-}) {
-  const params = await searchParams;
+export default async function InternalAnalyticsPage() {
   const expectedSecret = process.env.INTERNAL_REPORTING_SECRET;
   const cookieStore = await cookies();
   const cookieValue = cookieStore.get(INTERNAL_REPORTING_COOKIE)?.value;
-  const secretFromQuery = reportingSecretMatches(expectedSecret, params.secret);
   const secretFromCookie = isValidInternalReportingCookie(expectedSecret, cookieValue);
 
-  if (!expectedSecret || (!secretFromQuery && !secretFromCookie)) {
+  if (!expectedSecret || !secretFromCookie) {
     notFound();
-  }
-
-  if (secretFromQuery && !secretFromCookie && params.secret) {
-    redirect(`/interni/analytics/auth?secret=${encodeURIComponent(params.secret)}`);
   }
 
   let data: AnalyticsDashboardData | null = null;

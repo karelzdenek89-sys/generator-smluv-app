@@ -1,6 +1,7 @@
 ﻿'use client';
 
 import { useMemo, useState } from 'react';
+import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
@@ -12,7 +13,7 @@ import {
   buildExpatPreviewSections,
   getExpatPreviewLabels,
 } from '@/lib/i18n/expat-contract-preview';
-import PaymentModal from '@/app/components/PaymentModal';
+import PaymentModal from '@/app/components/LazyPaymentModal';
 import { BuilderLocaleNotice, useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
 
 type FormData = {
@@ -32,7 +33,7 @@ const inputClass = 'site-input';
 const cardClass = 'builder-card p-6';
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (<div><label className="site-form-label">{label}</label>{children}</div>);
+  return (<label className="block"><span className="site-form-label">{label}</span>{children}</label>);
 }
 function SectionTitle({ index, title, subtitle }: { index: string; title: string; subtitle?: string }) {
   return (<div className="mb-6"><div className="builder-kicker">{index}. {title}</div>{subtitle && <p className="builder-help mt-2 text-sm">{subtitle}</p>}</div>);
@@ -101,7 +102,7 @@ export default function PlnaMocPage() {
     }
   }, [form, builderLocale]);
 
-  const handlePayment = async (addOns: string[] = []) => {
+  const handlePayment = async (addOns: string[], authorization: CheckoutAuthorization) => {
     const missing: string[] = [];
     if (!form.principalName?.trim()) missing.push(validationFields.principalName);
     if (!form.agentName?.trim()) missing.push(validationFields.agentName);
@@ -114,7 +115,7 @@ export default function PlnaMocPage() {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contractType: 'power_of_attorney', tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', lang: builderLocale, payload: { ...form, contractType: 'power_of_attorney', lang: builderLocale }, email: form.principalEmail }),
+        body: JSON.stringify({ contractType: 'power_of_attorney', deliveryEmail: authorization.deliveryEmail, consent: authorization.consent, tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', lang: builderLocale, payload: { ...form, contractType: 'power_of_attorney', lang: builderLocale } }),
       });
       const data = await res.json();
       if (!res.ok || !data?.url) throw new Error();
@@ -191,7 +192,7 @@ export default function PlnaMocPage() {
             <section className={cardClass}>
               <SectionTitle index="02" title={sec('s02', 'Zmocnitel').title} subtitle={sec('s02', 'Zmocnitel', 'Osoba udělující plnou moc (oprávňující zmocněnce jednat).').subtitle} />
               <div className="grid sm:grid-cols-2 gap-4">
-                <Field label={fl('principalName', 'Jméno / název *')}><input className={inputClass} name="principalName" value={form.principalName} onChange={set} placeholder="Jan Novák" /></Field>
+                <Field label={fl('principalName', 'Jméno / název *')}><input className={inputClass} name="principalName" value={form.principalName} onChange={set} placeholder="Jan Novák" required /></Field>
                 <Field label={fl('principalId', 'Datum nar. / IČO *')}><input className={inputClass} name="principalId" value={form.principalId} onChange={set} placeholder="01.01.1970" /></Field>
                 <Field label={fl('principalAddress', 'Trvalé bydliště / sídlo *')}><input className={inputClass} name="principalAddress" value={form.principalAddress} onChange={set} placeholder="Ulice 1, Praha 1" /></Field>
                 <Field label={fl('principalEmail', 'E-mail')}><input className={inputClass} name="principalEmail" value={form.principalEmail} onChange={set} type="email" placeholder="jan@email.cz" /></Field>
@@ -201,7 +202,7 @@ export default function PlnaMocPage() {
             <section className={cardClass}>
               <SectionTitle index="03" title={sec('s03', 'Zmocněnec').title} subtitle={sec('s03', 'Zmocněnec', 'Osoba, která bude jednat za zmocnitele.').subtitle} />
               <div className="grid sm:grid-cols-2 gap-4">
-                <Field label={fl('agentName', 'Jméno / název *')}><input className={inputClass} name="agentName" value={form.agentName} onChange={set} placeholder="Marie Nováková" /></Field>
+                <Field label={fl('agentName', 'Jméno / název *')}><input className={inputClass} name="agentName" value={form.agentName} onChange={set} placeholder="Marie Nováková" required /></Field>
                 <Field label={fl('agentId', 'Datum nar. / IČO *')}><input className={inputClass} name="agentId" value={form.agentId} onChange={set} placeholder="05.05.1980" /></Field>
                 <Field label={fl('agentAddress', 'Trvalé bydliště / sídlo *')}><input className={inputClass} name="agentAddress" value={form.agentAddress} onChange={set} placeholder="Ulice 5, Brno" /></Field>
                 <Field label={fl('agentEmail', 'E-mail')}><input className={inputClass} name="agentEmail" value={form.agentEmail} onChange={set} type="email" placeholder="marie@email.cz" /></Field>

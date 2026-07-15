@@ -66,7 +66,7 @@ export const DPP_MAX_HOURS_PER_YEAR = 300;
 export const DPP_MONTHLY_THRESHOLD_2026_CZK = 12000;
 
 /**
- * Minimální mzda pro rok 2026 (nař. vlády č. 466/2025 Sb.).
+ * Minimální mzda pro rok 2026 (sdělení MPSV č. 356/2025 Sb.; mechanismus dle nař. vlády č. 285/2024 Sb.).
  * Měsíční: 22 400 Kč · hodinová (40h týden): 134,40 Kč.
  */
 export const MIN_WAGE_MONTHLY_2026_CZK = 22400;

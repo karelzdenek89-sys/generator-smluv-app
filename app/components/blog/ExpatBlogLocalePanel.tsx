@@ -50,7 +50,7 @@ export default function ExpatBlogLocalePanel({ locale, hub, articles }: Props) {
   const seoLinks = EXPAT_BLOG_CONTRACT_LINKS[locale];
 
   return (
-    <div className={`site-content-card rounded-[1.75rem] border p-7 transition ${borderClass}`}>
+    <div className={`site-content-card min-w-0 overflow-hidden rounded-[1.75rem] border p-5 sm:p-7 transition ${borderClass}`}>
       <div className="flex items-center gap-2">
         <span className="text-xl" aria-hidden="true">
           {copy.flag}
@@ -70,7 +70,7 @@ export default function ExpatBlogLocalePanel({ locale, hub, articles }: Props) {
             cta_type: `overview_${locale}`,
             destination: copy.overviewHref,
           }}
-          className="site-button-primary"
+          className="site-button-primary max-w-full whitespace-normal break-words text-center"
         >
           {copy.overviewLabel}
         </TrackedLink>
@@ -83,7 +83,7 @@ export default function ExpatBlogLocalePanel({ locale, hub, articles }: Props) {
             cta_type: 'why_us_article',
             destination: locale === 'en' ? WHY_US_EN_HREF : WHY_US_UA_HREF,
           }}
-          className="site-button-secondary"
+          className="site-button-secondary max-w-full whitespace-normal break-words text-center"
         >
           {copy.whyUsLabel}
         </TrackedLink>
@@ -99,7 +99,7 @@ export default function ExpatBlogLocalePanel({ locale, hub, articles }: Props) {
             cta_type: `hub_${locale}`,
             destination: hub.href,
           }}
-          className="mt-6 block rounded-xl border border-white/10 bg-black/20 p-4 transition hover:border-[#d6ac60]/30"
+          className="mt-6 block min-w-0 break-words rounded-xl border border-white/10 bg-black/20 p-4 transition hover:border-[#d6ac60]/30"
         >
           <p className="text-xs font-semibold uppercase tracking-wider text-[#d6ac60]">{copy.hubLabel}</p>
           <p className="mt-2 font-semibold text-[#f2e7c8]">{hub.title}</p>

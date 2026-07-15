@@ -15,6 +15,10 @@ import {
   getCheckoutAddonsTotalCzk,
   type CheckoutAddonKey,
 } from '@/lib/checkout-addons';
+import {
+  createCheckoutAuthorization,
+  type CheckoutAuthorization,
+} from '@/lib/checkout-authorization';
 
 interface Section {
   title: string;
@@ -30,7 +34,7 @@ interface PaymentModalProps {
   contractType: string;
   lang?: string;
   paymentCopy?: LeaseFormUi['paymentModal'];
-  onPay: (addOns: CheckoutAddonKey[]) => void;
+  onPay: (addOns: CheckoutAddonKey[], authorization: CheckoutAuthorization) => void;
   isProcessing: boolean;
   onClose: () => void;
 }
@@ -50,8 +54,12 @@ export default function PaymentModal({
 }: PaymentModalProps) {
   const pathname = usePathname();
   const [gdprConsent, setGdprConsent] = useState(false);
+  const [deliveryEmail, setDeliveryEmail] = useState('');
   const [selectedAddOns, setSelectedAddOns] = useState<CheckoutAddonKey[]>([]);
   const modalOpenTrackedRef = useRef(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const emailInputRef = useRef<HTMLInputElement>(null);
+  const previousActiveElementRef = useRef<HTMLElement | null>(null);
   const packageConfig = getThematicPackageConfig(packageKey);
   const locale = normalizeLocale(lang);
   const copy = paymentCopy;
@@ -91,9 +99,29 @@ export default function PaymentModal({
     onClose();
   };
 
-  // Zavření přes Escape
+  // Klávesnice: Escape + uzamčení fokusu uvnitř modalu.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Tab' && modalRef.current) {
+        const focusable = Array.from(
+          modalRef.current.querySelectorAll<HTMLElement>(
+            'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+          ),
+        );
+        if (focusable.length > 0) {
+          const first = focusable[0];
+          const last = focusable[focusable.length - 1];
+          if (e.shiftKey && document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          } else if (!e.shiftKey && document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+        return;
+      }
+
       if (e.key !== 'Escape') return;
 
       trackEvent('builder_checkout_modal_closed', {
@@ -127,6 +155,15 @@ export default function PaymentModal({
     validAddOnKeys,
     validSelectedAddOns.length,
   ]);
+
+  useEffect(() => {
+    previousActiveElementRef.current = document.activeElement as HTMLElement | null;
+    const focusTimer = window.setTimeout(() => emailInputRef.current?.focus(), 0);
+    return () => {
+      window.clearTimeout(focusTimer);
+      previousActiveElementRef.current?.focus();
+    };
+  }, []);
 
   // Zamezit scrollu pod modalem
   useEffect(() => {
@@ -204,7 +241,12 @@ export default function PaymentModal({
 
   return (
     <div
+      ref={modalRef}
       data-testid="lease-checkout-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="checkout-modal-title"
+      aria-describedby="checkout-modal-description"
       className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
       style={{ background: 'rgba(5, 8, 15, 0.92)', backdropFilter: 'blur(8px)' }}
       onClick={(e) => { if (e.target === e.currentTarget) closeModal('backdrop'); }}
@@ -293,7 +335,14 @@ export default function PaymentModal({
             {/* Hlavička */}
             <div className="mb-6">
               <div className="text-[11px] font-black uppercase tracking-[0.2em] text-amber-400/80">{copy?.unlockHeading ?? 'Odemknout dokument'}</div>
-              <h2 className="mt-2 text-2xl font-black leading-tight text-white">{title}</h2>
+              <h2 id="checkout-modal-title" className="mt-2 text-2xl font-black leading-tight text-white">{title}</h2>
+              <p id="checkout-modal-description" className="mt-2 text-sm leading-6 text-slate-400">
+                {locale === 'en'
+                  ? 'Enter the delivery email, review the order and confirm the terms before payment.'
+                  : locale === 'ua'
+                    ? 'Введіть email для доставки, перевірте замовлення та підтвердьте умови перед оплатою.'
+                    : 'Zadejte doručovací e-mail, zkontrolujte objednávku a před platbou potvrďte podmínky.'}
+              </p>
               <p className="mt-2 text-sm text-slate-400">
                 {hasSections
                   ? (copy?.unlockSubtitleReady ?? 'Váš dokument je sestavený a připravený ke stažení. Vyberte variantu a dokončete platbu.')
@@ -458,6 +507,36 @@ export default function PaymentModal({
             </div>
 
             <div className="mt-auto space-y-4">
+              <div>
+                <label htmlFor="checkout-delivery-email" className="mb-2 block text-xs font-bold text-slate-300">
+                  {locale === 'en'
+                    ? 'Email for document delivery'
+                    : locale === 'ua'
+                      ? 'Email для доставки документа'
+                      : 'E-mail pro doručení dokumentu'}
+                </label>
+                <input
+                  ref={emailInputRef}
+                  id="checkout-delivery-email"
+                  data-testid="checkout-delivery-email"
+                  type="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  required
+                  value={deliveryEmail}
+                  onChange={(event) => setDeliveryEmail(event.target.value)}
+                  className="w-full rounded-xl border border-white/10 bg-[#111c31] px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-amber-400/70 focus:ring-2 focus:ring-amber-400/20"
+                  placeholder="vas@email.cz"
+                />
+                <p className="mt-1.5 text-[11px] leading-5 text-slate-500">
+                  {locale === 'en'
+                    ? 'The download link and customer-zone access will be sent only to this address.'
+                    : locale === 'ua'
+                      ? 'Посилання для завантаження та доступ до кабінету буде надіслано лише на цю адресу.'
+                      : 'Odkaz ke stažení a přístup do zákaznické zóny odešleme pouze na tuto adresu.'}
+                </p>
+              </div>
+
               {/* Souhlas s OP + vzdání se odstoupení */}
               <label className="flex cursor-pointer items-start gap-3 group">
                 <input
@@ -468,13 +547,24 @@ export default function PaymentModal({
                   className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
                 />
                 <span className="text-xs leading-relaxed text-slate-400 group-hover:text-slate-300 transition">
-                  {copy?.consentLabel ?? (
+                  {copy?.consentLabel ? (
+                    <>
+                      {copy.consentLabel}{' '}
+                      <a href="/obchodni-podminky" target="_blank" rel="noopener noreferrer" className="text-amber-400 underline hover:text-amber-300">
+                        {locale === 'en' ? 'Terms' : locale === 'ua' ? 'Умови' : 'Obchodní podmínky'}
+                      </a>
+                      {' · '}
+                      <a href="/gdpr" target="_blank" rel="noopener noreferrer" className="text-amber-400 underline hover:text-amber-300">
+                        {locale === 'en' ? 'Privacy Policy' : locale === 'ua' ? 'Політика конфіденційності' : 'Ochrana osobních údajů'}
+                      </a>
+                    </>
+                  ) : (
                     <>
                       Přijímám{' '}
                       <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">obchodní podmínky</a>
                       {' '}a beru na vědomí{' '}
                       <a href="/gdpr" target="_blank" className="text-amber-400 underline hover:text-amber-300">zásady ochrany osobních údajů</a>.
-                      Výslovně souhlasím s okamžitým zahájením plnění a beru na vědomí, že tím <strong className="text-slate-300">ztrácím právo na odstoupení od smlouvy</strong> dle § 1837 písm. l) OZ.
+                      Výslovně souhlasím s okamžitým dodáním digitálního obsahu před uplynutím lhůty pro odstoupení a beru na vědomí, že jeho úplným dodáním <strong className="text-slate-300">ztrácím právo na odstoupení od smlouvy</strong> dle § 1837 písm. l) OZ.
                     </>
                   )}
                 </span>
@@ -485,6 +575,18 @@ export default function PaymentModal({
                 type="button"
                 data-testid="lease-checkout-pay"
                 onClick={() => {
+                  const normalizedEmail = deliveryEmail.trim().toLowerCase();
+                  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+                    alert(
+                      locale === 'en'
+                        ? 'Enter a valid delivery email.'
+                        : locale === 'ua'
+                          ? 'Введіть дійсну email-адресу для доставки.'
+                          : 'Zadejte platný e-mail pro doručení dokumentu.',
+                    );
+                    emailInputRef.current?.focus();
+                    return;
+                  }
                   if (!gdprConsent) {
                     trackEvent('builder_checkout_consent_missing', {
                       ...analyticsDefaults,
@@ -518,7 +620,7 @@ export default function PaymentModal({
                     total_price_czk: totalPriceCzk,
                     selected_addons_count: validSelectedAddOns.length,
                   });
-                  onPay(validSelectedAddOns);
+                  onPay(validSelectedAddOns, createCheckoutAuthorization(normalizedEmail));
                 }}
                 disabled={isProcessing}
                 className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight disabled:opacity-50 disabled:cursor-not-allowed"

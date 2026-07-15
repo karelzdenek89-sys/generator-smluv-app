@@ -452,7 +452,7 @@ const LEASE_FORM_CS: LeaseFormUi = {
     tierHeading: 'Varianta dokumentu',
     includedHeading: 'Součástí je',
     consentLabel:
-      'Souhlasím se zpracováním osobních údajů dle GDPR a vzdávám se práva na odstoupení od smlouvy dle § 1837 písm. l) OZ (digitální obsah).',
+      'Přijímám obchodní podmínky a beru na vědomí zásady ochrany osobních údajů. Výslovně souhlasím s okamžitým dodáním digitálního obsahu před uplynutím lhůty pro odstoupení a beru na vědomí, že jeho úplným dodáním ztrácím právo odstoupit dle § 1837 písm. l) OZ.',
     payCta: 'Zaplatit a stáhnout PDF',
     payCtaWithPrice: 'Odemknout a stáhnout',
     processing: 'Přesměrování na platbu…',
@@ -744,7 +744,7 @@ export const LEASE_FORM_EN: LeaseFormUi = {
     tierHeading: 'Document level',
     includedHeading: 'Included',
     consentLabel:
-      'I agree to personal data processing under GDPR and waive the right of withdrawal under § 1837(l) of the Civil Code (digital content).',
+      'I accept the Terms and acknowledge the Privacy Policy. I expressly consent to immediate delivery of the digital content before the withdrawal period ends and acknowledge that, once fully delivered, I lose the right of withdrawal under § 1837(l) of the Czech Civil Code.',
     payCta: 'Pay and download PDF',
     payCtaWithPrice: 'Unlock and download',
     processing: 'Redirecting to payment…',

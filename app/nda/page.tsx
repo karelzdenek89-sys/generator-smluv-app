@@ -1,6 +1,7 @@
 ﻿'use client';
 
 import Link from 'next/link';
+import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import { useState, useMemo } from 'react';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
@@ -8,7 +9,7 @@ import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
-import PaymentModal from '@/app/components/PaymentModal';
+import PaymentModal from '@/app/components/LazyPaymentModal';
 
 type NdaFormData = {
   ndaType: 'unilateral' | 'bilateral';
@@ -145,7 +146,7 @@ export default function NdaBuilderPage() {
 
   const scoreColor = riskAnalysis.score >= 85 ? 'text-emerald-400' : riskAnalysis.score >= 65 ? 'text-amber-400' : 'text-rose-400';
 
-  const handleSubmit = async (addOns: string[] = []) => {
+  const handleSubmit = async (addOns: string[], authorization: CheckoutAuthorization) => {
     if (!formData.disclosingName || !formData.receivingName) {
       alert('Vyplňte prosím jména obou smluvních stran.');
       return;
@@ -161,10 +162,11 @@ export default function NdaBuilderPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contractType: 'nda',
+          deliveryEmail: authorization.deliveryEmail,
+          consent: authorization.consent,
           tier: formData.tier,
           addOns,
           notaryUpsell: formData.tier !== 'basic',
-          email: formData.disclosingEmail || formData.receivingEmail || undefined,
           payload: formData,
         }),
       });
@@ -343,7 +345,7 @@ export default function NdaBuilderPage() {
                   <div>
                     <label className={labelClass}>Zvláštní kategorie chráněných informací (volitelné)</label>
                     <input value={formData.specialInfoCategories} onChange={e => set('specialInfoCategories', e.target.value)}
-                      placeholder="Osobní údaje, zdravotní záznamy, finanční data…" className={inputClass} />
+                      placeholder="Osobní údaje, zdravotní záznamy, finanční data…" aria-label="Zvláštní kategorie chráněných informací" className={inputClass} />
                   </div>
                 </div>
               </section>

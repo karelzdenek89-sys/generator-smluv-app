@@ -1,13 +1,14 @@
 ﻿'use client';
 
 import { useMemo, useState } from 'react';
+import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
-import PaymentModal from '@/app/components/PaymentModal';
+import PaymentModal from '@/app/components/LazyPaymentModal';
 
 type FormData = {
   partyAName: string; partyAId: string; partyAAddress: string; partyAEmail: string;
@@ -29,7 +30,7 @@ const inputClass = 'site-input';
 const cardClass = 'builder-card p-6';
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (<div><label className="site-form-label">{label}</label>{children}</div>);
+  return (<label className="block"><span className="site-form-label">{label}</span>{children}</label>);
 }
 function SectionTitle({ index, title, subtitle }: { index: string; title: string; subtitle?: string }) {
   return (<div className="mb-6"><div className="builder-kicker">{index}. {title}</div>{subtitle && <p className="builder-help mt-2 text-sm">{subtitle}</p>}</div>);
@@ -78,7 +79,7 @@ export default function SpolupraceePage() {
     }
   }, [form]);
 
-  const handlePayment = async (addOns: string[] = []) => {
+  const handlePayment = async (addOns: string[], authorization: CheckoutAuthorization) => {
     const missing: string[] = [];
     if (!form.partyAName?.trim()) missing.push('Stranu A');
     if (!form.partyBName?.trim()) missing.push('Stranu B');
@@ -88,7 +89,7 @@ export default function SpolupraceePage() {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contractType: 'cooperation', tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'cooperation' }, email: form.partyAEmail }),
+        body: JSON.stringify({ contractType: 'cooperation', deliveryEmail: authorization.deliveryEmail, consent: authorization.consent, tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'cooperation' } }),
       });
       const data = await res.json();
       if (!res.ok || !data?.url) throw new Error();
@@ -168,7 +169,7 @@ export default function SpolupraceePage() {
               <section className={cardClass}>
                 <SectionTitle index="01" title="Strana A" subtitle="Jedna ze spolupracujících stran (osoba nebo firma)." />
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label="Jméno / název *"><input className={inputClass} name="partyAName" value={form.partyAName} onChange={set} placeholder="Jan Novák / ABC s.r.o." /></Field>
+                  <Field label="Jméno / název *"><input className={inputClass} name="partyAName" value={form.partyAName} onChange={set} placeholder="Jan Novák / ABC s.r.o." required /></Field>
                   <Field label="IČO / datum nar. *"><input className={inputClass} name="partyAId" value={form.partyAId} onChange={set} placeholder="12345678" /></Field>
                   <Field label="Adresa / sídlo *"><input className={inputClass} name="partyAAddress" value={form.partyAAddress} onChange={set} placeholder="Ulice 1, Praha" /></Field>
                   <Field label="E-mail"><input className={inputClass} name="partyAEmail" value={form.partyAEmail} onChange={set} type="email" placeholder="jan@firma.cz" /></Field>
@@ -178,7 +179,7 @@ export default function SpolupraceePage() {
               <section className={cardClass}>
                 <SectionTitle index="02" title="Strana B" />
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label="Jméno / název *"><input className={inputClass} name="partyBName" value={form.partyBName} onChange={set} placeholder="Marie Svobodová / XYZ s.r.o." /></Field>
+                  <Field label="Jméno / název *"><input className={inputClass} name="partyBName" value={form.partyBName} onChange={set} placeholder="Marie Svobodová / XYZ s.r.o." required /></Field>
                   <Field label="IČO / datum nar. *"><input className={inputClass} name="partyBId" value={form.partyBId} onChange={set} placeholder="87654321" /></Field>
                   <Field label="Adresa / sídlo *"><input className={inputClass} name="partyBAddress" value={form.partyBAddress} onChange={set} placeholder="Ulice 5, Brno" /></Field>
                   <Field label="E-mail"><input className={inputClass} name="partyBEmail" value={form.partyBEmail} onChange={set} type="email" placeholder="marie@firma.cz" /></Field>
@@ -189,7 +190,7 @@ export default function SpolupraceePage() {
                 <SectionTitle index="03" title="Předmět spolupráce" subtitle="Co budete společně dělat? Čím konkrétnější, tím lépe." />
                 <div className="space-y-4">
                   <Field label="Oblast / popis spolupráce *">
-                    <input className={inputClass} name="cooperationScope" value={form.cooperationScope} onChange={set} placeholder="Společný vývoj softwaru, marketingová kampaň, e-shop…" />
+                    <input className={inputClass} name="cooperationScope" value={form.cooperationScope} onChange={set} placeholder="Společný vývoj softwaru, marketingová kampaň, e-shop…" required />
                   </Field>
                   <Field label="Podrobný popis (nepovinné)">
                     <textarea className="w-full min-h-[80px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="cooperationDetails" value={form.cooperationDetails} onChange={set} placeholder="Strana A dodá technologické řešení, Strana B zajistí obchodní kanály…" />
@@ -277,7 +278,7 @@ export default function SpolupraceePage() {
                 {/* Řešení sporů */}
                 <div className="mb-6">
                   <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
-                  <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set}>
+                  <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set} aria-label="Řešení sporů">
                     <option value="court">Obecný soud (výchozí)</option>
                     <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                     <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>

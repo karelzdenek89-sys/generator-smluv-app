@@ -7,7 +7,6 @@ const isDev = process.env.NODE_ENV !== 'production';
 const securityHeaders = [
   { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
   { key: 'X-Content-Type-Options', value: 'nosniff' },
-  { key: 'X-XSS-Protection', value: '1; mode=block' },
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
   {
     key: 'Permissions-Policy',
@@ -61,6 +60,13 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
+      {
+        source: '/api/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'private, no-store, max-age=0' },
+          { key: 'Pragma', value: 'no-cache' },
+        ],
+      },
       {
         source: '/(.*)',
         headers: securityHeaders,

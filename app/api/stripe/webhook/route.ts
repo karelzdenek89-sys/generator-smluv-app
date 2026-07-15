@@ -16,6 +16,13 @@ import type { AnalyticsEventParams } from '@/lib/analytics';
 
 export const runtime = 'nodejs';
 
+const RELEASE_LOCK_IF_OWNER = `
+if redis.call('GET', KEYS[1]) == ARGV[1] then
+  return redis.call('DEL', KEYS[1])
+end
+return 0
+`;
+
 async function recordPaidCheckoutAnalytics(
   session: Stripe.Checkout.Session,
   options: {
@@ -93,13 +100,25 @@ export async function POST(req: Request) {
 
     const rawBody = await req.text();
 
-    const event = stripe.webhooks.constructEvent(
-      rawBody,
-      signature,
-      webhookSecret,
-    );
+    let event: Stripe.Event;
+    try {
+      event = stripe.webhooks.constructEvent(
+        rawBody,
+        signature,
+        webhookSecret,
+      );
+    } catch (verificationError) {
+      console.error('Stripe webhook signature verification failed:', verificationError);
+      return NextResponse.json(
+        { error: 'Webhook verification failed.' },
+        { status: 400 },
+      );
+    }
 
-    if (event.type === 'checkout.session.completed') {
+    if (
+      event.type === 'checkout.session.completed' ||
+      event.type === 'checkout.session.async_payment_succeeded'
+    ) {
       const session = event.data.object as Stripe.Checkout.Session;
 
       if (session.payment_status !== 'paid') {
@@ -109,142 +128,136 @@ export async function POST(req: Request) {
         return NextResponse.json({ received: true });
       }
 
-      // Idempotence: atomický SET NX — zabránění race condition při Stripe retry
-      try {
-        const dedupKey = `webhook:paid:${session.id}`;
-        // SET NX vrátí 'OK' pokud klíč byl vytvořen, null pokud už existoval
-        const acquired = await redis.set(dedupKey, '1', { ex: 60 * 60 * 24 * 3, nx: true });
-        if (acquired === null) {
-          console.log(`[webhook] Duplicate event for ${session.id} — skipping`);
-          return NextResponse.json({ received: true });
-        }
-      } catch (dedupErr) {
-        // Fail-open: Redis výpadek nesmí zablokovat zpracování platby
-        console.warn('[webhook] Idempotency check fail-open:', dedupErr);
+      const draftId = session.metadata?.draftId;
+      if (!draftId) throw new Error(`Missing draftId for paid Checkout Session ${session.id}.`);
+
+      const completedKey = `webhook:fulfilled:${session.id}`;
+      const lockKey = `webhook:fulfillment-lock:${session.id}`;
+      const fulfillmentRecordTtl = 60 * 60 * 24 * 90;
+
+      if (await redis.get(completedKey)) {
+        console.log(`[webhook] Fulfilment already completed for ${session.id}.`);
+        return NextResponse.json({ received: true });
       }
 
-      const draftId = session.metadata?.draftId;
-      let checkoutAnalyticsRecorded = false;
+      const lockAcquired = await redis.set(lockKey, event.id, { ex: 5 * 60, nx: true });
+      if (lockAcquired === null) {
+        return NextResponse.json(
+          { received: false, retry: true },
+          { status: 409 },
+        );
+      }
 
-      if (draftId) {
+      try {
         const key = `contract:draft:${draftId}`;
         const existing = await redis.get<Record<string, unknown>>(key);
+        if (!existing) throw new Error(`Draft ${draftId} was not found for paid session ${session.id}.`);
 
-        if (existing) {
-          const existingPayload =
-            existing.payload && typeof existing.payload === 'object' && !Array.isArray(existing.payload)
-              ? (existing.payload as Record<string, unknown>)
-              : {};
-          const tier = String(session.metadata?.tier || existing.tier || 'basic');
-          const lang = String(session.metadata?.lang || existing.lang || existingPayload.lang || 'cs');
-          const addOns = normalizeStoredCheckoutAddons(existing.addOns ?? existingPayload.addOns);
-          const contractType = String(
-            session.metadata?.contractType || existing.contractType || existingPayload.contractType || '',
-          );
-          const packageKey = typeof existing.packageKey === 'string' ? existing.packageKey : null;
-          const archiveDays = getArchiveDaysWithAddons(normalizePricingTier(tier), packageKey, addOns);
-          const downloadToken =
-            typeof session.metadata?.downloadToken === 'string'
-              ? session.metadata.downloadToken
-              : typeof existing.downloadToken === 'string'
-                ? existing.downloadToken
-                : null;
-          const ttl = archiveDays * 60 * 60 * 24;
-          await redis.set(
-            key,
-            {
-              ...existing,
-              lang,
-              addOns,
-              paid: true,
-              paidAt: new Date().toISOString(),
-              stripeSessionId: session.id,
-              paymentStatus: session.payment_status,
-              customerEmail: session.customer_email || (existing.email as string) || null,
-              ...(downloadToken ? { downloadToken } : {}),
-            },
-            { ex: ttl },
-          );
-
-          // Reverzní index: session_id → draftId (pro zákaznickou zónu)
-          try {
-            await redis.set(`session:draft:${session.id}`, draftId, { ex: ttl });
-          } catch (revErr) {
-            console.warn('[webhook] Reverse index error (non-critical):', revErr);
-          }
-
-          // Indexovat session_id pod e-mailem zákazníka pro zákaznickou zónu (cross-device)
-          const customerEmailForIndex = session.customer_email || (existing.email as string);
-          if (customerEmailForIndex) {
-            try {
-              const normalizedEmail = customerEmailForIndex.toLowerCase().trim();
-              const emailKey = `orders:email:${normalizedEmail}`;
-              await redis.sadd(emailKey, session.id);
-              await redis.expire(emailKey, ttl);
-              await ensurePortalAccessToken(normalizedEmail);
-            } catch (indexErr) {
-              console.warn('[webhook] Email index error (non-critical):', indexErr);
-            }
-          }
-
-          // Povinné: odeslat e-mail zákazníkovi přes Resend
-          const resendKey = process.env.RESEND_API_KEY;
-          if (!resendKey) {
-            console.error('[webhook] KRITICKÁ CHYBA: RESEND_API_KEY není nastaveno — potvrzovací e-mail NEBYL odeslán zákazníkovi!');
-          }
-          const customerEmail = session.customer_email || (existing.email as string);
-          if (!customerEmail) {
-            console.error(`[webhook] KRITICKÁ CHYBA: zákazník nemá e-mail (session ${session.id}) — potvrzovací e-mail NEBYL odeslán!`);
-          }
-          if (resendKey && customerEmail) {
-            const portalToken = await ensurePortalAccessToken(customerEmail).catch(() => null);
-            await sendDownloadEmail(
-              resendKey,
-              customerEmail,
-              session.id,
-              session.metadata?.contractType || 'dokument',
-              process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz',
-              tier,
-              lang,
-              portalToken,
-              downloadToken,
-              archiveDays,
-              addOns,
-            ).catch((err) => console.error('[webhook] E-mail error:', err));
-          }
-
-          await recordPaidCheckoutAnalytics(session, {
-            tier,
-            contractType,
-            packageKey,
-            addOns,
-          });
-          checkoutAnalyticsRecorded = true;
+        const existingPayload =
+          existing.payload && typeof existing.payload === 'object' && !Array.isArray(existing.payload)
+            ? (existing.payload as Record<string, unknown>)
+            : {};
+        const tier = String(session.metadata?.tier || existing.tier || 'basic');
+        const lang = String(session.metadata?.lang || existing.lang || existingPayload.lang || 'cs');
+        const addOns = normalizeStoredCheckoutAddons(existing.addOns ?? existingPayload.addOns);
+        const contractType = String(
+          session.metadata?.contractType || existing.contractType || existingPayload.contractType || '',
+        );
+        const packageKey = typeof existing.packageKey === 'string' ? existing.packageKey : null;
+        const archiveDays = getArchiveDaysWithAddons(normalizePricingTier(tier), packageKey, addOns);
+        const archiveTtl = archiveDays * 60 * 60 * 24;
+        const paidAt = typeof existing.paidAt === 'string' ? existing.paidAt : new Date().toISOString();
+        const storedExpiresAt = typeof existing.expiresAt === 'string' ? Date.parse(existing.expiresAt) : NaN;
+        const expiresAtMs = Number.isFinite(storedExpiresAt)
+          ? storedExpiresAt
+          : Date.parse(paidAt) + archiveTtl * 1000;
+        const remainingTtl = Math.max(60, Math.ceil((expiresAtMs - Date.now()) / 1000));
+        const customerEmail = String(
+          existing.deliveryEmail ||
+          session.customer_details?.email ||
+          session.customer_email ||
+          existing.email ||
+          '',
+        ).trim().toLowerCase();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)) {
+          throw new Error(`Missing valid delivery email for paid session ${session.id}.`);
         }
-      }
+        const downloadToken =
+          typeof session.metadata?.downloadToken === 'string'
+            ? session.metadata.downloadToken
+            : typeof existing.downloadToken === 'string'
+              ? existing.downloadToken
+              : null;
 
-      if (!checkoutAnalyticsRecorded) {
-        const tier = String(session.metadata?.tier || 'basic');
-        const contractType = String(session.metadata?.contractType || '');
-        const packageKey =
-          typeof session.metadata?.packageKey === 'string' ? session.metadata.packageKey : null;
-        const addOns = normalizeStoredCheckoutAddons(session.metadata?.addOns);
+        await redis.set(
+          key,
+          {
+            ...existing,
+            lang,
+            addOns,
+            paid: true,
+            paidAt,
+            expiresAt: new Date(expiresAtMs).toISOString(),
+            stripeSessionId: session.id,
+            paymentStatus: session.payment_status,
+            customerEmail,
+            deliveryEmail: customerEmail,
+            ...(downloadToken ? { downloadToken } : {}),
+          },
+          { ex: remainingTtl },
+        );
+
+        await redis.set(`session:draft:${session.id}`, draftId, { ex: remainingTtl });
+        const emailKey = `orders:email:${customerEmail}`;
+        await redis.sadd(emailKey, session.id);
+        const emailIndexTtl = await redis.ttl(emailKey);
+        if (emailIndexTtl < remainingTtl) await redis.expire(emailKey, remainingTtl);
+        const portalToken = await ensurePortalAccessToken(customerEmail, remainingTtl);
+
+        const resendKey = process.env.RESEND_API_KEY;
+        if (!resendKey) throw new Error('RESEND_API_KEY is missing; fulfilment email cannot be sent.');
+        const emailSentKey = `webhook:email-sent:${session.id}`;
+        if (!(await redis.get(emailSentKey))) {
+          await sendDownloadEmail(
+            resendKey,
+            customerEmail,
+            session.id,
+            contractType || 'dokument',
+            process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz',
+            tier,
+            lang,
+            portalToken,
+            downloadToken,
+            archiveDays,
+            addOns,
+            existing.consent,
+          );
+          await redis.set(emailSentKey, '1', { ex: fulfillmentRecordTtl });
+        }
 
         await recordPaidCheckoutAnalytics(session, {
           tier,
           contractType,
           packageKey,
           addOns,
+        }).catch((analyticsError) => {
+          console.error('[webhook] Paid checkout analytics failed:', analyticsError);
+        });
+
+        await redis.set(completedKey, '1', { ex: fulfillmentRecordTtl });
+      } finally {
+        await redis.eval(RELEASE_LOCK_IF_OWNER, [lockKey], [event.id]).catch((unlockError) => {
+          console.error('[webhook] Fulfilment lock cleanup failed:', unlockError);
         });
       }
     }
 
     return NextResponse.json({ received: true });
   } catch (error) {
-    console.error('Stripe webhook error:', error);
+    console.error('Stripe webhook processing error:', error);
     return NextResponse.json(
-      { error: 'Webhook verification failed.' },
-      { status: 400 },
+      { error: 'Webhook processing failed; retry required.' },
+      { status: 500 },
     );
   }
 }
@@ -261,6 +274,7 @@ async function sendDownloadEmail(
   downloadToken: string | null = null,
   archiveDays: number = tier === 'basic' ? 7 : 30,
   addOns: readonly CheckoutAddonKey[] = [],
+  consent: unknown = null,
 ): Promise<void> {
   const contractNames: Record<string, string> = {
     lease: 'Nájemní smlouva',
@@ -281,18 +295,27 @@ async function sendDownloadEmail(
 
   const contractName = contractNames[contractType] || 'Právní dokument';
   const langQuery = lang === 'cs' ? '' : `&lang=${encodeURIComponent(lang)}`;
-  const tokenQuery = downloadToken ? `&token=${encodeURIComponent(downloadToken)}` : '';
-  const downloadUrl = `${baseUrl}/api/contracts/download?session_id=${sessionId}${langQuery}${tokenQuery}`;
-  const docxDownloadUrl = `${downloadUrl}&format=docx`;
+  const tokenFragment = downloadToken ? `#token=${encodeURIComponent(downloadToken)}` : '';
+  const downloadUrl = `${baseUrl}/stahnout?session_id=${encodeURIComponent(sessionId)}${langQuery}${tokenFragment}`;
+  const docxDownloadUrl = `${baseUrl}/stahnout?session_id=${encodeURIComponent(sessionId)}${langQuery}&format=docx${tokenFragment}`;
   const portalUrl = portalToken
-    ? `${baseUrl}/zakaznicka-zona?access=${encodeURIComponent(portalToken)}`
+    ? `${baseUrl}/zakaznicka-zona#access=${encodeURIComponent(portalToken)}`
     : `${baseUrl}/zakaznicka-zona`;
+  const consentRecord = consent && typeof consent === 'object' && !Array.isArray(consent)
+    ? (consent as Record<string, unknown>)
+    : null;
+  const consentAcceptedAt = typeof consentRecord?.acceptedAt === 'string'
+    ? new Date(consentRecord.acceptedAt).toLocaleString('cs-CZ', { timeZone: 'Europe/Prague' })
+    : null;
+  const termsVersion = typeof consentRecord?.termsVersion === 'string' ? consentRecord.termsVersion : null;
+  const privacyVersion = typeof consentRecord?.privacyVersion === 'string' ? consentRecord.privacyVersion : null;
 
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
+      'Idempotency-Key': `checkout-fulfilled-${sessionId}`,
     },
     body: JSON.stringify({
       from: 'SmlouvaHned <dokumenty@smlouvahned.cz>',
@@ -333,6 +356,11 @@ async function sendDownloadEmail(
               Odkaz ke stažení je platný ${archiveDays} dní od zaplacení.<br>
               V případě dotazů nás kontaktujte na <a href="mailto:info@smlouvahned.cz" style="color:#f59e0b;">info@smlouvahned.cz</a>
             </p>
+            ${consentAcceptedAt && termsVersion && privacyVersion ? `
+            <div style="margin-top:24px;padding:16px;border-radius:12px;background:#111c31;color:#94a3b8;font-size:11px;line-height:1.6;">
+              Potvrzení uzavření smlouvy: dne ${consentAcceptedAt} jste výslovně souhlasil(a) s okamžitým dodáním digitálního obsahu před uplynutím lhůty pro odstoupení a vzal(a) jste na vědomí, že dodáním digitálního obsahu ztrácíte právo odstoupit. Obchodní podmínky verze ${termsVersion}, zásady ochrany osobních údajů verze ${privacyVersion}.
+            </div>
+            ` : ''}
           </div>
           <p style="color:#334155;font-size:11px;text-align:center;margin-top:24px;">
             © 2026 SmlouvaHned. Dokumenty jsou generovány automaticky a neslouží jako individuální právní poradenství.

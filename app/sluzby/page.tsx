@@ -1,13 +1,14 @@
 ﻿'use client';
 
 import { useMemo, useState } from 'react';
+import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
-import PaymentModal from '@/app/components/PaymentModal';
+import PaymentModal from '@/app/components/LazyPaymentModal';
 
 type FormData = {
   providerName: string; providerIco: string; providerAddress: string; providerEmail: string; providerPhone: string;
@@ -30,7 +31,7 @@ const cardClass = 'builder-card p-6';
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div><label className="site-form-label">{label}</label>{children}</div>
+    <label className="block"><span className="site-form-label">{label}</span>{children}</label>
   );
 }
 function SectionTitle({ index, title, subtitle }: { index: string; title: string; subtitle?: string }) {
@@ -85,7 +86,7 @@ export default function SluzbyPage() {
     }
   }, [form]);
 
-  const handlePayment = async (addOns: string[] = []) => {
+  const handlePayment = async (addOns: string[], authorization: CheckoutAuthorization) => {
     const missing: string[] = [];
     if (!form.providerName?.trim()) missing.push('název poskytovatele');
     if (!form.clientName?.trim()) missing.push('název objednatele');
@@ -99,7 +100,7 @@ export default function SluzbyPage() {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contractType: 'service', tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'service' }, email: form.clientEmail || form.providerEmail }),
+        body: JSON.stringify({ contractType: 'service', deliveryEmail: authorization.deliveryEmail, consent: authorization.consent, tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'service' } }),
       });
       const data = await res.json();
       if (!res.ok || !data?.url) throw new Error();
@@ -181,7 +182,7 @@ export default function SluzbyPage() {
               <section className={cardClass}>
                 <SectionTitle index="01" title="Poskytovatel služeb" subtitle="Freelancer, agentura nebo firma poskytující služby." />
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label="Jméno / název *"><input className={inputClass} name="providerName" value={form.providerName} onChange={set} placeholder="Jan Novák, webdesigner" /></Field>
+                  <Field label="Jméno / název *"><input className={inputClass} name="providerName" value={form.providerName} onChange={set} placeholder="Jan Novák, webdesigner" required /></Field>
                   <Field label="IČO (OSVČ/firma)"><input className={inputClass} name="providerIco" value={form.providerIco} onChange={set} placeholder="12345678" /></Field>
                   <Field label="Adresa / sídlo *"><input className={inputClass} name="providerAddress" value={form.providerAddress} onChange={set} placeholder="Ulice 1, Praha 5" /></Field>
                   <Field label="E-mail *"><input className={inputClass} name="providerEmail" value={form.providerEmail} onChange={set} type="email" placeholder="jan@studio.cz" /></Field>
@@ -198,7 +199,7 @@ export default function SluzbyPage() {
               <section className={cardClass}>
                 <SectionTitle index="02" title="Objednatel" />
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label="Jméno / název *"><input className={inputClass} name="clientName" value={form.clientName} onChange={set} placeholder="XYZ s.r.o." /></Field>
+                  <Field label="Jméno / název *"><input className={inputClass} name="clientName" value={form.clientName} onChange={set} placeholder="XYZ s.r.o." required /></Field>
                   <Field label="IČO / datum nar. *"><input className={inputClass} name="clientId" value={form.clientId} onChange={set} placeholder="87654321" /></Field>
                   <Field label="Adresa / sídlo *"><input className={inputClass} name="clientAddress" value={form.clientAddress} onChange={set} placeholder="Náměstí 5, Brno" /></Field>
                   <Field label="E-mail"><input className={inputClass} name="clientEmail" value={form.clientEmail} onChange={set} type="email" placeholder="info@firma.cz" /></Field>
@@ -209,7 +210,7 @@ export default function SluzbyPage() {
                 <SectionTitle index="03" title="Předmět a rozsah služeb" subtitle="Čím přesnější, tím menší riziko sporů o rozsah plnění." />
                 <div className="space-y-4">
                   <Field label="Název / popis služeb *">
-                    <textarea className="w-full min-h-[80px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="serviceDescription" value={form.serviceDescription} onChange={set} placeholder="Správa sociálních sítí, tvorba obsahu, SEO optimalizace…" />
+                    <textarea className="w-full min-h-[80px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="serviceDescription" value={form.serviceDescription} onChange={set} placeholder="Správa sociálních sítí, tvorba obsahu, SEO optimalizace…" required />
                   </Field>
                   <Field label="Podrobná specifikace">
                     <textarea className="w-full min-h-[70px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="serviceDetails" value={form.serviceDetails} onChange={set} placeholder="2× týdně příspěvky na Instagram a Facebook, měsíční report, 4 blogové články/měsíc…" />
@@ -288,7 +289,7 @@ export default function SluzbyPage() {
                 {/* Řešení sporů */}
                 <div className="mb-6">
                   <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
-                  <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set}>
+                  <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set} aria-label="Řešení sporů">
                     <option value="court">Obecný soud (výchozí)</option>
                     <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                     <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>

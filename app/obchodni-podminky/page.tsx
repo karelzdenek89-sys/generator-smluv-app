@@ -48,7 +48,7 @@ export default function TermsPage() {
           Obchodní <span className="text-amber-500">podmínky</span>
         </h1>
         <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.25em] mb-12">
-          Platné od 1. 1. 2026 • SmlouvaHned.cz
+          Verze 2026-07-15 • SmlouvaHned.cz
         </p>
 
         <div className="space-y-10 text-sm leading-relaxed">
@@ -125,10 +125,10 @@ export default function TermsPage() {
               Poskytovatel není plátcem DPH. Uvedené ceny jsou konečné.
             </p>
             <p className="mb-3">
-              Platba probíhá prostřednictvím zabezpečené platební brány <strong className="text-white">Stripe</strong> (kartou). Ihned po potvrzení platby je Zákazníkovi zpřístupněn odkaz ke stažení dokumentu na stránce a zasílán na e-mail (pokud byl zadán).
+              Platba probíhá prostřednictvím zabezpečené platební brány <strong className="text-white">Stripe</strong> (kartou). Ihned po potvrzení platby je Zákazníkovi zpřístupněn odkaz ke stažení dokumentu na stránce a zaslán na povinně uvedený doručovací e-mail.
             </p>
             <div className="bg-[#0c1426]/60 border border-white/8 rounded-xl p-4 text-slate-300 text-xs leading-relaxed">
-              <strong className="text-white">Digitální obsah a právo na odstoupení:</strong> Předmětem plnění je digitální obsah (vygenerovaný PDF dokument) doručovaný ihned po potvrzení platby. V souladu s § 1837 písm. l) OZ zákazník před dokončením objednávky výslovně potvrzuje, že souhlasí s okamžitým zahájením plnění, a bere na vědomí, že tím ztrácí právo na odstoupení od smlouvy ve lhůtě 14 dnů dle § 1829 OZ. Toto potvrzení je součástí souhlasu udělovaného při dokončení objednávky.
+              <strong className="text-white">Digitální obsah a právo na odstoupení:</strong> Předmětem plnění je digitální obsah (vygenerovaný PDF, případně DOCX dokument) doručovaný ihned po potvrzení platby. V souladu s § 1837 písm. l) OZ zákazník před dokončením objednávky výslovně potvrzuje, že souhlasí s okamžitým zahájením plnění, a bere na vědomí, že úplným dodáním digitálního obsahu ztrácí právo na odstoupení od smlouvy ve lhůtě 14 dnů dle § 1829 OZ. Čas a verze tohoto potvrzení se evidují u objednávky a zákazník je obdrží v potvrzovacím e-mailu na trvalém nosiči.
             </div>
           </section>
 
@@ -171,8 +171,7 @@ export default function TermsPage() {
               <a href="https://adr.coi.cz" target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:underline">adr.coi.cz</a>.
             </p>
             <p className="mb-3">
-              V souladu s nařízením EU č. 524/2013 je Zákazník oprávněn využít platformu pro online řešení sporů provozovanou Evropskou komisí:{' '}
-              <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:underline">ec.europa.eu/consumers/odr</a>.
+              Evropská platforma pro online řešení spotřebitelských sporů (ODR) byla k 20. červenci 2025 ukončena. Pro mimosoudní řešení spotřebitelského sporu proto použijte výše uvedený portál České obchodní inspekce.
             </p>
           </section>
 

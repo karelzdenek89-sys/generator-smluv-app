@@ -26,7 +26,8 @@ const pageShell = 'min-h-screen bg-[#05080f] px-6 py-16 text-slate-200';
 function SuccessContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
-  const token = searchParams.get('token')?.trim() ?? '';
+  const queryToken = searchParams.get('token')?.trim() ?? '';
+  const [token, setToken] = useState(queryToken);
   const lang = normalizeLocale(searchParams.get('lang'));
   const [dlState, setDlState] = useState<DownloadState>('checking');
   const [progress, setProgress] = useState(0);
@@ -34,17 +35,35 @@ function SuccessContent() {
   const attemptRef = useRef(0);
   const encodedSessionId = sessionId ? encodeURIComponent(sessionId) : null;
 
+  useEffect(() => {
+    const hashToken = new URLSearchParams(window.location.hash.replace(/^#/, '')).get('token')?.trim() ?? '';
+    const resolvedToken = queryToken || hashToken;
+    const tokenTimer = resolvedToken
+      ? window.setTimeout(() => setToken(resolvedToken), 0)
+      : null;
+
+    if (queryToken || hashToken) {
+      const cleanUrl = new URL(window.location.href);
+      cleanUrl.searchParams.delete('token');
+      cleanUrl.hash = '';
+      window.history.replaceState(null, '', `${cleanUrl.pathname}${cleanUrl.search}`);
+    }
+    return () => {
+      if (tokenTimer !== null) window.clearTimeout(tokenTimer);
+    };
+  }, [queryToken]);
+
   const downloadUrl = useMemo(() => {
-    if (!encodedSessionId) return null;
+    if (!encodedSessionId || !token) return null;
     const langQuery = lang === 'cs' ? '' : `&lang=${encodeURIComponent(lang)}`;
-    const tokenQuery = token ? `&token=${encodeURIComponent(token)}` : '';
-    return `/api/contracts/download?session_id=${encodedSessionId}${langQuery}${tokenQuery}`;
+    return `/stahnout?session_id=${encodedSessionId}${langQuery}#token=${encodeURIComponent(token)}`;
   }, [encodedSessionId, lang, token]);
 
   const docxDownloadUrl = useMemo(() => {
-    if (!downloadUrl) return null;
-    return `${downloadUrl}&format=docx`;
-  }, [downloadUrl]);
+    if (!encodedSessionId || !token) return null;
+    const langQuery = lang === 'cs' ? '' : `&lang=${encodeURIComponent(lang)}`;
+    return `/stahnout?session_id=${encodedSessionId}${langQuery}&format=docx#token=${encodeURIComponent(token)}`;
+  }, [encodedSessionId, lang, token]);
 
   const purchaseTitle =
     orderMeta?.packageLabel ?? orderMeta?.contractName ?? 'Váš smluvní dokument';
@@ -68,7 +87,7 @@ function SuccessContent() {
   }, [encodedSessionId, sessionId, lang]);
 
   useEffect(() => {
-    if (!encodedSessionId) return;
+    if (!encodedSessionId || !token) return;
 
     const maxAttempts = 12;
     let cancelled = false;
@@ -79,8 +98,10 @@ function SuccessContent() {
       setProgress(Math.min(90, Math.round((attemptRef.current / maxAttempts) * 90)));
 
       try {
-        const tokenQuery = token ? `&token=${encodeURIComponent(token)}` : '';
-        const res = await fetch(`/api/contracts/status?session_id=${encodedSessionId}${tokenQuery}`, {
+        const res = await fetch('/api/contracts/status', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ sessionId, token }),
           cache: 'no-store',
         });
         const data = (await res.json()) as SuccessStatusResponse;
@@ -113,7 +134,7 @@ function SuccessContent() {
     return () => {
       cancelled = true;
     };
-  }, [encodedSessionId, token]);
+  }, [encodedSessionId, sessionId, token]);
 
   if (!sessionId) {
     return (

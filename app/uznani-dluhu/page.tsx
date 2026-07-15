@@ -1,13 +1,14 @@
 ﻿'use client';
 
 import { useMemo, useState } from 'react';
+import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
-import PaymentModal from '@/app/components/PaymentModal';
+import PaymentModal from '@/app/components/LazyPaymentModal';
 
 type FormData = {
   creditorName: string; creditorId: string; creditorAddress: string; creditorEmail: string;
@@ -28,7 +29,7 @@ const inputClass = 'site-input';
 const cardClass = 'builder-card p-6';
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (<div><label className="site-form-label">{label}</label>{children}</div>);
+  return (<label className="block"><span className="site-form-label">{label}</span>{children}</label>);
 }
 function SectionTitle({ index, title, subtitle }: { index: string; title: string; subtitle?: string }) {
   return (<div className="mb-6"><div className="builder-kicker">{index}. {title}</div>{subtitle && <p className="builder-help mt-2 text-sm">{subtitle}</p>}</div>);
@@ -75,7 +76,7 @@ export default function UznanidluhuPage() {
     }
   }, [form]);
 
-  const handlePayment = async (addOns: string[] = []) => {
+  const handlePayment = async (addOns: string[], authorization: CheckoutAuthorization) => {
     const missing: string[] = [];
     if (!form.creditorName?.trim()) missing.push('jméno věřitele');
     if (!form.debtorName?.trim()) missing.push('jméno dlužníka');
@@ -85,7 +86,7 @@ export default function UznanidluhuPage() {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contractType: 'debt_acknowledgment', tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'debt_acknowledgment' }, email: form.creditorEmail }),
+        body: JSON.stringify({ contractType: 'debt_acknowledgment', deliveryEmail: authorization.deliveryEmail, consent: authorization.consent, tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'debt_acknowledgment' } }),
       });
       const data = await res.json();
       if (!res.ok || !data?.url) throw new Error();
@@ -169,7 +170,7 @@ export default function UznanidluhuPage() {
             <section className={cardClass}>
               <SectionTitle index="01" title="Věřitel" />
               <div className="grid sm:grid-cols-2 gap-4">
-                <Field label="Jméno / název *"><input className={inputClass} name="creditorName" value={form.creditorName} onChange={set} placeholder="Pavel Horák" /></Field>
+                <Field label="Jméno / název *"><input className={inputClass} name="creditorName" value={form.creditorName} onChange={set} placeholder="Pavel Horák" required /></Field>
                 <Field label="Datum nar. / IČO *"><input className={inputClass} name="creditorId" value={form.creditorId} onChange={set} placeholder="01.01.1975" /></Field>
                 <Field label="Adresa *"><input className={inputClass} name="creditorAddress" value={form.creditorAddress} onChange={set} placeholder="Ulice 1, Praha 4" /></Field>
                 <Field label="E-mail"><input className={inputClass} name="creditorEmail" value={form.creditorEmail} onChange={set} type="email" placeholder="pavel@email.cz" /></Field>
@@ -179,7 +180,7 @@ export default function UznanidluhuPage() {
             <section className={cardClass}>
               <SectionTitle index="02" title="Dlužník" subtitle="Dlužník podpisem uznává, že dluh existuje a zavazuje se ho splatit." />
               <div className="grid sm:grid-cols-2 gap-4">
-                <Field label="Jméno / název *"><input className={inputClass} name="debtorName" value={form.debtorName} onChange={set} placeholder="Tomáš Procházka" /></Field>
+                <Field label="Jméno / název *"><input className={inputClass} name="debtorName" value={form.debtorName} onChange={set} placeholder="Tomáš Procházka" required /></Field>
                 <Field label="Datum nar. / IČO *"><input className={inputClass} name="debtorId" value={form.debtorId} onChange={set} placeholder="15.04.1988" /></Field>
                 <Field label="Adresa *"><input className={inputClass} name="debtorAddress" value={form.debtorAddress} onChange={set} placeholder="Ulice 10, Brno" /></Field>
                 <Field label="E-mail"><input className={inputClass} name="debtorEmail" value={form.debtorEmail} onChange={set} type="email" placeholder="tomas@email.cz" /></Field>
@@ -189,7 +190,7 @@ export default function UznanidluhuPage() {
             <section className={cardClass}>
               <SectionTitle index="03" title="Výše a původ dluhu" />
               <div className="grid sm:grid-cols-2 gap-4">
-                <Field label="Výše dluhu (Kč) *"><input className={inputClass} name="debtAmount" value={form.debtAmount} onChange={set} type="number" placeholder="50000" /></Field>
+                <Field label="Výše dluhu (Kč) *"><input className={inputClass} name="debtAmount" value={form.debtAmount} onChange={set} type="number" placeholder="50000" required /></Field>
                 <Field label="Měna"><select className={inputClass} name="currency" value={form.currency} onChange={set}><option>Kč</option><option>EUR</option></select></Field>
                 <div className="sm:col-span-2"><Field label="Výše dluhu slovy"><input className={inputClass} name="debtAmountWords" value={form.debtAmountWords} onChange={set} placeholder="padesát tisíc korun českých" /></Field></div>
                 <Field label="Vznik dluhu">
@@ -236,14 +237,14 @@ export default function UznanidluhuPage() {
               {/* Řešení sporů */}
               <div className="mb-6">
                 <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
-                <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set}>
+                <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set} aria-label="Řešení sporů">
                   <option value="court">Obecný soud (výchozí)</option>
                   <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
                   <option value="arbitration">Rozhodčí řízení (Rozhodčí soud HK ČR)</option>
-                  {form.disputeResolution === 'arbitration' && (
-                    <p className="mt-2 text-xs text-amber-400 leading-relaxed">⚠ Rozhodčí doložka není platná ve smlouvách se spotřebiteli (zákon č. 216/1994 Sb.). Použijte ji pouze pro vztahy B2B.</p>
-                  )}
                 </select>
+                {form.disputeResolution === 'arbitration' && (
+                  <p className="mt-2 text-xs text-amber-400 leading-relaxed">⚠ Rozhodčí doložka není platná ve smlouvách se spotřebiteli (zákon č. 216/1994 Sb.). Použijte ji pouze pro vztahy B2B.</p>
+                )}
               </div>
               {/* === Vyberte úroveň zpracování dokumentu === */}
               <div className="mt-6">

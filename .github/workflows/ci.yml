@@ -16,5 +16,7 @@ jobs:
           node-version: '20'
           cache: npm
       - run: npm ci
-      - run: npm run lint:ci
+      - run: npm audit --audit-level=moderate
       - run: npm run test:pre-deploy
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e

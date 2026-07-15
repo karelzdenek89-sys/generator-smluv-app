@@ -118,6 +118,7 @@ test.describe('UA lease expat smoke', () => {
       expect(modalText.toLowerCase()).not.toContain(bullet);
     }
 
+    await page.getByTestId('checkout-delivery-email').fill('customer@example.com');
     await page.getByTestId('lease-checkout-consent').check();
     const checkoutRequest = page.waitForRequest(
       (req) => req.url().includes('/api/checkout') && req.method() === 'POST',
@@ -127,6 +128,8 @@ test.describe('UA lease expat smoke', () => {
 
     expect(checkoutBody).not.toBeNull();
     expect(checkoutBody!.lang).toBe('ua');
+    expect(checkoutBody!.deliveryEmail).toBe('customer@example.com');
+    expect(checkoutBody!.consent).toMatchObject({ accepted: true });
     expect(checkoutBody!.contractType).toBe('lease');
     expect(['basic', 'complete']).toContain(checkoutBody!.tier);
     const payload = checkoutBody!.payload as Record<string, unknown>;
