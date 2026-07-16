@@ -151,6 +151,11 @@ export default function DppPage() {
         benefits={ui.landing.benefits}
         contents={ui.landing.contents}
         whenSuitable={ui.landing.whenSuitable}
+        whenUnsuitable={[
+          'Práce, která má u jednoho zaměstnavatele přesáhnout zákonný limit 300 hodin za kalendářní rok.',
+          'Pravidelná práce ve větším rozsahu, pro kterou je vhodnější DPČ nebo pracovní smlouva.',
+          'Posouzení práva cizince pracovat v ČR, daňových dopadů nebo probíhajícího pracovního sporu.',
+        ]}
         whenOther={ui.landing.whenOther}
         faq={ui.landing.faq}
         ctaLabel={ui.landing.ctaLabel}

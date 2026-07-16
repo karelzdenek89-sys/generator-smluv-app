@@ -169,6 +169,11 @@ export default function PracovniPage() {
         benefits={ui.landing.benefits}
         contents={ui.landing.contents}
         whenSuitable={ui.landing.whenSuitable}
+        whenUnsuitable={[
+          'Dohoda člena statutárního orgánu, agenturní zaměstnávání nebo jiné zvláštní pracovněprávní režimy.',
+          'Řešení pracovního sporu, ukončení stávajícího pracovního poměru nebo nároků zaměstnance.',
+          'Posouzení pracovního oprávnění cizince, imigračních povinností nebo složitých kolektivních podmínek.',
+        ]}
         whenOther={ui.landing.whenOther}
         faq={ui.landing.faq}
         ctaLabel={ui.landing.ctaLabel}

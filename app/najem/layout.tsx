@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
 import ProductSchemas from '@/app/components/seo/ProductSchemas';
 import { getExpatContractHreflangAlternates } from '@/lib/i18n/expat-hreflang';
-import { LEASE_CS_LANDING_FAQ } from '@/lib/seo/lease-builder-seo';
-import { faqPageSchema, jsonLdScript } from '@/lib/schemas';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 
@@ -41,10 +39,6 @@ export const metadata: Metadata = {
   },
 };
 
-const leaseFaqSchema = faqPageSchema(
-  LEASE_CS_LANDING_FAQ.map((item) => ({ question: item.q, answer: item.a })),
-);
-
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
@@ -53,10 +47,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         slug="/najem"
         description="Online generátor nájemní smlouvy na byt dle § 2235 a násl. OZ. Kauce, nájemné, valorizace, předávací protokol."
         breadcrumbLabel="Nájemní smlouva"
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLdScript(leaseFaqSchema) }}
       />
       {children}
     </>

@@ -488,6 +488,11 @@ function LeaseBuilderContent() {
         benefits={ui.landing.benefits}
         contents={ui.landing.contents}
         whenSuitable={ui.landing.whenSuitable}
+        whenUnsuitable={[
+          'Krátkodobé ubytování, komerční nájem nebo jiný vztah, který není běžným nájmem bytu či domu.',
+          'Probíhající spor o výpověď, kauci, dluh nebo vyklizení nemovitosti.',
+          'Atypické vlastnické vztahy, více navazujících smluv nebo podmínky vyžadující individuální právní posouzení.',
+        ]}
         whenOther={ui.landing.whenOther}
         faq={ui.landing.faq}
         ctaLabel={ui.landing.ctaLabel}

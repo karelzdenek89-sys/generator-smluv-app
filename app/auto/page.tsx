@@ -454,6 +454,11 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
         benefits={ui.landing.benefits}
         contents={ui.landing.contents}
         whenSuitable={ui.landing.whenSuitable}
+        whenUnsuitable={[
+          'Financování, leasing, zástava vozidla nebo převod, do kterého vstupuje třetí osoba.',
+          'Přeshraniční prodej, nejasné vlastnictví nebo chybějící doklady k vozidlu.',
+          'Probíhající spor o vady, stočený tachometr, pojistnou událost nebo jiný závažný problém.',
+        ]}
         whenOther={ui.landing.whenOther}
         faq={ui.landing.faq}
         ctaLabel={ui.landing.ctaLabel}

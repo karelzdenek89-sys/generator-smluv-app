@@ -198,6 +198,11 @@ export default function PodnajemuPage() {
         benefits={ui.landing.benefits}
         contents={ui.landing.contents}
         whenSuitable={ui.landing.whenSuitable}
+        whenUnsuitable={[
+          'Přímý pronájem od vlastníka — pro ten je určena nájemní smlouva, nikoli podnájem.',
+          'Podnájem bez potřebného souhlasu pronajímatele nebo v rozporu s hlavní nájemní smlouvou.',
+          'Probíhající spor, řetězení podnájmů nebo jiné nestandardní vztahy vyžadující individuální posouzení.',
+        ]}
         whenOther={ui.landing.whenOther}
         faq={ui.landing.faq}
         ctaLabel={ui.landing.ctaLabel}

@@ -123,7 +123,7 @@ export default function PodnajemniSmlouvaPage() {
               'Zákaz dalšího podnájmu',
               'Doba trvání podnájmu a výpovědní podmínky',
               'Předávací protokol se stavem bytu',
-              'Závěrečná установení a podpisy',
+              'Závěrečná ustanovení a podpisy',
             ].map(item => (
               <div key={item} className="flex items-start gap-2 text-sm text-slate-300">
                 <span className="text-yellow-400 flex-shrink-0 mt-0.5">✓</span>

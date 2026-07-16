@@ -93,8 +93,8 @@ test.describe('UA lease expat smoke', () => {
     assertSafeMarketingUa(seoText);
 
     await page.getByTestId('seo-lease-cta').click();
-    await page.waitForURL(/\/najem\?lang=ua/);
-    expect(page.url()).toMatch(/lang=ua/);
+    await page.waitForURL((url) => url.pathname === '/najem' && !url.searchParams.has('lang'));
+    expect(page.url()).toBe('http://127.0.0.1:3000/najem');
 
     await expect(page.getByRole('heading', { name: /Договір оренди/i }).first()).toBeVisible();
     await expect(
@@ -135,7 +135,7 @@ test.describe('UA lease expat smoke', () => {
     expect(payload.tenantName).toBe('Olena Orendar');
   });
 
-  test('lang=ua wins over preferred-locale cookie', async ({ page, context }) => {
+  test('lang=ua redirects cleanly and wins over preferred-locale cookie', async ({ page, context }) => {
     await context.addCookies([
       {
         name: 'preferred-locale',
@@ -144,6 +144,7 @@ test.describe('UA lease expat smoke', () => {
       },
     ]);
     await page.goto('/najem?lang=ua');
+    expect(page.url()).toBe('http://127.0.0.1:3000/najem');
     await expect(page.getByTestId('lease-landlord-name')).toBeVisible();
     await expect(page.getByText('Заповніть дані документа')).toBeVisible();
     await expect(
@@ -154,6 +155,7 @@ test.describe('UA lease expat smoke', () => {
   test('/darovaci?lang=ua shows Czech-only notice', async ({ page, context }) => {
     await context.clearCookies();
     await page.goto('/darovaci?lang=ua');
+    expect(page.url()).toBe('http://127.0.0.1:3000/darovaci');
     await expect(page.getByText('Лише чеська форма')).toBeVisible();
     await expect(
       page.getByRole('main').getByText(/наразі доступна лише чеською/i),

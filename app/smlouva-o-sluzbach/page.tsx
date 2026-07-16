@@ -131,7 +131,7 @@ export default function SmlouvaOSluzbach() {
               'Mlčenlivost a ochrana obchodního tajemství',
               'Sankce za prodlení nebo nesplnění SLA',
               'Podmínky ukončení smlouvy a výpovědi',
-              'Závěrečná установení a rozhodné právo',
+              'Závěrečná ustanovení a rozhodné právo',
             ].map(item => (
               <div key={item} className="flex items-start gap-2 text-sm text-slate-300">
                 <span className="text-pink-400 flex-shrink-0 mt-0.5">✓</span>

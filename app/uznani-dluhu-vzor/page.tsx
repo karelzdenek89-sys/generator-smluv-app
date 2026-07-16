@@ -136,7 +136,7 @@ export default function UznaniDluhuVzorPage() {
               'Úrok z prodlení',
               'Prohlášení o dobrovolnosti uznání',
               'Exekuční doložka (u notářského zápisu)',
-              'Závěrečná установení a podpisy',
+              'Závěrečná ustanovení a podpisy',
             ].map(item => (
               <div key={item} className="flex items-start gap-2 text-sm text-slate-300">
                 <span className="text-red-400 flex-shrink-0 mt-0.5">✓</span>

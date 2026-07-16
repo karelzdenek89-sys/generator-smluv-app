@@ -95,8 +95,8 @@ test.describe('EN lease expat smoke', () => {
     assertSafeMarketing(seoText);
 
     await page.getByTestId('seo-lease-cta').click();
-    await page.waitForURL(/\/najem\?lang=en/);
-    expect(page.url()).toMatch(/lang=en/);
+    await page.waitForURL((url) => url.pathname === '/najem' && !url.searchParams.has('lang'));
+    expect(page.url()).toBe('http://127.0.0.1:3000/najem');
 
     await expect(page.getByRole('heading', { name: 'Rental Agreement' }).first()).toBeVisible();
     await expect(page.getByText('Your contract will be generated primarily in Czech').first()).toBeVisible();
@@ -138,7 +138,7 @@ test.describe('EN lease expat smoke', () => {
     expect(payload.tenantName).toBe('John Tenant');
   });
 
-  test('lang=en wins over preferred-locale cookie', async ({ page, context }) => {
+  test('lang=en redirects cleanly and wins over preferred-locale cookie', async ({ page, context }) => {
     await context.addCookies([
       {
         name: 'preferred-locale',
@@ -147,6 +147,7 @@ test.describe('EN lease expat smoke', () => {
       },
     ]);
     await page.goto('/najem?lang=en');
+    expect(page.url()).toBe('http://127.0.0.1:3000/najem');
     await expect(page.getByTestId('lease-landlord-name')).toBeVisible();
     await expect(page.getByText('Fill in the document details')).toBeVisible();
     await expect(page.getByText('Your contract will be generated primarily in Czech').first()).toBeVisible();
@@ -169,6 +170,7 @@ test.describe('EN lease expat smoke', () => {
   test('/darovaci?lang=en shows Czech-only notice', async ({ page, context }) => {
     await context.clearCookies();
     await page.goto('/darovaci?lang=en');
+    expect(page.url()).toBe('http://127.0.0.1:3000/darovaci');
     await expect(page.getByText('Czech-only form')).toBeVisible();
     await expect(
       page.getByRole('main').getByText(/currently available in Czech only/i),

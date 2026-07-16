@@ -135,7 +135,7 @@ export default function PujckaSmlouvaPage() {
               'Zajištění pohledávky (zástavní právo, ručení) — pro. varianta',
               'Prohlášení o faktickém předání peněz',
               'Podmínky předčasného splacení',
-              'Závěrečná установení a podpisy',
+              'Závěrečná ustanovení a podpisy',
             ].map(item => (
               <div key={item} className="flex items-start gap-2 text-sm text-slate-300">
                 <span className="text-rose-400 flex-shrink-0 mt-0.5">✓</span>

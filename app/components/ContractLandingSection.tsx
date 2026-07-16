@@ -7,6 +7,7 @@ import { getAnalyticsDefaultsForPathname, trackEvent } from '@/lib/analytics';
 import { getBuilderCopy, getContractTypeByPath } from '@/lib/locale';
 import { BuilderLocaleNotice, useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
 import WhyNotGenericBlock from '@/app/components/marketing/WhyNotGenericBlock';
+import { faqPageSchema, jsonLdScript } from '@/lib/schemas';
 
 export interface ContractLandingBenefit {
   icon: string;
@@ -33,6 +34,7 @@ export interface ContractLandingSectionProps {
   benefits: ContractLandingBenefit[];
   contents: string[];
   whenSuitable: string[];
+  whenUnsuitable?: string[];
   whenOther?: ContractLandingAlternative[];
   faq: ContractLandingFaq[];
   ctaLabel?: string;
@@ -51,6 +53,7 @@ export default function ContractLandingSection({
   benefits,
   contents,
   whenSuitable,
+  whenUnsuitable,
   whenOther,
   faq,
   ctaLabel = 'Pokračovat k vytvoření dokumentu',
@@ -64,6 +67,78 @@ export default function ContractLandingSection({
   const locale = useBuilderLocale();
   const contractType = getContractTypeByPath(pathname);
   const localizedCopy = contractType ? getBuilderCopy(contractType, locale) : null;
+  const trustCopy =
+    locale === 'en'
+      ? {
+          unsuitableLabel: 'Outside the standard scope',
+          unsuitableTitle: 'When this tool is not suitable',
+          unsuitableItems: [
+            'An ongoing dispute, enforcement issue or terms that the parties do not agree on.',
+            'A complex, high-value or regulated transaction that needs individual legal assessment.',
+            'A situation where you need legal advice, representation or a certified translation.',
+          ],
+          outputLabel: 'What you receive',
+          outputTitle: 'A document assembled from your answers',
+          outputIntro:
+            'Before payment you can review the document structure and entered data. The final scope depends on the selected variant and add-ons.',
+          outputItems: [
+            'A PDF prepared for your final review and signatures.',
+            'The parties, amounts, dates and other data entered in the form placed into the document.',
+            'Clearly separated clauses and signature sections for the selected document type.',
+            'An editable DOCX only if you select that optional add-on at checkout.',
+          ],
+          templateStatus:
+            'Template status: maintained for standard situations. The date of the last documented substantive legal review is not currently published.',
+        }
+      : locale === 'ua'
+        ? {
+            unsuitableLabel: 'Поза стандартним обсягом',
+            unsuitableTitle: 'Коли цей інструмент не підходить',
+            unsuitableItems: [
+              'Триваючий спір, виконавче провадження або умови, щодо яких сторони не домовилися.',
+              'Складна, значна за вартістю чи регульована угода, що потребує індивідуальної правової оцінки.',
+              'Ситуація, коли потрібна юридична консультація, представництво або офіційний переклад.',
+            ],
+            outputLabel: 'Що ви отримаєте',
+            outputTitle: 'Документ, складений за вашими відповідями',
+            outputIntro:
+              'До оплати можна перевірити структуру документа та введені дані. Остаточний обсяг залежить від обраного варіанта й доповнень.',
+            outputItems: [
+              'PDF для остаточної перевірки та підписання.',
+              'Дані сторін, суми, дати та інші відомості з форми, внесені до документа.',
+              'Чітко розділені положення та блоки підписів для обраного типу документа.',
+              'Редагований DOCX лише за умови вибору цього доповнення під час оплати.',
+            ],
+            templateStatus:
+              'Стан шаблону: підтримується для стандартних ситуацій. Дата останньої документально підтвердженої змістовної правової перевірки наразі не опублікована.',
+          }
+        : {
+            unsuitableLabel: 'Mimo standardní rozsah',
+            unsuitableTitle: 'Kdy tento nástroj není vhodný',
+            unsuitableItems: [
+              'Probíhající spor, exekuce nebo podmínky, na kterých se strany neshodnou.',
+              'Složitá, vysoce hodnotná nebo regulovaná transakce vyžadující individuální právní posouzení.',
+              'Situace, kdy potřebujete právní radu, zastoupení nebo úředně ověřený překlad.',
+            ],
+            outputLabel: 'Co dostanete',
+            outputTitle: 'Dokument sestavený z vašich odpovědí',
+            outputIntro:
+              'Před platbou si zkontrolujete strukturu dokumentu i zadané údaje. Konečný rozsah se odvíjí od zvolené varianty a doplňků.',
+            outputItems: [
+              'PDF připravené k vaší závěrečné kontrole a podpisu.',
+              'Údaje o stranách, částky, data a další informace z formuláře doplněné do dokumentu.',
+              'Přehledně oddělená ustanovení a podpisové bloky podle zvoleného typu dokumentu.',
+              'Editovatelný DOCX pouze tehdy, pokud si tento volitelný doplněk vyberete v objednávce.',
+            ],
+            templateStatus:
+              'Stav šablony: průběžně udržovaná pro standardní situace. Datum poslední doložené věcné právní revize zatím není zveřejněno.',
+          };
+  const unsuitableItems = locale === 'cs' && whenUnsuitable?.length
+    ? whenUnsuitable
+    : trustCopy.unsuitableItems;
+  const faqSchema = faqPageSchema(
+    faq.map((item) => ({ question: item.q, answer: item.a })),
+  );
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -102,6 +177,10 @@ export default function ContractLandingSection({
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(faqSchema) }}
+      />
       {contractType ? <BuilderLocaleNotice contractType={contractType} /> : null}
       <section className="mx-auto max-w-7xl px-4 pb-12 pt-12 lg:px-8 lg:pt-16">
         <div className="max-w-3xl">
@@ -199,6 +278,23 @@ export default function ContractLandingSection({
               </ul>
             </div>
 
+            <div className="site-content-card rounded-[1.75rem] p-7">
+              <div className="site-kicker">{trustCopy.unsuitableLabel}</div>
+              <h2 className="site-heading-lg mt-4 text-[#f2e7c8]">
+                {trustCopy.unsuitableTitle}
+              </h2>
+              <ul className="mt-6 space-y-4">
+                {unsuitableItems.map((item) => (
+                  <li key={item} className="flex items-start gap-3 text-base leading-8 text-[#ddd5c7]">
+                    <span className="mt-2 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[rgba(196,116,116,0.24)] text-xs text-[#d99a8d]">
+                      ×
+                    </span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
             {whenOther?.length ? (
               <div className="site-content-card rounded-[1.75rem] p-7">
                 <div className="site-kicker">{localizedCopy ? 'Other document' : 'Jiný typ dokumentu'}</div>
@@ -220,6 +316,25 @@ export default function ContractLandingSection({
               </div>
             ) : null}
           </div>
+        </div>
+
+        <div className="site-content-card mt-8 rounded-[1.75rem] p-7 md:p-8">
+          <div className="site-kicker">{trustCopy.outputLabel}</div>
+          <h2 className="site-heading-lg mt-4 text-[#f2e7c8]">{trustCopy.outputTitle}</h2>
+          <p className="site-body mt-4 max-w-3xl text-[#d2c8b9]">{trustCopy.outputIntro}</p>
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {trustCopy.outputItems.map((item) => (
+              <div key={item} className="site-content-card-soft rounded-[1.25rem] p-5">
+                <div className="flex items-start gap-3">
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#d6ac60]" />
+                  <p className="text-sm leading-7 text-[#ddd5c7]">{item}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="mt-5 border-t border-[rgba(166,134,91,0.12)] pt-4 text-xs leading-6 text-[#9b8f7f]">
+            {trustCopy.templateStatus}
+          </p>
         </div>
       </section>
 

@@ -152,6 +152,11 @@ export default function SluzbyPage() {
           'Vztahy, kde je klíčové ošetřit duševní vlastnictví a podmínky ukončení',
           'B2B smlouvy bez vzniku pracovněprávního vztahu',
         ]}
+        whenUnsuitable={[
+          'Vztah, který má znaky závislé práce a měl by být upraven pracovní smlouvou nebo dohodou.',
+          'Regulované finanční, zdravotní nebo jiné odborné služby se zvláštními zákonnými povinnostmi.',
+          'Složitý outsourcing, přeshraniční plnění nebo rozsáhlé nakládání s osobními údaji a duševním vlastnictvím.',
+        ]}
         whenOther={[
           { label: 'Smlouva o dílo', href: '/smlouva-o-dilo', text: 'Pro jednorázové výsledky — zhotovení konkrétního díla s předáním a akceptací (stavba, vývoj softwaru jako projekt).' },
           { label: 'Dohoda o provedení práce (DPP)', href: '/dpp', text: 'Pokud jde o fyzickou osobu vykonávající práci v pracovněprávním vztahu do 300 hodin ročně.' },

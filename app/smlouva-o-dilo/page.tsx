@@ -263,6 +263,11 @@ export default function WorkContractPage() {
           'Grafický design, ilustrace nebo jiný kreativní výstup s předáním',
           'Jakékoli jednorázové zhotovení díla za úplatu s jasně definovaným výsledkem',
         ]}
+        whenUnsuitable={[
+          'Průběžné nebo opakované služby bez jednoznačně předávaného výsledku.',
+          'Složitá stavební díla, veřejné zakázky nebo projekty s rozsáhlým licenčním a odpovědnostním režimem.',
+          'Probíhající spor o vady, cenu, vícepráce nebo předání díla.',
+        ]}
         whenOther={[
           { label: 'Smlouva o poskytování služeb', href: '/sluzby', text: 'Pro průběžné nebo opakované plnění bez jednorázového předání díla (měsíční správa, marketing).' },
           { label: 'Smlouva o spolupráci', href: '/spoluprace', text: 'Pro dlouhodobou obchodní spolupráci s podílem na výnosech nebo výsledcích.' },

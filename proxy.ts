@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import {
+  getLegacyLangRedirect,
+  type PreferredPublicLocale,
+} from '@/lib/seo/legacy-lang-query';
 
 /** Supported public locale URL segments (expat product). */
 const ACTIVE_LOCALE_SEGMENTS = ['en', 'ua'] as const;
@@ -12,16 +16,6 @@ const RETIRED_LOCALE_REDIRECTS: Record<string, string> = {
   de: '/en',
   uk: '/ua',
 };
-
-const LOCALIZED_BUILDER_PATHS = new Set([
-  '/najem',
-  '/pracovni',
-  '/dpp',
-  '/podnajem',
-  '/plna-moc',
-  '/auto',
-  '/darovaci',
-]);
 
 /** Apex domain — canonical public host is www (matches sitemap, metadata, robots.txt). */
 const APEX_HOST = 'smlouvahned.cz';
@@ -38,6 +32,15 @@ function redirectToCanonicalHost(request: NextRequest): NextResponse {
   url.protocol = 'https:';
   url.host = CANONICAL_HOST;
   return NextResponse.redirect(url, 308);
+}
+
+function setPreferredLocale(response: NextResponse, locale: PreferredPublicLocale) {
+  response.cookies.set('preferred-locale', locale, {
+    path: '/',
+    maxAge: 60 * 60 * 24 * 30,
+    sameSite: 'lax',
+  });
+  response.headers.set('x-preferred-locale', locale);
 }
 
 function rewritePathSegment(pathname: string, fromSeg: string, toSeg: string): string {
@@ -65,49 +68,31 @@ export function proxy(request: NextRequest) {
     }
   }
 
+  // Public language variants use path segments (/en, /ua), not indexable query
+  // URLs. Persist a valid preference and redirect to the same URL without
+  // `lang`; preserve unrelated parameters such as `package`.
+  // `/success` is intentionally excluded because `lang` is transactional data
+  // used to select the purchased document download.
+  const legacyLangRedirect = getLegacyLangRedirect(pathname, request.nextUrl.searchParams);
+  if (legacyLangRedirect) {
+    const url = request.nextUrl.clone();
+    url.search = legacyLangRedirect.search;
+    const redirect = NextResponse.redirect(url, 308);
+    if (legacyLangRedirect.preferredLocale) {
+      setPreferredLocale(redirect, legacyLangRedirect.preferredLocale);
+    }
+    return redirect;
+  }
+
   const response = NextResponse.next();
   response.headers.set('x-pathname', pathname);
-
-  const langQuery = request.nextUrl.searchParams.get('lang')?.trim().toLowerCase();
-  if (langQuery) {
-    const preferred =
-      langQuery === 'cs' || langQuery === 'en'
-        ? langQuery
-        : langQuery === 'ua' || langQuery === 'uk' || langQuery === 'ukr'
-          ? 'ua'
-          : null;
-    if (preferred) {
-      response.cookies.set('preferred-locale', preferred, {
-        path: '/',
-        maxAge: 60 * 60 * 24 * 30,
-        sameSite: 'lax',
-      });
-      response.headers.set('x-preferred-locale', preferred);
-      return response;
-    }
-  }
 
   // 1) Explicit foreign-landing visit → store preference for builder banners.
   for (const seg of ACTIVE_LOCALE_SEGMENTS) {
     if (pathname === `/${seg}` || pathname.startsWith(`/${seg}/`)) {
-      response.cookies.set('preferred-locale', seg, {
-        path: '/',
-        maxAge: 60 * 60 * 24 * 30,
-        sameSite: 'lax',
-      });
+      setPreferredLocale(response, seg);
       return response;
     }
-  }
-
-  // 2) Czech builder URLs reset stale foreign preferences. Avoid setting
-  // locale cookies on every marketing/blog page so public pages stay cacheable.
-  if (LOCALIZED_BUILDER_PATHS.has(pathname)) {
-    response.cookies.set('preferred-locale', 'cs', {
-      path: '/',
-      maxAge: 60 * 60 * 24 * 30,
-      sameSite: 'lax',
-    });
-    response.headers.set('x-preferred-locale', 'cs');
   }
 
   return response;

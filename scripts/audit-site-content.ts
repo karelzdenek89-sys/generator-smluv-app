@@ -80,6 +80,8 @@ function main() {
   assert.match(terms, /není plátcem DPH/, 'Terms must clarify non-VAT-payer status');
   assert.match(terms, /90 dní/, 'Terms must mention 90-day archive add-on');
   assert.doesNotMatch(terms, /vč\. DPH/i, 'Terms must not say prices include VAT');
+  assert.doesNotMatch(terms, /consumers\/odr|nařízení EU č\. 524\/2013/i, 'Terms must not reference the retired EU ODR platform');
+  assert.match(terms, /https:\/\/adr\.coi\.cz/, 'Terms must retain the ČOI ADR link');
 
   const faq = read('app/faq/page.tsx');
   assert.match(faq, /Základní dokument 99 Kč/, 'FAQ must mention 99 Kč basic price');
@@ -194,8 +196,17 @@ function main() {
   assert.match(read('app/zakaznicka-zona/layout.tsx'), /index: false/, 'Customer zone must be noindex');
   const proxy = read('proxy.ts');
   assert.match(proxy, /CANONICAL_HOST/, 'Proxy should redirect apex domain to www');
-  assert.match(proxy, /LOCALIZED_BUILDER_PATHS/, 'Proxy should only reset locale cookies on relevant builder routes');
+  assert.match(proxy, /getLegacyLangRedirect/, 'Proxy must remove legacy lang query parameters');
+  assert.doesNotMatch(proxy, /LOCALIZED_BUILDER_PATHS/, 'Clean canonical builders must preserve explicit locale preference');
+  const legacyLangQuery = read('lib/seo/legacy-lang-query.ts');
+  assert.match(legacyLangQuery, /searchParams\.delete\('lang'\)/, 'Legacy lang helper must remove the parameter');
+  assert.match(legacyLangQuery, /pathname === '\/success'/, 'Proxy logic must preserve transactional lang data on /success');
   assert.match(read('vercel.json'), /www\.smlouvahned\.cz/, 'vercel.json should redirect apex host to www');
+
+  const contractLanding = read('app/components/ContractLandingSection.tsx');
+  assert.match(contractLanding, /whenUnsuitable/, 'Product landing must explain when the tool is unsuitable');
+  assert.match(contractLanding, /Co dostanete/, 'Product landing must explain the generated output');
+  assert.match(contractLanding, /faqPageSchema/, 'Visible product FAQ must have matching FAQPage schema');
 
   console.log('Site content audit passed (prices, legal copy, metadata, /najem UX, /slovnik).');
 }

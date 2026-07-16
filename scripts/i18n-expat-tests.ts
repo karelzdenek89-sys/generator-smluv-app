@@ -120,8 +120,12 @@ function testLocalePropagation() {
   assert.doesNotMatch(builderLocale, /readCookie/);
 
   const proxy = read('proxy.ts');
-  assert.match(proxy, /langQuery === 'cs'/);
-  assert.match(proxy, /preferred-locale', 'cs'/);
+  assert.match(proxy, /getLegacyLangRedirect/);
+  assert.doesNotMatch(proxy, /LOCALIZED_BUILDER_PATHS/);
+  const legacyLangQuery = read('lib/seo/legacy-lang-query.ts');
+  assert.match(legacyLangQuery, /locale === 'cs'/);
+  assert.match(legacyLangQuery, /searchParams\.delete\('lang'\)/);
+  assert.match(legacyLangQuery, /pathname === '\/success'/);
 
   const sitemap = read('app/sitemap.ts');
   assert.match(read('lib/seo/site.ts'), /https:\/\/www\.smlouvahned\.cz/);
@@ -158,8 +162,8 @@ function testLocalePropagation() {
     assert.match(retiredLayout, /index: false/);
     assert.doesNotMatch(retiredLayout, /makeLandingMetadata/);
   }
-  assert.match(proxy, /LOCALIZED_BUILDER_PATHS/);
-  assert.match(proxy, /public pages stay cacheable/);
+  assert.doesNotMatch(proxy, /LOCALIZED_BUILDER_PATHS/);
+  assert.match(proxy, /getLegacyLangRedirect/);
 }
 
 function testNoMisleadingBilingualMarketing() {

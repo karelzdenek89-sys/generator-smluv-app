@@ -123,7 +123,7 @@ export default function PlnaMocOnlinePage() {
               'Ověření podpisu zmocnitele (pro úřední záležitosti)',
               'Odkaz na konkrétní úkon nebo předmět',
               'Potvrzení o přijetí zmocnění',
-              'Závěrečná установení a podpisy',
+              'Závěrečná ustanovení a podpisy',
             ].map(item => (
               <div key={item} className="flex items-start gap-2 text-sm text-slate-300">
                 <span className="text-slate-400 flex-shrink-0 mt-0.5">✓</span>

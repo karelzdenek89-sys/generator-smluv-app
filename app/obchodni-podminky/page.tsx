@@ -167,12 +167,8 @@ export default function TermsPage() {
               Reklamaci lze uplatnit zejména v případě, kdy vygenerovaný dokument neodpovídá zadaným údajům (technická chyba systému). Reklamace se nevztahuje na nevhodné použití dokumentu nebo chyby vzniklé nesprávným vyplněním ze strany Zákazníka.
             </p>
             <p className="mb-3">
-              Zákazník je oprávněn obrátit se na <strong className="text-white">Českou obchodní inspekci (ČOI)</strong> jako subjekt mimosoudního řešení spotřebitelských sporů. Návrh na mimosoudní řešení sporu lze podat na adrese:{' '}
+              Pokud se spotřebitelský spor nepodaří vyřešit vzájemnou dohodou, může se Zákazník obrátit na <strong className="text-white">Českou obchodní inspekci (ČOI)</strong> jako subjekt mimosoudního řešení spotřebitelských sporů. Návrh lze podat a další informace získat na adrese:{' '}
               <a href="https://adr.coi.cz" target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:underline">adr.coi.cz</a>.
-            </p>
-            <p className="mb-3">
-              V souladu s nařízením EU č. 524/2013 je Zákazník oprávněn využít platformu pro online řešení sporů provozovanou Evropskou komisí:{' '}
-              <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:underline">ec.europa.eu/consumers/odr</a>.
             </p>
           </section>
 
