@@ -98,7 +98,7 @@ function topicUa(
     slug: opts.slug,
     audience: 'ua',
     contractKey,
-    category: 'Для інозemців (UA)',
+    category: 'Для іноземців (UA)',
     readTime: opts.readTime,
     dateLabel: DATE_UA,
     dateTime: DATE_TIME,
@@ -446,7 +446,7 @@ export const EXPAT_BLOG_TOPICS_JULY_2026: ExpatBlogArticle[] = [
       'Практичний огляд рівнів електронного підпису, eLegalizace та засвідчення на Czech POINT для договорів і довіреностей.',
     intro:
       'Іноземцям у Чехії часто потрібно підписувати договори оренди, купівлі авто або довіреності (plná moc). Чеське право визнає кілька рівнів підпису згідно з eIDAS. Деякі органи все ще вимагають ověřený podpis — особливо для переоформлення авто або довіреностей для імміграції.',
-    keywords: ['електронний підпис Чехія', 'eLegalizace', 'довіреність іноземці', 'кvalifikovaný podpis'],
+    keywords: ['електронний підпис Чехія', 'eLegalizace', 'довіреність іноземці', 'кваліфікований електронний підпис'],
     readTime: '8 хв',
     builderHref: withLocale('/plna-moc', 'ua'),
     seoLandingHref: getExpatSeoHref('ua', 'power_of_attorney'),

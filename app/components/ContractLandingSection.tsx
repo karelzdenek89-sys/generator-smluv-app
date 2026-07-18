@@ -67,6 +67,51 @@ export default function ContractLandingSection({
   const locale = useBuilderLocale();
   const contractType = getContractTypeByPath(pathname);
   const localizedCopy = contractType ? getBuilderCopy(contractType, locale) : null;
+  const localizedUi =
+    locale === 'en'
+      ? {
+          start: 'Start the form',
+          included: 'What is included',
+          contentsLabel: 'Document contents',
+          contentsTitle: 'What the document includes',
+          contentsIntro:
+            'Structured Czech contract content assembled from your answers. English labels and notices help you understand the form.',
+          suitableLabel: 'Typical use',
+          suitableTitle: 'When this document is suitable',
+          otherLabel: 'Other document',
+          otherTitle: 'When another document may fit better',
+          faqLabel: 'FAQ',
+          faqTitle: 'Common questions',
+        }
+      : locale === 'ua'
+        ? {
+            start: 'Почати заповнення',
+            included: 'Що містить документ',
+            contentsLabel: 'Зміст документа',
+            contentsTitle: 'Що містить документ',
+            contentsIntro:
+              'Структурований зміст чеського договору складається з ваших відповідей. Українські підказки допомагають зрозуміти форму.',
+            suitableLabel: 'Типове використання',
+            suitableTitle: 'Коли цей документ підходить',
+            otherLabel: 'Інший документ',
+            otherTitle: 'Коли краще обрати інший документ',
+            faqLabel: 'Поширені запитання',
+            faqTitle: 'Найчастіші запитання',
+          }
+        : {
+            start: ctaLabel,
+            included: 'Co dokument obsahuje',
+            contentsLabel: 'Obsah dokumentu',
+            contentsTitle: 'Co dokument obsahuje',
+            contentsIntro:
+              'Strukturovaný obsah obvyklý pro tento typ dokumentu, sestavený podle vašich podmínek.',
+            suitableLabel: 'Vhodné použití',
+            suitableTitle: 'Kdy je tento dokument vhodný',
+            otherLabel: 'Jiný typ dokumentu',
+            otherTitle: 'Kdy už je lepší zvolit jiný postup',
+            faqLabel: 'Časté otázky',
+            faqTitle: 'Nejčastější dotazy',
+          };
   const trustCopy =
     locale === 'en'
       ? {
@@ -88,7 +133,7 @@ export default function ContractLandingSection({
             'An editable DOCX only if you select that optional add-on at checkout.',
           ],
           templateStatus:
-            'Template status: maintained for standard situations. The date of the last documented substantive legal review is not currently published.',
+            'Designed for standard situations. This is not an individually reviewed legal document; use a lawyer for complex or disputed cases.',
         }
       : locale === 'ua'
         ? {
@@ -110,7 +155,7 @@ export default function ContractLandingSection({
               'Редагований DOCX лише за умови вибору цього доповнення під час оплати.',
             ],
             templateStatus:
-              'Стан шаблону: підтримується для стандартних ситуацій. Дата останньої документально підтвердженої змістовної правової перевірки наразі не опублікована.',
+              'Призначено для стандартних ситуацій. Це не індивідуально перевірений юридичний документ; для складних або спірних випадків зверніться до адвоката.',
           }
         : {
             unsuitableLabel: 'Mimo standardní rozsah',
@@ -131,7 +176,7 @@ export default function ContractLandingSection({
               'Editovatelný DOCX pouze tehdy, pokud si tento volitelný doplněk vyberete v objednávce.',
             ],
             templateStatus:
-              'Stav šablony: průběžně udržovaná pro standardní situace. Datum poslední doložené věcné právní revize zatím není zveřejněno.',
+              'Určeno pro standardní situace. Nejde o individuálně právně posouzený dokument; u složitého nebo sporného případu využijte advokáta.',
           };
   const unsuitableItems = locale === 'cs' && whenUnsuitable?.length
     ? whenUnsuitable
@@ -208,10 +253,10 @@ export default function ContractLandingSection({
 
           <div className="mt-8 flex flex-wrap gap-4">
             <button onClick={() => scrollTo(formId)} className="site-button-primary">
-              {localizedCopy ? 'Start the form' : ctaLabel}
+              {localizedUi.start}
             </button>
             <button onClick={() => scrollTo('obsah')} className="site-button-secondary">
-              {localizedCopy ? 'What is included' : 'Co dokument obsahuje'}
+              {localizedUi.included}
             </button>
           </div>
 
@@ -239,14 +284,12 @@ export default function ContractLandingSection({
       <section id="obsah" className="mx-auto max-w-7xl border-t border-[rgba(166,134,91,0.12)] px-4 py-14 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
           <div className="site-content-card rounded-[1.75rem] p-7">
-            <div className="site-kicker">{localizedCopy ? 'Document contents' : 'Obsah dokumentu'}</div>
+            <div className="site-kicker">{localizedUi.contentsLabel}</div>
             <h2 className="site-heading-lg mt-4 text-[#f2e7c8]">
-              {localizedCopy ? 'What the document includes' : 'Co dokument obsahuje'}
+              {localizedUi.contentsTitle}
             </h2>
             <p className="site-body mt-4 text-[#d2c8b9]">
-              {localizedCopy
-                ? 'Structured Czech contract content assembled from your answers. English labels and notices help you understand the form.'
-                : 'Strukturovaný obsah obvyklý pro tento typ dokumentu, sestavený podle vašich podmínek.'}
+              {localizedUi.contentsIntro}
             </p>
             <ul className="mt-6 space-y-4">
               {contents.map((item) => (
@@ -262,9 +305,9 @@ export default function ContractLandingSection({
 
           <div className="space-y-6">
             <div className="site-content-card rounded-[1.75rem] p-7">
-              <div className="site-kicker">{localizedCopy ? 'Typical use' : 'Vhodné použití'}</div>
+              <div className="site-kicker">{localizedUi.suitableLabel}</div>
               <h2 className="site-heading-lg mt-4 text-[#f2e7c8]">
-                {localizedCopy ? 'When this document is suitable' : 'Kdy je tento dokument vhodný'}
+                {localizedUi.suitableTitle}
               </h2>
               <ul className="mt-6 space-y-4">
                 {whenSuitable.map((item) => (
@@ -297,9 +340,9 @@ export default function ContractLandingSection({
 
             {whenOther?.length ? (
               <div className="site-content-card rounded-[1.75rem] p-7">
-                <div className="site-kicker">{localizedCopy ? 'Other document' : 'Jiný typ dokumentu'}</div>
+                <div className="site-kicker">{localizedUi.otherLabel}</div>
                 <h3 className="mt-4 text-2xl font-semibold tracking-[-0.03em] text-[#f2e7c8]">
-                  {localizedCopy ? 'When another document may fit better' : 'Kdy už je lepší zvolit jiný postup'}
+                  {localizedUi.otherTitle}
                 </h3>
                 <div className="mt-6 space-y-3">
                   {whenOther.map((item) => (
@@ -340,9 +383,9 @@ export default function ContractLandingSection({
 
       <section className="mx-auto max-w-7xl border-t border-[rgba(166,134,91,0.12)] px-4 py-14 lg:px-8">
         <div className="max-w-3xl">
-          <div className="site-kicker">{localizedCopy ? 'FAQ' : 'Časté otázky'}</div>
+          <div className="site-kicker">{localizedUi.faqLabel}</div>
           <h2 className="site-heading-lg mt-4 text-[#f2e7c8]">
-            {localizedCopy ? 'Common questions' : 'Nejčastější dotazy'}
+            {localizedUi.faqTitle}
           </h2>
         </div>
         <div className="mt-8 max-w-3xl space-y-3">

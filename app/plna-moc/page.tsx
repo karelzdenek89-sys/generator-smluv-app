@@ -211,10 +211,10 @@ export default function PlnaMocPage() {
             <section className={cardClass}>
               <SectionTitle index="04" title={sec('s04', 'Rozsah zmocnění').title} />
               <div className="space-y-4">
-                {form.poaType === 'property' && <Field label={fl('propertyAddress', 'Adresa / specifikace nemovitosti *')}><input className={inputClass} name="propertyAddress" value={form.propertyAddress} onChange={set} placeholder="Ulice 10, Praha 6, LV č. 123, KÚ Dejvice" /></Field>}
+                {form.poaType === 'property' && <Field label={fl('propertyAddress', 'Adresa / specifikace nemovitosti *')}><input className={inputClass} name="propertyAddress" value={form.propertyAddress} onChange={set} placeholder={fl('propertyAddress_placeholder', 'Ulice 10, Praha 6, LV č. 123, KÚ Dejvice')} /></Field>}
                 {form.poaType === 'court' && (
                   <div className="grid sm:grid-cols-2 gap-4">
-                    <Field label={fl('courtName', 'Název soudu')}><input className={inputClass} name="courtName" value={form.courtName} onChange={set} placeholder="Obvodní soud pro Prahu 1" /></Field>
+                    <Field label={fl('courtName', 'Název soudu')}><input className={inputClass} name="courtName" value={form.courtName} onChange={set} placeholder={fl('courtName_placeholder', 'Obvodní soud pro Prahu 1')} /></Field>
                     <Field label={fl('caseNumber', 'Sp. zn. / č.j.')}><input className={inputClass} name="caseNumber" value={form.caseNumber} onChange={set} placeholder="10 C 123/2026" /></Field>
                   </div>
                 )}
@@ -222,18 +222,18 @@ export default function PlnaMocPage() {
                   <div className="grid sm:grid-cols-2 gap-4">
                     <Field label={fl('companyName', 'Název firmy')}><input className={inputClass} name="companyName" value={form.companyName} onChange={set} placeholder="ABC s.r.o." /></Field>
                     <Field label={fl('companyIco', 'IČO firmy')}><input className={inputClass} name="companyIco" value={form.companyIco} onChange={set} placeholder="12345678" /></Field>
-                    <div className="sm:col-span-2"><Field label={fl('companyScope', 'Rozsah jednání')}><input className={inputClass} name="companyScope" value={form.companyScope} onChange={set} placeholder="Valná hromada, podepisování smluv, jednání s úřady…" /></Field></div>
+                    <div className="sm:col-span-2"><Field label={fl('companyScope', 'Rozsah jednání')}><input className={inputClass} name="companyScope" value={form.companyScope} onChange={set} placeholder={fl('companyScope_placeholder', 'Valná hromada, podepisování smluv, jednání s úřady…')} /></Field></div>
                   </div>
                 )}
                 {form.poaType === 'bank' && (
                   <div className="grid sm:grid-cols-2 gap-4">
                     <Field label={fl('bankAccount', 'Číslo účtu')}><input className={inputClass} name="bankAccount" value={form.bankAccount} onChange={set} placeholder="123456789/0800" /></Field>
-                    <Field label={fl('bankName', 'Banka')}><input className={inputClass} name="bankName" value={form.bankName} onChange={set} placeholder="Česká spořitelna" /></Field>
+                    <Field label={fl('bankName', 'Banka')}><input className={inputClass} name="bankName" value={form.bankName} onChange={set} placeholder={fl('bankName_placeholder', 'Česká spořitelna')} /></Field>
                   </div>
                 )}
                 {form.poaType === 'general' && (
                   <Field label={fl('scopeDescription', 'Rozsah zmocnění (popište) *')}>
-                    <textarea className="w-full min-h-[100px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="customScope" value={form.customScope} onChange={set} placeholder="Zastupování při přebírání zásilek, podpis smluv týkajících se…" />
+                    <textarea className="w-full min-h-[100px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="customScope" value={form.customScope} onChange={set} placeholder={fl('scopeDescription_placeholder', 'Zastupování při přebírání zásilek, podpis smluv týkajících se…')} />
                   </Field>
                 )}
               </div>
@@ -249,8 +249,8 @@ export default function PlnaMocPage() {
                   <div className="flex items-center gap-2">
                     <input type="checkbox" name="singleUse" checked={form.singleUse} onChange={set} className="h-4 w-4 accent-amber-500" />
                     <div>
-                      <div className="font-semibold text-white">Jednorázová plná moc</div>
-                      <div className="text-xs text-slate-400 mt-0.5">Platí jen pro jedno konkrétní jednání</div>
+                      <div className="font-semibold text-white">{fl('singleUse', 'Jednorázová plná moc')}</div>
+                      <div className="text-xs text-slate-400 mt-0.5">{fl('singleUseHint', 'Platí jen pro jedno konkrétní jednání')}</div>
                     </div>
                   </div>
                 </label>
@@ -258,8 +258,8 @@ export default function PlnaMocPage() {
                   <div className="flex items-center gap-2">
                     <input type="checkbox" name="allowSubstitution" checked={form.allowSubstitution} onChange={set} className="h-4 w-4 accent-amber-500" />
                     <div>
-                      <div className="font-semibold text-white">Substituce povolena</div>
-                      <div className="text-xs text-slate-400 mt-0.5">Zmocněnec smí pověřit třetí osobu</div>
+                      <div className="font-semibold text-white">{fl('allowSubstitution', 'Substituce povolena')}</div>
+                      <div className="text-xs text-slate-400 mt-0.5">{fl('allowSubstitutionHint', 'Zmocněnec smí pověřit třetí osobu')}</div>
                     </div>
                   </div>
                 </label>
@@ -277,6 +277,7 @@ export default function PlnaMocPage() {
               <SectionTitle index="06" title={sec('s06', 'Vyberte úroveň zpracování dokumentu').title} subtitle={sec('s06', 'Vyberte úroveň zpracování dokumentu', 'Zvolte variantu, která odpovídá vaší situaci a požadovanému rozsahu dokumentu.').subtitle} />
               <BuilderTierSelector
                 contractType="power_of_attorney"
+                locale={builderLocale}
                 tier={form.tier}
                 onTierChange={(tier) =>
                   setForm((prev) => ({ ...prev, tier, notaryUpsell: tier !== 'basic' }))
@@ -292,26 +293,27 @@ export default function PlnaMocPage() {
               <ContractPreview sections={previewSections} title={ui.form.documentLabel} labels={previewLabels} />
             )}
             <div className={cardClass}>
-              <div className="builder-kicker mb-4">Analýza smlouvy</div>
+              <div className="builder-kicker mb-4">{ui.form.analysisTitle}</div>
               <div className="flex items-center gap-4 mb-4">
                 <div className={`text-5xl font-black ${scoreColor}`}>{risk.score}</div>
-                <div><div className={`font-bold ${scoreColor}`}>{risk.label}</div><div className="text-xs text-slate-500">ze 100 bodů</div></div>
+                <div><div className={`font-bold ${scoreColor}`}>{risk.label}</div><div className="text-xs text-slate-500">{ui.form.scoreOf}</div></div>
               </div>
-              {risk.warnings.length === 0 ? <p className="text-sm text-emerald-400">✓ Plná moc je kompletní.</p>
+              {risk.warnings.length === 0 ? <p className="text-sm text-emerald-400">✓ {fl('completeMessage', 'Plná moc obsahuje všechny požadované vstupní údaje.')}</p>
                 : <ul className="space-y-2">{risk.warnings.map((w, i) => (<li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-amber-500/10 text-amber-300' : w.level === 'medium' ? 'bg-amber-500/10 text-amber-300' : 'bg-slate-700/40 text-slate-400'}`}>{w.level === 'high' ? '⚠ ' : w.level === 'medium' ? '▲ ' : '○ '}{w.text}</li>))}</ul>}
             </div>
             <div className={cardClass}>
               <BuilderCheckoutSummary
                 contractType="power_of_attorney"
+                locale={builderLocale}
                 tier={form.tier}
                 documentLabel={ui.form.documentLabel}
                 onUpgrade={() => setForm((prev) => ({ ...prev, tier: 'complete', notaryUpsell: true }))}
               />
               {(!form.principalName || !form.agentName) && !isProcessing && (
                 <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3 text-xs text-slate-400 space-y-1">
-                  <div className="font-semibold mb-1">Před platbou vyplňte:</div>
-                  {!form.principalName && <div>• Jméno zmocnitele</div>}
-                  {!form.agentName && <div>• Jméno zmocněnce</div>}
+                  <div className="font-semibold mb-1">{fl('fillBeforePayment', 'Před platbou vyplňte:')}</div>
+                  {!form.principalName && <div>• {fl('principalMissing', 'Jméno zmocnitele')}</div>}
+                  {!form.agentName && <div>• {fl('agentMissing', 'Jméno zmocněnce')}</div>}
                 </div>
               )}
                               {/* Tlačítko generování */}

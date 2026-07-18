@@ -26,7 +26,7 @@ const SUPPORTED_COPY: Record<ActiveLocale, BannerCopy> = {
     heading: 'You came from the English overview',
     body: 'The form on this page is in Czech.',
     detail:
-      'For supported contracts, the PDF includes Czech wording plus an explanatory English annex (not certified or official). In case of discrepancy, the Czech text prevails.',
+      'For supported contracts, you can add a PDF pairing the Czech and English clauses in one document (not certified or official). In case of discrepancy, the Czech text prevails.',
     translateHint: 'Tip: right-click the page and choose "Translate to English" to fill the form.',
     backToLanding: '← Back to English overview',
     dismiss: 'Got it',
@@ -35,7 +35,7 @@ const SUPPORTED_COPY: Record<ActiveLocale, BannerCopy> = {
     heading: 'Ви перейшли з українського огляду',
     body: 'Форма на цій сторінці чеською мовою.',
     detail:
-      'Для обраних договорів PDF містить чеський текст і пояснювальний український додаток (не офіційний переклад). У разі розбіжностей перевага має чеське формулювання.',
+      'Для підтримуваних договорів можна додати PDF із попарно розміщеними положеннями CZ+UA (не офіційний переклад). У разі розбіжностей перевагу має чеське формулювання.',
     translateHint: 'Підказка: клацніть правою кнопкою миші і виберіть «Перекласти».',
     backToLanding: '← Назад до українського огляду',
     dismiss: 'Зрозуміло',
@@ -47,7 +47,7 @@ const CZECH_ONLY_COPY: Record<ActiveLocale, BannerCopy> = {
     heading: 'You came from the English overview',
     body: 'This contract form is available in Czech only.',
     detail:
-      'The generated PDF will be in Czech. Selected core contracts (rental, employment, DPP, and others) offer English form guidance and an explanatory annex.',
+      'The generated PDF will be in Czech. Six core contracts offer English form guidance and an optional clause-paired CZ+EN PDF.',
     translateHint: 'Tip: use your browser translator while filling the Czech form.',
     backToLanding: '← Back to English overview',
     dismiss: 'Got it',
@@ -56,7 +56,7 @@ const CZECH_ONLY_COPY: Record<ActiveLocale, BannerCopy> = {
     heading: 'Ви перейшли з українського огляду',
     body: 'Ця форма доступна лише чеською.',
     detail:
-      'PDF буде чеською. Для основних договорів (оренда, праця, DPP тощо) є підказки українською та пояснювальний додаток у PDF.',
+      'PDF буде чеською. Для шести основних договорів є підказки українською та додатковий PDF із попарними положеннями CZ+UA.',
     translateHint: 'Підказка: використайте перекладач браузера під час заповнення.',
     backToLanding: '← Назад до українського огляду',
     dismiss: 'Зрозуміло',

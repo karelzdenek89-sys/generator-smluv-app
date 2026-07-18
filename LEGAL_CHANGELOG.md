@@ -30,6 +30,15 @@ U následujících šablon nebylo při založení tohoto changelogu doloženo da
 | Plná moc | nezjištěno | rozsah, doba, odvolání, forma a ověření podpisu | Příjemce může vyžadovat vlastní formulář nebo ověřený podpis | nutno ověřit |
 | Uznání dluhu | nezjištěno | důvod a výše dluhu, splatnost, promlčení, splátky | Vyšší riziko u sporných nebo promlčených pohledávek | nutno ověřit |
 
+## Dvojjazyčné varianty
+
+| Produkt | Technický stav | Poslední doložená jazyková a právní kontrola | Poznámka | Stav |
+| --- | --- | --- | --- | --- |
+| Nájemní smlouva CZ+EN | 18. 7. 2026 — implementováno párování článků a odstavců v PDF | technická, automatická a interní jazyková kontrola 18. 7. 2026; bez externího odborného posudku | Anglické znění je technicky synchronizováno s českými podmínkami. V produktu je výslovně označeno jako neoficiální a necertifikovaný překlad; před veřejným označením za odborně přeložené vyžaduje kontrolu právním překladatelem a českým advokátem | produkčně použitelné pouze s uvedeným omezením |
+| Nájemní smlouva CZ+UA | 18. 7. 2026 — implementováno párování článků a odstavců v PDF | technická, automatická a interní jazyková kontrola 18. 7. 2026; bez externího odborného posudku | Ukrajinské znění je technicky synchronizováno s českými podmínkami a terminologie kauce byla sjednocena na „грошова застава (кауція)“. V produktu je výslovně označeno jako neoficiální překlad; odborné označení vyžaduje kontrolu právním překladatelem a českým advokátem | produkčně použitelné pouze s uvedeným omezením |
+| Podnájem, pracovní smlouva, DPP, plná moc a prodej auta CZ+EN | 18. 7. 2026 — překladová vrstva zapojena do párování všech článků a odstavců v PDF | technická, automatická a interní jazyková kontrola 18. 7. 2026; bez externího odborného posudku | Automatické testy ověřují shodný počet a pořadí odstavců pro Basic i Complete. Produkt překlad neoznačuje za úřední, certifikovaný ani individuálně právně posouzený | produkčně použitelné pouze s uvedeným omezením |
+| Podnájem, pracovní smlouva, DPP, plná moc a prodej auta CZ+UA | 18. 7. 2026 — překladová vrstva zapojena do párování všech článků a odstavců v PDF | technická, automatická a interní jazyková kontrola 18. 7. 2026; bez externího odborného posudku | Automatické testy ověřují shodný počet a pořadí odstavců pro Basic i Complete. Produkt překlad neoznačuje za úřední, certifikovaný ani individuálně právně posouzený | produkčně použitelné pouze s uvedeným omezením |
+
 ## Pravidla pro další záznamy
 
 Každá další věcná kontrola má uvést datum, osobu nebo roli kontrolujícího, přesný rozsah, zdroje a soubory/šablony, kterých se týkala. Neúplná kontrola musí být výslovně označena jako dílčí. Bez doložené kontroly zůstává stav „nutno ověřit“.

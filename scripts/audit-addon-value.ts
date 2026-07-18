@@ -86,8 +86,10 @@ async function main() {
   assert.ok(keysFor('lease', 'basic', null, 'cs').includes('handover_protocol'));
   assert.ok(keysFor('car_sale', 'basic', null, 'cs').includes('handover_protocol'));
   assert.ok(!keysFor('gift', 'basic', null, 'cs').includes('handover_protocol'));
-  assert.ok(keysFor('lease', 'basic', null, 'en').includes('bilingual_annex'));
-  assert.ok(!keysFor('lease', 'basic', null, 'cs').includes('bilingual_annex'));
+  assert.ok(keysFor('lease', 'basic', null, 'en').includes('bilingual_contract'));
+  assert.ok(!keysFor('lease', 'basic', null, 'en').includes('bilingual_annex'));
+  assert.ok(!keysFor('lease', 'basic', null, 'cs').includes('bilingual_contract'));
+  assert.ok(keysFor('employment', 'basic', null, 'ua').includes('bilingual_contract'));
   assert.ok(!keysFor('gift', 'basic', null, 'en').includes('bilingual_annex'));
   assert.ok(!keysFor('lease', 'complete', null, 'cs').includes('signing_checklist'));
   assert.ok(!keysFor('lease', 'basic', 'landlord', 'cs').includes('handover_protocol'));

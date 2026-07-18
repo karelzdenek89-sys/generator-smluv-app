@@ -46,7 +46,7 @@ const eventSchema = z.object({
       price_band: z.enum(['99', '199', '299']).optional(),
       entry_mode: z.enum(['single_document', 'package_flow']).optional(),
       add_on_key: z
-        .enum(['docx', 'signing_checklist', 'handover_protocol', 'extended_archive', 'bilingual_annex'])
+        .enum(['docx', 'signing_checklist', 'handover_protocol', 'extended_archive', 'bilingual_contract', 'bilingual_lease', 'bilingual_annex'])
         .optional(),
       add_on_keys: z.string().optional(),
       add_on_price_czk: z.number().optional(),

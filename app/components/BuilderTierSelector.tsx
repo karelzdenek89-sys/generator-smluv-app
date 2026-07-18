@@ -10,6 +10,11 @@ import {
 import { getAnalyticsDefaultsForPathname, trackEvent } from '@/lib/analytics';
 import { getContractTierCopy, getTierSelectorDescription } from '@/lib/tier-copy';
 import type { LeaseFormUi } from '@/lib/i18n/lease-form';
+import {
+  getLocalizedIncludedItems,
+  getLocalizedPricingTier,
+} from '@/lib/i18n/pricing-locale';
+import { getBuilderSharedCopy } from '@/lib/i18n/builder-shared-copy';
 
 type BuilderTierSelectorProps = {
   tier: PricingTier;
@@ -19,6 +24,7 @@ type BuilderTierSelectorProps = {
   subtitle?: string;
   completeHighlights?: readonly string[];
   tierSelectorCopy?: LeaseFormUi['tierSelector'];
+  locale?: string | null;
 };
 
 export default function BuilderTierSelector({
@@ -29,14 +35,19 @@ export default function BuilderTierSelector({
   subtitle,
   completeHighlights,
   tierSelectorCopy,
+  locale,
 }: BuilderTierSelectorProps) {
   const pathname = usePathname();
   const contractTierCopy = getContractTierCopy(contractType);
   const copy = tierSelectorCopy;
-  const resolvedTitle = title ?? copy?.heading ?? PRICING_SECTION_COPY.heading;
-  const resolvedSubtitle = subtitle ?? copy?.intro ?? PRICING_SECTION_COPY.intro;
+  const shared = getBuilderSharedCopy(locale);
+  const localizedCompleteItems = getLocalizedIncludedItems(contractType, 'complete', null, locale);
+  const resolvedTitle = title ?? copy?.heading ?? (locale ? shared.tierHeading : PRICING_SECTION_COPY.heading);
+  const resolvedSubtitle = subtitle ?? copy?.intro ?? (locale ? shared.tierIntro : PRICING_SECTION_COPY.intro);
   const resolvedCompleteHighlights =
-    completeHighlights ?? copy?.completeHighlights ?? contractTierCopy.completeHighlights ?? BUILDER_COMPLETE_PERKS;
+    completeHighlights ??
+    copy?.completeHighlights ??
+    (locale && locale !== 'cs' ? localizedCompleteItems.slice(-3) : contractTierCopy.completeHighlights ?? BUILDER_COMPLETE_PERKS);
 
   const handleTierChange = (nextTier: PricingTier) => {
     const defaults = getAnalyticsDefaultsForPathname(pathname ?? '/');
@@ -64,20 +75,23 @@ export default function BuilderTierSelector({
       </div>
 
       {BUILDER_PRICING_OPTIONS.map((opt) => {
+        const localizedTier = getLocalizedPricingTier(opt.value, locale);
         const localizedLabel =
           copy && opt.value === 'basic'
             ? copy.basicLabel
             : copy && opt.value === 'complete'
               ? copy.completeLabel
-              : opt.label;
+              : localizedTier.title;
         const localizedDesc =
           copy && opt.value === 'basic'
             ? copy.basicDesc
             : copy && opt.value === 'complete'
               ? copy.completeDesc
-              : getTierSelectorDescription(contractType, opt.value);
+              : locale && locale !== 'cs'
+                ? localizedTier.shortDescription
+                : getTierSelectorDescription(contractType, opt.value);
         const localizedBadge =
-          copy && opt.value === 'complete' ? copy.completeBadge : opt.badge;
+          copy && opt.value === 'complete' ? copy.completeBadge : localizedTier.badge;
 
         return (
         <label

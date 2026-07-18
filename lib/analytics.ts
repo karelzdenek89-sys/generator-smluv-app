@@ -66,6 +66,8 @@ export type AnalyticsEventParams = {
     | 'signing_checklist'
     | 'handover_protocol'
     | 'extended_archive'
+    | 'bilingual_contract'
+    | 'bilingual_lease'
     | 'bilingual_annex';
   add_on_keys?: string;
   add_on_price_czk?: number;

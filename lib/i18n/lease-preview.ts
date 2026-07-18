@@ -62,16 +62,16 @@ const PREVIEW_LABELS: Record<'en' | 'ua', ContractPreviewLabels> = {
   en: {
     kicker: 'Guided preview',
     intro:
-      'This shows the explanatory translation structure from your inputs. The primary Czech lease and handover protocol wording are generated in Czech in the PDF.',
+      'This preview shows the contract structure assembled from your inputs. With the bilingual add-on, the final PDF pairs each Czech clause with its English counterpart.',
     footer:
-      'Orientational preview only. After payment you receive the full Czech PDF plus the explanatory English translation annex.',
+      'Orientational preview only. The bilingual add-on produces one clause-paired CZ+EN PDF; the Czech wording prevails.',
   },
   ua: {
     kicker: 'Попередній перегляд',
     intro:
-      'Тут — структура пояснювального перекладу з ваших даних. Основний чеський договір і протокол передачі в PDF генеруються чеською.',
+      'Цей перегляд показує структуру договору, складену з ваших даних. З двомовним доповненням кожне чеське положення в PDF попарно розміщується з українським.',
     footer:
-      'Орієнтовний перегляд. Після оплати — повний чеський PDF і пояснювальний український додаток.',
+      'Лише орієнтовний перегляд. Двомовне доповнення створює один PDF CZ+UA з попарними положеннями; перевагу має чеське формулювання.',
   },
 };
 
@@ -158,7 +158,7 @@ ${form.landlordName || '................'} · ${form.tenantName || '............
 
 Адреса: ${form.flatAddress || '................'}
 Оренда: ${form.rentAmount || '0'} Kč · Послуги: ${form.utilityAmount || '0'} Kč · Разом: ${monthlyTotal} Kč/міс.
-Застава: ${form.depositAmount || '0'} Kč · Строк: ${duration}
+Грошова застава (кауція): ${form.depositAmount || '0'} Kč · Строк: ${duration}
 
 Правила: тварини ${c.pets(form.allowPets)} · куріння ${c.smoking(form.allowSmoking)} · Airbnb ${c.airbnb(form.allowAirbnb)}
 

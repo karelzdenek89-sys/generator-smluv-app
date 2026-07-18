@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
 import {
   LEASE_CS_GUIDE_LINKS,
   LEASE_CS_SEO_SECTIONS,
@@ -8,6 +11,9 @@ import {
  * Supplementary SEO content for /najem only. Does not affect the contract builder form.
  */
 export default function LeaseBuilderSeoSection() {
+  const locale = useBuilderLocale();
+  if (locale !== 'cs') return null;
+
   return (
     <section
       aria-label="Průvodce nájemní smlouvou"

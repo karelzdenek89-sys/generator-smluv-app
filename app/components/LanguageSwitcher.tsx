@@ -2,7 +2,15 @@
 
 import Link from 'next/link';
 import { useState, useRef, useEffect } from 'react';
-import { ALL_LOCALES, LOCALE_META, localeHomePath, type Locale } from '@/lib/i18n/locales';
+import { usePathname } from 'next/navigation';
+import {
+  ALL_LOCALES,
+  LOCALE_META,
+  detectLocaleFromPath,
+  localeHomePath,
+  type Locale,
+} from '@/lib/i18n/locales';
+import { useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
 
 type Variant = 'desktop' | 'mobile';
 
@@ -14,7 +22,16 @@ export default function LanguageSwitcher({
   variant?: Variant;
 }) {
   const [open, setOpen] = useState(false);
+  const [pendingLocale, setPendingLocale] = useState<{ value: Locale } | null>(null);
   const ref = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
+  const builderLocale = useBuilderLocale();
+  const pathLocale = detectLocaleFromPath(pathname ?? '/');
+  const activeLocale = pathLocale !== 'cs'
+    ? pathLocale
+    : builderLocale !== 'cs'
+      ? builderLocale
+      : current;
 
   useEffect(() => {
     if (!open) return;
@@ -32,7 +49,17 @@ export default function LanguageSwitcher({
     };
   }, [open]);
 
-  const meta = LOCALE_META[current];
+  useEffect(() => {
+    if (!pendingLocale) return;
+    document.cookie = `preferred-locale=${encodeURIComponent(pendingLocale.value)}; path=/; max-age=31536000; SameSite=Lax`;
+    window.dispatchEvent(new Event('smlouvahned:locale'));
+  }, [pendingLocale]);
+
+  const meta = LOCALE_META[activeLocale];
+
+  const persistLocale = (locale: Locale) => {
+    setPendingLocale({ value: locale });
+  };
 
   if (variant === 'mobile') {
     return (
@@ -43,13 +70,14 @@ export default function LanguageSwitcher({
         <div className="flex flex-wrap gap-2">
           {ALL_LOCALES.map(l => {
             const m = LOCALE_META[l];
-            const isCurrent = l === current;
+            const isCurrent = l === activeLocale;
             return (
               <Link
                 key={l}
                 href={localeHomePath(l)}
                 hrefLang={m.htmlLang}
                 aria-current={isCurrent ? 'true' : undefined}
+                onNavigate={() => persistLocale(l)}
                 className={
                   isCurrent
                     ? 'inline-flex items-center gap-2 rounded-lg border border-[#c9a852]/60 bg-[#c9a852]/10 px-3 py-1.5 text-sm text-[#c9a852]'
@@ -86,7 +114,7 @@ export default function LanguageSwitcher({
         >
           {ALL_LOCALES.map(l => {
             const m = LOCALE_META[l];
-            const isCurrent = l === current;
+            const isCurrent = l === activeLocale;
             return (
               <Link
                 key={l}
@@ -95,6 +123,7 @@ export default function LanguageSwitcher({
                 role="option"
                 aria-selected={isCurrent}
                 onClick={() => setOpen(false)}
+                onNavigate={() => persistLocale(l)}
                 className={
                   isCurrent
                     ? 'flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-[#c9a852] bg-white/[0.04]'

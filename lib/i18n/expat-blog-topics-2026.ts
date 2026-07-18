@@ -31,11 +31,11 @@ function topicEn(
       ? [
           ...opts.sections,
           {
-            id: 'translation-annex',
-            title: 'Czech contract + English translation annex',
+            id: 'bilingual-contract',
+            title: 'Clause-paired Czech-English contract',
             paragraphs: [
-              'For rental agreements, the PDF contains the primary Czech lease first, then an explanatory English annex.',
-              'The annex helps you understand clauses before signing; it is not a certified translation for authorities.',
+              'For rental agreements, the optional bilingual PDF places every Czech clause next to its English counterpart in one document.',
+              'The English wording helps you understand the contract before signing; it is not a certified translation for authorities.',
             ],
           },
         ]
@@ -107,11 +107,11 @@ function topicUa(
       ? [
           ...opts.sections,
           {
-            id: 'translation-annex',
-            title: 'Чеський договір + український пояснювальний додаток',
+            id: 'bilingual-contract',
+            title: 'Двомовний договір CZ+UA з попарними положеннями',
             paragraphs: [
-              'У PDF спочатку основний чеський договір оренди, потім пояснювальний український додаток.',
-              'Додаток допомагає зрозуміти умови перед підписом; це не офіційний переклад для органів.',
+              'У додатковому двомовному PDF кожне чеське положення договору оренди попарно розміщується з українським.',
+              'Український текст допомагає зрозуміти умови перед підписанням; це не офіційний переклад для органів.',
             ],
           },
         ]
@@ -120,7 +120,7 @@ function topicUa(
     slug: opts.slug,
     audience: 'ua',
     contractKey,
-    category: 'Для інозemців (UA)',
+    category: 'Для іноземців (UA)',
     readTime: opts.readTime,
     dateLabel: DATE_UA,
     dateTime: DATE_TIME,

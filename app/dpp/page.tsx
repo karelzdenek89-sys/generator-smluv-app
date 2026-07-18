@@ -255,9 +255,10 @@ export default function DppPage() {
               <section className={cardClass}>
 
                 <div className="mt-6">
-                  <BuilderTierSelector
-                    contractType="dpp"
-                    tier={form.tier}
+              <BuilderTierSelector
+                contractType="dpp"
+                locale={builderLocale}
+                tier={form.tier}
                     onTierChange={(tier) =>
                       setForm((prev) => ({ ...prev, tier, notaryUpsell: tier !== 'basic' }))
                     }
@@ -292,6 +293,7 @@ export default function DppPage() {
             <div className={cardClass}>
               <BuilderCheckoutSummary
                 contractType="dpp"
+                locale={builderLocale}
                 tier={form.tier}
                 documentLabel={ui.form.documentLabel}
                 onUpgrade={() => setForm((prev) => ({ ...prev, tier: 'complete', notaryUpsell: true }))}
@@ -299,17 +301,17 @@ export default function DppPage() {
               {(!form.employerName || !form.employeeName || !form.taskDescription) && !isProcessing && (
                 <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3 text-xs text-slate-400 space-y-1">
                   <div className="font-semibold mb-1">{ui.form.fillToContinue}</div>
-                  {!form.employerName && <div>? {ui.page.sidebarMissing.employerName}</div>}
-                  {!form.employeeName && <div>? {ui.page.sidebarMissing.employeeName}</div>}
-                  {!form.taskDescription && <div>? {ui.page.sidebarMissing.taskDescription}</div>}
+                  {!form.employerName && <div>• {ui.page.sidebarMissing.employerName}</div>}
+                  {!form.employeeName && <div>• {ui.page.sidebarMissing.employeeName}</div>}
+                  {!form.taskDescription && <div>• {ui.page.sidebarMissing.taskDescription}</div>}
                 </div>
               )}
-                              {/* Tla??tko generov?n? */}
+                {/* Tlačítko generování */}
                 <button
                   onClick={() => setShowPreviewModal(true)}
                   className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >
-                  Vygenerovat smlouvu ?
+                  {ui.form.generate}
                 </button>
 
                 <p className="mt-3 text-center text-[11px] text-slate-500">

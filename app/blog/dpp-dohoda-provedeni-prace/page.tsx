@@ -184,7 +184,7 @@ export default function DppPage() {
             { t: 'Vymezení práce', d: 'Co přesně zaměstnanec dělá — druh práce, výstup nebo rozsah. Čím konkrétnější, tím lépe pro obě strany.' },
             { t: 'Rozsah práce (hodiny)', d: 'Sjednaný nebo odhadovaný rozsah hodin. Nutné sledovat, aby nebyl překročen limit 300 hodin.' },
             { t: 'Doba, na kterou se uzavírá', d: 'DPP lze uzavřít na dobu určitou (konkrétní projekt) nebo neurčitou s možností výpovědi.' },
-            { t: 'Odměna za práci', d: 'Minimálně ve výši minimální mzdy za hodinu (pro 2026: 20,80 Kč/hod). Způsob výplaty.' },
+            { t: 'Odměna za práci', d: 'Minimálně ve výši minimální mzdy za hodinu (pro 2026: 134,40 Kč/hod. při 40hodinové týdenní pracovní době). Způsob výplaty.' },
             { t: 'BOZP prohlášení', d: 'Poučení o bezpečnosti a ochraně zdraví při práci — nutné před zahájením práce.' },
           ].map(i => (
             <div key={i.t} className="rounded-xl border border-white/8 bg-[#0c1426] p-4">
@@ -258,7 +258,7 @@ export default function DppPage() {
             { n: '1', title: 'Neoznámení na ČSSZ', body: 'Od roku 2024 je povinné nahlásit každého zaměstnance na DPP na ČSSZ nejpozději v den nástupu — i u brigád pod hranici odvodů. Mnoho zaměstnavatelů tuto povinnost stále nezná. Pokuta může dosáhnout 100 000 Kč.' },
             { n: '2', title: 'Překročení limitu 300 hodin', body: 'Zaměstnavatel nevede evidenci hodin a zjistí překročení limitu až při kontrole z inspektorátu práce. Řešení: pravidelně sledovat hodiny a v případě delší spolupráce přejít včas na DPČ.' },
             { n: '3', title: 'Příliš vágní vymezení práce', body: 'DPP říká pouze „pomocné práce" nebo „administrativa". Inspektorát může takovou smlouvu považovat za zastřený pracovní poměr (tzv. švarcsystém), pokud zaměstnanec fakticky vykonává práci jako zaměstnanec.' },
-            { n: '4', title: 'Odměna pod minimální mzdou', body: 'Hodinová odměna na DPP musí odpovídat alespoň minimální mzdě (pro 2026: 20,80 Kč/hod). Nižší odměna je protiprávní a může být základem pro doplatek i penále.' },
+            { n: '4', title: 'Odměna pod minimální mzdou', body: 'Hodinová odměna na DPP musí odpovídat alespoň minimální mzdě (pro 2026: 134,40 Kč/hod. při 40hodinové týdenní pracovní době). Nižší odměna zakládá právo na doplatek do minimální mzdy.' },
             { n: '5', title: 'Ústní DPP', body: 'Zákoník práce vyžaduje písemnou formu. Ústní dohoda je neplatná — v případě sporu neexistuje důkaz o podmínkách práce ani o výši odměny.' },
           ].map(c => (
             <div key={c.n} className="rounded-2xl border border-white/8 bg-[#0c1426] p-5">
@@ -281,7 +281,7 @@ export default function DppPage() {
             'Od roku 2024: každý zaměstnanec na DPP musí být nahlášen na ČSSZ nejpozději v den nástupu',
             'Pojistné: pro rok 2026 sledujte rozhodný příjem 12 000 Kč/měsíc u jednoho zaměstnavatele',
             'Smlouva musí být písemná a obsahovat vymezení práce, rozsah hodin a odměnu',
-            'Hodinová odměna nesmí klesnout pod minimální mzdu (2026: 20,80 Kč/hod)',
+            'Hodinová odměna nesmí klesnout pod minimální mzdu (2026: 134,40 Kč/hod. při 40hodinové týdenní pracovní době)',
             'Při skončení vydejte zaměstnanci potvrzení o zaměstnání (zápočtový list)',
           ].map(t => (
             <div key={t} className="flex items-start gap-2 text-sm text-slate-300">

@@ -77,7 +77,10 @@ export function proxy(request: NextRequest) {
   if (legacyLangRedirect) {
     const url = request.nextUrl.clone();
     url.search = legacyLangRedirect.search;
-    const redirect = NextResponse.redirect(url, 308);
+    // Locale selection changes a user preference and must not be cached as a
+    // permanent redirect. A 307 ensures repeated EN ↔ UA switches always
+    // reach Proxy and refresh the preference cookie.
+    const redirect = NextResponse.redirect(url, 307);
     if (legacyLangRedirect.preferredLocale) {
       setPreferredLocale(redirect, legacyLangRedirect.preferredLocale);
     }

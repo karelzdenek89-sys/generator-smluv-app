@@ -2,9 +2,16 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { jsPDF } from 'jspdf';
-import { getContractMeta, buildContractSections, resolveTierFeatures, type StoredContractData, type ContractType } from './contracts';
+import {
+  getContractMeta,
+  buildContractSections,
+  resolveTierFeatures,
+  type ContractSection,
+  type StoredContractData,
+  type ContractType,
+} from './contracts';
 import { LEGAL_STATE_DISCLAIMER } from './legal-constants-2026';
-import { isExpatContract, normalizeLocale } from './locale';
+import { isExpatContract, normalizeLocale, type ExpatContractType } from './locale';
 import { getExpatAnnexMeta, getPage1ExpatNoticeLines } from './i18n/expat-pdf-annex';
 import {
   buildExpatTranslationSections,
@@ -82,6 +89,8 @@ const TOC_R = 250, TOC_G = 250, TOC_B = 249;
 const MARGIN    = 25;           // professional legal margin (was 20)
 const BODY_LEAD = 6.0;          // body line height mm (was 5.5)
 const SECTION_GAP = 7;          // space between sections (was 5)
+const BILINGUAL_CZ_LEAD = 4.6;
+const BILINGUAL_TRANSLATION_LEAD = 4.1;
 
 // ─────────────────────────────────────────────
 //  HELPERS
@@ -107,7 +116,83 @@ function buildDocumentTrace(data: StoredContractData): { docId: string; hash: st
   };
 }
 
+type BilingualContractLocale = Exclude<AppLocale, 'cs'>;
+
+const BILINGUAL_DOCUMENT_TITLES: Record<ExpatContractType, Record<BilingualContractLocale, string>> = {
+  lease: { en: 'RENTAL AGREEMENT', ua: 'ДОГОВІР ОРЕНДИ' },
+  sublease: { en: 'SUBLEASE AGREEMENT', ua: 'ДОГОВІР ПІДНАЙМУ' },
+  employment: { en: 'EMPLOYMENT CONTRACT', ua: 'ТРУДОВИЙ ДОГОВІР' },
+  dpp: { en: 'AGREEMENT TO PERFORM WORK (DPP)', ua: 'ДОГОВІР ПРО ВИКОНАННЯ РОБОТИ (DPP)' },
+  power_of_attorney: { en: 'POWER OF ATTORNEY', ua: 'ДОВІРЕНІСТЬ' },
+  car_sale: { en: 'VEHICLE PURCHASE AGREEMENT', ua: 'ДОГОВІР КУПІВЛІ-ПРОДАЖУ ТРАНСПОРТНОГО ЗАСОБУ' },
+};
+
+const BILINGUAL_ROLE_LABELS: Record<ExpatContractType, Record<BilingualContractLocale, [string, string]>> = {
+  lease: {
+    en: ['Pronajímatel / Landlord', 'Nájemce / Tenant'],
+    ua: ['Pronajímatel / Орендодавець', 'Nájemce / Орендар'],
+  },
+  sublease: {
+    en: ['Nájemce (podnajímatel) / Tenant (Sublessor)', 'Podnájemce / Subtenant'],
+    ua: ['Nájemce (podnajímatel) / Наймач (піднаймодавець)', 'Podnájemce / Піднаймач'],
+  },
+  employment: {
+    en: ['Zaměstnavatel / Employer', 'Zaměstnanec / Employee'],
+    ua: ['Zaměstnavatel / Роботодавець', 'Zaměstnanec / Працівник'],
+  },
+  dpp: {
+    en: ['Zaměstnavatel / Employer', 'Zaměstnanec / Employee'],
+    ua: ['Zaměstnavatel / Роботодавець', 'Zaměstnanec / Працівник'],
+  },
+  power_of_attorney: {
+    en: ['Zmocnitel / Principal', 'Zmocněnec / Agent'],
+    ua: ['Zmocnitel / Довіритель', 'Zmocněnec / Представник'],
+  },
+  car_sale: {
+    en: ['Prodávající / Seller', 'Kupující / Buyer'],
+    ua: ['Prodávající / Продавець', 'Kupující / Покупець'],
+  },
+};
+
+function getBilingualContractLocale(data: StoredContractData): BilingualContractLocale | null {
+  const locale = normalizeLocale(data.lang);
+  if (
+    isExpatContract(data.contractType) &&
+    (locale === 'en' || locale === 'ua') &&
+    (
+      hasCheckoutAddon(data, 'bilingual_contract') ||
+      (data.contractType === 'lease' && hasCheckoutAddon(data, 'bilingual_lease'))
+    )
+  ) {
+    return locale;
+  }
+  return null;
+}
+
+function getBilingualDocumentTitle(
+  title: string,
+  contractType: ContractType,
+  locale: BilingualContractLocale | null,
+): string {
+  if (locale && isExpatContract(contractType)) {
+    return `${title} / ${BILINGUAL_DOCUMENT_TITLES[contractType][locale]}`;
+  }
+  return title;
+}
+
+function getBilingualSectionTitle(
+  section: ContractSection,
+  locale: BilingualContractLocale | null,
+): string {
+  const translated = locale ? section.translations?.[locale]?.title : null;
+  return translated ? `${section.title} / ${translated}` : section.title;
+}
+
 function getSignatureLabels(contractType: ContractType, data?: StoredContractData): [string, string] {
+  const bilingualLocale = data ? getBilingualContractLocale(data) : null;
+  if (bilingualLocale && isExpatContract(contractType)) {
+    return BILINGUAL_ROLE_LABELS[contractType][bilingualLocale];
+  }
   switch (contractType) {
     case 'lease':               return ['Pronajímatel', 'Nájemce'];
     case 'car_sale':            return ['Prodávající', 'Kupující'];
@@ -204,16 +289,25 @@ function drawHeader(doc: jsPDF, title: string, isFirstPage: boolean, docId?: str
   const pageWidth = doc.internal.pageSize.getWidth();
 
   if (isFirstPage) {
-    // Generous top breathing room
-    const titleY = 28;
-
     doc.setFont('Roboto', 'bold');
-    doc.setFontSize(20);
     doc.setTextColor(INK_R, INK_G, INK_B);
-    doc.text(title.toUpperCase(), pageWidth / 2, titleY, { align: 'center' });
+    const titleText = title.toUpperCase();
+    const titleMaxWidth = pageWidth - MARGIN * 2;
+    let titleFontSize = 20;
+    doc.setFontSize(titleFontSize);
+    let titleLines = doc.splitTextToSize(titleText, titleMaxWidth) as string[];
+    while (titleLines.length > 2 && titleFontSize > 14) {
+      titleFontSize -= 1;
+      doc.setFontSize(titleFontSize);
+      titleLines = doc.splitTextToSize(titleText, titleMaxWidth) as string[];
+    }
+
+    const lineStep = titleFontSize * 0.38;
+    const titleY = titleLines.length > 1 ? 21 : 28;
+    doc.text(titleLines, pageWidth / 2, titleY, { align: 'center' });
 
     // Double thin rule beneath title — professional legal look
-    const ruleY1 = titleY + 5;
+    const ruleY1 = titleY + (titleLines.length - 1) * lineStep + 5;
     const ruleY2 = ruleY1 + 1.5;
     doc.setDrawColor(INK_R, INK_G, INK_B);
     doc.setLineWidth(0.5);
@@ -229,7 +323,12 @@ function drawHeader(doc: jsPDF, title: string, isFirstPage: boolean, docId?: str
     doc.setFont('Roboto', 'normal');
     doc.setFontSize(7.5);
     doc.setTextColor(META_R, META_G, META_B);
-    doc.text(title.toUpperCase(), MARGIN, 10);
+    const runningTitleMaxWidth = pageWidth - MARGIN * 2 - (docId ? 40 : 0);
+    const runningTitleLines = doc.splitTextToSize(title.toUpperCase(), runningTitleMaxWidth) as string[];
+    const runningTitle = runningTitleLines.length > 1
+      ? `${runningTitleLines[0].replace(/[\s/]+$/, '')}...`
+      : runningTitleLines[0];
+    doc.text(runningTitle, MARGIN, 10);
     if (docId) {
       doc.text(docId, pageWidth - MARGIN, 10, { align: 'right' });
     }
@@ -305,14 +404,18 @@ function drawSummaryBox(
 ): number {
   const pageWidth = doc.internal.pageSize.getWidth();
   const contentWidth = pageWidth - MARGIN * 2;
+  const bilingualLocale = getBilingualContractLocale(data);
+  const bilingualRoles = bilingualLocale && isExpatContract(contractType)
+    ? BILINGUAL_ROLE_LABELS[contractType][bilingualLocale]
+    : null;
 
   // Collect party lines
   const partyPairs: [string | undefined, string | undefined][] = (() => {
     switch (contractType) {
       case 'lease':
-        return [[data.landlordName as string, 'Pronajímatel'], [data.tenantName as string, 'Nájemce']];
+        return [[data.landlordName as string, bilingualRoles?.[0] ?? 'Pronajímatel'], [data.tenantName as string, bilingualRoles?.[1] ?? 'Nájemce']];
       case 'car_sale':
-        return [[data.sellerName as string, 'Prodávající'], [data.buyerName as string, 'Kupující']];
+        return [[data.sellerName as string, bilingualRoles?.[0] ?? 'Prodávající'], [data.buyerName as string, bilingualRoles?.[1] ?? 'Kupující']];
       case 'gift':
         return [[data.donorName as string, 'Dárce'], [(data.doneeName ?? data.recipientName) as string, 'Obdarovaný']];
       case 'work_contract':
@@ -324,15 +427,15 @@ function drawSummaryBox(
       case 'general_sale':
         return [[data.sellerName as string, 'Prodávající'], [data.buyerName as string, 'Kupující']];
       case 'employment':
-        return [[data.employerName as string, 'Zaměstnavatel'], [data.employeeName as string, 'Zaměstnanec']];
+        return [[data.employerName as string, bilingualRoles?.[0] ?? 'Zaměstnavatel'], [data.employeeName as string, bilingualRoles?.[1] ?? 'Zaměstnanec']];
       case 'dpp':
-        return [[data.employerName as string, 'Zaměstnavatel'], [data.employeeName as string, 'Zaměstnanec']];
+        return [[data.employerName as string, bilingualRoles?.[0] ?? 'Zaměstnavatel'], [data.employeeName as string, bilingualRoles?.[1] ?? 'Zaměstnanec']];
       case 'service':
         return [[data.providerName as string, 'Poskytovatel'], [data.clientName as string, 'Objednatel']];
       case 'sublease':
-        return [[(data.landlordName ?? data.tenantName) as string, 'Nájemce (podnajímatel)'], [data.tenantName as string, 'Podnájemce']];
+        return [[data.landlordName as string, bilingualRoles?.[0] ?? 'Nájemce (podnajímatel)'], [data.tenantName as string, bilingualRoles?.[1] ?? 'Podnájemce']];
       case 'power_of_attorney':
-        return [[data.principalName as string, 'Zmocnitel'], [data.agentName as string, 'Zmocněnec']];
+        return [[data.principalName as string, bilingualRoles?.[0] ?? 'Zmocnitel'], [data.agentName as string, bilingualRoles?.[1] ?? 'Zmocněnec']];
       case 'debt_acknowledgment':
         return [[data.creditorName as string, 'Věřitel'], [data.debtorName as string, 'Dlužník']];
       case 'cooperation':
@@ -348,9 +451,14 @@ function drawSummaryBox(
   const dateStr = data.contractDate
     ? new Date(data.contractDate as string).toLocaleDateString('cs-CZ')
     : new Date().toLocaleDateString('cs-CZ');
-  identLines.push(`Datum uzavření: ${dateStr}`);
+  const dateLabel = bilingualLocale === 'en'
+    ? 'Datum uzavření / Date'
+    : bilingualLocale === 'ua'
+      ? 'Datum uzavření / Дата'
+      : 'Datum uzavření';
+  identLines.push(`${dateLabel}: ${dateStr}`);
 
-  const amount = (data.price ?? data.loanAmount ?? data.rentAmount ?? data.debtAmount ?? data.totalPrice ?? data.monthlyFee ?? data.salary ?? data.totalRemuneration ?? data.hourlyRate) as number | undefined;
+  const amount = (data.price ?? data.priceAmount ?? data.purchasePrice ?? data.loanAmount ?? data.rentAmount ?? data.debtAmount ?? data.totalPrice ?? data.monthlyFee ?? data.salary ?? data.totalRemuneration ?? data.hourlyRate) as number | undefined;
   if (amount && !isNaN(Number(amount)) && Number(amount) > 0) {
     // Specifické formátování pro hodinovou sazbu (DPP / DPČ / služby).
     const isHourly = !data.price && !data.loanAmount && !data.rentAmount && !data.debtAmount
@@ -358,11 +466,22 @@ function drawSummaryBox(
       && Boolean(data.hourlyRate);
     const amountLabel =
       data.monthlyFee ? 'Měsíční paušál' :
+      data.salary && bilingualLocale === 'en' ? 'Mzda / Salary' :
+      data.salary && bilingualLocale === 'ua' ? 'Mzda / Заробітна плата' :
       data.salary ? 'Mzda (hrubá/měs.)' :
+      (data.priceAmount || data.purchasePrice) && contractType === 'car_sale' && bilingualLocale === 'en' ? 'Kupní cena / Purchase price' :
+      (data.priceAmount || data.purchasePrice) && contractType === 'car_sale' && bilingualLocale === 'ua' ? 'Kupní cena / Купівельна ціна' :
+      (data.priceAmount || data.purchasePrice) && contractType === 'car_sale' ? 'Kupní cena' :
+      data.rentAmount && contractType === 'lease' && bilingualLocale === 'en' ? 'Nájemné / Rent' :
+      data.rentAmount && contractType === 'lease' && bilingualLocale === 'ua' ? 'Nájemné / Оренда' :
       data.rentAmount && contractType === 'lease' ? 'Nájemné' :
+      data.rentAmount && contractType === 'sublease' && bilingualLocale === 'en' ? 'Podnájemné / Sublease rent' :
+      data.rentAmount && contractType === 'sublease' && bilingualLocale === 'ua' ? 'Podnájemné / Плата за піднайм' :
       data.rentAmount && contractType === 'sublease' ? 'Podnájemné' :
       data.loanAmount ? 'Výše zápůjčky' :
       data.debtAmount ? 'Výše dluhu' :
+      isHourly && bilingualLocale === 'en' ? 'Hodinová odměna / Hourly remuneration' :
+      isHourly && bilingualLocale === 'ua' ? 'Hodinová odměna / Погодинна винагорода' :
       isHourly ? 'Hodinová odměna' :
       'Sjednaná částka';
     const suffix = isHourly ? ' Kč/hod.' : ' Kč';
@@ -373,19 +492,36 @@ function drawSummaryBox(
     case 'lease':
     case 'sublease': {
       const addr = (data.propertyAddress ?? data.flatAddress) as string | undefined;
-      if (addr) identLines.push(`Nemovitost: ${addr}`);
+      if (addr) {
+        const propertyLabel = bilingualLocale === 'en'
+          ? 'Nemovitost / Property'
+          : bilingualLocale === 'ua'
+            ? 'Nemovitost / Нерухомість'
+            : 'Nemovitost';
+        identLines.push(`${propertyLabel}: ${addr}`);
+      }
       break;
     }
     case 'car_sale': {
       const vin = data.carVIN as string | undefined;
       const spz = data.carPlate as string | undefined;
-      if (vin || spz) identLines.push(`Vozidlo: VIN ${vin ?? '—'}  SPZ ${spz ?? '—'}`);
+      const vehicleLabel = bilingualLocale === 'en'
+        ? 'Vozidlo / Vehicle'
+        : bilingualLocale === 'ua'
+          ? 'Vozidlo / Транспортний засіб'
+          : 'Vozidlo';
+      if (vin || spz) identLines.push(`${vehicleLabel}: VIN ${vin ?? '—'}  SPZ ${spz ?? '—'}`);
       break;
     }
     case 'employment':
     case 'dpp': {
       const job = data.jobTitle as string | undefined;
-      if (job) identLines.push(`Pracovní pozice: ${job}`);
+      const jobLabel = bilingualLocale === 'en'
+        ? 'Pracovní pozice / Position'
+        : bilingualLocale === 'ua'
+          ? 'Pracovní pozice / Посада'
+          : 'Pracovní pozice';
+      if (job) identLines.push(`${jobLabel}: ${job}`);
       break;
     }
     case 'loan': {
@@ -429,8 +565,24 @@ function drawSummaryBox(
   doc.setFont('Roboto', 'bold');
   doc.setFontSize(7);
   doc.setTextColor(META_R, META_G, META_B);
-  doc.text('SMLUVNÍ STRANY', MARGIN + padH, labelY);
-  doc.text('IDENTIFIKACE DOKUMENTU', MARGIN + colW + padH + 1, labelY);
+  doc.text(
+    bilingualLocale === 'en'
+      ? 'SMLUVNÍ STRANY / PARTIES'
+      : bilingualLocale === 'ua'
+        ? 'SMLUVNÍ STRANY / СТОРОНИ'
+        : 'SMLUVNÍ STRANY',
+    MARGIN + padH,
+    labelY,
+  );
+  doc.text(
+    bilingualLocale === 'en'
+      ? 'IDENTIFIKACE / DOCUMENT DETAILS'
+      : bilingualLocale === 'ua'
+        ? 'IDENTIFIKACE / ДАНІ ДОКУМЕНТА'
+        : 'IDENTIFIKACE DOKUMENTU',
+    MARGIN + colW + padH + 1,
+    labelY,
+  );
 
   let rowY = labelY + rowH;
   doc.setFont('Roboto', 'normal');
@@ -448,9 +600,10 @@ function drawSummaryBox(
       doc.setFont('Roboto', 'normal');
       doc.setFontSize(9);
       doc.setTextColor(BODY_R, BODY_G, BODY_B);
-      const nameMaxW = colW - padH - 4;
+      const rolePrefixWidth = doc.getTextWidth(`${role}: `);
+      const nameMaxW = Math.max(18, colW - padH - rolePrefixWidth - 4);
       const nameTrimmed = doc.splitTextToSize(name, nameMaxW)[0] as string;
-      doc.text(nameTrimmed, MARGIN + padH + doc.getTextWidth(`${role}: `), rowY);
+      doc.text(nameTrimmed, MARGIN + padH + rolePrefixWidth, rowY);
     }
 
     const identLine = identLines[i];
@@ -661,43 +814,73 @@ async function measureSectionPages(
 ): Promise<Map<string, number>> {
   const scratch = new jsPDF({ unit: 'mm', format: 'a4', compress: false });
   await ensurePdfFonts(scratch);
+  const bilingualLocale = getBilingualContractLocale(data);
+  const documentTitle = getBilingualDocumentTitle(meta.title, data.contractType, bilingualLocale);
 
   const pageWidth = scratch.internal.pageSize.getWidth();
   const contentWidth = pageWidth - MARGIN * 2;
   const pageMap = new Map<string, number>();
 
-  drawHeader(scratch, meta.title, true);
+  drawHeader(scratch, documentTitle, true);
   let y = 40;
   y = drawSummaryBox(scratch, data, data.contractType, y);
+  y = drawLanguageNotice(scratch, data, y, contentWidth);
   let inProtocol = false;
 
   for (const section of sections) {
     if (isProtocolSection(section.title) && !inProtocol) {
       inProtocol = true;
       scratch.addPage();
-      drawHeader(scratch, meta.title, false);
+      drawHeader(scratch, documentTitle, false);
       y = 22;
     }
 
     if (isSignatureSection(section.title)) {
-      y = drawSignatureSection(scratch, section.title, labelLeft, labelRight, y, meta.title, extraSigLabel, extraSigName);
+      y = drawSignatureSection(
+        scratch,
+        getBilingualSectionTitle(section, bilingualLocale),
+        labelLeft,
+        labelRight,
+        y,
+        documentTitle,
+        extraSigLabel,
+        extraSigName,
+      );
       continue;
     }
 
     const orphanBuffer = section.body.length > 0 ? 32 : 20;
     if (y + orphanBuffer > 272) {
       scratch.addPage();
-      drawHeader(scratch, meta.title, false);
+      drawHeader(scratch, documentTitle, false);
       y = 22;
     }
 
     y += 4;
     pageMap.set(
-      section.title,
+      getBilingualSectionTitle(section, bilingualLocale),
       (scratch.internal as unknown as { getCurrentPageInfo: () => { pageNumber: number } }).getCurrentPageInfo().pageNumber,
     );
 
-    y = drawSectionTitle(scratch, section.title, y, contentWidth, inProtocol);
+    y = drawSectionTitle(
+      scratch,
+      getBilingualSectionTitle(section, bilingualLocale),
+      y,
+      contentWidth,
+      inProtocol,
+    );
+
+    if (bilingualLocale) {
+      y = drawBilingualSectionBody(
+        scratch,
+        section,
+        bilingualLocale,
+        y,
+        contentWidth,
+        documentTitle,
+      );
+      continue;
+    }
 
     const bodyLines = section.body.slice(0, 80);
     for (let i = 0; i < bodyLines.length; i++) {
@@ -708,7 +891,7 @@ async function measureSectionPages(
       const isLast = i === bodyLines.length - 1;
       if (isLast ? y + lh > 272 : y + lh + 8 > 272) {
         scratch.addPage();
-        drawHeader(scratch, meta.title, false);
+        drawHeader(scratch, documentTitle, false);
         y = 22;
       }
       scratch.text(split, MARGIN, y, { align: 'justify', maxWidth: contentWidth });
@@ -762,19 +945,6 @@ function drawTableOfContents(
   const total = visibleSections.length;
 
   visibleSections.forEach((section, idx) => {
-    if (idx % 2 === 0) {
-      doc.setFillColor(TOC_R, TOC_G, TOC_B);
-      doc.rect(MARGIN, y - 4, contentWidth, 7, 'F');
-    }
-
-    doc.setFont('Roboto', 'normal');
-    doc.setFontSize(9.5);
-    doc.setTextColor(BODY_R, BODY_G, BODY_B);
-    doc.text(section.title, MARGIN + 3, y);
-
-    doc.setFontSize(8);
-    doc.setTextColor(META_R, META_G, META_B);
-
     let numText: string;
     if (pageMap && pageMap.has(section.title)) {
       numText = `str. ${(pageMap.get(section.title) ?? 0) + tocOffset}`;
@@ -782,22 +952,31 @@ function drawTableOfContents(
       numText = `${idx + 1} / ${total}`;
     }
 
-    const numW  = doc.getTextWidth(numText);
-    const titW  = doc.getTextWidth(section.title) + MARGIN + 3;
-    const dotsX = Math.min(titW + 4, pageWidth - MARGIN - numW - 10);
-    const avail = pageWidth - MARGIN - numW - 4 - dotsX;
-    if (avail > 10) {
-      const dots = ' · · · · · · · · · · · · · · · · · ·';
-      doc.text(dots.substring(0, Math.floor(avail / 2)), dotsX, y);
-    }
-    doc.text(numText, pageWidth - MARGIN - numW, y);
+    doc.setFont('Roboto', 'normal');
+    doc.setFontSize(9.5);
+    const numW = doc.getTextWidth(numText);
+    const titleLines = doc.splitTextToSize(section.title, contentWidth - numW - 18) as string[];
+    const rowHeight = Math.max(7, titleLines.length * 4.4 + 2);
 
-    y += 7;
-    if (y > 270) {
+    if (y + rowHeight > 270) {
       doc.addPage();
       drawHeader(doc, title, false, docId);
       y = 22;
     }
+
+    if (idx % 2 === 0) {
+      doc.setFillColor(TOC_R, TOC_G, TOC_B);
+      doc.rect(MARGIN, y - 4, contentWidth, rowHeight, 'F');
+    }
+
+    doc.setTextColor(BODY_R, BODY_G, BODY_B);
+    doc.text(titleLines, MARGIN + 3, y);
+
+    doc.setFontSize(8);
+    doc.setTextColor(META_R, META_G, META_B);
+    doc.text(numText, pageWidth - MARGIN - numW, y);
+
+    y += rowHeight;
   });
 
   doc.setTextColor(0);
@@ -840,6 +1019,78 @@ function drawSectionTitle(
   doc.setTextColor(BODY_R, BODY_G, BODY_B);
 
   return y;
+}
+
+function drawBilingualSectionBody(
+  doc: jsPDF,
+  section: ContractSection,
+  locale: BilingualContractLocale,
+  startY: number,
+  contentWidth: number,
+  contractTitle: string,
+  docId?: string,
+): number {
+  let y = startY;
+  const translatedBody = section.translations?.[locale]?.body ?? [];
+  const localeLabel = locale === 'en' ? 'EN' : 'UA';
+
+  for (let i = 0; i < section.body.length; i++) {
+    const czechText = String(section.body[i] ?? '').trim() || ' ';
+    const translatedText = String(translatedBody[i] ?? '').trim();
+
+    doc.setFont('Roboto', 'normal');
+    doc.setFontSize(9.2);
+    const czechLines = doc.splitTextToSize(czechText, contentWidth) as string[];
+
+    doc.setFontSize(8.2);
+    const translationLines = translatedText
+      ? (doc.splitTextToSize(translatedText, contentWidth - 8) as string[])
+      : [];
+
+    const czechHeight = czechLines.length * BILINGUAL_CZ_LEAD;
+    const translationHeight = translationLines.length * BILINGUAL_TRANSLATION_LEAD;
+    const blockHeight = czechHeight + (translationLines.length ? translationHeight + 5 : 2);
+
+    if (y + blockHeight > 268) {
+      doc.addPage();
+      drawHeader(doc, contractTitle, false, docId);
+      y = 22;
+    }
+
+    doc.setFont('Roboto', 'normal');
+    doc.setFontSize(9.2);
+    doc.setTextColor(BODY_R, BODY_G, BODY_B);
+    doc.text(czechLines, MARGIN, y, { align: 'justify', maxWidth: contentWidth });
+    y += czechHeight + 1.5;
+
+    if (translationLines.length) {
+      const translationStart = y - 1;
+      doc.setDrawColor(148, 163, 184);
+      doc.setLineWidth(0.45);
+      doc.line(MARGIN, translationStart, MARGIN, translationStart + translationHeight + 1.5);
+
+      doc.setFont('Roboto', 'bold');
+      doc.setFontSize(6.5);
+      doc.setTextColor(100, 116, 139);
+      doc.text(localeLabel, MARGIN + 2, y + 0.3);
+
+      doc.setFont('Roboto', 'normal');
+      doc.setFontSize(8.2);
+      doc.setTextColor(71, 85, 105);
+      doc.text(translationLines, MARGIN + 8, y, {
+        align: 'justify',
+        maxWidth: contentWidth - 8,
+      });
+      y += translationHeight + 3.5;
+    } else {
+      y += 1;
+    }
+  }
+
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(10);
+  doc.setTextColor(BODY_R, BODY_G, BODY_B);
+  return y + SECTION_GAP;
 }
 
 function drawEndOfTextMarker(doc: jsPDF, y: number, contractTitle = ''): number {
@@ -1837,10 +2088,15 @@ function drawSignatureSection(
   extraName?: string,
 ): number {
   const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
 
-  // Needs ~70 mm (90 mm s extra blokem) — break early if not enough space
-  const neededTop = extraLabel ? 190 : 210;
-  if (y > neededTop) {
+  // The complete block also contains the name lines, role labels, divider and
+  // closing legal note. Keep all of it above the footer instead of estimating
+  // only the two handwritten-signature lines. A third signer needs almost a
+  // full page of its own.
+  const bodyBottom = pageHeight - 23;
+  const signatureBlockHeight = extraLabel ? (extraName ? 166 : 161) : 96;
+  if (y + signatureBlockHeight > bodyBottom) {
     doc.addPage();
     drawHeader(doc, contractTitle, false);
     y = 22;
@@ -2299,9 +2555,10 @@ function drawCompleteTierPages(
   title: string,
   docId: string,
   locale: AppLocale,
+  hasClausePairedContract = false,
 ): void {
   const pageWidth = doc.internal.pageSize.getWidth();
-  const expatIntro = getCompleteAnnexExpatIntro(locale);
+  const expatIntro = getCompleteAnnexExpatIntro(locale, contractType, hasClausePairedContract);
 
   // --- Průvodní pokyny ---
   doc.addPage();
@@ -2414,6 +2671,12 @@ function drawCompleteTierPages(
 export async function renderContractPdf(data: StoredContractData): Promise<Buffer> {
   const meta      = getContractMeta(data.contractType);
   const sections  = buildContractSections(data);
+  const bilingualLocale = getBilingualContractLocale(data);
+  const documentTitle = getBilingualDocumentTitle(meta.title, data.contractType, bilingualLocale);
+  const tocSections = sections.map((section) => ({
+    ...section,
+    title: getBilingualSectionTitle(section, bilingualLocale),
+  }));
   const [labelLeft, labelRight] = getSignatureLabels(data.contractType, data);
   const { hasPremiumClauses, hasCompletePages } = resolveTierFeatures(data);
   // Třetí podpisový blok (zatím pouze loan + zvolený ručitel).
@@ -2426,8 +2689,8 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
 
   const generatedDate = new Date().toLocaleDateString('cs-CZ');
   doc.setProperties({
-    title:    meta.title,
-    subject:  `Smlouva vygenerovaná na SmlouvaHned.cz – ${generatedDate} – ${docId}`,
+    title:    documentTitle,
+    subject:  `Smlouva vygenerovaná na SmlouvaHned.cz - ${generatedDate} - ${docId}`,
     author:   'SmlouvaHned.cz',
     keywords: `smlouva, ${data.contractType}, česká republika`,
     creator:  'SmlouvaHned.cz',
@@ -2437,7 +2700,7 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
   const contentWidth = pageWidth - MARGIN * 2;
 
   // ── First page ──
-  drawHeader(doc, meta.title, true, docId);
+  drawHeader(doc, documentTitle, true, docId);
 
   // First-page body starts with generous breathing room below header
   let y = 40;
@@ -2451,9 +2714,9 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
   if (hasPremiumClauses) {
     const sectionPageMap = await measureSectionPages(data, sections, meta, labelLeft, labelRight, extraSigLabel, extraSigName);
     // tocOffset=2: scratch content starts at scratch-page 1; real content starts at page 3 → offset by 2
-    drawTableOfContents(doc, sections, meta.title, docId, sectionPageMap, 2);
+    drawTableOfContents(doc, tocSections, documentTitle, docId, sectionPageMap, 2);
     doc.addPage();
-    drawHeader(doc, meta.title, false, docId);
+    drawHeader(doc, documentTitle, false, docId);
     y = 22;
   }
 
@@ -2461,14 +2724,14 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
   for (const section of sections) {
     // Lease handover protocol → custom form renderer (replaces generic body)
     if (isLeaseProtocol(section.title)) {
-      drawLeaseProtocolForm(doc, data, meta.title, docId);
+      drawLeaseProtocolForm(doc, data, documentTitle, docId);
       inProtocol = true;
       continue;
     }
 
     // Loan cash-handover receipt → custom form renderer (Complete + hotovost)
     if (isLoanCashReceipt(section.title)) {
-      drawLoanCashReceipt(doc, data, meta.title, docId);
+      drawLoanCashReceipt(doc, data, documentTitle, docId);
       inProtocol = true;
       continue;
     }
@@ -2476,14 +2739,14 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
     // Loan amortization schedule → custom table renderer (Complete + úročené splátky)
     if (isLoanSchedule(section.title)) {
       const annexNumber = data.transferMethod !== 'transfer' ? 2 : 1;
-      drawLoanSchedule(doc, data, meta.title, docId, annexNumber);
+      drawLoanSchedule(doc, data, documentTitle, docId, annexNumber);
       inProtocol = true;
       continue;
     }
 
     // DPP delivery and acceptance protocol → custom form (Professional+)
     if (isDppDeliveryProtocol(section.title)) {
-      drawDppDeliveryProtocol(doc, data, meta.title, docId);
+      drawDppDeliveryProtocol(doc, data, documentTitle, docId);
       inProtocol = true;
       continue;
     }
@@ -2492,7 +2755,7 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
     if (isProtocolSection(section.title) && !inProtocol) {
       inProtocol = true;
       doc.addPage();
-      drawHeader(doc, meta.title, false, docId);
+      drawHeader(doc, documentTitle, false, docId);
       y = 22;
       doc.setDrawColor(RULE_R, RULE_G, RULE_B);
       doc.setLineWidth(0.2);
@@ -2503,10 +2766,19 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
 
     if (isSignatureSection(section.title)) {
       if (!endOfTextDrawn) {
-        y = drawEndOfTextMarker(doc, y, meta.title);
+        y = drawEndOfTextMarker(doc, y, documentTitle);
         endOfTextDrawn = true;
       }
-      y = drawSignatureSection(doc, section.title, labelLeft, labelRight, y, meta.title, extraSigLabel, extraSigName);
+      y = drawSignatureSection(
+        doc,
+        getBilingualSectionTitle(section, bilingualLocale),
+        labelLeft,
+        labelRight,
+        y,
+        documentTitle,
+        extraSigLabel,
+        extraSigName,
+      );
       continue;
     }
 
@@ -2514,7 +2786,7 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
     const orphanBuffer = section.body.length > 0 ? 32 : 20;
     if (y + orphanBuffer > 272) {
       doc.addPage();
-      drawHeader(doc, meta.title, false, docId);
+      drawHeader(doc, documentTitle, false, docId);
       y = 22;
       doc.setFont('Roboto', 'normal');
       doc.setFontSize(10);
@@ -2522,7 +2794,26 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
     }
 
     y += 4;
-    y = drawSectionTitle(doc, section.title, y, contentWidth, inProtocol);
+    y = drawSectionTitle(
+      doc,
+      getBilingualSectionTitle(section, bilingualLocale),
+      y,
+      contentWidth,
+      inProtocol,
+    );
+
+    if (bilingualLocale) {
+      y = drawBilingualSectionBody(
+        doc,
+        section,
+        bilingualLocale,
+        y,
+        contentWidth,
+        documentTitle,
+        docId,
+      );
+      continue;
+    }
 
     const bodyLines = section.body.slice(0, 80);
     for (let i = 0; i < bodyLines.length; i++) {
@@ -2536,7 +2827,7 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
 
       if (needsBreak) {
         doc.addPage();
-        drawHeader(doc, meta.title, false, docId);
+        drawHeader(doc, documentTitle, false, docId);
         y = 22;
         doc.setFont('Roboto', 'normal');
         doc.setFontSize(10);
@@ -2551,12 +2842,16 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
   }
 
   const annexLocale = normalizeLocale(data.lang);
-  if (hasCheckoutAddon(data, 'bilingual_annex') && hasExpatTranslationAnnex(data.contractType, annexLocale)) {
+  if (
+    !bilingualLocale &&
+    hasCheckoutAddon(data, 'bilingual_annex') &&
+    hasExpatTranslationAnnex(data.contractType, annexLocale)
+  ) {
     renderExpatTranslationAnnex(
       doc,
       data,
       annexLocale,
-      meta.title,
+      documentTitle,
       docId,
       contentWidth,
       labelLeft,
@@ -2568,7 +2863,15 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
 
   // ── Complete-tier appendix pages ──
   if (hasCompletePages) {
-    drawCompleteTierPages(doc, data.contractType, contentWidth, meta.title, docId, normalizeLocale(data.lang));
+    drawCompleteTierPages(
+      doc,
+      data.contractType,
+      contentWidth,
+      documentTitle,
+      docId,
+      normalizeLocale(data.lang),
+      Boolean(bilingualLocale),
+    );
   }
 
   // ── Footers (post-processing pass) ──

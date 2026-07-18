@@ -37,6 +37,24 @@ export function getPage1ExpatNoticeLines(data: StoredContractData): string[] {
   const locale = normalizeLocale(data.lang);
   if (locale === 'cs' || !isExpatContractType(data.contractType)) return [];
 
+  const bilingualContract =
+    hasCheckoutAddon(data, 'bilingual_contract') ||
+    (data.contractType === 'lease' && hasCheckoutAddon(data, 'bilingual_lease'));
+
+  if (bilingualContract && locale === 'ua') {
+    return [
+      `ЧЕСЬКО-УКРАЇНСЬКИЙ ДОКУМЕНТ: ${CONTRACT_LABELS[data.contractType].ua.toUpperCase()}`,
+      'Після кожного чеського положення наведено український текст. Переклад не є офіційним або засвідченим. У разі розбіжностей переважає чеське формулювання.',
+    ];
+  }
+
+  if (bilingualContract && locale === 'en') {
+    return [
+      `CZECH-ENGLISH ${CONTRACT_LABELS[data.contractType].en.toUpperCase()}`,
+      'Each Czech clause is followed by its English wording. The translation is not certified or official. In case of discrepancy, the Czech wording prevails.',
+    ];
+  }
+
   const translationAnnex =
     hasCheckoutAddon(data, 'bilingual_annex') &&
     hasExpatTranslationAnnex(data.contractType, locale);

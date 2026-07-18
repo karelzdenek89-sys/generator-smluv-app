@@ -73,7 +73,8 @@ function main() {
   const landing = readFileSync(join(ROOT, 'app/components/ContractLandingSection.tsx'), 'utf8');
   assert.match(landing, /whenUnsuitable/);
   assert.match(landing, /Co dostanete/);
-  assert.match(landing, /poslední doložené věcné právní revize/);
+  assert.match(landing, /Nejde o individuálně právně posouzený dokument/);
+  assert.doesNotMatch(landing, /datum poslední doložené věcné právní revize/i);
   assert.match(landing, /faqPageSchema/);
 
   console.log('SEO/legal hygiene tests passed (lang redirects, sitemap, Czech copy, ADR and trust blocks).');

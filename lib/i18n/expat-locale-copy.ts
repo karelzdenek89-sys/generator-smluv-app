@@ -18,9 +18,9 @@ export type BuilderCopy = {
 };
 
 const CAPABILITY_FULL_EN =
-  'English-guided form · Czech PDF + explanatory English annex (not certified or official).';
+  'English-guided form · optional Czech-English PDF with paired clauses (not certified or official).';
 const CAPABILITY_FULL_UA =
-  'Форма українською · чеський PDF + пояснювальний український додаток (не офіційний переклад).';
+  'Форма українською · додатковий чесько-український PDF з попарними положеннями (не офіційний переклад).';
 
 export const EXPAT_CONTRACT_CAPABILITY: Record<
   ExpatUiLocale,
@@ -37,7 +37,7 @@ export const EXPAT_CONTRACT_CAPABILITY: Record<
   ua: {
     lease: CAPABILITY_FULL_UA,
     employment: CAPABILITY_FULL_UA,
-    dpp: 'Форма українською · чеський PDF + пояснювальний огляд основних умов (DPP, не повний переклад).',
+    dpp: CAPABILITY_FULL_UA,
     sublease: CAPABILITY_FULL_UA,
     power_of_attorney: CAPABILITY_FULL_UA,
     car_sale: CAPABILITY_FULL_UA,
@@ -88,15 +88,15 @@ const BUILDER_COPY_UA: Record<ExpatContractType, BuilderCopy> = {
   lease: {
     title: 'Договір оренди',
     description:
-      'Створіть чеський договір оренди квартири чи будинку: орендна плата, застава, комунальні послуги, передача та правила користування.',
+      'Створіть чеський договір оренди квартири чи будинку: орендна плата, грошова застава (кауція), комунальні послуги, передача та правила користування.',
     steps: ['Орендодавець', 'Орендар', 'Помешкання', 'Строк', 'Платежі', 'Протокол передачі', 'Правила', 'Підсумок і оплата'],
-    fields: ['ПІБ', 'РНОКПП / дата народження', 'Адреса', 'E-mail', 'Адреса квартири', 'Орендна плата', 'Застава', 'Дата початку', 'Банківський рахунок'],
+    fields: ['ПІБ', 'РНОКПП / дата народження', 'Адреса', 'E-mail', 'Адреса квартири', 'Орендна плата', 'Грошова застава (кауція)', 'Дата початку', 'Банківський рахунок'],
   },
   sublease: {
     title: 'Договір піднайму',
     description: 'Чеський договір піднайму кімнати, квартири чи її частини за згодою орендодавця.',
     steps: ['Головний орендар', 'Піднаймач', 'Помешкання', 'Згода орендодавця', 'Строк', 'Платежі', 'Правила', 'Підсумок і оплата'],
-    fields: ['ПІБ', 'РНОКПП / дата народження', 'Адреса', 'Дата згоди', 'Орендна плата', 'Застава', 'Дата початку', 'Дата передачі'],
+    fields: ['ПІБ', 'РНОКПП / дата народження', 'Адреса', 'Дата згоди', 'Орендна плата', 'Грошова застава (кауція)', 'Дата початку', 'Дата передачі'],
   },
   employment: {
     title: 'Трудовий договір',
@@ -220,6 +220,6 @@ export function getBuilderNoticeLabels(locale: ExpatUiLocale) {
 }
 
 export const FALLBACK_UI_NOTICE_BY_LOCALE: Record<ExpatUiLocale, string> = {
-  en: 'This form is displayed in English for guidance. The contract is generated primarily in Czech. Where available, an explanatory English translation may be included in the PDF. It is not certified or official.',
-  ua: 'Форма показана українською для зручності. Договір генерується переважно чеською. За наявності до PDF може бути додано пояснювальний український переклад. Він не є засвідченим чи офіційним.',
+  en: 'This form is displayed in English for guidance. Supported contracts offer an optional PDF pairing each Czech clause with English wording. The translation is not certified or official.',
+  ua: 'Форма показана українською для зручності. Для підтримуваних договорів є додатковий PDF, де після кожного чеського положення наведено український текст. Переклад не є засвідченим чи офіційним.',
 };

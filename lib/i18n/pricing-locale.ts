@@ -51,6 +51,18 @@ const LEASE_COMPLETE_EXTRA_UK = [
   `Посилання для завантаження доступне ${COMPLETE_ARCHIVE_DAYS} днів`,
 ] as const;
 
+const GENERIC_COMPLETE_EXTRA_EN = [
+  'Extended clauses and more detailed obligations for the selected document',
+  'Practical signing instructions and a final review checklist',
+  `Download link available for ${COMPLETE_ARCHIVE_DAYS} days`,
+] as const;
+
+const GENERIC_COMPLETE_EXTRA_UK = [
+  'Розширені положення та докладніші обов’язки для обраного документа',
+  'Практичні вказівки для підписання та чекліст остаточної перевірки',
+  `Посилання для завантаження доступне ${COMPLETE_ARCHIVE_DAYS} днів`,
+] as const;
+
 const PACKAGE_EN: Record<
   ThematicPackageKey,
   { title: string; checkoutDescription: string; includedOutputs: readonly string[] }
@@ -77,6 +89,33 @@ const PACKAGE_EN: Record<
       'Keys and documents receipt confirmation',
       'Practical transfer and handover notes',
       `Download link available for ${COMPLETE_ARCHIVE_DAYS} days`,
+    ],
+  },
+};
+
+const PACKAGE_UA: typeof PACKAGE_EN = {
+  landlord: {
+    title: 'Пакет для орендодавця',
+    checkoutDescription:
+      'Розширений чеський договір оренди з документами для передачі житла та підтвердження грошової застави.',
+    includedOutputs: [
+      'Розширений чеський договір оренди',
+      'Акт прийому-передачі житла',
+      'Підтвердження отримання грошової застави',
+      'Практичні вказівки для підписання та передачі',
+      `Посилання для завантаження доступне ${COMPLETE_ARCHIVE_DAYS} днів`,
+    ],
+  },
+  vehicle_sale: {
+    title: 'Пакет для продажу транспортного засобу',
+    checkoutDescription:
+      'Розширений чеський договір купівлі-продажу транспортного засобу з документами для передачі та перереєстрації.',
+    includedOutputs: [
+      'Розширений чеський договір купівлі-продажу транспортного засобу',
+      'Акт прийому-передачі транспортного засобу',
+      'Підтвердження передачі ключів і документів',
+      'Практичні вказівки для передачі та перереєстрації',
+      `Посилання для завантаження доступне ${COMPLETE_ARCHIVE_DAYS} днів`,
     ],
   },
 };
@@ -176,7 +215,7 @@ export function getLocalizedIncludedItems(
   const loc = normalizeLocale(locale);
   const pkg = packageKey === 'landlord' || packageKey === 'vehicle_sale' ? packageKey : null;
   if (loc !== 'cs' && pkg) {
-    return PACKAGE_EN[pkg].includedOutputs;
+    return (loc === 'ua' ? PACKAGE_UA : PACKAGE_EN)[pkg].includedOutputs;
   }
   if (loc !== 'cs') {
     const copy = getLocalizedCheckoutCopy(loc);
@@ -185,7 +224,10 @@ export function getLocalizedIncludedItems(
       return [...copy.basicItems, ...leaseExtra];
     }
     if (tier === 'complete') {
-      return [...copy.basicItems, ...copy.completeExtraItems];
+      return [
+        ...copy.basicItems,
+        ...(loc === 'ua' ? GENERIC_COMPLETE_EXTRA_UK : GENERIC_COMPLETE_EXTRA_EN),
+      ];
     }
     return copy.basicItems;
   }
@@ -198,7 +240,7 @@ export function getLocalizedPackagePresentation(
 ): { title: string; checkoutDescription: string } | null {
   const loc = normalizeLocale(locale);
   if (loc === 'cs') return null;
-  const row = PACKAGE_EN[packageKey];
+  const row = (loc === 'ua' ? PACKAGE_UA : PACKAGE_EN)[packageKey];
   return { title: row.title, checkoutDescription: row.checkoutDescription };
 }
 

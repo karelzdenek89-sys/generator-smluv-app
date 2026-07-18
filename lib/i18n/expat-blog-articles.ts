@@ -133,11 +133,11 @@ function contractArticleEn(
           sections: [
             ...opts.sections,
             {
-              id: 'translation-annex',
-              title: 'Czech contract + English translation annex',
-              paragraphs: [
-                'For rental agreements, the PDF contains the primary Czech lease wording first, then an explanatory English translation annex.',
-                'The translation helps you understand clauses before signing; it is not a certified translation for authorities.',
+            id: 'bilingual-contract',
+            title: 'Clause-paired Czech-English contract',
+            paragraphs: [
+              'The optional bilingual PDF places every Czech lease clause next to its English counterpart in one document.',
+              'The English wording helps you understand the clauses before signing; it is not a certified translation for authorities.',
               ],
               bullets: SAFETY_EN,
             },
@@ -198,11 +198,11 @@ function contractArticleUa(
       ? [
           ...opts.sections,
           {
-            id: 'translation-annex',
-            title: 'Чеський договір + український пояснювальний додаток',
+            id: 'bilingual-contract',
+            title: 'Двомовний договір CZ+UA з попарними положеннями',
             paragraphs: [
-              'У PDF спочатку основний чеський договір оренди, потім пояснювальний український додаток.',
-              'Додаток допомагає зрозуміти умови перед підписом; це не офіційний переклад для органів.',
+              'У додатковому двомовному PDF кожне чеське положення договору оренди попарно розміщується з українським.',
+              'Український текст допомагає зрозуміти умови перед підписанням; це не офіційний переклад для органів.',
             ],
             bullets: SAFETY_UA,
           },
@@ -213,7 +213,7 @@ function contractArticleUa(
     slug: opts.slug,
     audience: 'ua',
     contractKey: contract,
-    category: 'Для інозemців (UA)',
+    category: 'Для іноземців (UA)',
     readTime: opts.readTime,
     dateLabel: '17. května 2026',
     dateTime: '2026-05-17',
@@ -273,7 +273,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
         title: 'How it works',
         paragraphs: [
           'Choose a contract type below. The online form can be filled in English where supported.',
-          'After payment you receive a PDF assembled from your inputs. For the rental agreement, an explanatory English translation annex is included — in case of discrepancy, the Czech wording prevails.',
+          'After payment you receive a PDF assembled from your inputs. For all six supported contracts, you can add a clause-paired CZ+EN PDF; the Czech wording prevails.',
         ],
       },
       {
@@ -281,7 +281,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
         title: 'Core contracts with English guidance',
         paragraphs: ['Open the guide for your situation, then start the form:'],
         bullets: [
-          'Rental agreement — lease + handover protocol (+ translation annex)',
+          'Rental agreement — lease + handover protocol (+ optional clause-paired CZ+EN PDF)',
           'Employment contract — Czech employment relationship',
           'DPP agreement — short-term work up to statutory limits',
           'Sublease — room or apartment with landlord consent',
@@ -327,7 +327,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
     slug: HUB_GUIDE_UA,
     audience: 'ua',
     contractKey: 'hub',
-    category: 'Для інозemців (UA)',
+    category: 'Для іноземців (UA)',
     readTime: '6 хв',
     dateLabel: '17. května 2026',
     dateTime: '2026-05-17',
@@ -350,7 +350,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
         title: 'Як це працює',
         paragraphs: [
           'Оберіть тип договору нижче. Форму можна заповнити українською.',
-          'Після оплати — PDF з ваших даних. Для оренди додається пояснювальний український додаток; основним є чеське формулювання.',
+          'Після оплати ви отримаєте PDF зі своїми даними. Для всіх шести підтримуваних договорів можна додати PDF із попарними положеннями CZ+UA; перевагу має чеське формулювання.',
         ],
       },
       {
@@ -358,7 +358,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
         title: 'Основні договори',
         paragraphs: ['Відкрийте гід або форму:'],
         bullets: [
-          'Договір оренди — + протокол передачі (+ український додаток)',
+          'Договір оренди + акт прийому-передачі (+ додатковий PDF із попарними положеннями CZ+UA)',
           'Трудовий договір',
           'DPP — короткострокова праця',
           'Піднайм',
@@ -379,7 +379,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
     },
     finalCta: {
       title: 'Усі договори',
-      body: 'Повний огляд на українській landing сторінці.',
+      body: 'Повний огляд на українській оглядовій сторінці.',
       buttonLabel: 'Відкрити /ua →',
     },
     trustBox: {
@@ -399,9 +399,9 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
     slug: 'rental-agreement-czech-republic-guide-en',
     title: 'Rental agreement in the Czech Republic for foreigners (2026)',
     excerpt:
-      'How Czech leases work, what to check before signing, and how to generate a Czech rental PDF with an English-guided form and translation annex.',
+      'How Czech leases work, what to check before signing, and how to generate an optional clause-paired CZ+EN rental PDF.',
     intro:
-      'Whether you rent in Prague, Brno or elsewhere, the lease is almost always in Czech. You can still prepare it using an English form and receive an explanatory translation annex alongside the primary Czech wording.',
+      'Whether you rent in Prague, Brno or elsewhere, the lease is usually in Czech. You can prepare it using an English-guided form and optionally receive one PDF pairing every Czech clause with its English counterpart.',
     keywords: [
       'rental agreement Czech Republic',
       'lease contract Prague foreigners',
@@ -426,14 +426,14 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
         id: 'before-signing',
         title: 'Before you sign',
         paragraphs: [
-          'Read the Czech PDF carefully even if you use the English annex. Compare rent, fees and end date with what you agreed verbally.',
+          'Read the Czech wording carefully even when using the paired English text. Compare rent, fees and the end date with what you agreed.',
           'Ask for energy certificate (PENB) when relevant and confirm who registers your address if needed.',
         ],
       },
     ],
     primaryCta: {
       title: 'Create your Czech rental agreement',
-      body: 'English-guided form → Czech PDF + explanatory English translation annex + handover protocol.',
+      body: 'English-guided form → Czech PDF + optional clause-paired CZ+EN PDF + handover protocol.',
       buttonLabel: 'Open rental form (EN) →',
     },
     trust: {
@@ -447,9 +447,9 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
     slug: 'rental-agreement-czech-republic-guide-ua',
     title: 'Договір оренди в Чехії для іноземців (2026)',
     excerpt:
-      'Як працює чеська оренда, на що звернути увагу перед підписом і як отримати PDF з формою українською та пояснювальним додатком.',
+      'Як працює чеська оренда, на що звернути увагу перед підписанням і як отримати PDF із попарними положеннями CZ+UA.',
     intro:
-      'Оренда квартири в Празі чи іншому місті майже завжди оформлюється чеською. Форму можна заповнити українською, а в PDF буде основний чеський договір і пояснювальний український додаток.',
+      'Оренда квартири в Празі чи іншому місті зазвичай оформлюється чеською. Форму можна заповнити українською та додатково отримати один PDF, у якому кожне чеське положення попарно розміщене з українським.',
     keywords: ['договір оренди Чехія', 'оренда квартири Прага іноземці', 'чеський договір оренди'],
     readTime: '8 хв',
     sections: [
@@ -458,10 +458,10 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
         title: 'Що має бути в договорі',
         paragraphs: [
           'Оренда житла регулюється цивільним кодексом (§ 2235 та наст.). Письмова форма — стандарт.',
-          'Ключове: сторони, адреса, оренда і комунальні, застава, строк, правила (тварини, піднайм), передача.',
+          'Ключове: сторони, адреса, орендна плата і комунальні послуги, грошова застава (кауція), строк, правила (тварини, піднайм), передача.',
         ],
         bullets: [
-          'Застава (kauce) — часто до 3 місяців оренди',
+          'Грошова застава (kauce) та договірний штраф разом — щонайбільше три місячні орендні плати',
           'Строки попередження — залежать від строкового чи безстрокового договору',
           'Протокол передачі — лічильники та вади; збережіть фото',
         ],
@@ -476,7 +476,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Створити договір оренди',
-      body: 'Форма українською → чеський PDF + пояснювальний український додаток + протокол передачі.',
+      body: 'Форма українською → чеський PDF + додатковий PDF із попарними положеннями CZ+UA + акт прийому-передачі.',
       buttonLabel: 'Відкрити форму оренди (UA) →',
     },
     trust: {
@@ -687,7 +687,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
       {
         id: 'payments',
         title: 'Платежі',
-        paragraphs: ['Оренда, комунальні та застава між сторонами піднайму.'],
+        paragraphs: ['Орендна плата, комунальні послуги та грошова застава між сторонами піднайму.'],
         bullets: SAFETY_UA,
       },
     ],

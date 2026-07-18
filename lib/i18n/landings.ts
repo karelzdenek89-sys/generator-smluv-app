@@ -90,11 +90,11 @@ const EN: LandingContent = {
   h1Line1: 'Czech contracts online —',
   h1Line2: 'rental, employment, NDA in 5 minutes',
   intro:
-    'SmlouvaHned helps foreigners in the Czech Republic create standard Czech contract templates from a structured form. The PDF is generated primarily in Czech; selected core contracts may include an explanatory English annex (not certified or official). Requirements of authorities or third parties may differ.',
+    'SmlouvaHned helps foreigners in the Czech Republic create standard Czech contract templates from a structured form. For six supported contracts, an optional PDF pairs every Czech clause with its English wording (not certified or official). Requirements of authorities or third parties may differ.',
   ctaPrimary: 'Start a rental agreement →',
   ctaSecondary: 'Start a DPP agreement',
   warningBanner:
-    '⚠ English-guided forms are available for rental, employment, DPP, sublease, power of attorney and car sale. The PDF is primarily Czech; supported contracts include an explanatory English annex — not certified or official. Czech wording prevails.',
+    '⚠ English-guided forms are available for rental, employment, DPP, sublease, power of attorney and car sale. Each supports an optional paired Czech-English PDF. The translation is not certified or official; Czech wording prevails.',
   contractsHeading: 'Available contracts',
   openCzechForm: 'Open Czech form →',
   contracts: withContracts([
@@ -117,12 +117,12 @@ const EN: LandingContent = {
   howItWorks: [
     { title: '1. Pick a contract.', description: 'Choose from 14 standard document types above.' },
     { title: '2. Fill the form.', description: 'Enter the parties, amounts, dates, and optional clauses. Rental, employment, DPP, sublease, power of attorney and car sale use an English-guided form; other document types on this site are Czech-only for now.' },
-    { title: '3. Pay and download.', description: 'Pay by card via Stripe (CZK). Download your Czech PDF immediately; supported contracts may include an explanatory English annex. The link stays valid for 7–30 days.' },
+    { title: '3. Pay and download.', description: 'Pay by card via Stripe (CZK). For supported contracts, optionally add a paired Czech-English PDF. The link stays valid for 7–30 days.' },
     { title: '4. Sign on paper.', description: 'Print, both parties sign, keep one copy each. Czech contracts generally do not require notarisation unless they concern real estate transfer or specific corporate acts.' },
   ],
   whyHeading: 'Why foreigners use SmlouvaHned',
   whyBullets: [
-    '✓ Czech contract PDF with optional explanatory translation for supported document types (Czech wording prevails).',
+    '✓ Optional clause-paired CZ+EN PDF for six supported contract types (Czech wording prevails).',
     '✓ Templates reference the Czech Civil Code and Labour Code where relevant.',
     '✓ Templates built around the Czech Civil Code (§ 89/2012 Sb.) and the Labour Code — paragraph references are included.',
     '✓ Encrypted, temporary data storage — deleted automatically after 7–30 days.',
@@ -131,8 +131,8 @@ const EN: LandingContent = {
   ],
   faqHeading: 'Frequently asked questions',
   faq: [
-    { q: 'I do not speak Czech. Can I still use SmlouvaHned?', a: 'Yes for the six supported expat contracts: English-guided forms with a primarily Czech PDF and explanatory English annex. Other document types on this site are Czech-only for now. The annex is not certified or official; Czech wording prevails.' },
-    { q: 'Is the contract legally valid in the Czech Republic?', a: 'Yes. Each template is built around the relevant provisions of the Czech Civil Code (Občanský zákoník, Act No. 89/2012 Coll.) or the Labour Code. Section references appear in the document.' },
+    { q: 'I do not speak Czech. Can I still use SmlouvaHned?', a: 'Yes for the six supported expat contracts: English-guided forms with an optional Czech-English PDF pairing every clause. Other document types are Czech-only for now. The translation is not certified or official; Czech wording prevails.' },
+    { q: 'Is the contract legally valid in the Czech Republic?', a: 'A contract can be valid if the requirements of Czech law are met, the parties properly agree its content, and any required form is observed. The generator cannot confirm the validity of a specific transaction; consult a Czech attorney in non-standard cases.' },
     { q: 'Is SmlouvaHned a law firm?', a: 'No. SmlouvaHned is a software tool that generates standard template contracts. It is not legal advice and does not replace consultation with a Czech attorney (advokát).' },
     { q: 'How do payments work?', a: 'After you fill the form you can choose a tier and pay by card via Stripe. Payments are processed in Czech crowns (CZK).' },
     { q: 'How long is my generated PDF available to download?', a: 'The download link is valid for 7 days (basic document) or 30 days (extended document). Your form data is stored encrypted only for this period and is then deleted automatically.' },
@@ -169,15 +169,15 @@ const UA: LandingContent = {
   h1Line1: 'Чеські договори онлайн —',
   h1Line2: 'оренда, праця, NDA за 5 хвилин',
   intro:
-    'SmlouvaHned допомагає іноземцям у Чехії створювати стандартні чеські шаблони договорів із структурованої форми. PDF переважно чеською; для обраних договорів може бути пояснювальний український додаток (не офіційний переклад). Вимоги установ або третіх осіб можуть відрізнятися.',
+    'SmlouvaHned допомагає іноземцям у Чехії створювати стандартні чеські шаблони договорів. Для шести підтримуваних договорів можна додати PDF, де після кожного чеського положення наведено український текст. Переклад не є офіційним; переважає чеське формулювання.',
   ctaPrimary: 'Створити договір оренди →',
   ctaSecondary: 'Створити ДПП',
   warningBanner:
-    '⚠ Форми українською доступні для оренди, праці, DPP, піднайму, довіреності та купівлі авто. PDF переважно чеською; для цих договорів — пояснювальний український додаток, не офіційний переклад. Перевага має чеська версія.',
+    '⚠ Форми українською доступні для оренди, праці, DPP, піднайму, довіреності та купівлі авто. Для кожного доступний додатковий попарний PDF CZ+UA. Переклад не є офіційним; переважає чеська версія.',
   contractsHeading: 'Доступні договори',
   openCzechForm: 'Відкрити чеську форму →',
   contracts: withContracts([
-    { title: 'Договір оренди (nájemní smlouva)', blurb: 'Оренда квартири за § 2235 Цивільного кодексу Чехії. Завдаток, індексація, акт прийому-передачі.' },
+    { title: 'Договір оренди (nájemní smlouva)', blurb: 'Оренда квартири за § 2235 Цивільного кодексу Чехії. Грошова застава (кауція), індексація, акт приймання-передачі.' },
     { title: 'Договір суборенди (podnájemní smlouva)', blurb: 'Суборенда квартири чи кімнати, яку ви орендуєте. Потрібна згода власника.' },
     { title: 'ДПП — угода про виконання роботи (dohoda o provedení práce)', blurb: 'Дрібна робота до 300 годин на рік у одного роботодавця.' },
     { title: 'Трудовий договір (pracovní smlouva)', blurb: 'Стандартне працевлаштування за Трудовим кодексом Чехії.' },
@@ -196,12 +196,12 @@ const UA: LandingContent = {
   howItWorks: [
     { title: '1. Оберіть договір.', description: 'Виберіть один із 14 стандартних типів документів.' },
     { title: '2. Заповніть форму.', description: 'Введіть сторони, суми, дати та опційні пункти. Шість expat-договорів (оренда, праця, DPP, піднайм, довіреність, авто) — форма українською; інші типи документів на сайті поки лише чеською.' },
-    { title: '3. Оплатіть і завантажте.', description: 'Оплата карткою через Stripe (CZK). Завантажте чеський PDF одразу; для підтримуваних договорів можливий пояснювальний український додаток. Посилання чинне 7–30 днів.' },
+    { title: '3. Оплатіть і завантажте.', description: 'Оплата карткою через Stripe (CZK). Для підтримуваних договорів можна додати попарний PDF CZ+UA. Посилання чинне 7–30 днів.' },
     { title: '4. Підпишіть на папері.', description: 'Роздрукуйте, обидві сторони підписують, кожен залишає собі примірник. Нотаріальне засвідчення зазвичай не потрібне (виняток — нерухомість, корпоративні акти).' },
   ],
   whyHeading: 'Чому іноземці обирають SmlouvaHned',
   whyBullets: [
-    '✓ Чеський PDF із пояснювальним перекладом для підтримуваних типів договорів (переважає чеська версія).',
+    '✓ Додатковий попарний PDF CZ+UA для шести підтримуваних типів договорів (переважає чеська версія).',
     '✓ Шаблони посилаються на Цивільний та Трудовий кодекси Чехії, де це доречно.',
     '✓ У документі є посилання на відповідні параграфи законів.',
     '✓ Шифроване тимчасове сховище даних — автоматичне видалення через 7–30 днів.',
@@ -210,8 +210,8 @@ const UA: LandingContent = {
   ],
   faqHeading: 'Часті питання',
   faq: [
-    { q: 'Я не розмовляю чеською. Чи можу я користуватися SmlouvaHned?', a: 'Так для підтримуваних договорів: PDF переважно чеською, можливий пояснювальний український додаток. Інші форми поки лише чеською — скористайтеся перекладачем браузера. Переклад не є офіційним; переважає чеська версія.' },
-    { q: 'Чи дійсний договір у Чехії?', a: 'Так. Кожен шаблон побудований на відповідних положеннях Цивільного кодексу Чехії (закон № 89/2012 Sb.) або Трудового кодексу. Посилання на параграфи містяться в документі.' },
+    { q: 'Я не розмовляю чеською. Чи можу я користуватися SmlouvaHned?', a: 'Так, для шести підтримуваних договорів є форма українською та додатковий PDF CZ+UA з попарними положеннями. Інші форми поки лише чеською. Переклад не є офіційним; переважає чеська версія.' },
+    { q: 'Чи дійсний договір у Чехії?', a: 'Договір може бути дійсним, якщо виконані вимоги чеського права, сторони належно погодили зміст і дотрималися потрібної форми. Генератор не може підтвердити дійсність конкретної угоди; у нестандартних випадках зверніться до чеського адвоката.' },
     { q: 'SmlouvaHned — це адвокатська контора?', a: 'Ні. SmlouvaHned — програмний інструмент, який генерує стандартні шаблонні договори. Це не юридична консультація і не замінює адвоката.' },
     { q: 'Як працює оплата?', a: 'Після заповнення форми оберіть тариф і оплатіть карткою через Stripe. Платіж у чеських кронах (CZK).' },
     { q: 'Скільки часу доступне завантаження PDF?', a: 'Посилання дійсне 7 днів (базовий документ) або 30 днів (розширений). Ваші дані зберігаються зашифрованими лише цей період і потім автоматично видаляються.' },

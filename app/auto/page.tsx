@@ -98,6 +98,32 @@ function CarSaleBuilderContent() {
   const searchParams = useSearchParams();
   const builderLocale = useBuilderLocale();
   const ui = useMemo(() => getCarFormUi(builderLocale), [builderLocale]);
+  const productCopy = builderLocale === 'en'
+    ? {
+        packagePrice: 'Package price', standaloneHint: 'Need only the purchase agreement? Return to the standalone document for CZK 99 / 199.',
+        thematicPackage: 'Thematic package', packageTitle: 'Vehicle sale package',
+        packageIntro: 'This form offers a standalone document for CZK 99 or an extended level for CZK 199. For vehicle, keys and documents handover materials, use the CZK 299 package.',
+        guidanceIntro: 'Not sure which route fits?', guidanceLabel: 'Vehicle sale guidance', showPackage: 'View package →',
+        selectedProduct: 'Selected product', packageOutput: 'The output includes the extended vehicle purchase agreement, a handover protocol, confirmation of keys and documents, and practical transfer materials.',
+        packageQuestion: 'Do you also need to document the physical handover of the vehicle, keys and papers?', packageLink: 'View vehicle sale package', guidanceLink: 'vehicle sale guidance',
+      }
+    : builderLocale === 'ua'
+      ? {
+          packagePrice: 'Ціна пакета', standaloneHint: 'Потрібен лише договір купівлі-продажу? Поверніться до окремого документа за 99 / 199 Kč.',
+          thematicPackage: 'Тематичний пакет', packageTitle: 'Пакет для продажу транспортного засобу',
+          packageIntro: 'У цій формі доступний окремий документ за 99 Kč або розширений рівень за 199 Kč. Для документування передачі авто, ключів і документів оберіть пакет за 299 Kč.',
+          guidanceIntro: 'Не впевнені, який варіант обрати?', guidanceLabel: 'Пояснення щодо продажу авто', showPackage: 'Переглянути пакет →',
+          selectedProduct: 'Обраний продукт', packageOutput: 'Результат включає розширений договір купівлі-продажу авто, акт приймання-передачі, підтвердження передачі ключів і документів та практичні матеріали для перереєстрації.',
+          packageQuestion: 'Потрібно також оформити фізичну передачу авто, ключів і документів?', packageLink: 'Переглянути пакет для продажу авто', guidanceLink: 'пояснення щодо продажу авто',
+        }
+      : {
+          packagePrice: 'Cena balíčku', standaloneHint: 'Řešíte jen samotnou kupní smlouvu? Vraťte se na samostatný dokument 99 / 199 Kč.',
+          thematicPackage: 'Tematický balíček', packageTitle: 'Balíček pro prodej vozidla',
+          packageIntro: 'V tomto formuláři volíte mezi samostatným dokumentem za 99 Kč a širší variantou za 199 Kč. Pokud chcete řešit i předání vozidla, klíčů a dokladů, pokračujte tematickým balíčkem za 299 Kč.',
+          guidanceIntro: 'Pokud si nejste jistí, kterou cestu zvolit, pomůže vám orientační stránka', guidanceLabel: 'Podklady pro prodej vozidla', showPackage: 'Zobrazit balíček →',
+          selectedProduct: 'Zvolený produkt', packageOutput: 'Součástí výstupu bude kupní smlouva na vozidlo v komplexní variantě, předávací protokol, potvrzení o převzetí vozidla, klíčů a dokladů a praktické podklady k převodu.',
+          packageQuestion: 'Řešíte vedle samotné smlouvy i fyzické předání vozidla, klíčů a dokladů?', packageLink: 'Zobrazit Balíček pro prodej vozidla', guidanceLink: 'podklady pro prodej vozidla',
+        };
   const fl = (k: string, cs: string) => ui.fields[k] ?? cs;
   const sec = (k: string, title: string, subtitle?: string) => {
     const s = ui.sections[k];
@@ -484,7 +510,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/4 px-5 py-4">
                 <div className="text-xs uppercase tracking-[0.18em] text-slate-500">
-                  Cena balíčku
+                  {productCopy.packagePrice}
                 </div>
                 <div className="mt-2 text-3xl font-black tracking-tight text-white">
                   {packageConfig.priceLabel}
@@ -493,7 +519,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   href="/auto"
                   className="mt-3 inline-block text-xs leading-relaxed text-[#cbbba0] transition hover:text-white"
                 >
-                  Řešíte jen samotnou kupní smlouvu? Vraťte se na samostatný dokument 99 / 199 Kč.
+                  {productCopy.standaloneHint}
                 </Link>
               </div>
             </div>
@@ -506,26 +532,26 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
             className="interactive-card block rounded-[1.75rem] border border-[rgba(197,160,89,0.18)] bg-[rgba(255,255,255,0.035)] p-6 no-underline"
           >
             <div className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-400">
-              Tematický balíček
+              {productCopy.thematicPackage}
             </div>
             <div className="mt-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
               <div className="max-w-3xl">
                 <h2 className="text-2xl font-semibold tracking-tight text-white">
-                  Balíček pro prodej vozidla
+                  {productCopy.packageTitle}
                 </h2>
                 <p className="mt-3 text-sm leading-relaxed text-slate-300">
-                  V tomto formuláři volíte mezi samostatným dokumentem za 99 Kč a širší variantou za 199 Kč. Pokud chcete řešit i předání vozidla, klíčů a dokladů, pokračujte tematickým balíčkem za 299 Kč.
+                  {productCopy.packageIntro}
                 </p>
                 <p className="mt-3 text-xs leading-6 text-[#bba98c]">
-                  Pokud si nejste jistí, kterou cestu zvolit, pomůže vám orientační stránka{' '}
+                  {productCopy.guidanceIntro}{' '}
                   <Link href="/prodej-vozidla" className="link-gold-elegant">
-                    Podklady pro prodej vozidla
+                    {productCopy.guidanceLabel}
                   </Link>
                   .
                 </p>
               </div>
               <span className="link-gold-elegant text-sm font-semibold">
-                Zobrazit balíček →
+                {productCopy.showPackage}
               </span>
             </div>
           </Link>
@@ -897,14 +923,14 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   name="keysCount"
                   value={formData.keysCount}
                   onChange={handleChange}
-                  placeholder="Počet klíčů"
+                  placeholder={fl('keysCount', 'Počet klíčů')}
                   className={inputClass}
                 />
                 <input
                   name="tiresInfo"
                   value={formData.tiresInfo}
                   onChange={handleChange}
-                  placeholder="Pneumatiky / kola"
+                  placeholder={fl('tiresInfo', 'Pneumatiky / kola')}
                   className={inputClass}
                 />
               </div>
@@ -914,7 +940,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   name="knownDefects"
                   value={formData.knownDefects}
                   onChange={handleChange}
-                  placeholder="Popiš všechny známé vady: lak, koroze, motor, převodovka, podvozek, elektronika, klima, interiér..."
+                  placeholder={fl('knownDefects', 'Popište všechny známé vady: lak, koroze, motor, převodovka, podvozek, elektronika, klimatizace, interiér…')}
                   className={textareaClass}
                 />
               </div>
@@ -924,7 +950,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   name="documentsIncluded"
                   value={formData.documentsIncluded}
                   onChange={handleChange}
-                  placeholder="Předané doklady"
+                  placeholder={fl('documentsIncluded', 'Předané doklady')}
                   className={textareaClass}
                 />
               </div>
@@ -933,7 +959,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 name="equipmentIncluded"
                 value={formData.equipmentIncluded}
                 onChange={handleChange}
-                placeholder="Předané příslušenství a výbava: sada kol, rezervní klíč, střešní nosič, rádio, zimní pneu..."
+                placeholder={fl('equipmentIncluded', 'Předané příslušenství a výbava: sada kol, rezervní klíč, střešní nosič, rádio, zimní pneumatiky…')}
                 className={textareaClass}
               />
             </section>
@@ -949,64 +975,64 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   name="serviceHistory"
                   checked={formData.serviceHistory}
                   label={fl('serviceHistory', 'Servisní historie k dispozici')}
-                  hint="Ve smlouvě se uvede, že je servisní historie nebo knížka předána."
+                  hint={fl('serviceHistoryHint', 'Ve smlouvě se uvede, že je servisní historie nebo knížka předána.')}
                 />
                 <ToggleCard
                   name="accidentHistory"
                   checked={formData.accidentHistory}
                   label={fl('accidentHistory', 'Vozidlo bylo havarováno')}
-                  hint="Pokud ano, je lepší to přiznat výslovně a přesně."
+                  hint={fl('accidentHistoryHint', 'Pokud ano, uveďte to výslovně a přesně.')}
                   danger={formData.accidentHistory}
                 />
                 <ToggleCard
                   name="strictWarranties"
                   checked={formData.strictWarranties}
                   label={fl('strictWarranties', 'Přísnější právní prohlášení')}
-                  hint="Doporučená volba. Posiluje text o vadách, právních omezeních a stavu vozidla."
+                  hint={fl('strictWarrantiesHint', 'Doporučená volba. Posiluje text o vadách, právních omezeních a stavu vozidla.')}
                 />
                 <ToggleCard
                   name="odometerGuaranteed"
                   checked={formData.odometerGuaranteed}
                   label={fl('odometerGuaranteed', 'Garantovat stav tachometru')}
-                  hint="Silnější ochrana kupujícího, ale jen pokud si jsi tím jistý."
+                  hint={fl('odometerGuaranteedHint', 'Silnější ochrana kupujícího; zvolte jen tehdy, pokud lze údaj doložit.')}
                 />
                 <ToggleCard
                   name="buyerInspectedVehicle"
                   checked={formData.buyerInspectedVehicle}
                   label={fl('buyerInspectedVehicle', 'Kupující vozidlo prohlédl')}
-                  hint="Doporučená volba. Snižuje prostor pro pozdější námitky."
+                  hint={fl('buyerInspectedVehicleHint', 'Doporučená volba. Zachycuje možnost prohlídky a omezuje pozdější skutkové spory.')}
                 />
                 <ToggleCard
                   name="testDriveCompleted"
                   checked={formData.testDriveCompleted}
                   label={fl('testDriveCompleted', 'Proběhla zkušební jízda')}
-                  hint="Zkušební jízda proběhla před podpisem smlouvy. Uvede se v sekci prohlídky."
+                  hint={fl('testDriveCompletedHint', 'Zachycuje, že zkušební jízda proběhla před podpisem smlouvy.')}
                 />
                 <ToggleCard
                   name="mechanicInspectionOffered"
                   checked={formData.mechanicInspectionOffered}
                   label={fl('mechanicInspectionOffered', 'Kupující měl možnost prověřit vozidlo mechanikem')}
-                  hint="Prodávající umožnil nezávislou technickou prohlídku. Posiluje postavení při případném sporu o vady."
+                  hint={fl('mechanicInspectionOfferedHint', 'Zachycuje, že prodávající umožnil nezávislou technickou prohlídku.')}
                 />
                 <ToggleCard
                   name="isPledged"
                   checked={formData.isPledged}
                   label={fl('isPledged', 'Na vozidle vázne zástava')}
-                  hint="Musí být výslovně uvedeno."
+                  hint={fl('isPledgedHint', 'Každé zástavní nebo zajišťovací právo musí být výslovně uvedeno.')}
                   danger={formData.isPledged}
                 />
                 <ToggleCard
                   name="isInLeasing"
                   checked={formData.isInLeasing}
                   label={fl('isInLeasing', 'Vozidlo je v leasingu / financování')}
-                  hint="Zásadní právní informace."
+                  hint={fl('isInLeasingHint', 'Zásadní právní informace, která musí být uvedena.')}
                   danger={formData.isInLeasing}
                 />
                 <ToggleCard
                   name="hasThirdPartyRights"
                   checked={formData.hasThirdPartyRights}
                   label={fl('hasThirdPartyRights', 'Existují práva třetích osob')}
-                  hint="Např. společné vlastnictví, zajištění, omezení."
+                  hint={fl('hasThirdPartyRightsHint', 'Například společné vlastnictví, zajištění nebo jiné omezení.')}
                   danger={formData.hasThirdPartyRights}
                 />
               </div>
@@ -1057,11 +1083,11 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <div className="text-[11px] font-black uppercase tracking-[0.22em] text-slate-400">
-                      Stav vyplnění
+                      {fl('completionTitle', 'Stav vyplnění')}
                     </div>
                     <div className="mt-2 text-3xl font-black text-white">{completion}%</div>
                     <div className="mt-1 text-sm text-slate-400">
-                      Každý vyplněný údaj se okamžitě promítá do systému.
+                      {fl('completionHint', 'Každý vyplněný údaj se okamžitě promítá do dokumentu.')}
                     </div>
                   </div>
                   <div
@@ -1073,7 +1099,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                           : 'bg-rose-500/10 text-rose-300 border border-rose-500/20'
                     }`}
                   >
-                    {completion >= 85 ? 'Skoro hotovo' : completion >= 60 ? 'Dobré' : 'Doplň údaje'}
+                    {completion >= 85 ? fl('completionAlmost', 'Skoro hotovo') : completion >= 60 ? fl('completionGood', 'Dobré') : fl('completionMissing', 'Doplňte údaje')}
                   </div>
                 </div>
 
@@ -1091,7 +1117,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 <div className="flex justify-between items-start gap-4 mb-4">
                   <div>
                     <h3 className="font-black text-white text-sm uppercase tracking-[0.18em]">
-                      Analýza smlouvy
+                      {ui.form.analysisTitle}
                     </h3>
                     <p className="text-sm text-slate-400 mt-1">{riskAnalysis.label}</p>
                   </div>
@@ -1126,7 +1152,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     ))
                   ) : (
                     <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-sm text-emerald-200">
-                      Smlouva je nastavena velmi dobře a obsahuje silná právní prohlášení.
+                      {fl('analysisHealthy', 'Pro zvolené nastavení nejsou aktuální riziková upozornění. Před platbou a podpisem zkontrolujte všechny údaje.')}
                     </div>
                   )}
                 </div>
@@ -1136,10 +1162,10 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 <div className="absolute top-0 left-0 w-full h-1.5 bg-amber-500" />
                 <div className="mb-3">
                   <div className="text-[10px] font-black uppercase tracking-[0.24em] text-slate-400">
-                    Náhled výstupu
+                    {fl('outputPreview', 'Náhled českého znění')}
                   </div>
                   <div className="mt-1 text-xs text-slate-500">
-                    Každý klik i každé písmeno se okamžitě propíše sem.
+                    {fl('outputPreviewHint', 'Primární české znění se aktualizuje při vyplňování formuláře.')}
                   </div>
                 </div>
 
@@ -1152,10 +1178,10 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
               <div className={cardClass}>
                 <div className="mb-3">
                   <div className="text-[11px] font-black uppercase tracking-[0.22em] text-slate-400">
-                    Předávací protokol
+                    {fl('handoverProtocol', 'Předávací protokol')}
                   </div>
                   <div className="mt-1 text-sm text-slate-400">
-                    Automaticky generovaná příloha ke smlouvě.
+                    {fl('handoverProtocolHint', 'Automaticky generovaná česká příloha ke smlouvě.')}
                   </div>
                 </div>
 
@@ -1186,18 +1212,19 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 {packageConfig ? (
                   <div className="rounded-2xl border border-amber-500/20 bg-amber-500/8 p-5">
                     <div className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-400">
-                      Zvolený produkt
+                      {productCopy.selectedProduct}
                     </div>
                     <div className="mt-2 text-lg font-semibold text-white">
                       {packageConfig.title}
                     </div>
                     <p className="mt-2 text-sm leading-relaxed text-slate-300">
-                      Součástí výstupu bude kupní smlouva na vozidlo v komplexní variantě, předávací protokol, potvrzení o převzetí vozidla, klíčů a dokladů a praktické podklady k převodu.
+                      {productCopy.packageOutput}
                     </p>
                   </div>
                 ) : (
                   <BuilderTierSelector
                     contractType="car_sale"
+                    locale={builderLocale}
                     tier={formData.tier}
                     onTierChange={(tier) =>
                       setFormData((prev) => ({ ...prev, tier, notaryUpsell: tier !== 'basic' }))
@@ -1207,13 +1234,13 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
 
                 {!packageConfig ? (
                   <p className="mt-4 text-xs leading-relaxed text-[#b9c1d0]">
-                    Řešíte vedle samotné smlouvy i fyzické předání vozidla, klíčů a dokladů?{' '}
+                    {productCopy.packageQuestion}{' '}
                     <Link href="/balicek-prodej-vozidla" className="link-gold-elegant">
-                      Zobrazit Balíček pro prodej vozidla
+                      {productCopy.packageLink}
                     </Link>
                     . Pokud si chcete nejprve ujasnit, která cesta je pro vás vhodná, otevřete{' '}
                     <Link href="/prodej-vozidla" className="link-gold-elegant">
-                      podklady pro prodej vozidla
+                      {productCopy.guidanceLink}
                     </Link>
                     .
                   </p>
@@ -1224,6 +1251,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
               <div className={cardClass}>
                 <BuilderCheckoutSummary
                   contractType="car_sale"
+                  locale={builderLocale}
                   tier={formData.tier}
                   packageKey={packageConfig?.key ?? null}
                   documentLabel={ui.form.documentLabel}
@@ -1236,7 +1264,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   onClick={() => setShowPreviewModal(true)}
                   className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >
-                  Vygenerovat smlouvu →
+                  {ui.form.generate}
                 </button>
 
                 <p className="mt-3 text-center text-[11px] text-slate-500">

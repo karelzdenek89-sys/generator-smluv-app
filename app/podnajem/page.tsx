@@ -247,7 +247,7 @@ export default function PodnajemuPage() {
                 <div className="grid sm:grid-cols-3 gap-4">
                   <Field label={fl('flatLayout', 'Dispozice')}><input name="flatLayout" value={form.flatLayout} onChange={handleChange} placeholder="2+1" className={inputClass} /></Field>
                   <Field label={fl('flatUnitNumber', 'Číslo jednotky')}><input name="flatUnitNumber" value={form.flatUnitNumber} onChange={handleChange} placeholder="10/3" className={inputClass} /></Field>
-                  <Field label="Podlaží"><input name="floor" value={form.floor} onChange={handleChange} placeholder="3. patro" className={inputClass} /></Field>
+                  <Field label={fl('floor', 'Podlaží')}><input name="floor" value={form.floor} onChange={handleChange} placeholder={fl('floor_placeholder', '3. patro')} className={inputClass} /></Field>
                 </div>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Field label={fl('cadastralArea', 'Katastrální území')}><input name="cadastralArea" value={form.cadastralArea} onChange={handleChange} placeholder="Nové Město" className={inputClass} /></Field>
@@ -274,7 +274,7 @@ export default function PodnajemuPage() {
                 )}
                 {form.landlordConsent === 'no' && (
                   <div className="rounded-xl bg-rose-500/10 border border-rose-500/30 px-4 py-3 text-sm text-rose-300">
-                    ⚠ Podnájem bez souhlasu pronajímatele je porušením hlavní nájemní smlouvy a může vést k výpovědi nebo soudnímu sporu. Doporučujeme souhlas zajistit předem.
+                    ⚠ {fl('consentWarning', 'Podnájem bez potřebného souhlasu pronajímatele může porušovat hlavní nájemní smlouvu a vést k výpovědi nebo sporu. Doporučujeme souhlas zajistit předem.')}
                   </div>
                 )}
               </div>
@@ -286,7 +286,7 @@ export default function PodnajemuPage() {
               <div className="space-y-4">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Field label={fl('durationType', 'Typ doby')}>
-                    <select aria-label="Doba určitá" name="duration" value={form.duration} onChange={handleChange} className={inputClass}>
+                    <select aria-label={fl('durationType', 'Typ doby')} name="duration" value={form.duration} onChange={handleChange} className={inputClass}>
                       <option value="fixed">{fl('duration_fixed', 'Doba určitá')}</option>
                       <option value="indefinite">{fl('duration_indefinite', 'Doba neurčitá')}</option>
                     </select>
@@ -315,7 +315,7 @@ export default function PodnajemuPage() {
               </div>
               {form.tier === 'complete' && (
                 <div className="mt-4 pt-4 border-t border-slate-800/60">
-                  <div className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">Smluvní pokuty (Rozšířený dokument)</div>
+                  <div className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">{fl('penaltiesHeading', 'Smluvní pokuty (Rozšířený dokument)')}</div>
                   <div className="grid sm:grid-cols-3 gap-4">
                     <Field label={fl('minLatePenalty', 'Min. pokuta za den prodlení (Kč)')}><input name="minLatePenalty" type="number" value={form.minLatePenalty} onChange={handleChange} placeholder="200" className={inputClass} /></Field>
                     <Field label={fl('breachPenalty', 'Pokuta za porušení podmínek (Kč)')}><input name="breachPenalty" type="number" value={form.breachPenalty} onChange={handleChange} placeholder="20 000" className={inputClass} /></Field>
@@ -325,7 +325,7 @@ export default function PodnajemuPage() {
               )}
               {form.rentAmount && (
                 <div className="mt-4 rounded-2xl bg-amber-500/5 border border-amber-500/20 px-4 py-3 text-sm text-amber-300">
-                  Celkem měsíčně: <strong>{(Number(form.rentAmount) + Number(form.utilityAmount || 0)).toLocaleString('cs-CZ')} Kč</strong>
+                  {fl('monthlyTotal', 'Celkem měsíčně')}: <strong>{(Number(form.rentAmount) + Number(form.utilityAmount || 0)).toLocaleString(builderLocale === 'en' ? 'en-GB' : builderLocale === 'ua' ? 'uk-UA' : 'cs-CZ')} Kč</strong>
                 </div>
               )}
             </section>
@@ -338,9 +338,9 @@ export default function PodnajemuPage() {
                 <Field label={fl('keysCount', 'Počet klíčů předaných podnájemci')}><input name="keysCount" type="number" min="1" value={form.keysCount} onChange={handleChange} placeholder="2" className={inputClass} /></Field>
               </div>
               <div className="space-y-3">
-                <Toggle name="allowPets" checked={form.allowPets} onChange={handleChange} label={fl('allowPets', 'Zvířata povolena')} hint="Povoluje chov domácích zvířat v bytě." />
-                <Toggle name="allowSmoking" checked={form.allowSmoking} onChange={handleChange} label={fl('allowSmoking', 'Kouření povoleno')} hint="Podnájemce smí kouřit v prostorách bytu." />
-                <Toggle name="allowAirbnb" checked={form.allowAirbnb} onChange={handleChange} label={fl('allowAirbnb', 'Krátkodobý pronájem (Airbnb) povolen')} hint="Podnájemce smí dále podnajímat byt třetím osobám. Vyžaduje souhlas vlastníka." />
+                <Toggle name="allowPets" checked={form.allowPets} onChange={handleChange} label={fl('allowPets', 'Zvířata povolena')} hint={fl('allowPetsHint', 'Povoluje chov domácích zvířat v bytě v mezích zákona.')} />
+                <Toggle name="allowSmoking" checked={form.allowSmoking} onChange={handleChange} label={fl('allowSmoking', 'Kouření povoleno')} hint={fl('allowSmokingHint', 'Podnájemce smí kouřit v prostorách bytu.')} />
+                <Toggle name="allowAirbnb" checked={form.allowAirbnb} onChange={handleChange} label={fl('allowAirbnb', 'Krátkodobý pronájem (Airbnb) povolen')} hint={fl('allowAirbnbHint', 'Podnájemce smí přenechat byt třetím osobám; může být vyžadován souhlas vlastníka.')} />
               </div>
             </section>
 
@@ -348,8 +348,8 @@ export default function PodnajemuPage() {
             <section className={cardClass}>
               <SectionTitle index="08" title={sec('s08', 'Předávací protokol').title} subtitle={sec('s08', 'Předávací protokol', 'Stav bytu a vybavení při předání. Chrání obě strany při vrácení kauce.').subtitle} />
               <div className="space-y-4">
-                <Field label={fl('equipmentList', 'Vybavení bytu (výčet)')}><textarea name="equipmentList" value={form.equipmentList} onChange={handleChange} placeholder="Sporák, lednice, pračka, stůl, 2× židle…" className={textareaClass} /></Field>
-                <Field label={fl('knownDefects', 'Známé závady při předání')}><textarea name="knownDefects" value={form.knownDefects} onChange={handleChange} placeholder="Poškrábaná podlaha v ložnici, chybějící klika u okna v kuchyni…" className={textareaClass} /></Field>
+                <Field label={fl('equipmentList', 'Vybavení bytu (výčet)')}><textarea name="equipmentList" value={form.equipmentList} onChange={handleChange} placeholder={fl('equipmentList_placeholder', 'Sporák, lednice, pračka, stůl, 2× židle…')} className={textareaClass} /></Field>
+                <Field label={fl('knownDefects', 'Známé závady při předání')}><textarea name="knownDefects" value={form.knownDefects} onChange={handleChange} placeholder={fl('knownDefects_placeholder', 'Poškrábaná podlaha v ložnici, chybějící klika u okna v kuchyni…')} className={textareaClass} /></Field>
               </div>
             </section>
 
@@ -371,6 +371,7 @@ export default function PodnajemuPage() {
               <SectionTitle index="09" title={sec('s09', 'Vyberte úroveň zpracování dokumentu').title} subtitle={sec('s09', 'Vyberte úroveň zpracování dokumentu', 'Zvolte variantu, která odpovídá vaší situaci a požadovanému rozsahu dokumentu.').subtitle} />
               <BuilderTierSelector
                 contractType="sublease"
+                locale={builderLocale}
                 tier={form.tier}
                 onTierChange={(tier) => setForm((prev) => ({ ...prev, tier }))}
               />
@@ -409,6 +410,7 @@ export default function PodnajemuPage() {
             <div className={cardClass}>
               <BuilderCheckoutSummary
                 contractType="sublease"
+                locale={builderLocale}
                 tier={form.tier}
                 documentLabel={ui.form.documentLabel}
                 onUpgrade={() => setForm((prev) => ({ ...prev, tier: 'complete' }))}

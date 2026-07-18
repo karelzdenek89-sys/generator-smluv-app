@@ -99,7 +99,8 @@ test.describe('EN lease expat smoke', () => {
     expect(page.url()).toBe('http://127.0.0.1:3000/najem');
 
     await expect(page.getByRole('heading', { name: 'Rental Agreement' }).first()).toBeVisible();
-    await expect(page.getByText('Your contract will be generated primarily in Czech').first()).toBeVisible();
+    await expect(page).toHaveTitle('Rental Agreement | SmlouvaHned');
+    await expect(page.getByText('The Czech wording of your contract is authoritative').first()).toBeVisible();
     await expect(page.getByText('not certified or official').first()).toBeVisible();
     await expect(page.getByText('Czech wording prevails').first()).toBeVisible();
     await expect(page.getByText('Fill in the document details')).toBeVisible();
@@ -119,6 +120,8 @@ test.describe('EN lease expat smoke', () => {
       expect(modalText.toLowerCase()).not.toContain(bullet);
     }
 
+    await modal.getByRole('button', { name: /Czech-English rental agreement PDF/i }).click();
+
     await page.getByTestId('lease-checkout-consent').check();
     const checkoutRequest = page.waitForRequest(
       (req) => req.url().includes('/api/checkout') && req.method() === 'POST',
@@ -129,6 +132,7 @@ test.describe('EN lease expat smoke', () => {
     expect(checkoutBody).not.toBeNull();
     expect(checkoutBody!.lang).toBe('en');
     expect(checkoutBody!.contractType).toBe('lease');
+    expect(checkoutBody!.addOns).toContain('bilingual_contract');
     expect(['basic', 'complete']).toContain(checkoutBody!.tier);
     expect(checkoutBody!.payload).toBeTruthy();
     const payload = checkoutBody!.payload as Record<string, unknown>;
@@ -150,7 +154,19 @@ test.describe('EN lease expat smoke', () => {
     expect(page.url()).toBe('http://127.0.0.1:3000/najem');
     await expect(page.getByTestId('lease-landlord-name')).toBeVisible();
     await expect(page.getByText('Fill in the document details')).toBeVisible();
-    await expect(page.getByText('Your contract will be generated primarily in Czech').first()).toBeVisible();
+    await expect(page.getByText('The Czech wording of your contract is authoritative').first()).toBeVisible();
+  });
+
+  test('revisiting the same EN selector after UA refreshes the locale', async ({ page }) => {
+    await page.goto('/najem?lang=en&switch_test=repeat');
+    await expect(page.getByText('Fill in the document details')).toBeVisible();
+
+    await page.goto('/najem?lang=ua&switch_test=other');
+    await expect(page.getByTestId('lease-landlord-name')).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Договір оренди/i }).first()).toBeVisible();
+
+    await page.goto('/najem?lang=en&switch_test=repeat');
+    await expect(page.getByText('Fill in the document details')).toBeVisible();
   });
 
   test('retired locale routes redirect to active hubs', async ({ page, context }) => {
@@ -175,6 +191,6 @@ test.describe('EN lease expat smoke', () => {
     await expect(
       page.getByRole('main').getByText(/currently available in Czech only/i),
     ).toBeVisible();
-    await expect(page.getByText(/bilingual/i)).toHaveCount(0);
+    await expect(page.getByRole('main').getByText(/bilingual/i)).toHaveCount(0);
   });
 });

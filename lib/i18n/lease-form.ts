@@ -691,7 +691,7 @@ export const LEASE_FORM_EN: LeaseFormUi = {
     expatDeliverablesTitle: 'After payment you receive',
     expatDeliverables: [
       'Czech rental agreement PDF (primary Czech wording)',
-      'Explanatory English translation annex',
+      'Optional Czech-English version with every clause paired in one document (+199 CZK)',
       'Handover protocol annex (Czech)',
       'Signing guide and checklist (Complete tier, Czech)',
     ],

@@ -49,6 +49,8 @@ next-env.d.ts
 # Generated PDF samples + audit artifacts
 /sample-pdfs/
 /tmp/
+/output/
+/pre-deploy-audit.log
 
 # One-off local refactor scripts
 scripts/apply-*.mjs

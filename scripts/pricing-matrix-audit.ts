@@ -3,7 +3,7 @@
  */
 import assert from 'node:assert/strict';
 import { getStripePriceIdForCheckout, normalizeThematicPackageKeyForContract } from '../lib/packages';
-import { getTierPriceCzk, normalizePricingTier } from '../lib/pricing';
+import { normalizePricingTier } from '../lib/pricing';
 import {
   getAvailableCheckoutAddons,
   getCheckoutAddonsTotalCzk,
@@ -57,7 +57,8 @@ function testAddonMatrix() {
   assert.ok(packageLease.includes('extended_archive'), '90d archive upsell stays available on 30d packages');
 
   const enLease = getAvailableCheckoutAddons('lease', 'basic', null, 'en').map((a) => a.key);
-  assert.ok(enLease.includes('bilingual_annex'));
+  assert.ok(enLease.includes('bilingual_contract'));
+  assert.ok(!enLease.includes('bilingual_annex'));
 
   assert.deepEqual(
     normalizeCheckoutAddons(['handover_protocol', 'docx'], 'gift', 'basic', null, 'cs'),

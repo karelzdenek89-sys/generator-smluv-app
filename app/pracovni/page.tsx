@@ -299,9 +299,10 @@ export default function PracovniPage() {
 
                 {/* === VÝBĚR BALÍČKU === */}
                 <div className="mt-6">
-                  <BuilderTierSelector
-                    contractType="employment"
-                    tier={form.tier}
+              <BuilderTierSelector
+                contractType="employment"
+                locale={builderLocale}
+                tier={form.tier}
                     onTierChange={(tier) =>
                       setForm((prev) => ({ ...prev, tier, notaryUpsell: tier !== 'basic' }))
                     }
@@ -363,6 +364,7 @@ export default function PracovniPage() {
             <div className={cardClass}>
               <BuilderCheckoutSummary
                 contractType="employment"
+                locale={builderLocale}
                 tier={form.tier}
                 documentLabel={ui.form.documentLabel}
                 onUpgrade={() => setForm((prev) => ({ ...prev, tier: 'complete', notaryUpsell: true }))}

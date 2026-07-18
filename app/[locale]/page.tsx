@@ -43,11 +43,11 @@ const pageCopy: Record<Exclude<AppLocale, 'cs'>, {
     eyebrow: 'Contracts for foreigners in the Czech Republic',
     title: 'SmlouvaHned for expats',
     subtitle:
-      'Create core Czech contracts with English form guidance. The Czech wording remains primary; selected core contracts may include an explanatory English translation in the PDF (not certified or official).',
+      'Create six core Czech contracts with English form guidance. For each supported contract, you can add a Czech-English PDF with every clause paired in one document. The translation is not certified or official.',
     coreHeading: 'Most used contracts for foreigners in the Czech Republic',
     coreSub: 'Housing, work, representation and buying a car are covered first. Other documents stay available in Czech.',
     otherHeading: 'Other Czech documents available',
-    supportedBadge: 'English-guided form · Czech contract PDF',
+    supportedBadge: 'English-guided form · optional paired CZ+EN PDF',
     czechBadge: 'Available in Czech',
     cta: 'Open form',
   },
@@ -55,11 +55,11 @@ const pageCopy: Record<Exclude<AppLocale, 'cs'>, {
     eyebrow: 'Документи для іноземців у Чехії',
     title: 'SmlouvaHned для іноземців',
     subtitle:
-      'Основні чеські договори з підказками українською. Чеське формулювання залишається основним; для оренди — пояснювальний український додаток у PDF (не офіційний).',
+      'Створіть шість основних чеських договорів із підказками українською. Для кожного підтримуваного договору можна додати PDF CZ+UA, у якому чеські та українські положення попарно розміщені в одному документі. Переклад не є офіційним.',
     coreHeading: 'Найпотрібніші договори для іноземців у Чехії',
     coreSub: 'Житло, робота, довіреність і купівля авто — на першому місці.',
     otherHeading: 'Інші документи лише чеською',
-    supportedBadge: 'Форма українською · PDF чеською',
+    supportedBadge: 'Форма українською · додатковий попарний PDF CZ+UA',
     czechBadge: 'Доступно чеською',
     cta: 'Відкрити форму',
     learnMore: 'Детальніше',
@@ -225,7 +225,9 @@ export default async function LocaleLandingPage({ params }: LocalePageProps) {
 
       <section className="mx-auto max-w-7xl px-6 pb-12 md:px-10">
         <div className="mb-8">
-          <p className="site-kicker mb-2">Foreigner / Expat Pack</p>
+          <p className="site-kicker mb-2">
+            {locale === 'ua' ? 'Пакет для іноземців' : 'Foreigner / Expat Pack'}
+          </p>
           <h2 className="font-serif italic text-4xl font-bold text-white">{copy.coreHeading}</h2>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">{copy.coreSub}</p>
         </div>

@@ -31,7 +31,7 @@ async function run() {
       total++;
     }
     for (const loc of FOREIGN_LOCALES) {
-      const pdf = await renderContractPdf({ ...data, lang: loc });
+      const pdf = await renderContractPdf({ ...data, lang: loc, addOns: ['bilingual_contract'] });
       await writeFile(path.join(OUT_DIR, `${contract}-${loc}.pdf`), pdf);
       console.log(`✓ ${contract.padEnd(20)} ${loc}  ${(pdf.length / 1024).toFixed(0).padStart(4)} kB`);
       total++;

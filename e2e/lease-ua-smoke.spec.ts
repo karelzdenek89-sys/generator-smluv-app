@@ -97,8 +97,9 @@ test.describe('UA lease expat smoke', () => {
     expect(page.url()).toBe('http://127.0.0.1:3000/najem');
 
     await expect(page.getByRole('heading', { name: /Договір оренди/i }).first()).toBeVisible();
+    await expect(page).toHaveTitle('Договір оренди | SmlouvaHned');
     await expect(
-      page.getByText('Договір буде сформовано насамперед чеською мовою').first(),
+      page.getByText('Визначальним є чеське формулювання договору').first(),
     ).toBeVisible();
     await expect(page.getByText('не є засвідченим чи офіційним').first()).toBeVisible();
     await expect(page.getByText('Заповніть дані документа')).toBeVisible();
@@ -118,6 +119,8 @@ test.describe('UA lease expat smoke', () => {
       expect(modalText.toLowerCase()).not.toContain(bullet);
     }
 
+    await modal.getByRole('button', { name: /Чесько-український договір оренди PDF/i }).click();
+
     await page.getByTestId('lease-checkout-consent').check();
     const checkoutRequest = page.waitForRequest(
       (req) => req.url().includes('/api/checkout') && req.method() === 'POST',
@@ -128,6 +131,7 @@ test.describe('UA lease expat smoke', () => {
     expect(checkoutBody).not.toBeNull();
     expect(checkoutBody!.lang).toBe('ua');
     expect(checkoutBody!.contractType).toBe('lease');
+    expect(checkoutBody!.addOns).toContain('bilingual_contract');
     expect(['basic', 'complete']).toContain(checkoutBody!.tier);
     const payload = checkoutBody!.payload as Record<string, unknown>;
     expect(payload.lang).toBe('ua');
@@ -148,7 +152,7 @@ test.describe('UA lease expat smoke', () => {
     await expect(page.getByTestId('lease-landlord-name')).toBeVisible();
     await expect(page.getByText('Заповніть дані документа')).toBeVisible();
     await expect(
-      page.getByText('Договір буде сформовано насамперед чеською мовою').first(),
+      page.getByText('Визначальним є чеське формулювання договору').first(),
     ).toBeVisible();
   });
 

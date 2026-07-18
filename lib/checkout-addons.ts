@@ -7,6 +7,8 @@ export type CheckoutAddonKey =
   | 'signing_checklist'
   | 'handover_protocol'
   | 'extended_archive'
+  | 'bilingual_contract'
+  | 'bilingual_lease'
   | 'bilingual_annex';
 
 export type CheckoutAddonConfig = {
@@ -30,6 +32,8 @@ const BILINGUAL_ANNEX_CONTRACTS: readonly ContractType[] = [
   'sublease',
   'power_of_attorney',
 ];
+
+const BILINGUAL_CONTRACTS = BILINGUAL_ANNEX_CONTRACTS;
 
 export const CHECKOUT_ADDON_CONFIG: Record<CheckoutAddonKey, CheckoutAddonConfig> = {
   docx: {
@@ -65,6 +69,30 @@ export const CHECKOUT_ADDON_CONFIG: Record<CheckoutAddonKey, CheckoutAddonConfig
     priceLabel: '+39 Kč',
     description: 'Odkaz ke stažení zůstane dostupný 90 dní od zaplacení.',
     includedItem: 'Archiv a dostupnost odkazu ke stažení 90 dní',
+  },
+  bilingual_contract: {
+    key: 'bilingual_contract',
+    title: 'Dvojjazyčná smlouva PDF',
+    priceCzk: 199,
+    priceLabel: '+199 Kč',
+    description:
+      'České a anglické nebo ukrajinské znění je spárované odstavec po odstavci v jednom PDF. Při rozporu má přednost české znění.',
+    includedItem: 'Dvojjazyčná smlouva PDF CZ+EN nebo CZ+UA',
+    contracts: BILINGUAL_CONTRACTS,
+    localeMode: 'foreign',
+  },
+  // Compatibility for locally generated lease orders created before the
+  // generic bilingual_contract add-on was introduced.
+  bilingual_lease: {
+    key: 'bilingual_lease',
+    title: 'Dvojjazyčná nájemní smlouva PDF',
+    priceCzk: 199,
+    priceLabel: '+199 Kč',
+    description:
+      'České a anglické nebo ukrajinské znění je spárované článek po článku v jednom PDF. Při rozporu má přednost české znění.',
+    includedItem: 'Dvojjazyčná nájemní smlouva PDF CZ+EN nebo CZ+UA',
+    contracts: ['lease'],
+    localeMode: 'foreign',
   },
   bilingual_annex: {
     key: 'bilingual_annex',
@@ -122,6 +150,10 @@ export function getAvailableCheckoutAddons(
     if (addon.localeMode === 'foreign' && normalizedLocale === 'cs') return false;
     if (addon.unavailableWhenComplete && (tier === 'complete' || isPackage)) return false;
     if (addon.key === 'handover_protocol' && isPackage) return false;
+    // New purchases use bilingual_contract. Keep the old keys in the stored
+    // registry so previously paid documents can still be generated.
+    if (addon.key === 'bilingual_lease') return false;
+    if (addon.key === 'bilingual_annex' && BILINGUAL_CONTRACTS.includes(normalizedContract)) return false;
     if (addon.key === 'extended_archive' && archiveDays >= 90) return false;
     return true;
   });

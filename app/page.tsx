@@ -21,12 +21,12 @@ for (const l of FOREIGN_LOCALES) {
 export const metadata: Metadata = {
   title: { absolute: 'Generování smluv online 2026 — PDF ihned ke stažení | SmlouvaHned' },
   description:
-    '14 typů smluv online dle OZ 2026 — nájemní, kupní, pracovní, NDA a další. Vyplníte formulář, PDF s citacemi § stahujete ihned. Od 99 Kč.',
+    '14 typů smluv online — nájemní, kupní, pracovní, NDA a další. Vyplníte formulář, PDF s odkazy na relevantní ustanovení stahujete ihned. Od 99 Kč.',
   alternates: { canonical: HOMEPAGE_BASE_URL, languages: homepageLanguageAlternates },
   openGraph: {
     title: 'Generování smluv online 2026 — PDF ihned ke stažení',
     description:
-      '14 typů smluv online dle OZ 2026 — nájemní, kupní, pracovní, NDA a další. Formulář → PDF s citacemi § ihned. Od 99 Kč.',
+      '14 typů smluv online — nájemní, kupní, pracovní, NDA a další. Formulář → PDF s odkazy na relevantní ustanovení ihned. Od 99 Kč.',
     url: HOMEPAGE_BASE_URL,
     siteName: 'SmlouvaHned',
     type: 'website',
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Generování smluv online 2026',
-    description: '14 typů smluv dle OZ 2026 — formulář → PDF ihned. Od 99 Kč.',
+    description: '14 typů smluv — formulář → PDF ihned. Bez registrace, od 99 Kč.',
     images: ['/og-image.png'],
   },
 };
@@ -94,7 +94,7 @@ const softwareSchema = {
     'Citace konkrétních paragrafů OZ a zákoníku práce přímo v dokumentu',
     'Upozornění na typicky problematické volby ve formuláři (bez individuálního posouzení)',
     'Ochranné klauzule a smluvní sankce v základní variantě',
-    'Šablony aktualizované dle české legislativy k 1. 1. 2026',
+    'Standardizované šablony pro typické situace s odkazy na relevantní ustanovení',
     'Šifrované dočasné úložiště dat — automatické smazání po 7–30 dnech',
   ],
   provider: { '@type': 'Organization', name: 'SmlouvaHned', url: HOMEPAGE_BASE_URL },
@@ -137,7 +137,7 @@ export default function Home() {
         </div>
 
         {/* Navbar */}
-        <nav className="relative z-30 mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-7 md:px-10">
+        <nav className="relative z-30 mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 sm:px-6 md:px-10 md:py-7">
           <Link href="/" className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#c9a852]/40 bg-[#040c1a]/80 text-xs font-black text-[#c9a852]">
               SH
@@ -161,19 +161,24 @@ export default function Home() {
 
           <div className="flex items-center gap-2 md:hidden">
             <Link
-              href="/blog"
+              href="#smlouvy"
               className="rounded-lg border border-white/10 px-2.5 py-1.5 text-[11px] font-semibold text-slate-400 hover:text-white"
             >
-              Blog
+              Smlouvy
             </Link>
             <LanguageSwitcher current="cs" variant="desktop" />
           </div>
         </nav>
 
-        <div className="relative z-10 mx-auto w-full max-w-7xl px-6 md:px-10">
-          <div className="flex flex-col gap-3 rounded-2xl border border-[#c9a852]/25 bg-[#040c1a]/75 px-4 py-3 text-sm text-slate-300 shadow-[0_18px_60px_rgba(0,0,0,0.25)] backdrop-blur-sm md:flex-row md:items-center md:justify-between">
+        <div className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 md:px-10">
+          <div className="flex items-center justify-between gap-3 rounded-xl border border-[#c9a852]/25 bg-[#040c1a]/75 px-3 py-2 text-xs text-slate-300 shadow-[0_18px_60px_rgba(0,0,0,0.25)] backdrop-blur-sm sm:hidden">
+            <span className="font-semibold text-white">For foreigners</span>
+            <ExpatEntryLinks linkClassName="inline-flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 px-2 py-1 text-[11px] font-semibold text-[#c9a852]" />
+          </div>
+          <div className="hidden flex-col gap-3 rounded-2xl border border-[#c9a852]/25 bg-[#040c1a]/75 px-4 py-3 text-sm text-slate-300 shadow-[0_18px_60px_rgba(0,0,0,0.25)] backdrop-blur-sm sm:flex md:flex-row md:items-center md:justify-between">
             <div className="flex flex-col gap-1 leading-relaxed md:flex-row md:flex-wrap md:items-center md:gap-x-3 md:gap-y-1">
               <span className="font-semibold text-white">Potřebujete smlouvu v cizím jazyce?</span>
+              <span className="text-slate-400">Need a Czech contract in your language?</span>
               <span className="text-slate-400">Потрібен договір іншою мовою?</span>
             </div>
             <ExpatEntryLinks showBlogLink />
@@ -181,35 +186,33 @@ export default function Home() {
         </div>
 
         {/* Hero content */}
-        <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-6 pb-24 pt-6 md:px-10">
+        <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col justify-start px-4 pb-16 pt-6 sm:px-6 md:justify-center md:px-10 md:pb-24">
           <div className="max-w-2xl">
 
-            <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-[#c9a852]/25 bg-[#040c1a]/70 px-4 py-2 backdrop-blur-sm">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#c9a852]/25 bg-[#040c1a]/70 px-3 py-1.5 backdrop-blur-sm md:mb-7 md:px-4 md:py-2">
               <span className="h-1.5 w-1.5 rounded-full bg-[#c9a852]" />
               <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#c9a852]">
-                Aktualizováno · Česká legislativa 2026
+                14 typů dokumentů · formulář → PDF
               </span>
             </div>
 
-            <h1 className="font-serif italic text-6xl font-bold leading-[1.10] tracking-tight text-white md:text-7xl lg:text-[5rem]">
+            <h1 className="font-serif italic text-[3.15rem] font-bold leading-[1.02] tracking-tight text-white sm:text-6xl md:text-7xl md:leading-[1.10] lg:text-[5rem]">
               Smluvní dokumenty
               <br />
-              <span className="text-[#c9a852]">sestavené přesně</span>
-              <br />
-              podle vašich údajů.
+              <span className="text-[#c9a852]">z vašich údajů.</span>
             </h1>
 
-            <p className="mt-7 max-w-lg text-lg leading-relaxed text-slate-300">
+            <p className="mt-5 max-w-lg text-base leading-relaxed text-slate-300 md:mt-7 md:text-lg">
               Vyplníte přehledný formulář — systém sestaví dokument podle vašich podmínek
               a výsledkem je standardizované PDF připravené k podpisu, strukturované dle
               občanského zákoníku č. 89/2012 Sb.
             </p>
 
-            <div className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 text-base text-slate-400">
-              <span>Hotový PDF dokument ihned ke stažení</span>
+            <div className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-slate-300 md:mt-5 md:text-base">
+              <span>Od 99 Kč · bez registrace a předplatného</span>
             </div>
 
-            <div className="mt-9 flex flex-wrap items-center gap-4">
+            <div className="mt-6 flex flex-wrap items-center gap-4 md:mt-9">
               <Link
                 href="#smlouvy"
                 className="inline-flex items-center gap-2 rounded-xl bg-[#c9a852] px-8 py-4 text-base font-bold text-[#040c1a] transition-all duration-200 hover:bg-[#d4b86a] hover:shadow-[0_0_32px_rgba(201,168,82,0.35)]"
@@ -221,7 +224,7 @@ export default function Home() {
               </Link>
             </div>
 
-            <div className="mt-9 flex flex-wrap items-center gap-x-5 gap-y-2">
+            <div className="mt-6 hidden flex-wrap items-center gap-x-5 gap-y-2 sm:flex md:mt-9">
               {['✓ Zákonná struktura OZ/ZP', '✓ PDF ihned ke stažení', '✓ Bezpečná platba Stripe', '✓ Data smazána po 7–30 dnech, s add-onem 90 dní'].map(t => (
                 <span key={t} className="text-sm text-slate-400">{t}</span>
               ))}
@@ -230,7 +233,7 @@ export default function Home() {
         </div>
 
         {/* Scroll hint */}
-        <div className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 flex flex-col items-center gap-1.5 opacity-40">
+        <div className="absolute bottom-8 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-1.5 opacity-40 md:flex">
           <div className="h-8 w-px bg-gradient-to-b from-transparent to-[#c9a852]" />
           <span className="text-[10px] uppercase tracking-[0.25em] text-[#c9a852]">Smlouvy</span>
         </div>
@@ -252,7 +255,7 @@ export default function Home() {
             <h2 className="font-serif italic text-4xl font-bold text-white md:text-5xl">Vyberte typ dokumentu</h2>
             <p className="mt-3 text-base leading-relaxed text-slate-400">
               14 typů smluv sestavených dynamicky podle vašich údajů.
-              Aktualizováno dle OZ č. 89/2012 Sb. ve znění k 1. 1. 2026.
+              S odkazy na relevantní ustanovení OZ a zákoníku práce; před podpisem vždy zkontrolujte zadané údaje.
             </p>
           </div>
           <ContractGridPremium />
@@ -270,7 +273,8 @@ export default function Home() {
             </h3>
             <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">
               Přehled hlavních smluv (nájem, práce, auto, plná moc) s vysvětlením v cizím jazyce.
-              PDF zůstává v češtině; u vybraných smluv může být přiložen orientační překlad (ne úřední).
+              U nájemní smlouvy lze přidat variantu CZ+EN nebo CZ+UA s články spárovanými v jednom dokumentu;
+              překlad není úřední ani ověřený a při rozporu má přednost české znění.
             </p>
             <ExpatEntryLinks className="mt-5 flex flex-wrap gap-2" showBlogLink />
           </div>

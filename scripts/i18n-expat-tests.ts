@@ -10,6 +10,7 @@ import {
   LEGAL_NOTICE,
   normalizeLocale,
   withLocale,
+  type ExpatContractType,
 } from '../lib/locale';
 import {
   getLeaseFormUi,
@@ -25,7 +26,11 @@ import { buildExpatTranslationSections, hasExpatTranslationAnnex } from '../lib/
 import { LEASE_USE_NOTICE_EN } from '../lib/i18n/safety-copy';
 import { renderContractPdf } from '../lib/pdf';
 import { extractPdfText } from '../lib/pdf-text';
-import type { StoredContractData } from '../lib/contracts';
+import { buildContractSections, type StoredContractData } from '../lib/contracts';
+import {
+  CHECKOUT_ADDON_CONFIG,
+  getAvailableCheckoutAddons,
+} from '../lib/checkout-addons';
 import { EXPAT_CONTRACT_CAPABILITY } from '../lib/locale';
 import {
   getBuilderNoticeLabels,
@@ -60,14 +65,6 @@ const MARKETING_SURFACE_FILES = [
 ] as const;
 
 const FORBIDDEN_MARKETING = [
-  'bilingual pdf',
-  'bilingual output',
-  'czech-english pdf',
-  'english translation included',
-  'translated contract',
-  'bilingvní pdf',
-  'česko-anglická smlouva',
-  'překlad smlouvy',
   'certified translation guaranteed',
   'official translation guaranteed',
   'guaranteed for authorities',
@@ -116,6 +113,9 @@ function testLocalePropagation() {
   const builderLocale = read('app/components/BuilderLocaleNotice.tsx');
   assert.match(builderLocale, /queryLocale/);
   assert.match(builderLocale, /readBuilderLocaleFromBrowser/);
+  assert.match(builderLocale, /useState<AppLocale>\('cs'\)/);
+  assert.doesNotMatch(builderLocale, /useState<AppLocale>\(\(\)\s*=>/);
+  assert.match(builderLocale, /smlouvahned:locale/);
   assert.match(read('lib/locale.ts'), /preferred-locale/);
   assert.doesNotMatch(builderLocale, /readCookie/);
 
@@ -208,6 +208,88 @@ function testSupportedBuilders() {
   ]);
 }
 
+function testBilingualContractProductConfiguration() {
+  for (const contractType of EXPAT_CONTRACT_TYPES) {
+    const enKeys = getAvailableCheckoutAddons(contractType, 'basic', null, 'en').map((item) => item.key);
+    const uaKeys = getAvailableCheckoutAddons(contractType, 'basic', null, 'ua').map((item) => item.key);
+    const csKeys = getAvailableCheckoutAddons(contractType, 'basic', null, 'cs').map((item) => item.key);
+
+    assert.ok(enKeys.includes('bilingual_contract'), `${contractType}: EN bilingual add-on missing`);
+    assert.ok(uaKeys.includes('bilingual_contract'), `${contractType}: UA bilingual add-on missing`);
+    assert.ok(!csKeys.includes('bilingual_contract'), `${contractType}: add-on must be hidden for CS`);
+    assert.ok(!enKeys.includes('bilingual_lease'), `${contractType}: legacy lease key must stay hidden`);
+    assert.ok(!enKeys.includes('bilingual_annex'), `${contractType}: legacy annex must stay hidden`);
+  }
+  assert.equal(CHECKOUT_ADDON_CONFIG.bilingual_contract.priceCzk, 199);
+}
+
+async function testClausePairedBilingualContractPdfs() {
+  const samples: Record<ExpatContractType, StoredContractData> = {
+    lease: {
+      contractType: 'lease', landlordName: 'Jan Pronajímatel', landlordAddress: 'Praha 1',
+      tenantName: 'Olena Tenant', tenantAddress: 'Praha 2', flatAddress: 'Korunní 45, Praha 2',
+      rentAmount: '20000', utilityAmount: '3500', depositAmount: '40000', duration: 'fixed',
+      startDate: '2026-08-01', endDate: '2027-07-31',
+    },
+    sublease: {
+      contractType: 'sublease', landlordName: 'Jan Nájemce', landlordAddress: 'Praha 1',
+      tenantName: 'Olena Podnájemce', tenantAddress: 'Praha 2', flatAddress: 'Korunní 45, Praha 2',
+      rentAmount: '15000', utilityAmount: '2500', depositAmount: '15000', duration: 'fixed',
+      startDate: '2026-08-01', endDate: '2027-07-31', landlordConsent: 'yes',
+    },
+    employment: {
+      contractType: 'employment', employerName: 'ACME s.r.o.', employerIco: '12345678', employerAddress: 'Praha',
+      employeeName: 'Jane Worker', employeeBirth: '1990-01-01', employeeAddress: 'Brno',
+      jobTitle: 'Developer', workPlace: 'Praha', startDate: '2026-08-01', salary: '60000',
+      salaryType: 'monthly', employmentType: 'indefinite',
+    },
+    dpp: {
+      contractType: 'dpp', employerName: 'ACME s.r.o.', employerIco: '12345678', employerAddress: 'Praha',
+      employeeName: 'Jan Pracovník', employeeBirth: '1995-05-05', employeeAddress: 'Brno',
+      taskDescription: 'IT support', workPlace: 'Praha', estimatedHours: '80', totalRemuneration: '40000',
+      remunerationType: 'fixed', durationType: 'fixed', startDate: '2026-08-01', endDate: '2026-12-31',
+    },
+    power_of_attorney: {
+      contractType: 'power_of_attorney', principalName: 'Mai Nguyen', principalId: '900101/1234',
+      principalAddress: 'Praha', agentName: 'Petr Novák', agentId: '750505/5678', agentAddress: 'Brno',
+      poaType: 'general', validUntil: '2026-12-31',
+    },
+    car_sale: {
+      contractType: 'car_sale', sellerName: 'Jana Prodávající', sellerAddress: 'Brno',
+      buyerName: 'Hans Buyer', buyerAddress: 'Praha', carMake: 'Škoda', carModel: 'Octavia',
+      carVIN: 'TMBJB41Z9L0123456', carPlate: '1AB 2345', priceAmount: '250000',
+      paymentMethod: 'transfer', ownershipTransferMoment: 'payment',
+    },
+  };
+
+  for (const contractType of EXPAT_CONTRACT_TYPES) {
+    for (const tier of ['basic', 'complete'] as const) {
+      for (const locale of ['en', 'ua'] as const) {
+        const data = { ...samples[contractType], tier, lang: locale, addOns: ['bilingual_contract'] };
+      const sections = buildContractSections(data);
+      for (const section of sections) {
+        if (section.body.length === 0) continue;
+        const translated = section.translations?.[locale];
+          assert.ok(translated?.title, `${contractType}/${tier}/${locale}: missing title for ${section.title}`);
+        assert.equal(
+          translated?.body?.length,
+          section.body.length,
+            `${contractType}/${tier}/${locale}: paragraph alignment failed for ${section.title}`,
+        );
+      }
+
+      const text = await extractPdfText(await renderContractPdf(data));
+        assert.match(text, locale === 'en' ? /CZECH-ENGLISH/i : /ЧЕСЬКО-УКРАЇНСЬКИЙ/i);
+      assert.doesNotMatch(text, /Explanatory English Translation Annex|Пояснювальний додаток українською/i);
+        if (contractType === 'lease' && locale === 'ua') {
+        assert.match(text, /ГРОШОВА ЗАСТАВА \(КАУЦІЯ\)/i);
+        assert.doesNotMatch(text, /V\. ЗАВДАТОК/i);
+      }
+      }
+    }
+  }
+}
+
 function testOrdersApiSecurity() {
   const ordersRoute = read('app/api/orders/route.ts');
   assert.match(ordersRoute, /email-only enumeration/i);
@@ -280,6 +362,26 @@ function testLegalAccuracyRegressions() {
   assert.match(dppPages, /12 000 Kč/);
   assert.doesNotMatch(dppPages, /11 500 Kč|11500|Do 12 000 Kč|Do 12 000 Kč\/měs/);
   assert.match(dppPages, /Do 11 999 Kč|účast od 12 000 Kč|nedosáhne rozhodného příjmu 12 000 Kč/);
+
+  const minimumWagePages = [
+    read('app/blog/dpp-dohoda-provedeni-prace/page.tsx'),
+    read('app/blog/dpp-vzor-zdarma-2026/page.tsx'),
+    read('lib/legal-constants-2026.ts'),
+  ].join('\n');
+  assert.match(minimumWagePages, /22 400|22400/);
+  assert.match(minimumWagePages, /134,40|134\.4/);
+  assert.doesNotMatch(minimumWagePages, /20,80 Kč|20 800 Kč\/měs|124 Kč\/hod/);
+
+  const uaPublicCopy = [
+    read('app/components/blog/ExpatBlogLocalePanel.tsx'),
+    read('lib/i18n/expat-blog-articles.ts'),
+    read('lib/i18n/expat-blog-topics-2026.ts'),
+    read('lib/i18n/expat-blog-topics-july-2026.ts'),
+    read('lib/i18n/expat-blog-why-smlouvahned.ts'),
+    read('lib/i18n/expat-builder-forms.ts'),
+    read('lib/i18n/lease-form-uk-content.ts'),
+  ].join('\n');
+  assert.doesNotMatch(uaPublicCopy, /інtern|інозem|іноземціv|Повний remote|landing сторінці|кvalifikovaný/);
 }
 
 function testLeaseEnBuilderUi() {
@@ -398,13 +500,16 @@ function testLeaseEnglishContractSections() {
 
 function testExpatCapabilityDifferentiation() {
   assert.match(EXPAT_CONTRACT_CAPABILITY.en.lease, /English-guided form/i);
-  assert.match(EXPAT_CONTRACT_CAPABILITY.en.lease, /explanatory English annex/i);
+  assert.match(EXPAT_CONTRACT_CAPABILITY.en.lease, /Czech-English PDF with paired clauses/i);
   assert.match(EXPAT_CONTRACT_CAPABILITY.ua.lease, /українськ/i);
   assert.match(EXPAT_CONTRACT_CAPABILITY.en.employment, /English-guided form/i);
-  assert.match(EXPAT_CONTRACT_CAPABILITY.ua.dpp, /огляд основних умов/i);
   assert.match(EXPAT_CONTRACT_CAPABILITY.en.sublease, /English-guided form/i);
   assert.match(EXPAT_CONTRACT_CAPABILITY.en.power_of_attorney, /English-guided form/i);
   assert.match(EXPAT_CONTRACT_CAPABILITY.en.car_sale, /English-guided form/i);
+  for (const contractType of EXPAT_CONTRACT_TYPES) {
+    assert.match(EXPAT_CONTRACT_CAPABILITY.en[contractType], /paired clauses/i);
+    assert.match(EXPAT_CONTRACT_CAPABILITY.ua[contractType], /PDF/i);
+  }
 }
 
 function testExpatBuilderFormsLocalized() {
@@ -615,17 +720,17 @@ function testSeoRentalLandingPage() {
   const pageFlat = page.replace(/\s+/g, ' ');
   assert.match(
     pageFlat,
-    /Fill in the rental form in English and generate a Czech rental agreement with an explanatory English translation annex/,
+    /At checkout you can add a Czech-English rental agreement with every clause paired in one document/,
   );
   assert.match(page, /Create rental agreement/);
   assert.match(page, /builderHref: `\$\{builderPath\}\?lang=\$\{locale\}`/);
   assert.match(page, /not a law firm/i);
   assert.match(page, /not certified or official/i);
   assert.match(page, /does not guarantee acceptance by any authority/i);
-  assert.match(page, /explanatory English translation annex/i);
+  assert.match(page, /Czech-English clause-paired version/i);
   assert.match(page, /EXPAT_CONTRACT_ROUTES\[contractKey\]/);
   assert.match(page, /Договір оренди в Чехії/);
-  assert.match(page, /пояснювальним українським додатком/);
+  assert.match(page, /чесько-українську версію з попарними положеннями/);
 
   const forbidden = [
     'visa-ready',
@@ -857,6 +962,7 @@ async function main() {
   testLocalePropagation();
   testNoMisleadingBilingualMarketing();
   testSupportedBuilders();
+  testBilingualContractProductConfiguration();
   testUnsupportedContracts();
   testOrdersApiSecurity();
   testLegalCopy();
@@ -881,6 +987,7 @@ async function main() {
   testLeasePreviewHelpers();
   await testLeaseEnPdfTextContent();
   await testLeaseUkPdfTextContent();
+  await testClausePairedBilingualContractPdfs();
   await testEmploymentEnPdfTextContent();
   await testDppUaPdfTextContent();
   await testPdfFallback();

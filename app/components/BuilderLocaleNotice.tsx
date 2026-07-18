@@ -19,9 +19,10 @@ import {
 } from '@/lib/i18n/safety-copy';
 
 export function useBuilderLocale(): AppLocale {
-  const [locale, setLocale] = useState<AppLocale>(() =>
-    typeof window === 'undefined' ? 'cs' : readBuilderLocaleFromBrowser(),
-  );
+  // The server always renders Czech. Reading document.cookie in the lazy
+  // initializer made the first browser render differ from SSR for EN/UA users,
+  // which caused React hydration error #418 in production.
+  const [locale, setLocale] = useState<AppLocale>('cs');
 
   useEffect(() => {
     const syncLocale = () => {
@@ -39,10 +40,12 @@ export function useBuilderLocale(): AppLocale {
     syncLocale();
     window.addEventListener('popstate', syncLocale);
     window.addEventListener('pageshow', syncLocale);
+    window.addEventListener('smlouvahned:locale', syncLocale);
 
     return () => {
       window.removeEventListener('popstate', syncLocale);
       window.removeEventListener('pageshow', syncLocale);
+      window.removeEventListener('smlouvahned:locale', syncLocale);
     };
   }, []);
 
@@ -61,6 +64,32 @@ export function BuilderLocaleNotice({ contractType }: { contractType: ContractTy
     [locale],
   );
 
+  useEffect(() => {
+    const htmlLang = locale === 'ua' ? 'uk' : locale;
+    document.documentElement.lang = htmlLang;
+    if (locale === 'cs' || !copy?.title) return;
+
+    const localizedTitle = `${copy.title} | SmlouvaHned`;
+    const applyLocalizedTitle = () => {
+      document.title = localizedTitle;
+    };
+
+    // Next's metadata runtime can finish after child effects and may later
+    // re-apply the Czech server title. Keep the client-side title aligned with
+    // the active builder locale for as long as this page remains mounted.
+    applyLocalizedTitle();
+    const titleObserver = new MutationObserver(() => {
+      if (document.title !== localizedTitle) applyLocalizedTitle();
+    });
+    titleObserver.observe(document.head, {
+      childList: true,
+      subtree: true,
+      characterData: true,
+    });
+
+    return () => titleObserver.disconnect();
+  }, [copy?.title, locale]);
+
   if (locale === 'cs' || !labels) return null;
 
   const supported = isExpatContract(contractType);
@@ -73,7 +102,11 @@ export function BuilderLocaleNotice({ contractType }: { contractType: ContractTy
             {locale === 'ua' ? 'Лише чеська форма' : 'Czech-only form'}
           </div>
           <p className="mt-1">{getUnsupportedFormNotice(locale)}</p>
-          <p className="mt-2 text-amber-100/90">{LEGAL_NOTICE[locale]}</p>
+          <p className="mt-2 text-amber-100/90">
+            {locale === 'ua'
+              ? 'SmlouvaHned — програмний інструмент, а не адвокатська контора; у нестандартних випадках зверніться до чеського адвоката.'
+              : 'SmlouvaHned is a software tool, not a law firm; consult a Czech attorney in non-standard cases.'}
+          </p>
         </div>
       </div>
     );

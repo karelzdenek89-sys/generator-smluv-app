@@ -82,7 +82,7 @@ export function renderExpatSeoOgImageBySlug(slug: string, locale: AppLocale) {
     subtitle: content.metadata.openGraphDescription,
     locale,
     badge: content.breadcrumbLabel,
-    footer: locale === 'ua' ? UA_PREVAILS : `Explanatory translation ${DOT} Czech wording prevails`,
+    footer: locale === 'ua' ? UA_PREVAILS : `Clause-paired CZ+EN PDF ${DOT} Czech wording prevails`,
   });
 }
 
@@ -431,7 +431,7 @@ function renderExpatOgImage({ title, subtitle, locale, badge, footer }: ExpatOgP
         >
           <div>{`smlouvahned.cz/${locale}`}</div>
           <div style={{ color: '#d6ac60', fontWeight: 800 }}>
-            {footer ?? (isUa ? UA_PDF_ANNEX : `Czech PDF ${DOT} explanatory annex`)}
+            {footer ?? (isUa ? UA_PREVAILS : `Clause-paired CZ+EN PDF ${DOT} Czech wording prevails`)}
           </div>
         </div>
       </div>

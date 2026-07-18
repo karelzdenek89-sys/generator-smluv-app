@@ -11,7 +11,7 @@ const COPY = {
     kicker: 'For foreigners in the Czech Republic',
     title: 'Contract guides in English',
     description:
-      'Informational articles about typical Czech contracts. Where available, fill the form in English and download a Czech PDF with an explanatory English annex (not certified or official). Czech wording prevails.',
+      'Informational articles about typical Czech contracts. For six supported contracts, fill the form in English and optionally add a clause-paired CZ+EN PDF (not certified or official). Czech wording prevails.',
     overviewHref: '/en',
     overviewLabel: 'English contract overview',
     hubLabel: 'Start with the main guide',
@@ -24,13 +24,13 @@ const COPY = {
     kicker: 'Для іноземців у Чехії',
     title: 'Гіди українською',
     description:
-      'Інформаційні статті про типові чеські договори. Де доступно — форма українською, PDF переважно чеською з пояснювальним українським додатком (не офіційний переклад). Перевага має чеське формулювання.',
+      'Інформаційні статті про типові чеські договори. Для шести підтримуваних договорів є форма українською та додатковий PDF із попарними положеннями CZ+UA (не офіційний переклад). Перевагу має чеське формулювання.',
     overviewHref: '/ua',
     overviewLabel: 'Огляд договорів українською',
     hubLabel: 'Почніть з головного гіда',
     articlesHeading: 'Усі гіди українською',
     seoHeading: 'Оглядові сторінки договорів',
-    whyUsLabel: 'Чому SmlouvaHned, а не шаблон з інternetu',
+    whyUsLabel: 'Чому SmlouvaHned, а не шаблон з інтернету',
   },
 } as const;
 

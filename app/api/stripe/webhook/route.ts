@@ -13,6 +13,7 @@ import {
 import { normalizePricingTier } from '@/lib/pricing';
 import { recordAnalyticsEvent } from '@/lib/analytics-server';
 import type { AnalyticsEventParams } from '@/lib/analytics';
+import { getTransactionalEmailCopy } from '@/lib/i18n/builder-shared-copy';
 
 export const runtime = 'nodejs';
 
@@ -279,7 +280,11 @@ async function sendDownloadEmail(
     cooperation: 'Smlouva o spolupráci',
   };
 
-  const contractName = contractNames[contractType] || 'Právní dokument';
+  const localizedEmail = getTransactionalEmailCopy(lang);
+  const contractName = lang === 'cs'
+    ? contractNames[contractType] || 'Právní dokument'
+    : localizedEmail.contractName(contractType);
+  const emailCopy = localizedEmail.copy;
   const langQuery = lang === 'cs' ? '' : `&lang=${encodeURIComponent(lang)}`;
   const tokenQuery = downloadToken ? `&token=${encodeURIComponent(downloadToken)}` : '';
   const downloadUrl = `${baseUrl}/api/contracts/download?session_id=${sessionId}${langQuery}${tokenQuery}`;
@@ -297,11 +302,11 @@ async function sendDownloadEmail(
     body: JSON.stringify({
       from: 'SmlouvaHned <dokumenty@smlouvahned.cz>',
       to: [to],
-      subject: `✅ Váš dokument je připraven ke stažení — ${contractName}`,
+      subject: emailCopy.subject(contractName),
       html: `
         <!DOCTYPE html>
-        <html lang="cs">
-        <head><meta charset="UTF-8"><title>Váš dokument SmlouvaHned</title></head>
+        <html lang="${emailCopy.htmlLang}">
+        <head><meta charset="UTF-8"><title>${emailCopy.title} | SmlouvaHned</title></head>
         <body style="background:#05080f;font-family:Arial,sans-serif;color:#e2e8f0;padding:40px 20px;margin:0;">
           <div style="max-width:580px;margin:0 auto;background:#0c1426;border-radius:24px;border:1px solid #1e2940;padding:40px;">
             <div style="text-align:center;margin-bottom:32px;">
@@ -310,32 +315,32 @@ async function sendDownloadEmail(
               </div>
             </div>
             <h1 style="color:#fff;font-size:26px;font-weight:900;margin:0 0 12px;text-align:center;">
-              Vaše platba byla přijata ✓
+              ${emailCopy.title}
             </h1>
             <p style="color:#94a3b8;font-size:15px;text-align:center;margin-bottom:32px;">
-              ${contractName} je připravena ke stažení.
+              ${emailCopy.documentReady(contractName)}
             </p>
             <a href="${downloadUrl}"
                style="display:block;text-align:center;background:linear-gradient(135deg,#f59e0b,#eab308);color:#000;font-weight:900;font-size:18px;padding:18px 32px;border-radius:16px;text-decoration:none;margin-bottom:16px;letter-spacing:-0.3px;">
-              STÁHNOUT PDF DOKUMENT
+              ${emailCopy.downloadPdf}
             </a>
             ${addOns.includes('docx') ? `
             <a href="${docxDownloadUrl}"
                style="display:block;text-align:center;background:#1f2937;color:#fbbf24;font-weight:800;font-size:14px;padding:14px 24px;border-radius:14px;text-decoration:none;margin-bottom:16px;border:1px solid #92400e;">
-              STÁHNOUT EDITOVATELNÝ DOCX
+              ${emailCopy.downloadDocx}
             </a>
             ` : ''}
             <a href="${portalUrl}"
                style="display:block;text-align:center;border:1px solid #334155;color:#cbd5e1;font-weight:700;font-size:14px;padding:12px 24px;border-radius:12px;text-decoration:none;margin-bottom:24px;">
-              MOJE DOKUMENTY (bezpečný přístup)
+              ${emailCopy.myDocuments}
             </a>
             <p style="color:#64748b;font-size:12px;text-align:center;margin:0;">
-              Odkaz ke stažení je platný ${archiveDays} dní od zaplacení.<br>
-              V případě dotazů nás kontaktujte na <a href="mailto:info@smlouvahned.cz" style="color:#f59e0b;">info@smlouvahned.cz</a>
+              ${emailCopy.expiry(archiveDays)}<br>
+              ${emailCopy.questions} <a href="mailto:info@smlouvahned.cz" style="color:#f59e0b;">info@smlouvahned.cz</a>
             </p>
           </div>
           <p style="color:#334155;font-size:11px;text-align:center;margin-top:24px;">
-            © 2026 SmlouvaHned. Dokumenty jsou generovány automaticky a neslouží jako individuální právní poradenství.
+            © 2026 SmlouvaHned. ${emailCopy.footer}
           </p>
         </body>
         </html>

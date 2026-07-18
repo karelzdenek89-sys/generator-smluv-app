@@ -54,7 +54,7 @@ export function buildSubleaseContractSectionsUa(d: StoredContractData): Contract
       body: [
         `Підоренда: ${formatAmountCs(d.rentAmount)} Kč/міс.`,
         d.utilityAmount ? `Комунальні аванси: ${formatAmountCs(d.utilityAmount)} Kč.` : '',
-        d.depositAmount ? `Застава: ${formatAmountCs(d.depositAmount)} Kč, повернення за 30 днів.` : '',
+        d.depositAmount ? `Грошова застава (кауція): ${formatAmountCs(d.depositAmount)} Kč, повернення за 30 днів.` : '',
         `До ${asText(d.paymentDay, '15')}-го числа${d.bankAccount ? `, рахунок ${asText(d.bankAccount)}` : ''}.`,
       ].filter(Boolean) as string[],
     },

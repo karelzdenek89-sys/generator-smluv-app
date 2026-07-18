@@ -70,7 +70,7 @@ const LEASE_EN: LocalePack = {
   metadata: {
     title: 'Rental Agreement in the Czech Republic | English-Guided Czech Lease | SmlouvaHned',
     description:
-      'Create a Czech rental agreement for foreigners and landlords. English-guided form, Czech PDF with explanatory English annex. Not certified or official.',
+      'Create a Czech rental agreement for foreigners and landlords. English-guided form with an optional Czech-English version pairing every clause in one document.',
     keywords: [
       'rental agreement Czech Republic',
       'lease agreement Czech Republic foreigners',
@@ -80,20 +80,20 @@ const LEASE_EN: LocalePack = {
     ],
     openGraphTitle: 'Rental Agreement in the Czech Republic | SmlouvaHned',
     openGraphDescription:
-      'English-guided Czech rental agreement with explanatory English translation annex. Czech wording prevails.',
+      'English-guided rental agreement with an optional Czech-English clause-paired version. Czech wording prevails.',
     openGraphLocale: 'en_US',
   },
   breadcrumbLabel: 'Rental agreement',
   kicker: 'Foreigners & landlords in Czechia',
   h1: 'Rental Agreement in the Czech Republic',
   subtitle:
-    'Fill in the rental form in English and generate a Czech rental agreement with an explanatory English translation annex. Czech wording prevails.',
+    'Fill in the form in English. At checkout you can add a Czech-English rental agreement with every clause paired in one document. Czech wording prevails.',
   cta: 'Create rental agreement',
   backToExpats: 'All expat contracts',
   faq: [
     {
       q: 'Is this a certified English translation?',
-      a: 'No. The Czech lease is the primary document. Any English annex is explanatory only and not certified or official.',
+      a: 'No. The English wording is provided for understanding and is not certified or official. In case of discrepancy, the Czech wording prevails.',
     },
     {
       q: 'Can I use this for a visa or residence permit?',
@@ -102,13 +102,13 @@ const LEASE_EN: LocalePack = {
     { q: 'Who is this for?', a: 'Foreign tenants and landlords in the Czech Republic who want an English-guided form and a Czech contract PDF.' },
     {
       q: 'What do I receive after payment?',
-      a: 'A PDF with the Czech lease plus an explanatory English translation annex where supported.',
+      a: 'The selected Czech lease PDF. If you add the Czech-English option, each Czech clause is followed by its English wording in the same document.',
     },
   ],
   legalBullets: [
     'SmlouvaHned is a software tool, not a law firm.',
     'We do not provide legal or immigration advice.',
-    'The contract is primarily in Czech; the English annex is not certified or official.',
+    'The English wording is not certified or official.',
     'In case of discrepancy, the Czech wording prevails.',
   ],
 };
@@ -117,7 +117,7 @@ const LEASE_UA: LocalePack = {
   metadata: {
     title: 'Договір оренди в Чехії | Форма українською | SmlouvaHned',
     description:
-      'Чеський договір оренди для іноземців. Форма українською, PDF з пояснювальним українським додатком. Не офіційний переклад.',
+      'Чеський договір оренди для іноземців. Форма українською та додаткова версія CZ+UA з попарними положеннями в одному документі.',
     keywords: [
       'договір оренди Чехія',
       'оренда квартири Прага',
@@ -125,21 +125,21 @@ const LEASE_UA: LocalePack = {
       'найм житла Чехія іноземці',
     ],
     openGraphTitle: 'Договір оренди в Чехії | SmlouvaHned',
-    openGraphDescription: 'Чеський договір оренди з пояснювальним українським додатком.',
+    openGraphDescription: 'Договір оренди з додатковою чесько-українською версією та попарними положеннями.',
     openGraphLocale: 'uk_UA',
   },
   breadcrumbLabel: 'Договір оренди',
   kicker: 'Іноземці та орендодавці в Чехії',
   h1: 'Договір оренди в Чехії',
   subtitle:
-    'Форма українською → чеський PDF з пояснювальним українським додатком. Перевага має чеське формулювання.',
+    'Заповніть форму українською. Під час оплати можна додати чесько-українську версію з попарними положеннями. Перевага має чеське формулювання.',
   cta: 'Створити договір оренди',
   backToExpats: 'Усі договори для іноземців',
   faq: [
-    { q: 'Чи це офіційний переклад?', a: 'Ні. Основний документ — чеською. Додаток пояснювальний, не засвідчений.' },
+    { q: 'Чи це офіційний переклад?', a: 'Ні. Український текст не є офіційним або засвідченим. У разі розбіжностей переважає чеське формулювання.' },
     { q: 'Чи підійде для візи?', a: 'Ми не гарантуємо прийняття органами. Це не імміграційна консультація.' },
     { q: 'Для кого?', a: 'Для іноземних орендарів і орендодавців у Чехії.' },
-    { q: 'Що після оплати?', a: 'PDF з чеським договором і пояснювальним додатком.' },
+    { q: 'Що після оплати?', a: 'Обраний чеський PDF. Якщо додати версію CZ+UA, після кожного чеського положення буде наведено український текст у тому самому документі.' },
   ],
   legalBullets: [
     'SmlouvaHned — програмний інструмент, не юридична фірма.',
@@ -152,7 +152,7 @@ const EMPLOYMENT_EN: LocalePack = {
   metadata: {
     title: 'Employment Contract Czech Republic | English Form | SmlouvaHned',
     description:
-      'Create a Czech employment contract (pracovní smlouva) with an English-guided form. Czech PDF plus explanatory English annex for foreigners working in Czechia.',
+      'Create a Czech employment contract (pracovní smlouva) with an English-guided form and optional paired Czech-English PDF for foreigners working in Czechia.',
     keywords: [
       'Czech employment contract',
       'employment contract Czech Republic foreigners',
@@ -172,14 +172,14 @@ const EMPLOYMENT_EN: LocalePack = {
   cta: 'Create employment contract',
   backToExpats: 'All expat contracts',
   faq: [
-    { q: 'Is this a full Czech employment contract?', a: 'Yes — a Czech pracovní smlouva PDF is generated from your inputs, with optional explanatory English annex.' },
+    { q: 'Is this a full Czech employment contract?', a: 'Yes — a Czech pracovní smlouva PDF is generated from your inputs, with an optional paired Czech-English version.' },
     { q: 'Does this replace a work permit?', a: 'No. We do not provide immigration advice. Verify work authorization separately if required.' },
     { q: 'Can my employer use this?', a: 'Yes, for typical employment relationships between employer and employee in Czechia.' },
-    { q: 'English annex for HR?', a: 'The annex helps non-Czech speakers understand structure; Czech wording prevails.' },
+    { q: 'Czech-English PDF for HR?', a: 'Each Czech clause is followed by English wording; Czech wording prevails.' },
   ],
   legalBullets: [
     'Not legal advice. Verify work eligibility with official sources.',
-    'Czech wording prevails over the explanatory annex.',
+    'Czech wording prevails over the paired English translation.',
     'SmlouvaHned is not a law firm.',
   ],
 };
@@ -188,7 +188,7 @@ const EMPLOYMENT_UA: LocalePack = {
   metadata: {
     title: 'Трудовий договір Чехія | Форма українською | SmlouvaHned',
     description:
-      'Чеський трудовий договір (pracovní smlouva) з формою українською та пояснювальним додатком для іноземців, які працюють у Чехії.',
+      'Чеський трудовий договір (pracovní smlouva) з формою українською та додатковим попарним PDF CZ+UA.',
     keywords: [
       'трудовий договір Чехія',
       'pracovní smlouva українською',
@@ -206,10 +206,10 @@ const EMPLOYMENT_UA: LocalePack = {
   cta: 'Створити трудовий договір',
   backToExpats: 'Усі договори для іноземців',
   faq: [
-    { q: 'Чи це повний чеський договір?', a: 'Так — PDF чеською з ваших даних, з пояснювальним додатком.' },
+    { q: 'Чи це повний чеський договір?', a: 'Так. Додатково можна обрати PDF CZ+UA, де після кожного чеського положення наведено український текст.' },
     { q: 'Чи замінює дозвіл на роботу?', a: 'Ні. Імміграційні питання перевіряйте окремо.' },
     { q: 'Для роботодавця?', a: 'Так, для типових трудових відносин у Чехії.' },
-    { q: 'Додаток українською?', a: 'Пояснювальний, не офіційний; перевага чеської версії.' },
+    { q: 'Чи є версія CZ+UA?', a: 'Так. У додатковому PDF кожне чеське положення супроводжується українським текстом. Переклад не є офіційним; переважає чеське формулювання.' },
   ],
   legalBullets: ['Не юридична консультація.', 'Перевага чеського формулювання.', 'Не юридична фірма.'],
 };
@@ -218,7 +218,7 @@ const DPP_EN: LocalePack = {
   metadata: {
     title: 'DPP Agreement Czech Republic | Short-Term Work | SmlouvaHned',
     description:
-      'Czech dohoda o provedení práce (DPP) with English-guided form. For occasional work up to 300 hours/year per employer. Czech PDF + explanatory annex.',
+      'Czech dohoda o provedení práce (DPP) with English-guided form. For occasional work up to 300 hours/year per employer. Optional paired Czech-English PDF.',
     keywords: [
       'DPP agreement Czech Republic',
       'dohoda o provedení práce English',
@@ -234,13 +234,13 @@ const DPP_EN: LocalePack = {
   kicker: 'Occasional work in Czechia',
   h1: 'DPP Agreement (Dohoda o provedení práce)',
   subtitle:
-    'Create a Czech DPP for short-term or occasional work. English form guidance; Czech PDF with explanatory annex (DPP overview, not full legal translation).',
+    'Create a Czech DPP for short-term or occasional work. English form guidance with an optional PDF pairing each Czech clause with English wording.',
   cta: 'Create DPP agreement',
   backToExpats: 'All expat contracts',
   faq: [
     { q: 'What is DPP?', a: 'A Czech agreement to perform work — limited hours per year with one employer under the Labour Code.' },
     { q: '300-hour limit?', a: 'The form reminds you of the statutory cap; exceeding it may require a different contract type.' },
-    { q: 'English annex on DPP?', a: 'Ukrainian/English annex explains key terms; Czech DPP text in the PDF prevails.' },
+    { q: 'Paired translation for DPP?', a: 'Choose CZ+EN or CZ+UA to place the translation directly below each Czech clause. Czech wording prevails.' },
     { q: 'For freelancers?', a: 'DPP is employment-like; for B2B services use a different contract type.' },
   ],
   legalBullets: ['Not tax or social security advice.', 'Czech wording prevails.', 'Verify hours and insurance rules for your situation.'],
@@ -250,7 +250,7 @@ const DPP_UA: LocalePack = {
   metadata: {
     title: 'ДПП Чехія | Договір про виконання роботи | SmlouvaHned',
     description:
-      'Чеська ДПП (dohoda o provedení práce) з формою українською. До 300 годин на рік у одного роботодавця. PDF + пояснювальний огляд умов.',
+      'Чеська ДПП (dohoda o provedení práce) з формою українською. До 300 годин на рік у одного роботодавця. Додатковий попарний PDF CZ+UA.',
     keywords: ['ДПП Чехія', 'dohoda o provedení práce', 'підробіток Чехія', '300 годин ДПП'],
     openGraphTitle: 'ДПП Чехія | SmlouvaHned',
     openGraphDescription: 'ДПП з формою українською для іноземців.',
@@ -259,13 +259,13 @@ const DPP_UA: LocalePack = {
   breadcrumbLabel: 'ДПП',
   kicker: 'Підробіток у Чехії',
   h1: 'Договір ДПП (dohoda o provedení práce)',
-  subtitle: 'Чеська ДПП з підказками українською. PDF чеською + пояснювальний огляд (не повний переклад).',
+  subtitle: 'Чеська ДПП з підказками українською та додатковим PDF, де кожне чеське положення має український переклад.',
   cta: 'Створити ДПП',
   backToExpats: 'Усі договори для іноземців',
   faq: [
     { q: 'Що таке ДПП?', a: 'Угода про виконання роботи за чеським трудовим кодексом.' },
     { q: 'Ліміт 300 годин?', a: 'Форма нагадує про законний ліміт на одного роботодавця.' },
-    { q: 'Український додаток?', a: 'Пояснювальний огляд; чеський текст договору має перевагу.' },
+    { q: 'Чи є версія CZ+UA?', a: 'Так, переклад наведено безпосередньо під кожним чеським положенням; чеський текст має перевагу.' },
     { q: 'Для ФОП?', a: 'ДПП — трудовий формат; для послуг B2B інший договір.' },
   ],
   legalBullets: ['Не податкова консультація.', 'Перевага чеської версії.'],
@@ -275,7 +275,7 @@ const SUBLEASE_EN: LocalePack = {
   metadata: {
     title: 'Sublease Agreement Czech Republic | English Form | SmlouvaHned',
     description:
-      'Czech sublease (podnájemní smlouva) for tenants subletting a flat or room. English-guided form, landlord consent, Czech PDF + English annex.',
+      'Czech sublease (podnájemní smlouva) for tenants subletting a flat or room. English-guided form, landlord consent and optional paired Czech-English PDF.',
     keywords: [
       'sublease agreement Czech Republic',
       'podnájemní smlouva English',
@@ -297,7 +297,7 @@ const SUBLEASE_EN: LocalePack = {
     { q: 'Do I need landlord consent?', a: 'Generally yes for subletting a flat when you are not living there; the form captures consent details.' },
     { q: 'Difference from lease?', a: 'Sublease is between tenant and subtenant; the head lease with the owner remains separate.' },
     { q: 'Deposit and rent?', a: 'You set sublease rent, deposit and handover terms in the form.' },
-    { q: 'English annex?', a: 'Explanatory only; Czech sublease wording prevails.' },
+    { q: 'Czech-English version?', a: 'Each Czech clause is followed by English wording in the same PDF; Czech wording prevails.' },
   ],
   legalBullets: ['Not legal advice.', 'Verify head lease allows subletting.', 'Czech wording prevails.'],
 };
@@ -306,7 +306,7 @@ const SUBLEASE_UA: LocalePack = {
   metadata: {
     title: 'Піднайм Чехія | Піднаймна угода | SmlouvaHned',
     description:
-      'Чеський піднайм (podnájemní smlouva) з формою українською. Згода власника, завдаток, PDF + пояснювальний додаток.',
+      'Чеський піднайм (podnájemní smlouva) з формою українською. Згода власника, кауція та додатковий попарний PDF CZ+UA.',
     keywords: ['піднайм Чехія', 'podnájemní smlouva', 'суборенда Прага', 'піднайм квартири'],
     openGraphTitle: 'Піднайм Чехія | SmlouvaHned',
     openGraphDescription: 'Піднайм з формою українською.',
@@ -321,8 +321,8 @@ const SUBLEASE_UA: LocalePack = {
   faq: [
     { q: 'Чи потрібна згода власника?', a: 'Зазвичай так; форма фіксує згоду.' },
     { q: 'Відмінність від оренди?', a: 'Піднайм між орендарем і піднаймачем; основний договір окремо.' },
-    { q: 'Завдаток?', a: 'Вказуєте в формі разом із орендною платою.' },
-    { q: 'Додаток?', a: 'Пояснювальний; перевага чеської версії.' },
+    { q: 'Грошова застава (кауція)?', a: 'Вказуєте у формі разом з орендною платою.' },
+    { q: 'Чи є версія CZ+UA?', a: 'Так. У додатковому PDF положення наведені попарно чеською та українською. Переклад не є офіційним; переважає чеське формулювання.' },
   ],
   legalBullets: ['Не юридична консультація.', 'Перевірте основний договір оренди.'],
 };
@@ -331,7 +331,7 @@ const POA_EN: LocalePack = {
   metadata: {
     title: 'Power of Attorney Czech Republic | Plná moc | SmlouvaHned',
     description:
-      'Czech power of attorney (plná moc) for bank, property, court or general representation. English-guided form and Czech PDF with explanatory annex.',
+      'Czech power of attorney (plná moc) for bank, property, court or general representation. English-guided form and optional paired Czech-English PDF.',
     keywords: [
       'power of attorney Czech Republic',
       'plná moc English',
@@ -353,7 +353,7 @@ const POA_EN: LocalePack = {
     { q: 'Notarized signature required?', a: 'Some authorities require verified signatures; the form notes when you may need legalization.' },
     { q: 'General vs specific POA?', a: 'Choose type in the form — scope is adapted (property, court, company, bank, general).' },
     { q: 'Can the agent delegate?', a: 'Only if substitution is explicitly allowed in the document.' },
-    { q: 'English annex?', a: 'Explanatory; Czech plná moc prevails.' },
+    { q: 'Czech-English version?', a: 'Each Czech clause is followed by English wording in the same PDF; Czech plná moc prevails.' },
   ],
   legalBullets: ['Not legal advice.', 'Some acts require notarized POA — verify with the recipient.', 'Czech wording prevails.'],
 };
@@ -362,7 +362,7 @@ const POA_UA: LocalePack = {
   metadata: {
     title: 'Довіреність Чехія | Plná moc | SmlouvaHned',
     description:
-      'Чеська довіреність (plná moc) для банку, нерухомості, суду. Форма українською, PDF + пояснювальний додаток.',
+      'Чеська довіреність (plná moc) для банку, нерухомості та суду. Форма українською та додатковий попарний PDF CZ+UA.',
     keywords: ['довіреність Чехія', 'plná moc', 'довіреність банк Чехія', 'представництво Чехія'],
     openGraphTitle: 'Довіреність Чехія | SmlouvaHned',
     openGraphDescription: 'Довіреність з формою українською.',
@@ -378,7 +378,7 @@ const POA_UA: LocalePack = {
     { q: 'Нотаріус потрібен?', a: 'Деякі установи вимагають засвідчений підпис — уточніть у отримувача.' },
     { q: 'Типи довіреності?', a: 'У формі обираєте: загальна, нерухомість, суд, фірма, банк.' },
     { q: 'Передоручення?', a: 'Лише якщо це прямо дозволено.' },
-    { q: 'Додаток?', a: 'Пояснювальний; перевага чеської версії.' },
+    { q: 'Чи є версія CZ+UA?', a: 'Так. У додатковому PDF положення наведені попарно чеською та українською. Переклад не є офіційним; переважає чеське формулювання.' },
   ],
   legalBullets: ['Не юридична консультація.', 'Перевага чеського формулювання.'],
 };
@@ -430,7 +430,7 @@ const CAR_EN: LocalePack = {
     },
     { q: 'Is notarization required?', a: 'Usually not for standard private car sales; signatures of both parties suffice.' },
     { q: 'VIN and odometer?', a: 'The form captures VIN, mileage and known defects to reduce disputes.' },
-    { q: 'English annex?', a: 'Explanatory only; Czech kupní smlouva prevails.' },
+    { q: 'Czech-English version?', a: 'Each Czech clause is followed by English wording in the same PDF; Czech kupní smlouva prevails.' },
   ],
   legalBullets: ['Not legal advice.', 'Check liens and STK validity.', 'Czech wording prevails.'],
 };
@@ -455,7 +455,7 @@ const CAR_UA: LocalePack = {
     { q: 'Нотаріус?', a: 'Зазвичай не потрібен для звичайного продажу між фізособами.' },
     { q: 'Перепис авто?', a: 'Покупець реєструє на MD; зберігайте договір.' },
     { q: 'VIN і пробіг?', a: 'Форма фіксує дані та відомі вади.' },
-    { q: 'Додаток?', a: 'Пояснювальний; перевага чеської версії.' },
+    { q: 'Чи є версія CZ+UA?', a: 'Так. У додатковому PDF положення наведені попарно чеською та українською. Переклад не є офіційним; переважає чеське формулювання.' },
   ],
   legalBullets: ['Не юридична консультація.', 'Перевірте заставу та STK.'],
 };

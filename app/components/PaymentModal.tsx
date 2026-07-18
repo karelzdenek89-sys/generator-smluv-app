@@ -11,10 +11,13 @@ import { getAnalyticsDefaultsForPathname, trackEvent } from '@/lib/analytics';
 import {
   CHECKOUT_ADDON_CONFIG,
   getAvailableCheckoutAddons,
-  getCheckoutAddonIncludedItems,
   getCheckoutAddonsTotalCzk,
   type CheckoutAddonKey,
 } from '@/lib/checkout-addons';
+import {
+  getCheckoutAddonsHeading,
+  getLocalizedCheckoutAddon,
+} from '@/lib/i18n/checkout-addons';
 
 interface Section {
   title: string;
@@ -59,7 +62,9 @@ export default function PaymentModal({
   const availableAddOns = getAvailableCheckoutAddons(contractType, tier, packageKey, locale);
   const availableAddonKeys = new Set(availableAddOns.map((addon) => addon.key));
   const validSelectedAddOns = selectedAddOns.filter((key) => availableAddonKeys.has(key));
-  const selectedAddonItems = getCheckoutAddonIncludedItems(validSelectedAddOns);
+  const selectedAddonItems = validSelectedAddOns.map((key) =>
+    getLocalizedCheckoutAddon(CHECKOUT_ADDON_CONFIG[key], locale, contractType).includedItem,
+  );
   const localizedPackage = packageConfig
     ? getLocalizedPackagePresentation(packageConfig.key, locale)
     : null;
@@ -383,10 +388,11 @@ export default function PaymentModal({
             {availableAddOns.length > 0 && (
               <div className="mb-5 space-y-2">
                 <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">
-                  Doplňky k hotovému dokumentu
+                  {getCheckoutAddonsHeading(locale)}
                 </div>
                 {availableAddOns.map((addon) => {
                   const isSelected = selectedAddOns.includes(addon.key);
+                  const localizedAddon = getLocalizedCheckoutAddon(addon, locale, contractType);
                   return (
                     <button
                       key={addon.key}
@@ -410,10 +416,10 @@ export default function PaymentModal({
                           </span>
                           <span>
                             <span className="block text-sm font-bold text-white">
-                              {addon.title}
+                              {localizedAddon.title}
                             </span>
                             <span className="mt-1 block text-xs leading-relaxed text-slate-400">
-                              {addon.description}
+                              {localizedAddon.description}
                             </span>
                           </span>
                         </div>
