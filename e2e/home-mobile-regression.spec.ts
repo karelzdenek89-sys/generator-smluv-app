@@ -14,6 +14,18 @@ test('mobile homepage shows price and primary CTA in the first viewport', async 
   expect(box!.y + box!.height).toBeLessThanOrEqual(844);
 });
 
+test('desktop homepage keeps the primary CTA in the first laptop viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 1366, height: 768 });
+  await page.goto('/');
+
+  const cta = page.getByRole('link', { name: /Vybrat typ smlouvy/ }).first();
+  await expect(cta).toBeVisible();
+
+  const box = await cta.boundingBox();
+  expect(box).not.toBeNull();
+  expect(box!.y + box!.height).toBeLessThanOrEqual(768);
+});
+
 test('preferred UA locale hydrates the Czech rental route without React mismatch', async ({
   page,
   context,

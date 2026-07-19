@@ -137,7 +137,7 @@ export default function Home() {
         </div>
 
         {/* Navbar */}
-        <nav className="relative z-30 mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 sm:px-6 md:px-10 md:py-7">
+        <nav className="relative z-30 mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 sm:px-6 md:px-10 md:py-5">
           <Link href="/" className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#c9a852]/40 bg-[#040c1a]/80 text-xs font-black text-[#c9a852]">
               SH
@@ -186,23 +186,23 @@ export default function Home() {
         </div>
 
         {/* Hero content */}
-        <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col justify-start px-4 pb-16 pt-6 sm:px-6 md:justify-center md:px-10 md:pb-24">
+        <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col justify-start px-4 pb-16 pt-6 sm:px-6 md:justify-center md:px-10 md:pb-12">
           <div className="max-w-2xl">
 
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#c9a852]/25 bg-[#040c1a]/70 px-3 py-1.5 backdrop-blur-sm md:mb-7 md:px-4 md:py-2">
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#c9a852]/25 bg-[#040c1a]/70 px-3 py-1.5 backdrop-blur-sm md:px-4 md:py-2">
               <span className="h-1.5 w-1.5 rounded-full bg-[#c9a852]" />
               <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#c9a852]">
                 14 typů dokumentů · formulář → PDF
               </span>
             </div>
 
-            <h1 className="font-serif italic text-[3.15rem] font-bold leading-[1.02] tracking-tight text-white sm:text-6xl md:text-7xl md:leading-[1.10] lg:text-[5rem]">
+            <h1 className="font-serif italic text-[3.15rem] font-bold leading-[1.02] tracking-tight text-white sm:text-6xl md:text-7xl md:leading-[1.05]">
               Smluvní dokumenty
               <br />
               <span className="text-[#c9a852]">z vašich údajů.</span>
             </h1>
 
-            <p className="mt-5 max-w-lg text-base leading-relaxed text-slate-300 md:mt-7 md:text-lg">
+            <p className="mt-5 max-w-lg text-base leading-relaxed text-slate-300 md:mt-4">
               Vyplníte přehledný formulář — systém sestaví dokument podle vašich podmínek
               a výsledkem je standardizované PDF připravené k podpisu, strukturované dle
               občanského zákoníku č. 89/2012 Sb.
@@ -212,7 +212,7 @@ export default function Home() {
               <span>Od 99 Kč · bez registrace a předplatného</span>
             </div>
 
-            <div className="mt-6 flex flex-wrap items-center gap-4 md:mt-9">
+            <div className="mt-6 flex flex-wrap items-center gap-4 md:mt-5">
               <Link
                 href="#smlouvy"
                 className="inline-flex items-center gap-2 rounded-xl bg-[#c9a852] px-8 py-4 text-base font-bold text-[#040c1a] transition-all duration-200 hover:bg-[#d4b86a] hover:shadow-[0_0_32px_rgba(201,168,82,0.35)]"
