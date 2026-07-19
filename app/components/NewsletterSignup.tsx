@@ -2,13 +2,12 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
 import { getBuilderSharedCopy } from '@/lib/i18n/builder-shared-copy';
+import type { AppLocale } from '@/lib/locale';
 
 type State = 'idle' | 'sending' | 'sent' | 'error';
 
-export default function NewsletterSignup() {
-  const locale = useBuilderLocale();
+export default function NewsletterSignup({ locale }: { locale: AppLocale }) {
   const copy = getBuilderSharedCopy(locale).newsletter;
   const [state, setState] = useState<State>('idle');
   const [email, setEmail] = useState('');

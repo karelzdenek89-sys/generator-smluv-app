@@ -61,7 +61,7 @@ export const LOCALE_META: Record<Locale, LocaleMeta> = {
  */
 export const PDF_BILINGUAL_DISCLAIMER: Record<Exclude<Locale, 'cs'>, string> = {
   en: 'In case of any discrepancy between language versions, the Czech wording prevails. The translation is provided for convenience only and is not a certified or official translation.',
-  ua: 'У разі будь-яких розбіжностей між мовними версіями переважає чеська. Переклад надається лише для зручності і не є офіційним або засвідченим перекладом.',
+  ua: 'У разі будь-яких розбіжностей між мовними версіями переважає чеське формулювання. Переклад надається лише для зручності і не є офіційним або засвідченим перекладом.',
 };
 
 /** Czech-side prevailing-language line, always shown next to the foreign one. */

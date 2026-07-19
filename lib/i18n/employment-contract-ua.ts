@@ -76,7 +76,7 @@ export function buildEmploymentContractSectionsUa(d: StoredContractData): Contra
       body: [
         'Цей трудовий договір укладено згідно з § 34 та наст. закону ЧР № 262/2006 Зб. (трудовий кодекс).',
         `Дата укладення: ${d.contractDate ? formatDateCs(d.contractDate) : today()}`,
-        'У разі розбіжностей між цим оглядом і чеським текстом перевага має чеське формулювання.',
+        'У разі розбіжностей між цим оглядом і чеським текстом перевагу має чеське формулювання.',
         EMPLOYMENT_WORK_ELIGIBILITY_NOTICE_UK,
       ],
     },

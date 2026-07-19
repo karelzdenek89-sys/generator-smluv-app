@@ -6,7 +6,7 @@ const builders = [
   { path: '/pracovni', en: 'Employment Contract', ua: 'Трудовий договір' },
   { path: '/dpp', en: 'DPP Agreement', ua: 'Договір DPP' },
   { path: '/plna-moc', en: 'Power of Attorney', ua: 'Довіреність' },
-  { path: '/auto', en: 'Car Purchase Agreement', ua: 'Купівля авто' },
+  { path: '/auto', en: 'Car Purchase Agreement', ua: 'Договір купівлі-продажу авто' },
 ] as const;
 
 for (const locale of ['en', 'ua'] as const) {
@@ -21,3 +21,15 @@ for (const locale of ['en', 'ua'] as const) {
     }
   });
 }
+
+test('localized lease form does not expose its Czech default penalty text', async ({ page }) => {
+  await page.goto('/najem?lang=en');
+  await expect(page.getByPlaceholder('Late-vacating penalty, e.g. one day of rent')).toHaveValue(
+    "one day's rent",
+  );
+
+  await page.goto('/najem?lang=ua');
+  await expect(
+    page.getByPlaceholder('Штраф за несвоєчасне звільнення, напр. денна орендна плата'),
+  ).toHaveValue('одноденної орендної плати');
+});

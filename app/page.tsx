@@ -272,8 +272,9 @@ export default function Home() {
               Jste cizinec v ČR? Formuláře s nápovědou v angličtině nebo ukrajinštině
             </h3>
             <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">
-              Přehled hlavních smluv (nájem, práce, auto, plná moc) s vysvětlením v cizím jazyce.
-              U nájemní smlouvy lze přidat variantu CZ+EN nebo CZ+UA s články spárovanými v jednom dokumentu;
+              Šest hlavních smluv pro cizince: nájem, podnájem, pracovní smlouva, DPP, plná moc a prodej auta.
+              Formulář je dostupný v angličtině nebo ukrajinštině a u každé z těchto smluv lze přidat variantu
+              CZ+EN nebo CZ+UA s články spárovanými v jednom dokumentu;
               překlad není úřední ani ověřený a při rozporu má přednost české znění.
             </p>
             <ExpatEntryLinks className="mt-5 flex flex-wrap gap-2" showBlogLink />

@@ -78,7 +78,7 @@ export const DIFFERENTIATION_COMPARISON: {
       'PDF sestavené z vašeho formuláře',
       'Citace § OZ a ZP u klauzulí',
       'Upozornění u rizikových voleb',
-      '14 typů + nápověda EN/UA k českému PDF',
+      '6 typů s EN/UA formulářem a CZ+EN/CZ+UA PDF',
     ],
   },
 };

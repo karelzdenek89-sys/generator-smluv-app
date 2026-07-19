@@ -1,14 +1,34 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import NewsletterSignup from '@/app/components/NewsletterSignup';
 import { SEO_LANDINGS, FOOTER_GROUPS } from '@/lib/internal-links';
 import { useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
-import { EXPAT_CONTRACT_ROUTES, withLocale, type ExpatContractType } from '@/lib/locale';
+import {
+  EXPAT_CONTRACT_ROUTES,
+  getContractTypeByPath,
+  withLocale,
+  type AppLocale,
+  type ExpatContractType,
+} from '@/lib/locale';
 import { getLocalizedBuilderCopy } from '@/lib/i18n/expat-locale-copy';
 
 export default function Footer() {
-  const locale = useBuilderLocale();
+  const pathname = usePathname();
+  const builderLocale = useBuilderLocale();
+  const routeLocale: AppLocale = pathname === '/en' || pathname.startsWith('/en/')
+    ? 'en'
+    : pathname === '/ua' || pathname.startsWith('/ua/')
+      ? 'ua'
+      : pathname.startsWith('/blog/expat/') && pathname.endsWith('-en')
+        ? 'en'
+        : pathname.startsWith('/blog/expat/') && pathname.endsWith('-ua')
+          ? 'ua'
+          : 'cs';
+  const locale = routeLocale !== 'cs' || getContractTypeByPath(pathname)
+    ? (routeLocale !== 'cs' ? routeLocale : builderLocale)
+    : 'cs';
   const copy = locale === 'en'
     ? {
         tool: 'Software tool', description: 'Software for automated creation of standardised Czech contract documents. Not a law firm and does not provide legal advice.', operator: 'Operator', navigation: 'Navigation', glossary: 'Glossary', faq: 'FAQ', about: 'About', contact: 'Contact', documents: 'My documents', contracts: 'Supported contracts', secured: 'Secure payment', payment: 'Stripe exclusively processes payment details. We never see them.', warning: 'Notice:', disclaimer: 'SmlouvaHned.cz is software for standardised documents, not a law firm. For non-standard cases, disputes or high-value transactions, consult a Czech attorney.', terms: 'Terms', privacy: 'Privacy', copyright: 'is a document software tool, not a law firm.'
@@ -45,7 +65,7 @@ export default function Footer() {
                 </a>
               </p>
             </div>
-            <NewsletterSignup />
+            <NewsletterSignup locale={locale} />
           </div>
 
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4 text-[13px]">

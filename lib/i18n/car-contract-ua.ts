@@ -25,7 +25,7 @@ export function buildCarContractSectionsUa(d: StoredContractData): ContractSecti
     {
       title: 'ПРЕАМБУЛА',
       body: [
-        'Купівельна угода на авто за § 2079 та наст. цивільного кодексу ЧР.',
+        'Договір купівлі-продажу автомобіля за § 2079 та наступними положеннями Цивільного кодексу ЧР.',
         `Дата: ${d.contractDate ? formatDateCs(d.contractDate) : today()}`,
       ],
     },

@@ -314,12 +314,13 @@ export default function ProcSmlouvahnedMistoVzoru2026Page() {
 
       <section id="cizinci" className="mb-12 scroll-mt-6">
         <h2 className="mb-4 text-2xl font-black tracking-tight text-white">
-          6. Pro cizince: formulář EN/UA, smlouva v češtině
+          6. Pro cizince: formulář EN/UA a volitelné dvojjazyčné PDF
         </h2>
         <p className="mb-4 leading-relaxed text-slate-400">
-          V Česku podepisujete smlouvy primárně v češtině. U vybraných dokumentů můžete formulář vyplnit s
-          anglickou nebo ukrajinskou nápovědou. U nájemní smlouvy může PDF obsahovat i vysvětlující překlad —
-          ten není úřední; v případě rozporu platí české znění.
+          V Česku podepisujete smlouvy primárně v češtině. U nájmu, podnájmu, pracovní smlouvy, DPP, plné moci
+          a prodeje auta můžete formulář vyplnit anglicky nebo ukrajinsky a přidat PDF CZ+EN nebo CZ+UA s
+          jednotlivými ustanoveními spárovanými v jednom dokumentu. Překlad není úřední ani ověřený; v případě
+          rozporu má přednost české znění.
         </p>
         <p className="leading-relaxed text-slate-400">
           Anglická a ukrajinská verze tohoto článku najdete v odkazech nahoře. Přehled všech expat průvodců

@@ -37,3 +37,33 @@ test('preferred UA locale hydrates the Czech rental route without React mismatch
 
   expect(browserErrors.join('\n')).not.toMatch(/hydration|React error #418/i);
 });
+
+test('preferred foreign locale does not translate Czech marketing-page footer', async ({
+  page,
+  context,
+}) => {
+  await context.addCookies([
+    {
+      name: 'preferred-locale',
+      value: 'en',
+      url: 'http://127.0.0.1:3000',
+    },
+  ]);
+
+  await page.goto('/');
+
+  await expect(
+    page.getByRole('contentinfo').getByText('Softwarový nástroj', { exact: true }),
+  ).toBeVisible();
+  await expect(page.getByText('Software tool', { exact: true })).toHaveCount(0);
+  await expect(page.getByText(/Šest hlavních smluv pro cizince/)).toBeVisible();
+  await expect(page.getByText(/U nájemní smlouvy lze přidat variantu/)).toHaveCount(0);
+});
+
+test('localized hubs keep their own footer language', async ({ page }) => {
+  await page.goto('/en');
+  await expect(page.getByText('Software tool', { exact: true })).toBeVisible();
+
+  await page.goto('/ua');
+  await expect(page.getByText('Програмний інструмент', { exact: true })).toBeVisible();
+});

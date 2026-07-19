@@ -1062,7 +1062,15 @@ function LeaseBuilderContent() {
 
               <div className="mt-4">
                 <input
-                  value={formData.lateVacatePenalty}
+                  value={
+                    formData.lateVacatePenalty === 'jednodenního nájemného'
+                      ? builderLocale === 'en'
+                        ? "one day's rent"
+                        : builderLocale === 'ua'
+                          ? 'одноденної орендної плати'
+                          : formData.lateVacatePenalty
+                      : formData.lateVacatePenalty
+                  }
                   onChange={handleChange}
                   name="lateVacatePenalty"
                   placeholder={ui.form.placeholders.lateVacatePenalty}
