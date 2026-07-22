@@ -87,7 +87,7 @@ ${message}
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: 'SmlouvaHned <noreply@smlouvahned.cz>',
+      from: 'SmlouvaHned <noreply@planstavby.cz>',
       to: ['info@smlouvahned.cz'],
       reply_to: email,
       subject: `[Kontakt] ${subject || name}`,

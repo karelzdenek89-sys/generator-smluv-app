@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
         'Idempotency-Key': `newsletter-confirm-${confirmation.token}`,
       },
       body: JSON.stringify({
-        from: 'SmlouvaHned <dokumenty@smlouvahned.cz>',
+        from: 'SmlouvaHned <dokumenty@planstavby.cz>',
         to: [email],
         subject: 'Potvrďte odběr tipů SmlouvaHned',
         html: `<p>Dobrý den,</p><p>potvrďte prosím, že chcete dostávat praktické tipy a novinky služby SmlouvaHned.</p><p><a href="${confirmUrl}" style="display:inline-block;padding:12px 18px;background:#f59e0b;color:#111827;text-decoration:none;border-radius:10px;font-weight:700">Potvrdit odběr</a></p><p>Odkaz je platný 24 hodin. Pokud jste o odběr nežádali, tento e-mail ignorujte.</p>`,
