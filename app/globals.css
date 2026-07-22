@@ -243,6 +243,10 @@ body {
   color: #d2c8b9;
 }
 
+.blog-shell {
+  overflow-x: clip;
+}
+
 /* ─── Header Bar ────────────────────────────────────────────────────────────── */
 
 .site-headerbar {

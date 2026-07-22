@@ -318,7 +318,7 @@ async function sendDownloadEmail(
       'Idempotency-Key': `checkout-fulfilled-${sessionId}`,
     },
     body: JSON.stringify({
-      from: 'SmlouvaHned <dokumenty@smlouvahned.cz>',
+      from: 'SmlouvaHned <dokumenty@planstavby.cz>',
       to: [to],
       subject: `✅ Váš dokument je připraven ke stažení — ${contractName}`,
       html: `
