@@ -75,11 +75,11 @@ export function buildLeaseContractSectionsUk(d: StoredContractData): ContractSec
     {
       title: 'I. СТОРОНИ',
       body: [
-        `Орендодавець: ${asText(d.landlordName)}, РНОКПП/дата народження: ${asText(d.landlordId, '—')}, адреса: ${asText(d.landlordAddress)}`,
+        `Орендодавець: ${asText(d.landlordName)}, ідентифікаційний номер/дата народження: ${asText(d.landlordId, '—')}, адреса: ${asText(d.landlordAddress)}`,
         d.landlordOP ? `Посвідчення орендодавця: ${asText(d.landlordOP)}` : '',
         d.landlordEmail ? `E-mail орендодавця: ${asText(d.landlordEmail)}` : '',
         d.landlordPhone ? `Телефон орендодавця: ${asText(d.landlordPhone)}` : '',
-        `Орендар: ${asText(d.tenantName)}, РНОКПП/дата народження: ${asText(d.tenantId, '—')}, адреса: ${asText(d.tenantAddress)}`,
+        `Орендар: ${asText(d.tenantName)}, ідентифікаційний номер/дата народження: ${asText(d.tenantId, '—')}, адреса: ${asText(d.tenantAddress)}`,
         d.tenantOP ? `Посвідчення орендаря: ${asText(d.tenantOP)}` : '',
         d.tenantEmail ? `E-mail орендаря: ${asText(d.tenantEmail)}` : '',
         d.tenantPhone ? `Телефон орендаря: ${asText(d.tenantPhone)}` : '',

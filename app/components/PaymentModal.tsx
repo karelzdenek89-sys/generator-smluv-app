@@ -526,7 +526,7 @@ export default function PaymentModal({
                   value={deliveryEmail}
                   onChange={(event) => setDeliveryEmail(event.target.value)}
                   className="w-full rounded-xl border border-white/10 bg-[#111c31] px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-amber-400/70 focus:ring-2 focus:ring-amber-400/20"
-                  placeholder="vas@email.cz"
+                  placeholder={locale === 'cs' ? 'vas@email.cz' : 'you@email.com'}
                 />
                 <p className="mt-1.5 text-[11px] leading-5 text-slate-500">
                   {locale === 'en'

@@ -9,7 +9,7 @@ import ContractPreview from '@/app/components/ContractPreview';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import PaymentModal from '@/app/components/LazyPaymentModal';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
-import { useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
+import { useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
 import { getLeaseFormUi } from '@/lib/i18n/lease-form';
 import {
   buildLeaseHandoverPreview,
@@ -102,6 +102,11 @@ function LeaseBuilderContent() {
   useEffect(() => {
     setPackageKeyFromUrl(new URLSearchParams(window.location.search).get('package'));
   }, []);
+
+  useBuilderDocumentTitle(builderLocale, {
+    en: 'Rental agreement — online form | SmlouvaHned',
+    ua: 'Договір оренди — онлайн-форма | SmlouvaHned',
+  });
 
   const [formData, setFormData] = useState<LeaseFormData>({
     landlordName: '',
@@ -502,7 +507,7 @@ function LeaseBuilderContent() {
         guideLabel={ui.landing.guideLabel}
       />
 
-      <LeaseBuilderSeoSection />
+      {builderLocale === 'cs' ? <LeaseBuilderSeoSection /> : null}
 
       {packageConfig ? (
         <section className="mx-auto max-w-7xl px-4 pb-2 lg:px-8">

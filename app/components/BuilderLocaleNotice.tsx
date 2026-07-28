@@ -53,6 +53,19 @@ export function appendLangToPayload<T extends Record<string, unknown>>(payload: 
   return { ...payload, lang: locale };
 }
 
+/**
+ * Localizes the browser-tab title on expat builder pages. The Czech SSR <title> stays intact
+ * for cs and for crawlers (canonical expat entries are /en and /ua via hreflang).
+ */
+export function useBuilderDocumentTitle(locale: AppLocale, titles: { en: string; ua: string }) {
+  const { en, ua } = titles;
+  useEffect(() => {
+    if (locale === 'cs') return;
+    const title = locale === 'ua' ? ua : en;
+    if (title) document.title = title;
+  }, [locale, en, ua]);
+}
+
 export function BuilderLocaleNotice({ contractType }: { contractType: ContractType }) {
   const locale = useBuilderLocale();
   const copy = useMemo(() => getBuilderCopy(contractType, locale), [contractType, locale]);

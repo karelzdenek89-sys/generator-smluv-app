@@ -8,7 +8,7 @@ import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/LazyPaymentModal';
-import { BuilderLocaleNotice, useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
+import { BuilderLocaleNotice, useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
 import { getEmploymentFormUi } from '@/lib/i18n/expat-builder-forms';
 import { employmentRiskWarnings, employmentValidationFields } from '@/lib/i18n/expat-builder-risk';
 import {
@@ -56,6 +56,10 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 export default function PracovniPage() {
   const builderLocale = useBuilderLocale();
   const ui = useMemo(() => getEmploymentFormUi(builderLocale), [builderLocale]);
+  useBuilderDocumentTitle(builderLocale, {
+    en: 'Employment contract — online form | SmlouvaHned',
+    ua: 'Трудовий договір — онлайн-форма | SmlouvaHned',
+  });
   const [form, setForm] = useState<FormData>(() => {
     const d = getEmploymentFormUi(builderLocale).page.defaults;
     return {

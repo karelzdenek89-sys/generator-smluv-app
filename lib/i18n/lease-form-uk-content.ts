@@ -103,7 +103,7 @@ export const UK_LEASE_FORM_CONTENT = {
     },
     placeholders: {
       fullName: 'Повне ім’я',
-      birthId: 'РНОКПП / дата народження',
+      birthId: 'Ідентифікаційний номер / дата народження',
       address: 'Постійна адреса',
       idCard: 'Номер посвідчення',
       emailOptional: 'E-mail (необов’язково)',
