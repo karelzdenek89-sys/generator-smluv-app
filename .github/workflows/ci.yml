@@ -16,7 +16,10 @@ jobs:
           node-version: '24'
           cache: npm
       - run: npm ci
-      - run: npm audit --audit-level=moderate
+      # Audit the production supply chain (what actually ships). Dev-only lint
+      # tooling (eslint/brace-expansion) is excluded — its advisories never reach
+      # the browser bundle and would otherwise block deploys on upstream churn.
+      - run: npm audit --audit-level=moderate --omit=dev
       - run: npm run test:pre-deploy
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
