@@ -14,7 +14,7 @@ import {
   getExpatPreviewLabels,
 } from '@/lib/i18n/expat-contract-preview';
 import PaymentModal from '@/app/components/LazyPaymentModal';
-import { BuilderLocaleNotice, useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
+import { BuilderLocaleNotice, useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
 
 type FormData = {
   principalName: string; principalId: string; principalAddress: string; principalEmail: string;
@@ -42,6 +42,10 @@ function SectionTitle({ index, title, subtitle }: { index: string; title: string
 export default function PlnaMocPage() {
   const builderLocale = useBuilderLocale();
   const ui = useMemo(() => getPoaFormUi(builderLocale), [builderLocale]);
+  useBuilderDocumentTitle(builderLocale, {
+    en: 'Power of attorney — online form | SmlouvaHned',
+    ua: 'Довіреність — онлайн-форма | SmlouvaHned',
+  });
   const fl = (k: string, cs: string) => ui.fields[k] ?? cs;
   const sec = (k: string, title: string, subtitle?: string) => {
     const s = ui.sections[k];

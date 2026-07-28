@@ -15,7 +15,7 @@ import {
   getExpatPreviewLabels,
 } from '@/lib/i18n/expat-contract-preview';
 import PaymentModal from '@/app/components/LazyPaymentModal';
-import { BuilderLocaleNotice, useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
+import { BuilderLocaleNotice, useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
 
 type FormData = {
   landlordName: string; landlordId: string; landlordAddress: string; landlordEmail: string;
@@ -59,6 +59,10 @@ function Toggle({ name, checked, label, hint, onChange }: { name: string; checke
 export default function PodnajemuPage() {
   const builderLocale = useBuilderLocale();
   const ui = useMemo(() => getSubleaseFormUi(builderLocale), [builderLocale]);
+  useBuilderDocumentTitle(builderLocale, {
+    en: 'Sublease agreement — online form | SmlouvaHned',
+    ua: 'Договір суборенди — онлайн-форма | SmlouvaHned',
+  });
   const fl = (k: string, cs: string) => ui.fields[k] ?? cs;
   const sec = (k: string, title: string, subtitle?: string) => {
     const s = ui.sections[k];

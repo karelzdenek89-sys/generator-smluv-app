@@ -13,7 +13,7 @@ import {
 } from '@/lib/i18n/expat-contract-preview';
 import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/LazyPaymentModal';
-import { BuilderLocaleNotice, useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
+import { BuilderLocaleNotice, useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
 
 type FormData = {
   employerName: string; employerIco: string; employerAddress: string; employerEmail: string;
@@ -52,6 +52,10 @@ function SectionTitle({ index, title, subtitle }: { index: string; title: string
 export default function DppPage() {
   const builderLocale = useBuilderLocale();
   const ui = useMemo(() => getDppFormUi(builderLocale), [builderLocale]);
+  useBuilderDocumentTitle(builderLocale, {
+    en: 'Agreement to perform work (DPP) — online form | SmlouvaHned',
+    ua: 'Договір про виконання роботи (DPP) — онлайн-форма | SmlouvaHned',
+  });
   const [form, setForm] = useState<FormData>({
     employerName: '', employerIco: '', employerAddress: '', employerEmail: '',
     employeeName: '', employeeBirth: '', employeeAddress: '', employeeEmail: '',

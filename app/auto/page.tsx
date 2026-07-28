@@ -16,7 +16,7 @@ import {
   getExpatPreviewLabels,
 } from '@/lib/i18n/expat-contract-preview';
 import PaymentModal from '@/app/components/LazyPaymentModal';
-import { BuilderLocaleNotice, useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
+import { BuilderLocaleNotice, useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
 
 type PaymentMethod = 'cash' | 'transfer';
 
@@ -98,6 +98,10 @@ function CarSaleBuilderContent() {
   const [packageKeyFromUrl, setPackageKeyFromUrl] = useState<string | null>(null);
   const builderLocale = useBuilderLocale();
   const ui = useMemo(() => getCarFormUi(builderLocale), [builderLocale]);
+  useBuilderDocumentTitle(builderLocale, {
+    en: 'Car purchase agreement — online form | SmlouvaHned',
+    ua: 'Договір купівлі-продажу авто — онлайн-форма | SmlouvaHned',
+  });
   const fl = (k: string, cs: string) => ui.fields[k] ?? cs;
   const sec = (k: string, title: string, subtitle?: string) => {
     const s = ui.sections[k];

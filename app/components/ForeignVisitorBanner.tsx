@@ -26,19 +26,19 @@ type BannerCopy = {
 const SUPPORTED_COPY: Record<ActiveLocale, BannerCopy> = {
   en: {
     heading: 'You came from the English overview',
-    body: 'The form on this page is in Czech.',
+    body: 'The form on this page is guided in English.',
     detail:
-      'For supported contracts, the PDF includes Czech wording plus an explanatory English annex (not certified or official). In case of discrepancy, the Czech text prevails.',
-    translateHint: 'Tip: right-click the page and choose "Translate to English" to fill the form.',
+      'The PDF is generated in Czech with an explanatory English annex (not certified or official). In case of discrepancy, the Czech text prevails.',
+    translateHint: 'You can complete every field in English.',
     backToLanding: '← Back to English overview',
     dismiss: 'Got it',
   },
   ua: {
     heading: 'Ви перейшли з українського огляду',
-    body: 'Форма на цій сторінці чеською мовою.',
+    body: 'Форма на цій сторінці має підказки українською.',
     detail:
-      'Для обраних договорів PDF містить чеський текст і пояснювальний український додаток (не офіційний переклад). У разі розбіжностей перевага має чеське формулювання.',
-    translateHint: 'Підказка: клацніть правою кнопкою миші і виберіть «Перекласти».',
+      'PDF формується чеською з пояснювальним українським додатком (не офіційний переклад). У разі розбіжностей перевага має чеське формулювання.',
+    translateHint: 'Ви можете заповнити всі поля українською.',
     backToLanding: '← Назад до українського огляду',
     dismiss: 'Зрозуміло',
   },
