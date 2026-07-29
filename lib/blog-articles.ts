@@ -28,6 +28,39 @@ export type BlogClusterMeta = {
 
 export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   {
+    slug: 'vraceni-kauce-po-skonceni-najmu-2026',
+    title: 'Vrácení kauce po skončení nájmu 2026: kdy ji pronajímatel musí vrátit a jak řešit úroky',
+    excerpt:
+      'Jistota (kauce) se vrací při skončení nájmu. Jaký platí limit, co si smí pronajímatel započíst, jak je to s úroky z jistoty a jak předejít sporům při vracení.',
+    category: 'Bydlení',
+    readTime: '8 min',
+    date: '29. července 2026',
+    cluster: 'landlord',
+    href: '/blog/vraceni-kauce-po-skonceni-najmu-2026',
+  },
+  {
+    slug: 'odstoupeni-od-smlouvy-2026',
+    title: 'Odstoupení od smlouvy 2026: kdy lze odstoupit a jaké to má důsledky',
+    excerpt:
+      'Odstoupit lze jen ze zákona nebo z ujednání — obecné právo „vycouvat" ze smlouvy neexistuje. Jak se liší odstoupení, výpověď a dohoda a kdy platí spotřebitelských 14 dní.',
+    category: 'Obecné a praktické',
+    readTime: '9 min',
+    date: '29. července 2026',
+    cluster: 'general',
+    href: '/blog/odstoupeni-od-smlouvy-2026',
+  },
+  {
+    slug: 'urok-z-prodleni-2026',
+    title: 'Úrok z prodlení 2026: na co máte nárok u neuhrazené faktury nebo dluhu a jak ho spočítat',
+    excerpt:
+      'Úrok z prodlení plyne ze zákona i bez ujednání. Jak se počítá podle repo sazby ČNB, jak se liší od smluvní pokuty a jaká je paušální náhrada nákladů.',
+    category: 'Osobní a finanční',
+    readTime: '8 min',
+    date: '29. července 2026',
+    cluster: 'general',
+    href: '/blog/urok-z-prodleni-2026',
+  },
+  {
     slug: 'zkusebni-doba-2026',
     title: 'Zkušební doba 2026: 4 měsíce, 8 měsíců u vedoucích a pravidla prodloužení',
     excerpt:
