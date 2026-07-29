@@ -7,11 +7,41 @@ const WHY_SMOLOUVAHNED_CLUSTER: Record<string, string> = {
   'x-default': `${SITE_URL}/blog/proc-smlouvahned-misto-vzoru-2026`,
 };
 
+const DEPOSIT_RETURN_CLUSTER: Record<string, string> = {
+  cs: `${SITE_URL}/blog/vraceni-kauce-po-skonceni-najmu-2026`,
+  en: `${SITE_URL}/blog/expat/deposit-return-czechia-2026-guide-en`,
+  uk: `${SITE_URL}/blog/expat/deposit-return-czechia-2026-guide-ua`,
+  'x-default': `${SITE_URL}/blog/vraceni-kauce-po-skonceni-najmu-2026`,
+};
+
+const WITHDRAWAL_CLUSTER: Record<string, string> = {
+  cs: `${SITE_URL}/blog/odstoupeni-od-smlouvy-2026`,
+  en: `${SITE_URL}/blog/expat/withdrawal-from-contract-czechia-2026-guide-en`,
+  uk: `${SITE_URL}/blog/expat/withdrawal-from-contract-czechia-2026-guide-ua`,
+  'x-default': `${SITE_URL}/blog/odstoupeni-od-smlouvy-2026`,
+};
+
+const LATE_INTEREST_CLUSTER: Record<string, string> = {
+  cs: `${SITE_URL}/blog/urok-z-prodleni-2026`,
+  en: `${SITE_URL}/blog/expat/late-payment-interest-czechia-2026-guide-en`,
+  uk: `${SITE_URL}/blog/expat/late-payment-interest-czechia-2026-guide-ua`,
+  'x-default': `${SITE_URL}/blog/urok-z-prodleni-2026`,
+};
+
 /** Slugs (Czech or expat) that share a trilingual hreflang cluster. */
 export const BLOG_HREFLANG_CLUSTER_BY_SLUG: Record<string, Record<string, string>> = {
   'proc-smlouvahned-misto-vzoru-2026': WHY_SMOLOUVAHNED_CLUSTER,
   'why-smlouvahned-not-template-2026-guide-en': WHY_SMOLOUVAHNED_CLUSTER,
   'why-smlouvahned-not-template-2026-guide-ua': WHY_SMOLOUVAHNED_CLUSTER,
+  'vraceni-kauce-po-skonceni-najmu-2026': DEPOSIT_RETURN_CLUSTER,
+  'deposit-return-czechia-2026-guide-en': DEPOSIT_RETURN_CLUSTER,
+  'deposit-return-czechia-2026-guide-ua': DEPOSIT_RETURN_CLUSTER,
+  'odstoupeni-od-smlouvy-2026': WITHDRAWAL_CLUSTER,
+  'withdrawal-from-contract-czechia-2026-guide-en': WITHDRAWAL_CLUSTER,
+  'withdrawal-from-contract-czechia-2026-guide-ua': WITHDRAWAL_CLUSTER,
+  'urok-z-prodleni-2026': LATE_INTEREST_CLUSTER,
+  'late-payment-interest-czechia-2026-guide-en': LATE_INTEREST_CLUSTER,
+  'late-payment-interest-czechia-2026-guide-ua': LATE_INTEREST_CLUSTER,
 };
 
 export function getBlogHreflangAlternates(slug: string): Record<string, string> | undefined {
