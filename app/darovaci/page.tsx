@@ -290,6 +290,7 @@ export default function GiftContractPage() {
                 <h3 className="uppercase text-xs tracking-widest font-bold mb-6">2. Dárce</h3>
                 <div className="space-y-4">
                   <input
+                    name="donorName"
                     type="text"
                     placeholder="Celé jméno"
                     aria-label="Celé jméno"
@@ -328,6 +329,7 @@ export default function GiftContractPage() {
                 <h3 className="uppercase text-xs tracking-widest font-bold mb-6">3. Obdarovaný</h3>
                 <div className="space-y-4">
                   <input
+                    name="doneeName"
                     type="text"
                     placeholder="Celé jméno"
                     aria-label="Celé jméno"
@@ -370,6 +372,7 @@ export default function GiftContractPage() {
                 <>
                   <div className="grid md:grid-cols-2 gap-4">
                     <input
+                    name="amount"
                       type="number"
                       placeholder="Darovaná částka"
                       aria-label="Darovaná částka"
@@ -445,6 +448,7 @@ export default function GiftContractPage() {
                     onChange={(e) => updateField('carModel', e.target.value)}
                   />
                   <input
+                    name="carVIN"
                     type="text"
                     placeholder="VIN kód"
                     aria-label="VIN kód"
@@ -496,6 +500,7 @@ export default function GiftContractPage() {
                     </div>
                   </div>
                   <input
+                    name="propertyAddress"
                     type="text"
                     placeholder="Adresa nemovitosti"
                     aria-label="Adresa nemovitosti"
@@ -534,6 +539,7 @@ export default function GiftContractPage() {
 
               {formData.giftType === 'thing' && (
                 <textarea
+                    name="thingDescription"
                   placeholder="Podrobný popis darované věci..."
                   aria-label="Podrobný popis darované věci..."
                   className={textareaClass}
@@ -659,6 +665,7 @@ export default function GiftContractPage() {
 
                                 {/* Tlačítko generování */}
                 <button
+                  data-builder-generate=""
                   onClick={() => setShowPreviewModal(true)}
                   className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >

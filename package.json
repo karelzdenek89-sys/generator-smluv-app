@@ -21,7 +21,8 @@
     "test:e2e:lease-ua": "playwright test e2e/lease-ua-smoke.spec.ts",
     "test:e2e:lease-expat": "playwright test e2e/lease-en-smoke.spec.ts e2e/lease-ua-smoke.spec.ts",
     "test:pre-deploy": "npm run lint:ci && npm run test:api-security && npm run test:checkout-validation && npm run test:secrets && npm run test:source-integrity && npm run test:year-rollover && npm run test:money && tsx scripts/i18n-expat-tests.ts && tsx scripts/checkout-flow-audit.ts && tsx scripts/audit-addon-value.ts && tsx scripts/audit-site-content.ts && tsx scripts/pre-deploy-expat-check.ts && tsx scripts/audit-pre-deploy-pdfs.ts && tsx scripts/test-font-glyphs.ts && tsx scripts/lint-contracts.ts && tsx scripts/audit-output-quality.ts && npm run build",
-    "test:money": "tsx scripts/money-parsing-tests.ts"
+    "test:money": "tsx scripts/money-parsing-tests.ts",
+    "test:e2e:checkout": "playwright test e2e/checkout-contract.spec.ts e2e/checkout-required-fields.spec.ts"
   },
   "dependencies": {
     "@upstash/redis": "^1.38.0",

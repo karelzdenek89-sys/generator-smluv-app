@@ -321,6 +321,7 @@ export default function PlnaMocPage() {
               )}
                               {/* Tlačítko generování */}
                 <button
+                  data-builder-generate=""
                   onClick={() => setShowPreviewModal(true)}
                   className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >
