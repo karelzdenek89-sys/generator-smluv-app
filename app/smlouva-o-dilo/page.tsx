@@ -9,6 +9,7 @@ import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/LazyPaymentModal';
+import { isValidMoney } from '@/lib/money';
 
 type PaymentType = 'after_completion' | 'with_deposit' | 'milestones';
 
@@ -185,7 +186,7 @@ export default function WorkContractPage() {
     if (!formData.contractorName?.trim()) missing.push('jméno zhotovitele');
     if (!formData.workTitle?.trim()) missing.push('název díla');
     if (!formData.workDescription?.trim()) missing.push('popis díla');
-    if (!formData.priceAmount) missing.push('cenu díla');
+    if (!isValidMoney(formData.priceAmount)) missing.push('cenu díla');
     if (missing.length > 0) { alert(`Smlouva o dílo vyžaduje: ${missing.join(', ')}.`); return; }
     try {
       setIsProcessing(true);

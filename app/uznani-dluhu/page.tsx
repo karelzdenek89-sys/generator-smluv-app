@@ -9,6 +9,7 @@ import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/LazyPaymentModal';
+import { isValidMoney } from '@/lib/money';
 
 type FormData = {
   creditorName: string; creditorId: string; creditorAddress: string; creditorEmail: string;
@@ -80,7 +81,7 @@ export default function UznanidluhuPage() {
     const missing: string[] = [];
     if (!form.creditorName?.trim()) missing.push('jméno věřitele');
     if (!form.debtorName?.trim()) missing.push('jméno dlužníka');
-    if (!form.debtAmount) missing.push('výši dluhu');
+    if (!isValidMoney(form.debtAmount)) missing.push('výši dluhu');
     if (missing.length > 0) { alert(`Uznání dluhu vyžaduje: ${missing.join(', ')}.`); return; }
     try {
       setIsProcessing(true);

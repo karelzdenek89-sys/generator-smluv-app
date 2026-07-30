@@ -17,6 +17,7 @@ import {
 } from '@/lib/i18n/expat-contract-preview';
 import PaymentModal from '@/app/components/LazyPaymentModal';
 import { BuilderLocaleNotice, useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
+import { isValidMoney } from '@/lib/money';
 
 type PaymentMethod = 'cash' | 'transfer';
 
@@ -321,7 +322,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
     if (!formData.buyerName.trim()) missingFields.push(validationFields.buyerName);
     if (!formData.carMake.trim()) missingFields.push(validationFields.carMake);
     if (!formData.carVIN.trim()) missingFields.push(validationFields.carVIN);
-    if (!formData.priceAmount.trim()) missingFields.push(validationFields.priceAmount);
+    if (!isValidMoney(formData.priceAmount)) missingFields.push(validationFields.priceAmount);
 
     if (missingFields.length > 0) {
       alert(`${ui.form.validationPrefix} ${missingFields.join(', ')}.`);
