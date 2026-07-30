@@ -28,6 +28,7 @@ import {
   normalizeCheckoutAddons,
 } from '@/lib/checkout-addons';
 import { recordAnalyticsEvent } from '@/lib/analytics-server';
+import type { CheckoutRejectReason } from '@/lib/analytics';
 import { takeRateLimit } from '@/lib/rate-limit';
 import {
   CHECKOUT_CONSENT_TEXT_VERSION,
@@ -81,26 +82,47 @@ function priceBandForCheckout(tier: 'basic' | 'complete', packageKey?: string | 
   return tier === 'basic' ? '99' : '199';
 }
 
+/**
+ * Records why a checkout was turned away, then returns the response unchanged.
+ *
+ * Every guard below ends the request before Stripe is reached, so without this
+ * the attempt leaves no trace at all: the buyer sees an error, no order exists,
+ * and reporting cannot tell a broken checkout from a change of heart.
+ */
+async function rejectCheckout(
+  reason: CheckoutRejectReason,
+  responseBody: Record<string, unknown>,
+  status: number,
+  details?: { contractType?: ContractType; field?: string },
+): Promise<NextResponse> {
+  await recordAnalyticsEvent('checkout_rejected', {
+    source: 'checkout_modal',
+    surface: 'checkout_endpoint',
+    reject_reason: reason,
+    ...(details?.contractType ? { contract_type: details.contractType } : {}),
+    ...(details?.field ? { reject_field: details.field } : {}),
+  });
+  return NextResponse.json(responseBody, { status });
+}
+
 export async function POST(req: Request) {
   try {
     const json = await readFirstPartyJson(req, 128 * 1024);
     if (!json.ok) {
       const status = json.error === 'invalid_origin' ? 403 : json.error === 'payload_too_large' ? 413 : 400;
-      return NextResponse.json({ error: 'Neplatný JSON požadavek.' }, { status });
+      return rejectCheckout('invalid_json', { error: 'Neplatný JSON požadavek.' }, status);
     }
 
     // 1. Rate limit
     const rateLimit = await tryRateLimit(getClientIp(req));
     if (rateLimit === 'limited') {
-      return NextResponse.json(
-        { error: 'Příliš mnoho požadavků. Zkuste to za chvíli.' },
-        { status: 429 },
-      );
+      return rejectCheckout('rate_limited', { error: 'Příliš mnoho požadavků. Zkuste to za chvíli.' }, 429);
     }
     if (rateLimit === 'unavailable') {
-      return NextResponse.json(
+      return rejectCheckout(
+        'storage_unavailable',
         { error: 'Platbu nyní nelze bezpečně zahájit. Zkuste to prosím znovu.' },
-        { status: 503 },
+        503,
       );
     }
 
@@ -110,7 +132,7 @@ export async function POST(req: Request) {
     // contractType
     const rawType = typeof body.contractType === 'string' ? body.contractType : '';
     if (!(CONTRACT_TYPES as readonly string[]).includes(rawType)) {
-      return NextResponse.json({ error: 'Neplatný typ dokumentu.' }, { status: 400 });
+      return rejectCheckout('invalid_contract_type', { error: 'Neplatný typ dokumentu.' }, 400);
     }
     const contractType = rawType as ContractType;
 
@@ -131,12 +153,12 @@ export async function POST(req: Request) {
       deliveryEmail.length > 254 ||
       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(deliveryEmail)
     ) {
-      return NextResponse.json({ error: 'Zadejte platný e-mail pro doručení dokumentu.' }, { status: 400 });
+      return rejectCheckout('invalid_email', { error: 'Zadejte platný e-mail pro doručení dokumentu.' }, 400, { contractType });
     }
 
     const consentCandidate = body.consent;
     if (!consentCandidate || typeof consentCandidate !== 'object' || Array.isArray(consentCandidate)) {
-      return NextResponse.json({ error: 'Chybí povinný souhlas s digitálním plněním.' }, { status: 400 });
+      return rejectCheckout('consent_missing', { error: 'Chybí povinný souhlas s digitálním plněním.' }, 400, { contractType });
     }
     const consentRecord = consentCandidate as Record<string, unknown>;
     const acceptedAt = typeof consentRecord.acceptedAt === 'string' ? consentRecord.acceptedAt : '';
@@ -151,7 +173,7 @@ export async function POST(req: Request) {
       acceptedAtMs > now + 5 * 60_000 ||
       acceptedAtMs < now - 24 * 60 * 60_000
     ) {
-      return NextResponse.json({ error: 'Souhlas je neplatný nebo zastaralý. Obnovte stránku a zkuste to znovu.' }, { status: 400 });
+      return rejectCheckout('consent_stale', { error: 'Souhlas je neplatný nebo zastaralý. Obnovte stránku a zkuste to znovu.' }, 400, { contractType });
     }
     const consent: CheckoutConsent = {
       accepted: true,
@@ -167,7 +189,7 @@ export async function POST(req: Request) {
         ? (body.payload as Record<string, unknown>)
         : body;
     if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
-      return NextResponse.json({ error: 'Neplatná data dokumentu.' }, { status: 400 });
+      return rejectCheckout('payload_not_object', { error: 'Neplatná data dokumentu.' }, 400, { contractType });
     }
     if (!isBoundedJsonObject(payload, {
       maxDepth: 6,
@@ -175,17 +197,17 @@ export async function POST(req: Request) {
       maxArrayLength: 100,
       maxStringLength: 20_000,
     })) {
-      return NextResponse.json({ error: 'Data dokumentu překračují povolené limity.' }, { status: 400 });
+      return rejectCheckout('payload_too_large', { error: 'Data dokumentu překračují povolené limity.' }, 400, { contractType });
     }
     const payloadValidation = validateContractPayload(contractType, payload);
     if (!payloadValidation.success) {
       const firstIssue = payloadValidation.error.issues[0];
-      return NextResponse.json(
-        {
-          error: 'Dokument neobsahuje všechny povinné údaje.',
-          field: firstIssue?.path.join('.') || undefined,
-        },
-        { status: 400 },
+      const invalidField = firstIssue?.path.join('.') || undefined;
+      return rejectCheckout(
+        'payload_invalid',
+        { error: 'Dokument neobsahuje všechny povinné údaje.', field: invalidField },
+        400,
+        { contractType, field: invalidField },
       );
     }
 
@@ -213,9 +235,11 @@ export async function POST(req: Request) {
       console.error(
         `[checkout] Chybí Stripe Price ID pro tier=${paidTier} packageKey=${packageKey ?? 'none'}`,
       );
-      return NextResponse.json(
+      return rejectCheckout(
+        'internal_error',
         { error: 'Konfigurace ceny nenalezena. Kontaktujte podporu.' },
-        { status: 500 },
+        500,
+        { contractType },
       );
     }
 
@@ -255,9 +279,11 @@ export async function POST(req: Request) {
       );
     } catch (redisErr) {
       console.error('[checkout] Redis draft save failed:', redisErr);
-      return NextResponse.json(
+      return rejectCheckout(
+        'draft_persist_failed',
         { error: 'Dokument se nepodařilo bezpečně uložit před platbou. Zkuste to prosím znovu.' },
-        { status: 503 },
+        503,
+        { contractType },
       );
     }
 
@@ -328,9 +354,16 @@ export async function POST(req: Request) {
 
   } catch (error) {
     console.error('[checkout] Fatal error:', error);
-    return NextResponse.json(
+    // Everything reachable before Stripe reports its own reason and returns early,
+    // so an error surfacing here is either Stripe itself or genuinely unexpected.
+    const isStripeError =
+      typeof error === 'object' && error !== null && 'type' in error &&
+      typeof (error as { type: unknown }).type === 'string' &&
+      (error as { type: string }).type.startsWith('Stripe');
+    return rejectCheckout(
+      isStripeError ? 'stripe_unavailable' : 'internal_error',
       { error: 'Chyba při vytváření platby. Zkuste to prosím znovu.' },
-      { status: 500 },
+      500,
     );
   }
 }

@@ -18,6 +18,7 @@ export const ANALYTICS_EVENT_NAMES = [
   'builder_checkout_consent_missing',
   'builder_checkout_clicked',
   'stripe_checkout_started',
+  'checkout_rejected',
   'checkout_addon_selected',
   'checkout_addon_removed',
   'checkout_addon_purchased',
@@ -75,7 +76,35 @@ export type AnalyticsEventParams = {
   selected_addons_count?: number;
   download_format?: 'pdf' | 'docx';
   download_sequence?: number;
+  /** Which guard turned a checkout request away; see CHECKOUT_REJECT_REASONS. */
+  reject_reason?: CheckoutRejectReason;
+  /** Payload field that failed validation, when the guard identified one. */
+  reject_field?: string;
 };
+
+/**
+ * A rejected checkout is invisible to the buyer and to us: the request never
+ * reaches Stripe, so no funnel event is recorded and no order exists. Naming
+ * every guard lets a broken checkout show up in reporting instead of being
+ * mistaken for people changing their minds.
+ */
+export const CHECKOUT_REJECT_REASONS = [
+  'invalid_json',
+  'rate_limited',
+  'storage_unavailable',
+  'invalid_contract_type',
+  'invalid_email',
+  'consent_missing',
+  'consent_stale',
+  'payload_not_object',
+  'payload_too_large',
+  'payload_invalid',
+  'draft_persist_failed',
+  'stripe_unavailable',
+  'internal_error',
+] as const;
+
+export type CheckoutRejectReason = (typeof CHECKOUT_REJECT_REASONS)[number];
 
 type AnalyticsPayload = {
   event: AnalyticsEventName;
