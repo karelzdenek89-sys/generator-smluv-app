@@ -135,3 +135,73 @@ for (const builder of BUILDERS) {
     ).toEqual([]);
   });
 }
+
+/**
+ * The six contracts offered to foreigners run the same builders under ?lang=,
+ * with translated labels and extra locale notices. A buyer who cannot pay in
+ * their own language is just as lost as one blocked in Czech, so each locale is
+ * carried through the identical check.
+ */
+const EXPAT_BUILDERS: Builder[] = [
+  { route: '/najem', contractType: 'lease' },
+  { route: '/podnajem', contractType: 'sublease' },
+  { route: '/pracovni', contractType: 'employment' },
+  { route: '/dpp', contractType: 'dpp' },
+  { route: '/plna-moc', contractType: 'power_of_attorney' },
+  { route: '/auto', contractType: 'car_sale' },
+];
+
+for (const builder of EXPAT_BUILDERS) {
+  for (const lang of ['en', 'ua'] as const) {
+    test(`${builder.route}?lang=${lang} sends a payload the server schema accepts`, async ({ page }) => {
+      let captured: Record<string, unknown> | null = null;
+
+      await page.route('**/api/analytics', (route) => route.fulfill({ status: 204, body: '' }));
+      await page.route('**/api/checkout', async (route) => {
+        captured = JSON.parse(route.request().postData() ?? '{}');
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({ url: 'https://example.test/stub-checkout' }),
+        });
+      });
+
+      await page.goto(`${builder.route}?lang=${lang}`);
+      await expect(page.locator('main h1').first()).toBeVisible();
+
+      await fillEveryField(page);
+
+      const generate = page.locator('[data-builder-generate]').first();
+      await generate.scrollIntoViewIfNeeded();
+      await expect(generate).toBeEnabled();
+      await generate.click();
+
+      await expect(page.getByTestId('lease-checkout-modal')).toBeVisible();
+      await page.getByTestId('checkout-delivery-email').fill('kupujici@example.com');
+      await page.getByTestId('lease-checkout-consent').check();
+      await page.getByTestId('lease-checkout-pay').click();
+
+      await expect
+        .poll(() => captured, { message: `${builder.route}?lang=${lang}: checkout request was never sent` })
+        .not.toBeNull();
+
+      const body = captured as unknown as {
+        contractType?: string;
+        lang?: string;
+        payload?: Record<string, unknown>;
+      };
+      expect(body.contractType, `${builder.route}?lang=${lang}: wrong contractType`).toBe(builder.contractType);
+      expect(body.lang, `${builder.route}?lang=${lang}: locale lost on the way to checkout`).toBe(lang);
+
+      const result = validateContractPayload(builder.contractType, body.payload ?? {});
+      const issues = result.success
+        ? []
+        : result.error.issues.map((issue) => `${issue.path.join('.') || '(root)'}: ${issue.message}`);
+
+      expect(
+        issues,
+        `${builder.route}?lang=${lang}: a fully filled form produced a payload the server rejects`,
+      ).toEqual([]);
+    });
+  }
+}
