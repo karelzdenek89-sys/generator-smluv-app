@@ -5,7 +5,7 @@ import GuideLandingPage from '@/app/components/GuideLandingPage';
 export const metadata: Metadata = {
   title: 'Balíček pro prodej vozidla',
   description:
-    'Praktické řešení pro standardní převod vozidla. Kupní smlouva na vozidlo v komplexní variantě, předávací protokol, potvrzení o převzetí vozidla, klíčů a dokladů a související podklady k převodu.',
+    'Řešení pro standardní převod vozidla. Kupní smlouva v komplexní variantě, předávací protokol a potvrzení o převzetí vozidla, klíčů a dokladů.',
   alternates: { canonical: 'https://www.smlouvahned.cz/balicek-prodej-vozidla' },
   openGraph: {
     title: 'Balíček pro prodej vozidla',

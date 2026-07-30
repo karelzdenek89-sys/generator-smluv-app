@@ -7,7 +7,7 @@ import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
 export const metadata = blogArticlePageMetadata("nda-smlouva-mlcenlivost", {
-  title: "NDA smlouva o mlčenlivosti 2026: Co musí obsahovat a nejčastější chyby",
+  title: "NDA smlouva o mlčenlivosti 2026: co musí obsahovat",
   description: "Průvodce NDA smlouvou o mlčenlivosti pro rok 2026. Co chrání NDA, jak vymezit důvěrné informace, smluvní pokuta, jednostranná vs. vzájemná NDA a nejčastější chyby.",
   keywords: ['NDA smlouva',
     'smlouva o mlčenlivosti',
@@ -40,7 +40,7 @@ export default function NdaSmlouvaPage() {
           <time className="text-xs text-slate-600" dateTime="2026-04-01">1. dubna 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
-          NDA smlouva o mlčenlivosti 2026: Co musí obsahovat a nejčastější chyby
+          NDA smlouva o mlčenlivosti 2026: co musí obsahovat
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-400">
           Sdílíte obchodní tajemství, zákaznické databáze nebo know-how s partnerem, dodavatelem nebo

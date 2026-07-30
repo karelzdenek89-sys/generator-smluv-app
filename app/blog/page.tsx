@@ -22,7 +22,7 @@ const collectionSchema = {
   name: 'Blog | SmlouvaHned',
   url: `${SITE_URL}/blog`,
   inLanguage: 'cs',
-  description: 'Praktické průvodce ke smluvním dokumentům a běžným právním situacím (legislativa 2026).',
+  description: 'Praktické průvodce ke smluvním dokumentům a běžným právním situacím podle legislativy 2026 — nájem, práce a DPP, prodej auta, plná moc i uznání dluhu.',
   isPartOf: { '@type': 'WebSite', url: SITE_URL, name: 'SmlouvaHned' },
   mainEntity: {
     '@type': 'ItemList',

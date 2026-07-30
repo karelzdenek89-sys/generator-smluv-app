@@ -7,8 +7,8 @@ import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
 export const metadata = blogArticlePageMetadata("kupni-smlouva-na-auto-2026", {
-  title: "Kupní smlouva na auto 2026: Co musí obsahovat a jak se chránit",
-  description: "Průvodce kupní smlouvou na auto pro rok 2026. Co musí smlouva obsahovat, jak ověřit vozidlo, nejčastější chyby prodejců i kupujících a proč nestačí rukou psaná dohoda.",
+  title: "Kupní smlouva na auto 2026: co musí obsahovat",
+  description: "Průvodce kupní smlouvou na auto pro rok 2026. Co musí obsahovat, jak ověřit vozidlo, nejčastější chyby prodejců i kupujících a proč nestačí ruční dohoda.",
   keywords: ['kupní smlouva na auto 2026',
     'co musí obsahovat kupní smlouva na auto',
     'kupní smlouva vozidlo vzor',
@@ -42,7 +42,7 @@ export default function KupniSmlouvaAutoPage() {
           <time className="text-xs text-slate-600" dateTime="2026-03-15">15. března 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
-          Kupní smlouva na auto 2026: Co musí obsahovat a jak se chránit
+          Kupní smlouva na auto 2026: co musí obsahovat
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-400">
           Prodáváte nebo kupujete ojetý vůz? Správně sepsaná kupní smlouva na auto vás ochrání před

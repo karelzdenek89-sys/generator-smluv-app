@@ -6,7 +6,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz
 export const metadata: Metadata = {
   title: 'Smlouva o dílo 2026 — formulář online',
   description:
-    'Smlouva o dílo 2026 dle § 2586 OZ. Dílo, cena, termín a sankce — PDF ihned ke stažení. Od 99 Kč.',
+    'Vytvořte smlouvu o dílo online dle § 2586 OZ. Vymezení díla, cena, termín, předání i sankce za prodlení. PDF připravené k podpisu ihned, od 99 Kč.',
   keywords: [
     'vytvořit smlouvu o dílo',
     'smlouva o dílo formulář',

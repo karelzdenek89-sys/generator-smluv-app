@@ -2,7 +2,7 @@
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 
 export const metadata = blogArticlePageMetadata('svarcsystem-osvc-2026', {
-  title: 'Švarcsystém v praxi 2026: Kdy hrozí, jaká jsou rizika a jak ho neumožnit',
+  title: 'Švarcsystém 2026: kdy hrozí a jaká jsou rizika',
   description:
     'Co je švarcsystém, jaké znaky závislé práce sleduje inspekce práce a v čem se liší skutečná OSVČ od zastřeného zaměstnance. Praktický průvodce pro OSVČ i odběratele.',
 });
@@ -18,7 +18,7 @@ export default function SvarcsystemOsvc2026Page() {
       dateModifiedLabel="29. května 2026"
       breadcrumbLabel="Švarcsystém 2026"
       slug="svarcsystem-osvc-2026"
-      title="Švarcsystém v praxi 2026: Kdy hrozí, jaká jsou rizika a jak ho neumožnit"
+      title="Švarcsystém 2026: kdy hrozí a jaká jsou rizika"
       intro="Pojem švarcsystém se v posledních letech vrátil do středu pozornosti inspekce práce. Jde o zastírání pracovněprávního vztahu fakturací mezi OSVČ a odběratelem — formálně dva podnikatelé, fakticky zaměstnanec a zaměstnavatel. Tento průvodce shrnuje, jaké znaky kontroly sledují, jaká hrozí sankce a jak v praxi rozlišit zdravou B2B spolupráci od zastřeného zaměstnání."
       toc={[
         { href: '#co-je-svarcsystem', label: 'Co je švarcsystém a kde má kořeny' },

@@ -6,7 +6,7 @@ const canonicalUrl = `${SITE_URL}/gdpr`;
 
 export const metadata: Metadata = {
   title: 'Ochrana osobních údajů (GDPR)',
-  description: 'Zásady zpracování osobních údajů platformy SmlouvaHned.cz v souladu s GDPR (nařízení EU 2016/679).',
+  description: 'Zásady zpracování osobních údajů platformy SmlouvaHned.cz v souladu s GDPR (nařízení EU 2016/679) — jaké údaje zpracováváme, proč a jak dlouho.',
   alternates: { canonical: canonicalUrl },
   openGraph: {
     title: 'Ochrana osobních údajů (GDPR)',

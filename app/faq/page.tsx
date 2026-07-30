@@ -7,7 +7,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz
 export const metadata: Metadata = {
   title: 'Časté dotazy (FAQ) 2026',
   description:
-    'Odpovědi na časté otázky o tvorbě smluv online v roce 2026 — platnost dokumentů, ceny, GDPR, vrácení peněz.',
+    'Odpovědi na časté otázky o tvorbě smluv online v roce 2026 — platnost a použitelnost dokumentů, ceny, ochrana údajů podle GDPR i vrácení peněz.',
   alternates: { canonical: `${BASE_URL}/faq` },
   openGraph: {
     title: 'Časté dotazy (FAQ) 2026',

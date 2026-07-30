@@ -5,7 +5,7 @@ import { O_PROJEKTU_COMPARISON_ROWS } from '@/lib/marketing/differentiation';
 export const metadata: Metadata = {
   title: 'O projektu — Jak nástroj vznikl a jak funguje',
   description:
-    'SmlouvaHned.cz je softwarový nástroj pro automatizovanou tvorbu standardizovaných smluvních dokumentů. Provozovatel: Karel Zdeněk, IČO 23660295. Zjistěte, jak šablony vznikají a proč nejde o advokátní kancelář.',
+    'SmlouvaHned.cz je softwarový nástroj pro tvorbu standardizovaných smluvních dokumentů. Jak šablony vznikají a proč nejde o advokátní kancelář.',
   openGraph: {
     title: 'O projektu',
     description:

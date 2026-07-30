@@ -2,7 +2,7 @@ import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 
 export const metadata = blogArticlePageMetadata("doklady-pri-prodeji-auta-2026", {
-  title: "Jaké doklady předat při prodeji auta 2026: Přehled pro běžný převod vozidla",
+  title: "Doklady při prodeji auta 2026: kompletní přehled",
   description: "Přehled dokladů a podkladů, které se při běžném prodeji auta předávají kupujícímu. Jak pracovat s technickými doklady, klíči a dalšími přílohami převodu.",
 });
 
@@ -18,7 +18,7 @@ export default function DokladyPriProdejiAuta2026Page() {
         dateLabel="6. dubna 2026"
         breadcrumbLabel="Jaké doklady předat při prodeji auta 2026"
         slug="doklady-pri-prodeji-auta-2026"
-        title="Jaké doklady předat při prodeji auta 2026: Přehled pro běžný převod vozidla"
+        title="Doklady při prodeji auta 2026: kompletní přehled"
         intro="Při prodeji auta nejde jen o podpis kupní smlouvy. V praxi je důležité, aby obě strany měly jasno i v tom, jaké doklady a podklady byly při převodu skutečně předány."
         toc={[
           { href: '#proc-na-dokladech-zalezi', label: 'Proč na dokladech záleží' },

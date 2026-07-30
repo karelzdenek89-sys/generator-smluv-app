@@ -5,7 +5,7 @@ import GuideLandingPage from '@/app/components/GuideLandingPage';
 export const metadata: Metadata = {
   title: 'Balíček pro pronajímatele',
   description:
-    'Praktické řešení pro standardní pronájem bytu nebo domu. Nájemní smlouva v komplexní variantě, předávací protokol, potvrzení o převzetí kauce a související podklady k podpisu a předání.',
+    'Řešení pro standardní pronájem bytu nebo domu. Nájemní smlouva v komplexní variantě, předávací protokol a potvrzení o převzetí kauce v jednom balíčku.',
   alternates: { canonical: 'https://www.smlouvahned.cz/balicek-pronajimatel' },
   openGraph: {
     title: 'Balíček pro pronajímatele',

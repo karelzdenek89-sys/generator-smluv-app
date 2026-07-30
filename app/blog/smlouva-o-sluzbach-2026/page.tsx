@@ -7,8 +7,8 @@ import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
 export const metadata = blogArticlePageMetadata("smlouva-o-sluzbach-2026", {
-  title: "Smlouva o poskytování služeb 2026: Vzor, náležitosti a jak se chránit",
-  description: "Průvodce smlouvou o poskytování služeb pro rok 2026. Povinné náležitosti, rozdíl oproti smlouvě o dílo, odpovědnost za vady, reklamace, výpovědní podmínky a nejčastější chyby.",
+  title: "Smlouva o poskytování služeb 2026: vzor a náležitosti",
+  description: "Průvodce smlouvou o poskytování služeb pro rok 2026. Povinné náležitosti, rozdíl oproti smlouvě o dílo, odpovědnost za vady a výpovědní podmínky.",
   keywords: ['smlouva o poskytování služeb',
     'smlouva o službách vzor 2026',
     'smlouva o dílo vs smlouva o službách',
@@ -40,7 +40,7 @@ export default function SmlouvaOSluzbach2026Page() {
           <time className="text-xs text-slate-600" dateTime="2026-04-02">2. dubna 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
-          Smlouva o poskytování služeb 2026: Vzor, náležitosti a jak se chránit
+          Smlouva o poskytování služeb 2026: vzor a náležitosti
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-400">
           Poskytujete nebo objednáváte služby? Bez písemné smlouvy riskujete spory o rozsah, cenu

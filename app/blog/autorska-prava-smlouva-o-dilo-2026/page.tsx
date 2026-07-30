@@ -2,7 +2,7 @@
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 
 export const metadata = blogArticlePageMetadata('autorska-prava-smlouva-o-dilo-2026', {
-  title: 'Autorská práva ve smlouvě o dílo a spolupráci 2026: Kdo vlastní výsledek',
+  title: 'Autorská práva ve smlouvě o dílo 2026: kdo vlastní dílo',
   description:
     'Jak ve smlouvě s freelancerem nebo agenturou ošetřit autorská práva k softwaru, designu, textům nebo fotografiím. Licence vs. převod, výhradnost, dílo zaměstnanecké.',
 });
@@ -18,7 +18,7 @@ export default function AutorskaPravaSmlouvaODilo2026Page() {
       dateModifiedLabel="29. května 2026"
       breadcrumbLabel="Autorská práva ve smlouvě 2026"
       slug="autorska-prava-smlouva-o-dilo-2026"
-      title="Autorská práva ve smlouvě o dílo a spolupráci 2026: Kdo vlastní výsledek"
+      title="Autorská práva ve smlouvě o dílo 2026: kdo vlastní dílo"
       intro="Při objednání softwaru, grafiky, webu nebo textu od freelancera nebo agentury vzniká dílo chráněné autorským zákonem. Kdo ho po dokončení vlastní, kdo ho smí používat, šířit, upravovat — to neurčuje fakturace, ale smlouva. Tento průvodce shrnuje rozdíl mezi licencí a převodem, ukazuje typické chyby a vysvětluje, kdy se uplatní režim zaměstnaneckého díla."
       toc={[
         { href: '#autorske-pravo', label: 'Co je autorské právo a co chrání' },

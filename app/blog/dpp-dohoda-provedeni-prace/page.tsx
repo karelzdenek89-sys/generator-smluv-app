@@ -7,8 +7,8 @@ import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
 export const metadata = blogArticlePageMetadata("dpp-dohoda-provedeni-prace", {
-  title: "DPP dohoda o provedení práce 2026: Limity, odvody a jak ji správně napsat",
-  description: "Průvodce dohodou o provedení práce pro rok 2026. Limit 300 hodin ročně, rozhodný příjem 12 000 Kč, zdravotní pojištění, povinné náležitosti a nejčastější chyby zaměstnavatelů.",
+  title: "Dohoda o provedení práce 2026: limity a odvody",
+  description: "Průvodce dohodou o provedení práce pro rok 2026. Limit 300 hodin ročně, rozhodný příjem 12 000 Kč, odvody, povinné náležitosti a nejčastější chyby.",
   keywords: ['DPP dohoda o provedení práce',
     'dohoda o provedení práce vzor 2026',
     'DPP limit hodin',
@@ -40,7 +40,7 @@ export default function DppPage() {
           <time className="text-xs text-slate-600" dateTime="2026-04-02">2. dubna 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
-          DPP dohoda o provedení práce 2026: Limity, odvody a jak ji správně napsat
+          Dohoda o provedení práce 2026: limity a odvody
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-400">
           Dohoda o provedení práce je nejoblíbenější forma brigády a přivýdělku — ale skrývá řadu pastí.

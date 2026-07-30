@@ -2,9 +2,9 @@
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 
 export const metadata = blogArticlePageMetadata('viceprace-smlouva-o-dilo-2026', {
-  title: 'Vícepráce a změny díla 2026: Jak je ošetřit, ať nevzniká spor o cenu',
+  title: 'Vícepráce a změny díla 2026: jak předejít sporu o cenu',
   description:
-    'Jak ve smlouvě o dílo upravit vícepráce, změnové listy, fixaci ceny a předávací protokol. Praktický průvodce pro objednatele i zhotovitele — stavba, rekonstrukce, software, design.',
+    'Jak ve smlouvě o dílo upravit vícepráce, změnové listy, fixaci ceny a předání díla. Praktický průvodce pro objednatele i zhotovitele.',
 });
 
 export default function VicepraceSmlouvaODilo2026Page() {
@@ -18,7 +18,7 @@ export default function VicepraceSmlouvaODilo2026Page() {
       dateModifiedLabel="29. května 2026"
       breadcrumbLabel="Vícepráce a změny díla 2026"
       slug="viceprace-smlouva-o-dilo-2026"
-      title="Vícepráce a změny díla 2026: Jak je ošetřit, ať nevzniká spor o cenu"
+      title="Vícepráce a změny díla 2026: jak předejít sporu o cenu"
       intro="Vícepráce jsou nejčastější zdroj sporů ve smlouvě o dílo — u stavby, rekonstrukce i u softwaru. Objednatel počítá s pevnou cenou, zhotoviteli během práce přibyly úkoly a obě strany se neumí domluvit na tom, kdo má co platit. Tento průvodce shrnuje, jak vícepráce ve smlouvě předem ošetřit, jaký je rozdíl mezi pevnou cenou a rozpočtem a kdy lze cenu zákonem upravit."
       toc={[
         { href: '#co-jsou-viceprace', label: 'Co jsou vícepráce a kde vznikají' },

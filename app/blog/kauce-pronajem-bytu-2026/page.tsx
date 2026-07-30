@@ -2,7 +2,7 @@ import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 
 export const metadata = blogArticlePageMetadata("kauce-pronajem-bytu-2026", {
-  title: "Kauce při pronájmu bytu 2026: Jak ji správně sjednat a potvrdit",
+  title: "Kauce při pronájmu bytu 2026: jak ji správně sjednat",
   description: "Praktický průvodce k jistotě při pronájmu bytu. Kdy se používá, co uvést do nájemní smlouvy, jak potvrdit převzetí kauce a kdy ji po skončení nájmu vracet.",
 });
 
@@ -18,7 +18,7 @@ export default function KaucePronajemBytu2026Page() {
         dateLabel="6. dubna 2026"
         breadcrumbLabel="Kauce při pronájmu bytu 2026"
         slug="kauce-pronajem-bytu-2026"
-        title="Kauce při pronájmu bytu 2026: Jak ji správně sjednat a potvrdit"
+        title="Kauce při pronájmu bytu 2026: jak ji správně sjednat"
         intro="Kauce, správně jistota, patří mezi nejčastější body nájemní smlouvy. Nejasně sjednaná jistota ale vede k častým sporům: kdy byla uhrazena, v jaké výši, za jakých podmínek se vrací a co z ní lze započíst."
         toc={[
           { href: '#co-je-jistota', label: 'Co je jistota a k čemu slouží' },

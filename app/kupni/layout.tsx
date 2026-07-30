@@ -6,7 +6,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz
 export const metadata: Metadata = {
   title: 'Kupní smlouva na věc 2026 — formulář online',
   description:
-    'Kupní smlouva na movitou věc 2026 dle § 2079 OZ. Strany, popis věci, cena, předání — PDF ihned. Od 99 Kč.',
+    'Vytvořte kupní smlouvu na movitou věc online dle § 2079 OZ. Strany, popis věci, kupní cena, předání i odpovědnost za vady. PDF ihned, od 99 Kč.',
   keywords: [
     'vytvořit kupní smlouvu',
     'kupní smlouva formulář',

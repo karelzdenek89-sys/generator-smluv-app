@@ -3,7 +3,7 @@ import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 
 export const metadata = blogArticlePageMetadata("plna-moc-zastupovani-cizincu-2026", {
-  title: "Plná moc pro zastupování cizinců 2026: Náležitosti a úřední ověření podpisu",
+  title: "Plná moc pro cizince 2026: náležitosti a ověření",
   description: "Jak správně sepsat plnou moc pro cizince v České republice v roce 2026. Kdy je potřeba úředně ověřený podpis (Czech POINT) a jak se vyhnout nejčastějším chybám.",
 });
 

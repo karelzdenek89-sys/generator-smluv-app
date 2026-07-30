@@ -7,8 +7,8 @@ import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
 export const metadata = blogArticlePageMetadata("kupni-smlouva-movita-vec", {
-  title: "Kupní smlouva na věc 2026: Co musí obsahovat a nejčastější chyby",
-  description: "Průvodce kupní smlouvou na movitou věc pro rok 2026. Zákonné náležitosti dle OZ, jak popsat předmět koupě, odpovědnost za vady, bezpečné předání a nejčastější chyby kupujících i prodávajících.",
+  title: "Kupní smlouva na movitou věc 2026: obsah a chyby",
+  description: "Průvodce kupní smlouvou na movitou věc 2026. Zákonné náležitosti dle OZ, jak popsat předmět koupě, odpovědnost za vady a bezpečné předání věci.",
   keywords: ['kupní smlouva na věc',
     'kupní smlouva movitá věc',
     'kupní smlouva vzor 2026',
@@ -40,7 +40,7 @@ export default function KupniSmlouvaMovitaVecPage() {
           <time className="text-xs text-slate-600" dateTime="2026-03-25">25. března 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
-          Kupní smlouva na věc 2026: Co musí obsahovat a nejčastější chyby
+          Kupní smlouva na movitou věc 2026: obsah a chyby
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-400">
           Prodáváte nebo kupujete věc — elektroniku, nábytek, stroj nebo jiný hodnotný předmět?

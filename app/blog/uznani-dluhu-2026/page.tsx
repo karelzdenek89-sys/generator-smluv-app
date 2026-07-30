@@ -7,8 +7,8 @@ import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
 export const metadata = blogArticlePageMetadata("uznani-dluhu-2026", {
-  title: "Uznání dluhu 2026: Co to je, co musí obsahovat a proč je důležité",
-  description: "Průvodce uznáním dluhu pro rok 2026 (§ 2053 OZ). Co je uznání dluhu, jak se liší od smlouvy o půjčce, jaké náležitosti musí mít, jak přerušuje promlčení a nejčastější chyby.",
+  title: "Uznání dluhu 2026: co musí obsahovat a proč je důležité",
+  description: "Průvodce uznáním dluhu pro rok 2026 (§ 2053 OZ). Jak se liší od smlouvy o půjčce, jaké náležitosti musí mít a jak ovlivní promlčecí dobu.",
   keywords: ['uznání dluhu vzor 2026',
     'uznání dluhu náležitosti',
     'uznání dluhu promlčení',
@@ -40,7 +40,7 @@ export default function UznaniDluhu2026Page() {
           <time className="text-xs text-slate-600" dateTime="2026-04-02">2. dubna 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
-          Uznání dluhu 2026: Co to je, co musí obsahovat a proč je důležité
+          Uznání dluhu 2026: co musí obsahovat a proč je důležité
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-400">
           Dlužník vám dluží peníze, ale odmítá podepsat novou smlouvu o půjčce? Uznání dluhu je

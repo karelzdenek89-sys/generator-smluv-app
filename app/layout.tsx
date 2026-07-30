@@ -25,11 +25,11 @@ const BASE_URL = SITE_URL;
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: 'Generování smluv online 2026 — hotový PDF dokument za 5 minut | SmlouvaHned',
+    default: 'Generování smluv online 2026 — PDF za 5 minut | SmlouvaHned',
     template: '%s | SmlouvaHned',
   },
   description:
-    'Generování smluv online bez právníka. Nájemní smlouva, kupní smlouva, smlouva o dílo, NDA a další — vyplníte formulář, dostanete PDF připravené k podpisu. Dle legislativy 2026.',
+    'Generování smluv online. Nájemní a kupní smlouva, smlouva o dílo, DPP, NDA a další — vyplníte formulář a stáhnete PDF připravené k podpisu. Dle legislativy 2026.',
   authors: [{ name: 'SmlouvaHned', url: BASE_URL }],
   creator: 'SmlouvaHned',
   openGraph: {
@@ -37,9 +37,9 @@ export const metadata: Metadata = {
     locale: 'cs_CZ',
     url: BASE_URL,
     siteName: 'SmlouvaHned',
-    title: 'Generování smluv online 2026 — hotový PDF dokument za 5 minut',
+    title: 'Generování smluv online 2026 — PDF dokument za 5 minut',
     description:
-      'Generování smluv online bez právníka. Nájemní smlouva, kupní smlouva, NDA a další — formulář, PDF ihned ke stažení. Dle legislativy 2026.',
+      'Generování smluv online. Nájemní a kupní smlouva, smlouva o dílo, NDA a další — vyplníte formulář a stáhnete PDF ihned. Dle legislativy 2026.',
     images: [
       {
         url: OG_IMAGE_PATH,

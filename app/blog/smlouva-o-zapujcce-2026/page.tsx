@@ -7,8 +7,8 @@ import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
 export const metadata = blogArticlePageMetadata("smlouva-o-zapujcce-2026", {
-  title: "Smlouva o zápůjčce 2026: Vzor + nejčastější chyby při půjčce peněz",
-  description: "Průvodce smlouvou o zápůjčce (půjčce) pro rok 2026. Co musí obsahovat dle § 2390 OZ, jak nastavit úrok, splátkový kalendář, co dělat při nesplacení a proč nestačí SMS.",
+  title: "Smlouva o zápůjčce 2026: vzor a nejčastější chyby",
+  description: "Průvodce smlouvou o zápůjčce pro rok 2026. Co musí obsahovat dle § 2390 OZ, jak nastavit úrok a splátky, co dělat při nesplacení a proč nestačí SMS.",
   keywords: ['smlouva o zápůjčce',
     'smlouva o půjčce vzor 2026',
     'půjčka smlouva',
