@@ -7,7 +7,7 @@ import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
 export const metadata = blogArticlePageMetadata("podnajemni-smlouva-2026", {
-  title: "Podnájemní smlouva 2026: Co musí obsahovat a souhlas pronajímatele",
+  title: "Podnájemní smlouva 2026: obsah a souhlas pronajímatele",
   description: "Průvodce podnájemní smlouvou pro rok 2026. Kdy potřebujete souhlas pronajímatele, co musí smlouva obsahovat, práva podnájemce a nejčastější chyby při podnájmu bytu.",
   keywords: ['podnájemní smlouva',
     'podnájem bytu 2026',
@@ -40,7 +40,7 @@ export default function PodnajemniSmlouvaPage() {
           <time className="text-xs text-slate-600" dateTime="2026-04-02">2. dubna 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
-          Podnájemní smlouva 2026: Co musí obsahovat a souhlas pronajímatele
+          Podnájemní smlouva 2026: obsah a souhlas pronajímatele
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-400">
           Podnájem je situace, kdy nájemce přenechá byt nebo jeho část třetí osobě — podnájemci.

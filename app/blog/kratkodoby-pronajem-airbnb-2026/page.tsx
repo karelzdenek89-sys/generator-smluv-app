@@ -3,7 +3,7 @@ import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 
 export const metadata = blogArticlePageMetadata('kratkodoby-pronajem-airbnb-2026', {
-  title: 'Krátkodobý pronájem bytu a Airbnb 2026: Co sjednat ve smlouvě',
+  title: 'Krátkodobý pronájem a Airbnb 2026: co sjednat ve smlouvě',
   description:
     'Krátkodobé ubytování přes Airbnb nebo Booking — podnájem, ubytovací služba nebo porušení účelu nájmu. Co ve smlouvě výslovně upravit a proč nestačí ústní dohoda.',
 });
@@ -17,7 +17,7 @@ export default function KratkodobyPronajemAirbnb2026Page() {
       dateLabel="29. května 2026"
       breadcrumbLabel="Krátkodobý pronájem a Airbnb 2026"
       slug="kratkodoby-pronajem-airbnb-2026"
-      title="Krátkodobý pronájem bytu a Airbnb 2026: Co sjednat ve smlouvě"
+      title="Krátkodobý pronájem a Airbnb 2026: co sjednat ve smlouvě"
       intro="Krátkodobé přenechávání bytu hostům přes Airbnb, Booking nebo podobné platformy může být z pohledu vztahu nájemce a pronajímatele posuzováno jako přenechání bytu třetím osobám, podnájem nebo porušení účelu nájmu. Vztah mezi provozovatelem a hostem ale nemusí být klasický nájem — často se blíží ubytovací službě. Judikatura upozorňuje, že krátkodobé ubytování nemusí naplňovat účel bydlení, ale spíše ubytovací potřebu. Tento průvodce shrnuje, co je vhodné mít ve smlouvě sepsané, jaká rizika hrozí a proč nestačí ústní domluva."
       toc={[
         { href: '#co-je-kratkodoby', label: 'Airbnb není vždy jen podnájem' },

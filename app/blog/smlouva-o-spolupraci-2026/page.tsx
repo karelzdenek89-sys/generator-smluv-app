@@ -7,8 +7,8 @@ import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
 export const metadata = blogArticlePageMetadata("smlouva-o-spolupraci-2026", {
-  title: "Smlouva o spolupráci OSVČ 2026: Co musí obsahovat a jak se chránit",
-  description: "Průvodce smlouvou o spolupráci pro OSVČ a freelancery. Povinné náležitosti, vymezení předmětu spolupráce, honorář, autorská práva, mlčenlivost a jak se chránit před švarcsystémem.",
+  title: "Smlouva o spolupráci OSVČ 2026: co musí obsahovat",
+  description: "Průvodce smlouvou o spolupráci pro OSVČ a freelancery. Náležitosti, předmět spolupráce, honorář, autorská práva a jak se vyhnout švarcsystému.",
   keywords: ['smlouva o spolupráci OSVČ',
     'smlouva o spolupráci vzor 2026',
     'freelancer smlouva',
@@ -40,7 +40,7 @@ export default function SmlouvaOSpolupraci2026Page() {
           <time className="text-xs text-slate-600" dateTime="2026-04-02">2. dubna 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
-          Smlouva o spolupráci OSVČ 2026: Co musí obsahovat a jak se chránit
+          Smlouva o spolupráci OSVČ 2026: co musí obsahovat
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-400">
           Pracujete jako freelancer nebo OSVČ a fakturujete klientům? Ústní dohoda nestačí.

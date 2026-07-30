@@ -6,7 +6,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz
 export const metadata: Metadata = {
   title: 'Smlouva o mlčenlivosti (NDA) online 2026',
   description:
-    'NDA online — jednostranná nebo oboustranná smlouva o mlčenlivosti s vymezením rozsahu. PDF ihned. Od 99 Kč.',
+    'Vytvořte NDA online — jednostrannou i oboustrannou smlouvu o mlčenlivosti. Vymezení důvěrných informací, doba trvání i sankce. PDF ihned, od 99 Kč.',
   keywords: [
     'smlouva o mlčenlivosti',
     'NDA smlouva vzor 2026',

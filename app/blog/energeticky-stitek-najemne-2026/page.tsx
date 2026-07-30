@@ -2,7 +2,7 @@
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 
 export const metadata = blogArticlePageMetadata('energeticky-stitek-najemne-2026', {
-  title: 'Energetický štítek (PENB) a nájemné 2026: Co potřebujete vědět při pronájmu bytu',
+  title: 'Energetický štítek PENB a nájemné 2026: co vědět',
   description:
     'Průkaz energetické náročnosti budovy, jeho povinné předložení nájemci, dopad na výši nájemného a vyúčtování energií. Praktický průvodce pro pronajímatele i nájemce.',
 });
@@ -18,7 +18,7 @@ export default function EnergetickyStitekNajemne2026Page() {
       dateModifiedLabel="29. května 2026"
       breadcrumbLabel="Energetický štítek a nájemné 2026"
       slug="energeticky-stitek-najemne-2026"
-      title="Energetický štítek (PENB) a nájemné 2026: Co potřebujete vědět při pronájmu bytu"
+      title="Energetický štítek PENB a nájemné 2026: co vědět"
       intro="Průkaz energetické náročnosti budovy (PENB) — laicky energetický štítek — se stal v posledních letech standardní součástí inzerce i nájemních smluv. Pro rok 2026 platí jeho povinné zveřejnění v inzerátu a předání nájemci. Tento průvodce shrnuje, kdy je PENB povinný, co znamenají jednotlivé třídy A–G, a jak energetický štítek souvisí s vyúčtováním energií a férovou cenou nájmu."
       toc={[
         { href: '#co-je-penb', label: 'Co je PENB a kdy je povinný' },

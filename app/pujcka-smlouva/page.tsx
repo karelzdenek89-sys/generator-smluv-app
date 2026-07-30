@@ -5,7 +5,7 @@ import RelatedContracts from '@/app/components/RelatedContracts';
 export const metadata: Metadata = {
   title: 'Smlouva o zápůjčce vzor 2026 | Průvodce půjčkou',
   description:
-    'Co má obsahovat smlouva o zápůjčce, jak upravit splatnost, úrok, vrácení peněz a na co si dát pozor před podpisem.',
+    'Co má obsahovat smlouva o zápůjčce podle § 2390 OZ, jak nastavit splatnost, úrok a vrácení peněz a na co si dát pozor před podpisem.',
   keywords: [
     'smlouva o zápůjčce',
     'půjčka smlouva vzor 2026',
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Smlouva o zápůjčce vzor 2026 | Průvodce půjčkou',
     description:
-      'Co má obsahovat smlouva o zápůjčce, jak upravit splatnost, úrok, vrácení peněz a na co si dát pozor před podpisem.',
+      'Co má obsahovat smlouva o zápůjčce podle § 2390 OZ, jak nastavit splatnost, úrok a vrácení peněz a na co si dát pozor před podpisem.',
     url: 'https://www.smlouvahned.cz/pujcka-smlouva',
   },
   twitter: {

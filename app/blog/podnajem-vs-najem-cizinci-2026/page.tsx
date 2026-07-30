@@ -3,8 +3,8 @@ import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 
 export const metadata = blogArticlePageMetadata("podnajem-vs-najem-cizinci-2026", {
-  title: "Podnájem vs. nájem pro cizince 2026: Rozdíly a riziko zamítnutí víza",
-  description: "Jaký je rozdíl mezi nájemní a podnájemní smlouvou pro cizince v ČR v roce 2026. Jaké doklady vyžaduje OAMP (MV ČR) a proč chybějící souhlas vlastníka bytu znamená zamítnutí víza.",
+  title: "Podnájem vs. nájem pro cizince 2026: rozdíly a rizika",
+  description: "Rozdíl mezi nájemní a podnájemní smlouvou pro cizince v ČR 2026. Jaké doklady vyžaduje OAMP a proč chybějící souhlas vlastníka ohrozí vízum.",
 });
 
 

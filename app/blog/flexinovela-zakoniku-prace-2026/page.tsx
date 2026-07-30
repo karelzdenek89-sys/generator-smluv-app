@@ -2,9 +2,9 @@
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 
 export const metadata = blogArticlePageMetadata('flexinovela-zakoniku-prace-2026', {
-  title: 'Flexinovela zákoníku práce 2026: Co se mění u DPP, DPČ a pracovních smluv',
+  title: 'Flexinovela zákoníku práce 2026: co se mění',
   description:
-    'Přehled hlavních změn, které do pracovněprávních vztahů přinesla novela zákoníku práce (tzv. flexinovela) — povinnosti zaměstnavatelů u DPP, nové oznamovací povinnosti, dopady na zaměstnance.',
+    'Přehled hlavních změn, které přinesla novela zákoníku práce (flexinovela) — povinnosti zaměstnavatelů u DPP, oznamovací povinnosti a dopady na zaměstnance.',
 });
 
 export default function FlexinovelaZakonikuPrace2026Page() {
@@ -18,7 +18,7 @@ export default function FlexinovelaZakonikuPrace2026Page() {
       dateModifiedLabel="29. května 2026"
       breadcrumbLabel="Flexinovela zákoníku práce 2026"
       slug="flexinovela-zakoniku-prace-2026"
-      title="Flexinovela zákoníku práce 2026: Co se mění u DPP, DPČ a pracovních smluv"
+      title="Flexinovela zákoníku práce 2026: co se mění"
       intro="Novela zákoníku práce známá jako flexinovela nabyla účinnosti 1. června 2025. Některé informační povinnosti, pravidla pro dohodáře a home office ale souvisí i s dřívější transpoziční novelou a postupnými změnami. Pro rok 2026 je praktické sledovat nejen samotnou flexinovelu, ale i navazující pravidla pro DPP, DPČ, evidenci dohod a limity pro odvody. Tento průvodce shrnuje hlavní změny u běžných situací."
       toc={[
         { href: '#proc-flexinovela', label: 'Proč flexinovela vznikla a co řeší' },

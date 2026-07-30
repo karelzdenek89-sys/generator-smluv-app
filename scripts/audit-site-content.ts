@@ -49,6 +49,74 @@ function assertNoDirectMetadataBrandTitles() {
   }
 }
 
+/**
+ * SERP truncation guards.
+ *
+ * The root layout appends the `%s | SmlouvaHned` template to every page title,
+ * so an over-long title loses its own keywords — not just the brand suffix.
+ * Descriptions outside this band either get cut off or waste snippet space.
+ */
+const MAX_TITLE_LENGTH = 60;
+const MIN_DESCRIPTION_LENGTH = 120;
+const MAX_DESCRIPTION_LENGTH = 165;
+
+/** Pulls the literal title/description a page actually ships to Next metadata. */
+function extractMetadataStrings(src: string): { title?: string; description?: string } {
+  const title =
+    src.match(/blogArticlePageMetadata\(\s*['"][^'"]+['"]\s*,\s*\{[\s\S]{0,200}?title:\s*['"]([^'"]+)['"]/)?.[1] ??
+    src.match(/landingPageMetadata\(\{[\s\S]{0,300}?title:\s*['"]([^'"]+)['"]/)?.[1] ??
+    src.match(/const\s+PAGE_TITLE\s*=\s*['"]([^'"]+)['"]/)?.[1] ??
+    src.match(/export const metadata[\s\S]{0,200}?\n\s*title:\s*['"]([^'"]+)['"]/)?.[1];
+
+  const description =
+    src.match(/const\s+PAGE_DESCRIPTION\s*=\s*\n?\s*['"]([^'"]+)['"]/)?.[1] ??
+    src.match(/(?:blogArticlePageMetadata|landingPageMetadata)\([\s\S]{0,400}?description:\s*\n?\s*['"]([^'"]+)['"]/)?.[1] ??
+    src.match(/export const metadata[\s\S]{0,400}?\n\s*description:\s*\n?\s*['"]([^'"]+)['"]/)?.[1];
+
+  return { title, description };
+}
+
+function assertMetadataLengths() {
+  for (const fullPath of walkAppFiles()) {
+    if (!/[\\/](page|layout)\.tsx$/.test(fullPath)) continue;
+    // Internal dashboards are robots-disallowed, so SERP limits do not apply.
+    if (/[\\/]interni[\\/]/.test(fullPath)) continue;
+
+    const rel = fullPath.slice(ROOT.length + 1).replace(/\\/g, '/');
+    const { title, description } = extractMetadataStrings(readFileSync(fullPath, 'utf8'));
+
+    if (title !== undefined) {
+      assert.ok(
+        title.length <= MAX_TITLE_LENGTH,
+        `${rel}: metadata.title is ${title.length} chars (max ${MAX_TITLE_LENGTH}); it will be truncated in search results once the brand template is appended`,
+      );
+    }
+    if (description !== undefined) {
+      assert.ok(
+        description.length >= MIN_DESCRIPTION_LENGTH && description.length <= MAX_DESCRIPTION_LENGTH,
+        `${rel}: metadata.description is ${description.length} chars (expected ${MIN_DESCRIPTION_LENGTH}-${MAX_DESCRIPTION_LENGTH})`,
+      );
+    }
+  }
+}
+
+/**
+ * Articles that call blogArticlePageMetadata(slug) without overrides inherit their
+ * title/excerpt from the registry, so the registry is subject to the same limits.
+ */
+function assertBlogRegistryLengths() {
+  const src = read('lib/blog-articles.ts');
+  const entries = [...src.matchAll(/slug:\s*'([^']+)',\s*\n\s*title:\s*'([^']+)'/g)];
+  assert.ok(entries.length > 0, 'lib/blog-articles.ts: no article entries found');
+
+  for (const [, slug, title] of entries) {
+    assert.ok(
+      title.length <= MAX_TITLE_LENGTH,
+      `lib/blog-articles.ts (${slug}): title is ${title.length} chars (max ${MAX_TITLE_LENGTH})`,
+    );
+  }
+}
+
 function assertSeoMetadata(path: string) {
   const src = read(path);
   assert.match(src, /alternates:\s*\{\s*canonical:/, `${path}: missing canonical metadata`);
@@ -58,6 +126,8 @@ function assertSeoMetadata(path: string) {
 
 function main() {
   assertNoDirectMetadataBrandTitles();
+  assertMetadataLengths();
+  assertBlogRegistryLengths();
 
   const publicFiles = [
     'app/page.tsx',

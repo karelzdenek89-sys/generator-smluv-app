@@ -6,7 +6,7 @@ export const metadata = landingPageMetadata({
   path: '/uznani-dluhu-vzor',
   title: 'Uznání dluhu 2026: promlčení, splátky a náležitosti',
   description:
-    'Průvodce uznáním dluhu pro rok 2026. Jak ovlivní promlčení, co uvést o důvodu a výši dluhu a jak přemýšlet o splátkách.',
+    'Průvodce uznáním dluhu pro rok 2026. Jak ovlivní promlčecí dobu, co uvést o důvodu a výši dluhu a jak nastavit splátkový kalendář.',
   keywords: [
     'uznání dluhu vzor 2026',
     'uznání dluhu online',

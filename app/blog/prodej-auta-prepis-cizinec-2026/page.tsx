@@ -3,8 +3,8 @@ import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 
 export const metadata = blogArticlePageMetadata("prodej-auta-prepis-cizinec-2026", {
-  title: "Kupní smlouva na auto a přepis vozidla cizincem 2026: Průvodce",
-  description: "Kompletní průvodce prodejem a koupí auta cizincem v ČR v roce 2026. Jaké doklady potřebujete, jak správně nastavit kupní smlouvu a jak stihnout přepis do 10 pracovních dnů od převodu.",
+  title: "Prodej auta cizinci 2026: smlouva a přepis vozidla",
+  description: "Průvodce prodejem a koupí auta cizincem v ČR 2026. Jaké doklady potřebujete, jak nastavit kupní smlouvu a jak stihnout přepis do 10 pracovních dnů.",
 });
 
 
@@ -17,7 +17,7 @@ export default function ProdejAutaCizinec2026Page() {
       dateLabel="21. května 2026"
       breadcrumbLabel="Koupě auta cizincem 2026"
       slug="prodej-auta-prepis-cizinec-2026"
-      title="Kupní smlouva na auto a přepis vozidla cizincem 2026: Průvodce krok za krokem"
+      title="Prodej auta cizinci 2026: smlouva a přepis vozidla krok za krokem"
       intro="Koupě nebo prodej ojetého vozidla v České republice s sebou nese řadu administrativních povinností. Pokud je jednou ze stran cizinec, vstupují do procesu specifické požadavky týkající se registrace na úřadě, dokládání pobytu a pojištění. Zjistěte, jak na to v roce 2026 a na co si dát pozor."
       toc={[
         { href: '#kupni-smlouva-zaklad', label: 'Základní náležitosti kupní smlouvy na auto' },

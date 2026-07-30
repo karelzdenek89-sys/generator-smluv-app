@@ -2,7 +2,7 @@ import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 
 export const metadata = blogArticlePageMetadata("predani-vozidla-kupujicimu-2026", {
-  title: "Jak správně předat vozidlo kupujícímu 2026: Protokol, klíče, doklady a stav vozu",
+  title: "Předání vozidla kupujícímu 2026: protokol a doklady",
   description: "Praktický přehled toho, co řešit při předání vozidla kupujícímu. Stav vozu, klíče, technické doklady, příslušenství a proč je vhodné mít vše zachycené písemně.",
 });
 
@@ -18,7 +18,7 @@ export default function PredaniVozidlaKupujicimu2026Page() {
         dateLabel="6. dubna 2026"
         breadcrumbLabel="Předání vozidla kupujícímu 2026"
         slug="predani-vozidla-kupujicimu-2026"
-        title="Jak správně předat vozidlo kupujícímu 2026: Protokol, klíče, doklady a stav vozu"
+        title="Předání vozidla kupujícímu 2026: protokol a doklady"
         intro="Kupní smlouva na vozidlo řeší právní základ převodu. Samotné předání auta ale bývá stejně důležité. Právě v tomto okamžiku se potvrzuje stav vozu, počet klíčů, předané doklady i příslušenství."
         toc={[
           { href: '#proc-predani-sepsat', label: 'Proč zachytit předání vozidla samostatně' },

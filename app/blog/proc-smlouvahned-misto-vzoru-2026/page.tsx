@@ -14,7 +14,7 @@ export const metadata = {
   ...blogArticlePageMetadata(SLUG, {
     title: 'Proč zvolit SmlouvaHned místo staženého vzoru smlouvy (2026)',
     description:
-      'Srovnání vzoru z internetu, generického generátoru a SmlouvaHned — § u klauzulí, upozornění ve formuláři, náhled před stažením PDF. Praktický průvodce bez právních slibů.',
+      'Srovnání vzoru z internetu, generického generátoru a SmlouvaHned — § u klauzulí, upozornění ve formuláři a náhled před stažením PDF.',
     keywords: [
       'proč smlouvahned',
       'smlouvahned vs vzor',

@@ -7,7 +7,7 @@ import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
 export const metadata = blogArticlePageMetadata("najemni-smlouva-vzor-2026", {
-  title: "Nájemní smlouva vzor 2026: Co musí obsahovat a nejčastější chyby",
+  title: "Nájemní smlouva vzor 2026: co musí obsahovat",
   description: "Kompletní průvodce nájemní smlouvou pro rok 2026. Co musí smlouva obsahovat dle OZ, nejčastější chyby pronajímatelů, jak se chránit a kdy nestačí vzor z internetu.",
   keywords: ['nájemní smlouva vzor 2026',
     'co musí obsahovat nájemní smlouva',
@@ -41,7 +41,7 @@ export default function NajemniSmlouvaVzor2026Page() {
           <time className="text-xs text-slate-600" dateTime="2026-03-01">1. března 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
-          Nájemní smlouva vzor 2026: Co musí obsahovat a nejčastější chyby
+          Nájemní smlouva vzor 2026: co musí obsahovat
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-400">
           Pronajímáte byt nebo hledáte nájemní smlouvu pro rok 2026? Tento průvodce vám ukáže, co zákon vyžaduje,

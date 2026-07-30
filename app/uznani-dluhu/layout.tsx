@@ -6,7 +6,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz
 export const metadata: Metadata = {
   title: 'Uznání dluhu online 2026',
   description:
-    'Uznání dluhu dle § 2053 OZ — obnoví 10letou promlčecí dobu. Splátky a smluvní pokuta. Od 99 Kč.',
+    'Vytvořte uznání dluhu online dle § 2053 OZ. Obnoví desetiletou promlčecí dobu, umožní sjednat splátky i smluvní pokutu. PDF ihned ke stažení, od 99 Kč.',
   keywords: [
     'uznání dluhu vzor 2026',
     'uznání dluhu online',

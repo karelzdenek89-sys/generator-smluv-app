@@ -6,7 +6,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz
 export const metadata: Metadata = {
   title: 'Darovací smlouva 2026 — formulář online',
   description:
-    'Darovací smlouva 2026 dle § 2055 OZ. Dárce, obdarovaný, předmět daru — PDF ihned ke stažení. Od 99 Kč.',
+    'Vytvořte darovací smlouvu online dle § 2055 OZ. Dárce, obdarovaný, přesný předmět daru i podmínky předání. PDF připravené k podpisu ihned, od 99 Kč.',
   keywords: [
     'vytvořit darovací smlouvu',
     'darovací smlouva formulář',

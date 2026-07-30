@@ -6,7 +6,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz
 export const metadata: Metadata = {
   title: 'Smlouva o spolupráci online 2026',
   description:
-    'Smlouva o spolupráci OSVČ nebo firem. Podíl na výnosech, IP práva, mlčenlivost, exit klauzule. Od 99 Kč.',
+    'Vytvořte smlouvu o spolupráci pro OSVČ i firmy online. Předmět spolupráce, odměna, autorská práva, mlčenlivost a ukončení. PDF ihned, od 99 Kč.',
   keywords: [
     'smlouva o spolupráci vzor 2026',
     'smlouva o spolupráci OSVČ',

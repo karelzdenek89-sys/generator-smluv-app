@@ -3,8 +3,8 @@ import Link from 'next/link';
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 
 export const metadata = blogArticlePageMetadata("predani-bytu-najemci-2026", {
-  title: "Jak správně předat byt nájemci 2026: Co zachytit v protokolu a na co nezapomenout",
-  description: "Praktický přehled předání bytu nájemci. Co uvést do předávacího protokolu, jak pracovat s odečty měřidel, klíči, vybavením a kdy si připravit i potvrzení o převzetí kauce.",
+  title: "Předání bytu nájemci 2026: co zachytit v protokolu",
+  description: "Praktický přehled předání bytu nájemci. Co uvést do předávacího protokolu, jak zapsat odečty měřidel, klíče a vybavení a kdy doložit převzetí kauce.",
 });
 
 
@@ -19,7 +19,7 @@ export default function PredaniBytuNajemci2026Page() {
         dateLabel="6. dubna 2026"
         breadcrumbLabel="Předání bytu nájemci 2026"
         slug="predani-bytu-najemci-2026"
-        title="Jak správně předat byt nájemci 2026: Co zachytit v protokolu a na co nezapomenout"
+        title="Předání bytu nájemci 2026: co zachytit v protokolu"
         intro="Při podpisu nájemní smlouvy bývá pozornost soustředěná hlavně na výši nájemného a kauci. Samotné předání bytu ale rozhoduje o tom, jestli později vzniknou spory o stav nemovitosti, měřidla, klíče nebo vybavení."
         toc={[
           { href: '#proc-predani-resit', label: 'Proč řešit předání bytu samostatně' },
