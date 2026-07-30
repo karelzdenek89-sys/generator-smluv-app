@@ -283,7 +283,7 @@ export default function NdaBuilderPage() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label className={labelClass}>Jméno / název *</label>
-                    <input value={formData.disclosingName} onChange={e => set('disclosingName', e.target.value)} placeholder="Acme s.r.o." aria-label="Jméno / název *" className={inputClass} />
+                    <input name="disclosingName" value={formData.disclosingName} onChange={e => set('disclosingName', e.target.value)} placeholder="Acme s.r.o." aria-label="Jméno / název *" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>IČO / rodné číslo</label>
@@ -306,7 +306,7 @@ export default function NdaBuilderPage() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label className={labelClass}>Jméno / název *</label>
-                    <input value={formData.receivingName} onChange={e => set('receivingName', e.target.value)} placeholder="Jan Novák" aria-label="Jméno / název *" className={inputClass} />
+                    <input name="receivingName" value={formData.receivingName} onChange={e => set('receivingName', e.target.value)} placeholder="Jan Novák" aria-label="Jméno / název *" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>IČO / rodné číslo</label>
@@ -329,7 +329,7 @@ export default function NdaBuilderPage() {
                 <div className="space-y-4">
                   <div>
                     <label className={labelClass}>Popis důvěrných informací *</label>
-                    <textarea value={formData.confidentialInfoDesc} onChange={e => set('confidentialInfoDesc', e.target.value)}
+                    <textarea name="confidentialInfoDesc" value={formData.confidentialInfoDesc} onChange={e => set('confidentialInfoDesc', e.target.value)}
                       placeholder="Obchodní strategie, cenové kalkulace, zdrojové kódy, databáze zákazníků, výrobní postupy…"
                       aria-label="Obchodní strategie, cenové kalkulace, zdrojové kódy, databáze zákazníků, výrobní postupy…"
                       className={textareaClass} />
@@ -337,7 +337,7 @@ export default function NdaBuilderPage() {
                   </div>
                   <div>
                     <label className={labelClass}>Účel sdílení informací</label>
-                    <textarea value={formData.purposeOfDisclosure} onChange={e => set('purposeOfDisclosure', e.target.value)}
+                    <textarea name="purposeOfDisclosure" value={formData.purposeOfDisclosure} onChange={e => set('purposeOfDisclosure', e.target.value)}
                       placeholder="Hodnocení potenciální obchodní spolupráce / vývoj softwarového produktu / due diligence…"
                       aria-label="Hodnocení potenciální obchodní spolupráce / vývoj softwarového produktu / due diligence…"
                       className={textareaClass} />
@@ -466,6 +466,7 @@ export default function NdaBuilderPage() {
               {/* GDPR */}
                               {/* Tlačítko generování */}
                 <button
+                  data-builder-generate=""
                   onClick={() => setShowPreviewModal(true)}
                   className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >

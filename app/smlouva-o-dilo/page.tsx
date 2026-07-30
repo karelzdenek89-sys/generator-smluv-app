@@ -299,6 +299,7 @@ export default function WorkContractPage() {
                   </h3>
                   <div className="space-y-4">
                     <input
+                    name="clientName"
                       type="text"
                       placeholder="Jméno / Název firmy"
                       aria-label="Jméno / Název firmy"
@@ -339,6 +340,7 @@ export default function WorkContractPage() {
                   </h3>
                   <div className="space-y-4">
                     <input
+                    name="contractorName"
                       type="text"
                       placeholder="Jméno / Název firmy"
                       aria-label="Jméno / Název firmy"
@@ -380,6 +382,7 @@ export default function WorkContractPage() {
                 </h3>
                 <div className="space-y-5">
                   <input
+                    name="workTitle"
                     type="text"
                     placeholder="Název díla (např. Rekonstrukce kuchyně)"
                     aria-label="Název díla (např. Rekonstrukce kuchyně)"
@@ -388,6 +391,7 @@ export default function WorkContractPage() {
                     onChange={(e) => updateField('workTitle', e.target.value)}
                   />
                   <textarea
+                    name="workDescription"
                     placeholder="Detailní popis prací a rozsahu díla..."
                     aria-label="Detailní popis prací a rozsahu díla..."
                     className={textareaClass}
@@ -452,6 +456,7 @@ export default function WorkContractPage() {
                     <label className="text-xs text-slate-400">Celková cena</label>
                     <div className="flex mt-2">
                       <input
+                    name="priceAmount"
                         type="number"
                         placeholder="0"
                         aria-label="0"
@@ -785,6 +790,7 @@ export default function WorkContractPage() {
               {/* GDPR */}
                               {/* Tlačítko generování */}
                 <button
+                  data-builder-generate=""
                   onClick={() => setShowPreviewModal(true)}
                   className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >

@@ -294,7 +294,7 @@ export default function LoanBuilderPage() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label className={labelClass}>Jméno / název *</label>
-                    <input value={formData.lenderName} onChange={e => set('lenderName', e.target.value)} placeholder="Jan Novák" aria-label="Jméno / název *" className={inputClass} />
+                    <input name="lenderName" value={formData.lenderName} onChange={e => set('lenderName', e.target.value)} placeholder="Jan Novák" aria-label="Jméno / název *" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>Rodné číslo / IČO</label>
@@ -317,7 +317,7 @@ export default function LoanBuilderPage() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label className={labelClass}>Jméno / název *</label>
-                    <input value={formData.borrowerName} onChange={e => set('borrowerName', e.target.value)} placeholder="Petra Svobodová" aria-label="Jméno / název *" className={inputClass} />
+                    <input name="borrowerName" value={formData.borrowerName} onChange={e => set('borrowerName', e.target.value)} placeholder="Petra Svobodová" aria-label="Jméno / název *" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>Rodné číslo / IČO</label>
@@ -344,7 +344,7 @@ export default function LoanBuilderPage() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
                     <label className={labelClass}>Výše zápůjčky (Kč) *</label>
-                    <input type="number" value={formData.loanAmount} onChange={e => set('loanAmount', e.target.value)} placeholder="50 000" aria-label="Výše zápůjčky (Kč) *" className={inputClass} />
+                    <input name="loanAmount" type="number" value={formData.loanAmount} onChange={e => set('loanAmount', e.target.value)} placeholder="50 000" aria-label="Výše zápůjčky (Kč) *" className={inputClass} />
                   </div>
                   <div>
                     <label className={labelClass}>Slovně (pro smlouvu)</label>
@@ -411,7 +411,7 @@ export default function LoanBuilderPage() {
                   {formData.repaymentType === 'lump_sum' && (
                     <div>
                       <label className={labelClass}>Datum splatnosti *</label>
-                      <input type="date" value={formData.repaymentDate} onChange={e => set('repaymentDate', e.target.value)} aria-label="Datum splatnosti *" className={inputClass} />
+                      <input name="repaymentDate" type="date" value={formData.repaymentDate} onChange={e => set('repaymentDate', e.target.value)} aria-label="Datum splatnosti *" className={inputClass} />
                     </div>
                   )}
                   {formData.repaymentType === 'installments' && (
@@ -563,6 +563,7 @@ export default function LoanBuilderPage() {
               {/* GDPR */}
                               {/* Tlačítko generování */}
                 <button
+                  data-builder-generate=""
                   onClick={() => setShowPreviewModal(true)}
                   className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >

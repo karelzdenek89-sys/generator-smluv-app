@@ -1310,6 +1310,7 @@ function LeaseBuilderContent() {
                 <button
                   type="button"
                   data-testid="lease-open-checkout"
+                  data-builder-generate=""
                   onClick={() => {
                     if (!canOpenCheckout) {
                       alert(`${ui.validation.alertPrefix}: ${requiredFieldsMissing.join(', ')}.`);
