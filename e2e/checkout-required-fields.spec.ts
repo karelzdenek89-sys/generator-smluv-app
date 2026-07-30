@@ -12,23 +12,30 @@
 import { expect, test, type Page } from '@playwright/test';
 import { validateContractPayload, type ContractType } from '../lib/checkout-validation';
 
-type Builder = { route: string; contractType: ContractType; required: string[] };
+type Builder = { route: string; contractType: ContractType; required: string[]; money?: string[] };
+
+/**
+ * Amounts the server refuses. Clearing a field is not enough to find these:
+ * the builders only check that the box is not empty, so a zero or a negative
+ * sails through the form and dies at the server after the buyer presses pay.
+ */
+const REJECTED_AMOUNTS = ['0', '-1'];
 
 /** Mirrors the non-optional keys of each schema in lib/checkout-validation.ts. */
 const BUILDERS: Builder[] = [
-  { route: '/najem', contractType: 'lease', required: ['landlordName', 'tenantName', 'flatAddress', 'rentAmount', 'startDate'] },
-  { route: '/auto', contractType: 'car_sale', required: ['sellerName', 'buyerName', 'carMake', 'carVIN', 'priceAmount'] },
+  { route: '/najem', contractType: 'lease', required: ['landlordName', 'tenantName', 'flatAddress', 'rentAmount', 'startDate'], money: ['rentAmount'] },
+  { route: '/auto', contractType: 'car_sale', required: ['sellerName', 'buyerName', 'carMake', 'carVIN', 'priceAmount'], money: ['priceAmount'] },
   { route: '/darovaci', contractType: 'gift', required: ['donorName', 'doneeName'] },
-  { route: '/smlouva-o-dilo', contractType: 'work_contract', required: ['clientName', 'contractorName', 'workTitle', 'workDescription', 'priceAmount'] },
-  { route: '/pujcka', contractType: 'loan', required: ['lenderName', 'borrowerName', 'loanAmount'] },
+  { route: '/smlouva-o-dilo', contractType: 'work_contract', required: ['clientName', 'contractorName', 'workTitle', 'workDescription', 'priceAmount'], money: ['priceAmount'] },
+  { route: '/pujcka', contractType: 'loan', required: ['lenderName', 'borrowerName', 'loanAmount'], money: ['loanAmount'] },
   { route: '/nda', contractType: 'nda', required: ['disclosingName', 'receivingName', 'confidentialInfoDesc'] },
-  { route: '/kupni', contractType: 'general_sale', required: ['sellerName', 'buyerName', 'itemDescription', 'price'] },
+  { route: '/kupni', contractType: 'general_sale', required: ['sellerName', 'buyerName', 'itemDescription', 'price'], money: ['price'] },
   { route: '/pracovni', contractType: 'employment', required: ['employerName', 'employeeName', 'jobTitle', 'workPlace', 'startDate'] },
   { route: '/dpp', contractType: 'dpp', required: ['employerName', 'employeeName', 'taskDescription', 'workPlace'] },
   { route: '/sluzby', contractType: 'service', required: ['providerName', 'clientName', 'serviceDescription'] },
-  { route: '/podnajem', contractType: 'sublease', required: ['landlordName', 'tenantName', 'flatAddress', 'rentAmount', 'startDate'] },
+  { route: '/podnajem', contractType: 'sublease', required: ['landlordName', 'tenantName', 'flatAddress', 'rentAmount', 'startDate'], money: ['rentAmount'] },
   { route: '/plna-moc', contractType: 'power_of_attorney', required: ['principalName', 'agentName'] },
-  { route: '/uznani-dluhu', contractType: 'debt_acknowledgment', required: ['creditorName', 'debtorName', 'debtAmount'] },
+  { route: '/uznani-dluhu', contractType: 'debt_acknowledgment', required: ['creditorName', 'debtorName', 'debtAmount'], money: ['debtAmount'] },
   { route: '/spoluprace', contractType: 'cooperation', required: ['partyAName', 'partyBName', 'cooperationScope'] },
 ];
 
@@ -69,17 +76,17 @@ async function fillEveryField(page: Page) {
   });
 }
 
-/** Empties one field by name; false when the builder has no such control. */
-async function clearField(page: Page, name: string): Promise<boolean> {
-  return page.evaluate((fieldName) => {
+/** Sets one field by name; false when the builder has no such control. */
+async function setField(page: Page, name: string, value: string): Promise<boolean> {
+  return page.evaluate(([fieldName, fieldValue]) => {
     const el = document.querySelector<HTMLInputElement | HTMLTextAreaElement>(`[name="${fieldName}"]`);
     if (!el || el.offsetParent === null) return false;
     const prototype = el instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
-    Object.getOwnPropertyDescriptor(prototype, 'value')?.set?.call(el, '');
+    Object.getOwnPropertyDescriptor(prototype, 'value')?.set?.call(el, fieldValue);
     el.dispatchEvent(new Event('input', { bubbles: true }));
     el.dispatchEvent(new Event('change', { bubbles: true }));
     return true;
-  }, name);
+  }, [name, value] as const);
 }
 
 for (const builder of BUILDERS) {
@@ -94,7 +101,15 @@ for (const builder of BUILDERS) {
       void dialog.accept();
     });
 
-    for (const field of builder.required) {
+    const probes: { field: string; value: string; label: string }[] = [
+      ...builder.required.map((field) => ({ field, value: '', label: `${field} prázdné` })),
+      ...(builder.money ?? []).flatMap((field) =>
+        REJECTED_AMOUNTS.map((value) => ({ field, value, label: `${field}="${value}"` })),
+      ),
+    ];
+
+    for (const probe of probes) {
+      const { field, value } = probe;
       let captured: Record<string, unknown> | null = null;
       // Builders fire funnel events on click. Left alone, every test run would
     // write fake steps into the production analytics we diagnose from.
@@ -107,11 +122,11 @@ for (const builder of BUILDERS) {
 
       await page.goto(builder.route);
       await fillEveryField(page);
-      const present = await clearField(page, field);
+      const present = await setField(page, field, value);
       if (!present) {
         // A field with no reachable control cannot be probed, and a probe that
         // silently skips is worse than none — it reports safety it never checked.
-        unprobed.push(field);
+        unprobed.push(probe.label);
         await page.unroute('**/api/checkout');
         continue;
       }
@@ -145,14 +160,14 @@ for (const builder of BUILDERS) {
         // that neither reached pay nor was refused proves nothing at all.
         const refused = builderBlockedEarly || blockedByAlert;
         if (!refused && reachedPay) {
-          unprobed.push(`${field} (pay pressed, no request and no refusal — probe inconclusive)`);
+          unprobed.push(`${probe.label} (pay pressed, no request and no refusal — probe inconclusive)`);
         }
         continue;
       }
       const body = captured as { payload?: Record<string, unknown> };
       const result = validateContractPayload(builder.contractType, body.payload ?? {});
       if (!result.success) {
-        gaps.push(`${field} — form allowed pay, server rejects: ${result.error.issues.map((i) => i.path.join('.')).join(', ')}`);
+        gaps.push(`${probe.label} — form allowed pay, server rejects: ${result.error.issues.map((i) => i.path.join('.')).join(', ')}`);
       }
     }
 

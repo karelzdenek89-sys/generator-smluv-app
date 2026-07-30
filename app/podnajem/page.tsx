@@ -16,6 +16,7 @@ import {
 } from '@/lib/i18n/expat-contract-preview';
 import PaymentModal from '@/app/components/LazyPaymentModal';
 import { BuilderLocaleNotice, useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
+import { isValidMoney } from '@/lib/money';
 
 type FormData = {
   landlordName: string; landlordId: string; landlordAddress: string; landlordEmail: string;
@@ -130,7 +131,7 @@ export default function PodnajemuPage() {
     if (!form.landlordName.trim()) missing.push(validationFields.landlordName);
     if (!form.tenantName.trim()) missing.push(validationFields.tenantName);
     if (!form.flatAddress.trim()) missing.push(validationFields.flatAddress);
-    if (!form.rentAmount.trim()) missing.push(validationFields.rentAmount);
+    if (!isValidMoney(form.rentAmount)) missing.push(validationFields.rentAmount);
     if (!form.startDate) {
       missing.push(
         builderLocale === 'cs'

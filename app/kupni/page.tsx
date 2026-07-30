@@ -9,6 +9,7 @@ import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/LazyPaymentModal';
+import { isValidMoney } from '@/lib/money';
 
 type FormData = {
   sellerName: string; sellerId: string; sellerAddress: string; sellerEmail: string; sellerPhone: string; sellerBankAccount: string;
@@ -93,7 +94,7 @@ export default function KupniPage() {
     if (!form.sellerName?.trim()) missing.push('jméno prodávajícího');
     if (!form.buyerName?.trim()) missing.push('jméno kupujícího');
     if (!form.itemDescription?.trim()) missing.push('popis předmětu prodeje');
-    if (!form.price) missing.push('kupní cenu');
+    if (!isValidMoney(form.price)) missing.push('kupní cenu');
     if (form.itemType === 'car' && !form.carVIN?.trim()) missing.push('VIN vozidla');
     if (missing.length > 0) { alert(`Kupní smlouva vyžaduje: ${missing.join(', ')}.`); return; }
     try {

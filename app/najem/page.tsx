@@ -19,6 +19,7 @@ import {
   isExpatLeaseLocale,
 } from '@/lib/i18n/lease-preview';
 import { getThematicPackageConfig } from '@/lib/packages';
+import { isValidMoney } from '@/lib/money';
 
 type LeaseFormData = {
   landlordName: string;
@@ -247,7 +248,7 @@ function LeaseBuilderContent() {
     if (!formData.landlordName.trim()) missing.push(ui.validation.fields.landlordName);
     if (!formData.tenantName.trim()) missing.push(ui.validation.fields.tenantName);
     if (!formData.flatAddress.trim()) missing.push(ui.validation.fields.flatAddress);
-    if (!formData.rentAmount.trim()) missing.push(ui.validation.fields.rentAmount);
+    if (!isValidMoney(formData.rentAmount)) missing.push(ui.validation.fields.rentAmount);
     if (!formData.startDate) missing.push(ui.validation.fields.startDate);
     if (formData.duration === 'fixed' && !formData.endDate) missing.push(ui.validation.fields.endDate);
     return missing;
@@ -358,7 +359,7 @@ function LeaseBuilderContent() {
     if (!formData.landlordName.trim()) missingFields.push(ui.validation.fields.landlordName);
     if (!formData.tenantName.trim()) missingFields.push(ui.validation.fields.tenantName);
     if (!formData.flatAddress.trim()) missingFields.push(ui.validation.fields.flatAddress);
-    if (!formData.rentAmount.trim()) missingFields.push(ui.validation.fields.rentAmount);
+    if (!isValidMoney(formData.rentAmount)) missingFields.push(ui.validation.fields.rentAmount);
     if (!formData.startDate) missingFields.push(ui.validation.fields.startDate);
     if (formData.duration === 'fixed' && !formData.endDate) missingFields.push(ui.validation.fields.endDate);
 
