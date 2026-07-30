@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { isValidMoney } from '@/lib/money';
 
 export const CONTRACT_TYPES = [
   'lease', 'car_sale', 'gift', 'work_contract', 'loan', 'nda',
@@ -11,11 +12,14 @@ export type ContractType = (typeof CONTRACT_TYPES)[number];
 const text = z.string().trim().min(1).max(20_000);
 const shortText = z.string().trim().min(1).max(500);
 const optionalText = z.string().max(20_000).optional();
+/**
+ * Validates only — the original string is passed through to document rendering
+ * untouched, so accepting more notations cannot change what a contract says.
+ */
 const money = z.union([
   z.number().positive().finite(),
-  z.string().trim().min(1).max(50).refine((value) => {
-    const normalized = value.replace(/\s/g, '').replace(',', '.');
-    return Number.isFinite(Number(normalized)) && Number(normalized) > 0;
+  z.string().trim().min(1).max(50).refine(isValidMoney, {
+    message: 'Zadejte částku jako číslo, například 15000 nebo 15 000 Kč.',
   }),
 ]);
 
