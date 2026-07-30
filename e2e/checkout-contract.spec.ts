@@ -89,6 +89,10 @@ for (const builder of BUILDERS) {
     let captured: Record<string, unknown> | null = null;
 
     // Answer the checkout call locally so nothing downstream of it ever runs.
+    // Builders fire funnel events on click. Left alone, every test run would
+    // write fake steps into the production analytics we diagnose from.
+    await page.route('**/api/analytics', (route) => route.fulfill({ status: 204, body: '' }));
+
     await page.route('**/api/checkout', async (route) => {
       captured = JSON.parse(route.request().postData() ?? '{}');
       await route.fulfill({
