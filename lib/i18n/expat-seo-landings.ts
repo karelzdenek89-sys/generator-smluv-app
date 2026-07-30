@@ -68,7 +68,7 @@ export function getExpatBlogGuideSlug(
 
 const LEASE_EN: LocalePack = {
   metadata: {
-    title: 'Rental Agreement in the Czech Republic | English-Guided Czech Lease | SmlouvaHned',
+    title: 'Rental Agreement Czech Republic | English | SmlouvaHned',
     description:
       'Create a Czech rental agreement for foreigners and landlords. English-guided form, Czech PDF with explanatory English annex. Not certified or official.',
     keywords: [
@@ -150,7 +150,7 @@ const LEASE_UA: LocalePack = {
 
 const EMPLOYMENT_EN: LocalePack = {
   metadata: {
-    title: 'Employment Contract Czech Republic | English Form | SmlouvaHned',
+    title: 'Employment Contract Czech Republic | English | SmlouvaHned',
     description:
       'Create a Czech employment contract (pracovní smlouva) with an English-guided form. Czech PDF plus explanatory English annex for foreigners working in Czechia.',
     keywords: [
@@ -273,7 +273,7 @@ const DPP_UA: LocalePack = {
 
 const SUBLEASE_EN: LocalePack = {
   metadata: {
-    title: 'Sublease Agreement Czech Republic | English Form | SmlouvaHned',
+    title: 'Sublease Agreement Czech Republic | English | SmlouvaHned',
     description:
       'Czech sublease (podnájemní smlouva) for tenants subletting a flat or room. English-guided form, landlord consent, Czech PDF + English annex.',
     keywords: [
@@ -306,7 +306,7 @@ const SUBLEASE_UA: LocalePack = {
   metadata: {
     title: 'Піднайм Чехія | Піднаймна угода | SmlouvaHned',
     description:
-      'Чеський піднайм (podnájemní smlouva) з формою українською. Згода власника, завдаток, PDF + пояснювальний додаток.',
+      'Чеський піднайм (podnájemní smlouva) з формою українською. Згода власника, завдаток, строк і оплата. Чеський PDF з пояснювальним додатком.',
     keywords: ['піднайм Чехія', 'podnájemní smlouva', 'суборенда Прага', 'піднайм квартири'],
     openGraphTitle: 'Піднайм Чехія | SmlouvaHned',
     openGraphDescription: 'Піднайм з формою українською.',
@@ -362,7 +362,7 @@ const POA_UA: LocalePack = {
   metadata: {
     title: 'Довіреність Чехія | Plná moc | SmlouvaHned',
     description:
-      'Чеська довіреність (plná moc) для банку, нерухомості, суду. Форма українською, PDF + пояснювальний додаток.',
+      'Чеська довіреність (plná moc) для банку, нерухомості, суду чи держорганів. Форма українською, чеський PDF з пояснювальним додатком.',
     keywords: ['довіреність Чехія', 'plná moc', 'довіреність банк Чехія', 'представництво Чехія'],
     openGraphTitle: 'Довіреність Чехія | SmlouvaHned',
     openGraphDescription: 'Довіреність з формою українською.',
@@ -439,7 +439,7 @@ const CAR_UA: LocalePack = {
   metadata: {
     title: 'Купівля авто Чехія | Kupní smlouva | SmlouvaHned',
     description:
-      'Чеська купівля-продаж авто між приватними особами. VIN, пробіг, STK, ціна. Форма українською + PDF.',
+      'Чеська купівля-продаж авто між приватними особами. VIN, пробіг, STK, ціна та передача. Форма українською, чеський PDF з пояснювальним додатком.',
     keywords: ['купівля авто Чехія', 'kupní smlouva auto', 'договір продажу авто Прага', 'VIN договір'],
     openGraphTitle: 'Купівля авто Чехія | SmlouvaHned',
     openGraphDescription: 'Договір купівлі авто з формою українською.',

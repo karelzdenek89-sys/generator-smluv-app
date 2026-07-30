@@ -117,6 +117,32 @@ function assertBlogRegistryLengths() {
   }
 }
 
+/**
+ * EN/UA expat landings set `title: { absolute: ... }`, so the brand suffix is part
+ * of the string instead of coming from the root template — but the SERP budget is
+ * the same. These are the best-converting pages, so guard them explicitly.
+ */
+function assertExpatLandingLengths() {
+  const src = read('lib/i18n/expat-seo-landings.ts');
+  const packs = [
+    ...src.matchAll(
+      /const\s+([A-Z_]+):\s*LocalePack\s*=\s*\{[\s\S]*?metadata:\s*\{\s*title:\s*'([^']+)',\s*\n\s*description:\s*\n?\s*'([^']+)'/g,
+    ),
+  ];
+  assert.ok(packs.length > 0, 'lib/i18n/expat-seo-landings.ts: no locale packs found');
+
+  for (const [, name, title, description] of packs) {
+    assert.ok(
+      title.length <= MAX_TITLE_LENGTH,
+      `expat landing ${name}: title is ${title.length} chars (max ${MAX_TITLE_LENGTH})`,
+    );
+    assert.ok(
+      description.length >= MIN_DESCRIPTION_LENGTH && description.length <= MAX_DESCRIPTION_LENGTH,
+      `expat landing ${name}: description is ${description.length} chars (expected ${MIN_DESCRIPTION_LENGTH}-${MAX_DESCRIPTION_LENGTH})`,
+    );
+  }
+}
+
 function assertSeoMetadata(path: string) {
   const src = read(path);
   assert.match(src, /alternates:\s*\{\s*canonical:/, `${path}: missing canonical metadata`);
@@ -128,6 +154,7 @@ function main() {
   assertNoDirectMetadataBrandTitles();
   assertMetadataLengths();
   assertBlogRegistryLengths();
+  assertExpatLandingLengths();
 
   const publicFiles = [
     'app/page.tsx',
