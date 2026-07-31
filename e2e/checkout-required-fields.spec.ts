@@ -12,29 +12,101 @@
 import { expect, test, type Page } from '@playwright/test';
 import { validateContractPayload, type ContractType } from '../lib/checkout-validation';
 
-type Builder = { route: string; contractType: ContractType; required: string[]; money?: string[] };
+type ProbeSetup = { field: string; value: string };
+type FieldProbe = {
+  field: string;
+  value: string;
+  label: string;
+  setup?: ProbeSetup[];
+};
+type Builder = {
+  route: string;
+  contractType: ContractType;
+  required: string[];
+  money?: string[];
+  conditional?: FieldProbe[];
+};
 
 /**
  * Amounts the server refuses. Clearing a field is not enough to find these:
- * the builders only check that the box is not empty, so a zero or a negative
- * sails through the form and dies at the server after the buyer presses pay.
+ * the builders must agree with the server on zero, negative and exponent
+ * notation before the buyer reaches the pay action.
  */
-const REJECTED_AMOUNTS = ['0', '-1'];
+const REJECTED_AMOUNTS = ['0', '-1', '1e3'];
 
-/** Mirrors the non-optional keys of each schema in lib/checkout-validation.ts. */
+/** Mirrors non-optional and conditional requirements from lib/checkout-validation.ts. */
 const BUILDERS: Builder[] = [
-  { route: '/najem', contractType: 'lease', required: ['landlordName', 'tenantName', 'flatAddress', 'rentAmount', 'startDate'], money: ['rentAmount'] },
+  {
+    route: '/najem',
+    contractType: 'lease',
+    required: ['landlordName', 'tenantName', 'flatAddress', 'rentAmount', 'startDate'],
+    money: ['rentAmount'],
+    conditional: [{ field: 'endDate', value: '', label: 'endDate prázdné při době určité' }],
+  },
   { route: '/auto', contractType: 'car_sale', required: ['sellerName', 'buyerName', 'carMake', 'carVIN', 'priceAmount'], money: ['priceAmount'] },
-  { route: '/darovaci', contractType: 'gift', required: ['donorName', 'doneeName'] },
+  {
+    route: '/darovaci',
+    contractType: 'gift',
+    required: ['donorName', 'doneeName'],
+    conditional: [
+      { field: 'amount', value: '', label: 'amount prázdné při peněžním daru' },
+      { field: 'carVIN', value: '', label: 'carVIN prázdné při darování auta', setup: [{ field: 'giftType', value: 'car' }] },
+      { field: 'propertyAddress', value: '', label: 'propertyAddress prázdné při darování nemovitosti', setup: [{ field: 'giftType', value: 'property' }] },
+      { field: 'thingDescription', value: '', label: 'thingDescription prázdné při darování věci', setup: [{ field: 'giftType', value: 'thing' }] },
+    ],
+  },
   { route: '/smlouva-o-dilo', contractType: 'work_contract', required: ['clientName', 'contractorName', 'workTitle', 'workDescription', 'priceAmount'], money: ['priceAmount'] },
-  { route: '/pujcka', contractType: 'loan', required: ['lenderName', 'borrowerName', 'loanAmount'], money: ['loanAmount'] },
+  {
+    route: '/pujcka',
+    contractType: 'loan',
+    required: ['lenderName', 'borrowerName', 'loanAmount'],
+    money: ['loanAmount'],
+    conditional: [
+      { field: 'repaymentDate', value: '', label: 'repaymentDate prázdné při jednorázovém splacení' },
+      { field: 'installmentCount', value: '', label: 'installmentCount prázdné při splátkách', setup: [{ field: 'repaymentType', value: 'installments' }] },
+      { field: 'installmentAmount', value: '', label: 'installmentAmount prázdné při splátkách', setup: [{ field: 'repaymentType', value: 'installments' }] },
+      { field: 'guarantorName', value: '', label: 'guarantorName prázdné při ručení', setup: [{ field: 'securityType', value: 'guarantee' }] },
+    ],
+  },
   { route: '/nda', contractType: 'nda', required: ['disclosingName', 'receivingName', 'confidentialInfoDesc'] },
-  { route: '/kupni', contractType: 'general_sale', required: ['sellerName', 'buyerName', 'itemDescription', 'price'], money: ['price'] },
-  { route: '/pracovni', contractType: 'employment', required: ['employerName', 'employeeName', 'jobTitle', 'workPlace', 'startDate'] },
-  { route: '/dpp', contractType: 'dpp', required: ['employerName', 'employeeName', 'taskDescription', 'workPlace'] },
-  { route: '/sluzby', contractType: 'service', required: ['providerName', 'clientName', 'serviceDescription'] },
-  { route: '/podnajem', contractType: 'sublease', required: ['landlordName', 'tenantName', 'flatAddress', 'rentAmount', 'startDate'], money: ['rentAmount'] },
-  { route: '/plna-moc', contractType: 'power_of_attorney', required: ['principalName', 'agentName'] },
+  {
+    route: '/kupni',
+    contractType: 'general_sale',
+    required: ['sellerName', 'buyerName', 'itemDescription', 'price'],
+    money: ['price'],
+    conditional: [{ field: 'carVIN', value: '', label: 'carVIN prázdné při prodeji auta', setup: [{ field: 'itemType', value: 'car' }] }],
+  },
+  {
+    route: '/pracovni',
+    contractType: 'employment',
+    required: ['employerName', 'employeeName', 'jobTitle', 'workPlace', 'startDate'],
+    conditional: [{ field: 'salary', value: '', label: 'salary i hourlyRate prázdné' }],
+  },
+  {
+    route: '/dpp',
+    contractType: 'dpp',
+    required: ['employerName', 'employeeName', 'taskDescription', 'workPlace'],
+    conditional: [{ field: 'totalRemuneration', value: '', label: 'totalRemuneration i hourlyRate prázdné' }],
+  },
+  {
+    route: '/sluzby',
+    contractType: 'service',
+    required: ['providerName', 'clientName', 'serviceDescription'],
+    conditional: [{ field: 'monthlyFee', value: '', label: 'všechny způsoby určení ceny prázdné' }],
+  },
+  {
+    route: '/podnajem',
+    contractType: 'sublease',
+    required: ['landlordName', 'tenantName', 'flatAddress', 'rentAmount', 'startDate'],
+    money: ['rentAmount'],
+    conditional: [{ field: 'endDate', value: '', label: 'endDate prázdné při době určité' }],
+  },
+  {
+    route: '/plna-moc',
+    contractType: 'power_of_attorney',
+    required: ['principalName', 'agentName'],
+    conditional: [{ field: 'customScope', value: '', label: 'customScope prázdné při obecné plné moci' }],
+  },
   { route: '/uznani-dluhu', contractType: 'debt_acknowledgment', required: ['creditorName', 'debtorName', 'debtAmount'], money: ['debtAmount'] },
   { route: '/spoluprace', contractType: 'cooperation', required: ['partyAName', 'partyBName', 'cooperationScope'] },
 ];
@@ -54,7 +126,7 @@ async function fillEveryField(page: Page) {
     const visible = (el: HTMLElement) => !el.hidden && el.getAttribute('aria-hidden') !== 'true' && el.offsetParent !== null;
 
     for (const select of Array.from(document.querySelectorAll('select'))) {
-      if (!visible(select) || select.disabled) continue;
+      if (!visible(select) || select.disabled || select.value) continue;
       const option = Array.from(select.options).find((o) => o.value && !o.disabled);
       if (option) setValue(select, option.value);
     }
@@ -76,17 +148,39 @@ async function fillEveryField(page: Page) {
   });
 }
 
-/** Sets one field by name; false when the builder has no such control. */
-async function setField(page: Page, name: string, value: string): Promise<boolean> {
-  return page.evaluate(([fieldName, fieldValue]) => {
-    const el = document.querySelector<HTMLInputElement | HTMLTextAreaElement>(`[name="${fieldName}"]`);
-    if (!el || el.offsetParent === null) return false;
-    const prototype = el instanceof HTMLTextAreaElement ? HTMLTextAreaElement.prototype : HTMLInputElement.prototype;
-    Object.getOwnPropertyDescriptor(prototype, 'value')?.set?.call(el, fieldValue);
-    el.dispatchEvent(new Event('input', { bubbles: true }));
-    el.dispatchEvent(new Event('change', { bubbles: true }));
+/** Sets a named input/select or an explicitly marked button; false when unreachable. */
+async function setControl(page: Page, name: string, value: string): Promise<boolean> {
+  const markedButton = page.locator(
+    `[data-field-name="${name}"][data-field-value="${value}"]`,
+  ).first();
+  if (await markedButton.isVisible().catch(() => false)) {
+    await markedButton.click();
     return true;
-  }, [name, value] as const);
+  }
+
+  const radio = page.locator(
+    `input[type="radio"][name="${name}"][value="${value}"]`,
+  ).first();
+  if (await radio.count()) {
+    await radio.check({ force: true });
+    return true;
+  }
+
+  const control = page.locator(
+    `select[name="${name}"]:visible, input[name="${name}"]:visible, textarea[name="${name}"]:visible`,
+  ).first();
+  const visible = await control
+    .waitFor({ state: 'visible', timeout: 2_000 })
+    .then(() => true)
+    .catch(() => false);
+  if (!visible) return false;
+
+  if ((await control.evaluate((element) => element.tagName)) === 'SELECT') {
+    await control.selectOption(value);
+  } else {
+    await control.fill(value);
+  }
+  return true;
 }
 
 for (const builder of BUILDERS) {
@@ -101,11 +195,12 @@ for (const builder of BUILDERS) {
       void dialog.accept();
     });
 
-    const probes: { field: string; value: string; label: string }[] = [
+    const probes: FieldProbe[] = [
       ...builder.required.map((field) => ({ field, value: '', label: `${field} prázdné` })),
       ...(builder.money ?? []).flatMap((field) =>
         REJECTED_AMOUNTS.map((value) => ({ field, value, label: `${field}="${value}"` })),
       ),
+      ...(builder.conditional ?? []),
     ];
 
     for (const probe of probes) {
@@ -122,7 +217,21 @@ for (const builder of BUILDERS) {
 
       await page.goto(builder.route);
       await fillEveryField(page);
-      const present = await setField(page, field, value);
+      let setupComplete = true;
+      for (const setup of probe.setup ?? []) {
+        if (!(await setControl(page, setup.field, setup.value))) {
+          unprobed.push(`${probe.label} (nelze nastavit ${setup.field}="${setup.value}")`);
+          setupComplete = false;
+          break;
+        }
+      }
+      if (!setupComplete) {
+        await page.unroute('**/api/checkout');
+        continue;
+      }
+      if (probe.setup?.length) await fillEveryField(page);
+
+      const present = await setControl(page, field, value);
       if (!present) {
         // A field with no reachable control cannot be probed, and a probe that
         // silently skips is worse than none — it reports safety it never checked.
@@ -159,8 +268,12 @@ for (const builder of BUILDERS) {
         // A builder that refuses to submit is the outcome we want. Only a run
         // that neither reached pay nor was refused proves nothing at all.
         const refused = builderBlockedEarly || blockedByAlert;
-        if (!refused && reachedPay) {
-          unprobed.push(`${probe.label} (pay pressed, no request and no refusal — probe inconclusive)`);
+        if (!refused) {
+          unprobed.push(
+            reachedPay
+              ? `${probe.label} (pay pressed, no request and no refusal — probe inconclusive)`
+              : `${probe.label} (generate enabled, no refusal and checkout modal did not open)`,
+          );
         }
         continue;
       }

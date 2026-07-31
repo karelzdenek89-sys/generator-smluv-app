@@ -1,0 +1,44 @@
+name: Live checkout audit
+
+on:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: Stripe sessions to create on production
+        required: true
+        default: price-matrix
+        type: choice
+        options:
+          - price-matrix
+          - full
+
+permissions:
+  contents: read
+
+concurrency:
+  group: live-checkout-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      LIVE_CHECKOUT_AUDIT: '1'
+      PLAYWRIGHT_SKIP_WEBSERVER: '1'
+      PLAYWRIGHT_BASE_URL: https://www.smlouvahned.cz
+      CHECKOUT_AUDIT_SECRET: ${{ secrets.CHECKOUT_AUDIT_SECRET }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Verify 99/199/299 Kč price matrix
+        if: inputs.scope == 'price-matrix'
+        run: npx playwright test e2e/live-checkout-audit.spec.ts --grep '\[price-matrix\]'
+      - name: Verify every basic builder and the price matrix
+        if: inputs.scope == 'full'
+        run: npx playwright test e2e/live-checkout-audit.spec.ts

@@ -10,7 +10,7 @@
  *  - automatic_payment_methods → Google Pay, Apple Pay, karty atd.
  */
 
-import { randomUUID } from 'node:crypto';
+import { randomUUID, timingSafeEqual } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { getClientIp, isBoundedJsonObject, readFirstPartyJson } from '@/lib/api-security';
 import { redis } from '@/lib/redis';
@@ -63,6 +63,21 @@ const CANCEL_URLS: Record<ContractType, string> = {
   cooperation:          '/spoluprace',
 };
 
+const CHECKOUT_AUDIT_HEADER = 'x-smlouvahned-checkout-audit';
+
+function isAuthorizedCheckoutAudit(req: Request): boolean {
+  const expected = process.env.CHECKOUT_AUDIT_SECRET;
+  const provided = req.headers.get(CHECKOUT_AUDIT_HEADER);
+  if (!expected || !provided) return false;
+
+  const expectedBytes = Buffer.from(expected);
+  const providedBytes = Buffer.from(provided);
+  return (
+    expectedBytes.length === providedBytes.length &&
+    timingSafeEqual(expectedBytes, providedBytes)
+  );
+}
+
 // ── Rate limit ────────────────────────────────────────────────────────────────
 
 async function tryRateLimit(ip: string): Promise<'allowed' | 'limited' | 'unavailable'> {
@@ -94,36 +109,49 @@ async function rejectCheckout(
   responseBody: Record<string, unknown>,
   status: number,
   details?: { contractType?: ContractType; field?: string },
+  recordEvent: boolean = true,
 ): Promise<NextResponse> {
-  await recordAnalyticsEvent('checkout_rejected', {
-    source: 'checkout_modal',
-    surface: 'checkout_endpoint',
-    reject_reason: reason,
-    ...(details?.contractType ? { contract_type: details.contractType } : {}),
-    ...(details?.field ? { reject_field: details.field } : {}),
-  });
+  if (recordEvent) {
+    await recordAnalyticsEvent('checkout_rejected', {
+      source: 'checkout_modal',
+      surface: 'checkout_endpoint',
+      reject_reason: reason,
+      ...(details?.contractType ? { contract_type: details.contractType } : {}),
+      ...(details?.field ? { reject_field: details.field } : {}),
+    });
+  }
   return NextResponse.json(responseBody, { status });
 }
 
 export async function POST(req: Request) {
+  const isCheckoutAudit = isAuthorizedCheckoutAudit(req);
+  const reject = (
+    reason: CheckoutRejectReason,
+    responseBody: Record<string, unknown>,
+    status: number,
+    details?: { contractType?: ContractType; field?: string },
+  ) => rejectCheckout(reason, responseBody, status, details, !isCheckoutAudit);
+
   try {
     const json = await readFirstPartyJson(req, 128 * 1024);
     if (!json.ok) {
       const status = json.error === 'invalid_origin' ? 403 : json.error === 'payload_too_large' ? 413 : 400;
-      return rejectCheckout('invalid_json', { error: 'Neplatný JSON požadavek.' }, status);
+      return reject('invalid_json', { error: 'Neplatný JSON požadavek.' }, status);
     }
 
     // 1. Rate limit
-    const rateLimit = await tryRateLimit(getClientIp(req));
-    if (rateLimit === 'limited') {
-      return rejectCheckout('rate_limited', { error: 'Příliš mnoho požadavků. Zkuste to za chvíli.' }, 429);
-    }
-    if (rateLimit === 'unavailable') {
-      return rejectCheckout(
-        'storage_unavailable',
-        { error: 'Platbu nyní nelze bezpečně zahájit. Zkuste to prosím znovu.' },
-        503,
-      );
+    if (!isCheckoutAudit) {
+      const rateLimit = await tryRateLimit(getClientIp(req));
+      if (rateLimit === 'limited') {
+        return reject('rate_limited', { error: 'Příliš mnoho požadavků. Zkuste to za chvíli.' }, 429);
+      }
+      if (rateLimit === 'unavailable') {
+        return reject(
+          'storage_unavailable',
+          { error: 'Platbu nyní nelze bezpečně zahájit. Zkuste to prosím znovu.' },
+          503,
+        );
+      }
     }
 
     // 2. Parsování body – checkout bez jasného contractType nesmí vytvořit default objednávku
@@ -132,7 +160,7 @@ export async function POST(req: Request) {
     // contractType
     const rawType = typeof body.contractType === 'string' ? body.contractType : '';
     if (!(CONTRACT_TYPES as readonly string[]).includes(rawType)) {
-      return rejectCheckout('invalid_contract_type', { error: 'Neplatný typ dokumentu.' }, 400);
+      return reject('invalid_contract_type', { error: 'Neplatný typ dokumentu.' }, 400);
     }
     const contractType = rawType as ContractType;
 
@@ -153,12 +181,12 @@ export async function POST(req: Request) {
       deliveryEmail.length > 254 ||
       !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(deliveryEmail)
     ) {
-      return rejectCheckout('invalid_email', { error: 'Zadejte platný e-mail pro doručení dokumentu.' }, 400, { contractType });
+      return reject('invalid_email', { error: 'Zadejte platný e-mail pro doručení dokumentu.' }, 400, { contractType });
     }
 
     const consentCandidate = body.consent;
     if (!consentCandidate || typeof consentCandidate !== 'object' || Array.isArray(consentCandidate)) {
-      return rejectCheckout('consent_missing', { error: 'Chybí povinný souhlas s digitálním plněním.' }, 400, { contractType });
+      return reject('consent_missing', { error: 'Chybí povinný souhlas s digitálním plněním.' }, 400, { contractType });
     }
     const consentRecord = consentCandidate as Record<string, unknown>;
     const acceptedAt = typeof consentRecord.acceptedAt === 'string' ? consentRecord.acceptedAt : '';
@@ -173,7 +201,7 @@ export async function POST(req: Request) {
       acceptedAtMs > now + 5 * 60_000 ||
       acceptedAtMs < now - 24 * 60 * 60_000
     ) {
-      return rejectCheckout('consent_stale', { error: 'Souhlas je neplatný nebo zastaralý. Obnovte stránku a zkuste to znovu.' }, 400, { contractType });
+      return reject('consent_stale', { error: 'Souhlas je neplatný nebo zastaralý. Obnovte stránku a zkuste to znovu.' }, 400, { contractType });
     }
     const consent: CheckoutConsent = {
       accepted: true,
@@ -189,7 +217,7 @@ export async function POST(req: Request) {
         ? (body.payload as Record<string, unknown>)
         : body;
     if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
-      return rejectCheckout('payload_not_object', { error: 'Neplatná data dokumentu.' }, 400, { contractType });
+      return reject('payload_not_object', { error: 'Neplatná data dokumentu.' }, 400, { contractType });
     }
     if (!isBoundedJsonObject(payload, {
       maxDepth: 6,
@@ -197,13 +225,13 @@ export async function POST(req: Request) {
       maxArrayLength: 100,
       maxStringLength: 20_000,
     })) {
-      return rejectCheckout('payload_too_large', { error: 'Data dokumentu překračují povolené limity.' }, 400, { contractType });
+      return reject('payload_too_large', { error: 'Data dokumentu překračují povolené limity.' }, 400, { contractType });
     }
     const payloadValidation = validateContractPayload(contractType, payload);
     if (!payloadValidation.success) {
       const firstIssue = payloadValidation.error.issues[0];
       const invalidField = firstIssue?.path.join('.') || undefined;
-      return rejectCheckout(
+      return reject(
         'payload_invalid',
         { error: 'Dokument neobsahuje všechny povinné údaje.', field: invalidField },
         400,
@@ -235,7 +263,7 @@ export async function POST(req: Request) {
       console.error(
         `[checkout] Chybí Stripe Price ID pro tier=${paidTier} packageKey=${packageKey ?? 'none'}`,
       );
-      return rejectCheckout(
+      return reject(
         'internal_error',
         { error: 'Konfigurace ceny nenalezena. Kontaktujte podporu.' },
         500,
@@ -279,7 +307,7 @@ export async function POST(req: Request) {
       );
     } catch (redisErr) {
       console.error('[checkout] Redis draft save failed:', redisErr);
-      return rejectCheckout(
+      return reject(
         'draft_persist_failed',
         { error: 'Dokument se nepodařilo bezpečně uložit před platbou. Zkuste to prosím znovu.' },
         503,
@@ -329,6 +357,7 @@ export async function POST(req: Request) {
         downloadToken,
         addOns: getCheckoutAddonMetadata(addOns),
         ...(packageKey ? { packageKey } : {}),
+        ...(isCheckoutAudit ? { checkoutAudit: 'true' } : {}),
       },
     };
 
@@ -339,18 +368,32 @@ export async function POST(req: Request) {
 
     if (!session.url) throw new Error('Stripe nevrátil URL pro checkout.');
 
-    await recordAnalyticsEvent('stripe_checkout_started', {
-      source: 'checkout_modal',
-      surface: 'checkout_endpoint',
-      contract_type: contractType,
-      tier: checkoutTier === 'basic' ? 'basic' : 'complete',
-      package_key: packageKey ?? undefined,
-      price_band: priceBandForCheckout(checkoutTier, packageKey),
-      add_on_keys: addOns.join(','),
-      selected_addons_count: addOns.length,
-    });
+    if (!isCheckoutAudit) {
+      await recordAnalyticsEvent('stripe_checkout_started', {
+        source: 'checkout_modal',
+        surface: 'checkout_endpoint',
+        contract_type: contractType,
+        tier: checkoutTier === 'basic' ? 'basic' : 'complete',
+        package_key: packageKey ?? undefined,
+        price_band: priceBandForCheckout(checkoutTier, packageKey),
+        add_on_keys: addOns.join(','),
+        selected_addons_count: addOns.length,
+      });
+    }
 
-    return NextResponse.json({ url: session.url });
+    return NextResponse.json({
+      url: session.url,
+      ...(isCheckoutAudit
+        ? {
+            audit: {
+              amountTotal: session.amount_total,
+              currency: session.currency,
+              tier: checkoutTier,
+              packageKey,
+            },
+          }
+        : {}),
+    });
 
   } catch (error) {
     console.error('[checkout] Fatal error:', error);
@@ -360,7 +403,7 @@ export async function POST(req: Request) {
       typeof error === 'object' && error !== null && 'type' in error &&
       typeof (error as { type: unknown }).type === 'string' &&
       (error as { type: string }).type.startsWith('Stripe');
-    return rejectCheckout(
+    return reject(
       isStripeError ? 'stripe_unavailable' : 'internal_error',
       { error: 'Chyba při vytváření platby. Zkuste to prosím znovu.' },
       500,

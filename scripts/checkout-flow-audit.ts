@@ -74,6 +74,16 @@ function testCheckoutRouteCoverage() {
   assert.match(checkout, /getCheckoutAddonMetadata/);
   assert.match(checkout, /stripe_checkout_started/);
   assert.match(checkout, /recordAnalyticsEvent/);
+  assert.match(checkout, /CHECKOUT_AUDIT_SECRET/);
+  assert.match(checkout, /timingSafeEqual/);
+  assert.match(checkout, /if\s*\(!isCheckoutAudit\)\s*\{\s*await recordAnalyticsEvent\('stripe_checkout_started'/);
+  assert.match(checkout, /if\s*\(!isCheckoutAudit\)\s*\{\s*const rateLimit/);
+  assert.match(checkout, /amountTotal:\s*session\.amount_total/);
+  assert.doesNotMatch(
+    checkout,
+    /deliveryEmail\s*===\s*['"]checkout-audit@/,
+    'Live audit authorization must use a server secret, never a spoofable email address',
+  );
   assert.match(checkout, /Redis draft save failed/);
   assert.doesNotMatch(checkout, /Redis draft save fail-open/);
   assert.match(checkout, /validateContractPayload/);

@@ -11,26 +11,33 @@
  * opt-in and never runs in CI:
  *
  *   LIVE_CHECKOUT_AUDIT=1 PLAYWRIGHT_SKIP_WEBSERVER=1 \
+ *   CHECKOUT_AUDIT_SECRET=<same secret as the deployment> \
  *   PLAYWRIGHT_BASE_URL=https://www.smlouvahned.cz \
  *   npx playwright test e2e/live-checkout-audit.spec.ts
  *
- * Analytics stays stubbed so an audit run cannot forge funnel steps in the
- * production data the diagnosis depends on.
- *
- * Checkout is rate limited to 20 attempts per IP per hour, so the full matrix
- * cannot complete in one run — the tail comes back 429. Use -g to work through
- * it in batches, or expect the last few to report a rate limit rather than a
- * real fault.
+ * The server authenticates the audit secret before bypassing its normal rate
+ * limit and analytics writes. The secret is never exposed to page JavaScript.
+ * Audit responses expose the Stripe Session total and currency, so the test
+ * verifies the configured 99/199/299 Kč prices instead of just seeing a URL.
  */
 import { expect, test, type Page } from '@playwright/test';
 
 const ENABLED = process.env.LIVE_CHECKOUT_AUDIT === '1';
+const AUDIT_SECRET = process.env.CHECKOUT_AUDIT_SECRET;
+const AUDIT_HEADER = 'x-smlouvahned-checkout-audit';
 /** Marks the sessions this audit leaves behind so they are easy to spot. */
 const AUDIT_EMAIL = 'checkout-audit@example.com';
 
-type Target = { route: string; label: string };
+type BaseTarget = { route: string; label: string };
+type Target = BaseTarget & {
+  expectedAmountTotal: 9900 | 19900 | 29900;
+  expectedTier: 'basic' | 'complete';
+  expectedPackageKey: 'landlord' | null;
+  selectTier?: 'complete';
+  priceMatrix?: true;
+};
 
-const CZECH: Target[] = [
+const CZECH: BaseTarget[] = [
   { route: '/najem', label: 'nájemní smlouva' },
   { route: '/auto', label: 'kupní smlouva na auto' },
   { route: '/darovaci', label: 'darovací smlouva' },
@@ -50,11 +57,46 @@ const CZECH: Target[] = [
 const EXPAT = ['/najem', '/podnajem', '/pracovni', '/dpp', '/plna-moc', '/auto'];
 
 const TARGETS: Target[] = [
-  ...CZECH,
+  ...CZECH.map((target) => ({
+    ...target,
+    expectedAmountTotal: 9900 as const,
+    expectedTier: 'basic' as const,
+    expectedPackageKey: null,
+    ...(target.route === '/najem' ? { priceMatrix: true as const } : {}),
+  })),
   ...EXPAT.flatMap((route) => [
-    { route: `${route}?lang=en`, label: `${route} EN` },
-    { route: `${route}?lang=ua`, label: `${route} UA` },
+    {
+      route: `${route}?lang=en`,
+      label: `${route} EN`,
+      expectedAmountTotal: 9900 as const,
+      expectedTier: 'basic' as const,
+      expectedPackageKey: null,
+    },
+    {
+      route: `${route}?lang=ua`,
+      label: `${route} UA`,
+      expectedAmountTotal: 9900 as const,
+      expectedTier: 'basic' as const,
+      expectedPackageKey: null,
+    },
   ]),
+  {
+    route: '/najem?lang=en',
+    label: 'nájemní smlouva EN — rozšířená',
+    selectTier: 'complete',
+    expectedAmountTotal: 19900,
+    expectedTier: 'complete',
+    expectedPackageKey: null,
+    priceMatrix: true,
+  },
+  {
+    route: '/najem?package=landlord&lang=ua',
+    label: 'balíček pro pronajímatele UA',
+    expectedAmountTotal: 29900,
+    expectedTier: 'complete',
+    expectedPackageKey: 'landlord',
+    priceMatrix: true,
+  },
 ];
 
 async function fillEveryField(page: Page) {
@@ -96,18 +138,42 @@ async function fillEveryField(page: Page) {
 
 test.describe('live checkout audit', () => {
   test.skip(!ENABLED, 'opt-in: set LIVE_CHECKOUT_AUDIT=1 (creates real unpaid Stripe sessions)');
+  test.beforeAll(() => {
+    if (ENABLED) {
+      expect(
+        AUDIT_SECRET,
+        'CHECKOUT_AUDIT_SECRET must match the server secret; never expose it as NEXT_PUBLIC_*',
+      ).toBeTruthy();
+    }
+  });
 
   for (const target of TARGETS) {
-    test(`${target.route} reaches Stripe`, async ({ page }) => {
+    test(`${target.priceMatrix ? '[price-matrix] ' : ''}${target.label} reaches Stripe at ${target.expectedAmountTotal / 100} Kč`, async ({ page }) => {
       await page.route('**/api/analytics', (route) => route.fulfill({ status: 204, body: '' }));
 
-      type CheckoutAnswer = { status: number; url?: string; error?: string; field?: string };
+      type CheckoutAnswer = {
+        status: number;
+        url?: string;
+        error?: string;
+        field?: string;
+        audit?: {
+          amountTotal: number | null;
+          currency: string | null;
+          tier: 'basic' | 'complete';
+          packageKey: 'landlord' | 'vehicle_sale' | null;
+        };
+      };
       const answers: CheckoutAnswer[] = [];
       // Reading the body from a response event races the redirect to Stripe and
       // loses it. Fetching inside the route keeps the body while still letting
       // the real request through.
       await page.route('**/api/checkout', async (route) => {
-        const response = await route.fetch();
+        const response = await route.fetch({
+          headers: {
+            ...route.request().headers(),
+            [AUDIT_HEADER]: AUDIT_SECRET ?? '',
+          },
+        });
         const parsed = (await response.json().catch(() => ({}))) as Omit<CheckoutAnswer, 'status'>;
         answers.push({ status: response.status(), ...parsed });
         await route.fulfill({ response });
@@ -120,6 +186,9 @@ test.describe('live checkout audit', () => {
       await page.goto(target.route);
       await expect(page.locator('main h1').first()).toBeVisible();
       await fillEveryField(page);
+      if (target.selectTier) {
+        await page.locator(`input[name="tier"][value="${target.selectTier}"]`).first().check();
+      }
 
       const generate = page.locator('[data-builder-generate]').first();
       await generate.scrollIntoViewIfNeeded();
@@ -142,6 +211,12 @@ test.describe('live checkout audit', () => {
       ).toEqual({ status: 200, error: undefined, field: undefined });
 
       expect(answer.url, `${target.label}: no Stripe session URL returned`).toContain('stripe.com');
+      expect(answer.audit, `${target.label}: authenticated audit summary missing`).toEqual({
+        amountTotal: target.expectedAmountTotal,
+        currency: 'czk',
+        tier: target.expectedTier,
+        packageKey: target.expectedPackageKey,
+      });
     });
   }
 });
