@@ -269,6 +269,9 @@ export default function GiftContractPage() {
                 {(['money', 'car', 'property', 'thing'] as GiftType[]).map((type) => (
                   <button
                     key={type}
+                    type="button"
+                    data-field-name="giftType"
+                    data-field-value={type}
                     onClick={() => updateField('giftType', type)}
                     className={`py-5 px-4 rounded-2xl border-2 transition-all font-medium ${
                       formData.giftType === type

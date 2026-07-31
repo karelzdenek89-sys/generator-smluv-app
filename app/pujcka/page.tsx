@@ -9,6 +9,7 @@ import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
+import { isValidMoney } from '@/lib/money';
 import PaymentModal from '@/app/components/LazyPaymentModal';
 
 type RepaymentType = 'lump_sum' | 'installments';
@@ -170,7 +171,7 @@ export default function LoanBuilderPage() {
     const missing: string[] = [];
     if (!formData.lenderName?.trim()) missing.push('jméno věřitele');
     if (!formData.borrowerName?.trim()) missing.push('jméno vydlužitele');
-    if (!formData.loanAmount || Number(formData.loanAmount) <= 0) missing.push('výši zápůjčky');
+    if (!isValidMoney(formData.loanAmount)) missing.push('výši zápůjčky');
     if (formData.repaymentType === 'lump_sum' && !formData.repaymentDate) missing.push('datum splatnosti');
     if (formData.repaymentType === 'installments' && (!formData.installmentCount || !formData.installmentAmount)) missing.push('počet a výši splátek');
     if (formData.securityType === 'guarantee' && !formData.guarantorName?.trim()) missing.push('jméno ručitele');
@@ -399,7 +400,12 @@ export default function LoanBuilderPage() {
                 <div className="space-y-4">
                   <div className="grid sm:grid-cols-2 gap-3">
                     {(['lump_sum', 'installments'] as const).map(type => (
-                      <button key={type} onClick={() => set('repaymentType', type)}
+                      <button
+                        key={type}
+                        type="button"
+                        data-field-name="repaymentType"
+                        data-field-value={type}
+                        onClick={() => set('repaymentType', type)}
                         className={`p-4 rounded-2xl border text-left transition ${formData.repaymentType === type ? 'border-amber-500/60 bg-amber-500/10' : 'border-slate-700 bg-white/3 hover:border-slate-600'}`}>
                         <div className="font-bold text-white text-sm mb-1">{type === 'lump_sum' ? 'Jednorázově' : 'Ve splátkách'}</div>
                         <div className="text-xs text-slate-400">
@@ -418,11 +424,11 @@ export default function LoanBuilderPage() {
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div>
                         <label className={labelClass}>Počet splátek</label>
-                        <input type="number" value={formData.installmentCount} onChange={e => set('installmentCount', e.target.value)} placeholder="12" aria-label="Počet splátek" className={inputClass} />
+                        <input name="installmentCount" type="number" value={formData.installmentCount} onChange={e => set('installmentCount', e.target.value)} placeholder="12" aria-label="Počet splátek" className={inputClass} />
                       </div>
                       <div>
                         <label className={labelClass}>Výše splátky (Kč)</label>
-                        <input type="number" value={formData.installmentAmount} onChange={e => set('installmentAmount', e.target.value)} placeholder="4 500" aria-label="Výše splátky (Kč)" className={inputClass} />
+                        <input name="installmentAmount" type="number" value={formData.installmentAmount} onChange={e => set('installmentAmount', e.target.value)} placeholder="4 500" aria-label="Výše splátky (Kč)" className={inputClass} />
                       </div>
                       <div>
                         <label className={labelClass}>Den splatnosti splátky</label>
@@ -462,7 +468,12 @@ export default function LoanBuilderPage() {
                   {(['none', 'guarantee', 'pledge', 'bill'] as const).map(type => {
                     const labels = { none: 'Žádné', guarantee: 'Ručitel', pledge: 'Zástava', bill: 'Směnka' };
                     return (
-                      <button key={type} onClick={() => set('securityType', type)}
+                      <button
+                        key={type}
+                        type="button"
+                        data-field-name="securityType"
+                        data-field-value={type}
+                        onClick={() => set('securityType', type)}
                         className={`p-3 rounded-xl border text-sm font-semibold transition ${formData.securityType === type ? 'border-amber-500 bg-amber-500/10 text-white' : 'border-slate-700 text-slate-400 hover:border-slate-500'}`}>
                         {labels[type]}
                       </button>
@@ -474,7 +485,7 @@ export default function LoanBuilderPage() {
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div>
                         <label className={labelClass}>Jméno ručitele</label>
-                        <input value={formData.guarantorName} onChange={e => set('guarantorName', e.target.value)} placeholder="Tomáš Kovář" aria-label="Jméno ručitele" className={inputClass} />
+                        <input name="guarantorName" value={formData.guarantorName} onChange={e => set('guarantorName', e.target.value)} placeholder="Tomáš Kovář" aria-label="Jméno ručitele" className={inputClass} />
                       </div>
                       <div>
                         <label className={labelClass}>Rodné číslo / IČO ručitele</label>
