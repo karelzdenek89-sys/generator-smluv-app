@@ -1,5 +1,6 @@
 import path from 'path';
 import type { NextConfig } from 'next';
+import { CONTENT_CONSOLIDATION_REDIRECTS } from './lib/seo/content-consolidation-redirects';
 import { LEGACY_EXPAT_BLOG_REDIRECTS } from './lib/seo/legacy-expat-blog-redirects';
 
 const isDev = process.env.NODE_ENV !== 'production';
@@ -80,6 +81,7 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      ...CONTENT_CONSOLIDATION_REDIRECTS,
       { source: '/kupni-smlouva-auto', destination: '/auto', permanent: true },
       { source: '/uk', destination: '/ua', permanent: true },
       { source: '/uk/:path*', destination: '/ua/:path*', permanent: true },

@@ -174,7 +174,7 @@ export default function SmlouvaODiloOnlinePage() {
           <Link href="/" className="hover:text-slate-300 transition">← Všechny smlouvy</Link>
           <Link href="/sluzby" className="hover:text-slate-300 transition">Smlouva o poskytování služeb</Link>
           <Link href="/nda" className="hover:text-slate-300 transition">Smlouva o mlčenlivosti</Link>
-          <Link href="/pracovni-smlouva" className="hover:text-slate-300 transition">Pracovní smlouva</Link>
+          <Link href="/pracovni" className="hover:text-slate-300 transition">Pracovní smlouva</Link>
         </div>
       </div>
       <RelatedContracts currentHref="/smlouva-o-dilo-online" cluster="prace" />

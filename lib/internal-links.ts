@@ -16,7 +16,6 @@ export type InternalLink = {
 
 export const SEO_LANDINGS: readonly InternalLink[] = [
   { href: '/najem', label: 'Nájemní smlouva online', description: 'Generátor nájemní smlouvy — PDF ihned, volitelně DOCX. Byt, dům, kauce, výpověď.', cluster: 'bydleni' },
-  { href: '/najemni-smlouva', label: 'Nájemní smlouva 2026', description: 'Vzor a generátor nájemní smlouvy podle OZ — kauce, výpověď, předání bytu.', cluster: 'bydleni' },
   { href: '/najemni-smlouva-byt', label: 'Nájemní smlouva na byt', description: 'Specializovaný vzor pro nájem bytové jednotky.', cluster: 'bydleni' },
   { href: '/podnajemni-smlouva', label: 'Podnájemní smlouva', description: 'Vzor podnájmu se souhlasem pronajímatele.', cluster: 'bydleni' },
   { href: '/pro-pronajimatele', label: 'Dokumenty pro pronajímatele', description: 'Rozcestník: smlouva, předávací protokol, kauce.', cluster: 'bydleni' },
@@ -26,11 +25,11 @@ export const SEO_LANDINGS: readonly InternalLink[] = [
   { href: '/prodej-vozidla', label: 'Kupní smlouva na auto', description: 'Vzor pro převod vozidla — VIN, tachometr, doklady.', cluster: 'auto' },
   { href: '/balicek-prodej-vozidla', label: 'Balíček pro prodej vozidla', description: 'Smlouva + předávací protokol + podklady k převodu.', cluster: 'auto' },
 
-  { href: '/pracovni-smlouva', label: 'Pracovní smlouva 2026', description: 'Vzor pracovní smlouvy podle zákoníku práce.', cluster: 'prace' },
-  { href: '/dohoda-o-provedeni-prace', label: 'Dohoda o provedení práce (DPP)', description: 'Vzor DPP do 300 hodin ročně.', cluster: 'prace' },
+  { href: '/pracovni', label: 'Pracovní smlouva online', description: 'Formulář pracovní smlouvy podle zákoníku práce.', cluster: 'prace' },
+  { href: '/dpp', label: 'Dohoda o provedení práce (DPP)', description: 'Online DPP do 300 hodin ročně.', cluster: 'prace' },
   { href: '/smlouva-o-dilo-online', label: 'Smlouva o dílo online', description: 'Vzor pro řemeslníky, freelancery i firmy.', cluster: 'prace' },
   { href: '/smlouva-o-sluzbach', label: 'Smlouva o poskytování služeb', description: 'Vzor pro opakované služby a B2B kontrakty.', cluster: 'prace' },
-  { href: '/smlouva-o-spolupraci', label: 'Smlouva o spolupráci', description: 'Vzor B2B spolupráce mezi podnikateli.', cluster: 'b2b' },
+  { href: '/spoluprace', label: 'Smlouva o spolupráci', description: 'Online smlouva pro B2B spolupráci mezi podnikateli.', cluster: 'b2b' },
 
   { href: '/pujcka-smlouva', label: 'Smlouva o zápůjčce', description: 'Vzor půjčky peněz mezi soukromými osobami.', cluster: 'finance' },
   { href: '/uznani-dluhu-vzor', label: 'Uznání dluhu', description: 'Vzor uznání dluhu a splátkového kalendáře.', cluster: 'finance' },

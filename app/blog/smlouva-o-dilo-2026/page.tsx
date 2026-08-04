@@ -7,8 +7,8 @@ import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
 export const metadata = blogArticlePageMetadata("smlouva-o-dilo-2026", {
-  title: "Smlouva o dílo 2026: Co musí obsahovat a nejčastější chyby",
-  description: "Průvodce smlouvou o dílo pro rok 2026. Co musí smlouva obsahovat dle § 2586 OZ, jak se chránit jako objednatel i zhotovitel a kdy nestačí ústní dohoda.",
+  title: "Smlouva o dílo 2026: vzor, náležitosti a chyby",
+  description: "Smlouva o dílo 2026: co musí obsahovat, jak vymezit dílo, cenu a předání a kterým chybám se vyhnout. Vzor smlouvy vytvoříte online v PDF.",
   keywords: ['smlouva o dílo 2026',
     'co musí obsahovat smlouva o dílo',
     'smlouva o dílo vzor',
@@ -42,7 +42,7 @@ export default function SmlouvaODiloPage() {
           <time className="text-xs text-slate-600" dateTime="2026-03-20">20. března 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
-          Smlouva o dílo 2026: Co musí obsahovat a nejčastější chyby
+          Smlouva o dílo 2026: vzor, náležitosti a chyby
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-400">
           Stavíte, renovujete nebo zadáváte vývoj softwaru? Bez správně sepsané smlouvy o dílo

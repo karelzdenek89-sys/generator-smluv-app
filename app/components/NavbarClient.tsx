@@ -5,9 +5,9 @@ import Link from 'next/link';
 import LanguageSwitcher from '@/app/components/LanguageSwitcher';
 
 const navLinks = [
-  { href: '/najemni-smlouva', label: 'Nájemní smlouva' },
+  { href: '/najem', label: 'Nájemní smlouva' },
   { href: '/kupni-smlouva', label: 'Kupní smlouva' },
-  { href: '/pracovni-smlouva', label: 'Pracovní smlouva' },
+  { href: '/pracovni', label: 'Pracovní smlouva' },
   { href: '/blog', label: 'Právní průvodce' },
   { href: '/o-projektu', label: 'O projektu' },
 ];

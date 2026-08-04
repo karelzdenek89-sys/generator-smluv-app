@@ -9,6 +9,7 @@ import {
 } from '@/lib/i18n/expat-seo-landings';
 import {
   EXPAT_BUILDER_SITEMAP,
+  getExpatBuilderSitemapAlternates,
   getExpatSeoPageHreflangAlternates,
 } from '@/lib/i18n/expat-hreflang';
 import { czechBlogSitemapEntries } from '@/lib/seo/sitemap-blog';
@@ -63,11 +64,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     staticPage('/spoluprace', 0.85),
     staticPage('/blog', 0.8, 'weekly'),
     ...czechBlogSitemapEntries(),
-    staticPage('/najemni-smlouva', 0.95),
     staticPage('/smlouva-o-dilo-online', 0.95),
-    staticPage('/pracovni-smlouva', 0.95),
     staticPage('/kupni-smlouva', 0.95),
-    staticPage('/dohoda-o-provedeni-prace', 0.95),
     staticPage('/darovaci-smlouva', 0.93),
     staticPage('/nda-smlouva', 0.93),
     staticPage('/pujcka-smlouva', 0.93),
@@ -75,7 +73,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     staticPage('/plna-moc-online', 0.93),
     staticPage('/uznani-dluhu-vzor', 0.93),
     staticPage('/smlouva-o-sluzbach', 0.93),
-    staticPage('/smlouva-o-spolupraci', 0.93),
     staticPage('/najemni-smlouva-byt', 0.85),
     staticPage('/pro-pronajimatele', 0.9),
     staticPage('/prodej-vozidla', 0.9),
@@ -87,12 +84,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     staticPage('/kontakt', 0.5, 'yearly'),
     staticPage('/obchodni-podminky', 0.3, 'yearly'),
     staticPage('/gdpr', 0.3, 'yearly'),
-    ...EXPAT_BUILDER_SITEMAP.map(({ path, contractKey }) => ({
-      url: `${BASE_URL}${path}`,
-      changeFrequency: 'monthly' as const,
-      priority: 0.9,
-      alternates: { languages: getExpatSeoPageHreflangAlternates(contractKey) },
-    })),
+    ...EXPAT_BUILDER_SITEMAP.map(({ path, contractKey }) => {
+      const languages = getExpatBuilderSitemapAlternates(contractKey);
+      return {
+        url: `${BASE_URL}${path}`,
+        changeFrequency: 'monthly' as const,
+        priority: 0.9,
+        ...(languages ? { alternates: { languages } } : {}),
+      };
+    }),
     ...EXPAT_SEO_LOCALES.flatMap((locale) =>
       EXPAT_SEO_SLUGS.map((slug) => {
         const contractKey = getExpatContractKeyBySeoSlug(slug);

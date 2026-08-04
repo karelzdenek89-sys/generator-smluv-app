@@ -325,7 +325,6 @@ export default function PodnajemniSmlouvaPage() {
           {[
             { href: '/podnajemni-smlouva', label: '🏠 Podnájemní smlouva — přehled' },
             { href: '/blog/najemni-smlouva-vzor-2026', label: '🔑 Nájemní smlouva' },
-            { href: '/najemni-smlouva', label: '📋 Průvodce nájemní smlouvou' },
             { href: '/najem', label: '📝 Vytvořit nájemní smlouvu' },
             { href: '/', label: '📋 Všechny smlouvy' },
           ].map(l => (

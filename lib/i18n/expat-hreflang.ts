@@ -4,13 +4,14 @@ import { SITE_URL } from '@/lib/seo/site';
 import { getExpatSeoSlug } from '@/lib/i18n/expat-seo-landings';
 
 /**
- * Czech SEO landing paths for hreflang `cs` — not builder/form URLs.
- * Keeps language alternates separate from transactional form pages.
+ * Canonical Czech equivalents for hreflang `cs`.
+ * Consolidated clusters point directly to the builder; the remaining clusters
+ * keep a distinct Czech SEO landing where its intent is still unique.
  */
 export const CZECH_SEO_LANDING_BY_CONTRACT: Record<ExpatContractType, string> = {
-  lease: '/najemni-smlouva',
-  employment: '/pracovni-smlouva',
-  dpp: '/dohoda-o-provedeni-prace',
+  lease: '/najem',
+  employment: '/pracovni',
+  dpp: '/dpp',
   sublease: '/podnajemni-smlouva',
   power_of_attorney: '/plna-moc-online',
   car_sale: '/prodej-vozidla',
@@ -39,11 +40,22 @@ export function getExpatHreflangLanguages(contractKey: ExpatContractType): Recor
   };
 }
 
-/** Builder/form pages — self canonical only (avoid competing with SEO landings in hreflang). */
+function builderIsCzechHreflangEquivalent(contractKey: ExpatContractType): boolean {
+  return EXPAT_CONTRACT_ROUTES[contractKey] === CZECH_SEO_LANDING_BY_CONTRACT[contractKey];
+}
+
+/**
+ * Builder/form pages use a self canonical. Consolidated builders also expose
+ * the reciprocal language cluster; builders with a separate Czech SEO landing
+ * remain outside that cluster to avoid two Czech equivalents.
+ */
 export function getExpatBuilderCanonicalAlternates(contractKey: ExpatContractType) {
   const czechPath = EXPAT_CONTRACT_ROUTES[contractKey];
   return {
     canonical: `${SITE_URL}${czechPath}`,
+    ...(builderIsCzechHreflangEquivalent(contractKey)
+      ? { languages: getExpatHreflangLanguages(contractKey) }
+      : {}),
   };
 }
 
@@ -74,4 +86,11 @@ export function getExpatSeoPageAlternates(locale: 'en' | 'ua', contractKey: Expa
 /** Sitemap hreflang languages for /en|ua/{seo-slug} entries. */
 export function getExpatSeoPageHreflangAlternates(contractKey: ExpatContractType) {
   return getExpatHreflangLanguages(contractKey);
+}
+
+/** Hreflang sitemap data for builders that are the canonical Czech equivalent. */
+export function getExpatBuilderSitemapAlternates(contractKey: ExpatContractType) {
+  return builderIsCzechHreflangEquivalent(contractKey)
+    ? getExpatHreflangLanguages(contractKey)
+    : undefined;
 }

@@ -206,7 +206,7 @@ export const SITUATION_LANDING_CONFIG: Record<
     bottomLinks: [
       { href: '/balicek-pronajimatel', label: 'Balíček pro pronajímatele' },
       { href: '/najem', label: 'Nájemní smlouva' },
-      { href: '/najemni-smlouva', label: 'Průvodce nájemní smlouvou' },
+      { href: '/blog/najemni-smlouva-vzor-2026', label: 'Průvodce nájemní smlouvou' },
       { href: '/blog/predani-bytu-najemci-2026', label: 'Jak správně předat byt nájemci' },
       { href: '/podnajem', label: 'Podnájemní smlouva' },
     ],

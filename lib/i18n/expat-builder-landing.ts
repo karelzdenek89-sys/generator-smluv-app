@@ -48,7 +48,7 @@ function paymentFaq(locale: AppLocale): { q: string; a: string } {
 
 const EMPLOYMENT_LANDING: LocaleTriple<ExpatBuilderLandingBlock> = {
   cs: {
-    guideHref: '/pracovni-smlouva',
+    guideHref: '/blog/pracovni-smlouva-2026',
     benefits: [
       { icon: '⚖️', text: 'Sestaveno dle § 33–65 zákoníku práce (zákon č. 262/2006 Sb.)' },
       { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
@@ -348,7 +348,7 @@ const EMPLOYMENT_EXTRAS: LocaleTriple<ExpatBuilderPageExtras> = {
 
 const DPP_LANDING: LocaleTriple<ExpatBuilderLandingBlock> = {
   cs: {
-    guideHref: '/dohoda-o-provedeni-prace',
+    guideHref: '/blog/dpp-dohoda-provedeni-prace',
     benefits: [
       { icon: '⚖️', text: 'Sestaveno dle § 75–76 zákoníku práce (zákon č. 262/2006 Sb.)' },
       { icon: '📄', text: 'Okamžité PDF ke stažení po zaplacení' },

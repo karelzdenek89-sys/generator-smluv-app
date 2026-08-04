@@ -48,9 +48,8 @@ export default function DppDpcPorovnani2026Page() {
           href: '/dpp',
         }}
         relatedLinks={[
-          { href: '/dohoda-o-provedeni-prace', label: 'DPP — průvodce a generátor' },
-          { href: '/dpp', label: 'Formulář DPP' },
-          { href: '/pracovni-smlouva', label: 'Pracovní smlouva' },
+          { href: '/dpp', label: 'DPP — formulář a PDF' },
+          { href: '/pracovni', label: 'Pracovní smlouva' },
           { href: '/blog/dpp-dohoda-provedeni-prace', label: 'Kdy použít DPP a co má obsahovat' },
           { href: '/blog/pracovni-smlouva-2026', label: 'Pracovní smlouva 2026' },
         ]}

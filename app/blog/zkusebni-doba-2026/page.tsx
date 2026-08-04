@@ -2,7 +2,11 @@ import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 
-export const metadata = blogArticlePageMetadata('zkusebni-doba-2026');
+export const metadata = blogArticlePageMetadata('zkusebni-doba-2026', {
+  title: 'Zkušební doba 2026: 4 a 8 měsíců, prodloužení',
+  description:
+    'Zkušební doba v roce 2026: maximálně 4 měsíce, u vedoucích 8. Kdy ji sjednat, jak se prodlužuje a jaký limit platí u smlouvy na dobu určitou.',
+});
 
 export default function ZkusebniDoba2026Page() {
   return (

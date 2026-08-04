@@ -7,8 +7,8 @@ import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
 export const metadata = blogArticlePageMetadata("plna-moc-2026", {
-  title: "Plná moc 2026: co musí obsahovat a kdy je nutný notář",
-  description: "Průvodce plnou mocí pro rok 2026. Rozdíl mezi generální a speciální plnou mocí, kdy je nutný ověřený podpis, povinné náležitosti a nejčastější chyby.",
+  title: "Plná moc 2026: vzor, náležitosti a ověření podpisu",
+  description: "Plná moc 2026 přehledně: co musí obsahovat, generální vs. speciální plná moc a kdy potřebujete ověřený podpis. Vzor vytvoříte online v PDF.",
   keywords: ['plná moc vzor 2026',
     'plná moc náležitosti',
     'generální plná moc',
@@ -40,7 +40,7 @@ export default function PlnaMoc2026Page() {
           <time className="text-xs text-slate-600" dateTime="2026-04-02">2. dubna 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
-          Plná moc 2026: co musí obsahovat a kdy je nutný notář
+          Plná moc 2026: vzor, náležitosti a ověření podpisu
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-400">
           Plná moc umožňuje jednat jménem jiné osoby — vyřídit úřad, zastoupit při podpisu smlouvy

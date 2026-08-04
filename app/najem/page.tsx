@@ -504,7 +504,7 @@ function LeaseBuilderContent() {
         faq={ui.landing.faq}
         ctaLabel={ui.landing.ctaLabel}
         formId="formular"
-        guideHref="/najemni-smlouva"
+        guideHref="/blog/najemni-smlouva-vzor-2026"
         guideLabel={ui.landing.guideLabel}
       />
 
