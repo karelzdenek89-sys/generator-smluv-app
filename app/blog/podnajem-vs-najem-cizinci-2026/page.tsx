@@ -45,7 +45,7 @@ export default function PodnajemVsNajemCizinciPage() {
       }}
       relatedLinks={[
         { href: '/podnajemni-smlouva', label: 'Podnájemní smlouva online' },
-        { href: '/najemni-smlouva', label: 'Nájemní smlouva online' },
+        { href: '/najem', label: 'Nájemní smlouva online' },
         { href: '/blog/podnajemni-smlouva-2026', label: 'Podnájemní smlouva 2026' },
         { href: '/blog/chyby-pri-pronajmu-bytu-2026', label: 'Chyby při pronájmu bytu' },
       ]}

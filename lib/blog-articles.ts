@@ -62,7 +62,7 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   },
   {
     slug: 'zkusebni-doba-2026',
-    title: 'Zkušební doba 2026: délka, pravidla a prodloužení',
+    title: 'Zkušební doba 2026: 4 a 8 měsíců, prodloužení',
     excerpt:
       'Aktuální pravidla pro zkušební dobu po flexinovele zákoníku práce: kdy ji sjednat, jaké platí limity pro dobu určitou a kdy ji lze písemně prodloužit.',
     category: 'Práce a zaměstnání',
@@ -414,7 +414,7 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   },
   {
     slug: 'plna-moc-2026',
-    title: 'Plná moc 2026: Kdy ji potřebujete a co musí obsahovat',
+    title: 'Plná moc 2026: vzor, náležitosti a ověření podpisu',
     excerpt:
       'Kdy stačí prostá písemná forma, kdy je vhodný ověřený podpis a jak plnou moc přesně vymezit.',
     category: 'Osobní a právní',
@@ -458,7 +458,7 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   },
   {
     slug: 'dpp-dohoda-provedeni-prace',
-    title: 'Dohoda o provedení práce 2026: limity a odvody',
+    title: 'Dohoda o provedení práce 2026: vzor, limity a odvody',
     excerpt:
       'Praktický přehled, kdy je dohoda o provedení práce vhodná, jak nastavit odměnu a na co si dát pozor.',
     category: 'Práce a zaměstnání',
@@ -513,7 +513,7 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   },
   {
     slug: 'smlouva-o-dilo-2026',
-    title: 'Smlouva o dílo 2026: Kdy ji použít a jak popsat předmět díla',
+    title: 'Smlouva o dílo 2026: vzor, náležitosti a chyby',
     excerpt:
       'Jak přesně vymezit dílo, cenu, termíny a předání tak, aby smlouva fungovala i v běžné praxi.',
     category: 'Podnikání a zakázky',

@@ -282,7 +282,7 @@ export default function PracovniSmlouvaVzor2026Page() {
         <p className="mt-6 text-slate-400 leading-relaxed">
           Pokud nejde o pravidelný pracovní poměr, ale o krátkodobou práci do zákonných limitů, může být
           vhodnější{' '}
-          <Link href="/dohoda-o-provedeni-prace" className="text-amber-400 hover:text-amber-300 transition">
+          <Link href="/dpp" className="text-amber-400 hover:text-amber-300 transition">
             dohoda o provedení práce
           </Link>
           . Rozdíly mezi pracovní smlouvou, DPP a DPČ shrnujeme v{' '}
@@ -456,9 +456,9 @@ export default function PracovniSmlouvaVzor2026Page() {
           ))}
         </div>
         <p className="mt-6 text-sm text-slate-400 leading-relaxed">
-          Podrobný přehled náležitostí najdete také na stránce{' '}
-          <Link href="/pracovni-smlouva" className="text-amber-400 hover:text-amber-300 transition">
-            pracovní smlouva — průvodce
+          Hotovou smlouvu podle zadaných podmínek můžete připravit ve{' '}
+          <Link href="/pracovni" className="text-amber-400 hover:text-amber-300 transition">
+            formuláři pracovní smlouvy
           </Link>
           .
         </p>
@@ -502,8 +502,7 @@ export default function PracovniSmlouvaVzor2026Page() {
         <div className="flex flex-wrap gap-3">
           {[
             { href: '/pracovni', label: '👔 Vytvořit pracovní smlouvu' },
-            { href: '/pracovni-smlouva', label: '📋 Pracovní smlouva — průvodce' },
-            { href: '/dohoda-o-provedeni-prace', label: '📄 Dohoda o provedení práce' },
+            { href: '/dpp', label: '📄 Dohoda o provedení práce' },
             { href: '/blog/dpp-dpc-porovnani-2026', label: '⚖️ DPP vs. DPČ' },
             { href: '/blog/minimalni-mzda-dpp-pracovni-smlouva-2026', label: '💰 Minimální mzda a DPP' },
           ].map(l => (

@@ -152,7 +152,7 @@ export default function SpolupraceePage() {
         ]}
         ctaLabel="Vytvořit smlouvu o spolupráci"
         formId="formular"
-        guideHref="/smlouva-o-spolupraci"
+        guideHref="/blog/smlouva-o-spolupraci-2026"
         guideLabel="Průvodce smlouvou o spolupráci — podíl na výnosech, IP práva a exit"
       />
 

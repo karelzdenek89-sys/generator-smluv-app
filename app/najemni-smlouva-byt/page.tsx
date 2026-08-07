@@ -202,7 +202,7 @@ export default function NajemniSmlouvaBytPage() {
         <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">
           <Link href="/" className="hover:text-slate-300 transition">← Všechny smlouvy</Link>
           <Link href="/podnajemni-smlouva" className="hover:text-slate-300 transition">Podnájemní smlouva</Link>
-          <Link href="/najemni-smlouva" className="hover:text-slate-300 transition">Průvodce nájemní smlouvou</Link>
+          <Link href="/blog/najemni-smlouva-vzor-2026" className="hover:text-slate-300 transition">Průvodce nájemní smlouvou</Link>
         </div>
       </div>
       <RelatedContracts currentHref="/najemni-smlouva-byt" cluster="bydleni" />

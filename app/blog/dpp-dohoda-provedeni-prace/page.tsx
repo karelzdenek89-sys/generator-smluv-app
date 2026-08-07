@@ -7,8 +7,8 @@ import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
 
 export const metadata = blogArticlePageMetadata("dpp-dohoda-provedeni-prace", {
-  title: "Dohoda o provedení práce 2026: limity a odvody",
-  description: "Průvodce dohodou o provedení práce pro rok 2026. Limit 300 hodin ročně, rozhodný příjem 12 000 Kč, odvody, povinné náležitosti a nejčastější chyby.",
+  title: "Dohoda o provedení práce 2026: vzor, limity a odvody",
+  description: "DPP 2026 přehledně: vzor, limit 300 hodin, odvody a povinné náležitosti. Vytvořte dohodu online a stáhněte hotové PDF bez registrace.",
   keywords: ['DPP dohoda o provedení práce',
     'dohoda o provedení práce vzor 2026',
     'DPP limit hodin',
@@ -40,7 +40,7 @@ export default function DppPage() {
           <time className="text-xs text-slate-600" dateTime="2026-04-02">2. dubna 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
-          Dohoda o provedení práce 2026: limity a odvody
+          Dohoda o provedení práce 2026: vzor, limity a odvody
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-400">
           Dohoda o provedení práce je nejoblíbenější forma brigády a přivýdělku — ale skrývá řadu pastí.
@@ -319,9 +319,9 @@ export default function DppPage() {
         <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-600">Mohlo by vás zajímat</div>
         <div className="flex flex-wrap gap-3">
           {[
-            { href: '/dohoda-o-provedeni-prace', label: '📄 DPP — přehled' },
+            { href: '/dpp', label: '📄 Vytvořit DPP online' },
             { href: '/blog/pracovni-smlouva-2026', label: '👔 Pracovní smlouva' },
-            { href: '/pracovni-smlouva', label: '📋 Průvodce pracovní smlouvou' },
+            { href: '/pracovni', label: '📋 Vytvořit pracovní smlouvu' },
             { href: '/blog/smlouva-o-dilo-2026', label: '🔨 Smlouva o dílo' },
             { href: '/', label: '📋 Všechny smlouvy' },
           ].map(l => (

@@ -383,7 +383,7 @@ export default function ProcSmlouvahnedMistoVzoru2026Page() {
         <div className="flex flex-wrap gap-3">
           {[
             { href: '/o-projektu', label: 'Jak nástroj funguje' },
-            { href: '/najemni-smlouva', label: 'Nájemní smlouva — průvodce' },
+            { href: '/najem', label: 'Nájemní smlouva online' },
             { href: '/blog/najemni-smlouva-vzor-2026', label: 'Nájemní smlouva vzor 2026' },
             { href: '/blog/expat/foreigners-czech-contracts-guide-en', label: 'Guides for foreigners (EN)' },
           ].map((l) => (

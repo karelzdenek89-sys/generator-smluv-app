@@ -402,11 +402,11 @@ export default function NajemniSmlouvaVzor2026Page() {
         <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-600">Mohlo by vás zajímat</div>
         <div className="flex flex-wrap gap-3">
           {[
-            { href: '/najemni-smlouva', label: '🏠 Nájemní smlouva — landing page' },
+            { href: '/najem', label: '🏠 Vytvořit nájemní smlouvu online' },
             { href: '/blog/proc-smlouvahned-misto-vzoru-2026', label: '📖 Proč SmlouvaHned místo vzoru z webu' },
             { href: '/podnajem', label: '🏘️ Podnájemní smlouva' },
             { href: '/kupni-smlouva', label: '🛒 Kupní smlouva' },
-            { href: '/pracovni-smlouva', label: '💼 Pracovní smlouva' },
+            { href: '/pracovni', label: '💼 Pracovní smlouva' },
             { href: '/', label: '📋 Všechny smlouvy' },
           ].map(l => (
             <Link

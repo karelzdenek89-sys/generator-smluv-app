@@ -312,7 +312,7 @@ export default function NdaSmlouvaPage() {
             { href: '/nda-smlouva', label: '🔒 NDA smlouva — přehled' },
             { href: '/blog/smlouva-o-dilo-2026', label: '🔨 Smlouva o dílo' },
             { href: '/blog/pracovni-smlouva-2026', label: '👔 Pracovní smlouva' },
-            { href: '/smlouva-o-spolupraci', label: '🤝 Smlouva o spolupráci' },
+            { href: '/spoluprace', label: '🤝 Smlouva o spolupráci' },
             { href: '/', label: '📋 Všechny smlouvy' },
           ].map(l => (
             <Link key={l.href} href={l.href} className="rounded-xl border border-white/8 bg-white/3 px-4 py-2 text-sm text-slate-400 transition hover:border-white/15 hover:text-white">{l.label}</Link>

@@ -62,7 +62,7 @@ export const LEASE_CS_SEO_SECTIONS: readonly LeaseSeoSection[] = [
     ],
     links: [
       { href: '/blog/najemni-smlouva-vzor-2026', label: 'Co musí obsahovat nájemní smlouva — podrobný přehled' },
-      { href: '/najemni-smlouva', label: 'Průvodce nájemní smlouvou na SmlouvaHned' },
+      { href: '/blog/najem-na-dobu-urcitou-neurcitou-2026', label: 'Nájem na dobu určitou, nebo neurčitou' },
     ],
   },
   {
@@ -120,7 +120,6 @@ export const LEASE_CS_SEO_SECTIONS: readonly LeaseSeoSection[] = [
 ];
 
 export const LEASE_CS_GUIDE_LINKS = [
-  { href: '/najemni-smlouva', label: 'Průvodce nájemní smlouvou' },
   { href: '/blog/najemni-smlouva-vzor-2026', label: 'Vzor a obsah nájemní smlouvy 2026' },
   { href: '/blog/kauce-pronajem-bytu-2026', label: 'Kauce při pronájmu' },
   { href: '/blog/predani-bytu-najemci-2026', label: 'Předání bytu a protokol' },

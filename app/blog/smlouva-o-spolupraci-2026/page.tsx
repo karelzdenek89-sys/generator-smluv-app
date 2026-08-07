@@ -309,7 +309,7 @@ export default function SmlouvaOSpolupraci2026Page() {
         <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-600">Mohlo by vás zajímat</div>
         <div className="flex flex-wrap gap-3">
           {[
-            { href: '/smlouva-o-spolupraci', label: '🤝 Smlouva o spolupráci — přehled' },
+            { href: '/spoluprace', label: '🤝 Vytvořit smlouvu o spolupráci' },
             { href: '/blog/smlouva-o-dilo-2026', label: '🔨 Smlouva o dílo' },
             { href: '/blog/nda-smlouva-mlcenlivost', label: '🔒 NDA smlouva' },
             { href: '/smlouva-o-sluzbach', label: '📋 Smlouva o službách' },
