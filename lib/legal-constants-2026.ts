@@ -13,8 +13,8 @@
 //   3. Doplnit CHANGELOG na konci souboru
 // ═══════════════════════════════════════════════════════════════════════
 
-export const LEGAL_VERSION = '2026.1';
-export const LEGAL_REVIEWED_AT = '2026-05-15';
+export const LEGAL_VERSION = '2026.2';
+export const LEGAL_REVIEWED_AT = '2026-07-15';
 
 /**
  * Krátký disclaimer do patičky každé stránky PDF.
@@ -117,6 +117,23 @@ export const LOAN_ASSIGNMENT_CONSUMER_SAFE =
 // ───────────────────────────────────────────────────────────────────────
 // CHANGELOG
 // ───────────────────────────────────────────────────────────────────────
+// 2026-07-15 (v2026.2):
+//   - Zpětně doplněné záznamy: níže uvedené změny proběhly bez posunu verze,
+//     takže LEGAL_REVIEWED_AT nadále ukazoval na 2026-05-15 a soubor tvrdil
+//     starší právní stav, než jaký skutečně obsahoval.
+//   - MIN_WAGE_MONTHLY_2026_CZK = 22 400 Kč a MIN_WAGE_HOURLY_2026_CZK
+//     = 134,40 Kč (40h týden) — doplněno 2026-07-01.
+//   - Citace minimální mzdy opravena z „nař. vlády č. 466/2025 Sb." na
+//     „sdělení MPSV č. 356/2025 Sb.; mechanismus dle nař. vlády
+//     č. 285/2024 Sb." — 2026-07-15.
+//   - LEGAL_REVIEWED_AT je záměrně 2026-07-15 (den poslední věcné změny
+//     hodnot), nikoli den zápisu tohoto záznamu — hodnoty nebyly od té doby
+//     znovu ověřovány proti primárním zdrojům.
+//   - Mimo tento soubor: registrace zaměstnanců na ČSSZ přešla od 2026-07-01
+//     na dvoukrokový režim (registrace/předregistrace před zahájením práce,
+//     úplná registrace do 8 dnů). Promítnuto v blogovém obsahu k DPP; zde
+//     není konstanta, protože nejde o číselný limit ve smlouvách.
+//
 // 2026-05-15 (v2026.1):
 //   - Vytvořen modul, extrahovány klíčové konstanty z lib/contracts.ts.
 //   - § 35 ZP po novele 120/2025 Sb. (flexinovela, účinnost 1. 6. 2025):
