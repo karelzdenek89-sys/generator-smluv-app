@@ -5,6 +5,18 @@ import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
+import {
+  DPP_MONTHLY_THRESHOLD_2026_CZK,
+  MIN_WAGE_HOURLY_2026_CZK,
+  MIN_WAGE_MONTHLY_2026_CZK,
+} from '@/lib/legal-constants-2026';
+
+const dppThreshold2026 = DPP_MONTHLY_THRESHOLD_2026_CZK.toLocaleString('cs-CZ');
+const minimumMonthlyWage2026 = MIN_WAGE_MONTHLY_2026_CZK.toLocaleString('cs-CZ');
+const minimumHourlyWage2026 = MIN_WAGE_HOURLY_2026_CZK.toLocaleString('cs-CZ', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
 
 export const metadata = blogArticlePageMetadata("dpp-vzor-zdarma-2026", {
   title: "DPP vzor zdarma 2026 — co v něm chybí a proč na tom záleží",
@@ -151,10 +163,10 @@ export default function DppVzorZdarmaPage() {
             <tbody className="divide-y divide-white/5">
               {[
                 ['Limit hodin', '300 hodin ročně u jednoho zaměstnavatele (§ 75 ZP)'],
-                ['Pojistné a daň', 'Pro rok 2026 sledujte rozhodný příjem 12 000 Kč/měsíc; daňový režim závisí na prohlášení poplatníka a konkrétní situaci'],
-                ['Zdravotní pojištění', 'Odvod od příjmu 4 500 Kč/měsíc — zaměstnavatel musí sledovat kumulaci u více DPP'],
-                ['Oznamovací povinnost', 'Zaměstnavatel hlásí DPP na ČSSZ do 8 dnů od nástupu'],
-                ['Minimální odměna', 'Hodinová odměna nesmí být nižší než minimální mzda pro rok 2026 (22 400 Kč/měs. → 134,40 Kč/hod.)'],
+                ['Pojistné a daň', `Pro rok 2026 sledujte rozhodný příjem ${dppThreshold2026} Kč/měsíc; daňový režim závisí na prohlášení poplatníka a konkrétní situaci`],
+                ['Zdravotní pojištění', `U DPP vzniká účast při dosažení příjmu ${dppThreshold2026} Kč za měsíc u jednoho zaměstnavatele; hranice 4 500 Kč platí pro DPČ`],
+                ['Oznamovací povinnost', 'Od 1. 7. 2026 registrace nebo předregistrace před zahájením práce; úplná registrace do 8 dnů od nástupu'],
+                ['Minimální odměna', `Hodinová odměna nesmí být nižší než minimální mzda pro rok 2026 (${minimumMonthlyWage2026} Kč/měs. → ${minimumHourlyWage2026} Kč/hod.)`],
               ].map(([oblast, pravidlo]) => (
                 <tr key={oblast} className="bg-[#080f1e]">
                   <td className="px-5 py-3 text-xs font-bold text-white">{oblast}</td>
@@ -241,11 +253,11 @@ export default function DppVzorZdarmaPage() {
               'Jméno, adresa a rodné číslo / datum narození obou stran',
               'Přesný druh práce nebo popis pracovního úkolu',
               'Místo nebo oblast výkonu práce',
-              'Výše odměny — hodinová nebo úkolová sazba (min. 134,40 Kč/hod. v roce 2026)',
+              `Výše odměny — hodinová nebo úkolová sazba (min. ${minimumHourlyWage2026} Kč/hod. v roce 2026)`,
               'Maximální rozsah práce — ideálně s odkazem na limit 300 hodin ročně (§ 75 ZP)',
               'Způsob a termín vyplacení odměny',
               'Datum uzavření dohody a podpisy obou stran',
-              'Oznamovací povinnost zaměstnavatele vůči ČSSZ (do 8 dnů od nástupu)',
+              'Registrace nebo předregistrace na ČSSZ před zahájením práce a úplná registrace do 8 dnů od nástupu',
             ].map((item, i) => (
               <li key={item} className="flex items-start gap-3 text-sm text-slate-300">
                 <span className="flex-shrink-0 flex h-5 w-5 items-center justify-center rounded-full border border-amber-500/30 text-[10px] font-bold text-amber-400">{i + 1}</span>

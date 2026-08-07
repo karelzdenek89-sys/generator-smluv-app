@@ -54,7 +54,7 @@ async function fillEveryField(page: import('@playwright/test').Page) {
       !element.hidden && element.getAttribute('aria-hidden') !== 'true' && element.offsetParent !== null;
 
     for (const select of Array.from(document.querySelectorAll('select'))) {
-      if (!isVisible(select) || select.disabled) continue;
+      if (!isVisible(select) || select.disabled || select.value) continue;
       const option = Array.from(select.options).find((o) => o.value && !o.disabled);
       if (option) setValue(select, option.value);
     }
@@ -72,6 +72,9 @@ async function fillEveryField(page: import('@playwright/test').Page) {
       // actually type — the plain "15000" form is what let the July regression
       // through every fixture the project had.
       if (type === 'date') setValue(element, '2026-09-01');
+      else if (/estimatedhours/.test(name)) setValue(element, '80');
+      else if (/hourlyrate/.test(name)) setValue(element, '200');
+      else if (/salary|mzda/.test(name)) setValue(element, '30000');
       else if (type === 'number') setValue(element, '15000');
       else if (type === 'email') setValue(element, 'kupujici@example.com');
       else if (/amount|cena|price|rate|salary|mzda|odmena|castka|dluh/.test(name)) setValue(element, '15 000 Kč');

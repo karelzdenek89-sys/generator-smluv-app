@@ -138,6 +138,9 @@ async function fillEveryField(page: Page) {
       if (el.value.trim()) continue;
       const name = (el.getAttribute('name') || el.id || '').toLowerCase();
       if (type === 'date') setValue(el, '2026-09-01');
+      else if (/estimatedhours/.test(name)) setValue(el, '80');
+      else if (/hourlyrate/.test(name)) setValue(el, '200');
+      else if (/salary|mzda/.test(name)) setValue(el, '30000');
       else if (type === 'number') setValue(el, '15000');
       else if (type === 'email') setValue(el, 'kupujici@example.com');
       else if (/vin/.test(name)) setValue(el, 'TMBJJ7NE8G0123456');

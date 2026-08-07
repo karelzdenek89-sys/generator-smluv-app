@@ -285,6 +285,17 @@ function testLegalAccuracyRegressions() {
   assert.match(dppPages, /12 000 Kč/);
   assert.doesNotMatch(dppPages, /11 500 Kč|11500|Do 12 000 Kč|Do 12 000 Kč\/měs/);
   assert.match(dppPages, /Do 11 999 Kč|účast od 12 000 Kč|nedosáhne rozhodného příjmu 12 000 Kč/);
+
+  const dppGuide = read('app/blog/dpp-dohoda-provedeni-prace/page.tsx');
+  const dppFreeGuide = read('app/blog/dpp-vzor-zdarma-2026/page.tsx');
+  const dppBuilder = read('app/dpp/page.tsx');
+  assert.doesNotMatch(dppGuide, /20,80 Kč|nejpozději v den nástupu/);
+  assert.match(dppGuide, /Od 1\. července 2026|předregistraci/);
+  assert.match(dppGuide, /účast na nemocenském pojištění|výkonu rozhodnutí či exekuci/);
+  assert.doesNotMatch(dppFreeGuide, /Odvod od příjmu 4 500 Kč\/měsíc/);
+  assert.match(dppFreeGuide, /hranice 4 500 Kč platí pro DPČ/);
+  assert.match(dppFreeGuide, /před zahájením práce/);
+  assert.doesNotMatch(dppBuilder, /m\?sto|v\?\?i|\?{4,}|Tla\?\?/);
 }
 
 function testLeaseEnBuilderUi() {
@@ -391,6 +402,9 @@ function testLeaseEnglishContractSections() {
     flatAddress: 'Prague',
     rentAmount: '20000',
     startDate: '2026-06-01',
+    duration: 'fixed',
+    endDate: '2027-05-31',
+    depositAmount: '20000',
   };
   const sections = buildLeaseContractSectionsEn(data);
   assert.ok(sections.some((s) => s.title.includes('PARTIES')));
@@ -399,6 +413,13 @@ function testLeaseEnglishContractSections() {
   assert.match(read('lib/pdf.ts'), /renderExpatTranslationAnnex/);
   const ukSections = buildLeaseContractSectionsUk(data);
   assert.ok(ukSections.some((s) => s.title.includes('СТОРОНИ')));
+  const enText = sections.flatMap((section) => section.body).join(' ');
+  const ukText = ukSections.flatMap((section) => section.body).join(' ');
+  assert.match(enText, /Section 2285/);
+  assert.match(ukText, /§ 2285/);
+  assert.doesNotMatch(`${enText}\n${ukText}`, /Section 2230|§ 2230|within one month|протягом місяця/);
+  assert.doesNotMatch(read('lib/contracts-i18n/lease.ts'), /§ 2230/);
+  assert.doesNotMatch(read('app/najemni-smlouva/page.tsx'), /vrátit do jednoho měsíce/);
 }
 
 function testExpatCapabilityDifferentiation() {

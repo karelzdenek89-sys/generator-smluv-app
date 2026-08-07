@@ -11,6 +11,7 @@ import {
   today,
 } from '@/lib/i18n/expat-contract-helpers';
 import { EMPLOYMENT_WORK_ELIGIBILITY_NOTICE_UK } from '@/lib/i18n/safety-copy';
+import { MIN_WAGE_HOURLY_2026_CZK } from '@/lib/legal-constants-2026';
 
 function dppToolsClauseUa(d: StoredContractData): string {
   if (d.toolsProvided === 'employer') {
@@ -106,8 +107,10 @@ export function buildDppContractSectionsUa(d: StoredContractData): ContractSecti
       title: 'IV. ВИНАГОРОДА',
       body: [
         remunerationDesc,
+        `Оплата за фактично відпрацьований час не може бути нижчою за мінімальну зарплату; у 2026 році це щонайменше ${MIN_WAGE_HOURLY_2026_CZK.toLocaleString('uk-UA', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} Kč за годину (§ 111 трудового кодексу ЧР).`,
         'Участь у страхуванні не виникає, якщо місячний дохід у одного роботодавця залишається нижчим за законний поріг.',
         DPP_THRESHOLD_NOTE_UA,
+        'З 1 липня 2026 року роботодавець повинен зареєструвати працівника до початку роботи. Працівника з Чехії можна спочатку попередньо зареєструвати й завершити повну реєстрацію протягом 8 днів після початку; іноземного працівника потрібно повністю зареєструвати до початку роботи.',
         d.paymentAccount
           ? `Виплата на рахунок ${asText(d.paymentAccount)} протягом ${asText(d.paymentDays, '15')} днів після виконання / наприкінці місяця.`
           : 'Виплата готівкою або банківським переказом за домовленістю.',

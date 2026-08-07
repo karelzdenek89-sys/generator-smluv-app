@@ -1,12 +1,12 @@
 import {
-  ZP_TRIAL_MONTHS_STANDARD,
-  ZP_TRIAL_MONTHS_LEADERSHIP,
   DPP_THRESHOLD_NOTE,
   DPP_VACATION_NOTE,
+  MIN_WAGE_HOURLY_2026_CZK,
   LEASE_MINOR_REPAIRS_NOTE,
   LOAN_ASSIGNMENT_CONSUMER_SAFE,
 } from './legal-constants-2026';
 import { hasCheckoutAddon } from './checkout-addons';
+import { getEffectiveTrialPeriodMonths } from './labor-law-validation';
 
 export type ContractType =
   | 'lease'
@@ -1433,14 +1433,10 @@ function buildEmploymentContractSections(d: StoredContractData): ContractSection
     ? Math.max(2, requestedNoticeMonths)
     : 2;
   const leadershipRole = /vedouc|ředitel|manager|director/i.test(String(d.jobTitle ?? '')) || Boolean(d.isManager || d.isExecutive || d.isLeader);
-  const requestedTrialMonths = Number(d.trialPeriodMonths || 0);
   // § 35 zákoníku práce ve znění novely č. 120/2025 Sb. (flexinovela, účinnost 1. 6. 2025):
   // max. zkušební doba 4 měsíce / 8 měsíců u vedoucího zaměstnance.
   // U pracovního poměru na dobu určitou zároveň max. 1/2 sjednané doby trvání (§ 35 odst. 5 ZP).
-  const maxTrialMonths = leadershipRole ? ZP_TRIAL_MONTHS_LEADERSHIP : ZP_TRIAL_MONTHS_STANDARD;
-  const effectiveTrialMonths = Number.isFinite(requestedTrialMonths) && requestedTrialMonths > 0
-    ? Math.min(requestedTrialMonths, maxTrialMonths)
-    : 0;
+  const effectiveTrialMonths = getEffectiveTrialPeriodMonths({ ...d, isManager: leadershipRole });
 
   const trialPeriodClause = effectiveTrialMonths > 0
     ? `Sjednává se zkušební doba v délce ${pluralMonths(effectiveTrialMonths)} ode dne vzniku pracovního poměru (§ 35 ZP ve znění novely č. 120/2025 Sb.). U pracovního poměru sjednaného na dobu určitou nesmí zkušební doba přesáhnout polovinu sjednané doby jeho trvání. V průběhu zkušební doby může pracovní poměr zrušit kterákoliv ze stran kdykoli, a to i bez udání důvodu.`
@@ -1581,7 +1577,8 @@ function buildDppContractSections(d: StoredContractData): ContractSection[] {
     ? `Sjednaná odměna za provedení celého úkolu/práce činí ${formatAmount(d.totalRemuneration)} Kč. Odměna bude vyplacena po splnění sjednaného úkolu.`
     : 'Výše odměny bude stanovena dohodou smluvních stran před zahájením práce a bude uvedena v písemném dodatku k této dohodě.';
 
-  const taxNote = `Účast na nemocenském a důchodovém pojištění u DPP vzniká při dosažení rozhodného příjmu u jednoho zaměstnavatele v kalendářním měsíci. ${DPP_THRESHOLD_NOTE} V roce 2026 tedy příjem bez vzniku účasti nedosahuje 12 000 Kč (nejvýše 11 999 Kč). Zaměstnavatel plní evidenční a odvodové povinnosti prostřednictvím Jednotného měsíčního hlášení zaměstnavatele podle aktuální metodiky ČSSZ.`;
+  const taxNote = `Účast na nemocenském a důchodovém pojištění u DPP vzniká při dosažení rozhodného příjmu u jednoho zaměstnavatele v kalendářním měsíci. ${DPP_THRESHOLD_NOTE} V roce 2026 tedy příjem bez vzniku účasti nedosahuje 12 000 Kč (nejvýše 11 999 Kč). Od 1. července 2026 musí zaměstnavatel zaměstnance přihlásit ještě před zahájením práce; u českého zaměstnance může provést předregistraci a úplnou registraci dokončit do 8 dnů od nástupu, zatímco zahraniční zaměstnanec musí být plně registrován před nástupem. Další evidenční a odvodové povinnosti plní zaměstnavatel prostřednictvím Jednotného měsíčního hlášení zaměstnavatele podle aktuální metodiky ČSSZ.`;
+  const minimumWageNote = `Odměna za skutečně odpracovanou dobu nesmí být nižší než minimální mzda; pro rok 2026 činí nejméně ${MIN_WAGE_HOURLY_2026_CZK.toLocaleString('cs-CZ', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} Kč za hodinu (§ 111 ZP).`;
 
   const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
@@ -1651,6 +1648,7 @@ function buildDppContractSections(d: StoredContractData): ContractSection[] {
       title: 'IV. ODMĚNA A ZPŮSOB VÝPLATY',
       body: [
         remunerationDesc,
+        minimumWageNote,
         taxNote,
         d.paymentAccount ? `Odměna bude vyplacena na bankovní účet zaměstnance č. ${asText(d.paymentAccount)} do ${asText(d.paymentDays, '15')} dnů po splnění úkolu / po skončení měsíce.` : 'Odměna bude vyplacena v hotovosti nebo bankovním převodem.',
       ],

@@ -9,6 +9,7 @@ const INTENTIONAL_MOJIBAKE_FIXTURES = new Set([
   'scripts/source-integrity-check.ts',
 ]);
 const suspiciousText = /Ă|Ĺ|Ä(?:Ť|›|Ś|š|Ź|Ž)|â(?:€”|€¦|€ž|€ś|€ť|€™)|Â(?:˛|°|·)/u;
+const replacementQuestionDamage = /m\?sto|v\?\?i|Tla\?\?|mus\? m\?t|\?{4,}/u;
 
 const files = execFileSync(
   'git',
@@ -23,7 +24,9 @@ const findings: string[] = [];
 for (const file of files) {
   const lines = readFileSync(file, 'utf8').split(/\r?\n/);
   lines.forEach((line, index) => {
-    if (suspiciousText.test(line)) findings.push(`${file}:${index + 1}`);
+    if (suspiciousText.test(line) || replacementQuestionDamage.test(line)) {
+      findings.push(`${file}:${index + 1}`);
+    }
   });
 }
 
