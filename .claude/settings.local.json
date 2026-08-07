@@ -22,7 +22,10 @@
       "Bash(mv /tmp/page.tsx app/page.tsx)",
       "Bash(git push *)",
       "Bash(git add *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(npm run *)",
+      "Bash(grep -iE \"^\\(uk|ua|ru|vn|en|de|pl|sk\\)$\")",
+      "Bash(gh pr *)"
     ]
   }
 }
