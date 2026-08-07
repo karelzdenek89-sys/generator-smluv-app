@@ -9,8 +9,8 @@ import {
   today,
 } from '@/lib/i18n/expat-contract-helpers';
 import { EMPLOYMENT_WORK_ELIGIBILITY_NOTICE_EN } from '@/lib/i18n/safety-copy';
-import { ZP_TRIAL_MONTHS_LEADERSHIP, ZP_TRIAL_MONTHS_STANDARD } from '@/lib/legal-constants-2026';
 import { formatRemoteWorkForContract } from '@/lib/i18n/employment-remote-work';
+import { getEffectiveTrialPeriodMonths } from '@/lib/labor-law-validation';
 
 /** Explanatory English translation of the Czech employment contract — not certified or official. */
 export function buildEmploymentContractSectionsEn(d: StoredContractData): ContractSection[] {
@@ -19,15 +19,7 @@ export function buildEmploymentContractSectionsEn(d: StoredContractData): Contra
   const effectiveNoticeMonths = Number.isFinite(requestedNoticeMonths)
     ? Math.max(2, requestedNoticeMonths)
     : 2;
-  const leadershipRole =
-    /vedouc|ředitel|manager|director/i.test(String(d.jobTitle ?? '')) ||
-    Boolean(d.isManager || d.isExecutive || d.isLeader);
-  const requestedTrialMonths = Number(d.trialPeriodMonths || 0);
-  const maxTrialMonths = leadershipRole ? ZP_TRIAL_MONTHS_LEADERSHIP : ZP_TRIAL_MONTHS_STANDARD;
-  const effectiveTrialMonths =
-    Number.isFinite(requestedTrialMonths) && requestedTrialMonths > 0
-      ? Math.min(requestedTrialMonths, maxTrialMonths)
-      : 0;
+  const effectiveTrialMonths = getEffectiveTrialPeriodMonths(d);
 
   const trialPeriodClause =
     effectiveTrialMonths > 0

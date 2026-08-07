@@ -16,6 +16,10 @@ import {
   getExpatPreviewDateLocale,
   getExpatPreviewLabels,
 } from '@/lib/i18n/expat-contract-preview';
+import {
+  MIN_WAGE_HOURLY_2026_CZK,
+  MIN_WAGE_MONTHLY_2026_CZK,
+} from '@/lib/legal-constants-2026';
 
 type FormData = {
   employerName: string; employerIco: string; employerAddress: string; employerEmail: string;
@@ -127,9 +131,16 @@ export default function PracovniPage() {
     if (!form.jobTitle?.trim()) missing.push(validationFields.jobTitle);
     if (!form.workPlace?.trim()) missing.push(validationFields.workPlace);
     if (!form.startDate) missing.push(validationFields.startDate);
-    if (!form.salary && !form.hourlyRate) missing.push(validationFields.salary);
+    if (form.employmentType === 'fixed' && !form.endDate) missing.push(ui.fields.endDate);
+    const activePay = form.salaryType === 'hourly' ? form.hourlyRate : form.salary;
+    if (!activePay) missing.push(validationFields.salary);
     if (missing.length > 0) {
       alert(`${ui.form.validationPrefix} ${missing.join(', ')}.`);
+      return;
+    }
+    const blockingWarnings = risk.warnings.filter((warning) => warning.blocking);
+    if (blockingWarnings.length > 0) {
+      alert(blockingWarnings.map((warning) => warning.text).join('\n'));
       return;
     }
     try {
@@ -243,9 +254,9 @@ export default function PracovniPage() {
                     </select>
                   </Field>
                   <Field label={ui.fields.startDate}><input className={inputClass} name="startDate" value={form.startDate} onChange={set} type="date" required /></Field>
-                  {form.employmentType === 'fixed' && <Field label={ui.fields.endDate}><input className={inputClass} name="endDate" value={form.endDate} onChange={set} type="date" /></Field>}
+                  {form.employmentType === 'fixed' && <Field label={ui.fields.endDate}><input className={inputClass} name="endDate" value={form.endDate} onChange={set} type="date" required /></Field>}
                   <Field label={ui.fields.trialMonths}>
-                    <input className={inputClass} name="trialPeriodMonths" value={form.trialPeriodMonths} onChange={set} type="number" min="0" max="8" />
+                    <input className={inputClass} name="trialPeriodMonths" value={form.trialPeriodMonths} onChange={set} type="number" min="0" max={form.isManager ? 8 : 4} step="1" />
                     {Number(form.trialPeriodMonths) > (form.isManager ? 8 : 4) && (
                       <p className="mt-1.5 text-xs text-rose-400 font-medium">⚠ {ui.page.hints.trialMaxWarning(form.isManager ? 8 : 4)}</p>
                     )}
@@ -281,8 +292,8 @@ export default function PracovniPage() {
                     </select>
                   </Field>
                   {form.salaryType === 'monthly'
-                    ? <Field label={ui.fields.salary}><input className={inputClass} name="salary" value={form.salary} onChange={set} type="number" placeholder={ui.page.placeholders.salary} /></Field>
-                    : <Field label={ui.fields.hourlyRate}><input className={inputClass} name="hourlyRate" value={form.hourlyRate} onChange={set} type="number" placeholder={ui.page.placeholders.hourlyRate} /></Field>
+                    ? <Field label={ui.fields.salary}><input className={inputClass} name="salary" value={form.salary} onChange={set} type="number" min={MIN_WAGE_MONTHLY_2026_CZK * Math.min(Number(form.workHours) || 40, 40) / 40} placeholder={ui.page.placeholders.salary} /></Field>
+                    : <Field label={ui.fields.hourlyRate}><input className={inputClass} name="hourlyRate" value={form.hourlyRate} onChange={set} type="number" min={MIN_WAGE_HOURLY_2026_CZK} step="0.1" placeholder={ui.page.placeholders.hourlyRate} /></Field>
                   }
                   <Field label={ui.fields.payDay}><input className={inputClass} name="payDay" value={form.payDay} onChange={set} type="number" min="1" max="31" /></Field>
                   <div className="sm:col-span-2">

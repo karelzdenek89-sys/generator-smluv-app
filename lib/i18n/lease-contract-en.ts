@@ -137,7 +137,7 @@ export function buildLeaseContractSectionsEn(d: StoredContractData): ContractSec
         d.startDate ? `Lease start: ${formatDate(d.startDate)}.` : '',
         d.handoverDate ? `Physical handover date: ${formatDate(d.handoverDate)}.` : '',
         isFixedTerm
-          ? 'The lease ends when the fixed term expires unless the parties agree otherwise in writing. Early termination is only on statutory grounds or as set out herein.'
+          ? 'The lease ends when the fixed term expires unless the parties agree otherwise in writing. Early termination is only on statutory grounds or as set out herein. If the tenant continues to use the apartment for at least three months after expiry and the landlord does not request that the tenant leave during that period, the lease is renewed for the same term, but no more than two years (Section 2285 Civil Code).'
           : 'The tenant may terminate with three months’ notice without stating a reason. The landlord may terminate with three months’ notice only on statutory grounds (Section 2288 Civil Code).',
       ].filter(Boolean) as string[],
     },
@@ -173,7 +173,7 @@ export function buildLeaseContractSectionsEn(d: StoredContractData): ContractSec
         ? [
             `Before handover (at latest on signing), the tenant shall pay a deposit of CZK ${formatAmount(d.depositAmount)}${d.rentAmount && Number(d.rentAmount) > 0 ? ` (${Math.round(Number(d.depositAmount) / Number(d.rentAmount))}× monthly rent)` : ''}.`,
             'The deposit secures the landlord’s claims from the lease, especially unpaid rent, service advances, damage and restoration costs beyond normal wear.',
-            'The landlord shall return the deposit or balance within one month after termination and vacation, with statutory interest, after proven deductions.',
+            'After the lease ends, the landlord shall return the deposit or unused balance with statutory interest, after proven and itemised deductions, and provide the settlement without undue delay after the apartment is vacated and its condition is established.',
             'Set-off requires written notice with an itemised list.',
           ]
         : ['No security deposit was agreed between the parties.'],

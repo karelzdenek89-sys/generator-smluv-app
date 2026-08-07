@@ -3,14 +3,12 @@
  */
 import type { ContractSection, StoredContractData } from '../contracts';
 import { buildBilingualTranslations, fmtAmount, fmtDate, pad, type ParaPair } from './helpers';
+import { getEffectiveTrialPeriodMonths } from '../labor-law-validation';
 
 const date = (v: unknown, l: string) => v ? fmtDate(v, l) : new Date().toLocaleDateString(l);
 
 function shared(d: StoredContractData) {
-  const leadershipRole = /vedouc|ředitel|manager|director|leader/i.test(String(d.jobTitle ?? '')) || Boolean(d.isManager || d.isExecutive || d.isLeader);
-  const requestedTrialMonths = Number(d.trialPeriodMonths || 0);
-  const maxTrialMonths = leadershipRole ? 8 : 4;
-  const effectiveTrial = Number.isFinite(requestedTrialMonths) && requestedTrialMonths > 0 ? Math.min(requestedTrialMonths, maxTrialMonths) : 0;
+  const effectiveTrial = getEffectiveTrialPeriodMonths(d);
   return { effectiveTrial };
 }
 

@@ -5,6 +5,16 @@ import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
+import {
+  DPP_MONTHLY_THRESHOLD_2026_CZK,
+  MIN_WAGE_HOURLY_2026_CZK,
+} from '@/lib/legal-constants-2026';
+
+const dppThreshold2026 = DPP_MONTHLY_THRESHOLD_2026_CZK.toLocaleString('cs-CZ');
+const minimumHourlyWage2026 = MIN_WAGE_HOURLY_2026_CZK.toLocaleString('cs-CZ', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
 
 export const metadata = blogArticlePageMetadata("dpp-dohoda-provedeni-prace", {
   title: "Dohoda o provedení práce 2026: vzor, limity a odvody",
@@ -184,7 +194,7 @@ export default function DppPage() {
             { t: 'Vymezení práce', d: 'Co přesně zaměstnanec dělá — druh práce, výstup nebo rozsah. Čím konkrétnější, tím lépe pro obě strany.' },
             { t: 'Rozsah práce (hodiny)', d: 'Sjednaný nebo odhadovaný rozsah hodin. Nutné sledovat, aby nebyl překročen limit 300 hodin.' },
             { t: 'Doba, na kterou se uzavírá', d: 'DPP lze uzavřít na dobu určitou (konkrétní projekt) nebo neurčitou s možností výpovědi.' },
-            { t: 'Odměna za práci', d: 'Minimálně ve výši minimální mzdy za hodinu (pro 2026: 20,80 Kč/hod). Způsob výplaty.' },
+            { t: 'Odměna za práci', d: `Minimálně ve výši minimální mzdy za hodinu (pro 2026: ${minimumHourlyWage2026} Kč/hod.). Způsob výplaty.` },
             { t: 'BOZP prohlášení', d: 'Poučení o bezpečnosti a ochraně zdraví při práci — nutné před zahájením práce.' },
           ].map(i => (
             <div key={i.t} className="rounded-xl border border-white/8 bg-[#0c1426] p-4">
@@ -212,9 +222,10 @@ export default function DppPage() {
           <div className="rounded-xl border border-white/8 bg-[#0c1426] p-5">
             <div className="mb-2 text-sm font-black text-white">Oznámení na ČSSZ</div>
             <p className="text-sm text-slate-400 leading-relaxed">
-              Od roku 2024 je zaměstnavatel povinen hlásit nástup každého zaměstnance na DPP na ČSSZ
-              (ePortál ČSSZ), a to nejpozději v den nástupu. Platí i pro DPP pod 12 000 Kč, kde se
-              odvody neplatí. Sankce za nesplnění: až 100 000 Kč.
+              Od 1. července 2026 musí zaměstnavatel každého zaměstnance včetně DPP přihlásit ještě
+              před zahájením práce. U českého zaměstnance lze použít předregistraci na ePortálu ČSSZ
+              a úplnou registraci dokončit do 8 dnů od nástupu; zahraniční zaměstnanec musí být plně
+              registrován už před nástupem. Povinnost platí i pro DPP pod hranicí {dppThreshold2026} Kč.
             </p>
           </div>
           <div className="rounded-xl border border-white/8 bg-[#0c1426] p-5">
@@ -234,8 +245,9 @@ export default function DppPage() {
           <div className="rounded-xl border border-white/8 bg-[#0c1426] p-5">
             <div className="mb-2 text-sm font-black text-white">Potvrzení o zaměstnání (Zápočtový list)</div>
             <p className="text-sm text-slate-400 leading-relaxed">
-              Při skončení DPP je zaměstnavatel povinen vydat potvrzení o zaměstnání (§ 313 ZP),
-              i když se jedná jen o brigádu na dohodu.
+              Při skončení DPP vydává zaměstnavatel potvrzení o zaměstnání (§ 313 ZP), pokud DPP
+              založila účast na nemocenském pojištění nebo pokud byly z odměny prováděny srážky
+              při výkonu rozhodnutí či exekuci. Nejde tedy o automatickou povinnost u každé DPP.
             </p>
           </div>
         </div>
@@ -255,10 +267,10 @@ export default function DppPage() {
 
         <div className="space-y-5">
           {[
-            { n: '1', title: 'Neoznámení na ČSSZ', body: 'Od roku 2024 je povinné nahlásit každého zaměstnance na DPP na ČSSZ nejpozději v den nástupu — i u brigád pod hranici odvodů. Mnoho zaměstnavatelů tuto povinnost stále nezná. Pokuta může dosáhnout 100 000 Kč.' },
+            { n: '1', title: 'Chybějící registrace před nástupem', body: 'Od 1. července 2026 musí být každý zaměstnanec na DPP před zahájením práce plně registrován nebo u českého zaměstnance alespoň předregistrován na ČSSZ. Úplná registrace se následně dokončí do 8 dnů od nástupu.' },
             { n: '2', title: 'Překročení limitu 300 hodin', body: 'Zaměstnavatel nevede evidenci hodin a zjistí překročení limitu až při kontrole z inspektorátu práce. Řešení: pravidelně sledovat hodiny a v případě delší spolupráce přejít včas na DPČ.' },
             { n: '3', title: 'Příliš vágní vymezení práce', body: 'DPP říká pouze „pomocné práce" nebo „administrativa". Inspektorát může takovou smlouvu považovat za zastřený pracovní poměr (tzv. švarcsystém), pokud zaměstnanec fakticky vykonává práci jako zaměstnanec.' },
-            { n: '4', title: 'Odměna pod minimální mzdou', body: 'Hodinová odměna na DPP musí odpovídat alespoň minimální mzdě (pro 2026: 20,80 Kč/hod). Nižší odměna je protiprávní a může být základem pro doplatek i penále.' },
+            { n: '4', title: 'Odměna pod minimální mzdou', body: `Hodinová odměna na DPP musí odpovídat alespoň minimální mzdě (pro 2026: ${minimumHourlyWage2026} Kč/hod.). Nižší odměna je protiprávní a zakládá nárok na doplatek.` },
             { n: '5', title: 'Ústní DPP', body: 'Zákoník práce vyžaduje písemnou formu. Ústní dohoda je neplatná — v případě sporu neexistuje důkaz o podmínkách práce ani o výši odměny.' },
           ].map(c => (
             <div key={c.n} className="rounded-2xl border border-white/8 bg-[#0c1426] p-5">
@@ -278,11 +290,11 @@ export default function DppPage() {
         <div className="mb-6 space-y-2">
           {[
             'DPP lze uzavřít na max. 300 hodin ročně u jednoho zaměstnavatele — sledujte evidenci',
-            'Od roku 2024: každý zaměstnanec na DPP musí být nahlášen na ČSSZ nejpozději v den nástupu',
-            'Pojistné: pro rok 2026 sledujte rozhodný příjem 12 000 Kč/měsíc u jednoho zaměstnavatele',
+            'Od 1. července 2026: registrace nebo předregistrace na ČSSZ před zahájením práce, úplná registrace do 8 dnů',
+            `Pojistné: pro rok 2026 sledujte rozhodný příjem ${dppThreshold2026} Kč/měsíc u jednoho zaměstnavatele`,
             'Smlouva musí být písemná a obsahovat vymezení práce, rozsah hodin a odměnu',
-            'Hodinová odměna nesmí klesnout pod minimální mzdu (2026: 20,80 Kč/hod)',
-            'Při skončení vydejte zaměstnanci potvrzení o zaměstnání (zápočtový list)',
+            `Hodinová odměna nesmí klesnout pod minimální mzdu (2026: ${minimumHourlyWage2026} Kč/hod.)`,
+            'Potvrzení o zaměstnání se u DPP vydává jen při účasti na nemocenském pojištění nebo exekučních srážkách',
           ].map(t => (
             <div key={t} className="flex items-start gap-2 text-sm text-slate-300">
               <span className="mt-0.5 flex-shrink-0 text-amber-400 font-bold">✓</span>

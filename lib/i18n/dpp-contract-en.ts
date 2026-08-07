@@ -10,6 +10,7 @@ import {
   today,
 } from '@/lib/i18n/expat-contract-helpers';
 import { EMPLOYMENT_WORK_ELIGIBILITY_NOTICE_EN } from '@/lib/i18n/safety-copy';
+import { MIN_WAGE_HOURLY_2026_CZK } from '@/lib/legal-constants-2026';
 
 function dppToolsClauseEn(d: StoredContractData): string {
   if (d.toolsProvided === 'employer') {
@@ -104,8 +105,10 @@ export function buildDppContractSectionsEn(d: StoredContractData): ContractSecti
       title: 'IV. REMUNERATION',
       body: [
         remunerationDesc,
+        `Pay for hours actually worked may not be below the minimum wage; in 2026 it is at least CZK ${MIN_WAGE_HOURLY_2026_CZK.toFixed(2)} per hour (Section 111 of the Labour Code).`,
         'Insurance participation does not arise if monthly income with one employer remains below the statutory threshold.',
         DPP_THRESHOLD_NOTE_EN,
+        'From 1 July 2026, the employer must register the worker before work begins. A Czech worker may first be pre-registered and fully registered within 8 days after starting; a foreign worker must be fully registered before starting.',
         d.paymentAccount
           ? `Payment to account ${asText(d.paymentAccount)} within ${asText(d.paymentDays, '15')} days after completion / month-end.`
           : 'Payment in cash or by transfer as agreed.',

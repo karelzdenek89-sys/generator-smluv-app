@@ -1,7 +1,12 @@
 import type { AppLocale } from '@/lib/locale';
+import {
+  getDppLegalIssues,
+  getEmploymentLegalIssues,
+  getLaborValidationMessage,
+} from '@/lib/labor-law-validation';
 
 export type RiskLevel = 'high' | 'medium' | 'low';
-export type RiskWarning = { text: string; level: RiskLevel };
+export type RiskWarning = { text: string; level: RiskLevel; blocking?: boolean };
 
 function loc(locale: AppLocale): 'cs' | 'en' | 'ua' {
   return locale === 'en' || locale === 'ua' ? locale : 'cs';
@@ -15,7 +20,10 @@ export function employmentRiskWarnings(
     workPlace: string;
     startDate: string;
     salary: string;
+    salaryType: string;
     hourlyRate: string;
+    workHours: string;
+    noticePeriod: string;
     employmentType: string;
     endDate: string;
     trialPeriodMonths: string;
@@ -31,8 +39,6 @@ export function employmentRiskWarnings(
       start: 'Den nástupu je povinná náležitost § 34 ZP.',
       pay: 'Doporučujeme doplnit mzdu — zaměstnanec ji musí znát.',
       end: 'Doplňte datum konce pro smlouvu na dobu určitou.',
-      trial: (max: number, mgr: boolean) =>
-        `Zákonné maximum zkušební doby je ${max} měsíce (§ 35 ZP).${mgr ? '' : ' U vedoucích zaměstnanců max. 8 měsíců.'}`,
     },
     en: {
       ico: 'Add the employer’s company ID (IČO) — required.',
@@ -41,8 +47,6 @@ export function employmentRiskWarnings(
       start: 'Start date is mandatory under § 34.',
       pay: 'We recommend stating salary — the employee must know it.',
       end: 'Add the end date for a fixed-term contract.',
-      trial: (max: number, mgr: boolean) =>
-        `Maximum probation period is ${max} months (§ 35).${mgr ? '' : ' For managers, up to 8 months.'}`,
     },
     ua: {
       ico: 'Додайте IČO роботодавця — обов’язково.',
@@ -51,8 +55,6 @@ export function employmentRiskWarnings(
       start: 'День виходу на роботу — обов’язкова вимога § 34.',
       pay: 'Рекомендуємо вказати зарплату — працівник має її знати.',
       end: 'Додайте дату закінчення для строкового договору.',
-      trial: (max: number, mgr: boolean) =>
-        `Максимальний випробувальний строк — ${max} міс. (§ 35).${mgr ? '' : ' Для керівників — до 8 міс.'}`,
     },
   }[L];
   const warnings: RiskWarning[] = [];
@@ -60,11 +62,15 @@ export function employmentRiskWarnings(
   if (!form.jobTitle) warnings.push({ text: m.job, level: 'high' });
   if (!form.workPlace) warnings.push({ text: m.place, level: 'high' });
   if (!form.startDate) warnings.push({ text: m.start, level: 'high' });
-  if (!form.salary && !form.hourlyRate) warnings.push({ text: m.pay, level: 'medium' });
+  const activePay = form.salaryType === 'hourly' ? form.hourlyRate : form.salary;
+  if (!activePay) warnings.push({ text: m.pay, level: 'medium' });
   if (form.employmentType === 'fixed' && !form.endDate) warnings.push({ text: m.end, level: 'high' });
-  const maxTrial = form.isManager ? 8 : 4;
-  if (Number(form.trialPeriodMonths) > maxTrial) {
-    warnings.push({ text: m.trial(maxTrial, form.isManager), level: 'high' });
+  for (const issue of getEmploymentLegalIssues(form)) {
+    warnings.push({
+      text: getLaborValidationMessage(issue, L),
+      level: 'high',
+      blocking: true,
+    });
   }
   return warnings;
 }
@@ -102,7 +108,16 @@ export function employmentValidationFields(locale: AppLocale): Record<string, st
 
 export function dppRiskWarnings(
   locale: AppLocale,
-  form: { taskDescription: string; estimatedHours: string; totalRemuneration: string; hourlyRate: string },
+  form: {
+    taskDescription: string;
+    estimatedHours: string;
+    remunerationType: string;
+    totalRemuneration: string;
+    hourlyRate: string;
+    durationType: string;
+    startDate: string;
+    endDate: string;
+  },
 ): RiskWarning[] {
   const L = loc(locale);
   const m = {
@@ -127,18 +142,49 @@ export function dppRiskWarnings(
   }[L];
   const warnings: RiskWarning[] = [];
   if (!form.taskDescription) warnings.push({ text: m.task, level: 'high' });
-  if (!form.estimatedHours) warnings.push({ text: m.hours, level: 'medium' });
-  if (Number(form.estimatedHours) > 300) warnings.push({ text: m.over, level: 'high' });
-  if (!form.totalRemuneration && !form.hourlyRate) warnings.push({ text: m.pay, level: 'medium' });
+  if (!form.estimatedHours && form.remunerationType !== 'fixed') warnings.push({ text: m.hours, level: 'medium' });
+  const activePay = form.remunerationType === 'hourly' ? form.hourlyRate : form.totalRemuneration;
+  if (!activePay) warnings.push({ text: m.pay, level: 'medium' });
+  for (const issue of getDppLegalIssues(form)) {
+    warnings.push({
+      text: getLaborValidationMessage(issue, L),
+      level: 'high',
+      blocking: true,
+    });
+  }
   return warnings;
 }
 
 export function dppValidationFields(locale: AppLocale): Record<string, string> {
   const L = loc(locale);
   return {
-    cs: { employerName: 'zaměstnavatele', employeeName: 'zaměstnance', taskDescription: 'popis úkolu' },
-    en: { employerName: 'employer', employeeName: 'worker', taskDescription: 'task description' },
-    ua: { employerName: 'роботодавця', employeeName: 'працівника', taskDescription: 'опис завдання' },
+    cs: {
+      employerName: 'zaměstnavatele',
+      employeeName: 'zaměstnance',
+      taskDescription: 'popis úkolu',
+      workPlace: 'místo výkonu práce',
+      remuneration: 'výši odměny',
+      startDate: 'datum začátku DPP',
+      endDate: 'datum konce DPP',
+    },
+    en: {
+      employerName: 'employer',
+      employeeName: 'worker',
+      taskDescription: 'task description',
+      workPlace: 'place of work',
+      remuneration: 'remuneration',
+      startDate: 'DPP start date',
+      endDate: 'DPP end date',
+    },
+    ua: {
+      employerName: 'роботодавця',
+      employeeName: 'працівника',
+      taskDescription: 'опис завдання',
+      workPlace: 'місце виконання роботи',
+      remuneration: 'розмір винагороди',
+      startDate: 'дату початку DPP',
+      endDate: 'дату закінчення DPP',
+    },
   }[L];
 }
 

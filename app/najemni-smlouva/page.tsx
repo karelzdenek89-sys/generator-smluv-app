@@ -53,7 +53,7 @@ const faq = [
   },
   {
     q: 'Jak vysoká může být kauce a do kdy se vrací?',
-    a: 'Kauce nesmí přesáhnout trojnásobek měsíčního nájemného (bez záloh na služby). Pronajímatel ji musí vrátit do jednoho měsíce od ukončení nájmu, po odečtení případných oprávněných pohledávek. Vyšší kauce je v části nad limit neplatná.',
+    a: 'Kauce nesmí spolu s případnými smluvními pokutami přesáhnout trojnásobek měsíčního nájemného (bez záloh na služby). Po skončení nájmu pronajímatel vrací jistotu s úroky po odečtení řádně specifikovaných pohledávek; konkrétní lhůtu a postup vyúčtování je vhodné sjednat ve smlouvě.',
   },
   {
     q: 'Jaká je výpovědní doba u nájemní smlouvy?',

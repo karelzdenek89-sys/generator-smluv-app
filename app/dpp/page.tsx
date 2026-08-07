@@ -14,6 +14,7 @@ import {
 import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/LazyPaymentModal';
 import { BuilderLocaleNotice, useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
+import { MIN_WAGE_HOURLY_2026_CZK } from '@/lib/legal-constants-2026';
 
 type FormData = {
   employerName: string; employerIco: string; employerAddress: string; employerEmail: string;
@@ -101,17 +102,25 @@ export default function DppPage() {
   }, [form, builderLocale]);
 
   const handlePayment = async (addOns: string[], authorization: CheckoutAuthorization) => {
-    // Validace ? 75 ZP ? DPP mus? m?t druh pr?ce, m?sto, dobu a odm?nu.
+    // Validace § 75 ZP — DPP musí mít druh práce, místo, dobu a odměnu.
     const missing: string[] = [];
     if (!form.employerName?.trim()) missing.push(validationFields.employerName);
     if (!form.employeeName?.trim()) missing.push(validationFields.employeeName);
     if (!form.taskDescription?.trim()) missing.push(validationFields.taskDescription);
-    if (!form.workPlace?.trim()) missing.push(builderLocale === 'cs' ? 'm?sto v?konu pr?ce' : builderLocale === 'en' ? 'place of work' : '????? ?????????');
-    if (!form.hourlyRate && !form.totalRemuneration) {
-      missing.push(builderLocale === 'cs' ? 'v??i odm?ny' : builderLocale === 'en' ? 'remuneration' : '??????????');
+    if (!form.workPlace?.trim()) missing.push(validationFields.workPlace);
+    if (form.durationType === 'fixed' && !form.startDate) missing.push(validationFields.startDate);
+    if (form.durationType === 'fixed' && !form.endDate) missing.push(validationFields.endDate);
+    const activePay = form.remunerationType === 'hourly' ? form.hourlyRate : form.totalRemuneration;
+    if (!activePay) {
+      missing.push(validationFields.remuneration);
     }
     if (missing.length > 0) {
       alert(`${ui.form.validationPrefix} ${missing.join(', ')}.`);
+      return;
+    }
+    const blockingWarnings = risk.warnings.filter((warning) => warning.blocking);
+    if (blockingWarnings.length > 0) {
+      alert(blockingWarnings.map((warning) => warning.text).join('\n'));
       return;
     }
     try {
@@ -206,7 +215,7 @@ export default function DppPage() {
                   <div className="grid sm:grid-cols-2 gap-4">
                     <Field label={ui.fields.workPlace}><input className={inputClass} name="workPlace" value={form.workPlace} onChange={set} placeholder={ui.page.placeholders.workPlace} required /></Field>
                     <Field label={ui.fields.estimatedHours}>
-                      <input className={inputClass} name="estimatedHours" value={form.estimatedHours} onChange={set} type="number" placeholder={ui.page.placeholders.estimatedHours} />
+                      <input className={inputClass} name="estimatedHours" value={form.estimatedHours} onChange={set} type="number" min="1" max="300" step="0.5" placeholder={ui.page.placeholders.estimatedHours} />
                     </Field>
                     <Field label={ui.fields.toolsProvided}>
                       <select className={inputClass} name="toolsProvided" value={form.toolsProvided} onChange={set}>
@@ -228,8 +237,8 @@ export default function DppPage() {
                       <option value="indefinite">{ui.options.durationIndefinite}</option>
                     </select>
                   </Field>
-                  <Field label={ui.fields.startDate}><input className={inputClass} name="startDate" value={form.startDate} onChange={set} type="date" /></Field>
-                  {form.durationType === 'fixed' && <Field label={ui.fields.endDate}><input className={inputClass} name="endDate" value={form.endDate} onChange={set} type="date" /></Field>}
+                  <Field label={ui.fields.startDate}><input className={inputClass} name="startDate" value={form.startDate} onChange={set} type="date" required={form.durationType === 'fixed'} /></Field>
+                  {form.durationType === 'fixed' && <Field label={ui.fields.endDate}><input className={inputClass} name="endDate" value={form.endDate} onChange={set} type="date" min={form.startDate || undefined} required /></Field>}
                   <Field label={ui.fields.deadline}><input className={inputClass} name="deadline" value={form.deadline} onChange={set} type="date" /></Field>
                 </div>
               </section>
@@ -245,7 +254,7 @@ export default function DppPage() {
                   </Field>
                   {form.remunerationType === 'fixed'
                     ? <Field label={ui.fields.totalRemuneration}><input className={inputClass} name="totalRemuneration" value={form.totalRemuneration} onChange={set} type="number" placeholder={ui.page.placeholders.totalRemuneration} /></Field>
-                    : <Field label={ui.fields.hourlyRate}><input className={inputClass} name="hourlyRate" value={form.hourlyRate} onChange={set} type="number" placeholder={ui.page.placeholders.hourlyRate} /></Field>
+                    : <Field label={ui.fields.hourlyRate}><input className={inputClass} name="hourlyRate" value={form.hourlyRate} onChange={set} type="number" min={MIN_WAGE_HOURLY_2026_CZK} step="0.1" placeholder={ui.page.placeholders.hourlyRate} /></Field>
                   }
                   <Field label={ui.fields.paymentAccount}><input className={inputClass} name="paymentAccount" value={form.paymentAccount} onChange={set} placeholder={ui.page.placeholders.paymentAccount} /></Field>
                   <Field label={ui.fields.paymentDays}><input className={inputClass} name="paymentDays" value={form.paymentDays} onChange={set} type="number" /></Field>
@@ -283,7 +292,7 @@ export default function DppPage() {
                 ? <p className="text-sm text-emerald-400">{ui.page.hints.dppOk ?? ui.page.hints.contractCompliant}</p>
                 : <ul className="space-y-2">{risk.warnings.map((w, i) => (
                     <li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-rose-500/10 text-rose-300' : 'bg-amber-500/10 text-amber-300'}`}>
-                      {w.level === 'high' ? '? ' : '^ '}{w.text}
+                      {w.level === 'high' ? '⚠ ' : '▲ '}{w.text}
                     </li>
                   ))}</ul>
               }
@@ -299,12 +308,12 @@ export default function DppPage() {
               {(!form.employerName || !form.employeeName || !form.taskDescription) && !isProcessing && (
                 <div className="mt-4 rounded-xl bg-slate-800/40 border border-slate-700/50 px-4 py-3 text-xs text-slate-400 space-y-1">
                   <div className="font-semibold mb-1">{ui.form.fillToContinue}</div>
-                  {!form.employerName && <div>? {ui.page.sidebarMissing.employerName}</div>}
-                  {!form.employeeName && <div>? {ui.page.sidebarMissing.employeeName}</div>}
-                  {!form.taskDescription && <div>? {ui.page.sidebarMissing.taskDescription}</div>}
+                  {!form.employerName && <div>• {ui.page.sidebarMissing.employerName}</div>}
+                  {!form.employeeName && <div>• {ui.page.sidebarMissing.employeeName}</div>}
+                  {!form.taskDescription && <div>• {ui.page.sidebarMissing.taskDescription}</div>}
                 </div>
               )}
-                              {/* Tla??tko generov?n? */}
+                              {/* Tlačítko generování */}
                 <button
                   data-builder-generate=""
                   onClick={() => setShowPreviewModal(true)}
