@@ -56,9 +56,10 @@ function formatDate(value: string) {
   return dateFormatter.format(parsed);
 }
 
-function bandLabel(band: '99' | '199' | '299') {
+function bandLabel(band: '99' | '199' | '299' | '599') {
   if (band === '99') return 'Z\u00e1kladn\u00ed dokument';
   if (band === '199') return 'Komplexn\u00ed bal\u00ed\u010dek';
+  if (band === '599') return 'Zam\u011bstnavatel Start';
   return 'Tematick\u00e9 bal\u00ed\u010dky';
 }
 
@@ -235,7 +236,7 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
       </Section>
 
       <Section
-        title={'Z\u00e1jem o 99 / 199 / 299'}
+        title={'Z\u00e1jem o 99 / 199 / 299 / 599'}
         description={
           'Srovn\u00e1n\u00ed vrchn\u00edho z\u00e1jmu z homepage nebo package cesty, samotn\u00e9 volby ve flow a checkout klik\u016f.'
         }

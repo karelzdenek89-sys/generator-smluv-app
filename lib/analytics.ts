@@ -32,6 +32,8 @@ export const ANALYTICS_EVENT_NAMES = [
 
 export type AnalyticsEventName = (typeof ANALYTICS_EVENT_NAMES)[number];
 
+export type PriceBand = '99' | '199' | '299' | '599';
+
 export type AnalyticsEventParams = {
   pathname?: string;
   source?: string;
@@ -41,7 +43,7 @@ export type AnalyticsEventParams = {
   traffic_label?: string;
   article_slug?: string;
   situation_key?: 'landlord' | 'vehicle_sale';
-  package_key?: 'landlord' | 'vehicle_sale';
+  package_key?: 'landlord' | 'vehicle_sale' | 'employer_start';
   contract_type?:
     | 'lease'
     | 'car_sale'
@@ -60,7 +62,7 @@ export type AnalyticsEventParams = {
   tier?: 'basic' | 'complete';
   previous_tier?: 'basic' | 'complete';
   cta_type?: string;
-  price_band?: '99' | '199' | '299';
+  price_band?: PriceBand;
   entry_mode?: 'single_document' | 'package_flow';
   add_on_key?:
     | 'docx'
@@ -136,6 +138,7 @@ const SITUATION_KEY_BY_PATHNAME: Record<string, NonNullable<AnalyticsEventParams
 const PACKAGE_KEY_BY_PATHNAME: Record<string, NonNullable<AnalyticsEventParams['package_key']>> = {
   '/balicek-pronajimatel': 'landlord',
   '/balicek-prodej-vozidla': 'vehicle_sale',
+  '/balicek-zamestnavatel': 'employer_start',
 };
 
 export function getAnalyticsDefaultsForPathname(pathname: string): AnalyticsEventParams {

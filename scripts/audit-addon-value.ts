@@ -87,7 +87,7 @@ async function main() {
   assert.ok(keysFor('car_sale', 'basic', null, 'cs').includes('handover_protocol'));
   assert.ok(!keysFor('gift', 'basic', null, 'cs').includes('handover_protocol'));
   assert.ok(keysFor('lease', 'basic', null, 'en').includes('bilingual_annex'));
-  assert.ok(!keysFor('lease', 'basic', null, 'cs').includes('bilingual_annex'));
+  assert.ok(keysFor('lease', 'basic', null, 'cs').includes('bilingual_annex'));
   assert.ok(!keysFor('gift', 'basic', null, 'en').includes('bilingual_annex'));
   assert.ok(!keysFor('lease', 'complete', null, 'cs').includes('signing_checklist'));
   assert.ok(!keysFor('lease', 'basic', 'landlord', 'cs').includes('handover_protocol'));
@@ -113,10 +113,23 @@ async function main() {
   assert.ok(checklistParsed.numpages >= 2, 'signing checklist add-on should add appendix pages');
   assert.match(checklistText, /KONTROLNÍ SEZNAM/i);
 
-  const noAnnex = await pdfOutput({ ...leaseSample, lang: 'en' });
-  const annex = await pdfOutput({ ...leaseSample, lang: 'en', addOns: ['bilingual_annex'] });
+  const noAnnex = await pdfOutput({ ...leaseSample, lang: 'cs' });
+  const annex = await pdfOutput({
+    ...leaseSample,
+    lang: 'cs',
+    annexLanguage: 'en',
+    addOns: ['bilingual_annex'],
+  });
   assert.doesNotMatch(noAnnex.text, /Explanatory English Translation Annex/i);
   assert.match(annex.text, /Explanatory English Translation Annex/i);
+
+  const ukrainianAnnex = await pdfOutput({
+    ...leaseSample,
+    lang: 'cs',
+    annexLanguage: 'ua',
+    addOns: ['bilingual_annex'],
+  });
+  assert.match(ukrainianAnnex.text, /Пояснювальний додаток українською/i);
 
   const docx = await renderContractDocx({ ...leaseSample, addOns: ['docx'] });
   assert.ok(docx.length > 7_000, 'DOCX add-on should produce a non-empty Word document');

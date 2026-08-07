@@ -3,7 +3,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 import { PRICING_TIER_CONFIG } from '@/lib/pricing';
-import { getEffectiveIncludedItems, getThematicPackageConfig } from '@/lib/packages';
+import {
+  getEffectiveIncludedItems,
+  getEffectivePriceBand,
+  getThematicPackageConfig,
+} from '@/lib/packages';
 import { getLocalizedPackagePresentation, getLocalizedPricingTier } from '@/lib/i18n/pricing-locale';
 import { LEGAL_NOTICE, normalizeLocale } from '@/lib/locale';
 import type { LeaseFormUi } from '@/lib/i18n/lease-form';
@@ -56,6 +60,9 @@ export default function PaymentModal({
   const [gdprConsent, setGdprConsent] = useState(false);
   const [deliveryEmail, setDeliveryEmail] = useState('');
   const [selectedAddOns, setSelectedAddOns] = useState<CheckoutAddonKey[]>([]);
+  const [annexLanguage, setAnnexLanguage] = useState<'en' | 'ua'>(() =>
+    normalizeLocale(lang) === 'ua' ? 'ua' : 'en',
+  );
   const modalOpenTrackedRef = useRef(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const emailInputRef = useRef<HTMLInputElement>(null);
@@ -79,7 +86,7 @@ export default function PaymentModal({
   const checkoutPrice = `${totalPriceCzk.toLocaleString('cs-CZ')} Kč`;
   const validAddOnKeys = validSelectedAddOns.join(',');
   const analyticsDefaults = getAnalyticsDefaultsForPathname(pathname ?? '/');
-  const priceBand = packageConfig ? '299' : tier === 'complete' ? '199' : '99';
+  const priceBand = getEffectivePriceBand(tier, packageConfig?.key);
   const closeModal = (reason: 'button' | 'backdrop' | 'escape') => {
     trackEvent('builder_checkout_modal_closed', {
       ...analyticsDefaults,
@@ -158,7 +165,10 @@ export default function PaymentModal({
 
   useEffect(() => {
     previousActiveElementRef.current = document.activeElement as HTMLElement | null;
-    const focusTimer = window.setTimeout(() => emailInputRef.current?.focus(), 0);
+    const focusTimer = window.setTimeout(
+      () => modalRef.current?.focus({ preventScroll: true }),
+      0,
+    );
     return () => {
       window.clearTimeout(focusTimer);
       previousActiveElementRef.current?.focus();
@@ -247,6 +257,7 @@ export default function PaymentModal({
       aria-modal="true"
       aria-labelledby="checkout-modal-title"
       aria-describedby="checkout-modal-description"
+      tabIndex={-1}
       className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
       style={{ background: 'rgba(5, 8, 15, 0.92)', backdropFilter: 'blur(8px)' }}
       onClick={(e) => { if (e.target === e.currentTarget) closeModal('backdrop'); }}
@@ -473,6 +484,25 @@ export default function PaymentModal({
                     </button>
                   );
                 })}
+                {validSelectedAddOns.includes('bilingual_annex') ? (
+                  <label className="block rounded-2xl border border-sky-400/20 bg-sky-400/8 p-4">
+                    <span className="block text-[10px] font-black uppercase tracking-widest text-sky-200/80">
+                      Jazyk vysvětlující přílohy
+                    </span>
+                    <select
+                      data-testid="checkout-annex-language"
+                      value={annexLanguage}
+                      onChange={(event) => setAnnexLanguage(event.target.value as 'en' | 'ua')}
+                      className="mt-2 w-full rounded-xl border border-sky-300/20 bg-[#111c31] px-3 py-2.5 text-sm text-white outline-none focus:border-sky-300/60"
+                    >
+                      <option value="en">Angličtina / English</option>
+                      <option value="ua">Ukrajinština / Українська</option>
+                    </select>
+                    <span className="mt-2 block text-xs leading-relaxed text-sky-100/70">
+                      Český text zůstává rozhodující. Příloha je vysvětlující, nikoli úřední překlad.
+                    </span>
+                  </label>
+                ) : null}
               </div>
             )}
 
@@ -620,7 +650,13 @@ export default function PaymentModal({
                     total_price_czk: totalPriceCzk,
                     selected_addons_count: validSelectedAddOns.length,
                   });
-                  onPay(validSelectedAddOns, createCheckoutAuthorization(normalizedEmail));
+                  onPay(
+                    validSelectedAddOns,
+                    createCheckoutAuthorization(
+                      normalizedEmail,
+                      validSelectedAddOns.includes('bilingual_annex') ? annexLanguage : undefined,
+                    ),
+                  );
                 }}
                 disabled={isProcessing}
                 className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight disabled:opacity-50 disabled:cursor-not-allowed"

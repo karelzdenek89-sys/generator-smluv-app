@@ -12,6 +12,10 @@ import WhyNotGenericBlock from './marketing/WhyNotGenericBlock';
 import WhyUsArticleCallout from './marketing/WhyUsArticleCallout';
 import type { ClusterKey } from '@/lib/internal-links';
 import { breadcrumbSchema, jsonLdScript } from '@/lib/schemas';
+import {
+  getEffectivePriceBand,
+  type ThematicPackageKey,
+} from '@/lib/packages';
 
 type GuideFaq = {
   q: string;
@@ -23,10 +27,9 @@ type GuideItem = {
   text: string;
 };
 
-type GuideLandingTrackingContext = {
-  pageType: 'situation' | 'package';
-  pageKey: 'landlord' | 'vehicle_sale';
-};
+type GuideLandingTrackingContext =
+  | { pageType: 'situation'; pageKey: 'landlord' | 'vehicle_sale' }
+  | { pageType: 'package'; pageKey: ThematicPackageKey };
 
 type GuideLandingPageProps = {
   breadcrumbLabel: string;
@@ -112,7 +115,7 @@ export default function GuideLandingPage({
           source: 'package_page',
           surface: 'package_page',
           package_key: trackingContext.pageKey,
-          price_band: '299' as const,
+          price_band: getEffectivePriceBand('complete', trackingContext.pageKey),
         }
       : {
           source: 'situation_page',

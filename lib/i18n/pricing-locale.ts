@@ -79,6 +79,20 @@ const PACKAGE_EN: Record<
       `Download link available for ${COMPLETE_ARCHIVE_DAYS} days`,
     ],
   },
+  employer_start: {
+    title: 'Employer Start 2026',
+    checkoutDescription:
+      'Czech employment onboarding pack with the extended employment contract, statutory information sheet, related HR documents and DOCX.',
+    includedOutputs: [
+      'Extended Czech employment contract',
+      'Employment information sheet under § 37 Labour Code',
+      'Remote-work agreement when home office is selected',
+      'Work-equipment handover record',
+      'Employer onboarding checklist',
+      'PDF and editable DOCX version',
+      `Download link available for ${COMPLETE_ARCHIVE_DAYS} days`,
+    ],
+  },
 };
 
 function leaseCompleteExtraForLocale(loc: ReturnType<typeof normalizeLocale>) {
@@ -174,7 +188,10 @@ export function getLocalizedIncludedItems(
   locale?: string | null,
 ): readonly string[] {
   const loc = normalizeLocale(locale);
-  const pkg = packageKey === 'landlord' || packageKey === 'vehicle_sale' ? packageKey : null;
+  const pkg =
+    packageKey === 'landlord' || packageKey === 'vehicle_sale' || packageKey === 'employer_start'
+      ? packageKey
+      : null;
   if (loc !== 'cs' && pkg) {
     return PACKAGE_EN[pkg].includedOutputs;
   }

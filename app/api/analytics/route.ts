@@ -26,7 +26,7 @@ const eventSchema = z.object({
       traffic_label: boundedString.optional(),
       article_slug: boundedString.optional(),
       situation_key: z.enum(['landlord', 'vehicle_sale']).optional(),
-      package_key: z.enum(['landlord', 'vehicle_sale']).optional(),
+      package_key: z.enum(['landlord', 'vehicle_sale', 'employer_start']).optional(),
       contract_type: z
         .enum([
           'lease',
@@ -48,7 +48,7 @@ const eventSchema = z.object({
       tier: z.enum(['basic', 'professional', 'complete', 'premium']).optional(),
       previous_tier: z.enum(['basic', 'professional', 'complete', 'premium']).optional(),
       cta_type: boundedString.optional(),
-      price_band: z.enum(['99', '199', '299']).optional(),
+      price_band: z.enum(['99', '199', '299', '599']).optional(),
       entry_mode: z.enum(['single_document', 'package_flow']).optional(),
       add_on_key: z
         .enum(['docx', 'signing_checklist', 'handover_protocol', 'extended_archive', 'bilingual_annex'])

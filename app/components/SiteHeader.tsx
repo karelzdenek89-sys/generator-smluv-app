@@ -3,6 +3,7 @@ import LanguageSwitcher from '@/app/components/LanguageSwitcher';
 
 const navItems = [
   { href: '/#smlouvy', label: 'Smlouvy' },
+  { href: '/#balicky', label: 'Balíčky' },
   { href: '/#jak-to-funguje', label: 'Postup' },
   { href: '/blog', label: 'Blog' },
   { href: '/faq', label: 'FAQ' },

@@ -19,9 +19,9 @@ import {
 } from '@/lib/i18n/safety-copy';
 
 export function useBuilderLocale(): AppLocale {
-  const [locale, setLocale] = useState<AppLocale>(() =>
-    typeof window === 'undefined' ? 'cs' : readBuilderLocaleFromBrowser(),
-  );
+  // The server cannot read the browser-only preference. Keep the first client
+  // render identical to SSR, then synchronize the selected locale after hydration.
+  const [locale, setLocale] = useState<AppLocale>('cs');
 
   useEffect(() => {
     const syncLocale = () => {

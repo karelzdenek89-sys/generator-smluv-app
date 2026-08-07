@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { redis } from '@/lib/redis';
 import { stripe } from '@/lib/stripe';
-import { normalizeThematicPackageKeyForContract } from '@/lib/packages';
+import {
+  getEffectivePriceBand,
+  normalizeThematicPackageKeyForContract,
+  packageIncludesDocx,
+} from '@/lib/packages';
 import { getContractMeta, type StoredContractData } from '@/lib/contracts';
 import { renderContractPdf } from '@/lib/pdf';
 import { renderContractDocx } from '@/lib/docx';
@@ -45,11 +49,6 @@ function normalizePaidTier(value?: string | null): PaidTier {
   if (raw === 'professional') return 'professional';
   if (raw === 'complete' || raw === 'premium') return 'complete';
   return 'basic';
-}
-
-function priceBandForDownload(tier: PaidTier, packageKey?: string | null): '99' | '199' | '299' {
-  if (packageKey) return '299';
-  return tier === 'basic' ? '99' : '199';
 }
 
 async function nextDownloadSequence(draftId: string, existingDownloadCount: number, ttl: number): Promise<number> {
@@ -236,7 +235,10 @@ export async function GET(req: NextRequest) {
       contract_type: resolvedContractType,
       tier: resolvedTier === 'basic' ? 'basic' : 'complete',
       package_key: resolvedPackageKey ?? undefined,
-      price_band: priceBandForDownload(resolvedTier, resolvedPackageKey),
+      price_band: getEffectivePriceBand(
+        resolvedTier === 'basic' ? 'basic' : 'complete',
+        resolvedPackageKey,
+      ),
       download_format: format,
       download_sequence: nextDownloadCount,
       add_on_keys: addOns.join(','),
@@ -248,7 +250,7 @@ export async function GET(req: NextRequest) {
     });
 
     if (format === 'docx') {
-      if (!hasCheckoutAddon(fullData, 'docx')) {
+      if (!hasCheckoutAddon(fullData, 'docx') && !packageIncludesDocx(resolvedPackageKey)) {
         return NextResponse.json(
           { error: 'DOCX verze nebyla součástí této objednávky.' },
           { status: 403 },

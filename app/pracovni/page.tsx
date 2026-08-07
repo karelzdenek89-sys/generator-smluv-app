@@ -1,6 +1,7 @@
 ﻿'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
@@ -20,6 +21,7 @@ import {
   MIN_WAGE_HOURLY_2026_CZK,
   MIN_WAGE_MONTHLY_2026_CZK,
 } from '@/lib/legal-constants-2026';
+import { getThematicPackageConfig } from '@/lib/packages';
 
 type FormData = {
   employerName: string; employerIco: string; employerAddress: string; employerEmail: string;
@@ -31,6 +33,11 @@ type FormData = {
   salary: string; salaryType: 'monthly' | 'hourly'; hourlyRate: string; payDay: string; bonusDesc: string;
   nonCompete: boolean; nonCompetePeriod: string; breachPenalty: string;
   isManager: boolean;
+  professionalDevelopment: string; overtimeRules: string; collectiveAgreement: string;
+  socialSecurityAuthority: string; payMethod: string;
+  workEquipment: string; equipmentCondition: string;
+  remoteWorkPlace: string; remoteWorkSchedule: string;
+  remoteWorkCostMode: 'actual' | 'flat_rate' | 'none';
   contractDate: string;
   notaryUpsell: boolean;
   tier: 'basic' | 'complete';
@@ -58,8 +65,11 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 export default function PracovniPage() {
+  const [packageKeyFromUrl, setPackageKeyFromUrl] = useState<string | null>(null);
   const builderLocale = useBuilderLocale();
   const ui = useMemo(() => getEmploymentFormUi(builderLocale), [builderLocale]);
+  const packageConfig = getThematicPackageConfig(packageKeyFromUrl);
+  const isEmployerStart = packageConfig?.key === 'employer_start';
   useBuilderDocumentTitle(builderLocale, {
     en: 'Employment contract — online form | SmlouvaHned',
     ua: 'Трудовий договір — онлайн-форма | SmlouvaHned',
@@ -80,12 +90,36 @@ export default function PracovniPage() {
       salary: '', salaryType: 'monthly', hourlyRate: '', payDay: d.payDay ?? '15', bonusDesc: '',
       nonCompete: false, nonCompetePeriod: d.nonCompetePeriod ?? '12', breachPenalty: d.breachPenalty ?? '50000',
       isManager: false,
+      professionalDevelopment: 'Zaškolení pro sjednanou práci a další odborný rozvoj podle potřeb zaměstnavatele a právních předpisů.',
+      overtimeRules: 'Práce přesčas může být nařízena nebo dohodnuta pouze v rozsahu a za podmínek zákoníku práce.',
+      collectiveAgreement: 'Na pracovní poměr se nevztahuje kolektivní smlouva.',
+      socialSecurityAuthority: '',
+      payMethod: 'Bezhotovostním převodem na bankovní účet zaměstnance.',
+      workEquipment: 'Notebook včetně napájecího adaptéru; přístupové údaje a pracovní účet.',
+      equipmentCondition: 'Funkční, bez zjevných vad.',
+      remoteWorkPlace: '', remoteWorkSchedule: '', remoteWorkCostMode: 'flat_rate',
       contractDate: '', notaryUpsell: false,
       tier: 'basic' as const,
     };
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+
+  useEffect(() => {
+    setPackageKeyFromUrl(new URLSearchParams(window.location.search).get('package'));
+  }, []);
+
+  useEffect(() => {
+    if (!isEmployerStart) return;
+    setForm((current) =>
+      current.tier === 'complete' && current.notaryUpsell
+        ? current
+        : { ...current, tier: 'complete', notaryUpsell: true },
+    );
+  }, [isEmployerStart]);
+
+  const usesRemoteWork = Boolean(form.remoteWork)
+    && form.remoteWork !== ui.remoteWorkValues.none;
   const set = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     setForm(p => ({ ...p, [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value }));
@@ -116,11 +150,12 @@ export default function PracovniPage() {
       return buildExpatPreviewSections('employment', builderLocale, {
         ...form,
         contractType: 'employment',
+        packageKey: packageConfig?.key ?? null,
       } as StoredContractData);
     } catch {
       return [];
     }
-  }, [form, builderLocale]);
+  }, [form, builderLocale, packageConfig?.key]);
 
   const handlePayment = async (addOns: string[], authorization: CheckoutAuthorization) => {
     // Validace § 34 ZP — pracovní smlouva BEZ druhu práce, místa a dne nástupu
@@ -134,6 +169,18 @@ export default function PracovniPage() {
     if (form.employmentType === 'fixed' && !form.endDate) missing.push(ui.fields.endDate);
     const activePay = form.salaryType === 'hourly' ? form.hourlyRate : form.salary;
     if (!activePay) missing.push(validationFields.salary);
+    if (isEmployerStart) {
+      if (!form.employerAddress.trim()) missing.push('sídlo / adresu zaměstnavatele');
+      if (!form.employeeAddress.trim()) missing.push('bydliště zaměstnance');
+      if (!form.professionalDevelopment.trim()) missing.push('způsob odborného rozvoje');
+      if (!form.overtimeRules.trim()) missing.push('pravidla práce přesčas');
+      if (!form.collectiveAgreement.trim()) missing.push('informaci o kolektivní smlouvě');
+      if (!form.socialSecurityAuthority.trim()) missing.push('příslušný orgán sociálního zabezpečení');
+      if (!form.payMethod.trim()) missing.push('místo a způsob výplaty mzdy');
+      if (!form.workEquipment.trim()) missing.push('seznam pracovního vybavení nebo údaj, že se vybavení nepředává');
+      if (usesRemoteWork && !form.remoteWorkPlace.trim()) missing.push('místo práce na dálku');
+      if (usesRemoteWork && !form.remoteWorkSchedule.trim()) missing.push('rozsah práce na dálku');
+    }
     if (missing.length > 0) {
       alert(`${ui.form.validationPrefix} ${missing.join(', ')}.`);
       return;
@@ -147,7 +194,7 @@ export default function PracovniPage() {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contractType: 'employment', deliveryEmail: authorization.deliveryEmail, consent: authorization.consent, tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', lang: builderLocale, payload: { ...form, contractType: 'employment', lang: builderLocale } }),
+        body: JSON.stringify({ contractType: 'employment', deliveryEmail: authorization.deliveryEmail, consent: authorization.consent, annexLanguage: authorization.annexLanguage, tier: packageConfig?.defaultTier ?? form.tier, packageKey: packageConfig?.key ?? null, addOns, notaryUpsell: packageConfig ? true : form.tier !== 'basic', lang: builderLocale, payload: { ...form, contractType: 'employment', packageKey: packageConfig?.key ?? null, lang: builderLocale } }),
       });
       const data = await res.json();
       if (!res.ok || !data?.url) throw new Error();
@@ -192,6 +239,48 @@ export default function PracovniPage() {
         guideHref={ui.landing.guideHref}
         guideLabel={ui.landing.guideLabel}
       />
+
+      {isEmployerStart ? (
+        <div className="max-w-7xl mx-auto px-4 pt-8 lg:px-8">
+          <div className="rounded-[1.75rem] border border-amber-500/25 bg-[rgba(255,255,255,0.04)] p-6">
+            <div className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-400">
+              {packageConfig.badge}
+            </div>
+            <div className="mt-3 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div className="max-w-3xl">
+                <h2 className="text-2xl font-semibold tracking-tight text-white">
+                  {packageConfig.builderTitle}
+                </h2>
+                <p className="mt-3 text-sm leading-relaxed text-slate-300">
+                  {packageConfig.builderDescription}
+                </p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/4 px-5 py-4">
+                <div className="text-xs uppercase tracking-[0.18em] text-slate-500">Cena balíčku</div>
+                <div className="mt-2 text-3xl font-black tracking-tight text-white">{packageConfig.priceLabel}</div>
+                <Link href="/pracovni" className="mt-3 inline-block text-xs leading-relaxed text-[#cbbba0] transition hover:text-white">
+                  Potřebujete jen pracovní smlouvu? Zvolte samostatný dokument 99 / 199 Kč.
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="max-w-7xl mx-auto px-4 pt-8 lg:px-8">
+          <Link href="/balicek-zamestnavatel" className="interactive-card block rounded-[1.75rem] border border-[rgba(197,160,89,0.18)] bg-[rgba(255,255,255,0.035)] p-6">
+            <div className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-400">Nový personální balíček</div>
+            <div className="mt-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+              <div className="max-w-3xl">
+                <h2 className="text-2xl font-semibold tracking-tight text-white">Zaměstnavatel Start 2026</h2>
+                <p className="mt-3 text-sm leading-relaxed text-slate-300">
+                  Pracovní smlouva, informace podle § 37 ZP, podklady k home office a vybavení, nástupní checklist a DOCX za 599 Kč.
+                </p>
+              </div>
+              <span className="text-sm font-semibold text-amber-300">Zobrazit obsah balíčku →</span>
+            </div>
+          </Link>
+        </div>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8">
         <div className="grid lg:grid-cols-12 gap-8 items-start">
@@ -304,12 +393,74 @@ export default function PracovniPage() {
                 </div>
               </section>
 
+              {isEmployerStart ? (
+                <section className={cardClass}>
+                  <SectionTitle
+                    index="07"
+                    title="Navazující personální podklady"
+                    subtitle="Tyto údaje se použijí v informačním listu podle § 37 ZP, protokolu k vybavení a případné dohodě o práci na dálku."
+                  />
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <Field label="Orgán sociálního zabezpečení *">
+                      <input className={inputClass} name="socialSecurityAuthority" value={form.socialSecurityAuthority} onChange={set} placeholder="např. PSSZ Praha / OSSZ Brno-město" required />
+                    </Field>
+                    <Field label="Způsob a místo výplaty *">
+                      <input className={inputClass} name="payMethod" value={form.payMethod} onChange={set} required />
+                    </Field>
+                    <div className="sm:col-span-2">
+                      <Field label="Odborný rozvoj zajišťovaný zaměstnavatelem *">
+                        <textarea className="w-full min-h-[76px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none focus:border-amber-500/60" name="professionalDevelopment" value={form.professionalDevelopment} onChange={set} required />
+                      </Field>
+                    </div>
+                    <div className="sm:col-span-2">
+                      <Field label="Pravidla práce přesčas *">
+                        <textarea className="w-full min-h-[76px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none focus:border-amber-500/60" name="overtimeRules" value={form.overtimeRules} onChange={set} required />
+                      </Field>
+                    </div>
+                    <div className="sm:col-span-2">
+                      <Field label="Kolektivní smlouva *">
+                        <input className={inputClass} name="collectiveAgreement" value={form.collectiveAgreement} onChange={set} required />
+                      </Field>
+                    </div>
+                    <div className="sm:col-span-2">
+                      <Field label="Předávané pracovní vybavení *">
+                        <textarea className="w-full min-h-[90px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none focus:border-amber-500/60" name="workEquipment" value={form.workEquipment} onChange={set} placeholder="Uveďte vybavení, nebo napište „Bez předávaného vybavení“" required />
+                      </Field>
+                    </div>
+                    <div className="sm:col-span-2">
+                      <Field label="Stav vybavení při předání">
+                        <input className={inputClass} name="equipmentCondition" value={form.equipmentCondition} onChange={set} />
+                      </Field>
+                    </div>
+                    {usesRemoteWork ? (
+                      <>
+                        <Field label="Místo práce na dálku *">
+                          <input className={inputClass} name="remoteWorkPlace" value={form.remoteWorkPlace} onChange={set} placeholder="Úplná adresa" required />
+                        </Field>
+                        <Field label="Rozsah a pravidla home office *">
+                          <input className={inputClass} name="remoteWorkSchedule" value={form.remoteWorkSchedule} onChange={set} placeholder="např. 2 dny týdně po dohodě s vedoucím" required />
+                        </Field>
+                        <div className="sm:col-span-2">
+                          <Field label="Náhrada nákladů při práci na dálku *">
+                            <select className={inputClass} name="remoteWorkCostMode" value={form.remoteWorkCostMode} onChange={set}>
+                              <option value="flat_rate">Zákonný paušál za započatou hodinu podle aktuální vyhlášky MPSV</option>
+                              <option value="actual">Prokázané skutečné náklady</option>
+                              <option value="none">Předem sjednat, že náhrada nákladů nepřísluší</option>
+                            </select>
+                          </Field>
+                        </div>
+                      </>
+                    ) : null}
+                  </div>
+                </section>
+              ) : null}
+
               {/* Doplňující ustanovení */}
               <section className={cardClass}>
-                <SectionTitle index="07" title={ui.sections.extra.title} subtitle={ui.sections.extra.subtitle} />
+                <SectionTitle index={isEmployerStart ? '08' : '07'} title={ui.sections.extra.title} subtitle={ui.sections.extra.subtitle} />
 
                 {/* === VÝBĚR BALÍČKU === */}
-                <div className="mt-6">
+                {!packageConfig ? <div className="mt-6">
                   <BuilderTierSelector
                     contractType="employment"
                     tier={form.tier}
@@ -317,7 +468,7 @@ export default function PracovniPage() {
                       setForm((prev) => ({ ...prev, tier, notaryUpsell: tier !== 'basic' }))
                     }
                   />
-                </div>
+                </div> : null}
                 {form.notaryUpsell && (
                   <div className="mt-4 grid sm:grid-cols-2 gap-4">
                     <label htmlFor="nonCompete" className={`flex items-start gap-3 cursor-pointer rounded-xl border p-4 transition ${form.nonCompete ? 'border-amber-500/70 bg-amber-500/10' : 'border-slate-700/60 bg-[#111c31]'}`}>
@@ -375,6 +526,7 @@ export default function PracovniPage() {
               <BuilderCheckoutSummary
                 contractType="employment"
                 tier={form.tier}
+                packageKey={packageConfig?.key ?? null}
                 documentLabel={ui.form.documentLabel}
                 onUpgrade={() => setForm((prev) => ({ ...prev, tier: 'complete', notaryUpsell: true }))}
               />
@@ -409,6 +561,7 @@ export default function PracovniPage() {
         title={ui.form.documentLabel}
         tier={form.tier}
         onTierChange={(t) => setForm((prev) => ({ ...prev, tier: t }))}
+        packageKey={packageConfig?.key ?? null}
         contractType="employment"
         lang={builderLocale}
         onPay={handlePayment}

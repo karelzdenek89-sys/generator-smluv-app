@@ -58,6 +58,7 @@ function testCheckoutRouteCoverage() {
   assert.match(checkout, /getStripePriceIdForCheckout/);
   const packages = read('lib/packages.ts');
   assert.match(packages, /STRIPE_PRICE_ID_PACKAGE/);
+  assert.match(packages, /STRIPE_PRICE_ID_EMPLOYER_START/);
   assert.match(packages, /normalizeThematicPackageKeyForContract/);
   assert.doesNotMatch(
     packages,
@@ -65,6 +66,7 @@ function testCheckoutRouteCoverage() {
     '299 Kč packages must not fall back to the 199 Kč complete tier price',
   );
   assert.match(read('.env.example'), /STRIPE_PRICE_ID_PACKAGE/);
+  assert.match(read('.env.example'), /STRIPE_PRICE_ID_EMPLOYER_START/);
   assert.match(checkout, /CANCEL_URLS/);
   assert.match(checkout, /downloadToken/);
   assert.match(checkout, /Neplatný JSON požadavek/);
@@ -107,6 +109,7 @@ function testBuilderPayloads() {
     assert.match(src, /consent:\s*authorization\.consent/, `${page} must send consent proof`);
     if (hasLang) {
       assert.match(src, /lang:\s*builderLocale/, `${page} must pass builderLocale as lang`);
+      assert.match(src, /annexLanguage:\s*authorization\.annexLanguage/, `${page} must pass selected annex language`);
     }
   }
 }
@@ -198,7 +201,7 @@ function main() {
   testExpatLangInPayload();
   testWebhookAndDownload();
   testPokladnaAlias();
-  console.log('Checkout flow audit passed (14 contract types, expat lang, packageKey, webhook/download).');
+  console.log('Checkout flow audit passed (14 contract types, annex language, packageKey, webhook/download).');
 }
 
 main();

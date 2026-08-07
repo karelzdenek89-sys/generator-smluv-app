@@ -7,6 +7,7 @@ import { getAnalyticsDefaultsForPathname, trackEvent } from '@/lib/analytics';
 import { getBuilderCopy, getContractTypeByPath } from '@/lib/locale';
 import { BuilderLocaleNotice, useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
 import WhyNotGenericBlock from '@/app/components/marketing/WhyNotGenericBlock';
+import { getEffectivePriceBand, getThematicPackageConfig } from '@/lib/packages';
 
 export interface ContractLandingBenefit {
   icon: string;
@@ -75,27 +76,25 @@ export default function ContractLandingSection({
       typeof window !== 'undefined'
         ? new URLSearchParams(window.location.search).get('package')
         : null;
+    const packageConfig = getThematicPackageConfig(packageKey);
     const defaults = getAnalyticsDefaultsForPathname(currentPath);
 
     trackEvent('builder_view', {
       ...defaults,
       source: 'builder',
       surface: 'builder',
-      entry_mode: packageKey ? 'package_flow' : 'single_document',
-      package_key:
-        packageKey === 'landlord' || packageKey === 'vehicle_sale'
-          ? packageKey
-          : undefined,
+      entry_mode: packageConfig ? 'package_flow' : 'single_document',
+      package_key: packageConfig?.key,
     });
 
-    if (packageKey === 'landlord' || packageKey === 'vehicle_sale') {
+    if (packageConfig) {
       trackEvent('package_flow_entered', {
         ...defaults,
         source: 'package_landing',
         surface: 'builder',
-        package_key: packageKey,
+        package_key: packageConfig.key,
         entry_mode: 'package_flow',
-        price_band: '299',
+        price_band: getEffectivePriceBand('complete', packageConfig.key),
       });
     }
   }, [pathname]);

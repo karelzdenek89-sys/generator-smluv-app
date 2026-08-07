@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { redis } from '@/lib/redis';
 import { normalizePricingTier } from '@/lib/pricing';
-import { getThematicPackageConfig } from '@/lib/packages';
+import { getThematicPackageConfig, packageIncludesDocx } from '@/lib/packages';
 import { normalizeLocale } from '@/lib/locale';
 import { resolveEmailFromPortalToken } from '@/lib/orders-portal';
 import {
@@ -85,6 +85,9 @@ async function listOrdersForEmail(email: string) {
             const packageConfig = getThematicPackageConfig(draft.packageKey);
             const tier = normalizePricingTier(draft.tier);
             const addOns = normalizeStoredCheckoutAddons(draft.addOns ?? draft.payload?.addOns);
+            const displayAddOns = packageIncludesDocx(draft.packageKey) && !addOns.includes('docx')
+              ? [...addOns, 'docx' as const]
+              : addOns;
             return {
               sessionId,
               contractName:
@@ -95,8 +98,10 @@ async function listOrdersForEmail(email: string) {
               lang: normalizeLocale(draft.lang ?? draft.payload?.lang),
               downloadToken: draft.downloadToken ?? null,
               archiveDays: getArchiveDaysWithAddons(tier, draft.packageKey, addOns),
-              addOns,
-              includedItems: getCheckoutAddonIncludedItems(addOns),
+              addOns: displayAddOns,
+              includedItems: packageConfig
+                ? [...packageConfig.includedOutputs, ...getCheckoutAddonIncludedItems(addOns)]
+                : getCheckoutAddonIncludedItems(addOns),
             };
           }
         }
@@ -179,6 +184,9 @@ export async function GET(req: NextRequest) {
       const packageConfig = getThematicPackageConfig(draft.packageKey);
       const tier = normalizePricingTier(draft.tier);
       const addOns = normalizeStoredCheckoutAddons(draft.addOns ?? draft.payload?.addOns);
+      const displayAddOns = packageIncludesDocx(draft.packageKey) && !addOns.includes('docx')
+        ? [...addOns, 'docx' as const]
+        : addOns;
       return NextResponse.json({
         orders: [
           {
@@ -190,8 +198,10 @@ export async function GET(req: NextRequest) {
             lang: normalizeLocale(draft.lang ?? draft.payload?.lang),
             downloadToken: draft.downloadToken ?? null,
             archiveDays: getArchiveDaysWithAddons(tier, draft.packageKey, addOns),
-            addOns,
-            includedItems: getCheckoutAddonIncludedItems(addOns),
+            addOns: displayAddOns,
+            includedItems: packageConfig
+              ? [...packageConfig.includedOutputs, ...getCheckoutAddonIncludedItems(addOns)]
+              : getCheckoutAddonIncludedItems(addOns),
           },
         ],
       });

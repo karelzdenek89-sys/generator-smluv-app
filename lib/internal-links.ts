@@ -26,6 +26,7 @@ export const SEO_LANDINGS: readonly InternalLink[] = [
   { href: '/balicek-prodej-vozidla', label: 'Balíček pro prodej vozidla', description: 'Smlouva + předávací protokol + podklady k převodu.', cluster: 'auto' },
 
   { href: '/pracovni', label: 'Pracovní smlouva online', description: 'Formulář pracovní smlouvy podle zákoníku práce.', cluster: 'prace' },
+  { href: '/balicek-zamestnavatel', label: 'Zaměstnavatel Start 2026', description: 'Pracovní smlouva + informace podle § 37 ZP + nástupní podklady.', cluster: 'prace' },
   { href: '/dpp', label: 'Dohoda o provedení práce (DPP)', description: 'Online DPP do 300 hodin ročně.', cluster: 'prace' },
   { href: '/smlouva-o-dilo-online', label: 'Smlouva o dílo online', description: 'Vzor pro řemeslníky, freelancery i firmy.', cluster: 'prace' },
   { href: '/smlouva-o-sluzbach', label: 'Smlouva o poskytování služeb', description: 'Vzor pro opakované služby a B2B kontrakty.', cluster: 'prace' },

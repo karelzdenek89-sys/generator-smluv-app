@@ -4,6 +4,7 @@ import {
   getEffectivePriceLabel,
   getThematicPackageConfig,
   normalizeThematicPackageKey,
+  packageIncludesDocx,
 } from '@/lib/packages';
 import { normalizePricingTier, getTierPriceLabel } from '@/lib/pricing';
 import { stripe } from '@/lib/stripe';
@@ -130,6 +131,10 @@ export async function GET(req: NextRequest) {
     if (packageKey) {
       packageLabel = getThematicPackageConfig(packageKey)?.title ?? null;
     }
+    const displayAddOns = packageIncludesDocx(packageKey) && !addOns.includes('docx')
+      ? [...addOns, 'docx' as const]
+      : addOns;
+    const packageItems = getThematicPackageConfig(packageKey)?.includedOutputs ?? [];
 
     const priceLabel =
       formatStripeAmount(session.amount_total, session.currency) ??
@@ -145,8 +150,10 @@ export async function GET(req: NextRequest) {
       archiveDays: getArchiveDaysWithAddons(tier, packageKey, addOns),
       contractType,
       contractName: CONTRACT_NAMES[contractType] ?? 'Právní dokument',
-      addOns,
-      includedItems: getCheckoutAddonIncludedItems(addOns),
+      addOns: displayAddOns,
+      includedItems: packageItems.length > 0
+        ? [...packageItems, ...getCheckoutAddonIncludedItems(addOns)]
+        : getCheckoutAddonIncludedItems(addOns),
       lang,
     });
   } catch {

@@ -4,10 +4,10 @@ import {
   CHECKOUT_ADDONS,
   type CheckoutAddonKey,
 } from '@/lib/checkout-addons';
-import { THEMATIC_PACKAGES } from '@/lib/packages';
+import { THEMATIC_PACKAGES, type ThematicPackageKey } from '@/lib/packages';
 import { redis } from '@/lib/redis';
 import { SITUATION_LANDINGS } from '@/lib/situations';
-import type { AnalyticsEventName, AnalyticsEventParams } from './analytics';
+import type { AnalyticsEventName, AnalyticsEventParams, PriceBand } from './analytics';
 
 type StoredAnalyticsEvent = {
   event: AnalyticsEventName;
@@ -38,7 +38,7 @@ export type AnalyticsDashboardData = {
   recentOverview: DashboardRow[];
   insights: AnalyticsInsight[];
   pricingInterest: Array<{
-    band: '99' | '199' | '299';
+    band: PriceBand;
     topFunnel: number;
     selection: number;
     checkout: number;
@@ -69,7 +69,7 @@ export type AnalyticsDashboardData = {
     toPackage: number;
   }>;
   packagePerformance: Array<{
-    packageKey: 'landlord' | 'vehicle_sale';
+    packageKey: ThematicPackageKey;
     title: string;
     views: number;
     ctaToBuilder: number;
@@ -256,14 +256,18 @@ export async function getAnalyticsDashboardData(
   let packageViews = 0;
   let builderViews = 0;
   let packageFlowEntries = 0;
+  let packageFlow299Entries = 0;
+  let packageFlow599Entries = 0;
   let tier99Selections = 0;
   let tier199Selections = 0;
   let homepage99Clicks = 0;
   let homepage199Clicks = 0;
   let homepage299Clicks = 0;
+  let homepage599Clicks = 0;
   let checkout99 = 0;
   let checkout199 = 0;
   let checkout299 = 0;
+  let checkout599 = 0;
   let upgrades = 0;
   let checkoutModalOpens = 0;
   let checkoutModalCloses = 0;
@@ -301,7 +305,7 @@ export async function getAnalyticsDashboardData(
     { views: number; toBuilder: number; toPackage: number }
   >();
   const packageStats = new Map<
-    'landlord' | 'vehicle_sale',
+    ThematicPackageKey,
     { views: number; ctaToBuilder: number; builderEntries: number }
   >();
   const sourceToBuilder = new Map<string, number>();
@@ -495,6 +499,8 @@ export async function getAnalyticsDashboardData(
 
       case 'package_flow_entered':
         packageFlowEntries += 1;
+        if (params.price_band === '599') packageFlow599Entries += 1;
+        else packageFlow299Entries += 1;
         if (packageKey) {
           const current = packageStats.get(packageKey) ?? {
             views: 0,
@@ -536,6 +542,7 @@ export async function getAnalyticsDashboardData(
         if (params.price_band === '99') checkout99 += 1;
         if (params.price_band === '199') checkout199 += 1;
         if (params.price_band === '299') checkout299 += 1;
+        if (params.price_band === '599') checkout599 += 1;
         break;
 
       case 'stripe_checkout_started':
@@ -596,7 +603,8 @@ export async function getAnalyticsDashboardData(
         break;
 
       case 'homepage_package_click':
-        homepage299Clicks += 1;
+        if (params.price_band === '599') homepage599Clicks += 1;
+        else homepage299Clicks += 1;
         break;
 
       default:
@@ -749,6 +757,7 @@ export async function getAnalyticsDashboardData(
       { key: 'article_views', label: 'Zobrazen\u00ed \u010dl\u00e1nk\u016f', value: articleViews },
       { key: 'article_to_builder', label: '\u010cl\u00e1nky \u2192 builder', value: articleToBuilderClicks },
       { key: 'article_to_package', label: '\u010cl\u00e1nky \u2192 bal\u00ed\u010dek', value: articleToPackageClicks },
+      { key: 'seo_landing_views', label: 'Zobrazen\u00ed SEO landing\u016f', value: seoLandingViews },
       { key: 'situation_views', label: 'Zobrazen\u00ed situa\u010dn\u00edch str\u00e1nek', value: situationViews },
       { key: 'package_views', label: 'Zobrazen\u00ed bal\u00ed\u010dk\u016f', value: packageViews },
       { key: 'builder_views', label: 'Vstupy do builderu', value: builderViews },
@@ -783,8 +792,14 @@ export async function getAnalyticsDashboardData(
       {
         band: '299',
         topFunnel: homepage299Clicks,
-        selection: packageFlowEntries,
+        selection: packageFlow299Entries,
         checkout: checkout299,
+      },
+      {
+        band: '599',
+        topFunnel: homepage599Clicks,
+        selection: packageFlow599Entries,
+        checkout: checkout599,
       },
     ],
     addOnPerformance,

@@ -173,6 +173,7 @@ function main() {
   assert.match(terms, /PRICING_TIER_CONFIG\.basic\.priceLabel/, 'Terms must use configured basic price');
   assert.match(terms, /PRICING_TIER_CONFIG\.complete\.priceLabel/, 'Terms must use configured extended price');
   assert.match(terms, /THEMATIC_PACKAGE_CONFIG\.landlord\.priceLabel/, 'Terms must show configured package price');
+  assert.match(terms, /THEMATIC_PACKAGE_CONFIG\.employer_start\.priceLabel/, 'Terms must show configured employer package price');
   assert.match(terms, /CHECKOUT_ADDON_CONFIG/, 'Terms must list checkout add-ons');
   assert.match(terms, /není plátcem DPH/, 'Terms must clarify non-VAT-payer status');
   assert.match(terms, /90 dní/, 'Terms must mention 90-day archive add-on');
@@ -182,6 +183,7 @@ function main() {
   assert.match(faq, /Základní dokument 99 Kč/, 'FAQ must mention 99 Kč basic price');
   assert.match(faq, /Rozšířený dokument[^']*199 Kč/, 'FAQ must mention 199 Kč extended price');
   assert.match(faq, /299 Kč/, 'FAQ must mention 299 Kč package price');
+  assert.match(faq, /599 Kč/, 'FAQ must mention 599 Kč employer package price');
   assert.match(faq, /90 dní s doplňkem archivace/, 'FAQ must mention 90-day archive add-on');
   assert.doesNotMatch(faq, /DIČ/, 'FAQ invoice copy must not promise VAT ID on tax invoice');
   assert.match(faq, /images: \[\{ url: '\/og-image\.png'/, 'FAQ must define og:image');
@@ -295,7 +297,7 @@ function main() {
   );
   assert.match(read('next.config.ts'), /og-image\.png/, 'next.config should rewrite legacy OG image path');
   assert.match(read('app/opengraph-image.tsx'), /renderBrandOgImage/, 'Root OG image route must exist');
-  for (const path of ['/pro-pronajimatele', '/prodej-vozidla', '/balicek-pronajimatel', '/balicek-prodej-vozidla']) {
+  for (const path of ['/pro-pronajimatele', '/prodej-vozidla', '/balicek-pronajimatel', '/balicek-prodej-vozidla', '/balicek-zamestnavatel']) {
     assert.match(sitemap, new RegExp(path.replace(/\//g, '\\/')), `Sitemap missing ${path}`);
   }
 

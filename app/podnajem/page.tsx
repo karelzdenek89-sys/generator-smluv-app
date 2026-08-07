@@ -164,6 +164,7 @@ export default function PodnajemuPage() {
           contractType: 'sublease',
           deliveryEmail: authorization.deliveryEmail,
           consent: authorization.consent,
+          annexLanguage: authorization.annexLanguage,
           tier: form.tier,
           addOns,
           notaryUpsell: form.tier !== 'basic',

@@ -18,7 +18,7 @@
  * The server authenticates the audit secret before bypassing its normal rate
  * limit and analytics writes. The secret is never exposed to page JavaScript.
  * Audit responses expose the Stripe Session total and currency, so the test
- * verifies the configured 99/199/299 Kč prices instead of just seeing a URL.
+ * verifies the configured 99/199/299/599 Kč prices instead of just seeing a URL.
  */
 import { expect, test, type Page } from '@playwright/test';
 
@@ -30,9 +30,9 @@ const AUDIT_EMAIL = 'checkout-audit@example.com';
 
 type BaseTarget = { route: string; label: string };
 type Target = BaseTarget & {
-  expectedAmountTotal: 9900 | 19900 | 29900;
+  expectedAmountTotal: 9900 | 19900 | 29900 | 59900;
   expectedTier: 'basic' | 'complete';
-  expectedPackageKey: 'landlord' | null;
+  expectedPackageKey: 'landlord' | 'employer_start' | null;
   selectTier?: 'complete';
   priceMatrix?: true;
 };
@@ -95,6 +95,14 @@ const TARGETS: Target[] = [
     expectedAmountTotal: 29900,
     expectedTier: 'complete',
     expectedPackageKey: 'landlord',
+    priceMatrix: true,
+  },
+  {
+    route: '/pracovni?package=employer_start',
+    label: 'Zaměstnavatel Start 2026',
+    expectedAmountTotal: 59900,
+    expectedTier: 'complete',
+    expectedPackageKey: 'employer_start',
     priceMatrix: true,
   },
 ];
@@ -160,7 +168,7 @@ test.describe('live checkout audit', () => {
           amountTotal: number | null;
           currency: string | null;
           tier: 'basic' | 'complete';
-          packageKey: 'landlord' | 'vehicle_sale' | null;
+          packageKey: 'landlord' | 'vehicle_sale' | 'employer_start' | null;
         };
       };
       const answers: CheckoutAnswer[] = [];
@@ -186,6 +194,9 @@ test.describe('live checkout audit', () => {
       await page.goto(target.route);
       await expect(page.locator('main h1').first()).toBeVisible();
       await fillEveryField(page);
+      if (target.expectedPackageKey === 'employer_start') {
+        await page.locator('[name="remoteWork"]').selectOption('remote_none');
+      }
       if (target.selectTier) {
         await page.locator(`input[name="tier"][value="${target.selectTier}"]`).first().check();
       }
