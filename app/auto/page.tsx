@@ -346,6 +346,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
           contractType: 'car_sale',
           deliveryEmail: authorization.deliveryEmail,
           consent: authorization.consent,
+          annexLanguage: authorization.annexLanguage,
           tier: packageConfig ? packageConfig.defaultTier : formData.tier,
           packageKey: packageConfig?.key ?? null,
           addOns,

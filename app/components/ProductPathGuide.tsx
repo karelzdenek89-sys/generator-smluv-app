@@ -70,7 +70,9 @@ export default function ProductPathGuide({
                       ? '199'
                       : item.priceLabel.startsWith('299')
                         ? '299'
-                        : undefined,
+                        : item.priceLabel.startsWith('599')
+                          ? '599'
+                          : undefined,
                 destination: item.href,
                 ...trackingContext?.extraParams,
               }}

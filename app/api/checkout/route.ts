@@ -4,7 +4,7 @@
  *
  * Pravidla:
  *  - Draft payload musí být uložen před vytvořením platby
- *  - Tematické balíčky (299 Kč) → STRIPE_PRICE_ID_PACKAGE
+ *  - Balíčky 299 Kč → STRIPE_PRICE_ID_PACKAGE; Zaměstnavatel Start 599 Kč má vlastní Price ID
  *  - Tier „complete"/„premium" → STRIPE_PRICE_ID_PREMIUM (199 Kč)
  *  - Payload každého typu smlouvy musí projít serverovým schématem
  *  - automatic_payment_methods → Google Pay, Apple Pay, karty atd.
@@ -16,6 +16,7 @@ import { getClientIp, isBoundedJsonObject, readFirstPartyJson } from '@/lib/api-
 import { redis } from '@/lib/redis';
 import { stripe } from '@/lib/stripe';
 import {
+  getEffectivePriceBand,
   getStripePriceIdForCheckout,
   normalizeThematicPackageKeyForContract,
 } from '@/lib/packages';
@@ -25,6 +26,7 @@ import {
   CHECKOUT_ADDON_CONFIG,
   getArchiveDaysWithAddons,
   getCheckoutAddonMetadata,
+  normalizeAnnexLanguage,
   normalizeCheckoutAddons,
 } from '@/lib/checkout-addons';
 import { recordAnalyticsEvent } from '@/lib/analytics-server';
@@ -91,11 +93,6 @@ async function tryRateLimit(ip: string): Promise<'allowed' | 'limited' | 'unavai
 }
 
 // ── Hlavní handler ────────────────────────────────────────────────────────────
-
-function priceBandForCheckout(tier: 'basic' | 'complete', packageKey?: string | null): '99' | '199' | '299' {
-  if (packageKey) return '299';
-  return tier === 'basic' ? '99' : '199';
-}
 
 /**
  * Records why a checkout was turned away, then returns the response unchanged.
@@ -249,6 +246,55 @@ export async function POST(req: Request) {
           : null;
     const packageKey = normalizeThematicPackageKeyForContract(rawPackageKey, contractType);
     const checkoutTier = packageKey ? 'complete' : paidTier;
+
+    if (packageKey === 'employer_start') {
+      const requiredPackageFields = [
+        'employerAddress',
+        'employeeAddress',
+        'professionalDevelopment',
+        'overtimeRules',
+        'collectiveAgreement',
+        'socialSecurityAuthority',
+        'payMethod',
+        'workEquipment',
+      ] as const;
+      const missingPackageField = requiredPackageFields.find(
+        (field) => typeof payload[field] !== 'string' || !payload[field].trim(),
+      );
+      if (missingPackageField) {
+        return reject(
+          'payload_invalid',
+          { error: 'Doplňte všechny údaje potřebné pro personální balíček.', field: missingPackageField },
+          400,
+          { contractType, field: missingPackageField },
+        );
+      }
+
+      const remoteWork = String(payload.remoteWork ?? '');
+      const usesRemoteWork = Boolean(remoteWork) && !['remote_none', 'není povoleno'].includes(remoteWork);
+      if (usesRemoteWork) {
+        const missingRemoteField = ['remoteWorkPlace', 'remoteWorkSchedule', 'remoteWorkCostMode'].find(
+          (field) => typeof payload[field] !== 'string' || !payload[field].trim(),
+        );
+        if (missingRemoteField) {
+          return reject(
+            'payload_invalid',
+            { error: 'Doplňte podmínky práce na dálku pro samostatnou písemnou dohodu.', field: missingRemoteField },
+            400,
+            { contractType, field: missingRemoteField },
+          );
+        }
+        if (!['actual', 'flat_rate', 'none'].includes(String(payload.remoteWorkCostMode))) {
+          return reject(
+            'payload_invalid',
+            { error: 'Zvolte platný režim náhrady nákladů při práci na dálku.', field: 'remoteWorkCostMode' },
+            400,
+            { contractType, field: 'remoteWorkCostMode' },
+          );
+        }
+      }
+    }
+
     const addOns = normalizeCheckoutAddons(
       body.addOns ?? payload.addOns,
       contractType,
@@ -256,6 +302,17 @@ export async function POST(req: Request) {
       packageKey,
       lang,
     );
+    const annexLanguage = addOns.includes('bilingual_annex')
+      ? normalizeAnnexLanguage(body.annexLanguage ?? payload.annexLanguage)
+      : null;
+    if (addOns.includes('bilingual_annex') && !annexLanguage) {
+      return reject(
+        'payload_invalid',
+        { error: 'Zvolte jazyk dvojjazyčné přílohy.', field: 'annexLanguage' },
+        400,
+        { contractType, field: 'annexLanguage' },
+      );
+    }
 
     // 3. Price ID
     const priceId = getStripePriceIdForCheckout(checkoutTier, packageKey);
@@ -289,6 +346,7 @@ export async function POST(req: Request) {
           notaryUpsell: packageKey ? true : notaryUpsell,
           downloadToken,
           lang,
+          annexLanguage,
           deliveryEmail,
           consent,
           payload: {
@@ -299,6 +357,7 @@ export async function POST(req: Request) {
             addOns,
             notaryUpsell: packageKey ? true : notaryUpsell,
             lang,
+            annexLanguage,
           },
           paid: false,
           createdAt: new Date().toISOString(),
@@ -353,6 +412,7 @@ export async function POST(req: Request) {
         contractType,
         tier: checkoutTier,
         lang,
+        ...(annexLanguage ? { annexLanguage } : {}),
         notaryUpsell: String(packageKey ? true : notaryUpsell),
         downloadToken,
         addOns: getCheckoutAddonMetadata(addOns),
@@ -375,7 +435,7 @@ export async function POST(req: Request) {
         contract_type: contractType,
         tier: checkoutTier === 'basic' ? 'basic' : 'complete',
         package_key: packageKey ?? undefined,
-        price_band: priceBandForCheckout(checkoutTier, packageKey),
+        price_band: getEffectivePriceBand(checkoutTier, packageKey),
         add_on_keys: addOns.join(','),
         selected_addons_count: addOns.length,
       });

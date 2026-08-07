@@ -10,7 +10,7 @@ import type { ContractType } from './contracts';
 import { getTierIncludedItems } from './tier-copy';
 import { getLocalizedIncludedItems, getLocalizedPackagePresentation } from './i18n/pricing-locale';
 
-export type ThematicPackageKey = 'landlord' | 'vehicle_sale';
+export type ThematicPackageKey = 'landlord' | 'vehicle_sale' | 'employer_start';
 
 export type ThematicPackageConfig = {
   key: ThematicPackageKey;
@@ -33,6 +33,7 @@ export type ThematicPackageConfig = {
   builderDescription: string;
   checkoutDescription: string;
   includedOutputs: readonly string[];
+  includesDocx?: boolean;
 };
 
 export const THEMATIC_PACKAGE_CONFIG: Record<
@@ -107,6 +108,43 @@ export const THEMATIC_PACKAGE_CONFIG: Record<
       `Dostupnost odkazu ke stažení ${COMPLETE_ARCHIVE_DAYS} dní`,
     ],
   },
+  employer_start: {
+    key: 'employer_start',
+    slug: 'balicek-zamestnavatel',
+    href: '/balicek-zamestnavatel',
+    title: 'Zaměstnavatel Start 2026',
+    shortTitle: 'Zaměstnavatel Start',
+    priceCzk: 599,
+    priceLabel: '599 Kč',
+    badge: 'Personální balíček',
+    contractType: 'employment',
+    defaultTier: 'complete',
+    archiveDays: COMPLETE_ARCHIVE_DAYS,
+    intro:
+      'Ucelený dokumentační balíček pro nástup zaměstnance do běžného pracovního poměru. Pracovní smlouva, informace podle § 37 zákoníku práce a navazující podklady vzniknou z jednoho formuláře.',
+    perex:
+      'Balíček navazuje na pracovní smlouvu v rozšířené variantě a doplňuje ji o dokumenty, které zaměstnavatel při standardním nástupu zaměstnance typicky potřebuje předat, potvrdit nebo archivovat.',
+    comparisonNote:
+      'Oproti samostatné pracovní smlouvě obsahuje informační list podle § 37 ZP, podklady k práci na dálku a vybavení, nástupní checklist a editovatelný DOCX.',
+    suitableFor:
+      'Vhodné pro malé zaměstnavatele a HR, kteří nabírají zaměstnance do standardního pracovního poměru v České republice a chtějí připravit hlavní dokument i navazující personální podklady v jednom toku.',
+    cta: 'Připravit balíček Zaměstnavatel Start',
+    builderTitle: 'Zaměstnavatel Start 2026',
+    builderDescription:
+      'Součástí výstupu bude pracovní smlouva v rozšířené variantě, samostatná informace podle § 37 ZP, dohoda o práci na dálku při zvoleném home office, protokol k pracovnímu vybavení, nástupní checklist a PDF i DOCX.',
+    checkoutDescription:
+      'Dokumentační balíček pro standardní nástup zaměstnance včetně informačního listu podle § 37 ZP, navazujících personálních podkladů a DOCX.',
+    includedOutputs: [
+      'Pracovní smlouva v rozšířené variantě',
+      'Informace o obsahu pracovního poměru podle § 37 ZP',
+      'Dohoda o práci na dálku při zvoleném home office',
+      'Protokol o předání pracovního vybavení',
+      'Nástupní checklist zaměstnavatele',
+      'PDF a editovatelná DOCX verze',
+      `Dostupnost odkazu ke stažení ${COMPLETE_ARCHIVE_DAYS} dní`,
+    ],
+    includesDocx: true,
+  },
 };
 
 export const THEMATIC_PACKAGES = Object.values(
@@ -125,6 +163,7 @@ export function normalizeThematicPackageKey(
   const normalized = String(value).trim().toLowerCase();
   if (normalized === 'landlord') return 'landlord';
   if (normalized === 'vehicle_sale') return 'vehicle_sale';
+  if (normalized === 'employer_start') return 'employer_start';
   return null;
 }
 
@@ -188,14 +227,17 @@ export function getEffectivePriceLabel(
 }
 
 /**
- * Stripe Price ID for checkout — thematic packages (299 Kč) use STRIPE_PRICE_ID_PACKAGE,
- * not the standard complete tier price (199 Kč).
+ * Stripe Price ID for checkout. The 299 Kč packages share STRIPE_PRICE_ID_PACKAGE;
+ * Employer Start has its own 599 Kč Stripe Price and must never fall back to 299/199 Kč.
  */
 export function getStripePriceIdForCheckout(
   tier: string,
   packageKey?: string | null,
 ): string | undefined {
   const pkg = normalizeThematicPackageKey(packageKey);
+  if (pkg === 'employer_start') {
+    return process.env.STRIPE_PRICE_ID_EMPLOYER_START;
+  }
   if (pkg) {
     return process.env.STRIPE_PRICE_ID_PACKAGE;
   }
@@ -205,6 +247,19 @@ export function getStripePriceIdForCheckout(
     return process.env.STRIPE_PRICE_ID_PREMIUM ?? process.env.STRIPE_PRICE_ID_COMPLETE;
   }
   return process.env.STRIPE_PRICE_ID_BASIC;
+}
+
+export function packageIncludesDocx(packageKey?: string | null): boolean {
+  return getThematicPackageConfig(packageKey)?.includesDocx === true;
+}
+
+export function getEffectivePriceBand(
+  tier: PricingTier,
+  packageKey?: string | null,
+): '99' | '199' | '299' | '599' {
+  const packageConfig = getThematicPackageConfig(packageKey);
+  if (packageConfig) return String(packageConfig.priceCzk) as '299' | '599';
+  return tier === 'complete' ? '199' : '99';
 }
 
 export function getEffectiveArchiveDays(

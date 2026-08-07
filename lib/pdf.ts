@@ -2494,7 +2494,7 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
     y += SECTION_GAP;
   }
 
-  const annexLocale = normalizeLocale(data.lang);
+  const annexLocale = normalizeLocale(data.annexLanguage ?? data.lang);
   if (hasCheckoutAddon(data, 'bilingual_annex') && hasExpatTranslationAnnex(data.contractType, annexLocale)) {
     renderExpatTranslationAnnex(
       doc,

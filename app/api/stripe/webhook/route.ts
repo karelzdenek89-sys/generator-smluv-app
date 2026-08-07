@@ -13,6 +13,7 @@ import {
 import { normalizePricingTier } from '@/lib/pricing';
 import { recordAnalyticsEvent } from '@/lib/analytics-server';
 import type { AnalyticsEventParams } from '@/lib/analytics';
+import { getEffectivePriceBand, packageIncludesDocx } from '@/lib/packages';
 
 export const runtime = 'nodejs';
 
@@ -33,11 +34,10 @@ async function recordPaidCheckoutAnalytics(
   },
 ) {
   const normalizedTier = normalizePricingTier(options.tier);
-  const priceBand: AnalyticsEventParams['price_band'] = options.packageKey
-    ? '299'
-    : normalizedTier === 'complete'
-      ? '199'
-      : '99';
+  const priceBand: AnalyticsEventParams['price_band'] = getEffectivePriceBand(
+    normalizedTier,
+    options.packageKey,
+  );
   const addonsTotalCzk = getCheckoutAddonsTotalCzk(options.addOns);
   const totalPriceCzk =
     typeof session.amount_total === 'number' ? Math.round(session.amount_total / 100) : undefined;
@@ -230,6 +230,7 @@ export async function POST(req: Request) {
             downloadToken,
             archiveDays,
             addOns,
+            packageKey,
             existing.consent,
           );
           await redis.set(emailSentKey, '1', { ex: fulfillmentRecordTtl });
@@ -274,6 +275,7 @@ async function sendDownloadEmail(
   downloadToken: string | null = null,
   archiveDays: number = tier === 'basic' ? 7 : 30,
   addOns: readonly CheckoutAddonKey[] = [],
+  packageKey: string | null = null,
   consent: unknown = null,
 ): Promise<void> {
   const contractNames: Record<string, string> = {
@@ -342,7 +344,7 @@ async function sendDownloadEmail(
                style="display:block;text-align:center;background:linear-gradient(135deg,#f59e0b,#eab308);color:#000;font-weight:900;font-size:18px;padding:18px 32px;border-radius:16px;text-decoration:none;margin-bottom:16px;letter-spacing:-0.3px;">
               STÁHNOUT PDF DOKUMENT
             </a>
-            ${addOns.includes('docx') ? `
+            ${addOns.includes('docx') || packageIncludesDocx(packageKey) ? `
             <a href="${docxDownloadUrl}"
                style="display:block;text-align:center;background:#1f2937;color:#fbbf24;font-weight:800;font-size:14px;padding:14px 24px;border-radius:14px;text-decoration:none;margin-bottom:16px;border:1px solid #92400e;">
               STÁHNOUT EDITOVATELNÝ DOCX

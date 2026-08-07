@@ -78,6 +78,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     staticPage('/prodej-vozidla', 0.9),
     staticPage('/balicek-pronajimatel', 0.88),
     staticPage('/balicek-prodej-vozidla', 0.88),
+    staticPage('/balicek-zamestnavatel', 0.9),
     staticPage('/o-projektu', 0.6, 'yearly'),
     staticPage('/faq', 0.7),
     staticPage('/slovnik', 0.6),

@@ -70,7 +70,7 @@ export const PRICING_SECTION_COPY = {
   intro:
     'Každý dokument vytváříte prostřednictvím přehledného online formuláře. Zvolte variantu, která odpovídá vaší situaci a požadovanému rozsahu dokumentu.',
   footer:
-    'Pro vybrané situace jsou k dispozici i tematické balíčky se souvisejícími podklady. Aktuálně nabízíme řešení pro pronajímatele a pro převod vozidla.',
+    'Pro vybrané situace jsou k dispozici i tematické balíčky se souvisejícími podklady. Aktuálně nabízíme řešení pro pronajímatele, převod vozidla a standardní nástup zaměstnance.',
 } as const;
 
 export const PRICING_RANGE = {

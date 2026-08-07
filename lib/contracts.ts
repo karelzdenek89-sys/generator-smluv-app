@@ -1428,6 +1428,7 @@ function buildGeneralSaleContractSections(d: StoredContractData): ContractSectio
 // ─────────────────────────────────────────────
 function buildEmploymentContractSections(d: StoredContractData): ContractSection[] {
   const { hasPremiumClauses } = resolveTierFeatures(d);
+  const isEmployerStart = d.packageKey === 'employer_start';
   const requestedNoticeMonths = Number(d.noticePeriod || 2);
   const effectiveNoticeMonths = Number.isFinite(requestedNoticeMonths)
     ? Math.max(2, requestedNoticeMonths)
@@ -1453,6 +1454,23 @@ function buildEmploymentContractSections(d: StoredContractData): ContractSection
   const workTimeClause = d.workHours
     ? `Sjednaná týdenní pracovní doba činí ${asText(d.workHours)} hodin. Rozvrh pracovní doby: ${asText(d.workSchedule, 'pondělí–pátek, 8:00–17:00')}.`
     : `Týdenní pracovní doba je stanovena v délce 40 hodin (§ 79 ZP). Rozvrh pracovní doby: pondělí–pátek, 8:00–17:00.`;
+
+  const remoteWorkValue = String(d.remoteWork ?? '');
+  const usesRemoteWork = Boolean(remoteWorkValue)
+    && !['remote_none', 'není povoleno'].includes(remoteWorkValue);
+
+  const remoteCostClause = (() => {
+    switch (d.remoteWorkCostMode) {
+      case 'actual':
+        return 'Zaměstnavatel nahradí zaměstnanci prokázané náklady vzniklé v souvislosti s výkonem práce na dálku podle § 190a odst. 1 písm. a) ZP, a to v nejbližším pravidelném výplatním termínu po jejich řádném doložení.';
+      case 'flat_rate':
+        return 'Za každou započatou hodinu práce na dálku náleží zaměstnanci paušální náhrada nákladů ve výši stanovené aktuální vyhláškou MPSV podle § 190a odst. 3 až 6 ZP, není-li zaměstnavatelem písemně stanovena vyšší částka.';
+      case 'none':
+        return 'Smluvní strany si předem písemně sjednávají, že zaměstnanci náhrady nákladů v souvislosti s výkonem práce na dálku nepřísluší (§ 190a odst. 2 ZP). Tím nejsou dotčeny náhrady za opotřebení vlastního vybavení, jsou-li samostatně sjednány podle § 190 ZP.';
+      default:
+        return 'Náhrady nákladů při práci na dálku se řídí § 190a ZP a písemným ujednáním smluvních stran.';
+    }
+  })();
 
   const premiumContent: ContractSection[] = hasPremiumClauses ? [
     // Sekce KONKURENČNÍ DOLOŽKA se vykresluje pouze pokud ji strany sjednaly.
@@ -1563,6 +1581,78 @@ function buildEmploymentContractSections(d: StoredContractData): ContractSection
   ];
 
   sections.push({ title: `${hasPremiumClauses ? 'XI' : 'IX'}. PODPISY`, body: [] });
+
+  if (isEmployerStart) {
+    sections.push({
+      title: 'PŘÍLOHA Č. 1 – INFORMACE O OBSAHU PRACOVNÍHO POMĚRU PODLE § 37 ZP',
+      body: [
+        `Zaměstnavatel: ${asText(d.employerName)}, sídlo / adresa: ${asText(d.employerAddress)}`,
+        `Zaměstnanec: ${asText(d.employeeName)}, bydliště: ${asText(d.employeeAddress)}`,
+        'Zaměstnavatel tímto zaměstnance písemně informuje o údajích podle § 37 odst. 1 zákoníku práce, pokud nejsou v plném rozsahu obsaženy přímo v pracovní smlouvě. Informace musí být předána nejpozději do 7 dnů od vzniku pracovního poměru.',
+        `a) Název a sídlo zaměstnavatele: ${asText(d.employerName)}, ${asText(d.employerAddress)}.`,
+        `b) Bližší označení druhu a místa výkonu práce: ${asText(d.jobTitle)}; ${asText(d.jobDescription, 'dle aktuálního popisu pracovního místa')}; místo výkonu práce ${asText(d.workPlace)}.`,
+        `c) Dovolená a způsob určení: ${asText(d.vacationWeeks, '4')} týdnů za kalendářní rok; vznik a výpočet práva na dovolenou se řídí § 211 až 223 ZP.`,
+        `d) Zkušební doba: ${trialPeriodClause}`,
+        `e) Skončení pracovního poměru: dohodou, výpovědí, okamžitým zrušením, zrušením ve zkušební době nebo dalšími zákonnými způsoby. Výpověď a další jednostranná právní jednání musí být písemná a doručená druhé straně. Výpovědní doba: ${pluralMonths(effectiveNoticeMonths)}; běh a zákonné výjimky upravují zejména § 50 až 54 ZP.`,
+        `f) Odborný rozvoj zabezpečovaný zaměstnavatelem: ${asText(d.professionalDevelopment)}.`,
+        `g) Týdenní pracovní doba, její rozvržení a práce přesčas: ${workTimeClause} ${asText(d.overtimeRules)}`,
+        `h) Odpočinek a přestávky: přestávka na jídlo a oddech činí ${asText(d.breakMinutes, '30')} minut; minimální denní a týdenní odpočinek a poskytování přestávek se řídí zejména § 88, § 90 a § 92 ZP.`,
+        `i) Mzda, splatnost, termín, místo a způsob výplaty: ${salaryDesc} Způsob a místo výplaty: ${asText(d.payMethod)}.`,
+        `j) Kolektivní smlouvy: ${asText(d.collectiveAgreement)}.`,
+        `k) Orgán sociálního zabezpečení, kterému zaměstnavatel odvádí pojistné: ${asText(d.socialSecurityAuthority)}.`,
+        'Zaměstnanec potvrzuje převzetí této informace. Při změně uvedených údajů jej zaměstnavatel písemně informuje bez zbytečného odkladu, nejpozději v den účinnosti změny (§ 37 odst. 3 ZP).',
+        'Datum předání: ................................  Podpis zaměstnavatele: ................................  Podpis zaměstnance: ................................',
+      ],
+    });
+
+    let nextAppendix = 2;
+    if (usesRemoteWork) {
+      sections.push({
+        title: `PŘÍLOHA Č. ${nextAppendix} – DOHODA O PRÁCI NA DÁLKU`,
+        body: [
+          'Tato dohoda je uzavřena písemně podle § 317 zákoníku práce jako doplněk pracovní smlouvy mezi výše uvedeným zaměstnavatelem a zaměstnancem.',
+          `Režim práce na dálku: ${asText(formatRemoteWorkForContract(remoteWorkValue, 'cs'))}. Místo práce na dálku: ${asText(d.remoteWorkPlace)}. Rozsah a pravidla čerpání: ${asText(d.remoteWorkSchedule)}.`,
+          'Zaměstnanec vykonává práci na dálku v rozvržené pracovní době, je dostupný prostřednictvím dohodnutých komunikačních kanálů a vede evidenci pracovní doby v rozsahu určeném zaměstnavatelem. Práce přesčas, ve svátek nebo v noci podléhá předchozímu pokynu nebo souhlasu zaměstnavatele, vyžaduje-li jej zákon.',
+          `Pracovní vybavení určené k výkonu práce na dálku: ${asText(d.workEquipment, 'bez samostatně předávaného vybavení')}. Zaměstnanec je povinen vybavení chránit, používat je primárně k pracovním účelům a bez zbytečného odkladu hlásit poškození, ztrátu nebo bezpečnostní incident.`,
+          remoteCostClause,
+          'Zaměstnanec potvrzuje, že zvolené místo je způsobilé k výkonu práce, a zavazuje se dodržovat pokyny BOZP, požární ochrany, ochrany osobních údajů a informační bezpečnosti. Zaměstnavatel zajistí potřebné informace a školení; případná kontrola místa proběhne pouze po předchozí dohodě a s respektem k soukromí zaměstnance.',
+          'Závazek z této dohody lze rozvázat písemnou dohodou ke sjednanému dni nebo písemnou výpovědí z jakéhokoli důvodu či bez uvedení důvodu s patnáctidenní výpovědní dobou, která začíná dnem doručení druhé straně (§ 317 odst. 2 ZP).',
+          'Datum: ................................  Podpis zaměstnavatele: ................................  Podpis zaměstnance: ................................',
+        ],
+      });
+      nextAppendix += 1;
+    }
+
+    sections.push({
+      title: `PŘÍLOHA Č. ${nextAppendix} – PROTOKOL O PŘEDÁNÍ PRACOVNÍHO VYBAVENÍ`,
+      body: [
+        `Zaměstnavatel předává zaměstnanci následující pracovní vybavení: ${asText(d.workEquipment)}.`,
+        `Stav vybavení a příslušenství při předání: ${asText(d.equipmentCondition, 'funkční, bez zjevných vad; případné odchylky doplňte při podpisu')}.`,
+        'Zaměstnanec potvrzuje převzetí uvedeného vybavení, zavazuje se pečovat o ně s řádnou péčí, chránit přístupové údaje a používat vybavení v souladu s pracovními pokyny. O závadě, ztrátě nebo bezpečnostním incidentu informuje zaměstnavatele bez zbytečného odkladu.',
+        'Při skončení pracovního poměru nebo na výzvu zaměstnavatele zaměstnanec vybavení a veškeré příslušenství vrátí ve stavu odpovídajícím běžnému opotřebení. Tento protokol sám o sobě nezakládá dohodu o odpovědnosti za ztrátu svěřených věcí podle § 252 ZP.',
+        'Datum a místo předání: ................................  Identifikace / sériová čísla: ................................................',
+        'Podpis předávajícího: ................................  Podpis přebírajícího: ................................',
+      ],
+    });
+    nextAppendix += 1;
+
+    sections.push({
+      title: `PŘÍLOHA Č. ${nextAppendix} – NÁSTUPNÍ CHECKLIST ZAMĚSTNAVATELE`,
+      body: [
+        '[ ] Pracovní smlouva byla podepsána nejpozději v den nástupu a každá strana obdržela jedno vyhotovení.',
+        '[ ] Informace podle § 37 ZP byla zaměstnanci předána nejpozději do 7 dnů od vzniku pracovního poměru a doklad o předání je uložen.',
+        '[ ] Byla ověřena vstupní pracovnělékařská prohlídka, je-li podle druhu práce a aktuální právní úpravy vyžadována.',
+        '[ ] Zaměstnanec byl při nástupu seznámen s pracovním řádem, vnitřními předpisy, kolektivní smlouvou, BOZP a požární ochranou (§ 37 odst. 5 ZP).',
+        '[ ] Byly splněny aktuální registrační, evidenční a oznamovací povinnosti zaměstnavatele vůči orgánům sociálního zabezpečení a dalším příslušným institucím.',
+        '[ ] Mzdové a bankovní údaje, výplatní termín, rozvrh pracovní doby, dovolená a kontaktní osoba byly zaměstnanci sděleny.',
+        '[ ] Při práci na dálku byla podepsána písemná dohoda podle § 317 ZP a nastaven režim náhrad nákladů podle § 190a ZP.',
+        '[ ] Předané vybavení, přístupy, klíče a bezpečnostní oprávnění byly zaznamenány a zaměstnanec převzetí potvrdil.',
+        '[ ] Zaměstnanec obdržel kontakt pro hlášení překážek v práci, pracovních úrazů, technických závad a bezpečnostních incidentů.',
+        'Kontrolu provedl(a): ................................  Datum: ................................  Podpis: ................................',
+      ],
+    });
+  }
+
   return attachTranslations(sections, buildEmploymentTranslationsBySection(d, hasPremiumClauses));
 }
 

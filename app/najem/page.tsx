@@ -384,6 +384,7 @@ function LeaseBuilderContent() {
           contractType: 'lease',
           deliveryEmail: authorization.deliveryEmail,
           consent: authorization.consent,
+          annexLanguage: authorization.annexLanguage,
           tier: formData.tier,
           packageKey: packageConfig?.key ?? null,
           addOns,

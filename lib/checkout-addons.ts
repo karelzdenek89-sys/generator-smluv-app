@@ -1,5 +1,5 @@
 import type { ContractType } from './contracts';
-import { getEffectiveArchiveDays } from './packages';
+import { getEffectiveArchiveDays, packageIncludesDocx } from './packages';
 import type { PricingTier } from './pricing';
 
 export type CheckoutAddonKey =
@@ -9,6 +9,8 @@ export type CheckoutAddonKey =
   | 'extended_archive'
   | 'bilingual_annex';
 
+export type AnnexLanguage = 'en' | 'ua';
+
 export type CheckoutAddonConfig = {
   key: CheckoutAddonKey;
   title: string;
@@ -17,7 +19,6 @@ export type CheckoutAddonConfig = {
   description: string;
   includedItem: string;
   contracts?: readonly ContractType[];
-  localeMode?: 'any' | 'foreign';
   unavailableWhenComplete?: boolean;
 };
 
@@ -74,7 +75,6 @@ export const CHECKOUT_ADDON_CONFIG: Record<CheckoutAddonKey, CheckoutAddonConfig
     description: 'Vysvětlující cizojazyčná příloha k českému dokumentu pro snazší kontrolu.',
     includedItem: 'Dvojjazyčná vysvětlující příloha k českému dokumentu',
     contracts: BILINGUAL_ANNEX_CONTRACTS,
-    localeMode: 'foreign',
   },
 };
 
@@ -110,21 +110,27 @@ export function getAvailableCheckoutAddons(
   contractType: string | null | undefined,
   tier: PricingTier,
   packageKey?: string | null,
-  locale?: string | null,
+  _locale?: string | null,
 ): readonly CheckoutAddonConfig[] {
+  void _locale;
   const normalizedContract = String(contractType ?? '') as ContractType;
-  const normalizedLocale = String(locale ?? 'cs').toLowerCase();
   const archiveDays = getEffectiveArchiveDays(tier, packageKey);
   const isPackage = Boolean(packageKey);
 
   return CHECKOUT_ADDONS.filter((addon) => {
     if (addon.contracts && !addon.contracts.includes(normalizedContract)) return false;
-    if (addon.localeMode === 'foreign' && normalizedLocale === 'cs') return false;
+    if (addon.key === 'docx' && packageIncludesDocx(packageKey)) return false;
     if (addon.unavailableWhenComplete && (tier === 'complete' || isPackage)) return false;
     if (addon.key === 'handover_protocol' && isPackage) return false;
     if (addon.key === 'extended_archive' && archiveDays >= 90) return false;
     return true;
   });
+}
+
+export function normalizeAnnexLanguage(value: unknown): AnnexLanguage | null {
+  if (value === 'en') return 'en';
+  if (value === 'ua' || value === 'uk' || value === 'ukr') return 'ua';
+  return null;
 }
 
 export function normalizeCheckoutAddons(

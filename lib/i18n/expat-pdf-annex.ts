@@ -34,14 +34,17 @@ export function isUaSummaryAnnex(contractType: ExpatContractType): boolean {
 }
 
 export function getPage1ExpatNoticeLines(data: StoredContractData): string[] {
-  const locale = normalizeLocale(data.lang);
-  if (locale === 'cs' || !isExpatContractType(data.contractType)) return [];
+  const documentLocale = normalizeLocale(data.lang);
+  const annexLocale = normalizeLocale(data.annexLanguage ?? data.lang);
+  if (!isExpatContractType(data.contractType)) return [];
 
   const translationAnnex =
     hasCheckoutAddon(data, 'bilingual_annex') &&
-    hasExpatTranslationAnnex(data.contractType, locale);
+    hasExpatTranslationAnnex(data.contractType, annexLocale);
 
-  if (locale === 'ua' && translationAnnex) {
+  if (documentLocale === 'cs' && !translationAnnex) return [];
+
+  if (annexLocale === 'ua' && translationAnnex) {
     if (isUaSummaryAnnex(data.contractType)) {
       return [
         'ЧЕСЬКИЙ ДОГОВІР + ПОЯСНЮВАЛЬНИЙ ОГЛЯД УКРАЇНСЬКОЮ',
@@ -61,7 +64,7 @@ export function getPage1ExpatNoticeLines(data: StoredContractData): string[] {
     ];
   }
 
-  if (locale === 'ua') {
+  if (documentLocale === 'ua') {
     return [
       'ЧЕСЬКИЙ ДОКУМЕНТ З УКРАЇНСЬКИМИ ПІДКАЗКАМИ',
       'Форма була заповнена з українськими підказками. Згенерований документ залишається насамперед чеською мовою.',

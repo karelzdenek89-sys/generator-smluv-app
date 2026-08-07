@@ -6,8 +6,10 @@ import DifferentiationSection from '@/app/components/marketing/DifferentiationSe
 import ProductScopeStrip from '@/app/components/marketing/ProductScopeStrip';
 import ExpatEntryLinks from '@/app/components/ExpatEntryLinks';
 import LanguageSwitcher from '@/app/components/LanguageSwitcher';
+import TrackedLink from '@/app/components/analytics/TrackedLink';
 import { SEO_LANDINGS, CLUSTER_LABELS, type ClusterKey } from '@/lib/internal-links';
 import { FOREIGN_LOCALES, LOCALE_META } from '@/lib/i18n/locales';
+import { THEMATIC_PACKAGES } from '@/lib/packages';
 
 const HOMEPAGE_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 const homepageLanguageAlternates: Record<string, string> = {
@@ -93,7 +95,7 @@ const softwareSchema = {
     '14 typů standardizovaných dokumentů',
     'Citace konkrétních paragrafů OZ a zákoníku práce přímo v dokumentu',
     'Upozornění na typicky problematické volby ve formuláři (bez individuálního posouzení)',
-    'Ochranné klauzule a smluvní sankce v základní variantě',
+    'Ochranné klauzule a smluvní sankce v rozšířené variantě',
     'Šablony aktualizované dle české legislativy k 1. 1. 2026',
     'Šifrované dočasné úložiště dat — automatické smazání po 7–30 dnech',
   ],
@@ -102,12 +104,13 @@ const softwareSchema = {
     '@type': 'AggregateOffer',
     priceCurrency: 'CZK',
     lowPrice: '99',
-    highPrice: '299',
-    offerCount: '3',
+    highPrice: '599',
+    offerCount: '4',
     offers: [
       { '@type': 'Offer', name: 'Základní dokument', price: '99', priceCurrency: 'CZK' },
       { '@type': 'Offer', name: 'Rozšířený dokument', price: '199', priceCurrency: 'CZK' },
       { '@type': 'Offer', name: 'Tematický balíček', price: '299', priceCurrency: 'CZK' },
+      { '@type': 'Offer', name: 'Zaměstnavatel Start 2026', price: '599', priceCurrency: 'CZK' },
     ],
   },
 };
@@ -178,6 +181,7 @@ export default function Home() {
 
           <div className="hidden items-center gap-7 text-[13px] text-slate-400 md:flex">
             <Link href="#smlouvy" className="hover:text-white transition-colors duration-150">Smlouvy</Link>
+            <Link href="#balicky" className="hover:text-white transition-colors duration-150">Balíčky</Link>
             <Link href="#jak-to-funguje" className="hover:text-white transition-colors duration-150">Postup</Link>
             <Link href="/blog" className="hover:text-white transition-colors duration-150">Blog</Link>
             <Link href="/zakaznicka-zona"
@@ -270,6 +274,50 @@ export default function Home() {
         <DifferentiationSection />
 
         <ProductScopeStrip className="mt-10" />
+
+        <section id="balicky" className="mt-14 scroll-mt-24" aria-labelledby="balicky-title">
+          <div className="max-w-2xl">
+            <p className="site-kicker mb-2">Více dokumentů v jednom toku</p>
+            <h2 id="balicky-title" className="font-serif italic text-3xl font-bold text-white md:text-4xl">
+              Balíčky pro celý praktický scénář
+            </h2>
+            <p className="mt-3 text-base leading-relaxed text-slate-400">
+              K hlavní smlouvě dostanete i navazující dokumenty, které se při předání nebo nástupu běžně řeší zvlášť.
+            </p>
+          </div>
+          <div className="mt-8 grid gap-5 lg:grid-cols-3">
+            {THEMATIC_PACKAGES.map((item) => (
+              <article
+                key={item.key}
+                className={`site-content-card flex h-full flex-col rounded-[1.5rem] p-6 ${
+                  item.key === 'employer_start' ? 'border-[#c9a852]/45 bg-[#c9a852]/[0.07]' : ''
+                }`}
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#c9a852]">
+                    {item.key === 'employer_start' ? 'Novinka · personální balíček' : item.badge}
+                  </p>
+                  <span className="shrink-0 text-lg font-bold text-white">{item.priceLabel}</span>
+                </div>
+                <h3 className="mt-4 font-serif italic text-2xl font-bold text-white">{item.title}</h3>
+                <p className="mt-3 flex-grow text-sm leading-7 text-slate-400">{item.comparisonNote}</p>
+                <TrackedLink
+                  href={item.href}
+                  eventName="homepage_package_click"
+                  eventParams={{
+                    package_key: item.key,
+                    price_band: item.priceCzk === 599 ? '599' : '299',
+                    destination: item.href,
+                    surface: 'homepage_packages',
+                  }}
+                  className="mt-6 inline-flex items-center justify-center rounded-xl border border-[#c9a852]/35 bg-[#c9a852]/10 px-4 py-3 text-sm font-bold text-[#e2c77b] transition hover:border-[#c9a852]/65 hover:bg-[#c9a852]/15"
+                >
+                  Zobrazit obsah balíčku →
+                </TrackedLink>
+              </article>
+            ))}
+          </div>
+        </section>
 
         <div className="my-20 h-px bg-gradient-to-r from-transparent via-[#c9a852]/20 to-transparent md:my-24" />
 
@@ -390,7 +438,7 @@ export default function Home() {
             {[
               { title: 'Pronajímatelé', desc: 'Nájemní a podnájemní smlouvy s předávacím protokolem. Jasná pravidla pro kauce, zvířata a Airbnb.' },
               { title: 'Podnikatelé a OSVČ', desc: 'Smlouvy o dílo, o spolupráci, o službách, NDA. Ochrana know-how, smluvní pokuty, exit klauzule.' },
-              { title: 'Zaměstnavatelé', desc: 'Pracovní smlouvy a dohody (DPP, DPČ) se všemi zákonnými náležitostmi dle zákoníku práce 2026.' },
+              { title: 'Zaměstnavatelé', desc: 'Pracovní smlouvy a DPP se zákonnou strukturou dle zákoníku práce 2026 a navazující nástupní dokumentace.' },
               { title: 'Fyzické osoby', desc: 'Darovací smlouvy, kupní smlouvy, uznání dluhu, plné moci. Bezpečné transakce i mimo rodinu.' },
             ].map(c => (
               <div key={c.title} className="site-content-card rounded-[1.5rem] p-6">

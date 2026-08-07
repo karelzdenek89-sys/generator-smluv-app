@@ -13,11 +13,16 @@ export type CheckoutConsent = {
 export type CheckoutAuthorization = {
   deliveryEmail: string;
   consent: CheckoutConsent;
+  annexLanguage?: 'en' | 'ua';
 };
 
-export function createCheckoutAuthorization(deliveryEmail: string): CheckoutAuthorization {
+export function createCheckoutAuthorization(
+  deliveryEmail: string,
+  annexLanguage?: 'en' | 'ua',
+): CheckoutAuthorization {
   return {
     deliveryEmail: deliveryEmail.trim().toLowerCase(),
+    ...(annexLanguage ? { annexLanguage } : {}),
     consent: {
       accepted: true,
       acceptedAt: new Date().toISOString(),
