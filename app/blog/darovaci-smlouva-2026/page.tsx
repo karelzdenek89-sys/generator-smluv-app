@@ -1,6 +1,7 @@
 import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import Link from 'next/link';
-import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
+import ContextualProductOffer from '@/app/components/marketing/ContextualProductOffer';
+import { getContextualOffer } from '@/lib/marketing/contextual-offers';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
@@ -340,11 +341,9 @@ export default function DarovaciSmlouvaVzor2026Page() {
       </section>
 
       {/* ── MID-ARTICLE CTA ─────────────────────── */}
-      <ArticleInlineCta
-        title="Nechcete chyby řešit dodatečně?"
-        body="Darovací smlouva na SmlouvaHned pokrývá přesný popis daru, prohlášení o stavu věci, podmínky daru i klauzuli o odvolání. Formulář vás provede, PDF stáhnete ihned."
-        buttonLabel="Vytvořit darovací smlouvu"
-        href="/darovaci"
+      <ContextualProductOffer
+        {...getContextualOffer('gift')}
+        articleSlug="darovaci-smlouva-2026"
       />
 
       {/* ── SECTION 6 ───────────────────────────── */}

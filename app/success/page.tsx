@@ -4,6 +4,7 @@ import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { normalizeLocale } from '@/lib/locale';
+import PostPurchaseOffers from '@/app/components/PostPurchaseOffers';
 
 type DownloadState = 'checking' | 'ready' | 'error';
 
@@ -295,6 +296,15 @@ function SuccessContent() {
                 </a>
               </div>
             </div>
+          )}
+
+          {/* Navazující nabídka až po ověřené platbě, nikdy v checkoutu. */}
+          {dlState === 'ready' && (
+            <PostPurchaseOffers
+              contractType={orderMeta?.contractType}
+              sourcePage="success"
+              locale={lang}
+            />
           )}
 
           {orderMeta?.includedItems && orderMeta.includedItems.length > 0 && (

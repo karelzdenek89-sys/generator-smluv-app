@@ -1,6 +1,8 @@
 import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
+import ContextualProductOffer from '@/app/components/marketing/ContextualProductOffer';
+import { getContextualOffer } from '@/lib/marketing/contextual-offers';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
@@ -387,13 +389,8 @@ export default function NajemniSmlouvaVzor2026Page() {
         articleSlug="najemni-smlouva-vzor-2026"
       />
 
-      <ArticleInlineCta
-        title="Potřebujete i předávací protokol a potvrzení o kauci?"
-        body="Balíček pro pronajímatele (299 Kč) kombinuje nájemní smlouvu s podklady k předání bytu — typicky pro nový pronájem od základu."
-        buttonLabel="Otevřít balíček pro pronajímatele"
-        href="/balicek-pronajimatel"
-        variant="subtle"
-        eyebrow="Tematický balíček"
+      <ContextualProductOffer
+        {...getContextualOffer('lease')}
         articleSlug="najemni-smlouva-vzor-2026"
       />
 

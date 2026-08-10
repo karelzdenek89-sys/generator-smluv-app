@@ -97,6 +97,7 @@ export default function BalicekPronajimatelPage() {
             },
             {
               key: 'landlord-package',
+              bundleKey: 'landlord',
               title: 'Tematický balíček',
               priceLabel: '299 Kč',
               description:

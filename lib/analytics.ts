@@ -28,11 +28,21 @@ export const ANALYTICS_EVENT_NAMES = [
   'checkout_completed',
   'newsletter_subscribed',
   'document_downloaded',
+  // Monetizace 2.0 — kontextové produktové nabídky v obsahu
+  'content_offer_view',
+  'content_offer_click',
+  // Volba balíčku proti samostatnému dokumentu
+  'bundle_selected',
+  // Navazující nabídka po zaplacení / u stažení
+  'post_purchase_offer_view',
+  'post_purchase_offer_click',
+  // Zájem o roční plán; měří poptávku dřív, než vznikne recurring backend
+  'annual_plan_interest',
 ] as const;
 
 export type AnalyticsEventName = (typeof ANALYTICS_EVENT_NAMES)[number];
 
-export type PriceBand = '99' | '199' | '299' | '599';
+export type PriceBand = '99' | '199' | '299' | '399' | '599';
 
 export type AnalyticsEventParams = {
   pathname?: string;
@@ -43,7 +53,15 @@ export type AnalyticsEventParams = {
   traffic_label?: string;
   article_slug?: string;
   situation_key?: 'landlord' | 'vehicle_sale';
-  package_key?: 'landlord' | 'vehicle_sale' | 'employer_start';
+  package_key?: 'landlord' | 'vehicle_sale' | 'employer_start' | 'work_order';
+  /** Stabilní identifikátor nabízeného produktu (balíček, plán, partnerská služba). */
+  product_id?: string;
+  /** Druh nabídky, aby šlo oddělit obsahové CTA od post-payment nabídek. */
+  offer_type?: 'content_bundle' | 'post_purchase' | 'annual_plan';
+  /** Stránka, na které se nabídka zobrazila — doplňuje pathname o logický zdroj. */
+  source_page?: string;
+  /** Jazyk rozhraní, ve kterém se nabídka zobrazila. */
+  locale?: string;
   contract_type?:
     | 'lease'
     | 'car_sale'
@@ -139,7 +157,24 @@ const PACKAGE_KEY_BY_PATHNAME: Record<string, NonNullable<AnalyticsEventParams['
   '/balicek-pronajimatel': 'landlord',
   '/balicek-prodej-vozidla': 'vehicle_sale',
   '/balicek-zamestnavatel': 'employer_start',
+  '/balicek-zakazka': 'work_order',
 };
+
+const ANALYTICS_CONTRACT_TYPES = new Set<string>(Object.values(CONTRACT_TYPE_BY_PATHNAME) as string[]);
+
+/**
+ * Zúží libovolný řetězec na typ dokumentu známý analytice.
+ *
+ * Neznámou hodnotu raději zahodí, než aby ji poslala dál — do reportingu nesmí
+ * proniknout hodnota, kterou dashboard neumí zařadit.
+ */
+export function asAnalyticsContractType(
+  value: string | null | undefined,
+): AnalyticsEventParams['contract_type'] {
+  return value && ANALYTICS_CONTRACT_TYPES.has(value)
+    ? (value as AnalyticsEventParams['contract_type'])
+    : undefined;
+}
 
 export function getAnalyticsDefaultsForPathname(pathname: string): AnalyticsEventParams {
   const defaults: AnalyticsEventParams = { pathname };

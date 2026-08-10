@@ -40,7 +40,9 @@ export default function ArticleInlineCta({
             article_slug: articleSlug,
             cta_type: primary ? 'inline_primary' : 'inline_secondary',
           }}
-          className={primary ? 'site-button-primary' : 'site-button-secondary'}
+          // Tlačítka mají `white-space: nowrap`; delší popisky se na mobilu
+          // nevešly do sloupce článku a přetékaly z rámečku.
+          className={`${primary ? 'site-button-primary' : 'site-button-secondary'} w-full justify-center text-center !whitespace-normal sm:w-auto`}
         >
           {buttonLabel}
         </TrackedLink>

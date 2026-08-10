@@ -6,6 +6,7 @@ import {
   LOAN_ASSIGNMENT_CONSUMER_SAFE,
 } from './legal-constants-2026';
 import { hasCheckoutAddon } from './checkout-addons';
+import { isFeatureEnabled } from './feature-flags';
 import { getEffectiveTrialPeriodMonths } from './labor-law-validation';
 
 export type ContractType =
@@ -500,6 +501,78 @@ function buildWorkContractSections(d: StoredContractData): ContractSection[] {
     body: [],
   });
 
+  // Balíček Zakázka Plus — podklady, které se u běžné zakázky používají mezi
+  // podpisem smlouvy a předáním díla. Přílohy nezakládají nová práva nad rámec
+  // smlouvy; pouze dávají písemnou formu tomu, co si strany sjednaly v čl. III
+  // (platby), IX (vícepráce) a VI (předání díla).
+  if (d.packageKey === 'work_order') {
+    const currency = asText(d.currency, 'Kč');
+
+    sections.push({
+      title: 'PŘÍLOHA Č. 1 – PŘEDÁVACÍ A AKCEPTAČNÍ PROTOKOL K DÍLU',
+      body: [
+        `Objednatel: ${asText(d.clientName)}, adresa: ${asText(d.clientAddress)}`,
+        `Zhotovitel: ${asText(d.contractorName)}, adresa: ${asText(d.contractorAddress)}`,
+        `Dílo: „${asText(d.workTitle)}", místo plnění: ${asText(d.workLocation)}.`,
+        'Datum předání a převzetí: ................................  Místo: ................................',
+        'Předmět předání (rozsah skutečně provedených prací): ................................................',
+        'Zjištěné vady a nedodělky: [ ] žádné  [ ] uvedené níže, s dohodnutou lhůtou odstranění',
+        'Soupis vad a nedodělků včetně lhůty k odstranění: ................................................',
+        'Výsledek přejímky: [ ] dílo se přejímá bez výhrad  [ ] dílo se přejímá s výhradami uvedenými výše  [ ] dílo se nepřejímá pro podstatné vady',
+        `Záruční doba podle čl. V smlouvy činí ${asText(d.warrantyMonths, '24')} měsíců a počíná běžet dnem podpisu tohoto protokolu při převzetí díla.`,
+        'Objednatel je povinen dílo převzít, nemá-li podstatné vady; drobné vady a nedodělky nebránící užívání se řeší zápisem s lhůtou odstranění. Odmítne-li objednatel dílo převzít bezdůvodně, nastávají účinky předání dnem bezdůvodného odepření převzetí.',
+        'Předal za zhotovitele: ................................  Převzal za objednatele: ................................',
+      ],
+    });
+
+    sections.push({
+      title: 'PŘÍLOHA Č. 2 – FORMULÁŘ VÍCEPRACÍ',
+      body: [
+        `Dílo: „${asText(d.workTitle)}". Objednatel: ${asText(d.clientName)}. Zhotovitel: ${asText(d.contractorName)}.`,
+        'Vícepráce č.: ................  Datum vyhotovení: ................................',
+        'Popis požadovaných prací nad rámec sjednaného rozsahu díla: ................................................',
+        'Důvod víceprací: [ ] požadavek objednatele  [ ] skutečnost zjištěná při provádění díla  [ ] jiný důvod: ................',
+        `Cena víceprací: ................ ${currency} ${d.vatIncluded ? '(cena včetně DPH)' : '(cena bez DPH; DPH bude účtováno dle platných předpisů)'}`,
+        'Dopad na termín dokončení díla: [ ] bez vlivu  [ ] posun o ............ dnů, nový termín: ................................',
+        'Vícepráce lze podle čl. IX smlouvy provést pouze na základě předchozího písemného odsouhlasení objednatelem. Ústní dohody o rozšíření rozsahu díla jsou neúčinné a zhotovitel nemá nárok na úhradu neodsouhlasených víceprací (§ 2597 OZ).',
+        'Odsouhlasením tohoto formuláře oběma stranami se sjednaný rozsah díla a cena mění pouze v rozsahu zde uvedeném; ostatní ujednání smlouvy zůstávají nedotčena.',
+        'Za zhotovitele (navrhl): ................................  Za objednatele (odsouhlasil): ................................',
+      ],
+    });
+
+    sections.push({
+      title: 'PŘÍLOHA Č. 3 – ZMĚNOVÝ LIST',
+      body: [
+        `Dílo: „${asText(d.workTitle)}". Objednatel: ${asText(d.clientName)}. Zhotovitel: ${asText(d.contractorName)}.`,
+        'Změnový list č.: ................  Datum: ................................',
+        'Předmět změny: [ ] rozsah díla  [ ] technické řešení  [ ] harmonogram  [ ] cena  [ ] jiné: ................',
+        'Původní stav podle smlouvy: ................................................',
+        'Nový sjednaný stav: ................................................',
+        `Dopad na celkovou cenu díla: ................ ${currency}. Dopad na termín dokončení: ................`,
+        'Změny smlouvy jsou podle čl. závěrečných ustanovení platné pouze ve formě písemných, číslovaných a podepsaných dodatků (§ 564 OZ). Tento změnový list se po podpisu oběma stranami stává číslovaným dodatkem smlouvy.',
+        'Za objednatele: ................................  Za zhotovitele: ................................',
+      ],
+    });
+
+    sections.push({
+      title: 'PŘÍLOHA Č. 4 – PLATEBNÍ HARMONOGRAM',
+      body: [
+        `Celková cena díla podle čl. III smlouvy: ${formatAmount(d.priceAmount)} ${currency} ${d.vatIncluded ? '(cena včetně DPH)' : '(cena bez DPH)'}.`,
+        paymentDesc,
+        d.bankAccount
+          ? `Platby se hradí na účet zhotovitele ${asText(d.bankAccount)}, variabilní symbol ${asText(d.variableSymbol, 'uvedený na faktuře')}.`
+          : 'Platby se hradí na bankovní účet zhotovitele uvedený na faktuře.',
+        'Přehled plateb — doplňte podle skutečného průběhu zakázky:',
+        'Splátka / etapa | Podmínka vzniku nároku | Částka | Datum splatnosti | Uhrazeno dne',
+        '1. ................ | ................ | ................ | ................ | ................',
+        '2. ................ | ................ | ................ | ................ | ................',
+        '3. ................ | ................ | ................ | ................ | ................',
+        `Při prodlení objednatele s úhradou se uplatní smluvní pokuta podle čl. V smlouvy ve výši ${asText(d.clientPenaltyPerDay, '0,05')} % z dlužné částky za každý den prodlení.`,
+        'Odsouhlasené vícepráce se fakturují samostatně podle přílohy č. 2 a do tohoto harmonogramu se doplňují jako další řádek.',
+      ],
+    });
+  }
+
   return sections;
 }
 
@@ -717,6 +790,50 @@ function buildCarContractSections(d: StoredContractData): ContractSection[] {
         `Zjištěné vady při předání: ${asText(d.knownDefects, 'bez zjevných vad nad rámec běžného opotřebení')}.`,
         'Smluvní strany potvrzují, že vozidlo, klíče a doklady byly předány ve výše uvedeném stavu.',
       ].filter(Boolean) as string[],
+    });
+  }
+
+  // Balíček pro prodej vozidla — samostatná plná moc k zápisu změny vlastníka
+  // a kontrolní seznam k předání. Smlouva sama zmocnění mezi stranami obsahuje
+  // (čl. o přepisu), registr ale zpravidla vyžaduje samostatnou listinu,
+  // kterou lze předložit bez celé smlouvy.
+  if (d.packageKey === 'vehicle_sale' && isFeatureEnabled('carSaleComplete')) {
+    const vehicleLabel = `${asText(d.carMake)} ${asText(d.carModel)}`;
+
+    sections.push({
+      title: 'PŘÍLOHA Č. 2 – PLNÁ MOC K ZÁPISU ZMĚNY VLASTNÍKA VOZIDLA',
+      body: [
+        'Zmocnitel (nezúčastněná strana převodu): [ ] prodávající  [ ] kupující — označte, kdo zmocnění uděluje.',
+        `Prodávající: ${asText(d.sellerName)}, nar./IČO: ${asText(d.sellerId, '—')}, bytem/sídlo: ${asText(d.sellerAddress)}`,
+        `Kupující: ${asText(d.buyerName)}, nar./IČO: ${asText(d.buyerId, '—')}, bytem/sídlo: ${asText(d.buyerAddress)}`,
+        `Vozidlo: ${vehicleLabel}, VIN: ${asText(d.carVIN)}${d.carPlate ? `, registrační značka: ${asText(d.carPlate)}` : ''}.`,
+        'Zmocnitel tímto zmocňuje druhou smluvní stranu uvedenou výše, aby jej zastupovala v řízení o zápisu změny vlastníka silničního vozidla podle § 8 a násl. zákona č. 56/2001 Sb., o podmínkách provozu vozidel na pozemních komunikacích, a to zejména k podání žádosti, doplnění podkladů, převzetí dokladů a k dalším úkonům, které s tímto zápisem souvisejí.',
+        'Zmocnění se uděluje pouze pro převod výše označeného vozidla podle přiložené kupní smlouvy a zaniká provedením zápisu změny vlastníka nebo písemným odvoláním zmocnitele.',
+        'Zmocněnec zmocnění přijímá.',
+        'Podle § 441 odst. 2 OZ musí mít plná moc formu odpovídající zastoupenému právnímu jednání. Příslušný obecní úřad obce s rozšířenou působností zpravidla vyžaduje plnou moc s úředně ověřeným podpisem zmocnitele; ověření lze provést u notáře, na Czech POINTu nebo na matrice. Úřad může nad rámec zákona požadovat vlastní formulář nebo další náležitosti — před podáním doporučujeme ověřit aktuální požadavky konkrétního úřadu.',
+        'Žádost o zápis změny vlastníka je třeba podat do 10 pracovních dnů od přechodu vlastnického práva (§ 8 odst. 2 zákona č. 56/2001 Sb.).',
+        'V ................................ dne ................................',
+        'Podpis zmocnitele: ................................  Podpis zmocněnce: ................................',
+      ],
+    });
+
+    sections.push({
+      title: 'PŘÍLOHA Č. 3 – CHECKLIST PŘEDÁNÍ VOZIDLA A DOKLADŮ',
+      body: [
+        '[ ] Totožnost druhé strany byla ověřena podle dokladu totožnosti a údaje odpovídají smlouvě.',
+        '[ ] VIN na vozidle souhlasí s VIN uvedeným ve smlouvě a v technickém průkazu.',
+        '[ ] Stav tachometru při předání byl zapsán do předávacího protokolu.',
+        '[ ] Byl předán technický průkaz a osvědčení o registraci vozidla (malý technický průkaz).',
+        '[ ] Byly předány všechny klíče od vozidla, včetně náhradních, a případné ovladače.',
+        '[ ] Byla předána servisní knížka, doklady o servisu a další dokumentace, jsou-li k dispozici.',
+        '[ ] Byla ověřena platnost technické prohlídky a měření emisí.',
+        '[ ] Bylo ověřeno, zda na vozidle nevázne zástavní právo, leasing, zajišťovací převod nebo exekuce.',
+        '[ ] Kupní cena byla uhrazena sjednaným způsobem a úhrada je doložitelná.',
+        '[ ] Byla podána žádost o zápis změny vlastníka do 10 pracovních dnů od přechodu vlastnického práva.',
+        '[ ] Prodávající ukončil své pojištění odpovědnosti z provozu vozidla až po zápisu změny vlastníka; kupující sjednal vlastní pojištění před uvedením vozidla do provozu.',
+        '[ ] Obě strany mají podepsané vyhotovení smlouvy a předávacího protokolu.',
+        'Kontrolu provedl(a): ................................  Datum: ................................  Podpis: ................................',
+      ],
     });
   }
 

@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
+import type { PriceBand } from '@/lib/analytics';
 import {
   ANALYTICS_REPORTING_WINDOW_DAYS,
   getAnalyticsDashboardData,
@@ -56,9 +57,10 @@ function formatDate(value: string) {
   return dateFormatter.format(parsed);
 }
 
-function bandLabel(band: '99' | '199' | '299' | '599') {
+function bandLabel(band: PriceBand) {
   if (band === '99') return 'Z\u00e1kladn\u00ed dokument';
   if (band === '199') return 'Komplexn\u00ed bal\u00ed\u010dek';
+  if (band === '399') return 'Zak\u00e1zka Plus';
   if (band === '599') return 'Zam\u011bstnavatel Start';
   return 'Tematick\u00e9 bal\u00ed\u010dky';
 }
@@ -236,7 +238,7 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
       </Section>
 
       <Section
-        title={'Z\u00e1jem o 99 / 199 / 299 / 599'}
+        title={'Z\u00e1jem o 99 / 199 / 299 / 399 / 599'}
         description={
           'Srovn\u00e1n\u00ed vrchn\u00edho z\u00e1jmu z homepage nebo package cesty, samotn\u00e9 volby ve flow a checkout klik\u016f.'
         }

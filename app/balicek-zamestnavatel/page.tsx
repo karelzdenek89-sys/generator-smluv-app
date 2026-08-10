@@ -97,6 +97,7 @@ export default function EmployerStartPackagePage() {
             },
             {
               key: 'employer-package',
+              bundleKey: 'employer_start',
               title: 'Zaměstnavatel Start',
               priceLabel: '599 Kč',
               description: 'Pracovní smlouva, § 37, home office, vybavení, checklist a DOCX v jednom toku.',

@@ -1,3 +1,5 @@
+import { isFeatureEnabled } from './feature-flags';
+
 export type ClusterKey =
   | 'bydleni'
   | 'auto'
@@ -14,7 +16,22 @@ export type InternalLink = {
   cluster: ClusterKey;
 };
 
-export const SEO_LANDINGS: readonly InternalLink[] = [
+/**
+ * Interní odkazy na balíčky za feature flagem. Odkaz na vypnutý produkt by
+ * vedl na 404, takže se do rozcestníků, patičky ani homepage nesmí dostat.
+ */
+const FLAG_GATED_LANDINGS: readonly InternalLink[] = isFeatureEnabled('zakazkaPlus')
+  ? [
+      {
+        href: '/balicek-zakazka',
+        label: 'Zakázka Plus',
+        description: 'Smlouva o dílo + předání díla + vícepráce + platební harmonogram.',
+        cluster: 'prace',
+      },
+    ]
+  : [];
+
+const BASE_SEO_LANDINGS: readonly InternalLink[] = [
   { href: '/najem', label: 'Nájemní smlouva online', description: 'Generátor nájemní smlouvy — PDF ihned, volitelně DOCX. Byt, dům, kauce, výpověď.', cluster: 'bydleni' },
   { href: '/najemni-smlouva-byt', label: 'Nájemní smlouva na byt', description: 'Specializovaný vzor pro nájem bytové jednotky.', cluster: 'bydleni' },
   { href: '/podnajemni-smlouva', label: 'Podnájemní smlouva', description: 'Vzor podnájmu se souhlasem pronajímatele.', cluster: 'bydleni' },
@@ -38,6 +55,11 @@ export const SEO_LANDINGS: readonly InternalLink[] = [
   { href: '/nda-smlouva', label: 'NDA — smlouva o mlčenlivosti', description: 'Vzor NDA pro ochranu důvěrných informací.', cluster: 'b2b' },
   { href: '/plna-moc-online', label: 'Plná moc online', description: 'Vzor plné moci pro zastupování ve standardních situacích.', cluster: 'zastoupeni' },
   { href: '/darovaci-smlouva', label: 'Darovací smlouva', description: 'Vzor darování movité věci nebo peněz.', cluster: 'darovani' },
+];
+
+export const SEO_LANDINGS: readonly InternalLink[] = [
+  ...BASE_SEO_LANDINGS,
+  ...FLAG_GATED_LANDINGS,
 ];
 
 export const CLUSTER_LABELS: Record<ClusterKey, string> = {

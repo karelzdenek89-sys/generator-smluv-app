@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next';
+import { isFeatureEnabled } from '@/lib/feature-flags';
 import { FOREIGN_LOCALES, LOCALE_META } from '@/lib/i18n/locales';
 import { expatBlogSitemapEntries } from '@/lib/i18n/expat-blog-sitemap';
 import { getExpatBlogCanonical } from '@/lib/i18n/expat-blog-articles';
@@ -79,6 +80,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     staticPage('/balicek-pronajimatel', 0.88),
     staticPage('/balicek-prodej-vozidla', 0.88),
     staticPage('/balicek-zamestnavatel', 0.9),
+    // Zakázka Plus se do sitemapy dostane až se zapnutým flagem — do té doby
+    // stránka vrací 404 a nesmí být nabízena k indexaci.
+    ...(isFeatureEnabled('zakazkaPlus') ? [staticPage('/balicek-zakazka', 0.9)] : []),
     staticPage('/o-projektu', 0.6, 'yearly'),
     staticPage('/faq', 0.7),
     staticPage('/slovnik', 0.6),

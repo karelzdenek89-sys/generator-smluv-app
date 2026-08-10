@@ -1,6 +1,7 @@
 import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import Link from 'next/link';
-import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
+import ContextualProductOffer from '@/app/components/marketing/ContextualProductOffer';
+import { getContextualOffer } from '@/lib/marketing/contextual-offers';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
@@ -199,11 +200,9 @@ export default function SmlouvaOSpolupraci2026Page() {
       </section>
 
       {/* ── MID CTA ─────────────────────────────── */}
-      <ArticleInlineCta
-        title="Potřebujete smlouvu, která vás ochrání?"
-        body="Smlouva o spolupráci na SmlouvaHned obsahuje vymezení předmětu, honorář, autorská práva a mlčenlivost. Připraveno pro OSVČ a freelancery dle OZ 2026."
-        buttonLabel="Vytvořit smlouvu o spolupráci"
-        href="/spoluprace"
+      <ContextualProductOffer
+        {...getContextualOffer('cooperation')}
+        articleSlug="smlouva-o-spolupraci-2026"
       />
 
       {/* ── SECTION 5 ───────────────────────────── */}

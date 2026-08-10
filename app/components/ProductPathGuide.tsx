@@ -1,5 +1,18 @@
 import TrackedLink from '@/app/components/analytics/TrackedLink';
-import type { AnalyticsEventName, AnalyticsEventParams } from '@/lib/analytics';
+import type { AnalyticsEventName, AnalyticsEventParams, PriceBand } from '@/lib/analytics';
+import type { ThematicPackageKey } from '@/lib/packages';
+
+const PRICE_BANDS: readonly PriceBand[] = ['99', '199', '299', '399', '599'];
+
+/**
+ * Odvodí cenové pásmo z popisku ceny („399 Kč" → „399").
+ *
+ * Neznámý popisek raději nechá pásmo nevyplněné, než aby ho zařadil špatně —
+ * nový produkt se tak v reportingu neschová pod cizí cenovku.
+ */
+function priceBandFromLabel(priceLabel: string): PriceBand | undefined {
+  return PRICE_BANDS.find((band) => priceLabel.startsWith(band));
+}
 
 export type ProductPathGuideItem = {
   key: string;
@@ -10,6 +23,12 @@ export type ProductPathGuideItem = {
   cta: string;
   badge?: string;
   highlight?: boolean;
+  /**
+   * Klíč balíčku, pokud tato karta nabízí balíček místo samostatného dokumentu.
+   * Kliknutí na ni navíc odešle `bundle_selected`, aby šlo měřit, jak často
+   * návštěvník v rozhodovacím bodě zvolí balíček proti jednomu dokumentu.
+   */
+  bundleKey?: ThematicPackageKey;
 };
 
 export type ProductPathGuideTrackingContext = {
@@ -63,19 +82,24 @@ export default function ProductPathGuide({
                 source: trackingContext?.source ?? 'homepage',
                 surface: trackingContext?.surface ?? 'homepage',
                 cta_type: item.key,
-                price_band:
-                  item.priceLabel.startsWith('99')
-                    ? '99'
-                    : item.priceLabel.startsWith('199')
-                      ? '199'
-                      : item.priceLabel.startsWith('299')
-                        ? '299'
-                        : item.priceLabel.startsWith('599')
-                          ? '599'
-                          : undefined,
+                price_band: priceBandFromLabel(item.priceLabel),
                 destination: item.href,
                 ...trackingContext?.extraParams,
               }}
+              extraEventName={item.bundleKey ? 'bundle_selected' : undefined}
+              extraEventParams={
+                item.bundleKey
+                  ? {
+                      source: trackingContext?.source ?? 'homepage',
+                      surface: trackingContext?.surface ?? 'homepage',
+                      offer_type: 'content_bundle',
+                      product_id: item.bundleKey,
+                      package_key: item.bundleKey,
+                      price_band: priceBandFromLabel(item.priceLabel),
+                      destination: item.href,
+                    }
+                  : undefined
+              }
               className={`interactive-card flex flex-col rounded-[1.35rem] border p-5 no-underline ${
                 item.highlight
                   ? 'border-[rgba(214,172,96,0.28)] bg-[rgba(214,172,96,0.09)]'

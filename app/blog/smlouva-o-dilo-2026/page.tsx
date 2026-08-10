@@ -1,6 +1,8 @@
 import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
+import ContextualProductOffer from '@/app/components/marketing/ContextualProductOffer';
+import { getContextualOffer } from '@/lib/marketing/contextual-offers';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
@@ -404,11 +406,8 @@ export default function SmlouvaODiloPage() {
         lawyerSuitable="Velké stavební zakázky (statisíce až miliony Kč), zákazkový vývoj s komplexními autorskými právy, subdodavatelské řetězce nebo situace kde jedna strana odmítá standardní podmínky."
       />
 
-      <ArticleInlineCta
-        title="Vytvořte smlouvu o dílo online"
-        body="Formulář pokryje specifikaci díla, cenu, termín, akceptaci, záruky i smluvní pokuty. Hotovo za méně než 5 minut, PDF ke stažení ihned po zaplacení."
-        buttonLabel="Vytvořit smlouvu o dílo"
-        href="/smlouva-o-dilo"
+      <ContextualProductOffer
+        {...getContextualOffer('work_contract')}
         articleSlug="smlouva-o-dilo-2026"
       />
 

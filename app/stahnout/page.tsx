@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
+import PostPurchaseOffers from '@/app/components/PostPurchaseOffers';
 
 type DownloadRequest = {
   sessionId: string;
@@ -101,6 +102,15 @@ export default function SecureDownloadPage() {
           Přejít do zákaznické zóny
         </Link>
       </div>
+
+      {/* Tato stránka zná jen session a token, nikoli typ dokumentu, takže se
+          zobrazí pouze nabídky nezávislé na typu smlouvy. Nabídky vázané na
+          konkrétní dokument zůstávají na success stránce. */}
+      {state === 'ready' ? (
+        <div className="mx-auto mt-6 max-w-lg text-left">
+          <PostPurchaseOffers sourcePage="download" locale={request?.lang ?? 'cs'} />
+        </div>
+      ) : null}
     </main>
   );
 }

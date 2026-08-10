@@ -6,11 +6,21 @@ import {
   normalizePricingTier,
   type PricingTier,
 } from './pricing';
+import type { PriceBand } from './analytics';
 import type { ContractType } from './contracts';
+import { isFeatureEnabled, type FeatureFlagKey } from './feature-flags';
 import { getTierIncludedItems } from './tier-copy';
-import { getLocalizedIncludedItems, getLocalizedPackagePresentation } from './i18n/pricing-locale';
+import {
+  getLocalizedFlagGatedOutputs,
+  getLocalizedIncludedItems,
+  getLocalizedPackagePresentation,
+} from './i18n/pricing-locale';
 
-export type ThematicPackageKey = 'landlord' | 'vehicle_sale' | 'employer_start';
+export type ThematicPackageKey =
+  | 'landlord'
+  | 'vehicle_sale'
+  | 'employer_start'
+  | 'work_order';
 
 export type ThematicPackageConfig = {
   key: ThematicPackageKey;
@@ -145,6 +155,41 @@ export const THEMATIC_PACKAGE_CONFIG: Record<
     ],
     includesDocx: true,
   },
+  work_order: {
+    key: 'work_order',
+    slug: 'balicek-zakazka',
+    href: '/balicek-zakazka',
+    title: 'Zakázka Plus',
+    shortTitle: 'Zakázka Plus',
+    priceCzk: 399,
+    priceLabel: '399 Kč',
+    badge: 'Balíček k zakázce',
+    contractType: 'work_contract',
+    defaultTier: 'complete',
+    archiveDays: COMPLETE_ARCHIVE_DAYS,
+    intro:
+      'Dokumentace ke standardní zakázce mezi objednatelem a zhotovitelem. Smlouva o dílo, předání díla, vícepráce, změny rozsahu a platební harmonogram vzniknou z jednoho formuláře.',
+    perex:
+      'Balíček navazuje na smlouvu o dílo v rozšířené variantě a doplňuje ji o podklady, které se v průběhu zakázky používají nejčastěji — od odsouhlasení víceprací po předání a akceptaci díla.',
+    comparisonNote:
+      'Oproti samostatné smlouvě o dílo obsahuje předávací a akceptační protokol, formulář víceprací, změnový list a přehled platebního harmonogramu.',
+    suitableFor:
+      'Vhodné pro řemeslníky, freelancery a menší firmy, které chtějí mít u běžné zakázky připravenou nejen smlouvu, ale i podklady pro změny rozsahu a předání díla.',
+    cta: 'Připravit dokumentaci k zakázce',
+    builderTitle: 'Zakázka Plus',
+    builderDescription:
+      'Součástí výstupu bude smlouva o dílo v rozšířené variantě, předávací a akceptační protokol, formulář víceprací, změnový list a platební harmonogram.',
+    checkoutDescription:
+      'Smlouva o dílo v rozšířené variantě se souvisejícími podklady pro vícepráce, změny rozsahu a předání díla.',
+    includedOutputs: [
+      'Smlouva o dílo v rozšířené variantě',
+      'Předávací a akceptační protokol k dílu',
+      'Formulář víceprací k odsouhlasení',
+      'Změnový list pro změny rozsahu díla',
+      'Přehled platebního harmonogramu',
+      `Dostupnost odkazu ke stažení ${COMPLETE_ARCHIVE_DAYS} dní`,
+    ],
+  },
 };
 
 export const THEMATIC_PACKAGES = Object.values(
@@ -161,10 +206,67 @@ export function normalizeThematicPackageKey(
 ): ThematicPackageKey | null {
   if (!value) return null;
   const normalized = String(value).trim().toLowerCase();
-  if (normalized === 'landlord') return 'landlord';
-  if (normalized === 'vehicle_sale') return 'vehicle_sale';
-  if (normalized === 'employer_start') return 'employer_start';
-  return null;
+  return Object.prototype.hasOwnProperty.call(THEMATIC_PACKAGE_CONFIG, normalized)
+    ? (normalized as ThematicPackageKey)
+    : null;
+}
+
+/**
+ * Balíčky, které se smí nabízet i prodávat pouze se zapnutým feature flagem.
+ *
+ * Balíček bez nastaveného Stripe Price ID by checkout odmítl až chybou 500,
+ * takže neodbavený produkt nesmí projít ani do UI, ani do serverové validace.
+ */
+const FLAG_GATED_PACKAGES: Partial<Record<ThematicPackageKey, FeatureFlagKey>> = {
+  work_order: 'zakazkaPlus',
+};
+
+/** Je balíček aktuálně v provozu? Balíčky bez flagu jsou dostupné vždy. */
+export function isThematicPackageAvailable(key: ThematicPackageKey): boolean {
+  const flag = FLAG_GATED_PACKAGES[key];
+  return flag ? isFeatureEnabled(flag) : true;
+}
+
+/** Balíčky, které se smí vypsat v nabídce (rozcestníky, katalog, landing pages). */
+export function getAvailableThematicPackages(): readonly ThematicPackageConfig[] {
+  return THEMATIC_PACKAGES.filter((pkg) => isThematicPackageAvailable(pkg.key));
+}
+
+/**
+ * Výstupy balíčku, které přibývají až se zapnutým flagem.
+ *
+ * Vkládají se před poslední dvě položky (praktické podklady a dostupnost
+ * odkazu), aby výčet zůstal ve stejném pořadí jako obsah dokumentu.
+ */
+const FLAG_GATED_OUTPUTS: Partial<
+  Record<ThematicPackageKey, { flag: FeatureFlagKey; items: readonly string[] }>
+> = {
+  vehicle_sale: {
+    flag: 'carSaleComplete',
+    items: [
+      'Plná moc k zápisu změny vlastníka vozidla',
+      'Checklist předání vozidla a dokladů',
+    ],
+  },
+};
+
+/**
+ * Obsah balíčku tak, jak ho zákazník uvidí před platbou.
+ *
+ * Flag se čte až při volání, nikoli při inicializaci modulu. Generování
+ * dokumentu čte tentýž flag ve stejný okamžik, takže se slib v checkoutu
+ * a skutečný obsah PDF nemohou rozejít podle pořadí importů.
+ */
+export function getPackageIncludedOutputs(
+  key: ThematicPackageKey,
+  options?: { baseOutputs?: readonly string[]; locale?: string | null },
+): readonly string[] {
+  const outputs = options?.baseOutputs ?? THEMATIC_PACKAGE_CONFIG[key].includedOutputs;
+  const extra = FLAG_GATED_OUTPUTS[key];
+  if (!extra || !isFeatureEnabled(extra.flag)) return outputs;
+  const items = getLocalizedFlagGatedOutputs(key, options?.locale) ?? extra.items;
+  const insertAt = Math.max(0, outputs.length - 2);
+  return [...outputs.slice(0, insertAt), ...items, ...outputs.slice(insertAt)];
 }
 
 export function getThematicPackageConfig(
@@ -180,6 +282,7 @@ export function normalizeThematicPackageKeyForContract(
 ): ThematicPackageKey | null {
   const packageConfig = getThematicPackageConfig(value);
   if (!packageConfig || packageConfig.contractType !== contractType) return null;
+  if (!isThematicPackageAvailable(packageConfig.key)) return null;
   return packageConfig.key;
 }
 
@@ -192,8 +295,13 @@ export function getEffectiveIncludedItems(
   const packageConfig = getThematicPackageConfig(packageKey);
   if (packageConfig) {
     const localized = getLocalizedPackagePresentation(packageConfig.key, locale);
-    if (localized) return getLocalizedIncludedItems(contractType, tier, packageKey, locale);
-    return packageConfig.includedOutputs;
+    if (localized) {
+      return getPackageIncludedOutputs(packageConfig.key, {
+        baseOutputs: getLocalizedIncludedItems(contractType, tier, packageKey, locale),
+        locale,
+      });
+    }
+    return getPackageIncludedOutputs(packageConfig.key);
   }
   if (locale && locale !== 'cs') {
     return getLocalizedIncludedItems(contractType, tier, packageKey, locale);
@@ -228,7 +336,9 @@ export function getEffectivePriceLabel(
 
 /**
  * Stripe Price ID for checkout. The 299 Kč packages share STRIPE_PRICE_ID_PACKAGE;
- * Employer Start has its own 599 Kč Stripe Price and must never fall back to 299/199 Kč.
+ * every package on a different price band owns a dedicated Stripe Price and must
+ * never fall back to a cheaper one — a missing ID has to fail the checkout loudly
+ * rather than quietly undercharge.
  */
 export function getStripePriceIdForCheckout(
   tier: string,
@@ -237,6 +347,9 @@ export function getStripePriceIdForCheckout(
   const pkg = normalizeThematicPackageKey(packageKey);
   if (pkg === 'employer_start') {
     return process.env.STRIPE_PRICE_ID_EMPLOYER_START;
+  }
+  if (pkg === 'work_order') {
+    return process.env.STRIPE_PRICE_ID_WORK_ORDER;
   }
   if (pkg) {
     return process.env.STRIPE_PRICE_ID_PACKAGE;
@@ -256,9 +369,9 @@ export function packageIncludesDocx(packageKey?: string | null): boolean {
 export function getEffectivePriceBand(
   tier: PricingTier,
   packageKey?: string | null,
-): '99' | '199' | '299' | '599' {
+): PriceBand {
   const packageConfig = getThematicPackageConfig(packageKey);
-  if (packageConfig) return String(packageConfig.priceCzk) as '299' | '599';
+  if (packageConfig) return String(packageConfig.priceCzk) as PriceBand;
   return tier === 'complete' ? '199' : '99';
 }
 

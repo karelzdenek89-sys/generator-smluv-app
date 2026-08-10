@@ -1,6 +1,8 @@
 import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import Link from 'next/link';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
+import ContextualProductOffer from '@/app/components/marketing/ContextualProductOffer';
+import { getContextualOffer } from '@/lib/marketing/contextual-offers';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
@@ -488,11 +490,8 @@ export default function PracovniSmlouvaVzor2026Page() {
         lawyerSuitable="Agenturní zaměstnávání, hromadné propouštění, převod podniku, zaměstnávání cizinců, složité konkurenční doložky nebo spory ze skončení pracovního poměru."
       />
 
-      <ArticleInlineCta
-        title="Vytvořte pracovní smlouvu online"
-        body="Formulář vás provede každou částí smlouvy. Hotovo za méně než 5 minut, PDF ke stažení ihned po zaplacení."
-        buttonLabel="Vytvořit pracovní smlouvu"
-        href="/pracovni"
+      <ContextualProductOffer
+        {...getContextualOffer('employment')}
         articleSlug="pracovni-smlouva-2026"
       />
 

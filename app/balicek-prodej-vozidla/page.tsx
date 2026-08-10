@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import TrackView from '@/app/components/analytics/TrackView';
 import GuideLandingPage from '@/app/components/GuideLandingPage';
+import { isFeatureEnabled } from '@/lib/feature-flags';
 
 export const metadata: Metadata = {
   title: 'Balíček pro prodej vozidla',
@@ -100,6 +101,7 @@ export default function BalicekProdejVozidlaPage() {
             },
             {
               key: 'vehicle-package',
+              bundleKey: 'vehicle_sale',
               title: 'Tematický balíček',
               priceLabel: '299 Kč',
               description:
@@ -142,6 +144,18 @@ export default function BalicekProdejVozidlaPage() {
             title: 'Potvrzení o převzetí vozidla, klíčů a dokladů',
             text: 'Samostatný dokument navázaný na skutečné převzetí a předání mezi stranami.',
           },
+          ...(isFeatureEnabled('carSaleComplete')
+            ? [
+                {
+                  title: 'Plná moc k zápisu změny vlastníka',
+                  text: 'Samostatná listina pro případ, kdy zápis na úřadě vyřizuje jen jedna ze stran. Uvádí i podmínku úředně ověřeného podpisu.',
+                },
+                {
+                  title: 'Checklist předání vozidla a dokladů',
+                  text: 'Kontrolní seznam k předání — VIN, tachometr, klíče, technický průkaz, pojištění a lhůta pro zápis změny vlastníka.',
+                },
+              ]
+            : []),
           {
             title: 'Praktické podklady k převodu',
             text: 'Stručné podklady, které pomohou s podpisem, předáním a navazujícími kroky po převodu.',

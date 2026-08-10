@@ -1,6 +1,7 @@
 import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import Link from 'next/link';
-import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
+import ContextualProductOffer from '@/app/components/marketing/ContextualProductOffer';
+import { getContextualOffer } from '@/lib/marketing/contextual-offers';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
@@ -254,11 +255,9 @@ export default function DppPage() {
       </section>
 
       {/* ── MID CTA ─────────────────────────────── */}
-      <ArticleInlineCta
-        title="Nechcete zapomenout na žádnou povinnost?"
-        body="Formulář na SmlouvaHned pokrývá všechny zákonné náležitosti DPP — vymezení práce, hodinový rozsah, odměnu i BOZP prohlášení. Připraveno dle zákoníku práce 2026."
-        buttonLabel="Vytvořit DPP"
-        href="/dpp"
+      <ContextualProductOffer
+        {...getContextualOffer('dpp')}
+        articleSlug="dpp-dohoda-provedeni-prace"
       />
 
       {/* ── SECTION 6 ───────────────────────────── */}

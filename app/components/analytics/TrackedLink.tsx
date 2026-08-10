@@ -15,6 +15,15 @@ type TrackedLinkProps = Omit<ComponentProps<typeof Link>, 'href'> & {
   href: ComponentProps<typeof Link>['href'];
   eventName: AnalyticsEventName;
   eventParams?: AnalyticsEventParams;
+  /**
+   * Druhý event odeslaný při témže kliknutí.
+   *
+   * Umožňuje přidat nový signál (např. volbu balíčku) bez přepsání původního
+   * eventu, na kterém stojí stávající reporting. Předává se jako data, takže
+   * ji lze nastavit i ze serverové komponenty.
+   */
+  extraEventName?: AnalyticsEventName;
+  extraEventParams?: AnalyticsEventParams;
 };
 
 function hrefToString(href: TrackedLinkProps['href']) {
@@ -26,6 +35,8 @@ export default function TrackedLink({
   href,
   eventName,
   eventParams,
+  extraEventName,
+  extraEventParams,
   onClick,
   ...props
 }: TrackedLinkProps) {
@@ -74,6 +85,15 @@ export default function TrackedLink({
       destination,
       ...eventParams,
     });
+
+    if (extraEventName) {
+      trackEvent(extraEventName, {
+        ...defaults,
+        source: extraEventParams?.source ?? eventParams?.source ?? defaults.source ?? sourcePath,
+        destination,
+        ...extraEventParams,
+      });
+    }
   };
 
   return <Link href={href} onClick={handleClick} {...props} />;

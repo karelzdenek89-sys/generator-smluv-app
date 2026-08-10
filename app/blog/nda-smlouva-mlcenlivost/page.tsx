@@ -1,6 +1,7 @@
 import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import Link from 'next/link';
-import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
+import ContextualProductOffer from '@/app/components/marketing/ContextualProductOffer';
+import { getContextualOffer } from '@/lib/marketing/contextual-offers';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
@@ -255,11 +256,9 @@ export default function NdaSmlouvaPage() {
       </section>
 
       {/* ── MID CTA ─────────────────────────────── */}
-      <ArticleInlineCta
-        title="Nechcete chyby řešit dodatečně?"
-        body="NDA smlouva na SmlouvaHned obsahuje přesnou definici důvěrných informací, výjimky, dobu trvání a smluvní pokutu. Jednostranná nebo vzájemná — formulář vás provede."
-        buttonLabel="Vytvořit NDA smlouvu"
-        href="/nda"
+      <ContextualProductOffer
+        {...getContextualOffer('nda')}
+        articleSlug="nda-smlouva-mlcenlivost"
       />
 
       {/* ── SECTION 7: ZÁVĚR ────────────────────── */}

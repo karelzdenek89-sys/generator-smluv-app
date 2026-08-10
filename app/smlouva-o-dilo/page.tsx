@@ -1,6 +1,7 @@
 ﻿'use client';
 
-import { useState, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
@@ -10,6 +11,12 @@ import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/LazyPaymentModal';
 import { isValidMoney } from '@/lib/money';
+import {
+  getThematicPackageConfig,
+  isThematicPackageAvailable,
+  THEMATIC_PACKAGE_CONFIG,
+} from '@/lib/packages';
+import { isFeatureEnabled } from '@/lib/feature-flags';
 
 type PaymentType = 'after_completion' | 'with_deposit' | 'milestones';
 
@@ -109,9 +116,33 @@ export default function WorkContractPage() {
   const [formData, setFormData] = useState<WorkContractData>(defaultData);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [packageKeyFromUrl, setPackageKeyFromUrl] = useState<string | null>(null);
   const updateField = (field: keyof WorkContractData, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
+
+  useEffect(() => {
+    setPackageKeyFromUrl(new URLSearchParams(window.location.search).get('package'));
+  }, []);
+
+  // Balíček z URL smí projít jen tehdy, patří-li ke smlouvě o dílo a je-li
+  // zapnutý. Server tutéž podmínku vynucuje znovu v /api/checkout — tohle je
+  // pouze prezentační vrstva, nikoli autorita nad cenou.
+  const packageConfig = useMemo(() => {
+    const candidate = getThematicPackageConfig(packageKeyFromUrl);
+    if (!candidate || candidate.contractType !== 'work_contract') return null;
+    return isThematicPackageAvailable(candidate.key) ? candidate : null;
+  }, [packageKeyFromUrl]);
+  const isWorkOrderPackage = packageConfig?.key === 'work_order';
+
+  useEffect(() => {
+    if (!isWorkOrderPackage) return;
+    setFormData((current) =>
+      current.tier === 'complete' && current.notaryUpsell
+        ? current
+        : { ...current, tier: 'complete', notaryUpsell: true },
+    );
+  }, [isWorkOrderPackage]);
 
   const inputClass = 'w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition text-sm';
   const textareaClass = 'w-full min-h-[90px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition text-sm';
@@ -174,11 +205,15 @@ export default function WorkContractPage() {
   const previewSections = useMemo(() => {
     try {
       if (!formData.clientName) return [];
-      return buildContractSections({ ...formData, contractType: 'work_contract' } as StoredContractData);
+      return buildContractSections({
+        ...formData,
+        contractType: 'work_contract',
+        packageKey: packageConfig?.key ?? null,
+      } as StoredContractData);
     } catch {
       return [];
     }
-  }, [formData]);
+  }, [formData, packageConfig?.key]);
 
   const handleSubmit = async (addOns: string[], authorization: CheckoutAuthorization) => {
     const missing: string[] = [];
@@ -194,6 +229,7 @@ export default function WorkContractPage() {
       const payload = {
         ...formData,
         contractType: 'work_contract' as const,
+        packageKey: packageConfig?.key ?? null,
       };
 
       const res = await fetch('/api/checkout', {
@@ -203,9 +239,11 @@ export default function WorkContractPage() {
           contractType: 'work_contract',
           deliveryEmail: authorization.deliveryEmail,
           consent: authorization.consent,
-          tier: formData.tier,
+          annexLanguage: authorization.annexLanguage,
+          tier: packageConfig?.defaultTier ?? formData.tier,
+          packageKey: packageConfig?.key ?? null,
           addOns,
-          notaryUpsell: formData.tier !== 'basic',
+          notaryUpsell: packageConfig ? true : formData.tier !== 'basic',
           payload,
         }),
       });
@@ -282,6 +320,53 @@ export default function WorkContractPage() {
         guideHref="/smlouva-o-dilo-online"
         guideLabel="Průvodce smlouvou o dílo — kdy ji použít, cena díla, sankce a záruky"
       />
+
+      {/* Balíček se ohlašuje až nad formulářem, aby hlavní CTA v hero sekci
+          zůstalo na mobilu na stejném místě jako u samostatného dokumentu. */}
+      {!packageConfig && isFeatureEnabled('zakazkaPlus') && (
+        <div className="max-w-7xl mx-auto px-4 pt-8 lg:px-8">
+          <Link href="/balicek-zakazka" className="interactive-card block rounded-[1.75rem] border border-[rgba(197,160,89,0.18)] bg-[rgba(255,255,255,0.035)] p-6">
+            <div className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-400">Balíček k zakázce</div>
+            <div className="mt-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+              <div className="max-w-3xl">
+                <h2 className="text-2xl font-semibold tracking-tight text-white">Řešíte celou zakázku?</h2>
+                <p className="mt-3 text-sm leading-relaxed text-slate-300">
+                  Připravte smlouvu, platební podmínky, vícepráce a předání díla v jednom balíčku.{' '}
+                  {THEMATIC_PACKAGE_CONFIG.work_order.title} — {THEMATIC_PACKAGE_CONFIG.work_order.priceLabel}.
+                </p>
+              </div>
+              <span className="text-sm font-semibold text-amber-300">Zobrazit obsah balíčku →</span>
+            </div>
+          </Link>
+        </div>
+      )}
+
+      {packageConfig && (
+        <div className="max-w-7xl mx-auto px-4 pt-8 lg:px-8">
+          <div className="rounded-[1.75rem] border border-amber-500/25 bg-[rgba(255,255,255,0.04)] p-6">
+            <div className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-400">
+              {packageConfig.badge}
+            </div>
+            <div className="mt-3 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div className="max-w-3xl">
+                <h2 className="text-2xl font-semibold tracking-tight text-white">
+                  {packageConfig.builderTitle}
+                </h2>
+                <p className="mt-3 text-sm leading-relaxed text-slate-300">
+                  {packageConfig.builderDescription}
+                </p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/4 px-5 py-4">
+                <div className="text-xs uppercase tracking-[0.18em] text-slate-500">Cena balíčku</div>
+                <div className="mt-2 text-3xl font-black tracking-tight text-white">{packageConfig.priceLabel}</div>
+                <Link href="/smlouva-o-dilo" className="mt-3 inline-block text-xs leading-relaxed text-[#cbbba0] transition hover:text-white">
+                  Potřebujete jen smlouvu o dílo? Zvolte samostatný dokument 99 / 199 Kč.
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8">
         <div className="grid lg:grid-cols-12 gap-10">
@@ -737,17 +822,19 @@ export default function WorkContractPage() {
                 </select>
               </section>
 
-              {/* Tier selection */}
-              <section className={cardClass}>
-                <h3 className="text-amber-400 uppercase text-xs tracking-widest font-bold mb-6">6. Vyberte úroveň zpracování dokumentu</h3>
-                <BuilderTierSelector
-                  contractType="work_contract"
-                  tier={formData.tier}
-                  onTierChange={(tier) =>
-                    setFormData((prev) => ({ ...prev, tier, notaryUpsell: tier !== 'basic' }))
-                  }
-                />
-              </section>
+              {/* Tier selection — u balíčku je rozsah dán, výběr varianty se nezobrazuje */}
+              {!packageConfig && (
+                <section className={cardClass}>
+                  <h3 className="text-amber-400 uppercase text-xs tracking-widest font-bold mb-6">6. Vyberte úroveň zpracování dokumentu</h3>
+                  <BuilderTierSelector
+                    contractType="work_contract"
+                    tier={formData.tier}
+                    onTierChange={(tier) =>
+                      setFormData((prev) => ({ ...prev, tier, notaryUpsell: tier !== 'basic' }))
+                    }
+                  />
+                </section>
+              )}
 
             </div>
           </div>
@@ -784,6 +871,7 @@ export default function WorkContractPage() {
               <BuilderCheckoutSummary
                 contractType="work_contract"
                 tier={formData.tier}
+                packageKey={packageConfig?.key ?? null}
                 documentLabel="Smlouva o dílo"
                 onUpgrade={() => setFormData((prev) => ({ ...prev, tier: 'complete', notaryUpsell: true }))}
               />
@@ -813,6 +901,7 @@ export default function WorkContractPage() {
         tier={formData.tier}
         onTierChange={(t) => setFormData((prev) => ({ ...prev, tier: t }))}
         contractType="work_contract"
+        packageKey={packageConfig?.key ?? null}
         onPay={handleSubmit}
         isProcessing={isProcessing}
         onClose={() => setShowPreviewModal(false)}

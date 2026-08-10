@@ -257,16 +257,19 @@ export async function getAnalyticsDashboardData(
   let builderViews = 0;
   let packageFlowEntries = 0;
   let packageFlow299Entries = 0;
+  let packageFlow399Entries = 0;
   let packageFlow599Entries = 0;
   let tier99Selections = 0;
   let tier199Selections = 0;
   let homepage99Clicks = 0;
   let homepage199Clicks = 0;
   let homepage299Clicks = 0;
+  let homepage399Clicks = 0;
   let homepage599Clicks = 0;
   let checkout99 = 0;
   let checkout199 = 0;
   let checkout299 = 0;
+  let checkout399 = 0;
   let checkout599 = 0;
   let upgrades = 0;
   let checkoutModalOpens = 0;
@@ -500,6 +503,7 @@ export async function getAnalyticsDashboardData(
       case 'package_flow_entered':
         packageFlowEntries += 1;
         if (params.price_band === '599') packageFlow599Entries += 1;
+        else if (params.price_band === '399') packageFlow399Entries += 1;
         else packageFlow299Entries += 1;
         if (packageKey) {
           const current = packageStats.get(packageKey) ?? {
@@ -542,6 +546,7 @@ export async function getAnalyticsDashboardData(
         if (params.price_band === '99') checkout99 += 1;
         if (params.price_band === '199') checkout199 += 1;
         if (params.price_band === '299') checkout299 += 1;
+        if (params.price_band === '399') checkout399 += 1;
         if (params.price_band === '599') checkout599 += 1;
         break;
 
@@ -604,6 +609,7 @@ export async function getAnalyticsDashboardData(
 
       case 'homepage_package_click':
         if (params.price_band === '599') homepage599Clicks += 1;
+        else if (params.price_band === '399') homepage399Clicks += 1;
         else homepage299Clicks += 1;
         break;
 
@@ -794,6 +800,12 @@ export async function getAnalyticsDashboardData(
         topFunnel: homepage299Clicks,
         selection: packageFlow299Entries,
         checkout: checkout299,
+      },
+      {
+        band: '399',
+        topFunnel: homepage399Clicks,
+        selection: packageFlow399Entries,
+        checkout: checkout399,
       },
       {
         band: '599',

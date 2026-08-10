@@ -1,6 +1,7 @@
 import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import Link from 'next/link';
-import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
+import ContextualProductOffer from '@/app/components/marketing/ContextualProductOffer';
+import { getContextualOffer } from '@/lib/marketing/contextual-offers';
 import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
@@ -297,11 +298,9 @@ export default function KupniSmlouvaAutoPage() {
       </section>
 
       {/* ── MID-ARTICLE CTA ─────────────────────── */}
-      <ArticleInlineCta
-        title="Prodáváte nebo kupujete auto? Smlouva připravena za 5 minut."
-        body="Formulář pokryje VIN, stav tachometru, STK, emise, prohlášení o vadách i zástavní právo. Nemusíte nic vymýšlet — stačí vyplnit údaje."
-        buttonLabel="Vytvořit kupní smlouvu na auto"
-        href="/auto"
+      <ContextualProductOffer
+        {...getContextualOffer('car_sale')}
+        articleSlug="kupni-smlouva-na-auto-2026"
       />
 
       {/* ── SECTION 6 ───────────────────────────── */}

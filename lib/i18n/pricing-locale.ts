@@ -1,3 +1,4 @@
+import { isFeatureEnabled } from '@/lib/feature-flags';
 import { normalizeLocale } from '@/lib/locale';
 import {
   COMPLETE_ARCHIVE_DAYS,
@@ -93,7 +94,51 @@ const PACKAGE_EN: Record<
       `Download link available for ${COMPLETE_ARCHIVE_DAYS} days`,
     ],
   },
+  work_order: {
+    title: 'Work order package',
+    checkoutDescription:
+      'Extended Czech contract for work with handover, variation and payment-schedule documents for a standard project.',
+    includedOutputs: [
+      'Extended Czech contract for work',
+      'Handover and acceptance protocol',
+      'Variation (additional works) form',
+      'Change order sheet',
+      'Payment schedule overview',
+      `Download link available for ${COMPLETE_ARCHIVE_DAYS} days`,
+    ],
+  },
 };
+
+/**
+ * Cizojazyčné znění výstupů, které se u balíčku objeví až se zapnutým flagem.
+ * Drží se u ostatní EN kopie, aby překlad nevznikal na dvou místech.
+ */
+const PACKAGE_FLAG_GATED_OUTPUTS_EN: Partial<Record<ThematicPackageKey, readonly string[]>> = {
+  vehicle_sale: [
+    'Power of attorney for the change-of-owner registration',
+    'Vehicle and documents handover checklist',
+  ],
+};
+
+export function getLocalizedFlagGatedOutputs(
+  packageKey: ThematicPackageKey,
+  locale?: string | null,
+): readonly string[] | null {
+  if (normalizeLocale(locale) === 'cs') return null;
+  return PACKAGE_FLAG_GATED_OUTPUTS_EN[packageKey] ?? null;
+}
+
+/**
+ * Package keys with localized copy. Derived from the record above so a new
+ * package cannot silently fall through to the generic tier wording — the
+ * `Record<ThematicPackageKey, …>` type forces the entry to exist first.
+ */
+function localizedPackageKey(value?: string | null): ThematicPackageKey | null {
+  return typeof value === 'string' &&
+    Object.prototype.hasOwnProperty.call(PACKAGE_EN, value)
+    ? (value as ThematicPackageKey)
+    : null;
+}
 
 function leaseCompleteExtraForLocale(loc: ReturnType<typeof normalizeLocale>) {
   if (loc === 'ua') return LEASE_COMPLETE_EXTRA_UK;
@@ -188,10 +233,7 @@ export function getLocalizedIncludedItems(
   locale?: string | null,
 ): readonly string[] {
   const loc = normalizeLocale(locale);
-  const pkg =
-    packageKey === 'landlord' || packageKey === 'vehicle_sale' || packageKey === 'employer_start'
-      ? packageKey
-      : null;
+  const pkg = localizedPackageKey(packageKey);
   if (loc !== 'cs' && pkg) {
     return PACKAGE_EN[pkg].includedOutputs;
   }

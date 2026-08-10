@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import RelatedContracts from '@/app/components/RelatedContracts';
+import ContextualProductOffer from '@/app/components/marketing/ContextualProductOffer';
+import { getContextualOffer } from '@/lib/marketing/contextual-offers';
 
 export const metadata: Metadata = {
   title: 'Smlouva o dílo 2026: cena, termíny a předání',
@@ -169,6 +171,8 @@ export default function SmlouvaODiloOnlinePage() {
           </Link>
           <div className="mt-3 text-xs text-slate-600">Od 99 Kč · § 2586 OZ · PDF ihned</div>
         </section>
+
+        <ContextualProductOffer {...getContextualOffer('work_contract')} />
 
         <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">
           <Link href="/" className="hover:text-slate-300 transition">← Všechny smlouvy</Link>
