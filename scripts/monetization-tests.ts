@@ -6,12 +6,12 @@
  * a partnerskou nabídku zobrazenou bez cílové URL nebo bez označení.
  */
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ANALYTICS_EVENT_NAMES } from '../lib/analytics';
 import { PRICING_TIER_CONFIG } from '../lib/pricing';
-import { THEMATIC_PACKAGE_CONFIG } from '../lib/packages';
+import { getAvailableThematicPackages, THEMATIC_PACKAGE_CONFIG } from '../lib/packages';
 // Oba moduly čtou flagy i konfiguraci až při volání, takže stačí načíst je jednou.
 import { getPostPurchaseOffers } from '../lib/post-purchase-offers';
 import { getContextualOffer } from '../lib/marketing/contextual-offers';
@@ -186,6 +186,56 @@ function testNoHardcodedPricesInArticles() {
   assert.equal(PRICING_TIER_CONFIG.complete.priceCzk, 199);
 }
 
+/**
+ * Stránky nesmí vykreslovat surový výčet balíčků.
+ *
+ * `THEMATIC_PACKAGES` obsahuje i balíčky za vypnutým flagem, takže rozcestník
+ * postavený přímo nad ním vytvoří klikatelný odkaz na stránku, která vrací 404.
+ * Přesně to se jednou stalo na homepage. Renderovací vrstva proto musí sáhnout
+ * po `getAvailableThematicPackages()`.
+ */
+function testPagesNeverRenderDisabledPackages() {
+  const offenders: string[] = [];
+
+  function walk(dir: string) {
+    for (const entry of readdirSync(dir)) {
+      const path = join(dir, entry);
+      if (statSync(path).isDirectory()) {
+        walk(path);
+        continue;
+      }
+      if (!/\.tsx?$/.test(entry)) continue;
+      const source = readFileSync(path, 'utf8');
+      if (!/\bTHEMATIC_PACKAGES\b/.test(source)) continue;
+      offenders.push(relative(ROOT, path).replace(/\\/g, '/'));
+    }
+  }
+
+  walk(join(ROOT, 'app'));
+
+  assert.deepEqual(
+    offenders,
+    [],
+    'these files iterate THEMATIC_PACKAGES and would link to disabled products; ' +
+      `use getAvailableThematicPackages() instead:\n${offenders.join('\n')}`,
+  );
+
+  // A pojistka na chování: s vypnutým flagem výčet balíček nesmí obsahovat.
+  resetFlags();
+  assert.equal(
+    getAvailableThematicPackages().some((pkg) => pkg.key === 'work_order'),
+    false,
+    'disabled package must not appear in the offered list',
+  );
+  // Odkazy na balíčky vedou vždy na existující stránku.
+  for (const pkg of getAvailableThematicPackages()) {
+    assert.ok(
+      existsSync(join(ROOT, 'app', pkg.slug, 'page.tsx')),
+      `package ${pkg.key} links to /${pkg.slug}, but that page does not exist`,
+    );
+  }
+}
+
 function testAnalyticsEventsRegistered() {
   const required = [
     'content_offer_view',
@@ -235,6 +285,7 @@ function main() {
   testOfferTargeting();
   testContextualOffersNeverPointAtDisabledProducts();
   testNoHardcodedPricesInArticles();
+  testPagesNeverRenderDisabledPackages();
   testAnalyticsEventsRegistered();
   testNoPiiInMonetizationAnalytics();
 

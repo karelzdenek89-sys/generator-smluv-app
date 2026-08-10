@@ -9,7 +9,7 @@ import LanguageSwitcher from '@/app/components/LanguageSwitcher';
 import TrackedLink from '@/app/components/analytics/TrackedLink';
 import { SEO_LANDINGS, CLUSTER_LABELS, type ClusterKey } from '@/lib/internal-links';
 import { FOREIGN_LOCALES, LOCALE_META } from '@/lib/i18n/locales';
-import { THEMATIC_PACKAGES } from '@/lib/packages';
+import { getAvailableThematicPackages, getEffectivePriceBand } from '@/lib/packages';
 
 const HOMEPAGE_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 const homepageLanguageAlternates: Record<string, string> = {
@@ -286,7 +286,7 @@ export default function Home() {
             </p>
           </div>
           <div className="mt-8 grid gap-5 lg:grid-cols-3">
-            {THEMATIC_PACKAGES.map((item) => (
+            {getAvailableThematicPackages().map((item) => (
               <article
                 key={item.key}
                 className={`site-content-card flex h-full flex-col rounded-[1.5rem] p-6 ${
@@ -306,7 +306,7 @@ export default function Home() {
                   eventName="homepage_package_click"
                   eventParams={{
                     package_key: item.key,
-                    price_band: item.priceCzk === 599 ? '599' : '299',
+                    price_band: getEffectivePriceBand('complete', item.key),
                     destination: item.href,
                     surface: 'homepage_packages',
                   }}
