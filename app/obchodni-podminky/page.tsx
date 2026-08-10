@@ -5,7 +5,7 @@ import {
   COMPLETE_ARCHIVE_DAYS,
   PRICING_TIER_CONFIG,
 } from '@/lib/pricing';
-import { THEMATIC_PACKAGE_CONFIG } from '@/lib/packages';
+import { isThematicPackageAvailable, THEMATIC_PACKAGE_CONFIG } from '@/lib/packages';
 import { CHECKOUT_ADDON_CONFIG } from '@/lib/checkout-addons';
 import { SITE_URL } from '@/lib/seo/site';
 
@@ -115,6 +115,11 @@ export default function TermsPage() {
               <div className="flex justify-between"><span className="text-slate-400">{PRICING_TIER_CONFIG.complete.title}</span><span className="font-bold text-white">{PRICING_TIER_CONFIG.complete.priceLabel}</span></div>
               <div className="flex justify-between"><span className="text-slate-400">Tematický balíček</span><span className="font-bold text-white">{THEMATIC_PACKAGE_CONFIG.landlord.priceLabel}</span></div>
               <div className="flex justify-between"><span className="text-slate-400">Zaměstnavatel Start 2026</span><span className="font-bold text-white">{THEMATIC_PACKAGE_CONFIG.employer_start.priceLabel}</span></div>
+              {/* Ceník musí odpovídat tomu, co si zákazník může skutečně koupit,
+                  proto se položka objeví teprve s dostupností balíčku. */}
+              {isThematicPackageAvailable('work_order') && (
+                <div className="flex justify-between"><span className="text-slate-400">{THEMATIC_PACKAGE_CONFIG.work_order.title}</span><span className="font-bold text-white">{THEMATIC_PACKAGE_CONFIG.work_order.priceLabel}</span></div>
+              )}
             </div>
             <div className="bg-[#0c1426]/60 border border-white/5 rounded-2xl p-5 space-y-2 text-sm mb-3">
               <p className="text-xs font-black uppercase tracking-widest text-slate-500">Volitelné doplňky v checkoutu</p>
