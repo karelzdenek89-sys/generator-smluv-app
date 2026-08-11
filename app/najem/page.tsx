@@ -19,6 +19,7 @@ import {
   isExpatLeaseLocale,
 } from '@/lib/i18n/lease-preview';
 import { getThematicPackageConfig } from '@/lib/packages';
+import { getPackageAppendixNotice } from '@/lib/i18n/package-upsell';
 import { isValidMoney } from '@/lib/money';
 
 type LeaseFormData = {
@@ -98,6 +99,9 @@ function LeaseBuilderContent() {
   const builderLocale = useBuilderLocale();
   const ui = useMemo(() => getLeaseFormUi(builderLocale), [builderLocale]);
   const packageConfig = getThematicPackageConfig(packageKeyFromUrl);
+  // Přílohy balíčku jsou dnes pouze české — cizojazyčný zákazník to musí
+  // vědět dřív, než vstoupí do placeného toku.
+  const packageAppendixNotice = getPackageAppendixNotice(builderLocale);
   const isLandlordPackage = packageConfig?.key === 'landlord';
 
   useEffect(() => {
@@ -546,6 +550,9 @@ function LeaseBuilderContent() {
                 <h2 className="mt-3 text-2xl font-semibold tracking-[-0.03em] text-[#f2e7c8]">
                   {ui.package.thematicTitle}
                 </h2>
+                {packageAppendixNotice ? (
+                  <p className="mt-3 text-xs leading-6 text-[#bba98c]">{packageAppendixNotice}</p>
+                ) : null}
                 <p className="mt-3 text-sm leading-7 text-[#d7d0c3]">
                   {ui.package.thematicDesc}
                 </p>

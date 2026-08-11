@@ -9,6 +9,7 @@ import {
   getThematicPackageConfig,
 } from '@/lib/packages';
 import { getLocalizedPackagePresentation, getLocalizedPricingTier } from '@/lib/i18n/pricing-locale';
+import { getPackageAppendixNotice } from '@/lib/i18n/package-upsell';
 import { LEGAL_NOTICE, normalizeLocale } from '@/lib/locale';
 import type { LeaseFormUi } from '@/lib/i18n/lease-form';
 import { getAnalyticsDefaultsForPathname, trackEvent } from '@/lib/analytics';
@@ -87,6 +88,9 @@ export default function PaymentModal({
   const validAddOnKeys = validSelectedAddOns.join(',');
   const analyticsDefaults = getAnalyticsDefaultsForPathname(pathname ?? '/');
   const priceBand = getEffectivePriceBand(tier, packageConfig?.key);
+  // Přílohy balíčků nejsou přeložené; u cizojazyčného nákupu to musí zaznít
+  // přímo u balíčku, ne jen v obecném právním upozornění pod formulářem.
+  const packageAppendixNotice = getPackageAppendixNotice(locale);
   const closeModal = (reason: 'button' | 'backdrop' | 'escape') => {
     trackEvent('builder_checkout_modal_closed', {
       ...analyticsDefaults,
@@ -424,6 +428,11 @@ export default function PaymentModal({
                 <p className="mt-1 text-xs text-slate-400">
                   {localizedPackage?.checkoutDescription ?? packageConfig.checkoutDescription}
                 </p>
+                {packageAppendixNotice ? (
+                  <p className="mt-2 text-xs leading-5 text-slate-500">
+                    {packageAppendixNotice}
+                  </p>
+                ) : null}
               </div>
             )}
 

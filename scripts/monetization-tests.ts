@@ -20,8 +20,14 @@ import {
   getFulfilmentContractName,
   getFulfilmentEmailCopy,
 } from '../lib/i18n/fulfilment-email';
+import {
+  getPackageAppendixNotice,
+  getPackageUpsellCopy,
+} from '../lib/i18n/package-upsell';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+/** Oddělovač řádků jako konstanta — v šablonách testů se snadno rozbije escapování. */
+const NEWLINE = String.fromCharCode(10);
 
 function resetFlags() {
   delete process.env.NEXT_PUBLIC_FEATURE_ZAKAZKA_PLUS;
@@ -374,6 +380,103 @@ function testFulfilmentEmailIsLocalized() {
   assert.ok(formatConsentTimestamp('2026-08-11T10:00:00.000Z', 'en').length > 0);
 }
 
+/**
+ * Nabídka balíčku v cizojazyčném builderu.
+ *
+ * Upsell blok s CTA je aktivní nabídka, i když balíček není propagován na
+ * `/en` ani `/ua`. Nesmí být česky a musí u něj zaznít, že přílohy balíčku
+ * jsou pouze české — dřív než zákazník vstoupí do placeného toku.
+ */
+function testPackageUpsellIsLocalized() {
+  const czechChars = /[ěščřžýáíéůúťďň]/i;
+  const cyrillic = /[Ѐ-ӿ]/;
+
+  // Balíčky nabízené cizojazyčnému zákazníkovi nesmí mít český text.
+  for (const key of ['vehicle_sale', 'employer_start'] as const) {
+    const en = getPackageUpsellCopy(key, 'en');
+    assert.ok(en, `${key} must be offered in EN`);
+    // „Kč" je měna, ne český text — zůstává i v cizojazyčné verzi.
+    // „Zaměstnavatel Start 2026" je název produktu, ten se také nepřekládá.
+    const withoutCurrency = (text: string) => text.replace(/Kč/g, '').replace(/Zaměstnavatel Start/g, '');
+    for (const [field, text] of Object.entries({ badge: en.badge, body: en.body, cta: en.cta })) {
+      assert.equal(
+        czechChars.test(withoutCurrency(text)),
+        false,
+        `EN upsell ${key}.${field} still contains Czech: ${text}`,
+      );
+    }
+    assert.ok(en.appendixNotice, `${key}: EN must disclose the language of package appendices`);
+    assert.match(en.appendixNotice, /Czech/i);
+
+    const ua = getPackageUpsellCopy(key, 'ua');
+    assert.ok(ua, `${key} must be offered in UA`);
+    assert.ok(cyrillic.test(ua.badge), `UA upsell ${key}.badge must be Ukrainian`);
+    assert.ok(cyrillic.test(ua.body), `UA upsell ${key}.body must be Ukrainian`);
+    assert.ok(cyrillic.test(ua.cta), `UA upsell ${key}.cta must be Ukrainian`);
+    assert.ok(cyrillic.test(ua.appendixNotice), `${key}: UA disclosure must be Ukrainian`);
+  }
+
+  // Zakázka Plus je česky-only produkt a v cizím jazyce se nesmí nabídnout.
+  assert.ok(getPackageUpsellCopy('work_order', 'cs'), 'work_order must be offered in Czech');
+  assert.equal(
+    getPackageUpsellCopy('work_order', 'en'),
+    null,
+    'work_order is a Czech-only product and must not be offered in EN',
+  );
+  assert.equal(
+    getPackageUpsellCopy('work_order', 'ua'),
+    null,
+    'work_order is a Czech-only product and must not be offered in UA',
+  );
+
+  // V češtině se upozornění na jazyk příloh nezobrazuje — čeština je očekávaná.
+  assert.equal(getPackageAppendixNotice('cs'), '');
+  assert.ok(getPackageAppendixNotice('en'));
+  assert.ok(getPackageAppendixNotice('ua'));
+  // Neznámé locale spadne na češtinu.
+  assert.equal(getPackageAppendixNotice('de'), '');
+
+  // Ceny v nabídce se berou z ceníku, ne z natvrdo psaného textu.
+  const enVehicle = getPackageUpsellCopy('vehicle_sale', 'en');
+  assert.ok(enVehicle);
+  assert.ok(
+    enVehicle.body.includes(THEMATIC_PACKAGE_CONFIG.vehicle_sale.priceLabel),
+    'the EN upsell must quote the price from the price list',
+  );
+}
+
+/**
+ * Buildery nesmí mít nabídku balíčku napsanou natvrdo — jinak se cizojazyčnému
+ * zákazníkovi zobrazí česky, jak se stalo na /auto?lang=en.
+ */
+function testBuildersDoNotHardcodePackageUpsell() {
+  const offenders: string[] = [];
+  const builders = [
+    'app/auto/page.tsx',
+    'app/pracovni/page.tsx',
+    'app/najem/page.tsx',
+    'app/smlouva-o-dilo/page.tsx',
+  ];
+  // Věty, které dřív stály natvrdo v JSX cizojazyčně dosažitelných builderů.
+  const hardcoded = /V tomto formuláři volíte|Zobrazit balíček →|Zobrazit obsah balíčku →|Nový personální balíček/;
+
+  for (const file of builders) {
+    const source = readFileSync(join(ROOT, file), 'utf8');
+    source.split(NEWLINE).forEach((line, index) => {
+      if (hardcoded.test(line) && !/^\s*(?:\/\/|\*)/.test(line)) {
+        offenders.push(`${file}:${index + 1}: ${line.trim().slice(0, 90)}`);
+      }
+    });
+  }
+
+  assert.deepEqual(
+    offenders,
+    [],
+    'package upsell copy must come from lib/i18n, not be hardcoded in the builder:' +
+      NEWLINE + offenders.join(NEWLINE),
+  );
+}
+
 function testAnalyticsEventsRegistered() {
   const required = [
     'content_offer_view',
@@ -426,6 +529,8 @@ function main() {
   testPagesNeverRenderDisabledPackages();
   testNoBuilderAdvertisesUnavailableSurcharge();
   testFulfilmentEmailIsLocalized();
+  testPackageUpsellIsLocalized();
+  testBuildersDoNotHardcodePackageUpsell();
   testAnalyticsEventsRegistered();
   testNoPiiInMonetizationAnalytics();
 

@@ -9,6 +9,7 @@ import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import type { StoredContractData } from '@/lib/contracts';
 import { getThematicPackageConfig } from '@/lib/packages';
+import { getPackageUpsellCopy } from '@/lib/i18n/package-upsell';
 import { getCarFormUi } from '@/lib/i18n/expat-builder-forms';
 import { carRiskWarnings, carValidationFields } from '@/lib/i18n/expat-builder-risk';
 import {
@@ -99,6 +100,11 @@ function CarSaleBuilderContent() {
   const [packageKeyFromUrl, setPackageKeyFromUrl] = useState<string | null>(null);
   const builderLocale = useBuilderLocale();
   const ui = useMemo(() => getCarFormUi(builderLocale), [builderLocale]);
+  // Balíček je aktivní nabídka i v cizojazyčném builderu — musí být v jeho jazyce.
+  const packageUpsell = useMemo(
+    () => getPackageUpsellCopy('vehicle_sale', builderLocale),
+    [builderLocale],
+  );
   useBuilderDocumentTitle(builderLocale, {
     en: 'Car purchase agreement — online form | SmlouvaHned',
     ua: 'Договір купівлі-продажу авто — онлайн-форма | SmlouvaHned',
@@ -506,38 +512,44 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
             </div>
           </div>
         </div>
-      ) : (
+      ) : packageUpsell ? (
         <div className="max-w-7xl mx-auto px-4 pt-8 lg:px-8">
           <div className="interactive-card block rounded-[1.75rem] border border-[rgba(197,160,89,0.18)] bg-[rgba(255,255,255,0.035)] p-6">
             <div className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-400">
-              Tematický balíček
+              {packageUpsell.badge}
             </div>
             <div className="mt-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
               <div className="max-w-3xl">
                 <h2 className="text-2xl font-semibold tracking-tight text-white">
-                  Balíček pro prodej vozidla
+                  {packageUpsell.title}
                 </h2>
                 <p className="mt-3 text-sm leading-relaxed text-slate-300">
-                  V tomto formuláři volíte mezi samostatným dokumentem za 99 Kč a širší variantou za 199 Kč. Pokud chcete řešit i předání vozidla, klíčů a dokladů, pokračujte tematickým balíčkem za 299 Kč.
+                  {packageUpsell.body}
                 </p>
-                <p className="mt-3 text-xs leading-6 text-[#bba98c]">
-                  Pokud si nejste jistí, kterou cestu zvolit, pomůže vám orientační stránka{' '}
-                  <Link href="/prodej-vozidla" className="link-gold-elegant">
-                    Podklady pro prodej vozidla
-                  </Link>
-                  .
-                </p>
+                {packageUpsell.appendixNotice ? (
+                  <p className="mt-3 text-xs leading-6 text-[#bba98c]">
+                    {packageUpsell.appendixNotice}
+                  </p>
+                ) : (
+                  <p className="mt-3 text-xs leading-6 text-[#bba98c]">
+                    Pokud si nejste jistí, kterou cestu zvolit, pomůže vám orientační stránka{' '}
+                    <Link href="/prodej-vozidla" className="link-gold-elegant">
+                      Podklady pro prodej vozidla
+                    </Link>
+                    .
+                  </p>
+                )}
               </div>
               <Link
                 href="/balicek-prodej-vozidla"
                 className="link-gold-elegant text-sm font-semibold"
               >
-                Zobrazit balíček →
+                {packageUpsell.cta}
               </Link>
             </div>
           </div>
         </div>
-      )}
+      ) : null}
 
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8" id="formular">
         <div className="mb-6 border-t border-slate-800/60 pt-8">

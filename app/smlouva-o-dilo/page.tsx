@@ -14,9 +14,9 @@ import { isValidMoney } from '@/lib/money';
 import {
   getThematicPackageConfig,
   isThematicPackageAvailable,
-  THEMATIC_PACKAGE_CONFIG,
 } from '@/lib/packages';
 import { isFeatureEnabled } from '@/lib/feature-flags';
+import { getPackageUpsellCopy } from '@/lib/i18n/package-upsell';
 
 type PaymentType = 'after_completion' | 'with_deposit' | 'milestones';
 
@@ -134,6 +134,9 @@ export default function WorkContractPage() {
     return isThematicPackageAvailable(candidate.key) ? candidate : null;
   }, [packageKeyFromUrl]);
   const isWorkOrderPackage = packageConfig?.key === 'work_order';
+  // Zakázka Plus je česky-only produkt; builder nemá cizojazyčnou variantu,
+  // takže se nabídka bere z české sady. Modul je jediným zdrojem znění.
+  const workOrderUpsell = getPackageUpsellCopy('work_order', 'cs');
 
   useEffect(() => {
     if (!isWorkOrderPackage) return;
@@ -323,19 +326,16 @@ export default function WorkContractPage() {
 
       {/* Balíček se ohlašuje až nad formulářem, aby hlavní CTA v hero sekci
           zůstalo na mobilu na stejném místě jako u samostatného dokumentu. */}
-      {!packageConfig && isFeatureEnabled('zakazkaPlus') && (
+      {!packageConfig && isFeatureEnabled('zakazkaPlus') && workOrderUpsell && (
         <div className="max-w-7xl mx-auto px-4 pt-8 lg:px-8">
           <Link href="/balicek-zakazka" className="interactive-card block rounded-[1.75rem] border border-[rgba(197,160,89,0.18)] bg-[rgba(255,255,255,0.035)] p-6">
-            <div className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-400">Balíček k zakázce</div>
+            <div className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-400">{workOrderUpsell.badge}</div>
             <div className="mt-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
               <div className="max-w-3xl">
                 <h2 className="text-2xl font-semibold tracking-tight text-white">Řešíte celou zakázku?</h2>
-                <p className="mt-3 text-sm leading-relaxed text-slate-300">
-                  Připravte smlouvu, platební podmínky, vícepráce a předání díla v jednom balíčku.{' '}
-                  {THEMATIC_PACKAGE_CONFIG.work_order.title} — {THEMATIC_PACKAGE_CONFIG.work_order.priceLabel}.
-                </p>
+                <p className="mt-3 text-sm leading-relaxed text-slate-300">{workOrderUpsell.body}</p>
               </div>
-              <span className="text-sm font-semibold text-amber-300">Zobrazit obsah balíčku →</span>
+              <span className="text-sm font-semibold text-amber-300">{workOrderUpsell.cta}</span>
             </div>
           </Link>
         </div>

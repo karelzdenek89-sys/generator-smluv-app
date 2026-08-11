@@ -22,6 +22,7 @@ import {
   MIN_WAGE_MONTHLY_2026_CZK,
 } from '@/lib/legal-constants-2026';
 import { getThematicPackageConfig } from '@/lib/packages';
+import { getPackageUpsellCopy } from '@/lib/i18n/package-upsell';
 
 type FormData = {
   employerName: string; employerIco: string; employerAddress: string; employerEmail: string;
@@ -69,6 +70,12 @@ export default function PracovniPage() {
   const builderLocale = useBuilderLocale();
   const ui = useMemo(() => getEmploymentFormUi(builderLocale), [builderLocale]);
   const packageConfig = getThematicPackageConfig(packageKeyFromUrl);
+  // Nabídka balíčku musí být v jazyce builderu; v nepodporovaném jazyce se
+  // nevykreslí vůbec, aby cizojazyčný zákazník neviděl český upsell.
+  const packageUpsell = useMemo(
+    () => getPackageUpsellCopy('employer_start', builderLocale),
+    [builderLocale],
+  );
   const isEmployerStart = packageConfig?.key === 'employer_start';
   useBuilderDocumentTitle(builderLocale, {
     en: 'Employment contract — online form | SmlouvaHned',
@@ -265,22 +272,25 @@ export default function PracovniPage() {
             </div>
           </div>
         </div>
-      ) : (
+      ) : packageUpsell ? (
         <div className="max-w-7xl mx-auto px-4 pt-8 lg:px-8">
           <Link href="/balicek-zamestnavatel" className="interactive-card block rounded-[1.75rem] border border-[rgba(197,160,89,0.18)] bg-[rgba(255,255,255,0.035)] p-6">
-            <div className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-400">Nový personální balíček</div>
+            <div className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-400">{packageUpsell.badge}</div>
             <div className="mt-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
               <div className="max-w-3xl">
-                <h2 className="text-2xl font-semibold tracking-tight text-white">Zaměstnavatel Start 2026</h2>
+                <h2 className="text-2xl font-semibold tracking-tight text-white">{packageUpsell.title}</h2>
                 <p className="mt-3 text-sm leading-relaxed text-slate-300">
-                  Pracovní smlouva, informace podle § 37 ZP, podklady k home office a vybavení, nástupní checklist a DOCX za 599 Kč.
+                  {packageUpsell.body}
                 </p>
+                {packageUpsell.appendixNotice ? (
+                  <p className="mt-3 text-xs leading-6 text-[#bba98c]">{packageUpsell.appendixNotice}</p>
+                ) : null}
               </div>
-              <span className="text-sm font-semibold text-amber-300">Zobrazit obsah balíčku →</span>
+              <span className="text-sm font-semibold text-amber-300">{packageUpsell.cta}</span>
             </div>
           </Link>
         </div>
-      )}
+      ) : null}
 
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8">
         <div className="grid lg:grid-cols-12 gap-8 items-start">
