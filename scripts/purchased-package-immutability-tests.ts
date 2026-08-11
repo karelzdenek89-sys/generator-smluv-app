@@ -179,6 +179,62 @@ function testDisabledProductBlocksSaleButNotFulfilment() {
 }
 
 /**
+ * Historická verze balíčku se nikdy nepředefinovává.
+ *
+ * Zákazník má nárok na rozsah, který si koupil, a u právních dokumentů musí
+ * být zpětně doložitelné, co přesně mu bylo dodáno. Změna obsahu balíčku
+ * proto nesmí přepsat význam existující verze — musí vzniknout verze nová.
+ *
+ * Otisk níže je záměrně doslovný. Když ho úprava rozbije, není správnou
+ * reakcí přepsat otisk, ale přidat další verzi a nechat starou beze změny.
+ */
+const FROZEN_VERSIONS: Record<string, Record<number, readonly string[]>> = {
+  vehicle_sale: {
+    1: [
+      'Kupní smlouva na vozidlo v komplexní variantě',
+      'Předávací protokol k vozidlu',
+      'Potvrzení o převzetí vozidla, klíčů a dokladů',
+      'Praktické podklady k převodu a předání',
+      'Dostupnost odkazu ke stažení 30 dní',
+    ],
+    2: [
+      'Kupní smlouva na vozidlo v komplexní variantě',
+      'Předávací protokol k vozidlu',
+      'Potvrzení o převzetí vozidla, klíčů a dokladů',
+      'Plná moc k zápisu změny vlastníka vozidla',
+      'Checklist předání vozidla a dokladů',
+      'Praktické podklady k převodu a předání',
+      'Dostupnost odkazu ke stažení 30 dní',
+    ],
+  },
+  work_order: {
+    1: [
+      'Smlouva o dílo v rozšířené variantě',
+      'Předávací a akceptační protokol k dílu',
+      'Formulář víceprací k odsouhlasení',
+      'Změnový list pro změny rozsahu díla',
+      'Přehled platebního harmonogramu',
+      'Dostupnost odkazu ke stažení 30 dní',
+    ],
+  },
+};
+
+function testHistoricalVersionsAreFrozen() {
+  for (const [key, versions] of Object.entries(FROZEN_VERSIONS)) {
+    for (const [version, expected] of Object.entries(versions)) {
+      assert.deepEqual(
+        getPackageIncludedOutputs(key as 'vehicle_sale' | 'work_order', {
+          version: Number(version),
+        }),
+        expected,
+        `${key} v${version} was redefined. Historical versions are immutable — ` +
+          'add a new version instead of changing what an existing one means.',
+      );
+    }
+  }
+}
+
+/**
  * Pojistka proti návratu chyby: generování dokumentu ani jeho odbavení
  * se nesmí ptát na feature flag.
  */
@@ -212,10 +268,11 @@ async function main() {
   testLegacyOrderStaysOnVersionOne();
   testWorkOrderPackageStaysImmutable();
   testDisabledProductBlocksSaleButNotFulfilment();
+  testHistoricalVersionsAreFrozen();
   await testGenerationNeverReadsFlags();
 
   console.log(
-    'Purchased package immutability passed (vehicle_sale, work_order, legacy orders, sale vs fulfilment).',
+    'Purchased package immutability passed (vehicle_sale, work_order, legacy orders, sale vs fulfilment, frozen versions).',
   );
 }
 
