@@ -9,6 +9,7 @@ import {
   isThematicPackageAvailable,
   normalizeThematicPackageKeyForContract,
   packageIncludesDocx,
+  resolvePurchasablePackageKeyForContract,
   THEMATIC_PACKAGES,
 } from '../lib/packages';
 import { getAvailableAnnualPlans, isAnnualPlanAvailable } from '../lib/annual-plans';
@@ -116,14 +117,17 @@ function testEveryPackageHasDistinctPrice() {
 }
 
 /**
- * Vypnutý balíček nesmí projít serverovou validací checkoutu. Bez toho by
- * ručně poslaný `packageKey` otevřel platbu za produkt, který není v provozu.
+ * Vypnutý balíček nesmí projít validací NOVÉHO checkoutu. Ručně poslaný
+ * `packageKey` tak neotevře platbu za produkt, který není v provozu.
+ *
+ * Odbavení už zaplacené objednávky se naopak řídí `normalizeThematicPackage…`,
+ * které dostupnost nekontroluje — viz purchased-package-immutability-tests.
  */
 function testFeatureFlagGate() {
   process.env.NEXT_PUBLIC_FEATURE_ZAKAZKA_PLUS = 'false';
   assert.equal(isThematicPackageAvailable('work_order'), false);
   assert.equal(
-    normalizeThematicPackageKeyForContract('work_order', 'work_contract'),
+    resolvePurchasablePackageKeyForContract('work_order', 'work_contract'),
     null,
     'disabled package must not survive checkout normalization',
   );
@@ -135,10 +139,11 @@ function testFeatureFlagGate() {
   process.env.NEXT_PUBLIC_FEATURE_ZAKAZKA_PLUS = 'true';
   assert.equal(isThematicPackageAvailable('work_order'), true);
   assert.equal(
-    normalizeThematicPackageKeyForContract('work_order', 'work_contract'),
+    resolvePurchasablePackageKeyForContract('work_order', 'work_contract'),
     'work_order',
   );
   // Balíček zůstává vázaný na svůj typ dokumentu i po zapnutí.
+  assert.equal(resolvePurchasablePackageKeyForContract('work_order', 'lease'), null);
   assert.equal(normalizeThematicPackageKeyForContract('work_order', 'lease'), null);
 
   // Balíčky bez flagu jsou dostupné vždy.

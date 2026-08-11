@@ -6,7 +6,10 @@ import {
   LOAN_ASSIGNMENT_CONSUMER_SAFE,
 } from './legal-constants-2026';
 import { hasCheckoutAddon } from './checkout-addons';
-import { isFeatureEnabled } from './feature-flags';
+import {
+  normalizePackageVersion,
+  PACKAGE_VERSION_WITH_FLAG_OUTPUTS,
+} from './packages';
 import { getEffectiveTrialPeriodMonths } from './labor-law-validation';
 
 export type ContractType =
@@ -797,7 +800,13 @@ function buildCarContractSections(d: StoredContractData): ContractSection[] {
   // a kontrolní seznam k předání. Smlouva sama zmocnění mezi stranami obsahuje
   // (čl. o přepisu), registr ale zpravidla vyžaduje samostatnou listinu,
   // kterou lze předložit bez celé smlouvy.
-  if (d.packageKey === 'vehicle_sale' && isFeatureEnabled('carSaleComplete')) {
+  // Rozsah se řídí verzí zakoupenou v objednávce, nikoli aktuálním feature
+  // flagem. Vypnutí produktu nesmí odebrat přílohy z dokumentu, který si
+  // zákazník už zaplatil a může si ho znovu stáhnout.
+  if (
+    d.packageKey === 'vehicle_sale' &&
+    normalizePackageVersion(d.packageVersion) >= PACKAGE_VERSION_WITH_FLAG_OUTPUTS
+  ) {
     const vehicleLabel = `${asText(d.carMake)} ${asText(d.carModel)}`;
 
     sections.push({

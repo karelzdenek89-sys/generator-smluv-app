@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { redis } from '@/lib/redis';
 import {
   getEffectivePriceLabel,
+  getPackageIncludedOutputs,
   getThematicPackageConfig,
+  normalizePackageVersion,
   normalizeThematicPackageKey,
   packageIncludesDocx,
 } from '@/lib/packages';
@@ -57,6 +59,8 @@ function formatStripeAmount(amount: number | null, currency: string | null): str
 type DraftRecord = {
   contractType?: string;
   packageKey?: string | null;
+  /** Verze obsahu balíčku zamrazená při nákupu; chybí u starších objednávek. */
+  packageVersion?: number | null;
   tier?: string;
   lang?: string;
   addOns?: unknown;
@@ -104,6 +108,7 @@ export async function GET(req: NextRequest) {
     const tier = normalizePricingTier(session.metadata?.tier);
     const lang = normalizeLocale(session.metadata?.lang);
     let packageKey = normalizeThematicPackageKey(session.metadata?.packageKey);
+    let packageVersion = normalizePackageVersion(session.metadata?.packageVersion);
     let packageLabel: string | null = null;
     let addOns: CheckoutAddonKey[] = [];
     let tokenVerified = false;
@@ -117,6 +122,9 @@ export async function GET(req: NextRequest) {
         tokenVerified = true;
         if (draft?.packageKey) {
           packageKey = normalizeThematicPackageKey(draft.packageKey) ?? packageKey;
+        }
+        if (draft?.packageVersion != null) {
+          packageVersion = normalizePackageVersion(draft.packageVersion);
         }
         addOns = normalizeStoredCheckoutAddons(draft?.addOns ?? draft?.payload?.addOns);
       } catch {
@@ -134,7 +142,11 @@ export async function GET(req: NextRequest) {
     const displayAddOns = packageIncludesDocx(packageKey) && !addOns.includes('docx')
       ? [...addOns, 'docx' as const]
       : addOns;
-    const packageItems = getThematicPackageConfig(packageKey)?.includedOutputs ?? [];
+    // Výpis odpovídá zakoupené verzi balíčku, ne aktuální nabídce — zákazník
+    // po zaplacení vidí přesně to, co dostane ve svém dokumentu.
+    const packageItems = packageKey
+      ? getPackageIncludedOutputs(packageKey, { locale: lang, version: packageVersion })
+      : [];
 
     const priceLabel =
       formatStripeAmount(session.amount_total, session.currency) ??

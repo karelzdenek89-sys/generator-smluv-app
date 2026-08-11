@@ -1,4 +1,3 @@
-import { isFeatureEnabled } from '@/lib/feature-flags';
 import { normalizeLocale } from '@/lib/locale';
 import {
   COMPLETE_ARCHIVE_DAYS,

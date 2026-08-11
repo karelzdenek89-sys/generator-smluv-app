@@ -1,9 +1,9 @@
 /**
- * Balíček Zakázka Plus — obsah dokumentu, cenová cesta a chování flagu.
+ * Balíček Zakázka Plus — obsah dokumentu a cenová cesta.
  *
- * Flagy se nastavují nahoře, aby platily po celý běh testu; obsah balíčku
- * i generovaný dokument je čtou až při volání, takže na pořadí importů
- * nezáleží. Právě tuto vlastnost ověřuje `testVehiclePromiseMatchesDocument`.
+ * Flagy nahoře řídí jen to, co se právě prodává. Obsah už zakoupené
+ * objednávky se řídí uloženou `packageVersion`; neměnnost hlídá samostatně
+ * `purchased-package-immutability-tests`.
  */
 process.env.NEXT_PUBLIC_FEATURE_ZAKAZKA_PLUS = 'true';
 process.env.NEXT_PUBLIC_FEATURE_CAR_SALE_COMPLETE = 'true';
@@ -104,6 +104,9 @@ function testVehiclePackageExtras() {
   const car: StoredContractData = {
     contractType: 'car_sale',
     packageKey: 'vehicle_sale',
+    // Objednávka zakoupená v době, kdy byl rozšířený obsah v prodeji.
+    // Rozsah se řídí touto verzí, ne aktuálním flagem.
+    packageVersion: 2,
     tier: 'complete',
     sellerName: 'Petr Prodávající',
     sellerId: '800101/1234',
@@ -130,12 +133,17 @@ function testVehiclePackageExtras() {
   // Samostatný dokument bez balíčku tyto přílohy nedostane.
   const standalone = combinedText({ ...car, packageKey: null });
   assert.doesNotMatch(standalone, /PLNÁ MOC K ZÁPISU ZMĚNY VLASTNÍKA/);
+
+  // Objednávka koupená před rozšířením zůstává na původním rozsahu.
+  const olderOrder = combinedText({ ...car, packageVersion: 1 });
+  assert.doesNotMatch(olderOrder, /PLNÁ MOC K ZÁPISU ZMĚNY VLASTNÍKA/);
+  assert.match(olderOrder, /PŘEDÁVACÍ PROTOKOL K VOZIDLU/);
 }
 
 /**
- * Slib v checkoutu a skutečný obsah dokumentu musí řídit tentýž flag.
- * Kdyby se rozešly, zákazník by v obsahu balíčku viděl přílohu, kterou PDF
- * neobsahuje — nebo naopak platil za méně, než dostane.
+ * Nabídka v checkoutu musí odpovídat tomu, co nový zákazník opravdu dostane.
+ * Se zapnutým produktem se prodává verze 2, takže výpis obsahu ji musí uvádět —
+ * jinak by zákazník viděl jiný rozsah, než jaký mu vygeneruje dokument.
  */
 function testVehiclePromiseMatchesDocument() {
   const promised = getPackageIncludedOutputs('vehicle_sale');

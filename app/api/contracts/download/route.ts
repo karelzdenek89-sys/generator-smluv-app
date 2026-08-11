@@ -3,6 +3,7 @@ import { redis } from '@/lib/redis';
 import { stripe } from '@/lib/stripe';
 import {
   getEffectivePriceBand,
+  normalizePackageVersion,
   normalizeThematicPackageKeyForContract,
   packageIncludesDocx,
 } from '@/lib/packages';
@@ -63,6 +64,8 @@ type DraftRecord = {
   contractType: StoredContractData['contractType'];
   tier?: string;
   packageKey?: string | null;
+  /** Verze obsahu balíčku zamrazená při nákupu; chybí u starších objednávek. */
+  packageVersion?: number | null;
   notaryUpsell?: boolean;
   payload: StoredContractData;
   paid: boolean;
@@ -175,6 +178,11 @@ export async function GET(req: NextRequest) {
     const hasPaidPackage = Boolean(resolvedPackageKey);
     const paidNotaryUpsell = hasPaidPackage || resolvedTier === 'professional' || resolvedTier === 'complete';
     const addOns = normalizeStoredCheckoutAddons(draft.addOns ?? draft.payload.addOns);
+    // Verze zakoupená při platbě. Objednávky z doby před verzováním údaj
+    // nemají a spadnou na verzi 1 — přesně na rozsah, který tehdy koupily.
+    const resolvedPackageVersion = normalizePackageVersion(
+      session.metadata?.packageVersion ?? draft.packageVersion ?? draft.payload.packageVersion,
+    );
 
     const fullData: StoredContractData = {
       ...draft.payload,
@@ -182,6 +190,7 @@ export async function GET(req: NextRequest) {
       notaryUpsell: paidNotaryUpsell,
       tier: resolvedTier,
       packageKey: resolvedPackageKey,
+      packageVersion: resolvedPackageVersion,
       addOns,
       lang: requestedLang !== 'cs'
         ? requestedLang

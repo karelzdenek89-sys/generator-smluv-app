@@ -251,19 +251,64 @@ const FLAG_GATED_OUTPUTS: Partial<
 };
 
 /**
- * Obsah balíčku tak, jak ho zákazník uvidí před platbou.
+ * Verze obsahu balíčku.
  *
- * Flag se čte až při volání, nikoli při inicializaci modulu. Generování
- * dokumentu čte tentýž flag ve stejný okamžik, takže se slib v checkoutu
- * a skutečný obsah PDF nemohou rozejít podle pořadí importů.
+ * Verze 1 je původní rozsah, verze 2 přidává výstupy z `FLAG_GATED_OUTPUTS`.
+ * Zakoupená verze se ukládá do objednávky, takže obsah už zaplaceného
+ * dokumentu je neměnný — pozdější vypnutí flagu z něj nic neodebere.
+ */
+export const PACKAGE_VERSION_BASE = 1;
+export const PACKAGE_VERSION_WITH_FLAG_OUTPUTS = 2;
+
+/**
+ * Verze, kterou dostane NOVÝ zákazník při dnešním nákupu.
+ *
+ * Tohle je jediné místo, kde smí feature flag ovlivnit obsah balíčku —
+ * rozhoduje o tom, co se právě prodává, nikoli o tom, co dostane někdo,
+ * kdo už zaplatil.
+ */
+export function resolvePurchasablePackageVersion(key: ThematicPackageKey): number {
+  const extra = FLAG_GATED_OUTPUTS[key];
+  return extra && isFeatureEnabled(extra.flag)
+    ? PACKAGE_VERSION_WITH_FLAG_OUTPUTS
+    : PACKAGE_VERSION_BASE;
+}
+
+/**
+ * Verze zakoupeného balíčku z uložené objednávky.
+ *
+ * Objednávky vzniklé před zavedením verzování údaj neobsahují. Ty spadnou na
+ * verzi 1, což je přesně to, co si tehdy koupily — výstupy za flagem se do
+ * produkce nikdy nedostaly dřív, než začalo verzování.
+ */
+export function normalizePackageVersion(value: unknown): number {
+  const version = Number(value);
+  return Number.isInteger(version) && version >= PACKAGE_VERSION_BASE
+    ? version
+    : PACKAGE_VERSION_BASE;
+}
+
+/**
+ * Obsah balíčku pro danou verzi.
+ *
+ * Bez `version` vrací to, co se právě prodává (merchandising). S `version`
+ * vrací obsah zakoupené objednávky, nezávisle na aktuálním stavu flagů.
  */
 export function getPackageIncludedOutputs(
   key: ThematicPackageKey,
-  options?: { baseOutputs?: readonly string[]; locale?: string | null },
+  options?: {
+    baseOutputs?: readonly string[];
+    locale?: string | null;
+    version?: number;
+  },
 ): readonly string[] {
   const outputs = options?.baseOutputs ?? THEMATIC_PACKAGE_CONFIG[key].includedOutputs;
   const extra = FLAG_GATED_OUTPUTS[key];
-  if (!extra || !isFeatureEnabled(extra.flag)) return outputs;
+  if (!extra) return outputs;
+
+  const version = options?.version ?? resolvePurchasablePackageVersion(key);
+  if (version < PACKAGE_VERSION_WITH_FLAG_OUTPUTS) return outputs;
+
   const items = getLocalizedFlagGatedOutputs(key, options?.locale) ?? extra.items;
   const insertAt = Math.max(0, outputs.length - 2);
   return [...outputs.slice(0, insertAt), ...items, ...outputs.slice(insertAt)];
@@ -282,8 +327,24 @@ export function normalizeThematicPackageKeyForContract(
 ): ThematicPackageKey | null {
   const packageConfig = getThematicPackageConfig(value);
   if (!packageConfig || packageConfig.contractType !== contractType) return null;
-  if (!isThematicPackageAvailable(packageConfig.key)) return null;
   return packageConfig.key;
+}
+
+/**
+ * Balíček pro NOVÝ checkout. Oproti `normalizeThematicPackageKeyForContract`
+ * navíc vyžaduje, aby byl produkt v provozu.
+ *
+ * Dostupnost se smí kontrolovat výhradně tady. Kdyby ji vynucovalo i plnění
+ * objednávky, vypnutí produktu by zákazníkovi, který už zaplatil, při dalším
+ * stažení vygenerovalo dokument bez zakoupených příloh.
+ */
+export function resolvePurchasablePackageKeyForContract(
+  value: string | null | undefined,
+  contractType: ContractType,
+): ThematicPackageKey | null {
+  const key = normalizeThematicPackageKeyForContract(value, contractType);
+  if (!key) return null;
+  return isThematicPackageAvailable(key) ? key : null;
 }
 
 export function getEffectiveIncludedItems(
@@ -291,6 +352,11 @@ export function getEffectiveIncludedItems(
   tier: PricingTier,
   packageKey?: string | null,
   locale?: string | null,
+  /**
+   * Zakoupená verze balíčku. Vynechte před nákupem (vypíše se aktuální
+   * nabídka); po nákupu vždy předejte uloženou verzi objednávky.
+   */
+  version?: number,
 ): readonly string[] {
   const packageConfig = getThematicPackageConfig(packageKey);
   if (packageConfig) {
@@ -299,9 +365,10 @@ export function getEffectiveIncludedItems(
       return getPackageIncludedOutputs(packageConfig.key, {
         baseOutputs: getLocalizedIncludedItems(contractType, tier, packageKey, locale),
         locale,
+        version,
       });
     }
-    return getPackageIncludedOutputs(packageConfig.key);
+    return getPackageIncludedOutputs(packageConfig.key, { version });
   }
   if (locale && locale !== 'cs') {
     return getLocalizedIncludedItems(contractType, tier, packageKey, locale);

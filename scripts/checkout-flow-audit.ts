@@ -60,6 +60,10 @@ function testCheckoutRouteCoverage() {
   assert.match(packages, /STRIPE_PRICE_ID_PACKAGE/);
   assert.match(packages, /STRIPE_PRICE_ID_EMPLOYER_START/);
   assert.match(packages, /normalizeThematicPackageKeyForContract/);
+  // Nový checkout smí balíček přijmout jen přes variantu, která kontroluje
+  // dostupnost produktu; odbavení zaplacené objednávky ji záměrně nepoužívá.
+  assert.match(checkout, /resolvePurchasablePackageKeyForContract/);
+  assert.match(checkout, /packageVersion/);
   assert.doesNotMatch(
     packages,
     /STRIPE_PRICE_ID_PACKAGE\s*\?\?\s*process\.env\.STRIPE_PRICE_ID_PREMIUM/,

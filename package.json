@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "lint:ci": "eslint app lib e2e scripts/generate-samples.ts scripts/i18n-expat-tests.ts scripts/checkout-flow-audit.ts scripts/pre-deploy-expat-check.ts scripts/lint-contracts.ts scripts/audit-pre-deploy-pdfs.ts scripts/audit-output-quality.ts scripts/audit-addon-value.ts scripts/audit-site-content.ts scripts/api-security-tests.ts scripts/checkout-validation-tests.ts scripts/secret-scan.ts scripts/source-integrity-check.ts scripts/year-rollover-check.ts scripts/money-parsing-tests.ts scripts/seo-architecture-tests.ts scripts/pricing-matrix-audit.ts scripts/employer-package-tests.ts scripts/work-order-package-tests.ts scripts/monetization-tests.ts --quiet",
+    "lint:ci": "eslint app lib e2e scripts/generate-samples.ts scripts/i18n-expat-tests.ts scripts/checkout-flow-audit.ts scripts/pre-deploy-expat-check.ts scripts/lint-contracts.ts scripts/audit-pre-deploy-pdfs.ts scripts/audit-output-quality.ts scripts/audit-addon-value.ts scripts/audit-site-content.ts scripts/api-security-tests.ts scripts/checkout-validation-tests.ts scripts/secret-scan.ts scripts/source-integrity-check.ts scripts/year-rollover-check.ts scripts/money-parsing-tests.ts scripts/seo-architecture-tests.ts scripts/pricing-matrix-audit.ts scripts/employer-package-tests.ts scripts/work-order-package-tests.ts scripts/monetization-tests.ts scripts/purchased-package-immutability-tests.ts --quiet",
     "test:i18n": "tsx scripts/i18n-expat-tests.ts",
     "test:e2e:i18n": "tsx scripts/i18n-expat-tests.ts",
     "test:pdf:i18n": "tsx scripts/i18n-expat-tests.ts",
@@ -21,12 +21,13 @@
     "test:e2e:lease-en": "playwright test e2e/lease-en-smoke.spec.ts",
     "test:e2e:lease-ua": "playwright test e2e/lease-ua-smoke.spec.ts",
     "test:e2e:lease-expat": "playwright test e2e/lease-en-smoke.spec.ts e2e/lease-ua-smoke.spec.ts",
-    "test:pre-deploy": "npm run lint:ci && npm run test:api-security && npm run test:checkout-validation && npm run test:secrets && npm run test:source-integrity && npm run test:year-rollover && npm run test:money && npm run test:seo && npm run test:pricing && npm run test:employer-package && npm run test:work-order-package && npm run test:monetization && tsx scripts/i18n-expat-tests.ts && tsx scripts/checkout-flow-audit.ts && tsx scripts/audit-addon-value.ts && tsx scripts/audit-site-content.ts && tsx scripts/pre-deploy-expat-check.ts && tsx scripts/audit-pre-deploy-pdfs.ts && tsx scripts/test-font-glyphs.ts && tsx scripts/lint-contracts.ts && tsx scripts/audit-output-quality.ts && npm run build",
+    "test:pre-deploy": "npm run lint:ci && npm run test:api-security && npm run test:checkout-validation && npm run test:secrets && npm run test:source-integrity && npm run test:year-rollover && npm run test:money && npm run test:seo && npm run test:pricing && npm run test:employer-package && npm run test:work-order-package && npm run test:monetization && npm run test:immutability && tsx scripts/i18n-expat-tests.ts && tsx scripts/checkout-flow-audit.ts && tsx scripts/audit-addon-value.ts && tsx scripts/audit-site-content.ts && tsx scripts/pre-deploy-expat-check.ts && tsx scripts/audit-pre-deploy-pdfs.ts && tsx scripts/test-font-glyphs.ts && tsx scripts/lint-contracts.ts && tsx scripts/audit-output-quality.ts && npm run build",
     "test:money": "tsx scripts/money-parsing-tests.ts",
     "test:pricing": "tsx scripts/pricing-matrix-audit.ts",
     "test:employer-package": "tsx scripts/employer-package-tests.ts",
     "test:work-order-package": "tsx scripts/work-order-package-tests.ts",
     "test:monetization": "tsx scripts/monetization-tests.ts",
+    "test:immutability": "tsx scripts/purchased-package-immutability-tests.ts",
     "test:e2e:checkout": "playwright test e2e/checkout-contract.spec.ts e2e/checkout-required-fields.spec.ts e2e/employer-package.spec.ts"
   },
   "dependencies": {

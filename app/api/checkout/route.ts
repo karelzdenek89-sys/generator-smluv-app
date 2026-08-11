@@ -18,7 +18,8 @@ import { stripe } from '@/lib/stripe';
 import {
   getEffectivePriceBand,
   getStripePriceIdForCheckout,
-  normalizeThematicPackageKeyForContract,
+  resolvePurchasablePackageKeyForContract,
+  resolvePurchasablePackageVersion,
 } from '@/lib/packages';
 import { normalizeLocale } from '@/lib/locale';
 import { normalizePricingTier } from '@/lib/pricing';
@@ -244,8 +245,11 @@ export async function POST(req: Request) {
         : typeof payload.packageKey === 'string'
           ? payload.packageKey
           : null;
-    const packageKey = normalizeThematicPackageKeyForContract(rawPackageKey, contractType);
+    const packageKey = resolvePurchasablePackageKeyForContract(rawPackageKey, contractType);
     const checkoutTier = packageKey ? 'complete' : paidTier;
+    // Verze obsahu se zamrazí v okamžiku nákupu. Od této chvíle je pro
+    // objednávku závazná — pozdější změna feature flagu ji nesmí přepsat.
+    const packageVersion = packageKey ? resolvePurchasablePackageVersion(packageKey) : null;
 
     if (packageKey === 'employer_start') {
       const requiredPackageFields = [
@@ -342,6 +346,7 @@ export async function POST(req: Request) {
           contractType,
           tier: checkoutTier,
           packageKey,
+          packageVersion,
           addOns,
           notaryUpsell: packageKey ? true : notaryUpsell,
           downloadToken,
@@ -354,6 +359,7 @@ export async function POST(req: Request) {
             contractType,
             tier: checkoutTier,
             packageKey,
+            packageVersion,
             addOns,
             notaryUpsell: packageKey ? true : notaryUpsell,
             lang,
@@ -416,7 +422,7 @@ export async function POST(req: Request) {
         notaryUpsell: String(packageKey ? true : notaryUpsell),
         downloadToken,
         addOns: getCheckoutAddonMetadata(addOns),
-        ...(packageKey ? { packageKey } : {}),
+        ...(packageKey ? { packageKey, packageVersion: String(packageVersion) } : {}),
         ...(isCheckoutAudit ? { checkoutAudit: 'true' } : {}),
       },
     };
