@@ -92,10 +92,14 @@ const CONTRACT_TIER_COPY: Record<TierCopyContractType, TierContractCopy> = {
   work_contract: {
     basicDescription: 'Plnohodnotná smlouva o dílo pro standardní zakázku s jasně vymezeným rozsahem.',
     completeDescription:
-      'Rozšířená varianta pro projekty, kde potřebujete vícepráce, podrobnější předání a vyšší smluvní jistotu.',
+      'Rozšířená varianta pro projekty, kde potřebujete podrobnější pravidla víceprací, předání a vyšší smluvní jistotu.',
+    // Formulace záměrně mluví o ustanoveních smlouvy, ne o samostatných
+    // dokumentech — ty jsou obsahem balíčku Zakázka Plus. Dřívější znění
+    // („vícepráce a změnové listy“) vypadalo jako slib samostatných formulářů
+    // a stíralo rozdíl mezi 199 Kč a 399 Kč.
     completeHighlights: [
-      'vícepráce a změnové listy',
-      'předání a akceptace',
+      'ustanovení pro vícepráce a změny rozsahu',
+      'podrobnější pravidla předání a akceptace',
       'checklist převzetí díla',
     ],
     completeIncludes: [

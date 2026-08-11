@@ -172,7 +172,7 @@ export const THEMATIC_PACKAGE_CONFIG: Record<
     perex:
       'Balíček navazuje na smlouvu o dílo v rozšířené variantě a doplňuje ji o podklady, které se v průběhu zakázky používají nejčastěji — od odsouhlasení víceprací po předání a akceptaci díla.',
     comparisonNote:
-      'Oproti samostatné smlouvě o dílo obsahuje předávací a akceptační protokol, formulář víceprací, změnový list a přehled platebního harmonogramu.',
+      'Rozšířený dokument řeší vícepráce a předání díla ustanoveními uvnitř smlouvy. Balíček k tomu navíc přidává samostatné dokumenty, které se používají v průběhu zakázky: předávací a akceptační protokol, formulář víceprací, změnový list a přehled platebního harmonogramu.',
     suitableFor:
       'Vhodné pro řemeslníky, freelancery a menší firmy, které chtějí mít u běžné zakázky připravenou nejen smlouvu, ale i podklady pro změny rozsahu a předání díla.',
     cta: 'Připravit dokumentaci k zakázce',

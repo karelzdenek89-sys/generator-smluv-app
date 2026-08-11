@@ -15,6 +15,11 @@ import { getAvailableThematicPackages, THEMATIC_PACKAGE_CONFIG } from '../lib/pa
 // Oba moduly čtou flagy i konfiguraci až při volání, takže stačí načíst je jednou.
 import { getPostPurchaseOffers } from '../lib/post-purchase-offers';
 import { getContextualOffer } from '../lib/marketing/contextual-offers';
+import {
+  formatConsentTimestamp,
+  getFulfilmentContractName,
+  getFulfilmentEmailCopy,
+} from '../lib/i18n/fulfilment-email';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -236,6 +241,139 @@ function testPagesNeverRenderDisabledPackages() {
   }
 }
 
+/**
+ * Builder nesmí slibovat placený příplatek, který v checkoutu neexistuje.
+ *
+ * Formulář smlouvy o dílo nabízel „Chci notářsky ověřené podpisy (+200 Kč)“.
+ * Žádný takový add-on nikdy neexistoval: server cenu neúčtoval, dokument se
+ * nezměnil a notářské ověření je offline úkon, který web neposkytuje.
+ * Zákazník tedy zaškrtl placenou právní službu, kterou nikdy nedostal.
+ *
+ * Pravidlo: ceny doplňků se do UI dostávají výhradně z `CHECKOUT_ADDON_CONFIG`
+ * (`priceLabel`). Literálně napsaný příplatek ve stránce znamená buď neexistující
+ * službu, nebo cenu, která se rozejde s ceníkem.
+ */
+function testNoBuilderAdvertisesUnavailableSurcharge() {
+  const surcharge = /\+\s?\d{2,4}\s?Kč/;
+  const offenders: string[] = [];
+
+  function walk(dir: string) {
+    for (const entry of readdirSync(dir)) {
+      const path = join(dir, entry);
+      if (statSync(path).isDirectory()) {
+        walk(path);
+        continue;
+      }
+      if (!/\.tsx?$/.test(entry)) continue;
+      const source = readFileSync(path, 'utf8');
+      source.split('\n').forEach((line, index) => {
+        if (!surcharge.test(line)) return;
+        if (/^\s*(?:\/\/|\*|\/\*)/.test(line)) return;
+        offenders.push(
+          `${relative(ROOT, path).replace(/\\/g, '/')}:${index + 1}: ${line.trim().slice(0, 110)}`,
+        );
+      });
+    }
+  }
+
+  walk(join(ROOT, 'app'));
+
+  assert.deepEqual(
+    offenders,
+    [],
+    'a surcharge is written literally into the UI instead of coming from ' +
+      `CHECKOUT_ADDON_CONFIG — it may not correspond to any real add-on:\n${offenders.join('\n')}`,
+  );
+
+  // Žádná varianta notářského ověření se zákazníkovi nenabízí jako placená služba.
+  // Bez \w — ten v JS nematchuje diakritiku, takže „ověřené" by propadlo.
+  const notary = /notá[řr]sk\S*\s+ov[ěe][řr]en\S*\s+podpis/i;
+  const notaryOffenders: string[] = [];
+  function walkNotary(dir: string) {
+    for (const entry of readdirSync(dir)) {
+      const path = join(dir, entry);
+      if (statSync(path).isDirectory()) {
+        // Blog smí o notářském ověření věcně informovat; nabízet ho nesmí builder.
+        if (entry === 'blog') continue;
+        walkNotary(path);
+        continue;
+      }
+      if (!/\.tsx?$/.test(entry)) continue;
+      const source = readFileSync(path, 'utf8');
+      source.split('\n').forEach((line, index) => {
+        if (notary.test(line) && /checkbox|\(\+|Chci /i.test(line)) {
+          notaryOffenders.push(`${relative(ROOT, path).replace(/\\/g, '/')}:${index + 1}`);
+        }
+      });
+    }
+  }
+  walkNotary(join(ROOT, 'app'));
+
+  assert.deepEqual(
+    notaryOffenders,
+    [],
+    `no builder may offer notarised signatures as a purchasable option:\n${notaryOffenders.join('\n')}`,
+  );
+}
+
+/**
+ * Potvrzovací e-mail musí být v jazyce, ve kterém zákazník nakupoval.
+ * Doklad o souhlasu s okamžitým dodáním digitálního obsahu musí zůstat
+ * ve všech jazycích věcně stejný — je to zákonná náležitost, ne marketing.
+ */
+function testFulfilmentEmailIsLocalized() {
+  const czechChars = /[ěščřžýáíéůúťďň]/i;
+  const cyrillic = /[Ѐ-ӿ]/;
+
+  const cs = getFulfilmentEmailCopy('cs');
+  assert.equal(cs.htmlLang, 'cs');
+  assert.match(cs.subject('X'), /připraven/);
+
+  const en = getFulfilmentEmailCopy('en');
+  assert.equal(en.htmlLang, 'en');
+  for (const [label, text] of Object.entries({
+    subject: en.subject('Czech rental agreement'),
+    heading: en.heading,
+    downloadPdf: en.downloadPdf,
+    portal: en.portal,
+    expiry: en.expiry(30),
+    footer: en.footer,
+    consent: en.consent('1. 1. 2026', '2026-07-15', '2026-07-15'),
+  })) {
+    assert.equal(czechChars.test(text), false, `EN e-mail ${label} still contains Czech: ${text}`);
+  }
+
+  const ua = getFulfilmentEmailCopy('ua');
+  assert.equal(ua.htmlLang, 'uk');
+  assert.ok(cyrillic.test(ua.heading), 'UA e-mail heading must be Ukrainian');
+  assert.ok(cyrillic.test(ua.downloadPdf), 'UA download CTA must be Ukrainian');
+  assert.ok(cyrillic.test(ua.consent('1.1.2026', 'a', 'b')), 'UA consent record must be Ukrainian');
+
+  // Doklad o souhlasu musí ve všech jazycích nést verze podmínek.
+  for (const locale of ['cs', 'en', 'ua'] as const) {
+    const text = getFulfilmentEmailCopy(locale).consent('DATUM', 'T-1', 'P-1');
+    assert.ok(text.includes('DATUM'), `${locale}: consent must include the timestamp`);
+    assert.ok(text.includes('T-1') && text.includes('P-1'), `${locale}: consent must include versions`);
+  }
+
+  // Neznámé locale spadne na češtinu.
+  assert.equal(getFulfilmentEmailCopy('de').htmlLang, 'cs');
+  assert.equal(getFulfilmentContractName('lease', 'de'), 'Nájemní smlouva');
+
+  // Název dokumentu existuje pro všech 14 typů ve všech jazycích.
+  const types = ['lease','car_sale','gift','work_contract','loan','nda','general_sale',
+    'employment','dpp','service','sublease','power_of_attorney','debt_acknowledgment','cooperation'];
+  for (const locale of ['cs', 'en', 'ua'] as const) {
+    for (const t of types) {
+      const name = getFulfilmentContractName(t, locale);
+      assert.notEqual(name, 'Legal document', `${locale}/${t} fell back to the generic name`);
+      assert.notEqual(name, 'Právní dokument', `${locale}/${t} fell back to the generic name`);
+    }
+  }
+
+  assert.ok(formatConsentTimestamp('2026-08-11T10:00:00.000Z', 'en').length > 0);
+}
+
 function testAnalyticsEventsRegistered() {
   const required = [
     'content_offer_view',
@@ -286,6 +424,8 @@ function main() {
   testContextualOffersNeverPointAtDisabledProducts();
   testNoHardcodedPricesInArticles();
   testPagesNeverRenderDisabledPackages();
+  testNoBuilderAdvertisesUnavailableSurcharge();
+  testFulfilmentEmailIsLocalized();
   testAnalyticsEventsRegistered();
   testNoPiiInMonetizationAnalytics();
 

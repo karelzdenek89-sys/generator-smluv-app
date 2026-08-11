@@ -12,6 +12,11 @@ import {
 } from '@/lib/checkout-addons';
 import { normalizePricingTier } from '@/lib/pricing';
 import { recordAnalyticsEvent } from '@/lib/analytics-server';
+import {
+  formatConsentTimestamp,
+  getFulfilmentContractName,
+  getFulfilmentEmailCopy,
+} from '@/lib/i18n/fulfilment-email';
 import type { AnalyticsEventParams } from '@/lib/analytics';
 import { getEffectivePriceBand, packageIncludesDocx } from '@/lib/packages';
 
@@ -278,24 +283,8 @@ async function sendDownloadEmail(
   packageKey: string | null = null,
   consent: unknown = null,
 ): Promise<void> {
-  const contractNames: Record<string, string> = {
-    lease: 'Nájemní smlouva',
-    car_sale: 'Kupní smlouva na vozidlo',
-    gift: 'Darovací smlouva',
-    work_contract: 'Smlouva o dílo',
-    loan: 'Smlouva o zápůjčce',
-    nda: 'Smlouva o mlčenlivosti (NDA)',
-    general_sale: 'Kupní smlouva',
-    employment: 'Pracovní smlouva',
-    dpp: 'Dohoda o provedení práce',
-    service: 'Smlouva o poskytování služeb',
-    sublease: 'Podnájemní smlouva',
-    power_of_attorney: 'Plná moc',
-    debt_acknowledgment: 'Uznání dluhu',
-    cooperation: 'Smlouva o spolupráci',
-  };
-
-  const contractName = contractNames[contractType] || 'Právní dokument';
+  const copy = getFulfilmentEmailCopy(lang);
+  const contractName = getFulfilmentContractName(contractType, lang);
   const langQuery = lang === 'cs' ? '' : `&lang=${encodeURIComponent(lang)}`;
   const tokenFragment = downloadToken ? `#token=${encodeURIComponent(downloadToken)}` : '';
   const downloadUrl = `${baseUrl}/stahnout?session_id=${encodeURIComponent(sessionId)}${langQuery}${tokenFragment}`;
@@ -307,7 +296,7 @@ async function sendDownloadEmail(
     ? (consent as Record<string, unknown>)
     : null;
   const consentAcceptedAt = typeof consentRecord?.acceptedAt === 'string'
-    ? new Date(consentRecord.acceptedAt).toLocaleString('cs-CZ', { timeZone: 'Europe/Prague' })
+    ? formatConsentTimestamp(consentRecord.acceptedAt, lang)
     : null;
   const termsVersion = typeof consentRecord?.termsVersion === 'string' ? consentRecord.termsVersion : null;
   const privacyVersion = typeof consentRecord?.privacyVersion === 'string' ? consentRecord.privacyVersion : null;
@@ -322,11 +311,11 @@ async function sendDownloadEmail(
     body: JSON.stringify({
       from: 'SmlouvaHned <dokumenty@planstavby.cz>',
       to: [to],
-      subject: `✅ Váš dokument je připraven ke stažení — ${contractName}`,
+      subject: copy.subject(contractName),
       html: `
         <!DOCTYPE html>
-        <html lang="cs">
-        <head><meta charset="UTF-8"><title>Váš dokument SmlouvaHned</title></head>
+        <html lang="${copy.htmlLang}">
+        <head><meta charset="UTF-8"><title>${copy.pageTitle}</title></head>
         <body style="background:#05080f;font-family:Arial,sans-serif;color:#e2e8f0;padding:40px 20px;margin:0;">
           <div style="max-width:580px;margin:0 auto;background:#0c1426;border-radius:24px;border:1px solid #1e2940;padding:40px;">
             <div style="text-align:center;margin-bottom:32px;">
@@ -335,37 +324,37 @@ async function sendDownloadEmail(
               </div>
             </div>
             <h1 style="color:#fff;font-size:26px;font-weight:900;margin:0 0 12px;text-align:center;">
-              Vaše platba byla přijata ✓
+              ${copy.heading}
             </h1>
             <p style="color:#94a3b8;font-size:15px;text-align:center;margin-bottom:32px;">
-              ${contractName} je připravena ke stažení.
+              ${copy.intro(contractName)}
             </p>
             <a href="${downloadUrl}"
                style="display:block;text-align:center;background:linear-gradient(135deg,#f59e0b,#eab308);color:#000;font-weight:900;font-size:18px;padding:18px 32px;border-radius:16px;text-decoration:none;margin-bottom:16px;letter-spacing:-0.3px;">
-              STÁHNOUT PDF DOKUMENT
+              ${copy.downloadPdf}
             </a>
             ${addOns.includes('docx') || packageIncludesDocx(packageKey) ? `
             <a href="${docxDownloadUrl}"
                style="display:block;text-align:center;background:#1f2937;color:#fbbf24;font-weight:800;font-size:14px;padding:14px 24px;border-radius:14px;text-decoration:none;margin-bottom:16px;border:1px solid #92400e;">
-              STÁHNOUT EDITOVATELNÝ DOCX
+              ${copy.downloadDocx}
             </a>
             ` : ''}
             <a href="${portalUrl}"
                style="display:block;text-align:center;border:1px solid #334155;color:#cbd5e1;font-weight:700;font-size:14px;padding:12px 24px;border-radius:12px;text-decoration:none;margin-bottom:24px;">
-              MOJE DOKUMENTY (bezpečný přístup)
+              ${copy.portal}
             </a>
             <p style="color:#64748b;font-size:12px;text-align:center;margin:0;">
-              Odkaz ke stažení je platný ${archiveDays} dní od zaplacení.<br>
-              V případě dotazů nás kontaktujte na <a href="mailto:info@smlouvahned.cz" style="color:#f59e0b;">info@smlouvahned.cz</a>
+              ${copy.expiry(archiveDays)}<br>
+              ${copy.questions} <a href="mailto:info@smlouvahned.cz" style="color:#f59e0b;">info@smlouvahned.cz</a>
             </p>
             ${consentAcceptedAt && termsVersion && privacyVersion ? `
             <div style="margin-top:24px;padding:16px;border-radius:12px;background:#111c31;color:#94a3b8;font-size:11px;line-height:1.6;">
-              Potvrzení uzavření smlouvy: dne ${consentAcceptedAt} jste výslovně souhlasil(a) s okamžitým dodáním digitálního obsahu před uplynutím lhůty pro odstoupení a vzal(a) jste na vědomí, že dodáním digitálního obsahu ztrácíte právo odstoupit. Obchodní podmínky verze ${termsVersion}, zásady ochrany osobních údajů verze ${privacyVersion}.
+              ${copy.consent(consentAcceptedAt, termsVersion, privacyVersion)}
             </div>
             ` : ''}
           </div>
           <p style="color:#334155;font-size:11px;text-align:center;margin-top:24px;">
-            © 2026 SmlouvaHned. Dokumenty jsou generovány automaticky a neslouží jako individuální právní poradenství.
+            ${copy.footer}
           </p>
         </body>
         </html>

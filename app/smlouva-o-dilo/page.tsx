@@ -799,17 +799,6 @@ export default function WorkContractPage() {
                     </div>
                   </div>
 
-                  <div className="pt-4 border-t border-slate-800">
-                    <label className="flex items-center gap-3 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={formData.notaryUpsell}
-                        onChange={(e) => updateField('notaryUpsell', e.target.checked)}
-                        className="accent-amber-500 w-5 h-5"
-                      />
-                      <span className="font-bold text-white">Chci notářsky ověřené podpisy (+200 Kč)</span>
-                    </label>
-                  </div>
                 </div>
               </section>
 
