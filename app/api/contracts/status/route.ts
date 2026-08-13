@@ -19,6 +19,8 @@ import {
 } from '@/lib/checkout-addons';
 import { readFirstPartyJson } from '@/lib/api-security';
 import { takeRateLimit } from '@/lib/rate-limit';
+import { buildPartnerContext } from '@/lib/partners/context';
+import { getEligiblePartnerOffers } from '@/lib/partners/catalog';
 
 export const runtime = 'nodejs';
 
@@ -64,11 +66,12 @@ type DraftRecord = {
   tier?: string;
   lang?: string;
   addOns?: unknown;
-  payload?: {
+  payload?: Record<string, unknown> & {
     addOns?: unknown;
     lang?: string;
   };
   downloadToken?: string | null;
+  partnerAttributionId?: string | null;
 };
 
 function statusTokenMatches(draft: DraftRecord | null | undefined, token: string): boolean {
@@ -112,6 +115,7 @@ export async function GET(req: NextRequest) {
     let packageLabel: string | null = null;
     let addOns: CheckoutAddonKey[] = [];
     let tokenVerified = false;
+    let verifiedDraft: DraftRecord | null = null;
 
     if (draftId) {
       try {
@@ -120,6 +124,7 @@ export async function GET(req: NextRequest) {
           return NextResponse.json({ status: 'paid' });
         }
         tokenVerified = true;
+        verifiedDraft = draft ?? null;
         if (draft?.packageKey) {
           packageKey = normalizeThematicPackageKey(draft.packageKey) ?? packageKey;
         }
@@ -151,6 +156,16 @@ export async function GET(req: NextRequest) {
     const priceLabel =
       formatStripeAmount(session.amount_total, session.currency) ??
       getEffectivePriceLabel(tier, packageKey);
+    const partnerContext = buildPartnerContext({
+      contractType,
+      documentTier: tier,
+      locale: lang,
+      packageKey,
+      rawContractData: verifiedDraft?.payload,
+      paid: true,
+      completed: true,
+    });
+    const partnerOffers = partnerContext ? getEligiblePartnerOffers(partnerContext) : [];
 
     return NextResponse.json({
       status: 'paid',
@@ -167,6 +182,9 @@ export async function GET(req: NextRequest) {
         ? [...packageItems, ...getCheckoutAddonIncludedItems(addOns)]
         : getCheckoutAddonIncludedItems(addOns),
       lang,
+      partnerContext,
+      partnerOffers,
+      partnerAttributionId: verifiedDraft?.partnerAttributionId ?? null,
     });
   } catch {
     return NextResponse.json({ status: 'error' }, { status: 500 });

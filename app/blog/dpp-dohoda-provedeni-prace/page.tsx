@@ -18,8 +18,8 @@ const minimumHourlyWage2026 = MIN_WAGE_HOURLY_2026_CZK.toLocaleString('cs-CZ', {
 });
 
 export const metadata = blogArticlePageMetadata("dpp-dohoda-provedeni-prace", {
-  title: "Dohoda o provedení práce 2026: vzor, limity a odvody",
-  description: "DPP 2026 přehledně: vzor, limit 300 hodin, odvody a povinné náležitosti. Vytvořte dohodu online a stáhněte hotové PDF bez registrace.",
+  title: "DPP 2026: vzor dohody, limity, odvody a pravidla",
+  description: "DPP 2026 přehledně: vzor dohody, limit 300 hodin, hranice odvodů 12 000 Kč a povinné náležitosti. Vytvořte dohodu online v PDF.",
   keywords: ['DPP dohoda o provedení práce',
     'dohoda o provedení práce vzor 2026',
     'DPP limit hodin',
@@ -51,7 +51,7 @@ export default function DppPage() {
           <time className="text-xs text-slate-600" dateTime="2026-04-02">2. dubna 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
-          Dohoda o provedení práce 2026: vzor, limity a odvody
+          DPP 2026: vzor dohody, limity, odvody a pravidla
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-400">
           Dohoda o provedení práce je nejoblíbenější forma brigády a přivýdělku — ale skrývá řadu pastí.
@@ -334,6 +334,8 @@ export default function DppPage() {
             { href: '/blog/pracovni-smlouva-2026', label: '👔 Pracovní smlouva' },
             { href: '/pracovni', label: '📋 Vytvořit pracovní smlouvu' },
             { href: '/blog/smlouva-o-dilo-2026', label: '🔨 Smlouva o dílo' },
+            { href: '/blog/smlouva-o-dilo-vs-dpp-2026', label: 'DPP, nebo smlouva o dílo?' },
+            { href: '/blog/zkusebni-doba-2026', label: 'Zkušební doba 2026' },
             { href: '/', label: '📋 Všechny smlouvy' },
           ].map(l => (
             <Link key={l.href} href={l.href} className="rounded-xl border border-white/8 bg-white/3 px-4 py-2 text-sm text-slate-400 transition hover:border-white/15 hover:text-white">{l.label}</Link>

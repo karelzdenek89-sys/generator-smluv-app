@@ -17,10 +17,13 @@ import {
 } from '@/lib/packages';
 import { isFeatureEnabled } from '@/lib/feature-flags';
 import { getPackageUpsellCopy } from '@/lib/i18n/package-upsell';
+import BuilderUserRoleField from '@/app/components/partners/BuilderUserRoleField';
+import type { PartnerUserRole } from '@/lib/partners/types';
 
 type PaymentType = 'after_completion' | 'with_deposit' | 'milestones';
 
 type WorkContractData = {
+  partnerUserRole: PartnerUserRole;
   clientName: string;
   clientAddress: string;
   clientRegNo: string;
@@ -71,6 +74,7 @@ type WorkContractData = {
 };
 
 const defaultData: WorkContractData = {
+  partnerUserRole: 'unknown',
   clientName: '',
   clientAddress: '',
   clientRegNo: '',
@@ -461,6 +465,12 @@ export default function WorkContractPage() {
                   </div>
                 </section>
               </div>
+              <BuilderUserRoleField
+                contractType="work_contract"
+                locale="cs"
+                value={formData.partnerUserRole}
+                onChange={(partnerUserRole) => updateField('partnerUserRole', partnerUserRole)}
+              />
 
               <section className={cardClass}>
                 <h3 className="text-amber-400 uppercase text-xs tracking-widest font-bold mb-6">

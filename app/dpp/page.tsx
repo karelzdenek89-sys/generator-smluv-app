@@ -15,8 +15,12 @@ import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/LazyPaymentModal';
 import { BuilderLocaleNotice, useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
 import { MIN_WAGE_HOURLY_2026_CZK } from '@/lib/legal-constants-2026';
+import BuilderUserRoleField from '@/app/components/partners/BuilderUserRoleField';
+import type { PartnerUserRole } from '@/lib/partners/types';
+import { useMonetizationPolicy } from '@/app/components/useMonetizationPolicy';
 
 type FormData = {
+  partnerUserRole: PartnerUserRole;
   employerName: string; employerIco: string; employerAddress: string; employerEmail: string;
   employeeName: string; employeeBirth: string; employeeAddress: string; employeeEmail: string;
   taskDescription: string; taskDetails: string; workPlace: string; estimatedHours: string;
@@ -53,11 +57,13 @@ function SectionTitle({ index, title, subtitle }: { index: string; title: string
 export default function DppPage() {
   const builderLocale = useBuilderLocale();
   const ui = useMemo(() => getDppFormUi(builderLocale), [builderLocale]);
+  const monetizationPolicy = useMonetizationPolicy('dpp', builderLocale);
   useBuilderDocumentTitle(builderLocale, {
     en: 'Agreement to perform work (DPP) — online form | SmlouvaHned',
     ua: 'Договір про виконання роботи (DPP) — онлайн-форма | SmlouvaHned',
   });
   const [form, setForm] = useState<FormData>({
+    partnerUserRole: 'unknown',
     employerName: '', employerIco: '', employerAddress: '', employerEmail: '',
     employeeName: '', employeeBirth: '', employeeAddress: '', employeeEmail: '',
     taskDescription: '', taskDetails: '', workPlace: '', estimatedHours: '',
@@ -101,7 +107,7 @@ export default function DppPage() {
     }
   }, [form, builderLocale]);
 
-  const handlePayment = async (addOns: string[], authorization: CheckoutAuthorization) => {
+  const validateDocument = () => {
     // Validace § 75 ZP — DPP musí mít druh práce, místo, dobu a odměnu.
     const missing: string[] = [];
     if (!form.employerName?.trim()) missing.push(validationFields.employerName);
@@ -116,13 +122,18 @@ export default function DppPage() {
     }
     if (missing.length > 0) {
       alert(`${ui.form.validationPrefix} ${missing.join(', ')}.`);
-      return;
+      return false;
     }
     const blockingWarnings = risk.warnings.filter((warning) => warning.blocking);
     if (blockingWarnings.length > 0) {
       alert(blockingWarnings.map((warning) => warning.text).join('\n'));
-      return;
+      return false;
     }
+    return true;
+  };
+
+  const handlePayment = async (addOns: string[], authorization: CheckoutAuthorization) => {
+    if (!validateDocument()) return;
     try {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {
@@ -137,6 +148,56 @@ export default function DppPage() {
       setIsProcessing(false);
     }
   };
+
+  const handleFreeGenerate = async (authorization: CheckoutAuthorization) => {
+    if (!validateDocument()) return;
+    try {
+      setIsProcessing(true);
+      const res = await fetch('/api/contracts/free', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contractType: 'dpp',
+          tier: 'basic',
+          lang: builderLocale,
+          consent: authorization.consent,
+          payload: { ...form, contractType: 'dpp', tier: 'basic', lang: builderLocale },
+        }),
+      });
+      const data = await res.json().catch(() => null) as {
+        freeId?: string;
+        token?: string;
+        error?: string;
+      } | null;
+      if (!res.ok || !data?.freeId || !data.token) {
+        throw new Error(data?.error || ui.form.paymentError);
+      }
+      window.location.href = `/stahnout?free_id=${encodeURIComponent(data.freeId)}&lang=${encodeURIComponent(builderLocale)}#token=${encodeURIComponent(data.token)}`;
+    } catch (error) {
+      alert(error instanceof Error ? error.message : ui.form.paymentError);
+      setIsProcessing(false);
+    }
+  };
+
+  const isFreeBasic = form.tier === 'basic' && monetizationPolicy?.mode === 'free_experiment';
+  const freeCzechLanding = isFreeBasic && builderLocale === 'cs';
+  const landingBenefits = freeCzechLanding
+    ? ui.landing.benefits.map((benefit) =>
+        benefit.text.includes('po zaplacení')
+          ? { ...benefit, text: 'Základní PDF ke stažení zdarma, bez platby a bez registrace' }
+          : benefit,
+      )
+    : ui.landing.benefits;
+  const landingFaq = freeCzechLanding
+    ? ui.landing.faq.map((item) =>
+        item.q.includes('po zaplacení')
+          ? {
+              q: 'Dostanu základní DPP opravdu zdarma?',
+              a: 'Ano. V aktivním experimentu vytvoříte základní PDF bez platby a bez registrace; odkaz ke stažení je dostupný 24 hodin.',
+            }
+          : item,
+      )
+    : ui.landing.faq;
 
   const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-rose-400';
 
@@ -159,18 +220,23 @@ export default function DppPage() {
 
       <ContractLandingSection
         badge={ui.landing.badge}
-        h1Main={ui.landing.h1Main}
-        h1Accent={ui.landing.h1Accent}
-        subtitle={ui.landing.subtitle}
-        benefits={ui.landing.benefits}
+        h1Main={freeCzechLanding ? 'DPP 2026' : ui.landing.h1Main}
+        h1Accent={freeCzechLanding ? 'zdarma online' : ui.landing.h1Accent}
+        subtitle={freeCzechLanding
+          ? 'Vyplňte základní dohodu o provedení práce online a stáhněte PDF zdarma. Rozšířená varianta s dalšími klauzulemi zůstává placená.'
+          : ui.landing.subtitle}
+        benefits={landingBenefits}
         contents={ui.landing.contents}
         whenSuitable={ui.landing.whenSuitable}
         whenOther={ui.landing.whenOther}
-        faq={ui.landing.faq}
-        ctaLabel={ui.landing.ctaLabel}
+        faq={landingFaq}
+        ctaLabel={freeCzechLanding ? 'Vytvořit základní DPP zdarma' : ui.landing.ctaLabel}
         formId="formular"
         guideHref={ui.landing.guideHref}
         guideLabel={ui.landing.guideLabel}
+        monetizationMode={monetizationPolicy?.mode}
+        experimentId={monetizationPolicy?.experimentId}
+        experimentVariant={monetizationPolicy?.variant}
       />
 
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8">
@@ -182,6 +248,12 @@ export default function DppPage() {
                 <h2 className="text-lg font-black text-white uppercase tracking-wide">{ui.form.title}</h2>
                 <p className="text-sm text-slate-500 mt-1">{ui.form.requiredHint}</p>
               </div>
+              <BuilderUserRoleField
+                contractType="dpp"
+                locale={builderLocale}
+                value={form.partnerUserRole}
+                onChange={(partnerUserRole) => setForm((current) => ({ ...current, partnerUserRole }))}
+              />
 
               <section className={cardClass}>
                 <SectionTitle index="01" title={ui.sections.employer.title} />
@@ -267,6 +339,7 @@ export default function DppPage() {
                   <BuilderTierSelector
                     contractType="dpp"
                     tier={form.tier}
+                    monetizationPolicy={monetizationPolicy}
                     onTierChange={(tier) =>
                       setForm((prev) => ({ ...prev, tier, notaryUpsell: tier !== 'basic' }))
                     }
@@ -303,6 +376,7 @@ export default function DppPage() {
                 contractType="dpp"
                 tier={form.tier}
                 documentLabel={ui.form.documentLabel}
+                monetizationPolicy={monetizationPolicy}
                 onUpgrade={() => setForm((prev) => ({ ...prev, tier: 'complete', notaryUpsell: true }))}
               />
               {(!form.employerName || !form.employeeName || !form.taskDescription) && !isProcessing && (
@@ -319,11 +393,11 @@ export default function DppPage() {
                   onClick={() => setShowPreviewModal(true)}
                   className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >
-                  Vygenerovat smlouvu ?
+                  {isFreeBasic ? 'Vygenerovat základní DPP zdarma →' : 'Vygenerovat smlouvu →'}
                 </button>
 
                 <p className="mt-3 text-center text-[11px] text-slate-500">
-                  {ui.form.previewHint}
+                  {freeCzechLanding ? 'Náhled před bezplatným vygenerováním' : ui.form.previewHint}
                 </p>
             </div>
           </div>
@@ -339,6 +413,8 @@ export default function DppPage() {
         contractType="dpp"
         lang={builderLocale}
         onPay={handlePayment}
+        monetizationPolicy={monetizationPolicy}
+        onFreeGenerate={handleFreeGenerate}
         isProcessing={isProcessing}
         onClose={() => setShowPreviewModal(false)}
       />

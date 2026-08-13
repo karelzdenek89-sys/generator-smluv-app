@@ -13,6 +13,7 @@
 import { THEMATIC_PACKAGE_CONFIG } from '@/lib/packages';
 import { PRICING_TIER_CONFIG } from '@/lib/pricing';
 import { isFeatureEnabled } from '@/lib/feature-flags';
+import { getMonetizationPolicy } from '@/lib/monetization-policy';
 
 export type ContextualOfferKey =
   | 'work_contract'
@@ -141,18 +142,22 @@ export function getContextualOffer(key: ContextualOfferKey): ContextualOffer {
       };
     }
 
-    case 'dpp':
+    case 'dpp': {
+      const freeBasic = getMonetizationPolicy('dpp', 'cs').mode === 'free_experiment';
       return {
         product: 'dpp_document',
-        title: 'Potřebujete dohodu o provedení práce?',
+        title: freeBasic ? 'Vytvořte základní DPP zdarma' : 'Potřebujete dohodu o provedení práce?',
         description:
           'Formulář hlídá limit 300 hodin, odměnu, rozhodný příjem i povinnosti při registraci zaměstnance podle pravidel roku 2026.',
-        price: SINGLE_DOCUMENT_RANGE,
-        cta: 'Vytvořit dohodu o provedení práce',
+        price: freeBasic
+          ? `Základní PDF 0 Kč · rozšířená varianta ${COMPLETE.priceLabel}`
+          : SINGLE_DOCUMENT_RANGE,
+        cta: freeBasic ? 'Vytvořit základní DPP zdarma' : 'Vytvořit dohodu o provedení práce',
         href: '/dpp',
         contractType: 'dpp',
         note: STANDARD_SCOPE_NOTE,
       };
+    }
 
     case 'nda':
       return {

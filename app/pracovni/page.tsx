@@ -23,8 +23,11 @@ import {
 } from '@/lib/legal-constants-2026';
 import { getThematicPackageConfig } from '@/lib/packages';
 import { getPackageUpsellCopy } from '@/lib/i18n/package-upsell';
+import BuilderUserRoleField from '@/app/components/partners/BuilderUserRoleField';
+import type { PartnerUserRole } from '@/lib/partners/types';
 
 type FormData = {
+  partnerUserRole: PartnerUserRole;
   employerName: string; employerIco: string; employerAddress: string; employerEmail: string;
   employeeName: string; employeeBirth: string; employeeAddress: string; employeeEmail: string;
   jobTitle: string; jobDescription: string; workPlace: string; remoteWork: string;
@@ -84,6 +87,7 @@ export default function PracovniPage() {
   const [form, setForm] = useState<FormData>(() => {
     const d = getEmploymentFormUi(builderLocale).page.defaults;
     return {
+      partnerUserRole: 'unknown',
       employerName: '', employerIco: '', employerAddress: '', employerEmail: '',
       employeeName: '', employeeBirth: '', employeeAddress: '', employeeEmail: '',
       jobTitle: '', jobDescription: '', workPlace: '', remoteWork: '',
@@ -301,6 +305,12 @@ export default function PracovniPage() {
                 <h2 className="text-lg font-black text-white uppercase tracking-wide">{ui.form.title}</h2>
                 <p className="text-sm text-slate-500 mt-1">{ui.form.requiredHint}</p>
               </div>
+              <BuilderUserRoleField
+                contractType="employment"
+                locale={builderLocale}
+                value={form.partnerUserRole}
+                onChange={(partnerUserRole) => setForm((current) => ({ ...current, partnerUserRole }))}
+              />
 
               <section className={cardClass}>
                 <SectionTitle index="01" title={ui.sections.employer.title} subtitle={ui.sections.employer.subtitle} />

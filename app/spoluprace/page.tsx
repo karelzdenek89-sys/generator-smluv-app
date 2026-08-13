@@ -9,8 +9,11 @@ import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/LazyPaymentModal';
+import BuilderUserRoleField from '@/app/components/partners/BuilderUserRoleField';
+import type { PartnerUserRole } from '@/lib/partners/types';
 
 type FormData = {
+  partnerUserRole: PartnerUserRole;
   partyAName: string; partyAId: string; partyAAddress: string; partyAEmail: string;
   partyBName: string; partyBId: string; partyBAddress: string; partyBEmail: string;
   cooperationScope: string; cooperationDetails: string; cooperationGoal: string;
@@ -38,6 +41,7 @@ function SectionTitle({ index, title, subtitle }: { index: string; title: string
 
 export default function SpolupraceePage() {
   const [form, setForm] = useState<FormData>({
+    partnerUserRole: 'unknown',
     partyAName: '', partyAId: '', partyAAddress: '', partyAEmail: '',
     partyBName: '', partyBId: '', partyBAddress: '', partyBEmail: '',
     cooperationScope: '', cooperationDetails: '', cooperationGoal: '',
@@ -165,6 +169,12 @@ export default function SpolupraceePage() {
                 <h2 className="text-lg font-black text-white uppercase tracking-wide">Vyplňte údaje dokumentu</h2>
                 <p className="text-sm text-slate-500 mt-1">Všechna povinná pole jsou označena *</p>
               </div>
+              <BuilderUserRoleField
+                contractType="cooperation"
+                locale="cs"
+                value={form.partnerUserRole}
+                onChange={(partnerUserRole) => setForm((current) => ({ ...current, partnerUserRole }))}
+              />
 
               <section className={cardClass}>
                 <SectionTitle index="01" title="Strana A" subtitle="Jedna ze spolupracujících stran (osoba nebo firma)." />

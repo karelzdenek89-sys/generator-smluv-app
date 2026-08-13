@@ -18,7 +18,7 @@ export default function MinimalniMzdaDppPracovniSmlouva2026Page() {
       dateLabel="13. června 2026"
       breadcrumbLabel="Minimální mzda 2026"
       slug="minimalni-mzda-dpp-pracovni-smlouva-2026"
-      title="Minimální mzda 2026 ve smlouvách a DPP: co zkontrolovat před podpisem"
+      title="Minimální mzda 2026: 22 400 Kč, DPP a pracovní smlouva"
       intro={`Minimální mzda od 1. ledna 2026 činí ${MIN_WAGE_MONTHLY_2026_CZK.toLocaleString('cs-CZ')} Kč měsíčně, tedy ${MIN_WAGE_HOURLY_2026_CZK.toLocaleString('cs-CZ')} Kč za hodinu při 40hodinovém pracovním týdnu. Ovlivňuje pracovní smlouvy, DPP i DPČ — nejde jen o částku v dokumentu, ale také o správné sjednání odměny, pracovní doby, evidence a navazujících povinností.`}
       toc={[
         { href: '#castky-2026', label: 'Aktuální částky minimální mzdy pro rok 2026' },
@@ -60,7 +60,7 @@ export default function MinimalniMzdaDppPracovniSmlouva2026Page() {
           1. Aktuální částky minimální mzdy pro rok 2026
         </h2>
         <p className="mb-4 leading-relaxed text-slate-400">
-          Pro rok 2026 je minimální mzda stanovena nařízením vlády. Měsíční minimum odpovídá{' '}
+          Pro rok 2026 byla minimální mzda vyhlášena sdělením MPSV č. 356/2025 Sb. Měsíční minimum odpovídá{' '}
           {MIN_WAGE_MONTHLY_2026_CZK.toLocaleString('cs-CZ')} Kč hrubého při plném pracovním úvazku.
           Hodinová sazba vychází z 40hodinového pracovního týdnu a činí{' '}
           {MIN_WAGE_HOURLY_2026_CZK.toLocaleString('cs-CZ')} Kč za hodinu.

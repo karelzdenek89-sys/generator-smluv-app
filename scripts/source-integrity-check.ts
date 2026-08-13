@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 const SOURCE_EXTENSION = /\.(?:ts|tsx|js|jsx|css|md|txt|json|ya?ml)$/i;
 const INTENTIONAL_MOJIBAKE_FIXTURES = new Set([
@@ -22,6 +22,9 @@ const files = execFileSync(
 
 const findings: string[] = [];
 for (const file of files) {
+  // The index can still contain an intentionally deleted file until changes
+  // are staged. There is no source text left at that path to validate.
+  if (!existsSync(file)) continue;
   const lines = readFileSync(file, 'utf8').split(/\r?\n/);
   lines.forEach((line, index) => {
     if (suspiciousText.test(line) || replacementQuestionDamage.test(line)) {

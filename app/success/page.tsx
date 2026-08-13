@@ -4,7 +4,8 @@ import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { normalizeLocale } from '@/lib/locale';
-import PostPurchaseOffers from '@/app/components/PostPurchaseOffers';
+import PartnerNextSteps from '@/app/components/partners/PartnerNextSteps';
+import type { PartnerContext, PublicPartnerOffer } from '@/lib/partners/types';
 
 type DownloadState = 'checking' | 'ready' | 'error';
 
@@ -20,6 +21,9 @@ type SuccessStatusResponse = {
   contractName?: string;
   addOns?: string[];
   includedItems?: string[];
+  partnerContext?: PartnerContext | null;
+  partnerOffers?: PublicPartnerOffer[];
+  partnerAttributionId?: string | null;
 };
 
 const pageShell = 'min-h-screen bg-[#05080f] px-6 py-16 text-slate-200';
@@ -299,13 +303,14 @@ function SuccessContent() {
           )}
 
           {/* Navazující nabídka až po ověřené platbě, nikdy v checkoutu. */}
-          {dlState === 'ready' && (
-            <PostPurchaseOffers
-              contractType={orderMeta?.contractType}
+          {dlState === 'ready' && orderMeta?.partnerContext && orderMeta.partnerOffers ? (
+            <PartnerNextSteps
+              context={orderMeta.partnerContext}
+              offers={orderMeta.partnerOffers}
               sourcePage="success"
-              locale={lang}
+              attributionId={orderMeta.partnerAttributionId}
             />
-          )}
+          ) : null}
 
           {orderMeta?.includedItems && orderMeta.includedItems.length > 0 && (
             <div className="mt-5 rounded-2xl border border-white/5 bg-white/3 p-4">

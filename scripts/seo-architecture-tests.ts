@@ -122,7 +122,7 @@ function assertPriorityCtrCopy() {
   const expectedCopy: Record<string, string> = {
     'app/dpp/layout.tsx': 'DPP online 2026 — dohoda o provedení práce v PDF',
     'app/blog/dpp-dohoda-provedeni-prace/page.tsx':
-      'Dohoda o provedení práce 2026: vzor, limity a odvody',
+      'DPP 2026: vzor dohody, limity, odvody a pravidla',
     'app/blog/zkusebni-doba-2026/page.tsx':
       'Zkušební doba 2026: 4 a 8 měsíců, prodloužení',
     'app/blog/plna-moc-2026/page.tsx':

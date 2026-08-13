@@ -16,6 +16,7 @@ type Props = {
   breadcrumbLabel: string;
   /** Pricing 99/199 nebo 99/199/299 */
   twoTierOnly?: SoftwareApplicationSchemaInput['twoTierOnly'];
+  freeBasic?: SoftwareApplicationSchemaInput['freeBasic'];
 };
 
 export default function ProductSchemas({
@@ -24,8 +25,9 @@ export default function ProductSchemas({
   description,
   breadcrumbLabel,
   twoTierOnly = false,
+  freeBasic = false,
 }: Props) {
-  const swApp = softwareApplicationSchema({ name: appName, slug, description, twoTierOnly });
+  const swApp = softwareApplicationSchema({ name: appName, slug, description, twoTierOnly, freeBasic });
   const breadcrumb = breadcrumbSchema([
     { label: 'SmlouvaHned', href: '/' },
     { label: breadcrumbLabel, href: slug },

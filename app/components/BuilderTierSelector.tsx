@@ -10,6 +10,7 @@ import {
 import { getAnalyticsDefaultsForPathname, trackEvent } from '@/lib/analytics';
 import { getContractTierCopy, getTierSelectorDescription } from '@/lib/tier-copy';
 import type { LeaseFormUi } from '@/lib/i18n/lease-form';
+import type { PublicMonetizationPolicy } from '@/lib/monetization-policy';
 
 type BuilderTierSelectorProps = {
   tier: PricingTier;
@@ -19,6 +20,7 @@ type BuilderTierSelectorProps = {
   subtitle?: string;
   completeHighlights?: readonly string[];
   tierSelectorCopy?: LeaseFormUi['tierSelector'];
+  monetizationPolicy?: PublicMonetizationPolicy | null;
 };
 
 export default function BuilderTierSelector({
@@ -29,6 +31,7 @@ export default function BuilderTierSelector({
   subtitle,
   completeHighlights,
   tierSelectorCopy,
+  monetizationPolicy,
 }: BuilderTierSelectorProps) {
   const pathname = usePathname();
   const contractTierCopy = getContractTierCopy(contractType);
@@ -37,6 +40,7 @@ export default function BuilderTierSelector({
   const resolvedSubtitle = subtitle ?? copy?.intro ?? PRICING_SECTION_COPY.intro;
   const resolvedCompleteHighlights =
     completeHighlights ?? copy?.completeHighlights ?? contractTierCopy.completeHighlights ?? BUILDER_COMPLETE_PERKS;
+  const freeBasic = monetizationPolicy?.mode === 'free_experiment';
 
   const handleTierChange = (nextTier: PricingTier) => {
     const defaults = getAnalyticsDefaultsForPathname(pathname ?? '/');
@@ -48,7 +52,10 @@ export default function BuilderTierSelector({
       contract_type: defaults.contract_type,
       previous_tier: tier,
       tier: nextTier,
-      price_band: nextTier === 'complete' ? '199' : '99',
+      price_band: nextTier === 'complete' ? '199' : freeBasic ? undefined : '99',
+      monetization_mode: freeBasic && nextTier === 'basic' ? 'free_experiment' : 'paid',
+      experiment_id: monetizationPolicy?.experimentId ?? undefined,
+      variant: monetizationPolicy?.variant ?? undefined,
     });
 
     onTierChange(nextTier);
@@ -111,7 +118,7 @@ export default function BuilderTierSelector({
                   {localizedLabel}
                 </span>
                 <span className="shrink-0 text-sm font-black text-white">
-                  {opt.price}
+                  {opt.value === 'basic' && freeBasic ? 'Zdarma' : opt.price}
                 </span>
               </div>
               <div className="mt-1 text-xs leading-relaxed text-slate-400">

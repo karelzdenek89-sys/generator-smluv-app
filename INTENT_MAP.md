@@ -1,6 +1,6 @@
 # SmlouvaHned — intent a canonical mapa
 
-Poslední aktualizace: 2026-08-04
+Poslední aktualizace: 2026-08-13
 
 ## Pravidla
 
@@ -20,6 +20,20 @@ Poslední aktualizace: 2026-08-04
 | Smlouva o spolupráci | `/spoluprace` | `/blog/smlouva-o-spolupraci-2026` | `/smlouva-o-spolupraci` → `/spoluprace` |
 
 Vyřazené URL se nesmí vrátit do sitemap ani do aktivní interní navigace. Jejich zdrojové route soubory zatím zůstávají v repozitáři jako snadno dohledatelná historie; `next.config.ts` je obslouží přesměrováním před filesystémem.
+
+## HR podpůrné informační dotazy
+
+Tyto URL rozvíjejí jiné informační záměry a odkazují na hlavní DPP/pracovní hub i příslušný builder:
+
+| Záměr | Primární URL | Následující krok |
+|---|---|---|
+| zkušební doba, 4/8 měsíců, prodloužení | `/blog/zkusebni-doba-2026` | `/pracovni` |
+| DPP vs. DPČ | `/blog/dpp-dpc-porovnani-2026` | `/dpp` nebo `/pracovni` |
+| smlouva o dílo vs. DPP | `/blog/smlouva-o-dilo-vs-dpp-2026` | `/dpp` nebo `/smlouva-o-dilo` |
+| minimální mzda, DPP a pracovní smlouva | `/blog/minimalni-mzda-dpp-pracovni-smlouva-2026` | `/dpp` nebo `/pracovni` |
+| švarcsystém | `/blog/svarcsystem-osvc-2026` | `/pracovni`, `/dpp` nebo `/spoluprace` podle skutečného vztahu |
+
+GSC snapshot dodaný 13. 8. 2026 označil `/blog/dpp-dohoda-provedeni-prace` jako stránku s vysokými impresemi a slabým CTR. Titulek je proto query-first, ale URL a její informační role zůstávají beze změny. Bez stránkového exportu GSC se další URL automaticky nekonsolidují ani nepřepínají do free režimu.
 
 ## Aktivní specializované landing pages
 

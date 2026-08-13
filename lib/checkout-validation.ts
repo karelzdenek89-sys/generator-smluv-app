@@ -42,9 +42,17 @@ const optionalNumber = z.union([
 ]).optional();
 
 const base = z.object({}).passthrough();
+const role = {
+  lease: z.enum(['tenant', 'landlord', 'unknown']).optional(),
+  car: z.enum(['buyer', 'seller', 'unknown']).optional(),
+  work: z.enum(['customer', 'contractor', 'unknown']).optional(),
+  hr: z.enum(['employer', 'employee', 'unknown']).optional(),
+  cooperation: z.enum(['client', 'supplier', 'freelancer', 'company', 'unknown']).optional(),
+};
 
 const schemas: Record<ContractType, z.ZodType<Record<string, unknown>>> = {
   lease: base.extend({
+    partnerUserRole: role.lease,
     landlordName: shortText,
     tenantName: shortText,
     flatAddress: text,
@@ -58,6 +66,7 @@ const schemas: Record<ContractType, z.ZodType<Record<string, unknown>>> = {
     }
   }),
   car_sale: base.extend({
+    partnerUserRole: role.car,
     sellerName: shortText,
     buyerName: shortText,
     carMake: shortText,
@@ -83,6 +92,7 @@ const schemas: Record<ContractType, z.ZodType<Record<string, unknown>>> = {
     if (!data[field]?.trim()) ctx.addIssue({ code: 'custom', path: [field], message: `${label} je povinný údaj.` });
   }),
   work_contract: base.extend({
+    partnerUserRole: role.work,
     clientName: shortText,
     contractorName: shortText,
     workTitle: shortText,
@@ -128,6 +138,7 @@ const schemas: Record<ContractType, z.ZodType<Record<string, unknown>>> = {
     }
   }),
   employment: base.extend({
+    partnerUserRole: role.hr,
     employerName: shortText,
     employeeName: shortText,
     jobTitle: shortText,
@@ -167,6 +178,7 @@ const schemas: Record<ContractType, z.ZodType<Record<string, unknown>>> = {
     }
   }),
   dpp: base.extend({
+    partnerUserRole: role.hr,
     employerName: shortText,
     employeeName: shortText,
     taskDescription: text,
@@ -247,6 +259,7 @@ const schemas: Record<ContractType, z.ZodType<Record<string, unknown>>> = {
     debtAmount: money,
   }),
   cooperation: base.extend({
+    partnerUserRole: role.cooperation,
     partyAName: shortText,
     partyBName: shortText,
     cooperationScope: text,

@@ -14,6 +14,7 @@ import {
 import type { LeaseFormUi } from '@/lib/i18n/lease-form';
 import { normalizeLocale } from '@/lib/locale';
 import { getLocalizedPackagePresentation } from '@/lib/i18n/pricing-locale';
+import type { PublicMonetizationPolicy } from '@/lib/monetization-policy';
 
 type BuilderCheckoutSummaryProps = {
   tier: PricingTier;
@@ -24,6 +25,7 @@ type BuilderCheckoutSummaryProps = {
   documentLabel?: string;
   summaryCopy?: LeaseFormUi['checkoutSummary'];
   locale?: string | null;
+  monetizationPolicy?: PublicMonetizationPolicy | null;
 };
 
 export default function BuilderCheckoutSummary({
@@ -35,6 +37,7 @@ export default function BuilderCheckoutSummary({
   documentLabel = 'Vybraný dokument',
   summaryCopy,
   locale: localeProp,
+  monetizationPolicy,
 }: BuilderCheckoutSummaryProps) {
   const pathname = usePathname();
   const isComplete = tier === 'complete';
@@ -47,7 +50,12 @@ export default function BuilderCheckoutSummary({
   const defaults = getAnalyticsDefaultsForPathname(pathname ?? '/');
   const copy = summaryCopy;
   const resolvedTitle = title ?? copy?.title ?? 'Dokument připraven k odemknutí';
-  const priceLabel = packageConfig ? packageConfig.priceLabel : PRICING_TIER_CONFIG[tier].priceLabel;
+  const isFreeBasic = !packageConfig
+    && tier === 'basic'
+    && monetizationPolicy?.mode === 'free_experiment';
+  const priceLabel = isFreeBasic
+    ? 'Zdarma'
+    : packageConfig ? packageConfig.priceLabel : PRICING_TIER_CONFIG[tier].priceLabel;
   const leaseOutputSummary =
     contractType === 'lease'
       ? locale === 'en'
@@ -180,7 +188,9 @@ export default function BuilderCheckoutSummary({
 
       <p className="mt-4 text-xs leading-relaxed text-slate-400">
         {copy?.afterOrderVariant ??
-          'Po zaplacení získáte výstup odpovídající zvolené variantě ihned ke stažení, připravený k závěrečné kontrole a podpisu.'}
+          (isFreeBasic
+            ? 'Základní PDF získáte bez platby a bez registrace. Dokument bude připraven k závěrečné kontrole a podpisu.'
+            : 'Po zaplacení získáte výstup odpovídající zvolené variantě ihned ke stažení, připravený k závěrečné kontrole a podpisu.')}
       </p>
 
       {leaseOutputSummary ? (
@@ -191,10 +201,14 @@ export default function BuilderCheckoutSummary({
 
       <div className="mt-4 grid gap-2 text-[11px] leading-5 text-slate-400">
         <div className="rounded-xl border border-emerald-400/15 bg-emerald-400/8 px-3 py-2 text-emerald-100">
-          Stažení ihned po platbě. Bez registrace a bez předplatného.
+          {isFreeBasic
+            ? 'Stažení základního PDF zdarma. Bez registrace a bez předplatného.'
+            : 'Stažení ihned po platbě. Bez registrace a bez předplatného.'}
         </div>
         <div className="rounded-xl border border-slate-700/50 bg-slate-900/40 px-3 py-2">
-          Platební údaje zpracovává Stripe. Dokument je standardizovaný výstup, ne individuální právní poradenství.
+          {isFreeBasic
+            ? 'Bezplatný dokument bezpečně uchováváme 24 hodin. Jde o standardizovaný výstup, ne individuální právní poradenství.'
+            : 'Platební údaje zpracovává Stripe. Dokument je standardizovaný výstup, ne individuální právní poradenství.'}
         </div>
       </div>
     </>

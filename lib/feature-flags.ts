@@ -19,9 +19,7 @@
 export type FeatureFlagKey =
   | 'zakazkaPlus'
   | 'carSaleComplete'
-  | 'landlordAnnual'
-  | 'esignOffer'
-  | 'vehicleHistoryOffer';
+  | 'landlordAnnual';
 
 function isOn(value: string | undefined): boolean {
   return value === 'true' || value === '1';
@@ -38,12 +36,6 @@ export function isFeatureEnabled(key: FeatureFlagKey): boolean {
     // Roční plán pro pronajímatele. Bez recurring backendu musí zůstat vypnutý.
     case 'landlordAnnual':
       return isOn(process.env.NEXT_PUBLIC_FEATURE_LANDLORD_ANNUAL);
-    // Nabídka elektronického podpisu po zaplacení. Vyžaduje partnerskou URL.
-    case 'esignOffer':
-      return isOn(process.env.NEXT_PUBLIC_FEATURE_ESIGN_OFFER);
-    // Nabídka prověření historie vozidla po zaplacení. Vyžaduje partnerskou URL.
-    case 'vehicleHistoryOffer':
-      return isOn(process.env.NEXT_PUBLIC_FEATURE_VEHICLE_HISTORY_OFFER);
     default:
       return false;
   }

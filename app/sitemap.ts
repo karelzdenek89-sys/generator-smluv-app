@@ -87,6 +87,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     staticPage('/faq', 0.7),
     staticPage('/slovnik', 0.6),
     staticPage('/kontakt', 0.5, 'yearly'),
+    staticPage('/partneri', 0.4, 'yearly'),
     staticPage('/obchodni-podminky', 0.3, 'yearly'),
     staticPage('/gdpr', 0.3, 'yearly'),
     ...EXPAT_BUILDER_SITEMAP.map(({ path, contractKey }) => {

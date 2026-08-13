@@ -41,7 +41,7 @@ export default function GdprPage() {
           Ochrana osobních <span className="text-amber-500">údajů</span>
         </h1>
         <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.25em] mb-12">
-          Verze 2026-07-15 • Dle nařízení EU 2016/679 (GDPR)
+          Verze 2026-08-13 • Dle nařízení EU 2016/679 (GDPR)
         </p>
 
         <div className="space-y-10 text-sm leading-relaxed">
@@ -75,7 +75,7 @@ export default function GdprPage() {
                 <p className="text-slate-400 text-xs mb-2">Jména, adresy, data narození, čísla OP a IČO smluvních stran, které do formuláře zadáte vy sami.</p>
                 <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Účel:</span> Vygenerování standardizovaného smluvního dokumentu dle vašich zadaných dat.</div>
                 <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Právní základ:</span> Plnění smlouvy (čl. 6 odst. 1 písm. b) GDPR).</div>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> 7–30 dní od zaplacení podle zakoupeného dokumentu (Základní dokument 7 dní, Rozšířený dokument 30 dní, Tematický balíček 30 dní), případně 90 dní s doplňkem archivace. Poté jsou data automaticky smazána z dočasného úložiště.</div>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> U bezplatného experimentu nejvýše 24 hodin od vytvoření; e-mail pro tento tok nevyžadujeme. U placeného dokumentu 7–30 dní od zaplacení podle zakoupené varianty, případně 90 dní s doplňkem archivace. Poté jsou data automaticky smazána z dočasného úložiště.</div>
               </div>
               <div className="border border-white/8 rounded-2xl p-5">
                 <div className="font-bold text-white mb-2">E-mailová adresa</div>
@@ -122,6 +122,9 @@ export default function GdprPage() {
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Upstash (Redis)</strong> — dočasná evidence nepotvrzeného newsletteru po dobu 24 hodin a evidence potvrzeného souhlasu po dobu odběru.</span></li>
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Vercel</strong> — hosting platformy. Údaje jsou zpracovávány v rámci EHP nebo za odpovídajících záruk.</span></li>
             </ul>
+            <p className="mt-3 text-xs text-slate-500">
+              Navazující partner není příjemcem obsahu smlouvy ani kontaktních údajů automaticky. Nabídka se vybírá z minimalizovaných kategorií. Teprve vědomým kliknutím uživatel přejde na web konkrétního poskytovatele; případné předání kontaktních údajů vyžaduje samostatný, konkrétní souhlas pro daného partnera.
+            </p>
             <p className="mt-3 text-xs text-slate-500">
               Správce neprodává osobní údaje třetím stranám. Marketingové e-maily (newsletter) zasíláme výhradně na základě
               dobrovolného souhlasu, který můžete kdykoli odvolat.

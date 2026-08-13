@@ -8,6 +8,7 @@ import { getBuilderCopy, getContractTypeByPath } from '@/lib/locale';
 import { BuilderLocaleNotice, useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
 import WhyNotGenericBlock from '@/app/components/marketing/WhyNotGenericBlock';
 import { getEffectivePriceBand, getThematicPackageConfig } from '@/lib/packages';
+import type { MonetizationMode } from '@/lib/monetization-policy';
 
 export interface ContractLandingBenefit {
   icon: string;
@@ -41,6 +42,9 @@ export interface ContractLandingSectionProps {
   guideHref?: string;
   guideLabel?: string;
   differentiationHint?: string;
+  monetizationMode?: MonetizationMode;
+  experimentId?: string | null;
+  experimentVariant?: string | null;
 }
 
 export default function ContractLandingSection({
@@ -59,6 +63,9 @@ export default function ContractLandingSection({
   guideHref,
   guideLabel = 'Průvodce k tomuto dokumentu',
   differentiationHint,
+  monetizationMode,
+  experimentId,
+  experimentVariant,
 }: ContractLandingSectionProps) {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const pathname = usePathname();
@@ -72,6 +79,7 @@ export default function ContractLandingSection({
 
   useEffect(() => {
     const currentPath = pathname ?? '/';
+    if (currentPath === '/dpp' && monetizationMode === undefined) return;
     const packageKey =
       typeof window !== 'undefined'
         ? new URLSearchParams(window.location.search).get('package')
@@ -85,6 +93,10 @@ export default function ContractLandingSection({
       surface: 'builder',
       entry_mode: packageConfig ? 'package_flow' : 'single_document',
       package_key: packageConfig?.key,
+      monetization_mode: monetizationMode ?? 'paid',
+      experiment_id: experimentId ?? undefined,
+      variant: experimentVariant ?? undefined,
+      landing_page: currentPath,
     });
 
     if (packageConfig) {
@@ -97,7 +109,7 @@ export default function ContractLandingSection({
         price_band: getEffectivePriceBand('complete', packageConfig.key),
       });
     }
-  }, [pathname]);
+  }, [experimentId, experimentVariant, monetizationMode, pathname]);
 
   return (
     <>

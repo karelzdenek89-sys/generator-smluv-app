@@ -19,6 +19,7 @@ import {
 } from '@/lib/i18n/fulfilment-email';
 import type { AnalyticsEventParams } from '@/lib/analytics';
 import { getEffectivePriceBand, packageIncludesDocx } from '@/lib/packages';
+import { buildPartnerContext } from '@/lib/partners/context';
 
 export const runtime = 'nodejs';
 
@@ -193,6 +194,15 @@ export async function POST(req: Request) {
             : typeof existing.downloadToken === 'string'
               ? existing.downloadToken
               : null;
+        const partnerContext = buildPartnerContext({
+          contractType,
+          documentTier: tier,
+          locale: lang,
+          packageKey,
+          rawContractData: existingPayload,
+          paid: true,
+          completed: true,
+        });
 
         await redis.set(
           key,
@@ -207,6 +217,7 @@ export async function POST(req: Request) {
             paymentStatus: session.payment_status,
             customerEmail,
             deliveryEmail: customerEmail,
+            partnerContext,
             ...(downloadToken ? { downloadToken } : {}),
           },
           { ex: remainingTtl },

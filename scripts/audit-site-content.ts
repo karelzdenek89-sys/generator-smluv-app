@@ -23,9 +23,20 @@ function assertNoOldPriceCopy(path: string) {
 function assertMetadataTitleHasNoBrand(src: string, path: string) {
   const literalTitle = src.match(/export const metadata[\s\S]*?\n\s*title:\s*['"]([^'"]+)['"]/);
   const constantTitle = src.match(/const\s+PAGE_TITLE\s*=\s*['"]([^'"]+)['"]/);
-  const title = literalTitle?.[1] ?? constantTitle?.[1];
-  assert.ok(title, `${path}: metadata.title not found`);
-  assert.ok(!title.includes('| SmlouvaHned'), `${path}: metadata title duplicates root title template brand`);
+  const conditionalTitle = src.match(
+    /export const metadata[\s\S]{0,300}?\n\s*title:\s*[A-Z][A-Z0-9_]*\s*\?\s*['"]([^'"]+)['"]\s*:\s*['"]([^'"]+)['"]/,
+  );
+  const titles = literalTitle
+    ? [literalTitle[1]]
+    : constantTitle
+      ? [constantTitle[1]]
+      : conditionalTitle
+        ? [conditionalTitle[1], conditionalTitle[2]]
+        : [];
+  assert.ok(titles.length > 0, `${path}: metadata.title not found`);
+  for (const title of titles) {
+    assert.ok(!title.includes('| SmlouvaHned'), `${path}: metadata title duplicates root title template brand`);
+  }
 }
 
 function walkAppFiles(dir = join(ROOT, 'app')): string[] {
@@ -66,12 +77,14 @@ function extractMetadataStrings(src: string): { title?: string; description?: st
     src.match(/blogArticlePageMetadata\(\s*['"][^'"]+['"]\s*,\s*\{[\s\S]{0,200}?title:\s*['"]([^'"]+)['"]/)?.[1] ??
     src.match(/landingPageMetadata\(\{[\s\S]{0,300}?title:\s*['"]([^'"]+)['"]/)?.[1] ??
     src.match(/const\s+PAGE_TITLE\s*=\s*['"]([^'"]+)['"]/)?.[1] ??
-    src.match(/export const metadata[\s\S]{0,200}?\n\s*title:\s*['"]([^'"]+)['"]/)?.[1];
+    src.match(/export const metadata[\s\S]{0,200}?\n\s*title:\s*['"]([^'"]+)['"]/)?.[1] ??
+    src.match(/export const metadata[\s\S]{0,300}?\n\s*title:\s*[A-Z][A-Z0-9_]*\s*\?\s*['"]([^'"]+)['"]/)?.[1];
 
   const description =
     src.match(/const\s+PAGE_DESCRIPTION\s*=\s*\n?\s*['"]([^'"]+)['"]/)?.[1] ??
     src.match(/(?:blogArticlePageMetadata|landingPageMetadata)\([\s\S]{0,400}?description:\s*\n?\s*['"]([^'"]+)['"]/)?.[1] ??
-    src.match(/export const metadata[\s\S]{0,400}?\n\s*description:\s*\n?\s*['"]([^'"]+)['"]/)?.[1];
+    src.match(/export const metadata[\s\S]{0,400}?\n\s*description:\s*\n?\s*['"]([^'"]+)['"]/)?.[1] ??
+    src.match(/export const metadata[\s\S]{0,600}?\n\s*description:\s*\n?\s*[A-Z][A-Z0-9_]*\s*\?\s*['"]([^'"]+)['"]/)?.[1];
 
   return { title, description };
 }

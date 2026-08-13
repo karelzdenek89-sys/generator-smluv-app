@@ -227,7 +227,7 @@ export default function PracovniSmlouvaVzor2026Page() {
         <div className="mb-5 grid gap-3 sm:grid-cols-2">
           {[
             { t: 'Délka zkušební doby', d: 'Max. 4 měsíce (zaměstnanec), max. 8 měsíců (vedoucí zaměstnanec) — dle aktuálního znění § 35 zákoníku práce. Kratší zkušební dobu lze sjednat — delší ne.' },
-            { t: 'Kdy musí být sjednána', d: 'Nejpozději v den nástupu do práce. Po nástupu ji nelze dodatečně sjednat ani prodloužit.' },
+            { t: 'Kdy musí být sjednána', d: 'Písemně nejpozději v den vzniku pracovního poměru. Dokud běží, mohou ji strany písemnou dohodou prodloužit, ale jen do zákonného maxima.' },
             { t: 'Nesmí přesáhnout polovinu doby', d: 'U pracovního poměru na dobu určitou nesmí zkušební doba přesáhnout polovinu sjednané doby trvání.' },
             { t: 'Prodloužení pro nemoc a překážky', d: 'Zkušební doba se prodlužuje o dny, kdy zaměstnanec nepracoval pro překážky v práci nebo čerpal dovolenou.' },
           ].map(i => (
@@ -244,6 +244,12 @@ export default function PracovniSmlouvaVzor2026Page() {
           zkrátí na zákonné maximum. Přitom zaměstnavatel počítá s delší dobou a může být překvapen, že
           zaměstnance nelze ve zkušební době propustit bez udání důvodu o týden déle.
         </div>
+        <p className="mt-4 text-sm leading-relaxed text-slate-400">
+          Podrobná pravidla včetně smluvního i automatického prodloužení shrnuje{' '}
+          <Link href="/blog/zkusebni-doba-2026" className="text-amber-400 underline underline-offset-4 hover:text-amber-300">
+            průvodce zkušební dobou 2026
+          </Link>.
+        </p>
       </section>
 
       {/* ── SECTION 4 ───────────────────────────── */}

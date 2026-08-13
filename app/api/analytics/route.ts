@@ -26,7 +26,29 @@ const eventSchema = z.object({
       traffic_label: boundedString.optional(),
       article_slug: boundedString.optional(),
       situation_key: z.enum(['landlord', 'vehicle_sale']).optional(),
-      package_key: z.enum(['landlord', 'vehicle_sale', 'employer_start']).optional(),
+      package_key: z.enum(['landlord', 'vehicle_sale', 'employer_start', 'work_order']).optional(),
+      product_id: boundedString.optional(),
+      offer_type: z.enum(['content_bundle', 'post_purchase', 'partner', 'annual_plan']).optional(),
+      source_page: boundedString.optional(),
+      locale: z.enum(['cs', 'en', 'ua']).optional(),
+      partner_id: boundedString.optional(),
+      provider: boundedString.optional(),
+      offer_category: z.enum([
+        'electronic_signature', 'vehicle_history', 'insurance', 'landlord_services',
+        'construction_planning', 'invoicing', 'hr_payroll',
+      ]).optional(),
+      user_role: z.enum([
+        'landlord', 'tenant', 'seller', 'buyer', 'employer', 'employee',
+        'customer', 'client', 'contractor', 'supplier', 'freelancer', 'company', 'unknown',
+      ]).optional(),
+      placement: z.enum(['success', 'download']).optional(),
+      revenue_czk: boundedNumber.optional(),
+      partner_click_id: z.string().max(128).regex(/^[a-zA-Z0-9_-]+$/).optional(),
+      partner_transaction_id: z.string().uuid().optional(),
+      experiment_id: boundedString.optional(),
+      variant: boundedString.optional(),
+      monetization_mode: z.enum(['paid', 'freemium', 'free_experiment']).optional(),
+      landing_page: boundedString.optional(),
       contract_type: z
         .enum([
           'lease',
@@ -48,7 +70,7 @@ const eventSchema = z.object({
       tier: z.enum(['basic', 'professional', 'complete', 'premium']).optional(),
       previous_tier: z.enum(['basic', 'professional', 'complete', 'premium']).optional(),
       cta_type: boundedString.optional(),
-      price_band: z.enum(['99', '199', '299', '599']).optional(),
+      price_band: z.enum(['99', '199', '299', '399', '599']).optional(),
       entry_mode: z.enum(['single_document', 'package_flow']).optional(),
       add_on_key: z
         .enum(['docx', 'signing_checklist', 'handover_protocol', 'extended_archive', 'bilingual_annex'])
@@ -59,6 +81,10 @@ const eventSchema = z.object({
       base_price_czk: boundedNumber.optional(),
       total_price_czk: boundedNumber.optional(),
       selected_addons_count: z.number().int().min(0).max(20).optional(),
+      download_format: z.enum(['pdf', 'docx']).optional(),
+      download_sequence: z.number().int().min(1).max(1000).optional(),
+      reject_reason: boundedString.optional(),
+      reject_field: boundedString.optional(),
     })
     .partial()
     .optional(),

@@ -174,7 +174,9 @@ function testWebhookAndDownload() {
   assert.match(success, /\/stahnout\?/);
   assert.match(success, /format=docx/);
   assert.doesNotMatch(success, /\/api\/contracts\/download\?/);
-  assert.match(secureDownload, /fetch\('\/api\/contracts\/download'/);
+  assert.match(secureDownload, /request\.kind === 'free'/);
+  assert.match(secureDownload, /'\/api\/contracts\/free\/download'/);
+  assert.match(secureDownload, /'\/api\/contracts\/download'/);
   assert.match(secureDownload, /method:\s*'POST'/);
   assert.match(secureDownload, /token:\s*request\.token/);
   assert.match(secureDownload, /window\.history\.replaceState/);

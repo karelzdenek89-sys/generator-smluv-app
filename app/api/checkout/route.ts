@@ -44,6 +44,7 @@ import {
   validateContractPayload,
   type ContractType,
 } from '@/lib/checkout-validation';
+import { buildPartnerContext } from '@/lib/partners/context';
 
 export const runtime = 'nodejs';
 
@@ -339,6 +340,18 @@ export async function POST(req: Request) {
 
     // 4. Uložení draftu do Redisu — bez payloadu zákazník nedostane správný PDF výstup.
     const downloadToken = randomUUID();
+    const partnerAttributionId = randomUUID();
+    const partnerContext = buildPartnerContext({
+      contractType,
+      documentTier: checkoutTier,
+      locale: lang,
+      packageKey,
+      // Classification reads the server-validated document model, never the
+      // unvalidated request body. The original payload remains only for PDF output.
+      rawContractData: payloadValidation.data,
+      paid: false,
+      completed: false,
+    });
     try {
       await redis.set(
         `contract:draft:${draftId}`,
@@ -354,6 +367,8 @@ export async function POST(req: Request) {
           annexLanguage,
           deliveryEmail,
           consent,
+          partnerContext,
+          partnerAttributionId,
           payload: {
             ...payload,
             contractType,

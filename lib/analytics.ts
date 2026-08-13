@@ -10,6 +10,7 @@ export const ANALYTICS_EVENT_NAMES = [
   'package_page_view',
   'package_cta_click',
   'builder_view',
+  'builder_completed',
   'package_flow_entered',
   'builder_tier_selected',
   'builder_upgrade_clicked',
@@ -28,6 +29,10 @@ export const ANALYTICS_EVENT_NAMES = [
   'checkout_completed',
   'newsletter_subscribed',
   'document_downloaded',
+  'free_document_generated',
+  'free_document_downloaded',
+  'premium_offer_viewed',
+  'premium_upgrade_clicked',
   // Monetizace 2.0 — kontextové produktové nabídky v obsahu
   'content_offer_view',
   'content_offer_click',
@@ -36,6 +41,16 @@ export const ANALYTICS_EVENT_NAMES = [
   // Navazující nabídka po zaplacení / u stažení
   'post_purchase_offer_view',
   'post_purchase_offer_click',
+  // Generický partner funnel. Legacy post_purchase eventy zůstávají kvůli historii.
+  'partner_offer_eligible',
+  'partner_offer_viewed',
+  'partner_offer_clicked',
+  'partner_lead_started',
+  'partner_lead_consent_granted',
+  'partner_lead_submitted',
+  'partner_lead_succeeded',
+  'partner_lead_failed',
+  'partner_conversion_recorded',
   // Zájem o roční plán; měří poptávku dřív, než vznikne recurring backend
   'annual_plan_interest',
 ] as const;
@@ -57,11 +72,28 @@ export type AnalyticsEventParams = {
   /** Stabilní identifikátor nabízeného produktu (balíček, plán, partnerská služba). */
   product_id?: string;
   /** Druh nabídky, aby šlo oddělit obsahové CTA od post-payment nabídek. */
-  offer_type?: 'content_bundle' | 'post_purchase' | 'annual_plan';
+  offer_type?: 'content_bundle' | 'post_purchase' | 'partner' | 'annual_plan';
   /** Stránka, na které se nabídka zobrazila — doplňuje pathname o logický zdroj. */
   source_page?: string;
   /** Jazyk rozhraní, ve kterém se nabídka zobrazila. */
   locale?: string;
+  partner_id?: string;
+  provider?: string;
+  offer_category?:
+    | 'electronic_signature' | 'vehicle_history' | 'insurance'
+    | 'landlord_services' | 'construction_planning' | 'invoicing' | 'hr_payroll';
+  user_role?:
+    | 'landlord' | 'tenant' | 'seller' | 'buyer' | 'employer'
+    | 'employee' | 'customer' | 'client' | 'contractor'
+    | 'supplier' | 'freelancer' | 'company' | 'unknown';
+  placement?: 'success' | 'download';
+  revenue_czk?: number;
+  partner_click_id?: string;
+  partner_transaction_id?: string;
+  experiment_id?: string;
+  variant?: string;
+  monetization_mode?: 'paid' | 'freemium' | 'free_experiment';
+  landing_page?: string;
   contract_type?:
     | 'lease'
     | 'car_sale'

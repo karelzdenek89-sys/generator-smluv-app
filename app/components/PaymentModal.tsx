@@ -24,6 +24,7 @@ import {
   createCheckoutAuthorization,
   type CheckoutAuthorization,
 } from '@/lib/checkout-authorization';
+import type { PublicMonetizationPolicy } from '@/lib/monetization-policy';
 
 interface Section {
   title: string;
@@ -40,6 +41,8 @@ interface PaymentModalProps {
   lang?: string;
   paymentCopy?: LeaseFormUi['paymentModal'];
   onPay: (addOns: CheckoutAddonKey[], authorization: CheckoutAuthorization) => void;
+  monetizationPolicy?: PublicMonetizationPolicy | null;
+  onFreeGenerate?: (authorization: CheckoutAuthorization) => void;
   isProcessing: boolean;
   onClose: () => void;
 }
@@ -54,6 +57,8 @@ export default function PaymentModal({
   lang,
   paymentCopy,
   onPay,
+  monetizationPolicy,
+  onFreeGenerate,
   isProcessing,
   onClose,
 }: PaymentModalProps) {
@@ -70,21 +75,36 @@ export default function PaymentModal({
   const previousActiveElementRef = useRef<HTMLElement | null>(null);
   const packageConfig = getThematicPackageConfig(packageKey);
   const locale = normalizeLocale(lang);
+  const isFreeBasic = !packageConfig
+    && tier === 'basic'
+    && monetizationPolicy?.mode === 'free_experiment'
+    && Boolean(onFreeGenerate);
   const copy = paymentCopy;
-  const includedItems = getEffectiveIncludedItems(contractType, tier, packageKey, locale);
-  const availableAddOns = getAvailableCheckoutAddons(contractType, tier, packageKey, locale);
+  const includedItems = isFreeBasic
+    ? [
+        'PDF dokument sestavený podle zadaných údajů',
+        'Přehledná struktura určená ke kontrole a podpisu',
+        'Zabezpečené stažení bez platby a bez registrace',
+        'Dostupnost odkazu ke stažení 24 hodin',
+      ]
+    : getEffectiveIncludedItems(contractType, tier, packageKey, locale);
+  const availableAddOns = isFreeBasic
+    ? []
+    : getAvailableCheckoutAddons(contractType, tier, packageKey, locale);
   const availableAddonKeys = new Set(availableAddOns.map((addon) => addon.key));
   const validSelectedAddOns = selectedAddOns.filter((key) => availableAddonKeys.has(key));
   const selectedAddonItems = getCheckoutAddonIncludedItems(validSelectedAddOns);
   const localizedPackage = packageConfig
     ? getLocalizedPackagePresentation(packageConfig.key, locale)
     : null;
-  const basePriceCzk = packageConfig
+  const basePriceCzk = isFreeBasic
+    ? 0
+    : packageConfig
     ? packageConfig.priceCzk
     : PRICING_TIER_CONFIG[tier].priceCzk;
   const addonsTotalCzk = getCheckoutAddonsTotalCzk(validSelectedAddOns);
   const totalPriceCzk = basePriceCzk + addonsTotalCzk;
-  const checkoutPrice = `${totalPriceCzk.toLocaleString('cs-CZ')} Kč`;
+  const checkoutPrice = isFreeBasic ? 'Zdarma' : `${totalPriceCzk.toLocaleString('cs-CZ')} Kč`;
   const validAddOnKeys = validSelectedAddOns.join(',');
   const analyticsDefaults = getAnalyticsDefaultsForPathname(pathname ?? '/');
   const priceBand = getEffectivePriceBand(tier, packageConfig?.key);
@@ -202,11 +222,31 @@ export default function PaymentModal({
       base_price_czk: basePriceCzk,
       total_price_czk: totalPriceCzk,
       selected_addons_count: validSelectedAddOns.length,
+      monetization_mode: isFreeBasic ? 'free_experiment' : 'paid',
+      experiment_id: monetizationPolicy?.experimentId ?? undefined,
+      variant: monetizationPolicy?.variant ?? undefined,
     });
+    if (monetizationPolicy?.mode === 'free_experiment') {
+      trackEvent('premium_offer_viewed', {
+        ...analyticsDefaults,
+        source: 'checkout_modal',
+        surface: 'tier_selector',
+        contract_type: analyticsDefaults.contract_type,
+        tier: 'complete',
+        previous_tier: 'basic',
+        monetization_mode: 'free_experiment',
+        experiment_id: monetizationPolicy.experimentId ?? undefined,
+        variant: monetizationPolicy.variant ?? undefined,
+      });
+    }
   }, [
     addonsTotalCzk,
     analyticsDefaults,
     basePriceCzk,
+    isFreeBasic,
+    monetizationPolicy?.experimentId,
+    monetizationPolicy?.mode,
+    monetizationPolicy?.variant,
     packageConfig?.key,
     priceBand,
     tier,
@@ -352,14 +392,18 @@ export default function PaymentModal({
               <div className="text-[11px] font-black uppercase tracking-[0.2em] text-amber-400/80">{copy?.unlockHeading ?? 'Odemknout dokument'}</div>
               <h2 id="checkout-modal-title" className="mt-2 text-2xl font-black leading-tight text-white">{title}</h2>
               <p id="checkout-modal-description" className="mt-2 text-sm leading-6 text-slate-400">
-                {locale === 'en'
+                {isFreeBasic
+                  ? 'Zkontrolujte základní variantu a potvrďte podmínky. PDF vytvoříme bez platby a bez registrace.'
+                  : locale === 'en'
                   ? 'Enter the delivery email, review the order and confirm the terms before payment.'
                   : locale === 'ua'
                     ? 'Введіть email для доставки, перевірте замовлення та підтвердьте умови перед оплатою.'
                     : 'Zadejte doručovací e-mail, zkontrolujte objednávku a před platbou potvrďte podmínky.'}
               </p>
               <p className="mt-2 text-sm text-slate-400">
-                {hasSections
+                {isFreeBasic
+                  ? 'Základní DPP je připravena k bezplatnému vygenerování. Rozšířená varianta zůstává placená.'
+                  : hasSections
                   ? (copy?.unlockSubtitleReady ?? 'Váš dokument je sestavený a připravený ke stažení. Vyberte variantu a dokončete platbu.')
                   : (copy?.unlockSubtitleEmpty ?? 'Doplňte zbývající údaje ve formuláři a vyberte variantu dokumentu.')}
               </p>
@@ -376,7 +420,22 @@ export default function PaymentModal({
                     <button
                       key={t}
                       type="button"
-                      onClick={() => onTierChange(t)}
+                      onClick={() => {
+                        if (t === 'complete' && monetizationPolicy?.mode === 'free_experiment') {
+                          trackEvent('premium_upgrade_clicked', {
+                            ...analyticsDefaults,
+                            source: 'checkout_modal',
+                            surface: 'tier_selector',
+                            contract_type: analyticsDefaults.contract_type,
+                            tier: 'complete',
+                            previous_tier: 'basic',
+                            monetization_mode: 'free_experiment',
+                            experiment_id: monetizationPolicy.experimentId ?? undefined,
+                            variant: monetizationPolicy.variant ?? undefined,
+                          });
+                        }
+                        onTierChange(t);
+                      }}
                       className={`w-full rounded-2xl border p-4 text-left transition ${
                         isSelected
                           ? 'border-amber-500/60 bg-amber-500/10'
@@ -402,7 +461,9 @@ export default function PaymentModal({
                           )}
                         </div>
                         <span className={`font-black text-base ${isSelected ? 'text-amber-400' : 'text-slate-400'}`}>
-                          {cfg.priceLabel}
+                          {t === 'basic' && monetizationPolicy?.mode === 'free_experiment'
+                            ? 'Zdarma'
+                            : cfg.priceLabel}
                         </span>
                       </div>
                       <p className="mt-1.5 pl-6 text-xs text-slate-400">
@@ -539,14 +600,16 @@ export default function PaymentModal({
             )}
 
             <div className="mb-5 rounded-xl border border-emerald-400/15 bg-emerald-400/8 px-4 py-3 text-xs leading-6 text-emerald-100">
-              {copy?.secureNote ?? 'Platba probíhá bezpečně přes Stripe. Údaje karty se na naše servery nedostávají.'}
+              {isFreeBasic
+                ? 'Bez platby a bez registrace. Základní PDF uchováme 24 hodin pro zabezpečené stažení.'
+                : (copy?.secureNote ?? 'Platba probíhá bezpečně přes Stripe. Údaje karty se na naše servery nedostávají.')}
               <span className="block text-emerald-100/80">
-                {instantDownloadNote}
+                {isFreeBasic ? 'Rozšířená varianta s dalšími klauzulemi je nadále placená.' : instantDownloadNote}
               </span>
             </div>
 
             <div className="mt-auto space-y-4">
-              <div>
+              {!isFreeBasic ? <div>
                 <label htmlFor="checkout-delivery-email" className="mb-2 block text-xs font-bold text-slate-300">
                   {locale === 'en'
                     ? 'Email for document delivery'
@@ -574,7 +637,7 @@ export default function PaymentModal({
                       ? 'Посилання для завантаження та доступ до кабінету буде надіслано лише на цю адресу.'
                       : 'Odkaz ke stažení a přístup do zákaznické zóny odešleme pouze na tuto adresu.'}
                 </p>
-              </div>
+              </div> : null}
 
               {/* Souhlas s OP + vzdání se odstoupení */}
               <label className="flex cursor-pointer items-start gap-3 group">
@@ -615,7 +678,7 @@ export default function PaymentModal({
                 data-testid="lease-checkout-pay"
                 onClick={() => {
                   const normalizedEmail = deliveryEmail.trim().toLowerCase();
-                  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+                  if (!isFreeBasic && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
                     alert(
                       locale === 'en'
                         ? 'Enter a valid delivery email.'
@@ -640,9 +703,37 @@ export default function PaymentModal({
                       base_price_czk: basePriceCzk,
                       total_price_czk: totalPriceCzk,
                       selected_addons_count: validSelectedAddOns.length,
-                      cta_type: 'pay_without_consent',
+                      cta_type: isFreeBasic ? 'free_without_consent' : 'pay_without_consent',
+                      monetization_mode: isFreeBasic ? 'free_experiment' : 'paid',
+                      experiment_id: monetizationPolicy?.experimentId ?? undefined,
+                      variant: monetizationPolicy?.variant ?? undefined,
                     });
                     alert(copy?.gdprRequired ?? 'Potvrďte prosím souhlas se zpracováním osobních údajů.');
+                    return;
+                  }
+                  trackEvent('builder_completed', {
+                    ...analyticsDefaults,
+                    source: 'checkout_modal',
+                    surface: 'checkout_modal',
+                    contract_type: analyticsDefaults.contract_type,
+                    tier,
+                    package_key: packageConfig?.key,
+                    price_band: priceBand,
+                    add_on_keys: validAddOnKeys,
+                    addons_total_czk: addonsTotalCzk,
+                    base_price_czk: basePriceCzk,
+                    total_price_czk: totalPriceCzk,
+                    selected_addons_count: validSelectedAddOns.length,
+                    monetization_mode: isFreeBasic ? 'free_experiment' : 'paid',
+                    experiment_id: monetizationPolicy?.experimentId ?? undefined,
+                    variant: monetizationPolicy?.variant ?? undefined,
+                  });
+                  const authorization = createCheckoutAuthorization(
+                    normalizedEmail,
+                    validSelectedAddOns.includes('bilingual_annex') ? annexLanguage : undefined,
+                  );
+                  if (isFreeBasic && onFreeGenerate) {
+                    onFreeGenerate(authorization);
                     return;
                   }
                   trackEvent('builder_checkout_clicked', {
@@ -658,13 +749,11 @@ export default function PaymentModal({
                     base_price_czk: basePriceCzk,
                     total_price_czk: totalPriceCzk,
                     selected_addons_count: validSelectedAddOns.length,
+                    monetization_mode: 'paid',
                   });
                   onPay(
                     validSelectedAddOns,
-                    createCheckoutAuthorization(
-                      normalizedEmail,
-                      validSelectedAddOns.includes('bilingual_annex') ? annexLanguage : undefined,
-                    ),
+                    authorization,
                   );
                 }}
                 disabled={isProcessing}
@@ -673,15 +762,19 @@ export default function PaymentModal({
                 {isProcessing ? (
                   <span className="flex items-center justify-center gap-2">
                     <span className="w-5 h-5 border-2 border-black/40 border-t-black rounded-full animate-spin" />
-                    {copy?.processing ?? 'Přesměrování na platbu…'}
+                    {isFreeBasic ? 'Připravuji PDF…' : (copy?.processing ?? 'Přesměrování na platbu…')}
                   </span>
                 ) : (
-                  copy ? `${copy.payCtaWithPrice} — ${checkoutPrice} →` : `Zaplatit a stáhnout — ${checkoutPrice} →`
+                  isFreeBasic
+                    ? 'Vygenerovat základní PDF zdarma →'
+                    : copy ? `${copy.payCtaWithPrice} — ${checkoutPrice} →` : `Zaplatit a stáhnout — ${checkoutPrice} →`
                 )}
               </button>
 
               <p className="text-center text-[11px] text-slate-500">
-                {copy?.footerSecure ?? '🔒 Zabezpečená platba přes Stripe · PDF ke stažení ihned'}
+                {isFreeBasic
+                  ? '🔒 Zabezpečené stažení · bez Stripe · bez registrace'
+                  : (copy?.footerSecure ?? '🔒 Zabezpečená platba přes Stripe · PDF ke stažení ihned')}
               </p>
             </div>
           </div>

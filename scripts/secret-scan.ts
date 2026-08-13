@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 const trackedFiles = execFileSync(
   'git',
@@ -19,6 +19,10 @@ const patterns = [
 
 const findings: string[] = [];
 for (const file of trackedFiles) {
+  // `git ls-files --cached` also reports tracked files deleted in the working
+  // tree. Those paths have no content left to scan and must not abort the
+  // pre-deploy gate before the deletion is staged.
+  if (!existsSync(file)) continue;
   const content = readFileSync(file, 'utf8');
   for (const { name, pattern } of patterns) {
     pattern.lastIndex = 0;

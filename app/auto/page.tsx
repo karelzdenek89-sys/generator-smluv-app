@@ -19,10 +19,13 @@ import {
 import PaymentModal from '@/app/components/LazyPaymentModal';
 import { BuilderLocaleNotice, useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
 import { isValidMoney } from '@/lib/money';
+import BuilderUserRoleField from '@/app/components/partners/BuilderUserRoleField';
+import type { PartnerUserRole } from '@/lib/partners/types';
 
 type PaymentMethod = 'cash' | 'transfer';
 
 type CarSaleFormData = {
+  partnerUserRole: PartnerUserRole;
   sellerName: string;
   sellerId: string;
   sellerAddress: string;
@@ -123,6 +126,7 @@ function CarSaleBuilderContent() {
   }, []);
 
   const [formData, setFormData] = useState<CarSaleFormData>({
+    partnerUserRole: 'unknown',
     sellerName: '',
     sellerId: '',
     sellerAddress: '',
@@ -559,6 +563,12 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
 
         <div className="grid lg:grid-cols-12 gap-8 items-start">
           <div className="lg:col-span-7 space-y-6">
+            <BuilderUserRoleField
+              contractType="car_sale"
+              locale={builderLocale}
+              value={formData.partnerUserRole}
+              onChange={(partnerUserRole) => setFormData((current) => ({ ...current, partnerUserRole }))}
+            />
             <section className={cardClass}>
               <SectionTitle
                 index="01"

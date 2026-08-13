@@ -21,8 +21,11 @@ import {
 import { getThematicPackageConfig } from '@/lib/packages';
 import { getPackageAppendixNotice } from '@/lib/i18n/package-upsell';
 import { isValidMoney } from '@/lib/money';
+import BuilderUserRoleField from '@/app/components/partners/BuilderUserRoleField';
+import type { PartnerUserRole } from '@/lib/partners/types';
 
 type LeaseFormData = {
+  partnerUserRole: PartnerUserRole;
   landlordName: string;
   landlordId: string;
   landlordAddress: string;
@@ -114,6 +117,7 @@ function LeaseBuilderContent() {
   });
 
   const [formData, setFormData] = useState<LeaseFormData>({
+    partnerUserRole: 'unknown',
     landlordName: '',
     landlordId: '',
     landlordAddress: '',
@@ -581,6 +585,12 @@ function LeaseBuilderContent() {
               </section>
             ) : null}
             <div className="mb-6 border-t border-slate-800/60 pt-8"><h2 className="text-lg font-black text-white uppercase tracking-wide">{ui.form.title}</h2><p className="text-sm text-slate-500 mt-1">{ui.form.requiredHint}</p></div>
+            <BuilderUserRoleField
+              contractType="lease"
+              locale={builderLocale}
+              value={formData.partnerUserRole}
+              onChange={(partnerUserRole) => setFormData((current) => ({ ...current, partnerUserRole }))}
+            />
             <section className={cardClass}>
               <SectionTitle
                 index={ui.form.sections.landlord.index}

@@ -116,6 +116,8 @@ export type SoftwareApplicationSchemaInput = {
    * Pokud true, jen 99/199 Kč (pro produkty bez tematického balíčku).
    */
   twoTierOnly?: boolean;
+  /** Aktivní experiment, ve kterém je základní PDF skutečně zdarma. */
+  freeBasic?: boolean;
 };
 
 export function softwareApplicationSchema({
@@ -123,15 +125,16 @@ export function softwareApplicationSchema({
   slug,
   description,
   twoTierOnly = false,
+  freeBasic = false,
 }: SoftwareApplicationSchemaInput) {
   const url = `${BASE_URL}${slug}`;
   const offers = twoTierOnly
     ? [
-        { '@type': 'Offer', name: 'Základní dokument', price: '99', priceCurrency: 'CZK', url },
+        { '@type': 'Offer', name: 'Základní dokument', price: freeBasic ? '0' : '99', priceCurrency: 'CZK', url },
         { '@type': 'Offer', name: 'Rozšířený dokument', price: '199', priceCurrency: 'CZK', url },
       ]
     : [
-        { '@type': 'Offer', name: 'Základní dokument', price: '99', priceCurrency: 'CZK', url },
+        { '@type': 'Offer', name: 'Základní dokument', price: freeBasic ? '0' : '99', priceCurrency: 'CZK', url },
         { '@type': 'Offer', name: 'Rozšířený dokument', price: '199', priceCurrency: 'CZK', url },
         { '@type': 'Offer', name: 'Tematický balíček', price: '299', priceCurrency: 'CZK', url },
       ];
@@ -153,7 +156,7 @@ export function softwareApplicationSchema({
     offers: {
       '@type': 'AggregateOffer',
       priceCurrency: 'CZK',
-      lowPrice: '99',
+      lowPrice: freeBasic ? '0' : '99',
       highPrice: twoTierOnly ? '199' : '299',
       offerCount: String(offers.length),
       offers,

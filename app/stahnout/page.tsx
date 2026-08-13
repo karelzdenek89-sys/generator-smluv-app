@@ -2,35 +2,57 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import PostPurchaseOffers from '@/app/components/PostPurchaseOffers';
+import PartnerNextSteps from '@/app/components/partners/PartnerNextSteps';
+import type { PartnerContext, PublicPartnerOffer } from '@/lib/partners/types';
 
-type DownloadRequest = {
+type PaidDownloadRequest = {
+  kind: 'paid';
   sessionId: string;
   token: string;
   lang: string;
   format: 'pdf' | 'docx';
 };
 
+type FreeDownloadRequest = {
+  kind: 'free';
+  freeId: string;
+  token: string;
+  lang: string;
+  format: 'pdf';
+};
+
+type DownloadRequest = PaidDownloadRequest | FreeDownloadRequest;
+
 export default function SecureDownloadPage() {
   const [request, setRequest] = useState<DownloadRequest | null>(null);
   const [state, setState] = useState<'preparing' | 'ready' | 'error'>('preparing');
   const [error, setError] = useState('');
+  const [partnerResult, setPartnerResult] = useState<{
+    context: PartnerContext;
+    offers: PublicPartnerOffer[];
+    attributionId?: string | null;
+  } | null>(null);
   const startedFor = useRef('');
 
   useEffect(() => {
     const url = new URL(window.location.href);
     const token = new URLSearchParams(url.hash.replace(/^#/, '')).get('token')?.trim() ?? '';
     const sessionId = url.searchParams.get('session_id')?.trim() ?? '';
+    const freeId = url.searchParams.get('free_id')?.trim() ?? '';
     const lang = url.searchParams.get('lang')?.trim() ?? 'cs';
     const format = url.searchParams.get('format') === 'docx' ? 'docx' : 'pdf';
     url.hash = '';
     window.history.replaceState(null, '', `${url.pathname}${url.search}`);
-    if (!token || !sessionId) {
+    if (!token || (!sessionId && !freeId) || (sessionId && freeId)) {
       setError('Odkaz ke stažení je neplatný nebo neúplný. Použijte odkaz z potvrzovacího e-mailu.');
       setState('error');
       return;
     }
-    setRequest({ token, sessionId, lang, format });
+    if (freeId) {
+      setRequest({ kind: 'free', token, freeId, lang, format: 'pdf' });
+    } else {
+      setRequest({ kind: 'paid', token, sessionId, lang, format });
+    }
   }, []);
 
   const startDownload = useCallback(async () => {
@@ -38,15 +60,19 @@ export default function SecureDownloadPage() {
     setState('preparing');
     setError('');
     try {
-      const response = await fetch('/api/contracts/download', {
+      const response = await fetch(
+        request.kind === 'free' ? '/api/contracts/free/download' : '/api/contracts/download',
+        {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sessionId: request.sessionId,
-          token: request.token,
-          lang: request.lang,
-          format: request.format,
-        }),
+        body: JSON.stringify(request.kind === 'free'
+          ? { freeId: request.freeId, token: request.token }
+          : {
+              sessionId: request.sessionId,
+              token: request.token,
+              lang: request.lang,
+              format: request.format,
+            }),
         cache: 'no-store',
       });
       if (!response.ok) {
@@ -74,11 +100,36 @@ export default function SecureDownloadPage() {
 
   useEffect(() => {
     if (!request) return;
-    const key = `${request.sessionId}:${request.format}`;
+    const key = request.kind === 'free'
+      ? `${request.freeId}:pdf`
+      : `${request.sessionId}:${request.format}`;
     if (startedFor.current === key) return;
     startedFor.current = key;
     void startDownload();
   }, [request, startDownload]);
+
+  useEffect(() => {
+    if (!request || state !== 'ready') return;
+    let cancelled = false;
+    void fetch(request.kind === 'free' ? '/api/contracts/free/status' : '/api/contracts/status', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(request.kind === 'free'
+        ? { freeId: request.freeId, token: request.token }
+        : { sessionId: request.sessionId, token: request.token }),
+      cache: 'no-store',
+    })
+      .then((response) => response.ok ? response.json() : null)
+      .then((data: { partnerContext?: PartnerContext; partnerOffers?: PublicPartnerOffer[]; partnerAttributionId?: string | null } | null) => {
+        if (!cancelled && data?.partnerContext && Array.isArray(data.partnerOffers)) {
+          setPartnerResult({ context: data.partnerContext, offers: data.partnerOffers, attributionId: data.partnerAttributionId });
+        }
+      })
+      .catch(() => {
+        // Partner lookup is optional and must never affect a successful download.
+      });
+    return () => { cancelled = true; };
+  }, [request, state]);
 
   return (
     <main className="min-h-screen bg-[#05080f] px-6 py-20 text-slate-200">
@@ -103,12 +154,15 @@ export default function SecureDownloadPage() {
         </Link>
       </div>
 
-      {/* Tato stránka zná jen session a token, nikoli typ dokumentu, takže se
-          zobrazí pouze nabídky nezávislé na typu smlouvy. Nabídky vázané na
-          konkrétní dokument zůstávají na success stránce. */}
-      {state === 'ready' ? (
+      {/* Kontext i nabídky vrací server až po ověření platby a download tokenu. */}
+      {state === 'ready' && partnerResult ? (
         <div className="mx-auto mt-6 max-w-lg text-left">
-          <PostPurchaseOffers sourcePage="download" locale={request?.lang ?? 'cs'} />
+          <PartnerNextSteps
+            context={partnerResult.context}
+            offers={partnerResult.offers}
+            sourcePage="download"
+            attributionId={partnerResult.attributionId}
+          />
         </div>
       ) : null}
     </main>

@@ -7,6 +7,7 @@ import {
 import { THEMATIC_PACKAGES, type ThematicPackageKey } from '@/lib/packages';
 import { redis } from '@/lib/redis';
 import { SITUATION_LANDINGS } from '@/lib/situations';
+import { GSC_PAGE_SNAPSHOTS, classifyGscSnapshot } from '@/lib/gsc-monetization-candidates';
 import type { AnalyticsEventName, AnalyticsEventParams, PriceBand } from './analytics';
 
 type StoredAnalyticsEvent = {
@@ -86,6 +87,80 @@ export type AnalyticsDashboardData = {
     toBuilder: number;
     toPackage: number;
   }>;
+  partnerPerformance: Array<{
+    partnerId: string;
+    offerId: string;
+    contractType: string;
+    locale: string;
+    userRole: string;
+    eligibleUsers: number;
+    impressions: number;
+    clicks: number;
+    ctr: number;
+    leadStarts: number;
+    consentGranted: number;
+    leadSubmissions: number;
+    leadSuccesses: number;
+    conversions: number | null;
+    revenueCzk: number | null;
+    revenuePerClick: number | null;
+    revenuePerEligibleUser: number | null;
+    revenuePerPurchasedDocument: number | null;
+  }>;
+  monetizationPerformance: Array<{
+    contractType: string;
+    mode: string;
+    builderStarts: number;
+    builderCompletions: number;
+    freeDocuments: number;
+    freeDownloads: number;
+    purchases: number;
+    contractRevenueCzk: number;
+    partnerRevenueCzk: number | null;
+  }>;
+  gscCandidates: Array<{
+    page: string;
+    impressions: number;
+    clicks: number;
+    ctrPercent: number;
+    averagePosition: number;
+    classification: string;
+    source: string;
+    observedAt: string | null;
+  }>;
+};
+
+type MonetizationAccumulator = {
+  contractType: string;
+  mode: string;
+  builderStarts: number;
+  builderCompletions: number;
+  freeDocuments: number;
+  freeDownloads: number;
+  purchases: number;
+  contractRevenueCzk: number;
+  partnerRevenueCzk: number;
+  partnerRevenueKnown: boolean;
+};
+
+type PartnerAccumulator = {
+  partnerId: string;
+  offerId: string;
+  contractType: string;
+  locale: string;
+  userRole: string;
+  eligibleIds: Set<string>;
+  eligibleEvents: number;
+  impressions: number;
+  clicks: number;
+  leadStarts: number;
+  consentGranted: number;
+  leadSubmissions: number;
+  leadSuccesses: number;
+  conversions: number;
+  conversionsKnown: boolean;
+  revenueCzk: number;
+  revenueKnown: boolean;
 };
 
 export const ANALYTICS_REPORTING_WINDOW_DAYS = 30;
@@ -322,6 +397,57 @@ export async function getAnalyticsDashboardData(
     string,
     { views: number; toBuilder: number; toPackage: number }
   >();
+  const partnerStats = new Map<string, PartnerAccumulator>();
+  const monetizationStats = new Map<string, MonetizationAccumulator>();
+
+  function getMonetizationStat(params: AnalyticsEventParams): MonetizationAccumulator {
+    const contractType = params.contract_type ?? 'unknown';
+    const mode = params.monetization_mode ?? 'paid';
+    const key = `${contractType}::${mode}`;
+    const current = monetizationStats.get(key) ?? {
+      contractType,
+      mode,
+      builderStarts: 0,
+      builderCompletions: 0,
+      freeDocuments: 0,
+      freeDownloads: 0,
+      purchases: 0,
+      contractRevenueCzk: 0,
+      partnerRevenueCzk: 0,
+      partnerRevenueKnown: false,
+    };
+    monetizationStats.set(key, current);
+    return current;
+  }
+
+  function getPartnerStat(params: AnalyticsEventParams): PartnerAccumulator | null {
+    if (!params.partner_id || !params.product_id) return null;
+    const contractType = params.contract_type ?? 'unknown';
+    const locale = params.locale ?? 'unknown';
+    const userRole = params.user_role ?? 'unknown';
+    const key = [params.partner_id, params.product_id, contractType, locale, userRole].join('::');
+    const current = partnerStats.get(key) ?? {
+      partnerId: params.partner_id,
+      offerId: params.product_id,
+      contractType,
+      locale,
+      userRole,
+      eligibleIds: new Set<string>(),
+      eligibleEvents: 0,
+      impressions: 0,
+      clicks: 0,
+      leadStarts: 0,
+      consentGranted: 0,
+      leadSubmissions: 0,
+      leadSuccesses: 0,
+      conversions: 0,
+      conversionsKnown: false,
+      revenueCzk: 0,
+      revenueKnown: false,
+    };
+    partnerStats.set(key, current);
+    return current;
+  }
 
   for (const event of events) {
     const params = event.params ?? {};
@@ -480,6 +606,7 @@ export async function getAnalyticsDashboardData(
 
       case 'builder_view':
         builderViews += 1;
+        getMonetizationStat(params).builderStarts += 1;
         if (inRecentWindow) recentBuilderViews += 1;
         if (params.traffic_label || params.traffic_source) {
           attributedBuilderEntries += 1;
@@ -582,9 +709,11 @@ export async function getAnalyticsDashboardData(
 
       case 'checkout_completed':
         purchasesCompleted += 1;
+        getMonetizationStat(params).purchases += 1;
         if (inRecentWindow) recentPurchasesCompleted += 1;
         if (typeof params.total_price_czk === 'number' && Number.isFinite(params.total_price_czk)) {
           purchaseRevenueCzk += params.total_price_czk;
+          getMonetizationStat(params).contractRevenueCzk += params.total_price_czk;
           if (inRecentWindow) recentPurchaseRevenueCzk += params.total_price_czk;
         }
         break;
@@ -600,6 +729,77 @@ export async function getAnalyticsDashboardData(
 
       case 'newsletter_subscribed':
         newsletterSubscriptions += 1;
+        break;
+
+      case 'free_document_generated':
+        getMonetizationStat(params).freeDocuments += 1;
+        break;
+
+      case 'free_document_downloaded':
+        getMonetizationStat(params).freeDownloads += 1;
+        break;
+
+      case 'partner_offer_eligible': {
+        const stat = getPartnerStat(params);
+        if (!stat) break;
+        stat.eligibleEvents += 1;
+        if (params.partner_transaction_id) stat.eligibleIds.add(params.partner_transaction_id);
+        break;
+      }
+
+      case 'partner_offer_viewed': {
+        const stat = getPartnerStat(params);
+        if (stat) stat.impressions += 1;
+        break;
+      }
+
+      case 'partner_offer_clicked': {
+        const stat = getPartnerStat(params);
+        if (stat) stat.clicks += 1;
+        break;
+      }
+
+      case 'partner_lead_started': {
+        const stat = getPartnerStat(params);
+        if (stat) stat.leadStarts += 1;
+        break;
+      }
+
+      case 'partner_lead_consent_granted': {
+        const stat = getPartnerStat(params);
+        if (stat) stat.consentGranted += 1;
+        break;
+      }
+
+      case 'partner_lead_submitted': {
+        const stat = getPartnerStat(params);
+        if (stat) stat.leadSubmissions += 1;
+        break;
+      }
+
+      case 'partner_lead_succeeded': {
+        const stat = getPartnerStat(params);
+        if (stat) stat.leadSuccesses += 1;
+        break;
+      }
+
+      case 'partner_conversion_recorded': {
+        const stat = getPartnerStat(params);
+        if (!stat) break;
+        stat.conversionsKnown = true;
+        stat.conversions += 1;
+        if (typeof params.revenue_czk === 'number' && Number.isFinite(params.revenue_czk)) {
+          stat.revenueKnown = true;
+          stat.revenueCzk += params.revenue_czk;
+          const monetization = getMonetizationStat(params);
+          monetization.partnerRevenueKnown = true;
+          monetization.partnerRevenueCzk += params.revenue_czk;
+        }
+        break;
+      }
+
+      case 'builder_completed':
+        getMonetizationStat(params).builderCompletions += 1;
         break;
 
       case 'homepage_pricing_path_click':
@@ -683,6 +883,54 @@ export async function getAnalyticsDashboardData(
     .sort((a, b) => b.views + b.toBuilder - (a.views + a.toBuilder))
     .slice(0, 12);
 
+  const partnerPerformance = [...partnerStats.values()]
+    .map((stat) => {
+      const eligibleUsers = stat.eligibleIds.size || stat.eligibleEvents;
+      const revenueCzk = stat.revenueKnown ? stat.revenueCzk : null;
+      return {
+        partnerId: stat.partnerId,
+        offerId: stat.offerId,
+        contractType: stat.contractType,
+        locale: stat.locale,
+        userRole: stat.userRole,
+        eligibleUsers,
+        impressions: stat.impressions,
+        clicks: stat.clicks,
+        ctr: stat.impressions > 0 ? stat.clicks / stat.impressions : 0,
+        leadStarts: stat.leadStarts,
+        consentGranted: stat.consentGranted,
+        leadSubmissions: stat.leadSubmissions,
+        leadSuccesses: stat.leadSuccesses,
+        conversions: stat.conversionsKnown ? stat.conversions : null,
+        revenueCzk,
+        revenuePerClick: revenueCzk !== null && stat.clicks > 0 ? revenueCzk / stat.clicks : null,
+        revenuePerEligibleUser: revenueCzk !== null && eligibleUsers > 0 ? revenueCzk / eligibleUsers : null,
+        revenuePerPurchasedDocument: revenueCzk !== null && purchasesCompleted > 0
+          ? revenueCzk / purchasesCompleted
+          : null,
+      };
+    })
+    .sort((left, right) => right.clicks - left.clicks || right.impressions - left.impressions);
+
+  const monetizationPerformance = [...monetizationStats.values()]
+    .map((stat) => ({
+      contractType: stat.contractType,
+      mode: stat.mode,
+      builderStarts: stat.builderStarts,
+      builderCompletions: stat.builderCompletions,
+      freeDocuments: stat.freeDocuments,
+      freeDownloads: stat.freeDownloads,
+      purchases: stat.purchases,
+      contractRevenueCzk: stat.contractRevenueCzk,
+      partnerRevenueCzk: stat.partnerRevenueKnown ? stat.partnerRevenueCzk : null,
+    }))
+    .sort((left, right) => right.builderStarts - left.builderStarts);
+
+  const gscCandidates = GSC_PAGE_SNAPSHOTS.map((snapshot) => ({
+    ...snapshot,
+    classification: classifyGscSnapshot(snapshot),
+  }));
+
   const insights: AnalyticsInsight[] = [
     {
       label: 'Builder → checkout',
@@ -759,6 +1007,9 @@ export async function getAnalyticsDashboardData(
     insights,
     recentOverview,
     seoLandingPerformance,
+    partnerPerformance,
+    monetizationPerformance,
+    gscCandidates,
     overview: [
       { key: 'article_views', label: 'Zobrazen\u00ed \u010dl\u00e1nk\u016f', value: articleViews },
       { key: 'article_to_builder', label: '\u010cl\u00e1nky \u2192 builder', value: articleToBuilderClicks },

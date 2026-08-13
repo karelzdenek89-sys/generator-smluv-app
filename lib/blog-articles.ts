@@ -161,7 +161,7 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   },
   {
     slug: 'minimalni-mzda-dpp-pracovni-smlouva-2026',
-    title: 'Minimální mzda 2026 ve smlouvách a DPP: co hlídat',
+    title: 'Minimální mzda 2026: 22 400 Kč, DPP a pracovní smlouva',
     excerpt:
       'Aktuální přehled minimální mzdy v roce 2026, dopadů na DPP a pracovní smlouvy a praktických bodů, které zkontrolovat před podpisem dokumentu.',
     category: 'Práce a zaměstnání',
@@ -458,7 +458,7 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   },
   {
     slug: 'dpp-dohoda-provedeni-prace',
-    title: 'Dohoda o provedení práce 2026: vzor, limity a odvody',
+    title: 'DPP 2026: vzor dohody, limity, odvody a pravidla',
     excerpt:
       'Praktický přehled, kdy je dohoda o provedení práce vhodná, jak nastavit odměnu a na co si dát pozor.',
     category: 'Práce a zaměstnání',

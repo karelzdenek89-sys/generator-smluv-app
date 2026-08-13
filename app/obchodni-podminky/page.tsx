@@ -8,8 +8,10 @@ import {
 import { isThematicPackageAvailable, THEMATIC_PACKAGE_CONFIG } from '@/lib/packages';
 import { CHECKOUT_ADDON_CONFIG } from '@/lib/checkout-addons';
 import { SITE_URL } from '@/lib/seo/site';
+import { getMonetizationPolicy } from '@/lib/monetization-policy';
 
 const canonicalUrl = `${SITE_URL}/obchodni-podminky`;
+const FREE_BASIC_DPP = getMonetizationPolicy('dpp', 'cs').mode === 'free_experiment';
 
 export const metadata: Metadata = {
   title: 'Obchodní podmínky',
@@ -48,7 +50,7 @@ export default function TermsPage() {
           Obchodní <span className="text-amber-500">podmínky</span>
         </h1>
         <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.25em] mb-12">
-          Verze 2026-07-15 • SmlouvaHned.cz
+          Verze 2026-08-13 • SmlouvaHned.cz
         </p>
 
         <div className="space-y-10 text-sm leading-relaxed">
@@ -101,6 +103,11 @@ export default function TermsPage() {
             <p className="mb-3">
               Smlouva mezi Poskytovatelem a Zákazníkem vzniká dokončením objednávky — tj. vyplněním formuláře a úspěšným provedením platby. Zákazník bere na vědomí, že vložené údaje musí být pravdivé a úplné.
             </p>
+            {FREE_BASIC_DPP ? (
+              <p className="mb-3">
+                U aktuálně označené bezplatné základní DPP vzniká smluvní vztah potvrzením podmínek a požadavku na okamžité vytvoření dokumentu; platební krok se neprovádí. Bezplatnost se vztahuje pouze na základní PDF, ne na rozšířenou variantu, DOCX, doplňky ani tematické balíčky.
+              </p>
+            ) : null}
             <p>
               Zákazník je povinen zkontrolovat vygenerovaný dokument před jeho použitím. Poskytovatel neodpovídá za škody vzniklé chybným vyplněním formuláře.
             </p>
@@ -113,6 +120,9 @@ export default function TermsPage() {
             <div className="bg-[#0c1426]/60 border border-white/5 rounded-2xl p-5 space-y-2 text-sm mb-3">
               <div className="flex justify-between"><span className="text-slate-400">{PRICING_TIER_CONFIG.basic.title}</span><span className="font-bold text-white">{PRICING_TIER_CONFIG.basic.priceLabel}</span></div>
               <div className="flex justify-between"><span className="text-slate-400">{PRICING_TIER_CONFIG.complete.title}</span><span className="font-bold text-white">{PRICING_TIER_CONFIG.complete.priceLabel}</span></div>
+              {FREE_BASIC_DPP ? (
+                <div className="flex justify-between"><span className="text-slate-400">Základní DPP v aktivním experimentu</span><span className="font-bold text-white">0 Kč</span></div>
+              ) : null}
               <div className="flex justify-between"><span className="text-slate-400">Tematický balíček</span><span className="font-bold text-white">{THEMATIC_PACKAGE_CONFIG.landlord.priceLabel}</span></div>
               <div className="flex justify-between"><span className="text-slate-400">Zaměstnavatel Start 2026</span><span className="font-bold text-white">{THEMATIC_PACKAGE_CONFIG.employer_start.priceLabel}</span></div>
               {/* Ceník musí odpovídat tomu, co si zákazník může skutečně koupit,
@@ -148,6 +158,11 @@ export default function TermsPage() {
             <p>
               Odkaz ke stažení dokumentu a objednaných doplňků je aktivní po dobu <strong className="text-white">{BASIC_ARCHIVE_DAYS} dní</strong> ({PRICING_TIER_CONFIG.basic.title}) nebo <strong className="text-white">{COMPLETE_ARCHIVE_DAYS} dní</strong> ({PRICING_TIER_CONFIG.complete.title} a tematický balíček) od okamžiku zaplacení. Pokud si Zákazník zakoupí doplněk Dostupnost 90 dní, je odkaz dostupný <strong className="text-white">90 dní</strong> od zaplacení. Po uplynutí této doby může být dokument nedostupný z důvodu automatického mazání dočasného úložiště. Zákazníkovi doporučujeme dokument ihned po stažení uložit na bezpečném místě. V případě problémů nás kontaktujte na <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">info@smlouvahned.cz</a>.
             </p>
+            {FREE_BASIC_DPP ? (
+              <p className="mt-3">
+                Bezplatná základní DPP je po vytvoření dostupná přes jednorázově předaný zabezpečený token nejdéle 24 hodin. Není ukládána do zákaznické zóny ani zasílána e-mailem; zákazník ji má stáhnout a bezpečně uložit bezprostředně po vytvoření.
+              </p>
+            ) : null}
           </section>
 
           <section>

@@ -238,6 +238,88 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
       </Section>
 
       <Section
+        title={'Free / paid monetizační funnel'}
+        description={'Srovnání startů builderu, dokončení, bezplatných PDF, stažení a placených nákupů podle centrální monetizační politiky.'}
+      >
+        <Table
+          headers={[
+            'Dokument / režim', 'Start', 'Dokončeno', 'Free PDF', 'Free stažení',
+            'Platby', 'Tržba dokument', 'Partner revenue',
+          ]}
+          rows={data.monetizationPerformance.map((item) => [
+            <div key={`${item.contractType}:${item.mode}`}>
+              <div className="font-medium text-[#f7f0de]">{item.contractType}</div>
+              <div className="text-xs text-slate-500">{item.mode}</div>
+            </div>,
+            formatNumber(item.builderStarts),
+            formatNumber(item.builderCompletions),
+            formatNumber(item.freeDocuments),
+            formatNumber(item.freeDownloads),
+            formatNumber(item.purchases),
+            formatCurrency(item.contractRevenueCzk),
+            item.partnerRevenueCzk === null ? 'N/A' : formatCurrency(item.partnerRevenueCzk),
+          ])}
+        />
+      </Section>
+
+      <Section
+        title={'GSC kandidáti pro monetizační experiment'}
+        description={'Auditovatelný snapshot, nikoli živé Search Console. Bez stránkových dat se žádná další smlouva automaticky nepřepíná zdarma.'}
+      >
+        <Table
+          headers={['Stránka', 'Imprese', 'Kliky', 'CTR', 'Pozice', 'Klasifikace', 'Zdroj / datum']}
+          rows={data.gscCandidates.map((item) => [
+            item.page,
+            formatNumber(item.impressions),
+            formatNumber(item.clicks),
+            `${item.ctrPercent.toLocaleString('cs-CZ')} %`,
+            item.averagePosition.toLocaleString('cs-CZ'),
+            item.classification,
+            `${item.source}; ${item.observedAt ?? 'datum nedodáno'}`,
+          ])}
+        />
+      </Section>
+
+      <Section
+        title={'Partner funnel'}
+        description={'First-party metriky po nabídce, typu dokumentu, jazyku a roli. Konverze a revenue jsou N/A, dokud je partner nepotvrdí callbackem nebo webhookem.'}
+      >
+        <Table
+          headers={[
+            'Partner / nabídka', 'Kontext', 'Eligible', 'Viewed', 'Clicked', 'CTR',
+            'Lead start', 'Souhlas', 'Lead odeslán', 'Lead OK', 'Konverze', 'Revenue',
+            'Rev/click', 'Rev/eligible', 'Rev/dokument',
+          ]}
+          rows={data.partnerPerformance.map((item) => [
+            <div key={`${item.partnerId}:${item.offerId}`}>
+              <div className="font-medium text-[#f7f0de]">{item.partnerId}</div>
+              <div className="text-xs text-slate-500">{item.offerId}</div>
+            </div>,
+            <div key={`${item.offerId}:context`} className="text-xs">
+              <div>{item.contractType} / {item.userRole}</div>
+              <div className="text-slate-500">{item.locale}</div>
+            </div>,
+            formatNumber(item.eligibleUsers),
+            formatNumber(item.impressions),
+            formatNumber(item.clicks),
+            formatPercent(item.ctr),
+            formatNumber(item.leadStarts),
+            formatNumber(item.consentGranted),
+            formatNumber(item.leadSubmissions),
+            formatNumber(item.leadSuccesses),
+            item.conversions === null ? 'N/A' : formatNumber(item.conversions),
+            item.revenueCzk === null ? 'N/A' : formatCurrency(item.revenueCzk),
+            item.revenuePerClick === null ? 'N/A' : formatCurrency(item.revenuePerClick),
+            item.revenuePerEligibleUser === null ? 'N/A' : formatCurrency(item.revenuePerEligibleUser),
+            item.revenuePerPurchasedDocument === null ? 'N/A' : formatCurrency(item.revenuePerPurchasedDocument),
+          ])}
+        />
+        <p className="mt-4 text-xs leading-5 text-slate-500">
+          Revenue per click, eligible user a zakoupený dokument se počítá pouze u řádků s potvrzeným revenue; jinak zůstává N/A.
+        </p>
+      </Section>
+
+      <Section
         title={'Z\u00e1jem o 99 / 199 / 299 / 399 / 599'}
         description={
           'Srovn\u00e1n\u00ed vrchn\u00edho z\u00e1jmu z homepage nebo package cesty, samotn\u00e9 volby ve flow a checkout klik\u016f.'

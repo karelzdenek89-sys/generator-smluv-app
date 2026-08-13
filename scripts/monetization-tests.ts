@@ -13,7 +13,9 @@ import { ANALYTICS_EVENT_NAMES } from '../lib/analytics';
 import { PRICING_TIER_CONFIG } from '../lib/pricing';
 import { getAvailableThematicPackages, THEMATIC_PACKAGE_CONFIG } from '../lib/packages';
 // Oba moduly čtou flagy i konfiguraci až při volání, takže stačí načíst je jednou.
-import { getPostPurchaseOffers } from '../lib/post-purchase-offers';
+import { buildPartnerContext } from '../lib/partners/context';
+import { getEligiblePartnerOffers } from '../lib/partners/catalog';
+import { PARTNER_CONTEXT_KEYS, type PartnerContext } from '../lib/partners/types';
 import { getContextualOffer } from '../lib/marketing/contextual-offers';
 import {
   formatConsentTimestamp,
@@ -33,59 +35,90 @@ function resetFlags() {
   delete process.env.NEXT_PUBLIC_FEATURE_ZAKAZKA_PLUS;
   delete process.env.NEXT_PUBLIC_FEATURE_CAR_SALE_COMPLETE;
   delete process.env.NEXT_PUBLIC_FEATURE_LANDLORD_ANNUAL;
-  delete process.env.NEXT_PUBLIC_FEATURE_ESIGN_OFFER;
-  delete process.env.NEXT_PUBLIC_FEATURE_VEHICLE_HISTORY_OFFER;
-  delete process.env.NEXT_PUBLIC_ESIGN_OFFER_URL;
-  delete process.env.NEXT_PUBLIC_VEHICLE_HISTORY_OFFER_URL;
-  delete process.env.NEXT_PUBLIC_ESIGN_OFFER_IS_AFFILIATE;
-  delete process.env.NEXT_PUBLIC_VEHICLE_HISTORY_OFFER_IS_AFFILIATE;
+  for (const key of Object.keys(process.env)) {
+    if (key.startsWith('PARTNER_')) delete process.env[key];
+  }
+}
+
+function partnerContext(overrides: Partial<PartnerContext> = {}): PartnerContext {
+  return {
+    contractType: 'lease',
+    documentTier: 'basic',
+    locale: 'cs',
+    country: 'CZ',
+    transactionCategory: 'residential_lease',
+    userRole: 'unknown',
+    valueBand: 'unknown',
+    customerType: 'unknown',
+    monetizationMode: 'paid',
+    paid: true,
+    completed: true,
+    ...overrides,
+  };
 }
 
 function testOffersStayHiddenWithoutConfig() {
   resetFlags();
   assert.deepEqual(
-    getPostPurchaseOffers('car_sale'),
+    getEligiblePartnerOffers(partnerContext({ contractType: 'car_sale', transactionCategory: 'vehicle_used' })),
     [],
     'no offer may render while every flag is off',
   );
 
   // Zapnutý flag bez cílové URL nesmí zobrazit nefunkční nabídku.
-  process.env.NEXT_PUBLIC_FEATURE_ESIGN_OFFER = 'true';
+  process.env.PARTNER_ENGINE_ENABLED = 'true';
+  process.env.PARTNER_SIGNI_ENABLED = 'true';
   assert.deepEqual(
-    getPostPurchaseOffers('lease'),
+    getEligiblePartnerOffers(partnerContext()),
     [],
     'a flag without a destination URL must not render an offer',
   );
 
   // Relativní nebo nešifrovaný odkaz je odmítnut.
-  process.env.NEXT_PUBLIC_ESIGN_OFFER_URL = '/interni/analytics';
-  assert.deepEqual(getPostPurchaseOffers('lease'), [], 'relative URL must be rejected');
+  process.env.PARTNER_SIGNI_URL = '/interni/analytics';
+  assert.deepEqual(getEligiblePartnerOffers(partnerContext()), [], 'relative URL must be rejected');
 
-  process.env.NEXT_PUBLIC_ESIGN_OFFER_URL = 'http://example.com';
-  assert.deepEqual(getPostPurchaseOffers('lease'), [], 'plain http URL must be rejected');
+  process.env.PARTNER_SIGNI_URL = 'http://signi.com';
+  assert.deepEqual(getEligiblePartnerOffers(partnerContext()), [], 'plain http URL must be rejected');
+
+  process.env.PARTNER_SIGNI_URL = 'https://signi.com.evil.test/';
+  assert.deepEqual(getEligiblePartnerOffers(partnerContext()), [], 'look-alike domain must be rejected');
+
+  process.env.PARTNER_SIGNI_URL = 'https://signi.com/?email=pii@example.test';
+  assert.deepEqual(getEligiblePartnerOffers(partnerContext()), [], 'unapproved query must be rejected');
 }
 
 function testOfferTargeting() {
   resetFlags();
-  process.env.NEXT_PUBLIC_FEATURE_ESIGN_OFFER = 'true';
-  process.env.NEXT_PUBLIC_ESIGN_OFFER_URL = 'https://example.com/esign';
-  process.env.NEXT_PUBLIC_FEATURE_VEHICLE_HISTORY_OFFER = 'true';
-  process.env.NEXT_PUBLIC_VEHICLE_HISTORY_OFFER_URL = 'https://example.com/vin';
-  process.env.NEXT_PUBLIC_VEHICLE_HISTORY_OFFER_IS_AFFILIATE = 'true';
+  process.env.PARTNER_ENGINE_ENABLED = 'true';
+  process.env.PARTNER_SIGNI_ENABLED = 'true';
+  process.env.PARTNER_SIGNI_URL = 'https://signi.com/produkt/';
+  process.env.PARTNER_CEBIA_ENABLED = 'true';
+  process.env.PARTNER_CEBIA_URL = 'https://www.cebia.cz/';
+  process.env.PARTNER_CEBIA_IS_AFFILIATE = 'true';
 
-  const forLease = getPostPurchaseOffers('lease').map((offer) => offer.id);
-  assert.deepEqual(forLease, ['esign'], 'vehicle offer must not appear on a lease');
+  const forLease = getEligiblePartnerOffers(partnerContext()).map((offer) => offer.id);
+  assert.deepEqual(forLease, ['signi_esign'], 'vehicle offer must not appear on a lease');
 
-  const forCar = getPostPurchaseOffers('car_sale').map((offer) => offer.id);
-  assert.deepEqual(forCar.sort(), ['esign', 'vehicle_history']);
+  const unknownCar = getEligiblePartnerOffers(partnerContext({
+    contractType: 'car_sale', transactionCategory: 'vehicle_used', userRole: 'unknown',
+  })).map((offer) => offer.id);
+  assert.deepEqual(unknownCar, ['signi_esign'], 'vehicle offer must fail closed when the buyer role is unknown');
 
-  const vehicleOffer = getPostPurchaseOffers('car_sale')
-    .find((offer) => offer.id === 'vehicle_history');
+  const forCar = getEligiblePartnerOffers(partnerContext({
+    contractType: 'car_sale', transactionCategory: 'vehicle_used', userRole: 'buyer',
+  })).map((offer) => offer.id);
+  assert.deepEqual(forCar.sort(), ['cebia_vehicle_history', 'signi_esign']);
+
+  const vehicleOffer = getEligiblePartnerOffers(partnerContext({
+    contractType: 'car_sale', transactionCategory: 'vehicle_used', userRole: 'buyer',
+  }))
+    .find((offer) => offer.id === 'cebia_vehicle_history');
   assert.ok(vehicleOffer);
   assert.equal(vehicleOffer.isAffiliate, true, 'paid partner link must be flagged as affiliate');
   assert.ok(vehicleOffer.disclosure, 'partner offer must carry a disclosure sentence');
 
-  const esignOffer = getPostPurchaseOffers('lease')[0];
+  const esignOffer = getEligiblePartnerOffers(partnerContext())[0];
   assert.equal(
     esignOffer.isAffiliate,
     false,
@@ -93,9 +126,11 @@ function testOfferTargeting() {
   );
 
   // Expat kupující nesmí dostat českou nabídku v anglickém ani ukrajinském UI.
-  for (const locale of ['en', 'ua'] as const) {
-    const localized = getPostPurchaseOffers('car_sale', locale);
-    assert.equal(localized.length, 2, `${locale}: both offers must resolve`);
+  for (const locale of ['en'] as const) {
+    const localized = getEligiblePartnerOffers(partnerContext({
+      contractType: 'car_sale', transactionCategory: 'vehicle_used', userRole: 'buyer', locale,
+    }));
+    assert.equal(localized.length, 1, `${locale}: supported offers must resolve`);
     for (const offer of localized) {
       assert.ok(offer.title.trim(), `${locale}: ${offer.id} has no title`);
       assert.ok(offer.cta.trim(), `${locale}: ${offer.id} has no CTA`);
@@ -109,6 +144,94 @@ function testOfferTargeting() {
     }
   }
 
+  assert.deepEqual(
+    getEligiblePartnerOffers(partnerContext({ locale: 'ua' })),
+    [],
+    'unsupported locale must fail closed',
+  );
+
+  resetFlags();
+}
+
+function testPartnerContextIsCategoricalAndConstructionIsRelevant() {
+  resetFlags();
+  const context = buildPartnerContext({
+    contractType: 'work_contract',
+    documentTier: 'complete',
+    locale: 'cs',
+    packageKey: 'work_order',
+    rawContractData: {
+      partnerUserRole: 'customer',
+      workTitle: 'Rekonstrukce střechy',
+      workDescription: 'Citlivý volný text se nesmí přenést.',
+      priceAmount: '350 000 Kč',
+      deliveryEmail: 'pii@example.test',
+      clientName: 'Jan Příklad',
+      unexpected: 'secret',
+    },
+    paid: true,
+    completed: true,
+  });
+  assert.ok(context);
+  assert.deepEqual(Object.keys(context).sort(), [...PARTNER_CONTEXT_KEYS].sort());
+  assert.equal(context.transactionCategory, 'construction_reconstruction');
+  assert.equal(context.userRole, 'customer');
+  assert.equal(context.valueBand, '250k_500k');
+  assert.equal(JSON.stringify(context).includes('pii@example.test'), false);
+  assert.equal(JSON.stringify(context).includes('Jan Příklad'), false);
+  assert.equal(JSON.stringify(context).includes('Citlivý'), false);
+
+  process.env.PARTNER_ENGINE_ENABLED = 'true';
+  process.env.PARTNER_PLANSTAVBY_ENABLED = 'true';
+  const offers = getEligiblePartnerOffers(context);
+  assert.deepEqual(offers.map((offer) => offer.id), ['planstavby_budget']);
+  const url = new URL(offers[0].href);
+  assert.equal(url.searchParams.get('utm_source'), 'smlouvahned');
+  assert.equal(url.searchParams.get('utm_medium'), 'cross_sell');
+  assert.equal(url.searchParams.get('utm_campaign'), 'work_contract');
+  assert.equal(url.searchParams.has('email'), false);
+  assert.deepEqual(
+    getEligiblePartnerOffers({ ...context, paid: false }).map((offer) => offer.id),
+    ['planstavby_budget'],
+    'completed free documents may use the same privacy-safe next-step engine',
+  );
+  assert.deepEqual(getEligiblePartnerOffers({ ...context, completed: false }), [], 'unfinished documents have no offers');
+  assert.equal(
+    getEligiblePartnerOffers({ ...context, transactionCategory: 'business_services' }).length,
+    0,
+    'irrelevant work contracts must not receive the construction cross-sell',
+  );
+  resetFlags();
+}
+
+function testRequiredRoleEligibilityMatrix() {
+  resetFlags();
+  process.env.PARTNER_ENGINE_ENABLED = 'true';
+  process.env.PARTNER_CEBIA_ENABLED = 'true';
+  process.env.PARTNER_CEBIA_URL = 'https://www.cebia.cz/';
+  process.env.PARTNER_USETRENO_TENANT_INSURANCE_ENABLED = 'true';
+  process.env.PARTNER_USETRENO_TENANT_INSURANCE_URL = 'https://www.usetreno.cz/';
+  process.env.PARTNER_USETRENO_LANDLORD_INSURANCE_ENABLED = 'true';
+  process.env.PARTNER_USETRENO_LANDLORD_INSURANCE_URL = 'https://www.usetreno.cz/';
+  process.env.PARTNER_PLANSTAVBY_ENABLED = 'true';
+  process.env.PARTNER_IDOKLAD_ENABLED = 'true';
+  process.env.PARTNER_IDOKLAD_URL = 'https://www.idoklad.cz/';
+  process.env.PARTNER_SLONEEK_ENABLED = 'true';
+  process.env.PARTNER_SLONEEK_URL = 'https://www.sloneek.com/';
+
+  const ids = (context: PartnerContext) => getEligiblePartnerOffers(context).map((offer) => offer.id);
+  assert.ok(ids(partnerContext({ contractType: 'car_sale', transactionCategory: 'vehicle_used', userRole: 'buyer' })).includes('cebia_vehicle_history'));
+  assert.equal(ids(partnerContext({ contractType: 'car_sale', transactionCategory: 'vehicle_used', userRole: 'seller' })).includes('cebia_vehicle_history'), false);
+  assert.ok(ids(partnerContext({ contractType: 'lease', transactionCategory: 'residential_lease', userRole: 'tenant' })).includes('usetreno_tenant_insurance'));
+  assert.equal(ids(partnerContext({ contractType: 'lease', transactionCategory: 'residential_lease', userRole: 'tenant' })).includes('usetreno_landlord_insurance'), false);
+  assert.ok(ids(partnerContext({ contractType: 'lease', transactionCategory: 'residential_lease', userRole: 'landlord' })).includes('usetreno_landlord_insurance'));
+  assert.ok(ids(partnerContext({ contractType: 'work_contract', transactionCategory: 'construction_new_build', userRole: 'customer' })).includes('planstavby_budget'));
+  assert.ok(ids(partnerContext({ contractType: 'work_contract', transactionCategory: 'construction_other', userRole: 'contractor', customerType: 'business' })).includes('idoklad_invoicing'));
+  assert.ok(ids(partnerContext({ contractType: 'employment', transactionCategory: 'employment', userRole: 'employer', customerType: 'business' })).includes('sloneek_hr'));
+  assert.equal(ids(partnerContext({ contractType: 'employment', transactionCategory: 'employment', userRole: 'employee' })).includes('sloneek_hr'), false);
+
+  const unknownRiskSpecific = ids(partnerContext({ contractType: 'car_sale', transactionCategory: 'vehicle_used', userRole: 'unknown' }));
+  assert.deepEqual(unknownRiskSpecific, [], 'unknown role must not receive a role-specific offer');
   resetFlags();
 }
 
@@ -484,6 +607,14 @@ function testAnalyticsEventsRegistered() {
     'bundle_selected',
     'post_purchase_offer_view',
     'post_purchase_offer_click',
+    'partner_offer_eligible',
+    'partner_offer_viewed',
+    'partner_offer_clicked',
+    'partner_lead_started',
+    'partner_lead_consent_granted',
+    'partner_lead_submitted',
+    'partner_lead_succeeded',
+    'partner_lead_failed',
     'annual_plan_interest',
     // Existující ekvivalent požadovaného `addon_selected`.
     'checkout_addon_selected',
@@ -502,7 +633,7 @@ function testAnalyticsEventsRegistered() {
  */
 function testNoPiiInMonetizationAnalytics() {
   const files = [
-    'app/components/PostPurchaseOffers.tsx',
+    'app/components/partners/PartnerNextSteps.tsx',
     'app/components/marketing/ContextualProductOffer.tsx',
   ];
   const forbidden =
@@ -524,6 +655,8 @@ function testNoPiiInMonetizationAnalytics() {
 function main() {
   testOffersStayHiddenWithoutConfig();
   testOfferTargeting();
+  testPartnerContextIsCategoricalAndConstructionIsRelevant();
+  testRequiredRoleEligibilityMatrix();
   testContextualOffersNeverPointAtDisabledProducts();
   testNoHardcodedPricesInArticles();
   testPagesNeverRenderDisabledPackages();
