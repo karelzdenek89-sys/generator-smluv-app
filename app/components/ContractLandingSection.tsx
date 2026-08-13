@@ -136,6 +136,7 @@ export default function ContractLandingSection({
             compact
             documentHint={differentiationHint}
             contractType={contractType}
+            monetizationMode={monetizationMode}
           />
 
           <div className="mt-8 flex flex-wrap gap-4">

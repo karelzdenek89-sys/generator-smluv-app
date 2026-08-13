@@ -50,7 +50,7 @@ export default function DppPage() {
         <div className="mb-4 flex flex-wrap items-center gap-3">
           <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-amber-400">Práce a zaměstnání</span>
           <span className="text-xs text-slate-600">9 min čtení</span>
-          <time className="text-xs text-slate-600" dateTime="2026-04-02">2. dubna 2026</time>
+          <time className="text-xs text-slate-600" dateTime="2026-03-18">18. března 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
           DPP 2026: vzor dohody, limity, odvody a pravidla

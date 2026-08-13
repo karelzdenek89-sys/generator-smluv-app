@@ -49,10 +49,12 @@ export default function BuilderCheckoutSummary({
     : null;
   const defaults = getAnalyticsDefaultsForPathname(pathname ?? '/');
   const copy = summaryCopy;
-  const resolvedTitle = title ?? copy?.title ?? 'Dokument připraven k odemknutí';
   const isFreeBasic = !packageConfig
     && tier === 'basic'
     && monetizationPolicy?.mode === 'free_experiment';
+  const resolvedTitle = title
+    ?? copy?.title
+    ?? (isFreeBasic ? 'Dokument připraven k vygenerování' : 'Dokument připraven k odemknutí');
   const includedItems = isFreeBasic
     ? FREE_BASIC_PDF_INCLUDED_ITEMS
     : getEffectiveIncludedItems(contractType, tier, packageKey, locale);

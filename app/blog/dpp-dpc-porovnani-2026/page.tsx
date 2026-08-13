@@ -109,6 +109,7 @@ export default function DppDpcPorovnani2026Page() {
           buttonLabel={dppOffer.cta}
           href="/dpp"
           variant="subtle"
+          articleSlug="dpp-dpc-porovnani-2026"
         />
 
         <section id="klic-rozdily" className="mb-12 scroll-mt-6">

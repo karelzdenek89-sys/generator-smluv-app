@@ -54,7 +54,7 @@ export default function DppVzorZdarmaPage() {
         <div className="mb-4 flex flex-wrap items-center gap-3">
           <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-amber-400">Práce a zaměstnání</span>
           <span className="text-xs text-slate-600">7 min čtení</span>
-          <time className="text-xs text-slate-600" dateTime="2026-04-18">18. dubna 2026</time>
+          <time className="text-xs text-slate-600" dateTime="2026-05-20">20. května 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
           DPP vzor zdarma 2026 — co v něm chybí a proč na tom záleží
@@ -69,7 +69,7 @@ export default function DppVzorZdarmaPage() {
           <p className="mb-3 text-sm font-bold text-white">Vytvořte DPP přímo pro váš případ</p>
           <p className="mb-4 text-sm text-slate-400">
             Zadáte jméno, druh práce a odměnu — systém sestaví dohodu se správnými paragrafovými
-            citacemi zákoníku práce platného k 1. 1. 2026. PDF ke stažení ihned.
+            citacemi zákoníku práce aktuálními pro rok 2026. PDF ke stažení ihned.
           </p>
           <Link
             href="/dpp"
@@ -209,7 +209,7 @@ export default function DppVzorZdarmaPage() {
             <p className="mb-4 text-xs font-black uppercase tracking-widest text-amber-400">Generátor SmlouvaHned</p>
             {[
               'Dokument sestavený z vašich konkrétních údajů',
-              'Aktualizováno k 1. 1. 2026',
+              'Průběžně aktualizováno pro rok 2026',
               'Citace § 75 a dalších ustanovení ZP přímo v textu',
               'Varování při překročení limitu nebo rizikových volbách',
               'Přizpůsobí se druhu práce, odměně i době trvání',
@@ -227,6 +227,7 @@ export default function DppVzorZdarmaPage() {
           title={dppOffer.title}
           body="Vyplníte formulář za 3 minuty — systém sestaví dohodu s aktuálními paragrafovými citacemi a správnými náležitostmi pro rok 2026."
           buttonLabel={`${dppOffer.cta} →`}
+          articleSlug="dpp-vzor-zdarma-2026"
         />
       </section>
 

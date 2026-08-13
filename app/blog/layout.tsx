@@ -46,7 +46,7 @@ export default function BlogLayout({ children }: { children: ReactNode }) {
           <div className="rounded-2xl border border-amber-500/15 bg-amber-500/5 px-5 py-4 text-xs leading-relaxed text-slate-400">
             <span className="font-semibold text-amber-400">Upozornění:</span>{' '}
             Články na tomto blogu mají výhradně informační charakter a nepředstavují právní poradenství ve smyslu zákona č. 85/1996 Sb.
-            Obsah vychází z platného znění OZ č. 89/2012 Sb. a zákoníku práce k 1. 1. 2026, avšak každá situace je individuální.
+            Obsah průběžně aktualizujeme pro českou legislativu v roce 2026, avšak každá situace je individuální.
             Pro nestandardní, sporné nebo hodnotově závažné případy doporučujeme konzultaci s advokátem —{' '}
             <a href="https://www.cak.cz" target="_blank" rel="noopener noreferrer" className="text-amber-400 underline underline-offset-2 hover:text-amber-300 transition">
               seznam advokátů na cak.cz

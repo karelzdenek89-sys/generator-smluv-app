@@ -5,6 +5,7 @@ import { useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
 import type { ContractType } from '@/lib/contracts';
 import { resolveDocumentHint } from '@/lib/marketing/differentiation';
 import { getWhyNotGenericCopy } from '@/lib/i18n/why-not-generic-copy';
+import type { MonetizationMode } from '@/lib/monetization-policy';
 
 type WhyNotGenericBlockProps = {
   className?: string;
@@ -12,6 +13,7 @@ type WhyNotGenericBlockProps = {
   documentHint?: string;
   seoPath?: string;
   contractType?: ContractType | null;
+  monetizationMode?: MonetizationMode;
   compact?: boolean;
   showComparison?: boolean;
 };
@@ -21,6 +23,7 @@ export default function WhyNotGenericBlock({
   documentHint,
   seoPath,
   contractType,
+  monetizationMode,
   compact = false,
   showComparison = true,
 }: WhyNotGenericBlockProps) {
@@ -33,6 +36,14 @@ export default function WhyNotGenericBlock({
     locale,
   });
   const intro = resolvedHint ? copy.introWithHint(resolvedHint) : copy.introGeneric;
+  const bullets = contractType === 'dpp'
+    && locale === 'cs'
+    && monetizationMode === 'free_experiment'
+    ? [
+        ...copy.bullets.slice(0, -1),
+        'Tady nejdřív doplníte údaje, projdete náhled a základní PDF zdarma vygenerujete po dokončení formuláře.',
+      ]
+    : copy.bullets;
 
   return (
     <aside
@@ -86,7 +97,7 @@ export default function WhyNotGenericBlock({
       ) : null}
 
       <ul className={`mt-5 space-y-3 ${compact ? 'text-sm' : 'text-base'}`}>
-        {copy.bullets.map((line) => (
+        {bullets.map((line) => (
           <li key={line} className="flex items-start gap-3 text-[#ddd5c9]">
             <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#d6ac60]" aria-hidden />
             <span className="leading-7">{line}</span>

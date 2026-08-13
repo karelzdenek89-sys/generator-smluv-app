@@ -109,7 +109,7 @@ const softwareSchema = {
     'Citace konkrétních paragrafů OZ a zákoníku práce přímo v dokumentu',
     'Upozornění na typicky problematické volby ve formuláři (bez individuálního posouzení)',
     'Ochranné klauzule a smluvní sankce v rozšířené variantě',
-    'Šablony aktualizované dle české legislativy k 1. 1. 2026',
+    'Šablony průběžně aktualizované pro českou legislativu v roce 2026',
     FREE_BASIC_DPP
       ? 'Šifrované dočasné úložiště dat — základní DPP 24 hodin, placené dokumenty 7–30 dní'
       : 'Šifrované dočasné úložiště dat — automatické smazání po 7–30 dnech',
@@ -351,7 +351,7 @@ export default function Home() {
             <h2 className="font-serif italic text-4xl font-bold text-white md:text-5xl">Vyberte typ dokumentu</h2>
             <p className="mt-3 text-base leading-relaxed text-slate-400">
               14 typů smluv sestavených dynamicky podle vašich údajů.
-              Aktualizováno dle OZ č. 89/2012 Sb. ve znění k 1. 1. 2026.
+              Průběžně aktualizováno pro českou legislativu v roce 2026.
             </p>
           </div>
           <ContractGridPremium dppPriceLabel={FREE_BASIC_DPP ? 'Zdarma' : 'od 99 Kč'} />

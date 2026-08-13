@@ -110,7 +110,7 @@ const FAQ_GROUPS: FaqGroup[] = [
       {
         question: 'Co když dělám chybu ve formuláři?',
         answer:
-          'Před zaplacením se můžete vrátit a opravit jakékoli pole. Po zaplacení obdržíte PDF přesně s těmi údaji, které jste zadali — proto doporučujeme vše před odesláním pečlivě zkontrolovat.',
+          'Před dokončením formuláře se můžete vrátit a opravit jakékoli pole. Výsledné PDF bude obsahovat přesně ty údaje, které jste zadali — proto doporučujeme vše před vygenerováním pečlivě zkontrolovat.',
       },
     ],
   },
@@ -119,13 +119,14 @@ const FAQ_GROUPS: FaqGroup[] = [
     items: [
       {
         question: 'Jak nakládáte s mými údaji?',
-        answer:
-          'Údaje jsou uloženy pouze dočasně v šifrovaném úložišti po dobu 7–30 dní podle zakoupeného dokumentu, případně 90 dní s doplňkem archivace, a poté automaticky smazány. Platební údaje zpracovává výhradně Stripe — k vašim kartám nemáme přístup.',
+        answer: FREE_BASIC_DPP
+          ? 'Údaje pro bezplatnou základní DPP jsou v šifrovaném úložišti automaticky smazány po 24 hodinách. U placených dokumentů je doba uložení 7–30 dní, případně 90 dní s doplňkem archivace. Platební údaje zpracovává výhradně Stripe — k vašim kartám nemáme přístup.'
+          : 'Údaje jsou uloženy pouze dočasně v šifrovaném úložišti po dobu 7–30 dní podle zakoupeného dokumentu, případně 90 dní s doplňkem archivace, a poté automaticky smazány. Platební údaje zpracovává výhradně Stripe — k vašim kartám nemáme přístup.',
       },
       {
         question: 'Sdílíte data s třetími stranami?',
         answer:
-          'Ne. Data ze smlouvy nesdílíme s nikým třetím. Stripe zpracovává pouze platby. Resend obstarává transakční e-maily. Více v zásadách ochrany osobních údajů.',
+          'Bez vaší výslovné žádosti a souhlasu data ze smlouvy žádnému konkrétnímu partnerovi nepředáváme. Stripe zpracovává pouze platby. Resend obstarává transakční e-maily. Více v zásadách ochrany osobních údajů.',
       },
       {
         question: 'Můžu požádat o smazání dat?',
