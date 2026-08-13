@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import ProductSchemas from '@/app/components/seo/ProductSchemas';
+import { MonetizationPolicyProvider } from '@/app/components/useMonetizationPolicy';
 import { getExpatContractHreflangAlternates } from '@/lib/i18n/expat-hreflang';
 import { getMonetizationPolicy } from '@/lib/monetization-policy';
 
@@ -53,7 +54,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         breadcrumbLabel="Dohoda o provedení práce (DPP)"
         freeBasic={FREE_BASIC_DPP}
       />
-      {children}
+      <MonetizationPolicyProvider initialPolicy={DPP_POLICY}>
+        {children}
+      </MonetizationPolicyProvider>
     </>
   );
 }

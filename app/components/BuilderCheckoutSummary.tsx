@@ -15,6 +15,7 @@ import type { LeaseFormUi } from '@/lib/i18n/lease-form';
 import { normalizeLocale } from '@/lib/locale';
 import { getLocalizedPackagePresentation } from '@/lib/i18n/pricing-locale';
 import type { PublicMonetizationPolicy } from '@/lib/monetization-policy';
+import { FREE_BASIC_PDF_INCLUDED_ITEMS } from '@/lib/monetization-copy';
 
 type BuilderCheckoutSummaryProps = {
   tier: PricingTier;
@@ -46,13 +47,15 @@ export default function BuilderCheckoutSummary({
   const localizedPackage = packageConfig
     ? getLocalizedPackagePresentation(packageConfig.key, locale)
     : null;
-  const includedItems = getEffectiveIncludedItems(contractType, tier, packageKey, locale);
   const defaults = getAnalyticsDefaultsForPathname(pathname ?? '/');
   const copy = summaryCopy;
   const resolvedTitle = title ?? copy?.title ?? 'Dokument připraven k odemknutí';
   const isFreeBasic = !packageConfig
     && tier === 'basic'
     && monetizationPolicy?.mode === 'free_experiment';
+  const includedItems = isFreeBasic
+    ? FREE_BASIC_PDF_INCLUDED_ITEMS
+    : getEffectiveIncludedItems(contractType, tier, packageKey, locale);
   const priceLabel = isFreeBasic
     ? 'Zdarma'
     : packageConfig ? packageConfig.priceLabel : PRICING_TIER_CONFIG[tier].priceLabel;

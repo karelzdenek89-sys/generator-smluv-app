@@ -5,6 +5,8 @@ import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
+import { getContextualOffer } from '@/lib/marketing/contextual-offers';
+import { getMonetizationPolicy } from '@/lib/monetization-policy';
 import {
   DPP_MONTHLY_THRESHOLD_2026_CZK,
   MIN_WAGE_HOURLY_2026_CZK,
@@ -31,6 +33,9 @@ export const metadata = blogArticlePageMetadata("dpp-vzor-zdarma-2026", {
 
 
 export default function DppVzorZdarmaPage() {
+  const dppOffer = getContextualOffer('dpp');
+  const freeBasic = getMonetizationPolicy('dpp', 'cs').mode === 'free_experiment';
+
   return (
     <article className="mx-auto max-w-3xl px-6 py-12">
       <BlogArticleSchemas slug="dpp-vzor-zdarma-2026" />
@@ -70,7 +75,7 @@ export default function DppVzorZdarmaPage() {
             href="/dpp"
             className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-2.5 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400"
           >
-            Vytvořit DPP online →
+            {dppOffer.cta} →
           </Link>
         </div>
       </header>
@@ -208,7 +213,9 @@ export default function DppVzorZdarmaPage() {
               'Citace § 75 a dalších ustanovení ZP přímo v textu',
               'Varování při překročení limitu nebo rizikových volbách',
               'Přizpůsobí se druhu práce, odměně i době trvání',
-              'PDF ihned ke stažení po platbě',
+              freeBasic
+                ? 'Základní PDF ihned ke stažení zdarma, bez registrace'
+                : 'PDF ihned ke stažení po platbě',
             ].map(line => (
               <p key={line} className="mb-1.5 text-xs text-slate-300">✓ {line}</p>
             ))}
@@ -217,9 +224,9 @@ export default function DppVzorZdarmaPage() {
 
         <ArticleInlineCta
           href="/dpp"
-          title="Vytvořit DPP online"
+          title={dppOffer.title}
           body="Vyplníte formulář za 3 minuty — systém sestaví dohodu s aktuálními paragrafovými citacemi a správnými náležitostmi pro rok 2026."
-          buttonLabel="Vytvořit DPP →"
+          buttonLabel={`${dppOffer.cta} →`}
         />
       </section>
 
@@ -280,7 +287,7 @@ export default function DppVzorZdarmaPage() {
           href="/dpp"
           className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-6 py-3 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400"
         >
-          Vytvořit DPP online →
+          {dppOffer.cta} →
         </Link>
       </div>
 

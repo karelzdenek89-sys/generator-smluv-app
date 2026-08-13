@@ -10,8 +10,11 @@ import TrackedLink from '@/app/components/analytics/TrackedLink';
 import { SEO_LANDINGS, CLUSTER_LABELS, type ClusterKey } from '@/lib/internal-links';
 import { FOREIGN_LOCALES, LOCALE_META } from '@/lib/i18n/locales';
 import { getAvailableThematicPackages, getEffectivePriceBand } from '@/lib/packages';
+import { getMonetizationPolicy } from '@/lib/monetization-policy';
 
 const HOMEPAGE_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
+const HOME_DPP_POLICY = getMonetizationPolicy('dpp', 'cs');
+const FREE_BASIC_DPP = HOME_DPP_POLICY.mode === 'free_experiment';
 const homepageLanguageAlternates: Record<string, string> = {
   cs: HOMEPAGE_BASE_URL,
   'x-default': HOMEPAGE_BASE_URL,
@@ -23,12 +26,16 @@ for (const l of FOREIGN_LOCALES) {
 export const metadata: Metadata = {
   title: { absolute: 'Generování smluv online 2026 — PDF ihned ke stažení | SmlouvaHned' },
   description:
-    '14 typů smluv online dle OZ 2026 — nájemní, kupní, pracovní, NDA a další. Vyplníte formulář, PDF s citacemi § stahujete ihned. Od 99 Kč.',
+    FREE_BASIC_DPP
+      ? '14 typů smluv online dle OZ 2026 — základní DPP zdarma, další dokumenty od 99 Kč. Vyplníte formulář a PDF s citacemi § stáhnete ihned.'
+      : '14 typů smluv online dle OZ 2026 — nájemní, kupní, pracovní, NDA a další. Vyplníte formulář, PDF s citacemi § stahujete ihned. Od 99 Kč.',
   alternates: { canonical: HOMEPAGE_BASE_URL, languages: homepageLanguageAlternates },
   openGraph: {
     title: 'Generování smluv online 2026 — PDF ihned ke stažení',
     description:
-      '14 typů smluv online dle OZ 2026 — nájemní, kupní, pracovní, NDA a další. Formulář → PDF s citacemi § ihned. Od 99 Kč.',
+      FREE_BASIC_DPP
+        ? '14 typů smluv online dle OZ 2026 — základní DPP zdarma, další dokumenty od 99 Kč. Formulář → PDF s citacemi § ihned.'
+        : '14 typů smluv online dle OZ 2026 — nájemní, kupní, pracovní, NDA a další. Formulář → PDF s citacemi § ihned. Od 99 Kč.',
     url: HOMEPAGE_BASE_URL,
     siteName: 'SmlouvaHned',
     type: 'website',
@@ -38,7 +45,9 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Generování smluv online 2026',
-    description: '14 typů smluv dle OZ 2026 — formulář → PDF ihned. Od 99 Kč.',
+    description: FREE_BASIC_DPP
+      ? '14 typů smluv dle OZ 2026 — základní DPP zdarma, další dokumenty od 99 Kč.'
+      : '14 typů smluv dle OZ 2026 — formulář → PDF ihned. Od 99 Kč.',
     images: ['/og-image.png'],
   },
 };
@@ -54,15 +63,19 @@ const faqItems = [
   },
   {
     question: 'Jak celý proces funguje?',
-    answer: 'Vyberete typ smlouvy, vyplníte formulář krok za krokem a vygenerujete dokument. Po odemčení obdržíte hotové PDF ke stažení. U tematického balíčku také průvodní instrukce a checklist.',
+    answer: 'Vyberete typ smlouvy, vyplníte formulář krok za krokem a vygenerujete dokument. Po dokončení obdržíte hotové PDF ke stažení. U tematického balíčku také průvodní instrukce a checklist.',
   },
   {
-    question: 'Co obdržím po zaplacení?',
-    answer: 'Ihned po dokončení platby obdržíte odkaz ke stažení vygenerovaného PDF. Platnost odkazu: Základní dokument 7 dní, Rozšířený dokument 30 dní. U Rozšířeného dokumentu také praktické podklady k podpisu a archivaci. U tematických balíčků také předávací dokumentace a checklist.',
+    question: 'Jak dokument získám?',
+    answer: FREE_BASIC_DPP
+      ? 'Základní DPP v aktivním experimentu vygenerujete bez platby a bez registrace; zabezpečený odkaz ke stažení platí 24 hodin. U placených dokumentů získáte PDF ihned po dokončení platby, základní dokument na 7 dní a rozšířený na 30 dní.'
+      : 'Ihned po dokončení platby obdržíte odkaz ke stažení vygenerovaného PDF. Platnost odkazu: Základní dokument 7 dní, Rozšířený dokument 30 dní. U Rozšířeného dokumentu také praktické podklady k podpisu a archivaci. U tematických balíčků také předávací dokumentace a checklist.',
   },
   {
     question: 'Jsou bezpečně uložena moje data?',
-    answer: 'Údaje jsou uloženy pouze dočasně v šifrovaném úložišti po dobu 7–30 dní dle zakoupeného dokumentu, případně 90 dní s doplňkem archivace, a poté automaticky smazány. Platební údaje zpracovává výhradně Stripe — na naše servery se nikdy nedostanou.',
+    answer: FREE_BASIC_DPP
+      ? 'Údaje bezplatné základní DPP jsou v šifrovaném úložišti dostupné 24 hodin. U placených dokumentů je doba 7–30 dní, případně 90 dní s doplňkem archivace; poté se data automaticky smažou. Platební údaje zpracovává výhradně Stripe.'
+      : 'Údaje jsou uloženy pouze dočasně v šifrovaném úložišti po dobu 7–30 dní dle zakoupeného dokumentu, případně 90 dní s doplňkem archivace, a poté automaticky smazány. Platební údaje zpracovává výhradně Stripe — na naše servery se nikdy nedostanou.',
   },
   {
     question: 'Je to náhrada individuální právní služby?',
@@ -97,16 +110,21 @@ const softwareSchema = {
     'Upozornění na typicky problematické volby ve formuláři (bez individuálního posouzení)',
     'Ochranné klauzule a smluvní sankce v rozšířené variantě',
     'Šablony aktualizované dle české legislativy k 1. 1. 2026',
-    'Šifrované dočasné úložiště dat — automatické smazání po 7–30 dnech',
+    FREE_BASIC_DPP
+      ? 'Šifrované dočasné úložiště dat — základní DPP 24 hodin, placené dokumenty 7–30 dní'
+      : 'Šifrované dočasné úložiště dat — automatické smazání po 7–30 dnech',
   ],
   provider: { '@type': 'Organization', name: 'SmlouvaHned', url: HOMEPAGE_BASE_URL },
   offers: {
     '@type': 'AggregateOffer',
     priceCurrency: 'CZK',
-    lowPrice: '99',
+    lowPrice: FREE_BASIC_DPP ? '0' : '99',
     highPrice: '599',
-    offerCount: '4',
+    offerCount: FREE_BASIC_DPP ? '5' : '4',
     offers: [
+      ...(FREE_BASIC_DPP
+        ? [{ '@type': 'Offer', name: 'Základní DPP', price: '0', priceCurrency: 'CZK' }]
+        : []),
       { '@type': 'Offer', name: 'Základní dokument', price: '99', priceCurrency: 'CZK' },
       { '@type': 'Offer', name: 'Rozšířený dokument', price: '199', priceCurrency: 'CZK' },
       { '@type': 'Offer', name: 'Tematický balíček', price: '299', priceCurrency: 'CZK' },
@@ -254,7 +272,12 @@ export default function Home() {
             </div>
 
             <div className="mt-9 flex flex-wrap items-center gap-x-5 gap-y-2">
-              {['✓ Zákonná struktura OZ/ZP', '✓ PDF ihned ke stažení', '✓ Bezpečná platba Stripe', '✓ Data smazána po 7–30 dnech, s add-onem 90 dní'].map(t => (
+              {[
+                '✓ Zákonná struktura OZ/ZP',
+                '✓ PDF ihned ke stažení',
+                FREE_BASIC_DPP ? '✓ Základní DPP bez platby' : '✓ Bezpečná platba Stripe',
+                FREE_BASIC_DPP ? '✓ Data základní DPP smazána po 24 hodinách' : '✓ Data smazána po 7–30 dnech, s add-onem 90 dní',
+              ].map(t => (
                 <span key={t} className="text-sm text-slate-400">{t}</span>
               ))}
             </div>
@@ -331,7 +354,7 @@ export default function Home() {
               Aktualizováno dle OZ č. 89/2012 Sb. ve znění k 1. 1. 2026.
             </p>
           </div>
-          <ContractGridPremium />
+          <ContractGridPremium dppPriceLabel={FREE_BASIC_DPP ? 'Zdarma' : 'od 99 Kč'} />
 
           <div
             className="mt-10 rounded-2xl border border-[#c9a852]/25 bg-[#0c1426]/90 p-6 md:p-8"
@@ -411,9 +434,9 @@ export default function Home() {
           <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-4">
             {[
               { step: '01', title: 'Vyplníte údaje', desc: 'Zadáte strany, podmínky a hodnoty dohody. Formulář vás provede každou důležitou částí bez právního žargonu.' },
-              { step: '02', title: 'Zkontrolujete souhrn', desc: 'Před platbou vidíte přehled všech podmínek. Ověříte, co dokument bude obsahovat, ještě než cokoli zaplatíte.' },
+              { step: '02', title: 'Zkontrolujete souhrn', desc: 'Před dokončením vidíte přehled všech podmínek. Ověříte, co dokument bude obsahovat, ještě než ho vygenerujete nebo odemknete.' },
               { step: '03', title: 'Vygenerujete dokument', desc: 'Zobrazí se náhled sestavený podle vašich dat. Zvolíte variantu — Základní nebo Rozšířený se smluvními pokutami.' },
-              { step: '04', title: 'Stáhnete PDF', desc: 'Po odemčení dokumentu obdržíte kompletní PDF připravené k tisku a podpisu. Ihned, bez čekání.' },
+              { step: '04', title: 'Stáhnete PDF', desc: 'Po vygenerování nebo odemčení obdržíte kompletní PDF připravené k tisku a podpisu. Ihned, bez čekání.' },
             ].map(s => (
               <div key={s.step} className="site-content-card rounded-[1.5rem] p-6">
                 <div className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#c9a852]/30 text-sm font-bold text-[#c9a852]">

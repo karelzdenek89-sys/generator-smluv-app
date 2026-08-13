@@ -37,7 +37,7 @@ const OPTIONS: Partial<Record<ContractType, readonly Option[]>> = {
 const COPY = {
   cs: {
     title: 'Pro koho dokument připravujete?',
-    hint: 'Nepovinné. Pomůže nám po zaplacení zobrazit jen relevantní další kroky.',
+    hint: 'Nepovinné. Pomůže nám po dokončení zobrazit jen relevantní další kroky.',
     unknown: 'Nechci uvést / jiná role',
   },
   en: {

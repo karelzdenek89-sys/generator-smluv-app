@@ -8,7 +8,7 @@ interface Contract {
   subtitle: string;
   href: string;
   paragraph: string;
-  price: string;
+  price?: string;
   tag?: string;
 }
 
@@ -72,7 +72,6 @@ const moreContracts: Contract[] = [
     subtitle: 'Brigádnická dohoda do 300 hodin ročně s vymezeným druhem práce a odměnou.',
     href: '/dpp',
     paragraph: '§ 75 a násl. ZP',
-    price: 'od 99 Kč',
   },
   {
     title: 'Smlouva o poskytování služeb',
@@ -118,7 +117,15 @@ const moreContracts: Contract[] = [
   },
 ];
 
-function ContractCard({ c, featured }: { c: Contract; featured?: boolean }) {
+function ContractCard({
+  c,
+  featured,
+  dppPriceLabel,
+}: {
+  c: Contract;
+  featured?: boolean;
+  dppPriceLabel: string;
+}) {
   return (
     <Link
       href={c.href}
@@ -147,7 +154,9 @@ function ContractCard({ c, featured }: { c: Contract; featured?: boolean }) {
 
       <div className="mt-5 flex items-center justify-between border-t border-[#c9a852]/10 pt-4">
         <span className="text-xs text-slate-600 font-mono tracking-wide">{c.paragraph}</span>
-        <span className="shrink-0 text-xs font-black text-white">{c.price}</span>
+        <span className="shrink-0 text-xs font-black text-white">
+          {c.href === '/dpp' ? dppPriceLabel : c.price}
+        </span>
       </div>
 
       {/* Arrow */}
@@ -158,7 +167,7 @@ function ContractCard({ c, featured }: { c: Contract; featured?: boolean }) {
   );
 }
 
-export default function ContractGridPremium() {
+export default function ContractGridPremium({ dppPriceLabel }: { dppPriceLabel: string }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -166,10 +175,10 @@ export default function ContractGridPremium() {
       {/* Main 5 contracts */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {mainContracts.slice(0, 2).map(c => (
-          <ContractCard key={c.href} c={c} featured />
+          <ContractCard key={c.href} c={c} featured dppPriceLabel={dppPriceLabel} />
         ))}
         {mainContracts.slice(2).map(c => (
-          <ContractCard key={c.href} c={c} />
+          <ContractCard key={c.href} c={c} dppPriceLabel={dppPriceLabel} />
         ))}
       </div>
 
@@ -180,7 +189,7 @@ export default function ContractGridPremium() {
       >
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {moreContracts.map(c => (
-            <ContractCard key={c.href} c={c} />
+            <ContractCard key={c.href} c={c} dppPriceLabel={dppPriceLabel} />
           ))}
         </div>
       </div>

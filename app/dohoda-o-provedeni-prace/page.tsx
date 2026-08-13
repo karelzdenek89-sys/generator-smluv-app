@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import RelatedContracts from '@/app/components/RelatedContracts';
+import { getContextualOffer } from '@/lib/marketing/contextual-offers';
 import { landingPageMetadata } from '@/lib/seo/landing-page-metadata';
 
 export const metadata = landingPageMetadata({
@@ -51,6 +52,8 @@ const faqSchema = {
 };
 
 export default function DohodaOProvedeniPracePage() {
+  const dppOffer = getContextualOffer('dpp');
+
   return (
     <main className="min-h-screen bg-[#05080f] text-slate-200">
       <script
@@ -98,9 +101,9 @@ export default function DohodaOProvedeniPracePage() {
           </p>
           <Link href="/dpp"
             className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-8 py-4 text-base font-black uppercase tracking-tight text-black shadow-[0_0_30px_rgba(245,158,11,0.25)] transition hover:bg-amber-400">
-            Sestavit DPP →
+            {dppOffer.cta} →
           </Link>
-          <div className="mt-4 text-sm text-slate-500">Od 99 Kč · PDF ke stažení · Zákoník práce 2026</div>
+          <div className="mt-4 text-sm text-slate-500">{dppOffer.price} · PDF ke stažení · Zákoník práce 2026</div>
         </div>
 
         <section className="mb-12 rounded-3xl border border-white/8 bg-[#0c1426] p-8">
@@ -165,9 +168,9 @@ export default function DohodaOProvedeniPracePage() {
           </p>
           <Link href="/dpp"
             className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-8 py-4 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400">
-            Sestavit DPP →
+            {dppOffer.cta} →
           </Link>
-          <div className="mt-3 text-xs text-slate-600">Od 99 Kč · § 75 ZP · PDF ke stažení</div>
+          <div className="mt-3 text-xs text-slate-600">{dppOffer.price} · § 75 ZP · PDF ke stažení</div>
         </section>
 
         <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">

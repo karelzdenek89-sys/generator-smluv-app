@@ -30,6 +30,8 @@ export const metadata = blogArticlePageMetadata("dpp-dohoda-provedeni-prace", {
 
 
 export default function DppPage() {
+  const dppOffer = getContextualOffer('dpp');
+
   return (
     <article className="mx-auto max-w-3xl px-6 py-12">
       <BlogArticleSchemas slug="dpp-dohoda-provedeni-prace" />
@@ -66,7 +68,7 @@ export default function DppPage() {
             href="/dpp"
             className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-2.5 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400"
           >
-            Vytvořit DPP →
+            {dppOffer.cta} →
           </Link>
         </div>
       </header>
@@ -256,7 +258,7 @@ export default function DppPage() {
 
       {/* ── MID CTA ─────────────────────────────── */}
       <ContextualProductOffer
-        {...getContextualOffer('dpp')}
+        {...dppOffer}
         articleSlug="dpp-dohoda-provedeni-prace"
       />
 
@@ -320,9 +322,9 @@ export default function DppPage() {
           href="/dpp"
           className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-8 py-4 text-sm font-black uppercase tracking-tight text-black shadow-[0_0_40px_rgba(245,158,11,0.25)] transition hover:bg-amber-400"
         >
-          Vytvořit DPP →
+          {dppOffer.cta} →
         </Link>
-        <div className="mt-3 text-xs text-slate-600">Od 99 Kč · Dle ZP · Platné pro 2026</div>
+        <div className="mt-3 text-xs text-slate-600">{dppOffer.price} · Dle ZP · Platné pro 2026</div>
       </div>
 
       {/* ── RELATED ─────────────────────────────── */}

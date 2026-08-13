@@ -1,12 +1,25 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { createContext, createElement, useContext, useEffect, useState, type ReactNode } from 'react';
 import type { ContractType } from '@/lib/contracts';
 import type { PartnerLocale } from '@/lib/partners/types';
 import type { PublicMonetizationPolicy } from '@/lib/monetization-policy';
 
+const MonetizationPolicyContext = createContext<PublicMonetizationPolicy | null>(null);
+
+export function MonetizationPolicyProvider({
+  initialPolicy,
+  children,
+}: {
+  initialPolicy: PublicMonetizationPolicy;
+  children: ReactNode;
+}) {
+  return createElement(MonetizationPolicyContext.Provider, { value: initialPolicy }, children);
+}
+
 export function useMonetizationPolicy(contractType: ContractType, locale: PartnerLocale) {
-  const [policy, setPolicy] = useState<PublicMonetizationPolicy | null>(null);
+  const initialPolicy = useContext(MonetizationPolicyContext);
+  const [fetchedPolicy, setFetchedPolicy] = useState<PublicMonetizationPolicy | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -15,12 +28,20 @@ export function useMonetizationPolicy(contractType: ContractType, locale: Partne
       { cache: 'no-store', signal: controller.signal },
     )
       .then((response) => response.ok ? response.json() : null)
-      .then((value: PublicMonetizationPolicy | null) => setPolicy(value))
+      .then((value: PublicMonetizationPolicy | null) => setFetchedPolicy(value))
       .catch(() => {
-        // Paid remains the UI fallback when the policy endpoint is unavailable.
+        // Keep the server-provided policy; routes without a provider retain their paid fallback.
       });
     return () => controller.abort();
   }, [contractType, locale]);
 
-  return policy;
+  if (fetchedPolicy?.contractType === contractType && fetchedPolicy.locale === locale) {
+    return fetchedPolicy;
+  }
+
+  if (initialPolicy?.contractType === contractType && initialPolicy.locale === locale) {
+    return initialPolicy;
+  }
+
+  return null;
 }

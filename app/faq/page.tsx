@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { breadcrumbSchema, faqPageSchema, jsonLdScript, type FaqItem } from '@/lib/schemas';
+import { getMonetizationPolicy } from '@/lib/monetization-policy';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
+const FREE_BASIC_DPP = getMonetizationPolicy('dpp', 'cs').mode === 'free_experiment';
 
 export const metadata: Metadata = {
   title: 'Časté dotazy (FAQ) 2026',
@@ -35,8 +37,9 @@ const FAQ_GROUPS: FaqGroup[] = [
     items: [
       {
         question: 'Kolik dokument stojí?',
-        answer:
-          'Základní dokument 99 Kč, Rozšířený dokument s ochrannými klauzulemi 199 Kč, tematický balíček pro pronájem nebo prodej vozidla 299 Kč a personální balíček Zaměstnavatel Start 2026 za 599 Kč. Cena je konečná, žádné předplatné ani skryté poplatky.',
+        answer: FREE_BASIC_DPP
+          ? 'Základní DPP je v aktivním experimentu zdarma; rozšířená DPP stojí 199 Kč. U ostatních typů stojí Základní dokument 99 Kč, Rozšířený dokument 199 Kč, tematický balíček 299 Kč a personální balíček Zaměstnavatel Start 2026 599 Kč. Bez předplatného a skrytých poplatků.'
+          : 'Základní dokument 99 Kč, Rozšířený dokument s ochrannými klauzulemi 199 Kč, tematický balíček pro pronájem nebo prodej vozidla 299 Kč a personální balíček Zaměstnavatel Start 2026 za 599 Kč. Cena je konečná, žádné předplatné ani skryté poplatky.',
       },
       {
         question: 'Jak probíhá platba?',
@@ -90,8 +93,9 @@ const FAQ_GROUPS: FaqGroup[] = [
     items: [
       {
         question: 'Jak rychle dokument obdržím?',
-        answer:
-          'Ihned po dokončení platby. Odkaz ke stažení PDF se zobrazí v prohlížeči a odešle se vám e-mailem. Platnost odkazu: Základní dokument 7 dní, Rozšířený dokument a tematický balíček 30 dní, případně 90 dní s doplňkem archivace.',
+        answer: FREE_BASIC_DPP
+          ? 'Základní DPP vygenerujete ihned bez platby a bez registrace; zabezpečený odkaz ke stažení je dostupný 24 hodin. Placené dokumenty obdržíte ihned po dokončení platby, základní na 7 dní a rozšířený nebo tematický balíček na 30 dní.'
+          : 'Ihned po dokončení platby. Odkaz ke stažení PDF se zobrazí v prohlížeči a odešle se vám e-mailem. Platnost odkazu: Základní dokument 7 dní, Rozšířený dokument a tematický balíček 30 dní, případně 90 dní s doplňkem archivace.',
       },
       {
         question: 'V jakém formátu je výstup?',

@@ -25,6 +25,7 @@ import {
   type CheckoutAuthorization,
 } from '@/lib/checkout-authorization';
 import type { PublicMonetizationPolicy } from '@/lib/monetization-policy';
+import { FREE_BASIC_PDF_INCLUDED_ITEMS } from '@/lib/monetization-copy';
 
 interface Section {
   title: string;
@@ -81,12 +82,7 @@ export default function PaymentModal({
     && Boolean(onFreeGenerate);
   const copy = paymentCopy;
   const includedItems = isFreeBasic
-    ? [
-        'PDF dokument sestavený podle zadaných údajů',
-        'Přehledná struktura určená ke kontrole a podpisu',
-        'Zabezpečené stažení bez platby a bez registrace',
-        'Dostupnost odkazu ke stažení 24 hodin',
-      ]
+    ? FREE_BASIC_PDF_INCLUDED_ITEMS
     : getEffectiveIncludedItems(contractType, tier, packageKey, locale);
   const availableAddOns = isFreeBasic
     ? []
@@ -107,7 +103,7 @@ export default function PaymentModal({
   const checkoutPrice = isFreeBasic ? 'Zdarma' : `${totalPriceCzk.toLocaleString('cs-CZ')} Kč`;
   const validAddOnKeys = validSelectedAddOns.join(',');
   const analyticsDefaults = getAnalyticsDefaultsForPathname(pathname ?? '/');
-  const priceBand = getEffectivePriceBand(tier, packageConfig?.key);
+  const priceBand = isFreeBasic ? undefined : getEffectivePriceBand(tier, packageConfig?.key);
   // Přílohy balíčků nejsou přeložené; u cizojazyčného nákupu to musí zaznít
   // přímo u balíčku, ne jen v obecném právním upozornění pod formulářem.
   const packageAppendixNotice = getPackageAppendixNotice(locale);

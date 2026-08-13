@@ -1,6 +1,5 @@
-'use client';
-
 import Link from 'next/link';
+import { getMonetizationPolicy } from '@/lib/monetization-policy';
 
 type AccentKey =
   | 'lease' | 'car' | 'gift' | 'work' | 'loan' | 'nda'
@@ -28,7 +27,7 @@ interface ContractItem {
   title: string;
   description: string;
   href: string;
-  price: string;
+  price?: string;
   accentKey: AccentKey;
   highlight: string;
   paragraph: string;
@@ -166,7 +165,6 @@ const groups: ContractGroup[] = [
         title:       'Dohoda o provedení práce',
         description: 'Pro brigády a jednorázové úkoly do 300 hod./rok. Mimo pravidelný pracovní poměr, s IP doložkou.',
         href:        '/dpp',
-        price:       'od 99 Kč',
         accentKey:   'dpp',
         highlight:   'Max. 300 hod./rok',
         paragraph:   '§ 75 zákoníku práce',
@@ -209,7 +207,7 @@ const groups: ContractGroup[] = [
   },
 ];
 
-function ContractCard({ contract }: { contract: ContractItem }) {
+function ContractCard({ contract, dppPriceLabel }: { contract: ContractItem; dppPriceLabel: string }) {
   return (
     <Link
       href={contract.href}
@@ -243,7 +241,7 @@ function ContractCard({ contract }: { contract: ContractItem }) {
 
         <div className="mt-auto border-t border-white/8 pt-3 flex items-center justify-between gap-3">
           <span className="text-xs font-black text-white">
-            {contract.price}
+            {contract.href === '/dpp' ? dppPriceLabel : contract.price}
           </span>
           <span className="text-xs font-bold uppercase tracking-[0.12em] text-amber-400 transition group-hover:text-amber-300 flex items-center gap-1">
             Vytvořit
@@ -256,6 +254,10 @@ function ContractCard({ contract }: { contract: ContractItem }) {
 }
 
 export default function ContractCatalog() {
+  const dppPriceLabel = getMonetizationPolicy('dpp', 'cs').mode === 'free_experiment'
+    ? 'Zdarma'
+    : 'od 99 Kč';
+
   return (
     <div className="space-y-10">
       {groups.map((group) => (
@@ -274,7 +276,7 @@ export default function ContractCatalog() {
           {/* Cards grid */}
           <div className={`grid grid-cols-1 gap-4 sm:grid-cols-2 ${group.items.length >= 3 ? 'xl:grid-cols-3' : ''}`}>
             {group.items.map((item) => (
-              <ContractCard key={item.href} contract={item} />
+              <ContractCard key={item.href} contract={item} dppPriceLabel={dppPriceLabel} />
             ))}
           </div>
         </div>

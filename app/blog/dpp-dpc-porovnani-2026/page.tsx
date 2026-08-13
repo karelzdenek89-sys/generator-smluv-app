@@ -1,6 +1,7 @@
 import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
+import { getContextualOffer } from '@/lib/marketing/contextual-offers';
 
 export const metadata = blogArticlePageMetadata("dpp-dpc-porovnani-2026", {
   title: "DPP nebo DPČ 2026: rozdíly, limity a kdy co použít",
@@ -9,6 +10,8 @@ export const metadata = blogArticlePageMetadata("dpp-dpc-porovnani-2026", {
 
 
 export default function DppDpcPorovnani2026Page() {
+  const dppOffer = getContextualOffer('dpp');
+
   return (
     <>
 
@@ -30,9 +33,9 @@ export default function DppDpcPorovnani2026Page() {
           { href: '#co-musi-obsahovat', label: 'Co musí každá dohoda obsahovat' },
         ]}
         primaryAction={{
-          title: 'Potřebujete DPP sestavit online?',
-          body: 'Formulář pro dohodu o provedení práce — pracovní úkol, rozsah hodin, odměna, volitelná IP doložka. PDF ke stažení od 99 Kč.',
-          buttonLabel: 'Vytvořit DPP online',
+          title: dppOffer.title,
+          body: `${dppOffer.description} ${dppOffer.price}.`,
+          buttonLabel: dppOffer.cta,
           href: '/dpp',
         }}
         trustBox={{
@@ -102,8 +105,8 @@ export default function DppDpcPorovnani2026Page() {
 
         <ArticleInlineCta
           title="Sestavte DPP přehledně online"
-          body="Pracovní úkol, rozsah hodin, odměna a volitelná IP doložka. Standardizovaný dokument dle § 75 zákoníku práce. PDF ke stažení od 99 Kč."
-          buttonLabel="Pokračovat k DPP"
+          body={`${dppOffer.description} ${dppOffer.price}.`}
+          buttonLabel={dppOffer.cta}
           href="/dpp"
           variant="subtle"
         />
