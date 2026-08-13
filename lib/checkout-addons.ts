@@ -1,6 +1,7 @@
 import type { ContractType } from './contracts';
 import { getEffectiveArchiveDays, packageIncludesDocx } from './packages';
 import type { PricingTier } from './pricing';
+import { normalizeLocale, type AppLocale } from './locale';
 
 export type CheckoutAddonKey =
   | 'docx'
@@ -80,6 +81,29 @@ export const CHECKOUT_ADDON_CONFIG: Record<CheckoutAddonKey, CheckoutAddonConfig
 
 export const CHECKOUT_ADDONS = Object.values(CHECKOUT_ADDON_CONFIG);
 
+const LOCALIZED_ADDON_COPY: Record<Exclude<AppLocale, 'cs'>, Record<CheckoutAddonKey, Pick<CheckoutAddonConfig, 'title' | 'description' | 'includedItem'>>> = {
+  en: {
+    docx: { title: 'Editable DOCX version', description: 'Adds an editable file for later changes in a word processor.', includedItem: 'Editable DOCX version of the document' },
+    signing_checklist: { title: 'Pre-signing checklist', description: 'A practical checklist for review before printing, signing and handover.', includedItem: 'Checklist before signing and using the document' },
+    handover_protocol: { title: 'Handover record', description: 'A related record for handing over an apartment or vehicle, including condition and signatures.', includedItem: 'Handover record as an annex to the document' },
+    extended_archive: { title: '90-day archive', description: 'The download link remains available for 90 days after payment.', includedItem: 'Archive and download-link availability for 90 days' },
+    bilingual_annex: { title: 'Bilingual annex', description: 'An explanatory foreign-language annex to the Czech document for easier review.', includedItem: 'Bilingual explanatory annex to the Czech document' },
+  },
+  ua: {
+    docx: { title: 'Редагована версія DOCX', description: 'Додає редагований файл для подальших змін у текстовому редакторі.', includedItem: 'Редагована версія документа DOCX' },
+    signing_checklist: { title: 'Чекліст перед підписанням', description: 'Практичний список для перевірки перед друком, підписанням і переданням.', includedItem: 'Чекліст перед підписанням і використанням документа' },
+    handover_protocol: { title: 'Протокол передання', description: 'Пов’язаний протокол передання квартири або автомобіля із зазначенням стану та підписами.', includedItem: 'Протокол передання як додаток до документа' },
+    extended_archive: { title: 'Архів на 90 днів', description: 'Посилання для завантаження залишається доступним 90 днів після оплати.', includedItem: 'Архів і доступність посилання для завантаження протягом 90 днів' },
+    bilingual_annex: { title: 'Двомовний додаток', description: 'Пояснювальний іншомовний додаток до чеського документа для зручнішої перевірки.', includedItem: 'Двомовний пояснювальний додаток до чеського документа' },
+  },
+};
+
+function localizeAddon(addon: CheckoutAddonConfig, locale?: string | null): CheckoutAddonConfig {
+  const normalized = normalizeLocale(locale);
+  if (normalized === 'cs') return addon;
+  return { ...addon, ...LOCALIZED_ADDON_COPY[normalized][addon.key] };
+}
+
 export function isCheckoutAddonKey(value: unknown): value is CheckoutAddonKey {
   return typeof value === 'string' && Object.prototype.hasOwnProperty.call(CHECKOUT_ADDON_CONFIG, value);
 }
@@ -110,9 +134,8 @@ export function getAvailableCheckoutAddons(
   contractType: string | null | undefined,
   tier: PricingTier,
   packageKey?: string | null,
-  _locale?: string | null,
+  locale?: string | null,
 ): readonly CheckoutAddonConfig[] {
-  void _locale;
   const normalizedContract = String(contractType ?? '') as ContractType;
   const archiveDays = getEffectiveArchiveDays(tier, packageKey);
   const isPackage = Boolean(packageKey);
@@ -124,7 +147,7 @@ export function getAvailableCheckoutAddons(
     if (addon.key === 'handover_protocol' && isPackage) return false;
     if (addon.key === 'extended_archive' && archiveDays >= 90) return false;
     return true;
-  });
+  }).map((addon) => localizeAddon(addon, locale));
 }
 
 export function normalizeAnnexLanguage(value: unknown): AnnexLanguage | null {
@@ -161,8 +184,8 @@ export function getCheckoutAddonsTotalCzk(addOns: readonly CheckoutAddonKey[]): 
   return addOns.reduce((sum, key) => sum + CHECKOUT_ADDON_CONFIG[key].priceCzk, 0);
 }
 
-export function getCheckoutAddonIncludedItems(addOns: readonly CheckoutAddonKey[]): string[] {
-  return addOns.map((key) => CHECKOUT_ADDON_CONFIG[key].includedItem);
+export function getCheckoutAddonIncludedItems(addOns: readonly CheckoutAddonKey[], locale?: string | null): string[] {
+  return addOns.map((key) => localizeAddon(CHECKOUT_ADDON_CONFIG[key], locale).includedItem);
 }
 
 export function getArchiveDaysWithAddons(

@@ -21,6 +21,8 @@ import { readFirstPartyJson } from '@/lib/api-security';
 import { takeRateLimit } from '@/lib/rate-limit';
 import { buildPartnerContext } from '@/lib/partners/context';
 import { getEligiblePartnerOffers } from '@/lib/partners/catalog';
+import { getLocalizedPackagePresentation, getLocalizedPricingTier } from '@/lib/i18n/pricing-locale';
+import { getFulfilmentContractName } from '@/lib/i18n/fulfilment-email';
 
 export const runtime = 'nodejs';
 
@@ -32,26 +34,10 @@ async function checkStatusRateLimit(ip: string): Promise<boolean> {
   }
 }
 
-const CONTRACT_NAMES: Record<string, string> = {
-  lease: 'Nájemní smlouva',
-  car_sale: 'Kupní smlouva na vozidlo',
-  gift: 'Darovací smlouva',
-  work_contract: 'Smlouva o dílo',
-  loan: 'Smlouva o zápůjčce',
-  nda: 'Smlouva o mlčenlivosti (NDA)',
-  general_sale: 'Kupní smlouva',
-  employment: 'Pracovní smlouva',
-  dpp: 'Dohoda o provedení práce',
-  service: 'Smlouva o poskytování služeb',
-  sublease: 'Podnájemní smlouva',
-  power_of_attorney: 'Plná moc',
-  debt_acknowledgment: 'Uznání dluhu',
-  cooperation: 'Smlouva o spolupráci',
-};
-
-function formatStripeAmount(amount: number | null, currency: string | null): string | null {
+function formatStripeAmount(amount: number | null, currency: string | null, locale: string): string | null {
   if (typeof amount !== 'number' || !currency) return null;
-  return new Intl.NumberFormat('cs-CZ', {
+  const intlLocale = locale === 'en' ? 'en-GB' : locale === 'ua' ? 'uk-UA' : 'cs-CZ';
+  return new Intl.NumberFormat(intlLocale, {
     style: 'currency',
     currency: currency.toUpperCase(),
     maximumFractionDigits: 0,
@@ -142,7 +128,9 @@ export async function GET(req: NextRequest) {
     }
 
     if (packageKey) {
-      packageLabel = getThematicPackageConfig(packageKey)?.title ?? null;
+      packageLabel = getLocalizedPackagePresentation(packageKey, lang)?.title
+        ?? getThematicPackageConfig(packageKey)?.title
+        ?? null;
     }
     const displayAddOns = packageIncludesDocx(packageKey) && !addOns.includes('docx')
       ? [...addOns, 'docx' as const]
@@ -154,7 +142,7 @@ export async function GET(req: NextRequest) {
       : [];
 
     const priceLabel =
-      formatStripeAmount(session.amount_total, session.currency) ??
+      formatStripeAmount(session.amount_total, session.currency, lang) ??
       getEffectivePriceLabel(tier, packageKey);
     const partnerContext = buildPartnerContext({
       contractType,
@@ -170,17 +158,17 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       status: 'paid',
       tier,
-      tierLabel: packageLabel ?? getTierPriceLabel(tier),
+      tierLabel: packageLabel ?? (lang === 'cs' ? getTierPriceLabel(tier) : getLocalizedPricingTier(tier, lang).title),
       packageKey,
       packageLabel,
       priceLabel,
       archiveDays: getArchiveDaysWithAddons(tier, packageKey, addOns),
       contractType,
-      contractName: CONTRACT_NAMES[contractType] ?? 'Právní dokument',
+      contractName: getFulfilmentContractName(contractType, lang),
       addOns: displayAddOns,
       includedItems: packageItems.length > 0
-        ? [...packageItems, ...getCheckoutAddonIncludedItems(addOns)]
-        : getCheckoutAddonIncludedItems(addOns),
+        ? [...packageItems, ...getCheckoutAddonIncludedItems(addOns, lang)]
+        : getCheckoutAddonIncludedItems(addOns, lang),
       lang,
       partnerContext,
       partnerOffers,

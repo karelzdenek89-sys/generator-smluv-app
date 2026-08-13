@@ -6,6 +6,7 @@ import type { ContractType } from '@/lib/contracts';
 import { resolveDocumentHint } from '@/lib/marketing/differentiation';
 import { getWhyNotGenericCopy } from '@/lib/i18n/why-not-generic-copy';
 import type { MonetizationMode } from '@/lib/monetization-policy';
+import { getFreeBasicPdfCopy } from '@/lib/monetization-copy';
 
 type WhyNotGenericBlockProps = {
   className?: string;
@@ -29,6 +30,7 @@ export default function WhyNotGenericBlock({
 }: WhyNotGenericBlockProps) {
   const locale = useBuilderLocale();
   const copy = getWhyNotGenericCopy(locale);
+  const freeCopy = getFreeBasicPdfCopy(locale);
   const resolvedHint = resolveDocumentHint({
     explicit: documentHint,
     seoPath,
@@ -37,11 +39,10 @@ export default function WhyNotGenericBlock({
   });
   const intro = resolvedHint ? copy.introWithHint(resolvedHint) : copy.introGeneric;
   const bullets = contractType === 'dpp'
-    && locale === 'cs'
     && monetizationMode === 'free_experiment'
     ? [
         ...copy.bullets.slice(0, -1),
-        'Tady nejdřív doplníte údaje, projdete náhled a základní PDF zdarma vygenerujete po dokončení formuláře.',
+        freeCopy.dpp.whyNotGeneric,
       ]
     : copy.bullets;
 

@@ -1225,6 +1225,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 ) : (
                   <BuilderTierSelector
                     contractType="car_sale"
+                    locale={builderLocale}
                     tier={formData.tier}
                     onTierChange={(tier) =>
                       setFormData((prev) => ({ ...prev, tier, notaryUpsell: tier !== 'basic' }))
@@ -1254,6 +1255,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   tier={formData.tier}
                   packageKey={packageConfig?.key ?? null}
                   documentLabel={ui.form.documentLabel}
+                  locale={builderLocale}
                   onUpgrade={() => setFormData((prev) => ({ ...prev, tier: 'complete', notaryUpsell: true }))}
                 />
 
@@ -1264,7 +1266,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   onClick={() => setShowPreviewModal(true)}
                   className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >
-                  Vygenerovat smlouvu →
+                  {ui.form.generate}
                 </button>
 
                 <p className="mt-3 text-center text-[11px] text-slate-500">

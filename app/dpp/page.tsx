@@ -18,6 +18,7 @@ import { MIN_WAGE_HOURLY_2026_CZK } from '@/lib/legal-constants-2026';
 import BuilderUserRoleField from '@/app/components/partners/BuilderUserRoleField';
 import type { PartnerUserRole } from '@/lib/partners/types';
 import { useMonetizationPolicy } from '@/app/components/useMonetizationPolicy';
+import { getFreeBasicPdfCopy } from '@/lib/monetization-copy';
 
 type FormData = {
   partnerUserRole: PartnerUserRole;
@@ -58,6 +59,7 @@ export default function DppPage() {
   const builderLocale = useBuilderLocale();
   const ui = useMemo(() => getDppFormUi(builderLocale), [builderLocale]);
   const monetizationPolicy = useMonetizationPolicy('dpp', builderLocale);
+  const freeCopy = getFreeBasicPdfCopy(builderLocale);
   useBuilderDocumentTitle(builderLocale, {
     en: 'Agreement to perform work (DPP) — online form | SmlouvaHned',
     ua: 'Договір про виконання роботи (DPP) — онлайн-форма | SmlouvaHned',
@@ -180,20 +182,18 @@ export default function DppPage() {
   };
 
   const isFreeBasic = form.tier === 'basic' && monetizationPolicy?.mode === 'free_experiment';
-  const freeCzechLanding = isFreeBasic && builderLocale === 'cs';
-  const landingBenefits = freeCzechLanding
-    ? ui.landing.benefits.map((benefit) =>
-        benefit.text.includes('po zaplacení')
-          ? { ...benefit, text: 'Základní PDF ke stažení zdarma, bez platby a bez registrace' }
-          : benefit,
+  const freeLanding = isFreeBasic;
+  const landingBenefits = freeLanding
+    ? ui.landing.benefits.map((benefit, index) =>
+        index === 1 ? { ...benefit, text: freeCopy.dpp.benefit } : benefit,
       )
     : ui.landing.benefits;
-  const landingFaq = freeCzechLanding
-    ? ui.landing.faq.map((item) =>
-        item.q.includes('po zaplacení')
+  const landingFaq = freeLanding
+    ? ui.landing.faq.map((item, index) =>
+        index === ui.landing.faq.length - 1
           ? {
-              q: 'Dostanu základní DPP opravdu zdarma?',
-              a: 'Ano. V aktivním experimentu vytvoříte základní PDF bez platby a bez registrace; odkaz ke stažení je dostupný 24 hodin.',
+              q: freeCopy.dpp.faqQuestion,
+              a: freeCopy.dpp.faqAnswer,
             }
           : item,
       )
@@ -220,17 +220,17 @@ export default function DppPage() {
 
       <ContractLandingSection
         badge={ui.landing.badge}
-        h1Main={freeCzechLanding ? 'DPP 2026' : ui.landing.h1Main}
-        h1Accent={freeCzechLanding ? 'zdarma online' : ui.landing.h1Accent}
-        subtitle={freeCzechLanding
-          ? 'Vyplňte základní dohodu o provedení práce online a stáhněte PDF zdarma. Rozšířená varianta s dalšími klauzulemi zůstává placená.'
+        h1Main={freeLanding ? freeCopy.dpp.h1Main : ui.landing.h1Main}
+        h1Accent={freeLanding ? freeCopy.dpp.h1Accent : ui.landing.h1Accent}
+        subtitle={freeLanding
+          ? freeCopy.dpp.subtitle
           : ui.landing.subtitle}
         benefits={landingBenefits}
         contents={ui.landing.contents}
         whenSuitable={ui.landing.whenSuitable}
         whenOther={ui.landing.whenOther}
         faq={landingFaq}
-        ctaLabel={freeCzechLanding ? 'Vytvořit základní DPP zdarma' : ui.landing.ctaLabel}
+        ctaLabel={freeLanding ? freeCopy.dpp.landingCta : ui.landing.ctaLabel}
         formId="formular"
         guideHref={ui.landing.guideHref}
         guideLabel={ui.landing.guideLabel}
@@ -339,6 +339,7 @@ export default function DppPage() {
                   <BuilderTierSelector
                     contractType="dpp"
                     tier={form.tier}
+                    locale={builderLocale}
                     monetizationPolicy={monetizationPolicy}
                     onTierChange={(tier) =>
                       setForm((prev) => ({ ...prev, tier, notaryUpsell: tier !== 'basic' }))
@@ -376,6 +377,7 @@ export default function DppPage() {
                 contractType="dpp"
                 tier={form.tier}
                 documentLabel={ui.form.documentLabel}
+                locale={builderLocale}
                 monetizationPolicy={monetizationPolicy}
                 onUpgrade={() => setForm((prev) => ({ ...prev, tier: 'complete', notaryUpsell: true }))}
               />
@@ -393,11 +395,11 @@ export default function DppPage() {
                   onClick={() => setShowPreviewModal(true)}
                   className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >
-                  {isFreeBasic ? 'Vygenerovat základní DPP zdarma →' : 'Vygenerovat smlouvu →'}
+                  {isFreeBasic ? freeCopy.dpp.builderCta : ui.form.generate}
                 </button>
 
                 <p className="mt-3 text-center text-[11px] text-slate-500">
-                  {freeCzechLanding ? 'Náhled před bezplatným vygenerováním' : ui.form.previewHint}
+                  {freeLanding ? freeCopy.dpp.previewHint : ui.form.previewHint}
                 </p>
             </div>
           </div>

@@ -42,12 +42,12 @@ const COPY = {
   },
   en: {
     title: 'Which party are you preparing the document for?',
-    hint: 'Optional. This helps us show only relevant next steps after payment.',
+    hint: 'Optional. This helps us show only relevant next steps after completion.',
     unknown: 'Prefer not to say / another role',
   },
   ua: {
     title: 'Для якої сторони ви готуєте документ?',
-    hint: 'Необов’язково. Це допоможе показати лише доречні наступні кроки після оплати.',
+    hint: 'Необов’язково. Це допоможе показати лише доречні наступні кроки після завершення.',
     unknown: 'Не хочу вказувати / інша роль',
   },
 } as const;

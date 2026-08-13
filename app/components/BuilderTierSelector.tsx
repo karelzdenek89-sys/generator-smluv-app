@@ -11,6 +11,9 @@ import { getAnalyticsDefaultsForPathname, trackEvent } from '@/lib/analytics';
 import { getContractTierCopy, getTierSelectorDescription } from '@/lib/tier-copy';
 import type { LeaseFormUi } from '@/lib/i18n/lease-form';
 import type { PublicMonetizationPolicy } from '@/lib/monetization-policy';
+import { getFreeBasicPdfCopy } from '@/lib/monetization-copy';
+import { normalizeLocale } from '@/lib/locale';
+import { getLocalizedPricingTier } from '@/lib/i18n/pricing-locale';
 
 type BuilderTierSelectorProps = {
   tier: PricingTier;
@@ -21,6 +24,7 @@ type BuilderTierSelectorProps = {
   completeHighlights?: readonly string[];
   tierSelectorCopy?: LeaseFormUi['tierSelector'];
   monetizationPolicy?: PublicMonetizationPolicy | null;
+  locale?: string | null;
 };
 
 export default function BuilderTierSelector({
@@ -32,15 +36,35 @@ export default function BuilderTierSelector({
   completeHighlights,
   tierSelectorCopy,
   monetizationPolicy,
+  locale,
 }: BuilderTierSelectorProps) {
   const pathname = usePathname();
   const contractTierCopy = getContractTierCopy(contractType);
   const copy = tierSelectorCopy;
-  const resolvedTitle = title ?? copy?.heading ?? PRICING_SECTION_COPY.heading;
-  const resolvedSubtitle = subtitle ?? copy?.intro ?? PRICING_SECTION_COPY.intro;
+  const normalizedLocale = normalizeLocale(locale);
+  const genericCopy = normalizedLocale === 'en'
+    ? {
+        heading: 'Choose a document version',
+        intro: 'Select the level that fits your situation. You can change it before checkout.',
+        highlights: ['Broader clauses', 'Practical annexes', 'Longer availability'],
+      }
+    : normalizedLocale === 'ua'
+      ? {
+          heading: 'Виберіть версію документа',
+          intro: 'Оберіть рівень відповідно до вашої ситуації. Його можна змінити перед оплатою.',
+          highlights: ['Ширші положення', 'Практичні додатки', 'Довша доступність'],
+        }
+      : {
+          heading: PRICING_SECTION_COPY.heading,
+          intro: PRICING_SECTION_COPY.intro,
+          highlights: contractTierCopy.completeHighlights ?? BUILDER_COMPLETE_PERKS,
+        };
+  const resolvedTitle = title ?? copy?.heading ?? genericCopy.heading;
+  const resolvedSubtitle = subtitle ?? copy?.intro ?? genericCopy.intro;
   const resolvedCompleteHighlights =
-    completeHighlights ?? copy?.completeHighlights ?? contractTierCopy.completeHighlights ?? BUILDER_COMPLETE_PERKS;
+    completeHighlights ?? copy?.completeHighlights ?? genericCopy.highlights;
   const freeBasic = monetizationPolicy?.mode === 'free_experiment';
+  const freeCopy = getFreeBasicPdfCopy(locale);
 
   const handleTierChange = (nextTier: PricingTier) => {
     const defaults = getAnalyticsDefaultsForPathname(pathname ?? '/');
@@ -76,15 +100,19 @@ export default function BuilderTierSelector({
             ? copy.basicLabel
             : copy && opt.value === 'complete'
               ? copy.completeLabel
-              : opt.label;
+              : getLocalizedPricingTier(opt.value, normalizedLocale).title;
         const localizedDesc =
           copy && opt.value === 'basic'
             ? copy.basicDesc
             : copy && opt.value === 'complete'
               ? copy.completeDesc
-              : getTierSelectorDescription(contractType, opt.value);
+              : normalizedLocale === 'cs'
+                ? getTierSelectorDescription(contractType, opt.value)
+                : getLocalizedPricingTier(opt.value, normalizedLocale).shortDescription;
         const localizedBadge =
-          copy && opt.value === 'complete' ? copy.completeBadge : opt.badge;
+          copy && opt.value === 'complete'
+            ? copy.completeBadge
+            : getLocalizedPricingTier(opt.value, normalizedLocale).badge;
 
         return (
         <label
@@ -118,7 +146,7 @@ export default function BuilderTierSelector({
                   {localizedLabel}
                 </span>
                 <span className="shrink-0 text-sm font-black text-white">
-                  {opt.value === 'basic' && freeBasic ? 'Zdarma' : opt.price}
+                  {opt.value === 'basic' && freeBasic ? freeCopy.priceLabel : opt.price}
                 </span>
               </div>
               <div className="mt-1 text-xs leading-relaxed text-slate-400">

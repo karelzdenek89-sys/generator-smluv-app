@@ -483,6 +483,7 @@ export default function PracovniPage() {
                 {!packageConfig ? <div className="mt-6">
                   <BuilderTierSelector
                     contractType="employment"
+                    locale={builderLocale}
                     tier={form.tier}
                     onTierChange={(tier) =>
                       setForm((prev) => ({ ...prev, tier, notaryUpsell: tier !== 'basic' }))
@@ -548,6 +549,7 @@ export default function PracovniPage() {
                 tier={form.tier}
                 packageKey={packageConfig?.key ?? null}
                 documentLabel={ui.form.documentLabel}
+                locale={builderLocale}
                 onUpgrade={() => setForm((prev) => ({ ...prev, tier: 'complete', notaryUpsell: true }))}
               />
               {(!form.employerName || !form.employeeName || !form.jobTitle) && !isProcessing && (

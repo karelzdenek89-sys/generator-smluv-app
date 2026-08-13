@@ -17,7 +17,17 @@ type DeclaredMonetizationPolicy = PublicMonetizationPolicy & {
   source: 'gsc_underperformer' | 'commercial_default';
 };
 
-const PAID_REASON = 'Výchozí placený režim; bez aktivního a doloženého experimentu.';
+const PAID_REASON: Record<PartnerLocale, string> = {
+  cs: 'Výchozí placený režim; bez aktivního a doloženého experimentu.',
+  en: 'Default paid mode; no active, evidence-based experiment applies.',
+  ua: 'Стандартний платний режим; активний обґрунтований експеримент не застосовується.',
+};
+
+function disabledExperimentReason(locale: PartnerLocale, experimentId: string | null): string {
+  if (locale === 'en') return `Experiment ${experimentId} is disabled by the global kill switch.`;
+  if (locale === 'ua') return `Експеримент ${experimentId} вимкнено глобальним аварійним перемикачем.`;
+  return `Experiment ${experimentId} je vypnut globálním kill switchem.`;
+}
 
 const DECLARED_POLICIES: readonly DeclaredMonetizationPolicy[] = [
   {
@@ -56,7 +66,7 @@ export function getMonetizationPolicy(
       contractType,
       locale,
       mode: 'paid',
-      reason: declared?.reason ?? PAID_REASON,
+      reason: declared?.reason ?? PAID_REASON[locale],
       experimentId: null,
       variant: null,
       enabledFrom: null,
@@ -68,7 +78,7 @@ export function getMonetizationPolicy(
       contractType,
       locale,
       mode: 'paid',
-      reason: `Experiment ${declared.experimentId} je vypnut globálním kill switchem.`,
+      reason: disabledExperimentReason(locale, declared.experimentId),
       experimentId: declared.experimentId,
       variant: declared.variant,
       enabledFrom: declared.enabledFrom,

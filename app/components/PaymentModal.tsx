@@ -10,7 +10,7 @@ import {
 } from '@/lib/packages';
 import { getLocalizedPackagePresentation, getLocalizedPricingTier } from '@/lib/i18n/pricing-locale';
 import { getPackageAppendixNotice } from '@/lib/i18n/package-upsell';
-import { LEGAL_NOTICE, normalizeLocale } from '@/lib/locale';
+import { LEGAL_NOTICE, normalizeLocale, type AppLocale } from '@/lib/locale';
 import type { LeaseFormUi } from '@/lib/i18n/lease-form';
 import { getAnalyticsDefaultsForPathname, trackEvent } from '@/lib/analytics';
 import {
@@ -25,12 +25,142 @@ import {
   type CheckoutAuthorization,
 } from '@/lib/checkout-authorization';
 import type { PublicMonetizationPolicy } from '@/lib/monetization-policy';
-import { FREE_BASIC_PDF_INCLUDED_ITEMS } from '@/lib/monetization-copy';
+import { getFreeBasicPdfCopy } from '@/lib/monetization-copy';
 
 interface Section {
   title: string;
   body: string[];
 }
+
+const GENERIC_PAYMENT_COPY: Record<AppLocale, {
+  close: string;
+  readyTitle: string;
+  readySubtitle: string;
+  unlockHeading: string;
+  paidDescription: string;
+  unlockReady: string;
+  unlockEmpty: string;
+  tierHeading: string;
+  includedHeading: string;
+  addonsHeading: string;
+  annexLanguage: string;
+  annexEnglish: string;
+  annexUkrainian: string;
+  annexNotice: string;
+  document: string;
+  selectedAddons: string;
+  total: string;
+  secureNote: string;
+  consentStart: string;
+  terms: string;
+  consentMiddle: string;
+  privacy: string;
+  consentDelivery: string;
+  consentLoss: string;
+  consentLegal: string;
+  emailInvalid: string;
+  consentRequired: string;
+  processing: string;
+  payCta: string;
+  footerSecure: string;
+}> = {
+  cs: {
+    close: 'Zavřít',
+    readyTitle: 'Váš dokument je připraven',
+    readySubtitle: 'Odemkněte přístup k plnému PDF dokumentu',
+    unlockHeading: 'Odemknout dokument',
+    paidDescription: 'Zadejte doručovací e-mail, zkontrolujte objednávku a před platbou potvrďte podmínky.',
+    unlockReady: 'Váš dokument je sestavený a připravený ke stažení. Vyberte variantu a dokončete platbu.',
+    unlockEmpty: 'Doplňte zbývající údaje ve formuláři a vyberte variantu dokumentu.',
+    tierHeading: 'Varianta dokumentu',
+    includedHeading: 'Součástí je',
+    addonsHeading: 'Doplňky k hotovému dokumentu',
+    annexLanguage: 'Jazyk vysvětlující přílohy',
+    annexEnglish: 'Angličtina / English',
+    annexUkrainian: 'Ukrajinština / Українська',
+    annexNotice: 'Český text zůstává rozhodující. Příloha je vysvětlující, nikoli úřední překlad.',
+    document: 'Dokument',
+    selectedAddons: 'Vybrané doplňky',
+    total: 'Celkem',
+    secureNote: 'Platba probíhá bezpečně přes Stripe. Údaje karty se na naše servery nedostávají.',
+    consentStart: 'Přijímám',
+    terms: 'obchodní podmínky',
+    consentMiddle: 'a beru na vědomí',
+    privacy: 'zásady ochrany osobních údajů',
+    consentDelivery: 'Výslovně souhlasím s okamžitým dodáním digitálního obsahu před uplynutím lhůty pro odstoupení a beru na vědomí, že jeho úplným dodáním',
+    consentLoss: 'ztrácím právo na odstoupení od smlouvy',
+    consentLegal: 'dle § 1837 písm. l) OZ.',
+    emailInvalid: 'Zadejte platný e-mail pro doručení dokumentu.',
+    consentRequired: 'Potvrďte prosím souhlas se zpracováním osobních údajů.',
+    processing: 'Přesměrování na platbu…',
+    payCta: 'Zaplatit a stáhnout',
+    footerSecure: '🔒 Zabezpečená platba přes Stripe · PDF ke stažení ihned',
+  },
+  en: {
+    close: 'Close',
+    readyTitle: 'Your document is ready',
+    readySubtitle: 'Unlock access to the full PDF document',
+    unlockHeading: 'Unlock document',
+    paidDescription: 'Enter the delivery email, review the order and confirm the terms before payment.',
+    unlockReady: 'Your document is assembled and ready to download. Choose a version and complete payment.',
+    unlockEmpty: 'Complete the remaining form details and choose a document version.',
+    tierHeading: 'Document version',
+    includedHeading: 'Included',
+    addonsHeading: 'Add-ons for your completed document',
+    annexLanguage: 'Language of the explanatory annex',
+    annexEnglish: 'English',
+    annexUkrainian: 'Ukrainian / Українська',
+    annexNotice: 'The Czech text remains authoritative. The annex is explanatory, not an official translation.',
+    document: 'Document',
+    selectedAddons: 'Selected add-ons',
+    total: 'Total',
+    secureNote: 'Payment is processed securely by Stripe. Card details never reach our servers.',
+    consentStart: 'I accept the',
+    terms: 'Terms',
+    consentMiddle: 'and acknowledge the',
+    privacy: 'Privacy Policy',
+    consentDelivery: 'I expressly consent to immediate delivery of digital content before the withdrawal period expires and acknowledge that, once fully delivered, I',
+    consentLoss: 'lose my right of withdrawal',
+    consentLegal: 'under Section 1837(l) of the Czech Civil Code.',
+    emailInvalid: 'Enter a valid delivery email.',
+    consentRequired: 'Please confirm your consent to the processing of personal data.',
+    processing: 'Redirecting to payment…',
+    payCta: 'Pay and download',
+    footerSecure: '🔒 Secure payment via Stripe · PDF available immediately',
+  },
+  ua: {
+    close: 'Закрити',
+    readyTitle: 'Ваш документ готовий',
+    readySubtitle: 'Відкрийте доступ до повного PDF-документа',
+    unlockHeading: 'Відкрити документ',
+    paidDescription: 'Введіть email для доставки, перевірте замовлення та підтвердьте умови перед оплатою.',
+    unlockReady: 'Ваш документ сформовано й підготовлено до завантаження. Виберіть версію та завершіть оплату.',
+    unlockEmpty: 'Заповніть решту даних у формі та виберіть версію документа.',
+    tierHeading: 'Версія документа',
+    includedHeading: 'Включено',
+    addonsHeading: 'Доповнення до готового документа',
+    annexLanguage: 'Мова пояснювального додатка',
+    annexEnglish: 'Англійська / English',
+    annexUkrainian: 'Українська',
+    annexNotice: 'Чеський текст залишається визначальним. Додаток є пояснювальним, а не офіційним перекладом.',
+    document: 'Документ',
+    selectedAddons: 'Вибрані доповнення',
+    total: 'Разом',
+    secureNote: 'Платіж безпечно обробляє Stripe. Дані картки не надходять на наші сервери.',
+    consentStart: 'Я приймаю',
+    terms: 'Умови',
+    consentMiddle: 'і ознайомився(-лася) з',
+    privacy: 'Політикою конфіденційності',
+    consentDelivery: 'Я прямо погоджуюся на негайне надання цифрового вмісту до закінчення строку на відмову та підтверджую, що після повного надання',
+    consentLoss: 'втрачаю право на відмову від договору',
+    consentLegal: 'відповідно до § 1837 літ. l) Цивільного кодексу Чехії.',
+    emailInvalid: 'Введіть дійсну email-адресу для доставки.',
+    consentRequired: 'Підтвердьте згоду на обробку персональних даних.',
+    processing: 'Перенаправляємо до оплати…',
+    payCta: 'Оплатити й завантажити',
+    footerSecure: '🔒 Безпечна оплата через Stripe · PDF доступний одразу',
+  },
+};
 
 interface PaymentModalProps {
   sections: Section[];
@@ -76,20 +206,22 @@ export default function PaymentModal({
   const previousActiveElementRef = useRef<HTMLElement | null>(null);
   const packageConfig = getThematicPackageConfig(packageKey);
   const locale = normalizeLocale(lang);
+  const genericCopy = GENERIC_PAYMENT_COPY[locale];
+  const freeCopy = getFreeBasicPdfCopy(locale);
   const isFreeBasic = !packageConfig
     && tier === 'basic'
     && monetizationPolicy?.mode === 'free_experiment'
     && Boolean(onFreeGenerate);
   const copy = paymentCopy;
   const includedItems = isFreeBasic
-    ? FREE_BASIC_PDF_INCLUDED_ITEMS
+    ? freeCopy.includedItems
     : getEffectiveIncludedItems(contractType, tier, packageKey, locale);
   const availableAddOns = isFreeBasic
     ? []
     : getAvailableCheckoutAddons(contractType, tier, packageKey, locale);
   const availableAddonKeys = new Set(availableAddOns.map((addon) => addon.key));
   const validSelectedAddOns = selectedAddOns.filter((key) => availableAddonKeys.has(key));
-  const selectedAddonItems = getCheckoutAddonIncludedItems(validSelectedAddOns);
+  const selectedAddonItems = getCheckoutAddonIncludedItems(validSelectedAddOns, locale);
   const localizedPackage = packageConfig
     ? getLocalizedPackagePresentation(packageConfig.key, locale)
     : null;
@@ -100,7 +232,7 @@ export default function PaymentModal({
     : PRICING_TIER_CONFIG[tier].priceCzk;
   const addonsTotalCzk = getCheckoutAddonsTotalCzk(validSelectedAddOns);
   const totalPriceCzk = basePriceCzk + addonsTotalCzk;
-  const checkoutPrice = isFreeBasic ? 'Zdarma' : `${totalPriceCzk.toLocaleString('cs-CZ')} Kč`;
+  const checkoutPrice = isFreeBasic ? freeCopy.priceLabel : `${totalPriceCzk.toLocaleString('cs-CZ')} Kč`;
   const validAddOnKeys = validSelectedAddOns.join(',');
   const analyticsDefaults = getAnalyticsDefaultsForPathname(pathname ?? '/');
   const priceBand = isFreeBasic ? undefined : getEffectivePriceBand(tier, packageConfig?.key);
@@ -286,7 +418,10 @@ export default function PaymentModal({
     setSelectedAddOns(next);
   };
 
-  const today = new Date().toLocaleDateString('cs-CZ', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  const today = new Date().toLocaleDateString(
+    locale === 'en' ? 'en-GB' : locale === 'ua' ? 'uk-UA' : 'cs-CZ',
+    { day: '2-digit', month: '2-digit', year: 'numeric' },
+  );
   const hasSections = sections.length > 0;
 
   return (
@@ -308,7 +443,7 @@ export default function PaymentModal({
         <button
           onClick={() => closeModal('button')}
           className="absolute right-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white/8 text-slate-400 hover:bg-white/14 hover:text-white transition"
-          aria-label={copy?.close ?? 'Zavřít'}
+          aria-label={copy?.close ?? genericCopy.close}
         >
           ✕
         </button>
@@ -372,8 +507,8 @@ export default function PaymentModal({
                 </svg>
               </div>
               <div>
-                <div className="text-lg font-black text-white">{copy?.readyTitle ?? 'Váš dokument je připraven'}</div>
-                <div className="mt-1 text-sm text-slate-400">{copy?.readySubtitle ?? 'Odemkněte přístup k plnému PDF dokumentu'}</div>
+                <div className="text-lg font-black text-white">{copy?.readyTitle ?? genericCopy.readyTitle}</div>
+                <div className="mt-1 text-sm text-slate-400">{copy?.readySubtitle ?? genericCopy.readySubtitle}</div>
               </div>
             </div>
           </div>
@@ -385,30 +520,26 @@ export default function PaymentModal({
 
             {/* Hlavička */}
             <div className="mb-6">
-              <div className="text-[11px] font-black uppercase tracking-[0.2em] text-amber-400/80">{copy?.unlockHeading ?? 'Odemknout dokument'}</div>
+              <div className="text-[11px] font-black uppercase tracking-[0.2em] text-amber-400/80">{copy?.unlockHeading ?? genericCopy.unlockHeading}</div>
               <h2 id="checkout-modal-title" className="mt-2 text-2xl font-black leading-tight text-white">{title}</h2>
               <p id="checkout-modal-description" className="mt-2 text-sm leading-6 text-slate-400">
                 {isFreeBasic
-                  ? 'Zkontrolujte základní variantu a potvrďte podmínky. PDF vytvoříme bez platby a bez registrace.'
-                  : locale === 'en'
-                  ? 'Enter the delivery email, review the order and confirm the terms before payment.'
-                  : locale === 'ua'
-                    ? 'Введіть email для доставки, перевірте замовлення та підтвердьте умови перед оплатою.'
-                    : 'Zadejte doručovací e-mail, zkontrolujte objednávku a před platbou potvrďte podmínky.'}
+                  ? freeCopy.modalDescription
+                  : genericCopy.paidDescription}
               </p>
               <p className="mt-2 text-sm text-slate-400">
                 {isFreeBasic
-                  ? 'Základní DPP je připravena k bezplatnému vygenerování. Rozšířená varianta zůstává placená.'
+                  ? freeCopy.modalSubtitle
                   : hasSections
-                  ? (copy?.unlockSubtitleReady ?? 'Váš dokument je sestavený a připravený ke stažení. Vyberte variantu a dokončete platbu.')
-                  : (copy?.unlockSubtitleEmpty ?? 'Doplňte zbývající údaje ve formuláři a vyberte variantu dokumentu.')}
+                  ? (copy?.unlockSubtitleReady ?? genericCopy.unlockReady)
+                  : (copy?.unlockSubtitleEmpty ?? genericCopy.unlockEmpty)}
               </p>
             </div>
 
             {/* Výběr varianty — pouze pokud není package */}
             {!packageConfig && (
               <div className="mb-5 space-y-2">
-                <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">{copy?.tierHeading ?? 'Varianta dokumentu'}</div>
+                <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">{copy?.tierHeading ?? genericCopy.tierHeading}</div>
                 {(['basic', 'complete'] as const).map((t) => {
                   const cfg = PRICING_TIER_CONFIG[t];
                   const isSelected = tier === t;
@@ -450,15 +581,15 @@ export default function PaymentModal({
                                 : copy.tierCompleteTitle
                               : getLocalizedPricingTier(t, locale).title}
                           </span>
-                          {cfg.badge && (
+                          {getLocalizedPricingTier(t, locale).badge && (
                             <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-bold text-amber-400">
-                              {cfg.badge}
+                              {getLocalizedPricingTier(t, locale).badge}
                             </span>
                           )}
                         </div>
                         <span className={`font-black text-base ${isSelected ? 'text-amber-400' : 'text-slate-400'}`}>
                           {t === 'basic' && monetizationPolicy?.mode === 'free_experiment'
-                            ? 'Zdarma'
+                            ? freeCopy.priceLabel
                             : cfg.priceLabel}
                         </span>
                       </div>
@@ -495,7 +626,7 @@ export default function PaymentModal({
 
             {/* Co je součástí */}
             <div className="mb-5 rounded-xl border border-slate-700/50 bg-slate-800/40 px-4 py-3">
-              <div className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-500">{copy?.includedHeading ?? 'Součástí je'}</div>
+              <div className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-500">{copy?.includedHeading ?? genericCopy.includedHeading}</div>
               <ul className="space-y-1.5">
                 {[...includedItems, ...selectedAddonItems].map((item) => (
                   <li key={item} className="flex items-start gap-2 text-xs text-slate-300">
@@ -509,7 +640,7 @@ export default function PaymentModal({
             {availableAddOns.length > 0 && (
               <div className="mb-5 space-y-2">
                 <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">
-                  Doplňky k hotovému dokumentu
+                  {genericCopy.addonsHeading}
                 </div>
                 {availableAddOns.map((addon) => {
                   const isSelected = selectedAddOns.includes(addon.key);
@@ -553,7 +684,7 @@ export default function PaymentModal({
                 {validSelectedAddOns.includes('bilingual_annex') ? (
                   <label className="block rounded-2xl border border-sky-400/20 bg-sky-400/8 p-4">
                     <span className="block text-[10px] font-black uppercase tracking-widest text-sky-200/80">
-                      Jazyk vysvětlující přílohy
+                      {genericCopy.annexLanguage}
                     </span>
                     <select
                       data-testid="checkout-annex-language"
@@ -561,11 +692,11 @@ export default function PaymentModal({
                       onChange={(event) => setAnnexLanguage(event.target.value as 'en' | 'ua')}
                       className="mt-2 w-full rounded-xl border border-sky-300/20 bg-[#111c31] px-3 py-2.5 text-sm text-white outline-none focus:border-sky-300/60"
                     >
-                      <option value="en">Angličtina / English</option>
-                      <option value="ua">Ukrajinština / Українська</option>
+                      <option value="en">{genericCopy.annexEnglish}</option>
+                      <option value="ua">{genericCopy.annexUkrainian}</option>
                     </select>
                     <span className="mt-2 block text-xs leading-relaxed text-sky-100/70">
-                      Český text zůstává rozhodující. Příloha je vysvětlující, nikoli úřední překlad.
+                      {genericCopy.annexNotice}
                     </span>
                   </label>
                 ) : null}
@@ -574,17 +705,17 @@ export default function PaymentModal({
 
             <div className="mb-5 rounded-xl border border-white/8 bg-white/3 px-4 py-3">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-400">Dokument</span>
+                <span className="text-slate-400">{genericCopy.document}</span>
                 <span className="font-semibold text-white">{basePriceCzk.toLocaleString('cs-CZ')} Kč</span>
               </div>
               {addonsTotalCzk > 0 ? (
                 <div className="mt-1 flex items-center justify-between text-sm">
-                  <span className="text-slate-400">Vybrané doplňky</span>
+                  <span className="text-slate-400">{genericCopy.selectedAddons}</span>
                   <span className="font-semibold text-white">+{addonsTotalCzk.toLocaleString('cs-CZ')} Kč</span>
                 </div>
               ) : null}
               <div className="mt-3 flex items-center justify-between border-t border-white/8 pt-3">
-                <span className="text-xs font-black uppercase tracking-widest text-slate-500">Celkem</span>
+                <span className="text-xs font-black uppercase tracking-widest text-slate-500">{genericCopy.total}</span>
                 <span className="text-xl font-black text-amber-400">{checkoutPrice}</span>
               </div>
             </div>
@@ -597,10 +728,10 @@ export default function PaymentModal({
 
             <div className="mb-5 rounded-xl border border-emerald-400/15 bg-emerald-400/8 px-4 py-3 text-xs leading-6 text-emerald-100">
               {isFreeBasic
-                ? 'Bez platby a bez registrace. Základní PDF uchováme 24 hodin pro zabezpečené stažení.'
-                : (copy?.secureNote ?? 'Platba probíhá bezpečně přes Stripe. Údaje karty se na naše servery nedostávají.')}
+                ? freeCopy.modalSecure
+                : (copy?.secureNote ?? genericCopy.secureNote)}
               <span className="block text-emerald-100/80">
-                {isFreeBasic ? 'Rozšířená varianta s dalšími klauzulemi je nadále placená.' : instantDownloadNote}
+                {isFreeBasic ? freeCopy.modalPremium : instantDownloadNote}
               </span>
             </div>
 
@@ -658,11 +789,13 @@ export default function PaymentModal({
                     </>
                   ) : (
                     <>
-                      Přijímám{' '}
-                      <a href="/obchodni-podminky" target="_blank" className="text-amber-400 underline hover:text-amber-300">obchodní podmínky</a>
-                      {' '}a beru na vědomí{' '}
-                      <a href="/gdpr" target="_blank" className="text-amber-400 underline hover:text-amber-300">zásady ochrany osobních údajů</a>.
-                      Výslovně souhlasím s okamžitým dodáním digitálního obsahu před uplynutím lhůty pro odstoupení a beru na vědomí, že jeho úplným dodáním <strong className="text-slate-300">ztrácím právo na odstoupení od smlouvy</strong> dle § 1837 písm. l) OZ.
+                      {genericCopy.consentStart}{' '}
+                      <a href="/obchodni-podminky" target="_blank" rel="noopener noreferrer" className="text-amber-400 underline hover:text-amber-300">{genericCopy.terms}</a>
+                      {' '}{genericCopy.consentMiddle}{' '}
+                      <a href="/gdpr" target="_blank" rel="noopener noreferrer" className="text-amber-400 underline hover:text-amber-300">{genericCopy.privacy}</a>.{' '}
+                      {genericCopy.consentDelivery}{' '}
+                      <strong className="text-slate-300">{genericCopy.consentLoss}</strong>{' '}
+                      {genericCopy.consentLegal}
                     </>
                   )}
                 </span>
@@ -676,11 +809,7 @@ export default function PaymentModal({
                   const normalizedEmail = deliveryEmail.trim().toLowerCase();
                   if (!isFreeBasic && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
                     alert(
-                      locale === 'en'
-                        ? 'Enter a valid delivery email.'
-                        : locale === 'ua'
-                          ? 'Введіть дійсну email-адресу для доставки.'
-                          : 'Zadejte platný e-mail pro doručení dokumentu.',
+                      genericCopy.emailInvalid,
                     );
                     emailInputRef.current?.focus();
                     return;
@@ -704,7 +833,7 @@ export default function PaymentModal({
                       experiment_id: monetizationPolicy?.experimentId ?? undefined,
                       variant: monetizationPolicy?.variant ?? undefined,
                     });
-                    alert(copy?.gdprRequired ?? 'Potvrďte prosím souhlas se zpracováním osobních údajů.');
+                    alert(copy?.gdprRequired ?? genericCopy.consentRequired);
                     return;
                   }
                   trackEvent('builder_completed', {
@@ -758,19 +887,19 @@ export default function PaymentModal({
                 {isProcessing ? (
                   <span className="flex items-center justify-center gap-2">
                     <span className="w-5 h-5 border-2 border-black/40 border-t-black rounded-full animate-spin" />
-                    {isFreeBasic ? 'Připravuji PDF…' : (copy?.processing ?? 'Přesměrování na platbu…')}
+                    {isFreeBasic ? freeCopy.processing : (copy?.processing ?? genericCopy.processing)}
                   </span>
                 ) : (
                   isFreeBasic
-                    ? 'Vygenerovat základní PDF zdarma →'
-                    : copy ? `${copy.payCtaWithPrice} — ${checkoutPrice} →` : `Zaplatit a stáhnout — ${checkoutPrice} →`
+                    ? freeCopy.generateCta
+                    : `${copy?.payCtaWithPrice ?? genericCopy.payCta} — ${checkoutPrice} →`
                 )}
               </button>
 
               <p className="text-center text-[11px] text-slate-500">
                 {isFreeBasic
-                  ? '🔒 Zabezpečené stažení · bez Stripe · bez registrace'
-                  : (copy?.footerSecure ?? '🔒 Zabezpečená platba přes Stripe · PDF ke stažení ihned')}
+                  ? freeCopy.footerSecure
+                  : (copy?.footerSecure ?? genericCopy.footerSecure)}
               </p>
             </div>
           </div>

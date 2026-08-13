@@ -1140,6 +1140,7 @@ function LeaseBuilderContent() {
               ) : (
                 <BuilderTierSelector
                   contractType="lease"
+                  locale={builderLocale}
                   tierSelectorCopy={ui.tierSelector}
                   tier={formData.tier}
                   onTierChange={(tier) =>
