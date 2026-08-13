@@ -5,6 +5,9 @@ import { czechDateToDate } from '@/lib/seo/czech-date';
 import { SITE_URL } from '@/lib/seo/site';
 
 const PILLAR_SLUGS = new Set([
+  'dovolena-dpp-2026',
+  'vypovedni-doba-pracovni-pomer-2026',
+  'trvaly-pobyt-v-najmu-2026',
   'predavaci-protokol-vzor-2026',
   'smlouva-o-dilo-freelancer-2026',
   'smlouva-o-dilo-vs-dpp-2026',

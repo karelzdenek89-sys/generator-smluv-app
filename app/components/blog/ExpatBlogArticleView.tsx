@@ -179,9 +179,49 @@ export default function ExpatBlogArticleView({ article }: Props) {
         </section>
       ))}
 
+      {article.officialSources?.length ? (
+        <section className="site-content-card mb-10 rounded-[1.75rem] p-6" aria-labelledby="official-sources-heading">
+          <h2 id="official-sources-heading" className="site-heading-md text-[#f2e7c8]">
+            {locale === 'en' ? 'Official sources' : 'Офіційні джерела'}
+          </h2>
+          <p className="mt-3 text-sm leading-7 text-[#bba98c]">
+            {locale === 'en'
+              ? 'Rules can change. Check the current wording before acting.'
+              : 'Правила можуть змінюватися. Перед дією перевірте актуальну редакцію.'}
+          </p>
+          <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-7 text-[#d2c8b9]">
+            {article.officialSources.map((source) => (
+              <li key={source.href}>
+                <a
+                  href={source.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#d6ac60] hover:underline"
+                >
+                  {source.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
+
       <ArticleTrustBox
         generatorSuitable={article.trustBox.generatorSuitable}
         lawyerSuitable={article.trustBox.lawyerSuitable}
+        labels={
+          locale === 'en'
+            ? {
+                eyebrow: 'When the tool fits',
+                generatorTitle: 'Suitable for a standard situation',
+                lawyerTitle: 'When to consult an attorney',
+              }
+            : {
+                eyebrow: 'Коли інструмент доречний',
+                generatorTitle: 'Для стандартної ситуації',
+                lawyerTitle: 'Коли звернутися до адвоката',
+              }
+        }
       />
 
       <ArticleInlineCta

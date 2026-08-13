@@ -28,6 +28,39 @@ export type BlogClusterMeta = {
 
 export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   {
+    slug: 'dovolena-dpp-2026',
+    title: 'Dovolená u DPP 2026: nárok, 80 hodin a výpočet',
+    excerpt:
+      'Kdy u dohody o provedení práce vzniká dovolená, proč rozhoduje 28 dní a 80 hodin a jak se nárok počítá z fiktivní 20hodinové týdenní pracovní doby.',
+    category: 'Práce a zaměstnání',
+    readTime: '8 min',
+    date: '13. srpna 2026',
+    cluster: 'general',
+    href: '/blog/dovolena-dpp-2026',
+  },
+  {
+    slug: 'vypovedni-doba-pracovni-pomer-2026',
+    title: 'Výpovědní doba 2026: kdy začíná a jak dlouho trvá',
+    excerpt:
+      'Výpovědní doba po flexinovele zpravidla běží už ode dne doručení. Přehled dvouměsíčního pravidla, jednoměsíčních výjimek a starších smluvních ujednání.',
+    category: 'Práce a zaměstnání',
+    readTime: '9 min',
+    date: '13. srpna 2026',
+    cluster: 'general',
+    href: '/blog/vypovedni-doba-pracovni-pomer-2026',
+  },
+  {
+    slug: 'trvaly-pobyt-v-najmu-2026',
+    title: 'Trvalý pobyt v nájmu 2026: souhlas a pravidla pro cizince',
+    excerpt:
+      'Kdy českému nájemci stačí platná nájemní smlouva, proč zákaz trvalého pobytu neúčinkuje a jak se liší doklad o ubytování pro cizince.',
+    category: 'Bydlení',
+    readTime: '9 min',
+    date: '13. srpna 2026',
+    cluster: 'landlord',
+    href: '/blog/trvaly-pobyt-v-najmu-2026',
+  },
+  {
     slug: 'vraceni-kauce-po-skonceni-najmu-2026',
     title: 'Vrácení kauce po skončení nájmu 2026: lhůty a úroky',
     excerpt:

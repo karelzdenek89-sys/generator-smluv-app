@@ -3,6 +3,7 @@ import { getExpatSeoHref } from '@/lib/i18n/expat-seo-landings';
 import { EXPAT_BLOG_TOPICS_2026 } from '@/lib/i18n/expat-blog-topics-2026';
 import { EXPAT_BLOG_TOPICS_JULY_2026 } from '@/lib/i18n/expat-blog-topics-july-2026';
 import { EXPAT_BLOG_TOPICS_PROTECTIONS_2026 } from '@/lib/i18n/expat-blog-topics-protections-2026';
+import { EXPAT_BLOG_TOPICS_AUGUST_2026 } from '@/lib/i18n/expat-blog-topics-august-2026';
 import { EXPAT_BLOG_WHY_SMOLOUVAHNED } from '@/lib/i18n/expat-blog-why-smlouvahned';
 import { EXPAT_CONTRACT_ROUTES, withLocale, type AppLocale } from '@/lib/locale';
 
@@ -38,6 +39,7 @@ export type ExpatBlogArticle = {
   finalCta: { title: string; body: string; buttonLabel: string; href?: string };
   trustBox: { generatorSuitable: string; lawyerSuitable: string };
   disclaimer: { heading: string; body: string; lawyerNote: string };
+  officialSources?: { label: string; href: string }[];
   ui: {
     breadcrumbBlog: string;
     readTime: string;
@@ -1121,6 +1123,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
   ...EXPAT_BLOG_TOPICS_2026,
   ...EXPAT_BLOG_TOPICS_JULY_2026,
   ...EXPAT_BLOG_TOPICS_PROTECTIONS_2026,
+  ...EXPAT_BLOG_TOPICS_AUGUST_2026,
   ...EXPAT_BLOG_WHY_SMOLOUVAHNED,
 ];
 

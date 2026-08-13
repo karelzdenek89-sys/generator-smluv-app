@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { CZECH_BLOG_ARTICLES } from '../lib/blog-articles';
 import { czechBlogSitemapEntries } from '../lib/seo/sitemap-blog';
+import { getBlogHreflangAlternates } from '../lib/seo/blog-hreflang-clusters';
 import { SITE_URL } from '../lib/seo/site';
 import {
   EMPLOYMENT_WORK_ELIGIBILITY_NOTICE,
@@ -704,6 +705,50 @@ function testLocalizedBlogArticles() {
   assert.match(landing, /\/blog\/expat\/foreigners-czech-contracts-guide-en/);
   assert.match(landing, /\/blog\/expat\/foreigners-czech-contracts-guide-ua/);
   assert.doesNotMatch(expatArticles.toLowerCase(), /visa-ready|accepted by foreign police|certified translation guaranteed|official translation guaranteed/);
+
+  const augustClusters = [
+    {
+      cs: 'dovolena-dpp-2026',
+      en: 'dpp-holiday-czechia-2026-guide-en',
+      ua: 'dpp-holiday-czechia-2026-guide-ua',
+    },
+    {
+      cs: 'vypovedni-doba-pracovni-pomer-2026',
+      en: 'employment-notice-period-czechia-2026-guide-en',
+      ua: 'employment-notice-period-czechia-2026-guide-ua',
+    },
+    {
+      cs: 'trvaly-pobyt-v-najmu-2026',
+      en: 'registered-address-rental-czechia-2026-guide-en',
+      ua: 'registered-address-rental-czechia-2026-guide-ua',
+    },
+  ] as const;
+
+  for (const cluster of augustClusters) {
+    const en = getExpatBlogArticle(cluster.en);
+    const ua = getExpatBlogArticle(cluster.ua);
+    assert.ok(en, `Missing EN article ${cluster.en}`);
+    assert.ok(ua, `Missing UA article ${cluster.ua}`);
+    assert.equal(en.dateTime, '2026-08-13');
+    assert.equal(ua.dateTime, '2026-08-13');
+    assert.ok(en.officialSources?.length, `${cluster.en} must cite official sources`);
+    assert.ok(ua.officialSources?.length, `${cluster.ua} must cite official sources`);
+    assert.match(en.disclaimer.body, /not a law firm/i);
+    assert.match(ua.disclaimer.body, /не юридична фірма/i);
+
+    const alternates = getBlogHreflangAlternates(cluster.cs);
+    assert.ok(alternates, `Missing hreflang cluster for ${cluster.cs}`);
+    assert.match(alternates.en, new RegExp(`${cluster.en}$`));
+    assert.match(alternates.uk, new RegExp(`${cluster.ua}$`));
+    assert.match(alternates.cs, new RegExp(`${cluster.cs}$`));
+    assert.deepEqual(getBlogHreflangAlternates(cluster.en), alternates);
+    assert.deepEqual(getBlogHreflangAlternates(cluster.ua), alternates);
+  }
+
+  assert.match(expatView, /Official sources/);
+  assert.match(expatView, /Офіційні джерела/);
+  assert.match(expatView, /When to consult an attorney/);
+  assert.match(expatView, /Коли звернутися до адвоката/);
 }
 
 function testExpatSeoLandingPages() {
