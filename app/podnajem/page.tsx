@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
-import { useMemo, useState } from 'react';
+import { use, useMemo, useState } from 'react';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
@@ -16,6 +16,11 @@ import {
 } from '@/lib/i18n/expat-contract-preview';
 import PaymentModal from '@/app/components/LazyPaymentModal';
 import { useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
+import LocalizedBuilderShell from '@/app/components/LocalizedBuilderShell';
+import {
+  getBuilderLocaleFromSearchParams,
+  type BuilderSearchParams,
+} from '@/lib/locale';
 import { isValidMoney } from '@/lib/money';
 
 type FormData = {
@@ -57,7 +62,7 @@ function Toggle({ name, checked, label, hint, onChange }: { name: string; checke
   );
 }
 
-export default function PodnajemuPage() {
+function PodnajemuPageContent() {
   const builderLocale = useBuilderLocale();
   const ui = useMemo(() => getSubleaseFormUi(builderLocale), [builderLocale]);
   useBuilderDocumentTitle(builderLocale, {
@@ -442,6 +447,19 @@ export default function PodnajemuPage() {
       />
     )}
     </>
+  );
+}
+
+export default function PodnajemuPage({
+  searchParams,
+}: {
+  searchParams: Promise<BuilderSearchParams>;
+}) {
+  const initialLocale = getBuilderLocaleFromSearchParams(use(searchParams));
+  return (
+    <LocalizedBuilderShell initialLocale={initialLocale}>
+      <PodnajemuPageContent />
+    </LocalizedBuilderShell>
   );
 }
 

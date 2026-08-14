@@ -11,7 +11,7 @@ const navItems = [
 
 export default function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-white/8 bg-[#05080f]/92 backdrop-blur-xl">
+    <header data-site-header="global" className="sticky top-0 z-40 border-b border-white/8 bg-[#05080f]/92 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-4 md:px-10">
         <Link href="/" className="flex min-w-0 items-center gap-3">
           <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-[#c9a852]/40 bg-[#07111e] text-xs font-black text-[#c9a852]">

@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { use, useEffect, useMemo, useState } from 'react';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import Link from 'next/link';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
@@ -10,6 +10,11 @@ import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import PaymentModal from '@/app/components/LazyPaymentModal';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
+import LocalizedBuilderShell from '@/app/components/LocalizedBuilderShell';
+import {
+  getBuilderLocaleFromSearchParams,
+  type BuilderSearchParams,
+} from '@/lib/locale';
 import { getLeaseFormUi } from '@/lib/i18n/lease-form';
 import {
   buildLeaseHandoverPreview,
@@ -1373,8 +1378,17 @@ function LeaseBuilderContent() {
   );
 }
 
-export default function LeaseBuilderPage() {
-  return <LeaseBuilderContent />;
+export default function LeaseBuilderPage({
+  searchParams,
+}: {
+  searchParams: Promise<BuilderSearchParams>;
+}) {
+  const initialLocale = getBuilderLocaleFromSearchParams(use(searchParams));
+  return (
+    <LocalizedBuilderShell initialLocale={initialLocale}>
+      <LeaseBuilderContent />
+    </LocalizedBuilderShell>
+  );
 }
 
 

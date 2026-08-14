@@ -1,11 +1,76 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { spawn } from 'node:child_process';
+import { once } from 'node:events';
+import { existsSync, readFileSync } from 'node:fs';
+import { createServer } from 'node:net';
 import { resolve } from 'node:path';
+import { setTimeout as delay } from 'node:timers/promises';
 
 const freeExperiment = process.env.FREE_FUNNEL_EXPERIMENTS_ENABLED === 'true';
 
 function readBuiltHtml(routePath: string): string {
   return readFileSync(resolve('.next/server/app', routePath), 'utf8');
+}
+
+async function getFreePort(): Promise<number> {
+  return new Promise((resolvePort, reject) => {
+    const server = createServer();
+    server.once('error', reject);
+    server.listen(0, '127.0.0.1', () => {
+      const address = server.address();
+      if (!address || typeof address === 'string') {
+        server.close();
+        reject(new Error('Could not allocate a local port for the DPP SSR audit.'));
+        return;
+      }
+      server.close((error) => {
+        if (error) reject(error);
+        else resolvePort(address.port);
+      });
+    });
+  });
+}
+
+async function readBuiltDppHtml(): Promise<string> {
+  const staticPath = resolve('.next/server/app/dpp.html');
+  if (existsSync(staticPath)) return readFileSync(staticPath, 'utf8');
+
+  const port = await getFreePort();
+  const nextBin = resolve('node_modules/next/dist/bin/next');
+  const server = spawn(
+    process.execPath,
+    [nextBin, 'start', '-H', '127.0.0.1', '-p', String(port)],
+    {
+      cwd: process.cwd(),
+      env: { ...process.env, NEXT_TELEMETRY_DISABLED: '1' },
+      stdio: ['ignore', 'pipe', 'pipe'],
+      windowsHide: true,
+    },
+  );
+  let serverOutput = '';
+  server.stdout.on('data', (chunk) => { serverOutput += String(chunk); });
+  server.stderr.on('data', (chunk) => { serverOutput += String(chunk); });
+
+  try {
+    for (let attempt = 0; attempt < 80; attempt += 1) {
+      if (server.exitCode !== null) {
+        throw new Error(`Next server exited before the SSR audit:\n${serverOutput}`);
+      }
+      try {
+        const response = await fetch(`http://127.0.0.1:${port}/dpp`);
+        if (response.ok) return await response.text();
+      } catch {
+        // The server is still starting.
+      }
+      await delay(250);
+    }
+    throw new Error(`Timed out waiting for the DPP SSR route.\n${serverOutput}`);
+  } finally {
+    if (server.exitCode === null) {
+      server.kill();
+      await Promise.race([once(server, 'exit'), delay(2_000)]);
+    }
+  }
 }
 
 function visibleText(html: string): string {
@@ -21,7 +86,8 @@ function visibleText(html: string): string {
     .trim();
 }
 
-const dppHtml = readBuiltHtml('dpp.html');
+async function main() {
+const dppHtml = await readBuiltDppHtml();
 const dppText = visibleText(dppHtml);
 const homeHtml = readBuiltHtml('index.html');
 const homeText = visibleText(homeHtml);
@@ -123,3 +189,9 @@ if (freeExperiment) {
 }
 
 console.log(`DPP SSR consistency tests passed (${freeExperiment ? 'free_experiment' : 'paid'}).`);
+}
+
+void main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

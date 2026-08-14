@@ -1,11 +1,16 @@
 'use client';
 
-import { useSyncExternalStore } from 'react';
+import { Suspense } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import NewsletterSignup from '@/app/components/NewsletterSignup';
 import { SEO_LANDINGS, FOOTER_GROUPS } from '@/lib/internal-links';
-import { normalizeLocale, type AppLocale } from '@/lib/locale';
+import {
+  getContractTypeByPath,
+  isExpatContract,
+  normalizeLocale,
+  type AppLocale,
+} from '@/lib/locale';
 
 type FooterCopy = {
   softwareTool: string;
@@ -82,33 +87,18 @@ const FOOTER_COPY: Record<AppLocale, FooterCopy> = {
   },
 };
 
-function subscribeToLocation(callback: () => void) {
-  window.addEventListener('popstate', callback);
-  window.addEventListener('pageshow', callback);
-  return () => {
-    window.removeEventListener('popstate', callback);
-    window.removeEventListener('pageshow', callback);
-  };
-}
-
-function getQueryLocaleSnapshot(): 'en' | 'ua' | null {
-  const raw = new URLSearchParams(window.location.search).get('lang');
-  const normalized = raw ? normalizeLocale(raw) : 'cs';
-  return normalized === 'en' || normalized === 'ua' ? normalized : null;
-}
-
-export default function Footer() {
-  const pathname = usePathname();
-  const firstSegment = pathname.split('/')[1] ?? '';
-  const queryLocale = useSyncExternalStore(subscribeToLocation, getQueryLocaleSnapshot, () => null);
-
-  const locale: AppLocale =
-    firstSegment === 'ua' ? 'ua' : firstSegment === 'en' ? 'en' : queryLocale ?? 'cs';
+function FooterContent({
+  locale,
+  placement = 'global',
+}: {
+  locale: AppLocale;
+  placement?: 'global' | 'localized-builder';
+}) {
   const t = FOOTER_COPY[locale];
   const showCzechSeoColumns = locale === 'cs';
 
   return (
-    <footer className="border-t border-[#c9a852]/10 bg-[#040c1a] text-slate-300 mt-20 md:mt-24">
+    <footer data-site-footer={placement} className="border-t border-[#c9a852]/10 bg-[#040c1a] text-slate-300 mt-20 md:mt-24">
       <div className="mx-auto max-w-7xl px-6 pt-12 pb-8 md:px-10">
         <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
           <div className="max-w-xs">
@@ -258,4 +248,36 @@ export default function Footer() {
       </div>
     </footer>
   );
+}
+
+export function LocalizedFooter({ locale }: { locale: Exclude<AppLocale, 'cs'> }) {
+  return <FooterContent locale={locale} placement="localized-builder" />;
+}
+
+function BuilderFooter() {
+  const searchParams = useSearchParams();
+  const raw = searchParams.get('lang');
+  const normalized = raw ? normalizeLocale(raw) : 'cs';
+  const locale: AppLocale = normalized === 'en' || normalized === 'ua' ? normalized : 'cs';
+  return <FooterContent locale={locale} />;
+}
+
+export default function Footer() {
+  const pathname = usePathname();
+  const firstSegment = pathname.split('/')[1] ?? '';
+  const pathLocale: AppLocale | null =
+    firstSegment === 'ua' ? 'ua' : firstSegment === 'en' ? 'en' : null;
+
+  if (pathLocale) return <FooterContent locale={pathLocale} />;
+
+  const contractType = getContractTypeByPath(pathname);
+  if (contractType && isExpatContract(contractType)) {
+    return (
+      <Suspense fallback={<FooterContent locale="cs" />}>
+        <BuilderFooter />
+      </Suspense>
+    );
+  }
+
+  return <FooterContent locale="cs" />;
 }

@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+/* Foreign-language builders provide their own localized footer. This marker is
+   present in request-rendered HTML, so Czech global chrome never flashes even
+   when JavaScript is disabled. */
+body:has([data-localized-builder-shell]) [data-site-header="global"],
+body:has([data-localized-builder-shell]) [data-site-footer="global"] {
+  display: none !important;
+}
+
 :root {
   --background: #060912;
   --foreground: #f2f4f8;

@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import { useMemo, useState } from 'react';
+import { use, useMemo, useState } from 'react';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
@@ -15,6 +15,11 @@ import {
 } from '@/lib/i18n/expat-contract-preview';
 import PaymentModal from '@/app/components/LazyPaymentModal';
 import { useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
+import LocalizedBuilderShell from '@/app/components/LocalizedBuilderShell';
+import {
+  getBuilderLocaleFromSearchParams,
+  type BuilderSearchParams,
+} from '@/lib/locale';
 
 type FormData = {
   principalName: string; principalId: string; principalAddress: string; principalEmail: string;
@@ -39,7 +44,7 @@ function SectionTitle({ index, title, subtitle }: { index: string; title: string
   return (<div className="mb-6"><div className="builder-kicker">{index}. {title}</div>{subtitle && <p className="builder-help mt-2 text-sm">{subtitle}</p>}</div>);
 }
 
-export default function PlnaMocPage() {
+function PlnaMocPageContent() {
   const builderLocale = useBuilderLocale();
   const ui = useMemo(() => getPoaFormUi(builderLocale), [builderLocale]);
   useBuilderDocumentTitle(builderLocale, {
@@ -349,6 +354,19 @@ export default function PlnaMocPage() {
       />
     )}
     </>
+  );
+}
+
+export default function PlnaMocPage({
+  searchParams,
+}: {
+  searchParams: Promise<BuilderSearchParams>;
+}) {
+  const initialLocale = getBuilderLocaleFromSearchParams(use(searchParams));
+  return (
+    <LocalizedBuilderShell initialLocale={initialLocale}>
+      <PlnaMocPageContent />
+    </LocalizedBuilderShell>
   );
 }
 

@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { use, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import ContractPreview from '@/app/components/ContractPreview';
@@ -10,6 +10,11 @@ import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/LazyPaymentModal';
 import { useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
+import LocalizedBuilderShell from '@/app/components/LocalizedBuilderShell';
+import {
+  getBuilderLocaleFromSearchParams,
+  type BuilderSearchParams,
+} from '@/lib/locale';
 import { getEmploymentFormUi } from '@/lib/i18n/expat-builder-forms';
 import { employmentRiskWarnings, employmentValidationFields } from '@/lib/i18n/expat-builder-risk';
 import {
@@ -68,7 +73,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   );
 }
 
-export default function PracovniPage() {
+function PracovniPageContent() {
   const [packageKeyFromUrl, setPackageKeyFromUrl] = useState<string | null>(null);
   const builderLocale = useBuilderLocale();
   const ui = useMemo(() => getEmploymentFormUi(builderLocale), [builderLocale]);
@@ -595,6 +600,19 @@ export default function PracovniPage() {
       />
     )}
     </>
+  );
+}
+
+export default function PracovniPage({
+  searchParams,
+}: {
+  searchParams: Promise<BuilderSearchParams>;
+}) {
+  const initialLocale = getBuilderLocaleFromSearchParams(use(searchParams));
+  return (
+    <LocalizedBuilderShell initialLocale={initialLocale}>
+      <PracovniPageContent />
+    </LocalizedBuilderShell>
   );
 }
 

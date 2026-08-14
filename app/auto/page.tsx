@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { use, useEffect, useMemo, useState } from 'react';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import Link from 'next/link';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
@@ -18,6 +18,11 @@ import {
 } from '@/lib/i18n/expat-contract-preview';
 import PaymentModal from '@/app/components/LazyPaymentModal';
 import { useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
+import LocalizedBuilderShell from '@/app/components/LocalizedBuilderShell';
+import {
+  getBuilderLocaleFromSearchParams,
+  type BuilderSearchParams,
+} from '@/lib/locale';
 import { isValidMoney } from '@/lib/money';
 import BuilderUserRoleField from '@/app/components/partners/BuilderUserRoleField';
 import type { PartnerUserRole } from '@/lib/partners/types';
@@ -1299,7 +1304,16 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
   );
 }
 
-export default function CarSaleBuilderPage() {
-  return <CarSaleBuilderContent />;
+export default function CarSaleBuilderPage({
+  searchParams,
+}: {
+  searchParams: Promise<BuilderSearchParams>;
+}) {
+  const initialLocale = getBuilderLocaleFromSearchParams(use(searchParams));
+  return (
+    <LocalizedBuilderShell initialLocale={initialLocale}>
+      <CarSaleBuilderContent />
+    </LocalizedBuilderShell>
+  );
 }
 

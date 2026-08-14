@@ -35,15 +35,20 @@ async function blockExternalNetwork(page: Page) {
   });
 }
 
+function getConfiguredOrigin(baseURL: unknown): string {
+  return new URL(String(baseURL ?? 'http://127.0.0.1:3000')).origin;
+}
+
 test.describe('builder locale isolation', () => {
   test.beforeEach(async ({ page }) => {
     await blockExternalNetwork(page);
   });
 
-  test('stale UA preference cannot translate isolated blocks on a Czech UTM visit', async ({ page, context }) => {
+  test('stale UA preference cannot translate isolated blocks on a Czech UTM visit', async ({ page, context }, testInfo) => {
+    const cookieUrl = getConfiguredOrigin(testInfo.project.use.baseURL);
     await context.addCookies([
-      { name: 'preferred-locale', value: 'ua', url: 'http://127.0.0.1:3000' },
-      { name: 'foreign-banner-dismissed', value: '1', url: 'http://127.0.0.1:3000' },
+      { name: 'preferred-locale', value: 'ua', url: cookieUrl },
+      { name: 'foreign-banner-dismissed', value: '1', url: cookieUrl },
     ]);
 
     await page.goto(
@@ -58,9 +63,10 @@ test.describe('builder locale isolation', () => {
     await expect(page.getByText('Czech-only form')).toHaveCount(0);
   });
 
-  test('a Czech supported builder also ignores a stale foreign preference', async ({ page, context }) => {
+  test('a Czech supported builder also ignores a stale foreign preference', async ({ page, context }, testInfo) => {
+    const cookieUrl = getConfiguredOrigin(testInfo.project.use.baseURL);
     await context.addCookies([
-      { name: 'preferred-locale', value: 'en', url: 'http://127.0.0.1:3000' },
+      { name: 'preferred-locale', value: 'en', url: cookieUrl },
     ]);
 
     await page.goto('/najem?utm_source=partner');
@@ -70,9 +76,10 @@ test.describe('builder locale isolation', () => {
     await expect(page.getByText('English-guided Czech contract')).toHaveCount(0);
   });
 
-  test('all canonical builder URLs stay Czech with stale UA state', async ({ page, context }) => {
+  test('all canonical builder URLs stay Czech with stale UA state', async ({ page, context }, testInfo) => {
+    const cookieUrl = getConfiguredOrigin(testInfo.project.use.baseURL);
     await context.addCookies([
-      { name: 'preferred-locale', value: 'ua', url: 'http://127.0.0.1:3000' },
+      { name: 'preferred-locale', value: 'ua', url: cookieUrl },
     ]);
 
     for (const route of [...LOCALIZED_BUILDERS, ...CZECH_ONLY_BUILDERS]) {
@@ -82,6 +89,37 @@ test.describe('builder locale isolation', () => {
       expect(mainText, route).not.toMatch(/[\u0400-\u04ff]/u);
       expect(mainText, route).not.toContain('Czech-only form');
     }
+  });
+
+  test('localized builder chrome is already coherent in server-rendered HTML', async ({ browser }, testInfo) => {
+    const baseURL = getConfiguredOrigin(testInfo.project.use.baseURL);
+    const context = await browser.newContext({ javaScriptEnabled: false });
+    const page = await context.newPage();
+
+    const uaResponse = await page.goto(new URL('/najem?lang=ua', baseURL).toString(), {
+      waitUntil: 'domcontentloaded',
+    });
+    expect(uaResponse?.headers()['content-language']).toBe('uk');
+    await expect(page.locator('[data-site-header="global"]')).toBeHidden();
+    await expect(page.getByRole('heading', { name: /Договір оренди/u }).first()).toBeVisible();
+    await expect(
+      page.locator('[data-site-footer="localized-builder"]').getByText('Програмний інструмент', { exact: true }),
+    ).toBeVisible();
+    await expect(page.locator('[data-site-footer="global"]:visible')).toHaveCount(0);
+    await expect(page.getByText('Document contents', { exact: true })).toHaveCount(0);
+
+    const enResponse = await page.goto(new URL('/najem?lang=en', baseURL).toString(), {
+      waitUntil: 'domcontentloaded',
+    });
+    expect(enResponse?.headers()['content-language']).toBe('en');
+    await expect(page.locator('[data-site-header="global"]')).toBeHidden();
+    await expect(page.getByRole('heading', { name: /Rental agreement for an apartment online/iu }).first()).toBeVisible();
+    await expect(
+      page.locator('[data-site-footer="localized-builder"]').getByText('Software tool', { exact: true }),
+    ).toBeVisible();
+    await expect(page.locator('[data-site-footer="global"]:visible')).toHaveCount(0);
+
+    await context.close();
   });
 
   test('explicit UA builder uses Ukrainian chrome without English leftovers or duplicate notices', async ({ page }) => {
@@ -97,9 +135,10 @@ test.describe('builder locale isolation', () => {
     await expect(page.getByText('Договір буде сформовано насамперед чеською мовою')).toHaveCount(1);
   });
 
-  test('explicit EN wins over a stale UA preference', async ({ page, context }) => {
+  test('explicit EN wins over a stale UA preference', async ({ page, context }, testInfo) => {
+    const cookieUrl = getConfiguredOrigin(testInfo.project.use.baseURL);
     await context.addCookies([
-      { name: 'preferred-locale', value: 'ua', url: 'http://127.0.0.1:3000' },
+      { name: 'preferred-locale', value: 'ua', url: cookieUrl },
     ]);
 
     await page.goto('/najem?lang=en');

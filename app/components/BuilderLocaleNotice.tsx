@@ -1,6 +1,13 @@
 'use client';
 
-import { useEffect, useMemo, useSyncExternalStore } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useSyncExternalStore,
+  type ReactNode,
+} from 'react';
 import type { ContractType } from '@/lib/contracts';
 import {
   LEGAL_NOTICE,
@@ -17,7 +24,24 @@ import {
   getLeaseUseNotice,
 } from '@/lib/i18n/safety-copy';
 
+const BuilderLocaleContext = createContext<AppLocale>('cs');
+
+export function BuilderLocaleProvider({
+  initialLocale,
+  children,
+}: {
+  initialLocale: AppLocale;
+  children: ReactNode;
+}) {
+  return (
+    <BuilderLocaleContext.Provider value={initialLocale}>
+      {children}
+    </BuilderLocaleContext.Provider>
+  );
+}
+
 export function useBuilderLocale(): AppLocale {
+  const initialLocale = useContext(BuilderLocaleContext);
   return useSyncExternalStore(
     (onStoreChange) => {
       window.addEventListener('popstate', onStoreChange);
@@ -28,7 +52,7 @@ export function useBuilderLocale(): AppLocale {
       };
     },
     readBuilderLocaleFromBrowser,
-    () => 'cs',
+    () => initialLocale,
   );
 }
 

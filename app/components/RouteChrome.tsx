@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useSyncExternalStore } from 'react';
-import { usePathname } from 'next/navigation';
+import { Suspense, useEffect } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
 import SiteHeader from '@/app/components/SiteHeader';
 import {
   getContractTypeByPath,
@@ -11,55 +11,45 @@ import {
 
 const FOREIGN_LOCALE_SEGMENTS = new Set(['en', 'ua']);
 
-function subscribeToLocation(callback: () => void) {
-  window.addEventListener('popstate', callback);
-  window.addEventListener('pageshow', callback);
-  return () => {
-    window.removeEventListener('popstate', callback);
-    window.removeEventListener('pageshow', callback);
-  };
-}
-
-/** Locale chosen via ?lang= on builder pages (en/ua), else null. */
-function getQueryLocaleSnapshot(): 'en' | 'ua' | null {
-  const contractType = getContractTypeByPath(window.location.pathname);
-  if (!contractType || !isExpatContract(contractType)) return null;
-  const raw = new URLSearchParams(window.location.search).get('lang');
+function BuilderRouteChrome() {
+  const searchParams = useSearchParams();
+  const raw = searchParams.get('lang');
   const normalized = raw ? normalizeLocale(raw) : 'cs';
-  return normalized === 'en' || normalized === 'ua' ? normalized : null;
+  const queryLocale = normalized === 'en' || normalized === 'ua' ? normalized : null;
+
+  useEffect(() => {
+    document.documentElement.lang = queryLocale === 'ua' ? 'uk' : queryLocale ?? 'cs';
+  }, [queryLocale]);
+
+  return queryLocale ? null : <SiteHeader />;
 }
 
 export default function RouteChrome() {
   const pathname = usePathname();
   const firstSegment = pathname.split('/')[1] ?? '';
   const isForeignLocaleSegment = FOREIGN_LOCALE_SEGMENTS.has(firstSegment);
-
-  // useSyncExternalStore keeps the ?lang read hydration-safe (server snapshot = null,
-  // matching the path-only first paint) without useSearchParams / setState-in-effect.
-  const queryLocale = useSyncExternalStore(
-    subscribeToLocation,
-    getQueryLocaleSnapshot,
-    () => null,
-  );
+  const contractType = getContractTypeByPath(pathname);
+  const isLocalizedBuilder = Boolean(contractType && isExpatContract(contractType));
 
   useEffect(() => {
-    const htmlLang = isForeignLocaleSegment
-      ? firstSegment === 'ua'
-        ? 'uk'
-        : 'en'
-      : queryLocale
-        ? queryLocale === 'ua'
-          ? 'uk'
-          : 'en'
-        : 'cs';
-    document.documentElement.lang = htmlLang;
-  }, [firstSegment, isForeignLocaleSegment, queryLocale]);
+    if (isForeignLocaleSegment) {
+      document.documentElement.lang = firstSegment === 'ua' ? 'uk' : 'en';
+    } else if (!isLocalizedBuilder) {
+      document.documentElement.lang = 'cs';
+    }
+  }, [firstSegment, isForeignLocaleSegment, isLocalizedBuilder]);
 
-  const showSiteHeader =
-    pathname !== '/' &&
-    !isForeignLocaleSegment &&
-    !queryLocale &&
-    !pathname.startsWith('/success');
+  if (pathname === '/' || isForeignLocaleSegment || pathname.startsWith('/success')) {
+    return null;
+  }
 
-  return showSiteHeader ? <SiteHeader /> : null;
+  if (isLocalizedBuilder) {
+    return (
+      <Suspense fallback={<SiteHeader />}>
+        <BuilderRouteChrome />
+      </Suspense>
+    );
+  }
+
+  return <SiteHeader />;
 }

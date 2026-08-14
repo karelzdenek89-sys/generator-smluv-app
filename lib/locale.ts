@@ -13,6 +13,10 @@ export const EMPLOYMENT_WORK_ELIGIBILITY_NOTICE = EMPLOYMENT_WORK_ELIGIBILITY_NO
 
 export type AppLocale = 'cs' | 'en' | 'ua';
 
+export type BuilderSearchParams = {
+  lang?: string | string[];
+};
+
 export const VALID_LOCALE_INPUTS = ['cs', 'en', 'ua', 'ukr', 'uk'] as const;
 
 export const APP_LOCALES: AppLocale[] = ['cs', 'en', 'ua'];
@@ -63,6 +67,20 @@ export function readBuilderLocaleFromBrowser(): AppLocale {
   const params = new URLSearchParams(window.location.search);
   const queryLocale = params.get('lang');
   return isSupportedLocaleInput(queryLocale) ? normalizeLocale(queryLocale) : 'cs';
+}
+
+/**
+ * Request-time locale for localized builder pages. Keeping this normalization
+ * shared with the browser reader prevents SSR and hydration from choosing
+ * different languages for the same URL.
+ */
+export function getBuilderLocaleFromSearchParams(
+  searchParams: BuilderSearchParams,
+): AppLocale {
+  const raw = Array.isArray(searchParams.lang)
+    ? searchParams.lang[0]
+    : searchParams.lang;
+  return isSupportedLocaleInput(raw) ? normalizeLocale(raw) : 'cs';
 }
 
 export function normalizeLocale(value: unknown): AppLocale {

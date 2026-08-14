@@ -21,6 +21,8 @@ const playfair = Playfair_Display({
 
 const BASE_URL = SITE_URL;
 
+const LOCALE_BOOTSTRAP_SCRIPT = `(()=>{try{const p=location.pathname.replace(/\\/$/,"")||"/";const s=p.split("/")[1]||"";let l=s==="ua"?"uk":s==="en"?"en":"cs";if(l==="cs"&&new Set(["/najem","/podnajem","/pracovni","/dpp","/plna-moc","/auto"]).has(p)){const q=new URLSearchParams(location.search).get("lang");l=q==="ua"||q==="uk"||q==="ukr"?"uk":q==="en"?"en":"cs"}document.documentElement.lang=l}catch{}})()`;
+
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),
   title: {
@@ -80,6 +82,7 @@ export default function RootLayout({
           name="seznam-wmt"
           content="1kRt8NQO2kwavM4MjoHzXWCI6dxVOV"
         />
+        <script dangerouslySetInnerHTML={{ __html: LOCALE_BOOTSTRAP_SCRIPT }} />
       </head>
       <body
         className={`${inter.variable} ${playfair.variable} antialiased bg-[#060912] text-[#d7dee8]`}
