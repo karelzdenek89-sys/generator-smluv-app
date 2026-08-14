@@ -1,16 +1,11 @@
 'use client';
 
-import { Suspense } from 'react';
+import { useSyncExternalStore } from 'react';
 import Link from 'next/link';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import NewsletterSignup from '@/app/components/NewsletterSignup';
 import { SEO_LANDINGS, FOOTER_GROUPS } from '@/lib/internal-links';
-import {
-  getContractTypeByPath,
-  isExpatContract,
-  normalizeLocale,
-  type AppLocale,
-} from '@/lib/locale';
+import { normalizeLocale, type AppLocale } from '@/lib/locale';
 
 type FooterCopy = {
   softwareTool: string;
@@ -86,6 +81,21 @@ const FOOTER_COPY: Record<AppLocale, FooterCopy> = {
     terms: 'Умови використання',
   },
 };
+
+function subscribeToLocation(callback: () => void) {
+  window.addEventListener('popstate', callback);
+  window.addEventListener('pageshow', callback);
+  return () => {
+    window.removeEventListener('popstate', callback);
+    window.removeEventListener('pageshow', callback);
+  };
+}
+
+function getQueryLocaleSnapshot(): 'en' | 'ua' | null {
+  const raw = new URLSearchParams(window.location.search).get('lang');
+  const normalized = raw ? normalizeLocale(raw) : 'cs';
+  return normalized === 'en' || normalized === 'ua' ? normalized : null;
+}
 
 function FooterContent({
   locale,
@@ -254,30 +264,15 @@ export function LocalizedFooter({ locale }: { locale: Exclude<AppLocale, 'cs'> }
   return <FooterContent locale={locale} placement="localized-builder" />;
 }
 
-function BuilderFooter() {
-  const searchParams = useSearchParams();
-  const raw = searchParams.get('lang');
-  const normalized = raw ? normalizeLocale(raw) : 'cs';
-  const locale: AppLocale = normalized === 'en' || normalized === 'ua' ? normalized : 'cs';
-  return <FooterContent locale={locale} />;
-}
-
 export default function Footer() {
   const pathname = usePathname();
   const firstSegment = pathname.split('/')[1] ?? '';
-  const pathLocale: AppLocale | null =
-    firstSegment === 'ua' ? 'ua' : firstSegment === 'en' ? 'en' : null;
-
-  if (pathLocale) return <FooterContent locale={pathLocale} />;
-
-  const contractType = getContractTypeByPath(pathname);
-  if (contractType && isExpatContract(contractType)) {
-    return (
-      <Suspense fallback={<FooterContent locale="cs" />}>
-        <BuilderFooter />
-      </Suspense>
-    );
-  }
-
-  return <FooterContent locale="cs" />;
+  const queryLocale = useSyncExternalStore(
+    subscribeToLocation,
+    getQueryLocaleSnapshot,
+    () => null,
+  );
+  const locale: AppLocale =
+    firstSegment === 'ua' ? 'ua' : firstSegment === 'en' ? 'en' : queryLocale ?? 'cs';
+  return <FooterContent locale={locale} />;
 }

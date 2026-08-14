@@ -96,6 +96,12 @@ test.describe('builder locale isolation', () => {
     const context = await browser.newContext({ javaScriptEnabled: false });
     const page = await context.newPage();
 
+    await page.goto(new URL('/dpp', baseURL).toString(), {
+      waitUntil: 'domcontentloaded',
+    });
+    await expect(page.locator('[data-site-header="global"]:visible')).toHaveCount(1);
+    await expect(page.locator('[data-site-footer="global"]:visible')).toHaveCount(1);
+
     const uaResponse = await page.goto(new URL('/najem?lang=ua', baseURL).toString(), {
       waitUntil: 'domcontentloaded',
     });
