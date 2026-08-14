@@ -50,19 +50,19 @@ export const EXPAT_CONTRACT_ROUTES: Record<ContractType, string> = {
   cooperation: '/spoluprace',
 };
 
-/** Browser-only: ?lang= wins, then preferred-locale cookie, else cs. */
+/**
+ * Browser-only locale for the six builders that have complete EN/UA guidance.
+ * The URL is the only authority: persisted preferences must not translate
+ * isolated client blocks on an otherwise Czech page.
+ */
 export function readBuilderLocaleFromBrowser(): AppLocale {
   if (typeof window === 'undefined') return 'cs';
+  const contractType = getContractTypeByPath(window.location.pathname);
+  if (!contractType || !isExpatContract(contractType)) return 'cs';
+
   const params = new URLSearchParams(window.location.search);
-  if (params.has('lang')) {
-    const queryLocale = params.get('lang');
-    return isSupportedLocaleInput(queryLocale) ? normalizeLocale(queryLocale) : 'cs';
-  }
-  const match = document.cookie.match(/(?:^|;\s*)preferred-locale=([^;]+)/);
-  if (match?.[1]) {
-    return normalizeLocale(decodeURIComponent(match[1].trim()));
-  }
-  return 'cs';
+  const queryLocale = params.get('lang');
+  return isSupportedLocaleInput(queryLocale) ? normalizeLocale(queryLocale) : 'cs';
 }
 
 export function normalizeLocale(value: unknown): AppLocale {
@@ -83,6 +83,8 @@ export function isExpatContract(contractType: ContractType): contractType is Exp
 
 export function withLocale(href: string, locale: AppLocale): string {
   if (locale === 'cs') return href;
+  const contractType = getContractTypeByPath(href);
+  if (contractType && !isExpatContract(contractType)) return href;
   const separator = href.includes('?') ? '&' : '?';
   return `${href}${separator}lang=${locale}`;
 }

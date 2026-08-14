@@ -14,7 +14,7 @@ import {
   getExpatPreviewLabels,
 } from '@/lib/i18n/expat-contract-preview';
 import PaymentModal from '@/app/components/LazyPaymentModal';
-import { BuilderLocaleNotice, useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
+import { useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
 
 type FormData = {
   principalName: string; principalId: string; principalAddress: string; principalEmail: string;
@@ -158,7 +158,6 @@ export default function PlnaMocPage() {
 
   return (
     <>
-    <BuilderLocaleNotice contractType="power_of_attorney" />
     <main className="site-page contract-builder font-sans pb-24">
       <header className="contract-builder-header">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">

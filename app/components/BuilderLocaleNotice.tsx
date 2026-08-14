@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useSyncExternalStore } from 'react';
 import type { ContractType } from '@/lib/contracts';
 import {
   LEGAL_NOTICE,
@@ -8,7 +8,6 @@ import {
   getFallbackUiNotice,
   getUnsupportedFormNotice,
   isExpatContract,
-  isSupportedLocaleInput,
   readBuilderLocaleFromBrowser,
   type AppLocale,
 } from '@/lib/locale';
@@ -19,34 +18,18 @@ import {
 } from '@/lib/i18n/safety-copy';
 
 export function useBuilderLocale(): AppLocale {
-  // The server cannot read the browser-only preference. Keep the first client
-  // render identical to SSR, then synchronize the selected locale after hydration.
-  const [locale, setLocale] = useState<AppLocale>('cs');
-
-  useEffect(() => {
-    const syncLocale = () => {
-      const nextLocale = readBuilderLocaleFromBrowser();
-      const params = new URLSearchParams(window.location.search);
-      const queryLocale = params.get('lang');
-
-      if (queryLocale && isSupportedLocaleInput(queryLocale)) {
-        document.cookie = `preferred-locale=${encodeURIComponent(nextLocale)}; path=/; max-age=31536000; SameSite=Lax`;
-      }
-
-      setLocale((current) => (current === nextLocale ? current : nextLocale));
-    };
-
-    syncLocale();
-    window.addEventListener('popstate', syncLocale);
-    window.addEventListener('pageshow', syncLocale);
-
-    return () => {
-      window.removeEventListener('popstate', syncLocale);
-      window.removeEventListener('pageshow', syncLocale);
-    };
-  }, []);
-
-  return locale;
+  return useSyncExternalStore(
+    (onStoreChange) => {
+      window.addEventListener('popstate', onStoreChange);
+      window.addEventListener('pageshow', onStoreChange);
+      return () => {
+        window.removeEventListener('popstate', onStoreChange);
+        window.removeEventListener('pageshow', onStoreChange);
+      };
+    },
+    readBuilderLocaleFromBrowser,
+    () => 'cs',
+  );
 }
 
 export function appendLangToPayload<T extends Record<string, unknown>>(payload: T, locale: AppLocale): T & { lang: AppLocale } {

@@ -154,13 +154,11 @@ test.describe('UA lease expat smoke', () => {
     ).toBeVisible();
   });
 
-  test('/darovaci?lang=ua shows Czech-only notice', async ({ page, context }) => {
+  test('/darovaci?lang=ua canonicalizes to a fully Czech builder', async ({ page, context }) => {
     await context.clearCookies();
     await page.goto('/darovaci?lang=ua');
-    await expect(page.getByText('Лише чеська форма')).toBeVisible();
-    await expect(
-      page.getByRole('main').getByText(/наразі доступна лише чеською/i),
-    ).toBeVisible();
-    await expect(page.getByText(/bilingual/i)).toHaveCount(0);
+    await expect(page).toHaveURL(/\/darovaci$/);
+    await expect(page.getByRole('heading', { name: /Darovací smlouva online/i })).toBeVisible();
+    await expect(page.getByText('Лише чеська форма')).toHaveCount(0);
   });
 });

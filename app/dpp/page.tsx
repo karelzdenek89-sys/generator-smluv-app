@@ -13,7 +13,7 @@ import {
 } from '@/lib/i18n/expat-contract-preview';
 import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/LazyPaymentModal';
-import { BuilderLocaleNotice, useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
+import { useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
 import { MIN_WAGE_HOURLY_2026_CZK } from '@/lib/legal-constants-2026';
 import BuilderUserRoleField from '@/app/components/partners/BuilderUserRoleField';
 import type { PartnerUserRole } from '@/lib/partners/types';
@@ -203,7 +203,6 @@ export default function DppPage() {
 
   return (
     <>
-    <BuilderLocaleNotice contractType="dpp" />
     <main className="site-page contract-builder min-h-screen pb-24">
       <header className="contract-builder-header sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">

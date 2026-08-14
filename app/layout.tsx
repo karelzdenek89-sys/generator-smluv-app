@@ -3,7 +3,6 @@ import { Inter, Playfair_Display } from 'next/font/google';
 import './globals.css';
 import CookiesBanner from '@/app/components/CookiesBanner';
 import Footer from '@/app/components/Footer';
-import ForeignVisitorBanner from '@/app/components/ForeignVisitorBanner';
 import RouteChrome from '@/app/components/RouteChrome';
 import SiteAnalytics from '@/app/components/SiteAnalytics';
 import { OG_IMAGE_PATH, SITE_URL } from '@/lib/seo/site';
@@ -86,7 +85,6 @@ export default function RootLayout({
         className={`${inter.variable} ${playfair.variable} antialiased bg-[#060912] text-[#d7dee8]`}
         style={{ colorScheme: 'dark' }}
       >
-        <ForeignVisitorBanner />
         <RouteChrome />
         {children}
         <Footer />

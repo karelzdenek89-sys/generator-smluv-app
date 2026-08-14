@@ -3,7 +3,11 @@
 import { useEffect, useSyncExternalStore } from 'react';
 import { usePathname } from 'next/navigation';
 import SiteHeader from '@/app/components/SiteHeader';
-import { normalizeLocale } from '@/lib/locale';
+import {
+  getContractTypeByPath,
+  isExpatContract,
+  normalizeLocale,
+} from '@/lib/locale';
 
 const FOREIGN_LOCALE_SEGMENTS = new Set(['en', 'ua']);
 
@@ -18,6 +22,8 @@ function subscribeToLocation(callback: () => void) {
 
 /** Locale chosen via ?lang= on builder pages (en/ua), else null. */
 function getQueryLocaleSnapshot(): 'en' | 'ua' | null {
+  const contractType = getContractTypeByPath(window.location.pathname);
+  if (!contractType || !isExpatContract(contractType)) return null;
   const raw = new URLSearchParams(window.location.search).get('lang');
   const normalized = raw ? normalizeLocale(raw) : 'cs';
   return normalized === 'en' || normalized === 'ua' ? normalized : null;

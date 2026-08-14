@@ -317,7 +317,8 @@ function main() {
   assert.match(read('app/zakaznicka-zona/layout.tsx'), /index: false/, 'Customer zone must be noindex');
   const proxy = read('proxy.ts');
   assert.match(proxy, /CANONICAL_HOST/, 'Proxy should redirect apex domain to www');
-  assert.match(proxy, /LOCALIZED_BUILDER_PATHS/, 'Proxy should only reset locale cookies on relevant builder routes');
+  assert.match(proxy, /CZECH_ONLY_BUILDER_PATHS/, 'Proxy should canonicalize unsupported localized builder URLs');
+  assert.doesNotMatch(proxy, /preferred-locale/, 'Locale rendering must not depend on a persistent preference cookie');
   assert.match(read('vercel.json'), /www\.smlouvahned\.cz/, 'vercel.json should redirect apex host to www');
 
   console.log('Site content audit passed (prices, legal copy, metadata, /najem UX, /slovnik).');

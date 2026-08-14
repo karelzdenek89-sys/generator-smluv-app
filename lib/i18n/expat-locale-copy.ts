@@ -206,8 +206,8 @@ const OTHER_CONTRACTS_UK: OtherContractLink[] = [
 ];
 
 export const OTHER_CONTRACTS_CZECH_ONLY_HINT: Record<ExpatUiLocale, string> = {
-  en: 'These forms keep your selected language in the URL, but the builder will clearly say that the form is Czech-only.',
-  ua: 'Посилання зберігає мову в URL, але у формі буде чітко вказано, що вона лише чеською.',
+  en: 'These Czech-only forms open as fully Czech pages because localized guidance is not available for them yet.',
+  ua: 'Ці форми відкриваються як повністю чеські сторінки, оскільки локалізованих підказок для них поки немає.',
 };
 
 export function getOtherContractsForLocale(locale: ExpatUiLocale): OtherContractLink[] {

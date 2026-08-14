@@ -9,7 +9,7 @@ import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import type { StoredContractData } from '@/lib/contracts';
 import { getThematicPackageConfig } from '@/lib/packages';
-import { getPackageUpsellCopy } from '@/lib/i18n/package-upsell';
+import { getPackageBuilderFlowCopy, getPackageUpsellCopy } from '@/lib/i18n/package-upsell';
 import { getCarFormUi } from '@/lib/i18n/expat-builder-forms';
 import { carRiskWarnings, carValidationFields } from '@/lib/i18n/expat-builder-risk';
 import {
@@ -17,7 +17,7 @@ import {
   getExpatPreviewLabels,
 } from '@/lib/i18n/expat-contract-preview';
 import PaymentModal from '@/app/components/LazyPaymentModal';
-import { BuilderLocaleNotice, useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
+import { useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
 import { isValidMoney } from '@/lib/money';
 import BuilderUserRoleField from '@/app/components/partners/BuilderUserRoleField';
 import type { PartnerUserRole } from '@/lib/partners/types';
@@ -106,6 +106,10 @@ function CarSaleBuilderContent() {
   // Balíček je aktivní nabídka i v cizojazyčném builderu — musí být v jeho jazyce.
   const packageUpsell = useMemo(
     () => getPackageUpsellCopy('vehicle_sale', builderLocale),
+    [builderLocale],
+  );
+  const packageFlowCopy = useMemo(
+    () => getPackageBuilderFlowCopy('vehicle_sale', builderLocale),
     [builderLocale],
   );
   useBuilderDocumentTitle(builderLocale, {
@@ -443,7 +447,6 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
 
   return (
     <>
-    <BuilderLocaleNotice contractType="car_sale" />
     <main className="site-page contract-builder pb-24">
       <header className="contract-builder-header">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
@@ -488,20 +491,20 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
         <div className="max-w-7xl mx-auto px-4 pt-8 lg:px-8">
           <div className="rounded-[1.75rem] border border-amber-500/20 bg-[rgba(255,255,255,0.04)] p-6">
             <div className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-400">
-              {packageConfig.badge}
+              {packageUpsell?.badge ?? packageConfig.badge}
             </div>
             <div className="mt-3 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
               <div className="max-w-3xl">
                 <h2 className="text-2xl font-semibold tracking-tight text-white">
-                  {packageConfig.builderTitle}
+                  {packageUpsell?.title ?? packageConfig.builderTitle}
                 </h2>
                 <p className="mt-3 text-sm leading-relaxed text-slate-300">
-                  {packageConfig.builderDescription}
+                  {packageUpsell?.body ?? packageConfig.builderDescription}
                 </p>
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/4 px-5 py-4">
                 <div className="text-xs uppercase tracking-[0.18em] text-slate-500">
-                  Cena balíčku
+                  {packageFlowCopy?.priceHeading}
                 </div>
                 <div className="mt-2 text-3xl font-black tracking-tight text-white">
                   {packageConfig.priceLabel}
@@ -510,7 +513,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   href="/auto"
                   className="mt-3 inline-block text-xs leading-relaxed text-[#cbbba0] transition hover:text-white"
                 >
-                  Řešíte jen samotnou kupní smlouvu? Vraťte se na samostatný dokument 99 / 199 Kč.
+                  {packageFlowCopy?.backToStandalone}
                 </Link>
               </div>
             </div>
@@ -1213,13 +1216,13 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 {packageConfig ? (
                   <div className="rounded-2xl border border-amber-500/20 bg-amber-500/8 p-5">
                     <div className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-400">
-                      Zvolený produkt
+                      {packageFlowCopy?.selectedProductLabel}
                     </div>
                     <div className="mt-2 text-lg font-semibold text-white">
                       {packageConfig.title}
                     </div>
                     <p className="mt-2 text-sm leading-relaxed text-slate-300">
-                      Součástí výstupu bude kupní smlouva na vozidlo v komplexní variantě, předávací protokol, potvrzení o převzetí vozidla, klíčů a dokladů a praktické podklady k převodu.
+                      {packageFlowCopy?.selectedProductBody}
                     </p>
                   </div>
                 ) : (
@@ -1235,13 +1238,13 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
 
                 {!packageConfig ? (
                   <p className="mt-4 text-xs leading-relaxed text-[#b9c1d0]">
-                    Řešíte vedle samotné smlouvy i fyzické předání vozidla, klíčů a dokladů?{' '}
+                    {packageFlowCopy?.relatedPrompt}{' '}
                     <Link href="/balicek-prodej-vozidla" className="link-gold-elegant">
-                      Zobrazit Balíček pro prodej vozidla
+                      {packageFlowCopy?.relatedPackageLabel}
                     </Link>
-                    . Pokud si chcete nejprve ujasnit, která cesta je pro vás vhodná, otevřete{' '}
+                    . {packageFlowCopy?.relatedGuidePrompt}{' '}
                     <Link href="/prodej-vozidla" className="link-gold-elegant">
-                      podklady pro prodej vozidla
+                      {packageFlowCopy?.relatedGuideLabel}
                     </Link>
                     .
                   </p>

@@ -9,7 +9,7 @@ import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/LazyPaymentModal';
-import { BuilderLocaleNotice, useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
+import { useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
 import { getEmploymentFormUi } from '@/lib/i18n/expat-builder-forms';
 import { employmentRiskWarnings, employmentValidationFields } from '@/lib/i18n/expat-builder-risk';
 import {
@@ -22,7 +22,7 @@ import {
   MIN_WAGE_MONTHLY_2026_CZK,
 } from '@/lib/legal-constants-2026';
 import { getThematicPackageConfig } from '@/lib/packages';
-import { getPackageUpsellCopy } from '@/lib/i18n/package-upsell';
+import { getPackageBuilderFlowCopy, getPackageUpsellCopy } from '@/lib/i18n/package-upsell';
 import BuilderUserRoleField from '@/app/components/partners/BuilderUserRoleField';
 import type { PartnerUserRole } from '@/lib/partners/types';
 
@@ -77,6 +77,10 @@ export default function PracovniPage() {
   // nevykreslí vůbec, aby cizojazyčný zákazník neviděl český upsell.
   const packageUpsell = useMemo(
     () => getPackageUpsellCopy('employer_start', builderLocale),
+    [builderLocale],
+  );
+  const packageFlowCopy = useMemo(
+    () => getPackageBuilderFlowCopy('employer_start', builderLocale),
     [builderLocale],
   );
   const isEmployerStart = packageConfig?.key === 'employer_start';
@@ -181,16 +185,16 @@ export default function PracovniPage() {
     const activePay = form.salaryType === 'hourly' ? form.hourlyRate : form.salary;
     if (!activePay) missing.push(validationFields.salary);
     if (isEmployerStart) {
-      if (!form.employerAddress.trim()) missing.push('sídlo / adresu zaměstnavatele');
-      if (!form.employeeAddress.trim()) missing.push('bydliště zaměstnance');
-      if (!form.professionalDevelopment.trim()) missing.push('způsob odborného rozvoje');
-      if (!form.overtimeRules.trim()) missing.push('pravidla práce přesčas');
-      if (!form.collectiveAgreement.trim()) missing.push('informaci o kolektivní smlouvě');
-      if (!form.socialSecurityAuthority.trim()) missing.push('příslušný orgán sociálního zabezpečení');
-      if (!form.payMethod.trim()) missing.push('místo a způsob výplaty mzdy');
-      if (!form.workEquipment.trim()) missing.push('seznam pracovního vybavení nebo údaj, že se vybavení nepředává');
-      if (usesRemoteWork && !form.remoteWorkPlace.trim()) missing.push('místo práce na dálku');
-      if (usesRemoteWork && !form.remoteWorkSchedule.trim()) missing.push('rozsah práce na dálku');
+      if (!form.employerAddress.trim()) missing.push(ui.fields.employerAddress);
+      if (!form.employeeAddress.trim()) missing.push(ui.fields.employeeAddress);
+      if (!form.professionalDevelopment.trim()) missing.push(ui.fields.professionalDevelopment);
+      if (!form.overtimeRules.trim()) missing.push(ui.fields.overtimeRules);
+      if (!form.collectiveAgreement.trim()) missing.push(ui.fields.collectiveAgreement);
+      if (!form.socialSecurityAuthority.trim()) missing.push(ui.fields.socialSecurityAuthority);
+      if (!form.payMethod.trim()) missing.push(ui.fields.payMethod);
+      if (!form.workEquipment.trim()) missing.push(ui.fields.workEquipment);
+      if (usesRemoteWork && !form.remoteWorkPlace.trim()) missing.push(ui.fields.remoteWorkPlace);
+      if (usesRemoteWork && !form.remoteWorkSchedule.trim()) missing.push(ui.fields.remoteWorkSchedule);
     }
     if (missing.length > 0) {
       alert(`${ui.form.validationPrefix} ${missing.join(', ')}.`);
@@ -220,7 +224,6 @@ export default function PracovniPage() {
 
   return (
     <>
-    <BuilderLocaleNotice contractType="employment" />
     <main className="min-h-screen bg-[#05080f] text-slate-200 font-sans pb-24">
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[#08101e]/90 backdrop-blur">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
@@ -255,22 +258,22 @@ export default function PracovniPage() {
         <div className="max-w-7xl mx-auto px-4 pt-8 lg:px-8">
           <div className="rounded-[1.75rem] border border-amber-500/25 bg-[rgba(255,255,255,0.04)] p-6">
             <div className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-400">
-              {packageConfig.badge}
+              {packageUpsell?.badge ?? packageConfig.badge}
             </div>
             <div className="mt-3 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
               <div className="max-w-3xl">
                 <h2 className="text-2xl font-semibold tracking-tight text-white">
-                  {packageConfig.builderTitle}
+                  {packageUpsell?.title ?? packageConfig.builderTitle}
                 </h2>
                 <p className="mt-3 text-sm leading-relaxed text-slate-300">
-                  {packageConfig.builderDescription}
+                  {packageUpsell?.body ?? packageConfig.builderDescription}
                 </p>
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/4 px-5 py-4">
-                <div className="text-xs uppercase tracking-[0.18em] text-slate-500">Cena balíčku</div>
+                <div className="text-xs uppercase tracking-[0.18em] text-slate-500">{packageFlowCopy?.priceHeading}</div>
                 <div className="mt-2 text-3xl font-black tracking-tight text-white">{packageConfig.priceLabel}</div>
                 <Link href="/pracovni" className="mt-3 inline-block text-xs leading-relaxed text-[#cbbba0] transition hover:text-white">
-                  Potřebujete jen pracovní smlouvu? Zvolte samostatný dokument 99 / 199 Kč.
+                  {packageFlowCopy?.backToStandalone}
                 </Link>
               </div>
             </div>
@@ -417,55 +420,55 @@ export default function PracovniPage() {
                 <section className={cardClass}>
                   <SectionTitle
                     index="07"
-                    title="Navazující personální podklady"
-                    subtitle="Tyto údaje se použijí v informačním listu podle § 37 ZP, protokolu k vybavení a případné dohodě o práci na dálku."
+                    title={ui.sections.packageFollowup.title}
+                    subtitle={ui.sections.packageFollowup.subtitle}
                   />
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <Field label="Orgán sociálního zabezpečení *">
+                    <Field label={ui.fields.socialSecurityAuthority}>
                       <input className={inputClass} name="socialSecurityAuthority" value={form.socialSecurityAuthority} onChange={set} placeholder="např. PSSZ Praha / OSSZ Brno-město" required />
                     </Field>
-                    <Field label="Způsob a místo výplaty *">
+                    <Field label={ui.fields.payMethod}>
                       <input className={inputClass} name="payMethod" value={form.payMethod} onChange={set} required />
                     </Field>
                     <div className="sm:col-span-2">
-                      <Field label="Odborný rozvoj zajišťovaný zaměstnavatelem *">
+                      <Field label={ui.fields.professionalDevelopment}>
                         <textarea className="w-full min-h-[76px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none focus:border-amber-500/60" name="professionalDevelopment" value={form.professionalDevelopment} onChange={set} required />
                       </Field>
                     </div>
                     <div className="sm:col-span-2">
-                      <Field label="Pravidla práce přesčas *">
+                      <Field label={ui.fields.overtimeRules}>
                         <textarea className="w-full min-h-[76px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none focus:border-amber-500/60" name="overtimeRules" value={form.overtimeRules} onChange={set} required />
                       </Field>
                     </div>
                     <div className="sm:col-span-2">
-                      <Field label="Kolektivní smlouva *">
+                      <Field label={ui.fields.collectiveAgreement}>
                         <input className={inputClass} name="collectiveAgreement" value={form.collectiveAgreement} onChange={set} required />
                       </Field>
                     </div>
                     <div className="sm:col-span-2">
-                      <Field label="Předávané pracovní vybavení *">
+                      <Field label={ui.fields.workEquipment}>
                         <textarea className="w-full min-h-[90px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none focus:border-amber-500/60" name="workEquipment" value={form.workEquipment} onChange={set} placeholder="Uveďte vybavení, nebo napište „Bez předávaného vybavení“" required />
                       </Field>
                     </div>
                     <div className="sm:col-span-2">
-                      <Field label="Stav vybavení při předání">
+                      <Field label={ui.fields.equipmentCondition}>
                         <input className={inputClass} name="equipmentCondition" value={form.equipmentCondition} onChange={set} />
                       </Field>
                     </div>
                     {usesRemoteWork ? (
                       <>
-                        <Field label="Místo práce na dálku *">
+                        <Field label={ui.fields.remoteWorkPlace}>
                           <input className={inputClass} name="remoteWorkPlace" value={form.remoteWorkPlace} onChange={set} placeholder="Úplná adresa" required />
                         </Field>
-                        <Field label="Rozsah a pravidla home office *">
+                        <Field label={ui.fields.remoteWorkSchedule}>
                           <input className={inputClass} name="remoteWorkSchedule" value={form.remoteWorkSchedule} onChange={set} placeholder="např. 2 dny týdně po dohodě s vedoucím" required />
                         </Field>
                         <div className="sm:col-span-2">
-                          <Field label="Náhrada nákladů při práci na dálku *">
+                          <Field label={ui.fields.remoteWorkCostMode}>
                             <select className={inputClass} name="remoteWorkCostMode" value={form.remoteWorkCostMode} onChange={set}>
-                              <option value="flat_rate">Zákonný paušál za započatou hodinu podle aktuální vyhlášky MPSV</option>
-                              <option value="actual">Prokázané skutečné náklady</option>
-                              <option value="none">Předem sjednat, že náhrada nákladů nepřísluší</option>
+                              <option value="flat_rate">{ui.options.remoteCostFlat}</option>
+                              <option value="actual">{ui.options.remoteCostActual}</option>
+                              <option value="none">{ui.options.remoteCostNone}</option>
                             </select>
                           </Field>
                         </div>

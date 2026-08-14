@@ -81,6 +81,8 @@ const FORBIDDEN_MARKETING = [
 function testLocalePropagation() {
   assert.equal(withLocale('/najem', 'en'), '/najem?lang=en');
   assert.equal(withLocale('/pracovni', 'ua'), '/pracovni?lang=ua');
+  assert.equal(withLocale('/smlouva-o-dilo', 'en'), '/smlouva-o-dilo');
+  assert.equal(withLocale('/darovaci', 'ua'), '/darovaci');
   assert.equal(normalizeLocale('vi'), 'cs');
   assert.equal(normalizeLocale('vn'), 'cs');
   assert.equal(normalizeLocale('ua'), 'ua');
@@ -115,14 +117,15 @@ function testLocalePropagation() {
   assert.doesNotMatch(homepage, /Bạn cần|ngôn ngữ|label: 'VI'/);
 
   const builderLocale = read('app/components/BuilderLocaleNotice.tsx');
-  assert.match(builderLocale, /queryLocale/);
+  assert.match(builderLocale, /useSyncExternalStore/);
   assert.match(builderLocale, /readBuilderLocaleFromBrowser/);
-  assert.match(read('lib/locale.ts'), /preferred-locale/);
+  assert.doesNotMatch(read('lib/locale.ts'), /preferred-locale/);
   assert.doesNotMatch(builderLocale, /readCookie/);
 
   const proxy = read('proxy.ts');
-  assert.match(proxy, /langQuery === 'cs'/);
-  assert.match(proxy, /preferred-locale', 'cs'/);
+  assert.match(proxy, /CZECH_ONLY_BUILDER_PATHS/);
+  assert.match(proxy, /searchParams\.delete\('lang'\)/);
+  assert.doesNotMatch(proxy, /preferred-locale/);
 
   const sitemap = read('app/sitemap.ts');
   assert.match(read('lib/seo/site.ts'), /https:\/\/www\.smlouvahned\.cz/);
@@ -157,7 +160,7 @@ function testLocalePropagation() {
   assert.doesNotMatch(rootLayout, /next\/headers/);
   assert.match(rootLayout, /RouteChrome/);
   assert.match(read('app/components/RouteChrome.tsx'), /usePathname/);
-  assert.doesNotMatch(read('app/components/ForeignVisitorBanner.tsx'), /next\/headers/);
+  assert.doesNotMatch(rootLayout, /ForeignVisitorBanner/);
   assert.match(read('app/page.tsx'), /organizationSchema/);
   assert.match(localeLayout, /ExpatLocaleSchemas/);
   assert.match(localeLayout, /document\.documentElement\.lang/);
@@ -167,7 +170,8 @@ function testLocalePropagation() {
     assert.doesNotMatch(retiredLayout, /makeLandingMetadata/);
   }
   assert.match(proxy, /LOCALIZED_BUILDER_PATHS/);
-  assert.match(proxy, /public pages stay cacheable/);
+  assert.match(proxy, /CZECH_ONLY_BUILDER_PATHS/);
+  assert.match(proxy, /unsupported language selector/);
 }
 
 function testNoMisleadingBilingualMarketing() {
@@ -317,9 +321,9 @@ function testLeaseEnBuilderUi() {
 
   assert.match(najem, /getLeaseFormUi\(builderLocale\)/);
   assert.match(najem, /ui\.form\.placeholders\.fullName/);
-  assert.match(najem, /ui\.notices\.legal/);
   assert.match(najem, /lang: builderLocale/);
-  assert.match(najem, /ui\.isEnglish/);
+  assert.doesNotMatch(najem, /ui\.notices\.legal/);
+  assert.match(read('app/components/BuilderLocaleNotice.tsx'), /LEGAL_NOTICE\[locale\]/);
 
   const landing = read('app/[locale]/page.tsx');
   assert.match(landing, /coreContractCopy/);
@@ -388,8 +392,9 @@ function testEmploymentEligibilityInBuilders() {
       'Before signing, the parties should verify',
     ),
   );
-  assert.match(pracovni, /BuilderLocaleNotice contractType="employment"/);
-  assert.match(dpp, /BuilderLocaleNotice contractType="dpp"/);
+  assert.match(pracovni, /ContractLandingSection/);
+  assert.match(dpp, /ContractLandingSection/);
+  assert.match(read('app/components/ContractLandingSection.tsx'), /BuilderLocaleNotice/);
   assert.match(notice, /getEmploymentWorkEligibilityNotice/);
 }
 

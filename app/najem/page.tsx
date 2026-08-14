@@ -578,12 +578,6 @@ function LeaseBuilderContent() {
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8">
         <div className="grid lg:grid-cols-12 gap-8 items-start">
           <div id="formular" className="lg:col-span-7 space-y-6">
-            {ui.isEnglish ? (
-              <section className="rounded-2xl border border-sky-400/25 bg-sky-400/10 p-5 text-sm leading-7 text-sky-50">
-                <p className="font-bold text-sky-100">{ui.notices.legal}</p>
-                <p className="mt-2 text-sky-100/90">{ui.notices.leaseUse}</p>
-              </section>
-            ) : null}
             <div className="mb-6 border-t border-slate-800/60 pt-8"><h2 className="text-lg font-black text-white uppercase tracking-wide">{ui.form.title}</h2><p className="text-sm text-slate-500 mt-1">{ui.form.requiredHint}</p></div>
             <BuilderUserRoleField
               contractType="lease"

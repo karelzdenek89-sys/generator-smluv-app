@@ -15,7 +15,7 @@ import {
   getExpatPreviewLabels,
 } from '@/lib/i18n/expat-contract-preview';
 import PaymentModal from '@/app/components/LazyPaymentModal';
-import { BuilderLocaleNotice, useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
+import { useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
 import { isValidMoney } from '@/lib/money';
 
 type FormData = {
@@ -183,7 +183,6 @@ export default function PodnajemuPage() {
 
   return (
     <>
-    <BuilderLocaleNotice contractType="sublease" />
     <main className="min-h-screen bg-[#080f1e] text-white pb-20">
       {/* Header */}
       <div className="sticky top-0 z-30 bg-[#080f1e]/95 backdrop-blur border-b border-slate-800/80">
