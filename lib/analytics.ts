@@ -26,6 +26,7 @@ export const ANALYTICS_EVENT_NAMES = [
   'homepage_pricing_path_click',
   'homepage_situation_click',
   'homepage_package_click',
+  'homepage_contract_card_click',
   'checkout_completed',
   'newsletter_subscribed',
   'document_downloaded',
@@ -57,13 +58,15 @@ export const ANALYTICS_EVENT_NAMES = [
 
 export type AnalyticsEventName = (typeof ANALYTICS_EVENT_NAMES)[number];
 
-export type PriceBand = '99' | '199' | '299' | '399' | '599';
+export type PriceBand = '0' | '99' | '199' | '299' | '399' | '599';
 
 export type AnalyticsEventParams = {
   pathname?: string;
   source?: string;
   destination?: string;
   surface?: string;
+  /** One-based position of an item within its merchandising surface. */
+  position?: number;
   traffic_source?: string;
   traffic_label?: string;
   article_slug?: string;
