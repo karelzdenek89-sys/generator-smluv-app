@@ -10,11 +10,24 @@ import TrackedLink from '@/app/components/analytics/TrackedLink';
 import { SEO_LANDINGS, CLUSTER_LABELS, type ClusterKey } from '@/lib/internal-links';
 import { FOREIGN_LOCALES, LOCALE_META } from '@/lib/i18n/locales';
 import { getAvailableThematicPackages, getEffectivePriceBand } from '@/lib/packages';
-import { getMonetizationPolicy } from '@/lib/monetization-policy';
+import { getFreeBasicPdfCopy } from '@/lib/monetization-copy';
+import { getMonetizationPolicy, isFreeBasicPolicy } from '@/lib/monetization-policy';
+import { PRICING_TIER_CONFIG } from '@/lib/pricing';
 
 const HOMEPAGE_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
 const HOME_DPP_POLICY = getMonetizationPolicy('dpp', 'cs');
-const FREE_BASIC_DPP = HOME_DPP_POLICY.mode === 'free_experiment';
+const FREE_BASIC_DPP = isFreeBasicPolicy(HOME_DPP_POLICY);
+const HOME_BASIC_PRICE_LABEL = `od ${PRICING_TIER_CONFIG.basic.priceLabel}`;
+const HOME_DPP_MERCHANDISING = {
+  mode: HOME_DPP_POLICY.mode,
+  priceLabel: FREE_BASIC_DPP ? getFreeBasicPdfCopy('cs').priceLabel : HOME_BASIC_PRICE_LABEL,
+  badgeLabel: FREE_BASIC_DPP ? 'ZÁKLADNÍ PDF ZDARMA' : null,
+  subtitle: FREE_BASIC_DPP
+    ? 'DPP 2026 do 300 hodin ročně. Základní PDF vytvoříte bez registrace a bez platby.'
+    : null,
+  experimentId: HOME_DPP_POLICY.experimentId,
+  variant: HOME_DPP_POLICY.variant,
+};
 const homepageLanguageAlternates: Record<string, string> = {
   cs: HOMEPAGE_BASE_URL,
   'x-default': HOMEPAGE_BASE_URL,
@@ -350,11 +363,14 @@ export default function Home() {
             <p className="site-kicker mb-2">Katalog dokumentů</p>
             <h2 className="font-serif italic text-4xl font-bold text-white md:text-5xl">Vyberte typ dokumentu</h2>
             <p className="mt-3 text-base leading-relaxed text-slate-400">
-              14 typů smluv sestavených dynamicky podle vašich údajů.
+              {FREE_BASIC_DPP
+                ? `14 typů smluv sestavených podle vašich údajů. Základní DPP vytvoříte zdarma, ostatní dokumenty ${HOME_BASIC_PRICE_LABEL}.`
+                : `14 typů smluv sestavených podle vašich údajů. Dokumenty ${HOME_BASIC_PRICE_LABEL}.`}
+              {' '}
               Průběžně aktualizováno pro českou legislativu v roce 2026.
             </p>
           </div>
-          <ContractGridPremium dppPriceLabel={FREE_BASIC_DPP ? 'Zdarma' : 'od 99 Kč'} />
+          <ContractGridPremium dppMerchandising={HOME_DPP_MERCHANDISING} />
 
           <div
             className="mt-10 rounded-2xl border border-[#c9a852]/25 bg-[#0c1426]/90 p-6 md:p-8"

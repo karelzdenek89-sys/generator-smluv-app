@@ -5,6 +5,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { createServer } from 'node:net';
 import { resolve } from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
+import { PRICING_TIER_CONFIG } from '../lib/pricing';
 
 const freeExperiment = process.env.FREE_FUNNEL_EXPERIMENTS_ENABLED === 'true';
 
@@ -86,11 +87,49 @@ function visibleText(html: string): string {
     .trim();
 }
 
+function htmlBetween(html: string, startMarker: string, endMarker: string): string {
+  const start = html.indexOf(startMarker);
+  const end = html.indexOf(endMarker, start + startMarker.length);
+  assert.ok(start >= 0, `Missing SSR marker: ${startMarker}`);
+  assert.ok(end > start, `Missing SSR marker after ${startMarker}: ${endMarker}`);
+  return html.slice(start, end);
+}
+
+function contractTypesIn(html: string): string[] {
+  return Array.from(html.matchAll(/data-contract-type="([^"]+)"/g), (match) => match[1]);
+}
+
+function contractCardHtml(html: string, contractType: string): string {
+  const marker = `data-contract-type="${contractType}"`;
+  const markerIndex = html.indexOf(marker);
+  assert.ok(markerIndex >= 0, `Missing ${contractType} contract card`);
+  const start = html.lastIndexOf('<a', markerIndex);
+  const end = html.indexOf('</a>', markerIndex);
+  assert.ok(start >= 0 && end > markerIndex, `Invalid ${contractType} contract card HTML`);
+  return html.slice(start, end + 4);
+}
+
+function escapeRegex(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 async function main() {
 const dppHtml = await readBuiltDppHtml();
 const dppText = visibleText(dppHtml);
 const homeHtml = readBuiltHtml('index.html');
 const homeText = visibleText(homeHtml);
+const primaryCatalogHtml = htmlBetween(
+  homeHtml,
+  'data-homepage-catalog="primary"',
+  'data-homepage-catalog="expanded"',
+);
+const expandedCatalogHtml = htmlBetween(
+  homeHtml,
+  'data-homepage-catalog="expanded"',
+  'data-homepage-catalog-toggle="true"',
+);
+const primaryDppCardHtml = contractCardHtml(primaryCatalogHtml, 'dpp');
+const paidBasicLabel = `od ${PRICING_TIER_CONFIG.basic.priceLabel}`;
 const guideText = visibleText(readBuiltHtml('dohoda-o-provedeni-prace.html'));
 const mainArticleHtml = readBuiltHtml('blog/dpp-dohoda-provedeni-prace.html');
 const mainArticleText = visibleText(mainArticleHtml);
@@ -127,6 +166,22 @@ assert.match(faqText, /Bez vaší výslovné žádosti a souhlasu data ze smlouv
 assert.ok(!homeText.includes('k 1. 1. 2026'));
 assert.ok(!mainArticleText.includes('k 1. 1. 2026'));
 assert.ok(!freeTemplateArticleText.includes('k 1. 1. 2026'));
+assert.deepEqual(
+  contractTypesIn(primaryCatalogHtml),
+  ['lease', 'car_sale', 'dpp', 'employment', 'work_contract'],
+  'Homepage primary catalog order must keep DPP in position 3',
+);
+assert.ok(
+  !contractTypesIn(expandedCatalogHtml).includes('dpp'),
+  'DPP must not be duplicated in the expanded catalog',
+);
+assert.match(primaryDppCardHtml, /data-position="3"/);
+for (const paidContract of ['lease', 'car_sale', 'employment', 'work_contract']) {
+  assert.ok(
+    visibleText(contractCardHtml(primaryCatalogHtml, paidContract)).includes(paidBasicLabel),
+    `${paidContract} must use the configured Basic price on the homepage`,
+  );
+}
 
 if (freeExperiment) {
   assert.match(dppHtml, /<title>DPP 2026 zdarma/);
@@ -158,7 +213,20 @@ if (freeExperiment) {
   }
 
   assert.match(homeText, /DPP — Dohoda o provedení práce .*? Zdarma/);
-  assert.match(homeHtml, /základní DPP zdarma, další dokumenty od 99 Kč/i);
+  assert.match(primaryDppCardHtml, /data-monetization-mode="free_experiment"/);
+  assert.match(primaryDppCardHtml, /ZÁKLADNÍ PDF ZDARMA/);
+  assert.match(
+    visibleText(primaryDppCardHtml),
+    /DPP 2026 do 300 hodin ročně\. Základní PDF vytvoříte bez registrace a bez platby\./,
+  );
+  assert.match(
+    homeText,
+    new RegExp(`Základní DPP vytvoříte zdarma, ostatní dokumenty ${escapeRegex(paidBasicLabel)}`),
+  );
+  assert.match(
+    homeHtml,
+    new RegExp(`základní DPP zdarma, další dokumenty ${escapeRegex(paidBasicLabel)}`, 'i'),
+  );
   assert.ok(!guideText.includes('Od 99 Kč · PDF ke stažení'));
   assert.match(guideText, /Základní PDF 0 Kč · rozšířená varianta 199 Kč/);
   assert.ok(!mainArticleText.includes('Od 99 Kč · Dle ZP'));
@@ -180,7 +248,13 @@ if (freeExperiment) {
   assert.ok(!dppText.includes('Vygenerovat základní DPP zdarma'));
   assert.ok(!dppHtml.includes('"lowPrice":"0"'));
 
-  assert.match(homeText, /DPP — Dohoda o provedení práce .*? od 99 Kč/);
+  assert.match(
+    homeText,
+    new RegExp(`DPP — Dohoda o provedení práce .*? ${escapeRegex(paidBasicLabel)}`),
+  );
+  assert.match(primaryDppCardHtml, /data-monetization-mode="paid"/);
+  assert.ok(!primaryDppCardHtml.includes('ZÁKLADNÍ PDF ZDARMA'));
+  assert.ok(!primaryDppCardHtml.includes('bez registrace a bez platby'));
   assert.match(guideText, /99–199 Kč · PDF ke stažení/);
   assert.match(mainArticleText, /99–199 Kč · Dle ZP/);
   assert.match(comparisonArticleText, /99–199 Kč/);

@@ -22,6 +22,7 @@ const eventSchema = z.object({
       source: boundedString.optional(),
       destination: boundedString.optional(),
       surface: boundedString.optional(),
+      position: z.number().int().min(1).max(100).optional(),
       traffic_source: boundedString.optional(),
       traffic_label: boundedString.optional(),
       article_slug: boundedString.optional(),
@@ -70,7 +71,7 @@ const eventSchema = z.object({
       tier: z.enum(['basic', 'professional', 'complete', 'premium']).optional(),
       previous_tier: z.enum(['basic', 'professional', 'complete', 'premium']).optional(),
       cta_type: boundedString.optional(),
-      price_band: z.enum(['99', '199', '299', '399', '599']).optional(),
+      price_band: z.enum(['0', '99', '199', '299', '399', '599']).optional(),
       entry_mode: z.enum(['single_document', 'package_flow']).optional(),
       add_on_key: z
         .enum(['docx', 'signing_checklist', 'handover_protocol', 'extended_archive', 'bilingual_annex'])
