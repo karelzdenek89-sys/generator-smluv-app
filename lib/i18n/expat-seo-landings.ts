@@ -410,7 +410,7 @@ const CAR_EN: LocalePack = {
   faq: [
     {
       q: 'Is a written car sale agreement required in Czechia?',
-      a: 'For a standard private sale between individuals, a written kupní smlouva is strongly recommended. It documents price, vehicle details and handover — and you will need it for registration and transfer.',
+      a: 'For a standard private sale between individuals, a written kupní smlouva is strongly recommended. It documents the price, vehicle details and handover, and serves as evidence of the transaction.',
     },
     {
       q: 'What should be included in a Czech car sale agreement?',
@@ -418,11 +418,11 @@ const CAR_EN: LocalePack = {
     },
     {
       q: 'Who handles the vehicle transfer?',
-      a: 'After signing, the buyer typically registers the vehicle at the traffic inspectorate (obecní/obvodní úřad obce s rozšířenou působností). The signed contract supports the ownership change.',
+      a: 'After a sale, the existing and new owner generally submit a joint application to record the ownership change, normally within 10 working days. It can be handled at any municipal authority with extended jurisdiction (ORP).',
     },
     {
       q: 'What documents are needed?',
-      a: 'Usually the signed contract, technical certificate (small or large TP), proof of identity, and registration documents. Requirements can vary — check with the local office before your visit.',
+      a: 'For a standard transfer, the Ministry of Transport lists the joint application, original proof of identity, the vehicle registration certificate and the technical certificate if one was issued. The office verifies compulsory insurance and a valid vehicle inspection during processing. A signed contract is useful evidence of the sale, but is not listed as a universally required document for a standard transfer. Check the current requirements before visiting an office.',
     },
     {
       q: 'Can foreigners buy or sell a car in Czechia?',
@@ -453,7 +453,14 @@ const CAR_UA: LocalePack = {
   backToExpats: 'Усі договори для іноземців',
   faq: [
     { q: 'Нотаріус?', a: 'Зазвичай не потрібен для звичайного продажу між фізособами.' },
-    { q: 'Перепис авто?', a: 'Покупець реєструє на MD; зберігайте договір.' },
+    {
+      q: 'Перепис авто?',
+      a: 'Після продажу попередній і новий власник загалом подають спільну заяву про зміну власника протягом 10 робочих днів. Звернутися можна до будь-якого ORP (муніципального органу з розширеною компетенцією).',
+    },
+    {
+      q: 'Які документи потрібні?',
+      a: 'Для стандартного переоформлення Міністерство транспорту вказує спільну заяву, оригінал документа, що посвідчує особу, свідоцтво про реєстрацію та технічний паспорт, якщо його було видано. Орган перевіряє обов’язкове страхування і чинну evidenční kontrolu під час розгляду. Підписаний договір є корисним доказом продажу, але не названий у цьому стандартному переліку як універсально обов’язковий документ. Перед візитом перевірте актуальні вимоги.',
+    },
     { q: 'VIN і пробіг?', a: 'Форма фіксує дані та відомі вади.' },
     { q: 'Додаток?', a: 'Пояснювальний; перевага чеської версії.' },
   ],

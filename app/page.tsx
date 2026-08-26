@@ -70,7 +70,7 @@ export const metadata: Metadata = {
 const faqItems = [
   {
     question: 'Jsou dokumenty připraveny k podpisu?',
-    answer: 'Výstupem je kompletně vyplněný PDF dokument strukturovaný dle příslušných ustanovení občanského zákoníku č. 89/2012 Sb. Obsah dokumentu závisí na vašich vstupech — před podpisem doporučujeme všechna data zkontrolovat.',
+    answer: 'Výstupem je kompletně vyplněný PDF dokument strukturovaný podle příslušné české právní úpravy pro daný typ dokumentu. Obsah dokumentu závisí na vašich vstupech — před podpisem doporučujeme všechna data zkontrolovat.',
   },
   {
     question: 'Čím se liší Základní dokument od Rozšířeného dokumentu?',
@@ -267,8 +267,8 @@ export default function Home() {
 
             <p className="mt-7 max-w-lg text-lg leading-relaxed text-slate-300">
               Vyplníte přehledný formulář — systém sestaví dokument podle vašich podmínek
-              a výsledkem je standardizované PDF připravené k podpisu, strukturované dle
-              občanského zákoníku č. 89/2012 Sb.
+              a výsledkem je standardizované PDF připravené k podpisu, strukturované podle
+              příslušné české právní úpravy pro daný typ dokumentu.
             </p>
 
             <div className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 text-base text-slate-400">

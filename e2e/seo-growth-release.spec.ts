@@ -80,11 +80,21 @@ test('priority Czech journeys expose a visible product path', async ({ page }) =
   await expect(page.locator('main h1').first()).toBeVisible();
 });
 
-test('EN and UA automotive landings are canonical, localized and lead to noindex builder variants', async ({ page, request }) => {
+test('EN and UA automotive landings are canonical, localized, state the joint transfer procedure and lead to noindex builder variants', async ({ page, request }) => {
   const analyticsPayloads = await stubAnalytics(page);
   const scenarios = [
-    { locale: 'en', contentLanguage: 'en', builderLang: 'en' },
-    { locale: 'ua', contentLanguage: 'uk', builderLang: 'ua' },
+    {
+      locale: 'en',
+      contentLanguage: 'en',
+      builderLang: 'en',
+      registrationCopy: 'existing and new owner generally submit a joint application',
+    },
+    {
+      locale: 'ua',
+      contentLanguage: 'uk',
+      builderLang: 'ua',
+      registrationCopy: 'попередній і новий власник загалом подають спільну заяву',
+    },
   ] as const;
 
   for (const scenario of scenarios) {
@@ -97,6 +107,7 @@ test('EN and UA automotive landings are canonical, localized and lead to noindex
       `https://www.smlouvahned.cz${pathname}`,
     );
     await expect(page.getByTestId('seo-car_sale-cta')).toBeVisible();
+    await expect(page.locator('main')).toContainText(scenario.registrationCopy);
 
     const builderResponse = await request.get(`/auto?lang=${scenario.builderLang}`);
     expect(builderResponse.status()).toBe(200);
