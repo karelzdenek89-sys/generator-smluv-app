@@ -26,6 +26,7 @@ import {
 } from '@/lib/checkout-authorization';
 import type { PublicMonetizationPolicy } from '@/lib/monetization-policy';
 import { getFreeBasicPdfCopy } from '@/lib/monetization-copy';
+import { subscribeToProductAnalyticsConsent } from '@/lib/analytics-attribution';
 
 interface Section {
   title: string;
@@ -334,39 +335,41 @@ export default function PaymentModal({
   }, []);
 
   useEffect(() => {
-    if (modalOpenTrackedRef.current) return;
-    modalOpenTrackedRef.current = true;
-
-    trackEvent('builder_checkout_modal_open', {
-      ...analyticsDefaults,
-      source: 'builder',
-      surface: 'checkout_modal',
-      contract_type: analyticsDefaults.contract_type,
-      tier,
-      package_key: packageConfig?.key,
-      price_band: priceBand,
-      add_on_keys: validAddOnKeys,
-      addons_total_czk: addonsTotalCzk,
-      base_price_czk: basePriceCzk,
-      total_price_czk: totalPriceCzk,
-      selected_addons_count: validSelectedAddOns.length,
-      monetization_mode: isFreeBasic ? 'free_experiment' : 'paid',
-      experiment_id: monetizationPolicy?.experimentId ?? undefined,
-      variant: monetizationPolicy?.variant ?? undefined,
-    });
-    if (monetizationPolicy?.mode === 'free_experiment') {
-      trackEvent('premium_offer_viewed', {
+    const recordOpen = () => {
+      if (modalOpenTrackedRef.current) return;
+      modalOpenTrackedRef.current = trackEvent('builder_checkout_modal_open', {
         ...analyticsDefaults,
-        source: 'checkout_modal',
-        surface: 'tier_selector',
+        source: 'builder',
+        surface: 'checkout_modal',
         contract_type: analyticsDefaults.contract_type,
-        tier: 'complete',
-        previous_tier: 'basic',
-        monetization_mode: 'free_experiment',
-        experiment_id: monetizationPolicy.experimentId ?? undefined,
-        variant: monetizationPolicy.variant ?? undefined,
+        tier,
+        package_key: packageConfig?.key,
+        price_band: priceBand,
+        add_on_keys: validAddOnKeys,
+        addons_total_czk: addonsTotalCzk,
+        base_price_czk: basePriceCzk,
+        total_price_czk: totalPriceCzk,
+        selected_addons_count: validSelectedAddOns.length,
+        monetization_mode: isFreeBasic ? 'free_experiment' : 'paid',
+        experiment_id: monetizationPolicy?.experimentId ?? undefined,
+        variant: monetizationPolicy?.variant ?? undefined,
       });
-    }
+      if (modalOpenTrackedRef.current && monetizationPolicy?.mode === 'free_experiment') {
+        trackEvent('premium_offer_viewed', {
+          ...analyticsDefaults,
+          source: 'checkout_modal',
+          surface: 'tier_selector',
+          contract_type: analyticsDefaults.contract_type,
+          tier: 'complete',
+          previous_tier: 'basic',
+          monetization_mode: 'free_experiment',
+          experiment_id: monetizationPolicy.experimentId ?? undefined,
+          variant: monetizationPolicy.variant ?? undefined,
+        });
+      }
+    };
+    recordOpen();
+    return subscribeToProductAnalyticsConsent(recordOpen);
   }, [
     addonsTotalCzk,
     analyticsDefaults,
@@ -836,23 +839,6 @@ export default function PaymentModal({
                     alert(copy?.gdprRequired ?? genericCopy.consentRequired);
                     return;
                   }
-                  trackEvent('builder_completed', {
-                    ...analyticsDefaults,
-                    source: 'checkout_modal',
-                    surface: 'checkout_modal',
-                    contract_type: analyticsDefaults.contract_type,
-                    tier,
-                    package_key: packageConfig?.key,
-                    price_band: priceBand,
-                    add_on_keys: validAddOnKeys,
-                    addons_total_czk: addonsTotalCzk,
-                    base_price_czk: basePriceCzk,
-                    total_price_czk: totalPriceCzk,
-                    selected_addons_count: validSelectedAddOns.length,
-                    monetization_mode: isFreeBasic ? 'free_experiment' : 'paid',
-                    experiment_id: monetizationPolicy?.experimentId ?? undefined,
-                    variant: monetizationPolicy?.variant ?? undefined,
-                  });
                   const authorization = createCheckoutAuthorization(
                     normalizedEmail,
                     validSelectedAddOns.includes('bilingual_annex') ? annexLanguage : undefined,

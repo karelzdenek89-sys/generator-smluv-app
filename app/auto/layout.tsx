@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import ProductSchemas from '@/app/components/seo/ProductSchemas';
 import { getExpatContractHreflangAlternates } from '@/lib/i18n/expat-hreflang';
+import { SITE_URL } from '@/lib/seo/site';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
+const BASE_URL = SITE_URL;
 
 export const metadata: Metadata = {
   title: 'Kupní smlouva na auto online 2026',

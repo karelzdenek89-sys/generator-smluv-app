@@ -3,8 +3,9 @@ import ProductSchemas from '@/app/components/seo/ProductSchemas';
 import { getExpatContractHreflangAlternates } from '@/lib/i18n/expat-hreflang';
 import { LEASE_CS_LANDING_FAQ } from '@/lib/seo/lease-builder-seo';
 import { faqPageSchema, jsonLdScript } from '@/lib/schemas';
+import { SITE_URL } from '@/lib/seo/site';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
+const BASE_URL = SITE_URL;
 
 const PAGE_TITLE = 'Nájemní smlouva online 2026 | Formulář a PDF ihned';
 const PAGE_DESCRIPTION =

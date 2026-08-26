@@ -145,7 +145,7 @@ function DppPageContent() {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contractType: 'dpp', deliveryEmail: authorization.deliveryEmail, consent: authorization.consent, annexLanguage: authorization.annexLanguage, tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', lang: builderLocale, payload: { ...form, contractType: 'dpp', lang: builderLocale } }),
+        body: JSON.stringify({ contractType: 'dpp', deliveryEmail: authorization.deliveryEmail, consent: authorization.consent, analyticsConsentGranted: authorization.analyticsConsentGranted, analyticsAttribution: authorization.analyticsAttribution, annexLanguage: authorization.annexLanguage, tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', lang: builderLocale, payload: { ...form, contractType: 'dpp', lang: builderLocale } }),
       });
       const data = await res.json();
       if (!res.ok || !data?.url) throw new Error();
@@ -168,6 +168,8 @@ function DppPageContent() {
           tier: 'basic',
           lang: builderLocale,
           consent: authorization.consent,
+          analyticsConsentGranted: authorization.analyticsConsentGranted,
+          analyticsAttribution: authorization.analyticsAttribution,
           payload: { ...form, contractType: 'dpp', tier: 'basic', lang: builderLocale },
         }),
       });

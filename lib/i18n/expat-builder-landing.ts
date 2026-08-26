@@ -105,7 +105,7 @@ const EMPLOYMENT_LANDING: LocaleTriple<ExpatBuilderLandingBlock> = {
     ],
   },
   en: {
-    guideHref: '/blog/expat/employment-contract-guide-en',
+    guideHref: '/blog/expat/employment-contract-czech-republic-guide-en',
     benefits: [
       { icon: '⚖️', text: 'Built for Czech Labour Code § 33–65 (Act No. 262/2006 Coll.)' },
       { icon: '📄', text: 'PDF download right after verified payment' },
@@ -136,9 +136,9 @@ const EMPLOYMENT_LANDING: LocaleTriple<ExpatBuilderLandingBlock> = {
         text: 'For short tasks up to 300 hours/year with one employer — not full employment.',
       },
       {
-        label: 'Services agreement',
-        href: '/sluzby?lang=en',
-        text: 'For cooperation with a self-employed contractor or company outside employment law.',
+        label: 'Services agreement (Czech form)',
+        href: '/sluzby',
+        text: 'For cooperation with a self-employed contractor or company outside employment law. The linked form is available in Czech only.',
       },
     ],
     faq: [
@@ -162,7 +162,7 @@ const EMPLOYMENT_LANDING: LocaleTriple<ExpatBuilderLandingBlock> = {
     ],
   },
   ua: {
-    guideHref: '/blog/expat/employment-contract-guide-ua',
+    guideHref: '/blog/expat/employment-contract-czech-republic-guide-ua',
     benefits: [
       { icon: '⚖️', text: 'За § 33–65 трудового кодексу Чехії (закон № 262/2006 Sb.)' },
       { icon: '📄', text: 'PDF одразу після підтвердженої оплати' },
@@ -193,9 +193,9 @@ const EMPLOYMENT_LANDING: LocaleTriple<ExpatBuilderLandingBlock> = {
         text: 'Для коротких завдань до 300 год/рік — без повного трудового договору.',
       },
       {
-        label: 'Договір про надання послуг',
-        href: '/sluzby?lang=ua',
-        text: 'Для співпраці з ФОП або фірмою поза трудовим правом.',
+        label: 'Договір про надання послуг (форма чеською)',
+        href: '/sluzby',
+        text: 'Для співпраці з ФОП або фірмою поза трудовим правом. Форма за посиланням доступна лише чеською.',
       },
     ],
     faq: [
@@ -398,7 +398,7 @@ const DPP_LANDING: LocaleTriple<ExpatBuilderLandingBlock> = {
     ],
   },
   en: {
-    guideHref: '/blog/expat/dpp-guide-en',
+    guideHref: '/blog/expat/dpp-agreement-czech-republic-guide-en',
     benefits: [
       { icon: '⚖️', text: 'Czech Labour Code § 75–76 (Act No. 262/2006 Coll.)' },
       { icon: '📄', text: 'PDF download immediately after payment' },
@@ -426,9 +426,9 @@ const DPP_LANDING: LocaleTriple<ExpatBuilderLandingBlock> = {
         text: 'For regular employment with a fixed working schedule.',
       },
       {
-        label: 'Services agreement',
-        href: '/sluzby?lang=en',
-        text: 'For cooperation with a contractor outside employment law.',
+        label: 'Services agreement (Czech form)',
+        href: '/sluzby',
+        text: 'For cooperation with a contractor outside employment law. The linked form is available in Czech only.',
       },
     ],
     faq: [
@@ -448,7 +448,7 @@ const DPP_LANDING: LocaleTriple<ExpatBuilderLandingBlock> = {
     ],
   },
   ua: {
-    guideHref: '/blog/expat/dpp-guide-ua',
+    guideHref: '/blog/expat/dpp-agreement-czech-republic-guide-ua',
     benefits: [
       { icon: '⚖️', text: '§ 75–76 трудового кодексу Чехії' },
       { icon: '📄', text: 'PDF одразу після оплати' },
@@ -471,7 +471,7 @@ const DPP_LANDING: LocaleTriple<ExpatBuilderLandingBlock> = {
     ],
     whenOther: [
       { label: 'Трудовий договір', href: '/pracovni?lang=ua', text: 'Для регулярної роботи з фіксованим графіком.' },
-      { label: 'Договір послуг', href: '/sluzby?lang=ua', text: 'Для співпраці з ФОП поза трудовим правом.' },
+      { label: 'Договір послуг (форма чеською)', href: '/sluzby', text: 'Для співпраці з ФОП поза трудовим правом. Форма за посиланням доступна лише чеською.' },
     ],
     faq: [
       {
@@ -629,7 +629,7 @@ const SUBLEASE_LANDING: LocaleTriple<ExpatBuilderLandingBlock> = {
     ],
   },
   en: {
-    guideHref: '/blog/expat/sublease-guide-en',
+    guideHref: '/blog/expat/sublease-agreement-czech-republic-guide-en',
     benefits: [
       { icon: '⚖️', text: 'Civil Code § 2274–2278 (sublease of flat)' },
       { icon: '📄', text: 'PDF after verified payment' },
@@ -675,7 +675,7 @@ const SUBLEASE_LANDING: LocaleTriple<ExpatBuilderLandingBlock> = {
     ],
   },
   ua: {
-    guideHref: '/blog/expat/sublease-guide-ua',
+    guideHref: '/blog/expat/sublease-agreement-czech-republic-guide-ua',
     benefits: [
       { icon: '⚖️', text: '§ 2274–2278 цивільного кодексу (піднайм)' },
       { icon: '📄', text: 'PDF після оплати' },
@@ -760,7 +760,7 @@ const POA_LANDING: LocaleTriple<ExpatBuilderLandingBlock> = {
     ],
   },
   en: {
-    guideHref: '/blog/expat/power-of-attorney-guide-en',
+    guideHref: '/blog/expat/power-of-attorney-czech-republic-guide-en',
     benefits: [
       { icon: '⚖️', text: 'Civil Code § 441–456 — representation by power of attorney' },
       { icon: '📄', text: 'PDF immediately after payment' },
@@ -783,9 +783,9 @@ const POA_LANDING: LocaleTriple<ExpatBuilderLandingBlock> = {
     ],
     whenOther: [
       {
-        label: 'Cooperation agreement',
-        href: '/spoluprace?lang=en',
-        text: 'For an ongoing cooperation framework, not a one-off mandate.',
+        label: 'Cooperation agreement (Czech form)',
+        href: '/spoluprace',
+        text: 'For an ongoing cooperation framework, not a one-off mandate. The linked form is available in Czech only.',
       },
     ],
     faq: [
@@ -809,7 +809,7 @@ const POA_LANDING: LocaleTriple<ExpatBuilderLandingBlock> = {
     ],
   },
   ua: {
-    guideHref: '/blog/expat/power-of-attorney-guide-ua',
+    guideHref: '/blog/expat/power-of-attorney-czech-republic-guide-ua',
     benefits: [
       { icon: '⚖️', text: '§ 441–456 цивільного кодексу' },
       { icon: '📄', text: 'PDF одразу після оплати' },
@@ -831,7 +831,7 @@ const POA_LANDING: LocaleTriple<ExpatBuilderLandingBlock> = {
       'Дії від імені компанії',
     ],
     whenOther: [
-      { label: 'Договір співпраці', href: '/spoluprace?lang=ua', text: 'Для тривалої співпраці, а не разового доручення.' },
+      { label: 'Договір співпраці (форма чеською)', href: '/spoluprace', text: 'Для тривалої співпраці, а не разового доручення. Форма за посиланням доступна лише чеською.' },
     ],
     faq: [
       { q: 'Коли потрібне засвідчення підпису?', a: 'Де це вимагає закон або отримувач — зазвичай нерухомість і банк.' },
@@ -885,7 +885,7 @@ const CAR_LANDING: LocaleTriple<ExpatBuilderLandingBlock> = {
     ],
   },
   en: {
-    guideHref: '/blog/expat/car-sale-guide-en',
+    guideHref: '/blog/expat/car-sale-agreement-czech-republic-guide-en',
     benefits: [
       { icon: '⚖️', text: 'Civil Code § 2079+ (purchase agreement)' },
       { icon: '📄', text: 'PDF after payment' },
@@ -906,7 +906,7 @@ const CAR_LANDING: LocaleTriple<ExpatBuilderLandingBlock> = {
       'Written contract for authorities and insurance',
     ],
     whenOther: [
-      { label: 'Work contract', href: '/smlouva-o-dilo?lang=en', text: 'For vehicle repair, not sale.' },
+      { label: 'Work contract (Czech form)', href: '/smlouva-o-dilo', text: 'For vehicle repair, not sale. The linked form is available in Czech only.' },
     ],
     faq: [
       {
@@ -921,7 +921,7 @@ const CAR_LANDING: LocaleTriple<ExpatBuilderLandingBlock> = {
     ],
   },
   ua: {
-    guideHref: '/blog/expat/car-sale-guide-ua',
+    guideHref: '/blog/expat/car-sale-agreement-czech-republic-guide-ua',
     benefits: [
       { icon: '⚖️', text: '§ 2079+ цивільного кодексу' },
       { icon: '📄', text: 'PDF після оплати' },
@@ -941,7 +941,7 @@ const CAR_LANDING: LocaleTriple<ExpatBuilderLandingBlock> = {
       'Без автосалону',
       'Письмовий договір для органів',
     ],
-    whenOther: [{ label: 'Договір підряду', href: '/smlouva-o-dilo?lang=ua', text: 'Для ремонту, не продажу.' }],
+    whenOther: [{ label: 'Договір підряду (форма чеською)', href: '/smlouva-o-dilo', text: 'Для ремонту, не продажу. Форма за посиланням доступна лише чеською.' }],
     faq: [
       { q: 'Що має бути в договорі?', a: 'Сторони, VIN, ціна та передача.' },
       { q: 'Чи потрібне засвідчення підписів?', a: 'Зазвичай ні для приватного продажу.' },

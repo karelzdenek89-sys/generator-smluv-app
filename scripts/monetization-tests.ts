@@ -6,6 +6,13 @@
  * a partnerskou nabídku zobrazenou bez cílové URL nebo bez označení.
  */
 import assert from 'node:assert/strict';
+import {
+  attributionViewMatchesSource,
+  analyticsAttributionEventParams,
+  normalizeCheckoutAnalyticsAttribution,
+  normalizeConsentedCheckoutAnalyticsAttribution,
+  normalizeStoredCheckoutAnalyticsAttribution,
+} from '../lib/analytics-attribution';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -209,6 +216,7 @@ function testRequiredRoleEligibilityMatrix() {
   process.env.PARTNER_ENGINE_ENABLED = 'true';
   process.env.PARTNER_CEBIA_ENABLED = 'true';
   process.env.PARTNER_CEBIA_URL = 'https://www.cebia.cz/';
+  process.env.PARTNER_CEBIA_IS_AFFILIATE = 'true';
   process.env.PARTNER_USETRENO_TENANT_INSURANCE_ENABLED = 'true';
   process.env.PARTNER_USETRENO_TENANT_INSURANCE_URL = 'https://www.usetreno.cz/';
   process.env.PARTNER_USETRENO_LANDLORD_INSURANCE_ENABLED = 'true';
@@ -627,6 +635,238 @@ function testAnalyticsEventsRegistered() {
   }
 }
 
+function testPrivacySafeRevenueAttribution() {
+  const now = Date.parse('2026-08-26T12:00:00.000Z');
+  const validInput = {
+    trafficSource: 'blog_article',
+    articleSlug: 'kupni-smlouva-na-auto-2026',
+    landingPage: '/blog/kupni-smlouva-na-auto-2026',
+    capturedAt: '2026-08-26T11:45:00.000Z',
+  };
+  const valid = normalizeCheckoutAnalyticsAttribution(validInput, now);
+  assert.deepEqual(valid, validInput);
+  assert.equal(
+    normalizeConsentedCheckoutAnalyticsAttribution(false, validInput, now),
+    null,
+    'a valid acquisition payload must be discarded when analytics consent is absent',
+  );
+  assert.deepEqual(
+    normalizeConsentedCheckoutAnalyticsAttribution(true, validInput, now),
+    validInput,
+    'consented fresh acquisition attribution should be normalized',
+  );
+  assert.deepEqual(analyticsAttributionEventParams(valid), {
+    traffic_source: 'blog_article',
+    article_slug: 'kupni-smlouva-na-auto-2026',
+    acquisition_page: '/blog/kupni-smlouva-na-auto-2026',
+  });
+  assert.equal(attributionViewMatchesSource('blog_article_view', 'blog_article'), true);
+  assert.equal(attributionViewMatchesSource('package_page_view', 'package_page'), true);
+  assert.equal(attributionViewMatchesSource('situation_page_view', 'situation_page'), true);
+  assert.equal(attributionViewMatchesSource('seo_landing_view', 'seo_landing'), true);
+  assert.equal(attributionViewMatchesSource('homepage_view', 'homepage'), true);
+  assert.equal(attributionViewMatchesSource('builder_view', 'builder_landing'), true);
+  assert.equal(
+    attributionViewMatchesSource('package_page_view', 'blog_article'),
+    false,
+    'a package view must not be credited to a previously stored blog attribution',
+  );
+  assert.equal(
+    normalizeCheckoutAnalyticsAttribution({
+      ...validInput,
+      articleSlug: 'different-article',
+    }, now),
+    null,
+    'article slug must identify the attributed blog landing',
+  );
+  assert.equal(
+    normalizeCheckoutAnalyticsAttribution({ ...validInput, capturedAt: '2026-08-26T11:29:59.000Z' }, now),
+    null,
+    'client attribution older than 30 minutes must expire',
+  );
+  assert.ok(
+    normalizeStoredCheckoutAnalyticsAttribution(
+      { ...validInput, capturedAt: '2026-08-26T11:29:59.000Z' },
+      now,
+    ),
+    'a draft normalized at checkout must remain attributable after a longer Stripe session',
+  );
+  assert.ok(normalizeCheckoutAnalyticsAttribution({
+    trafficSource: 'homepage',
+    landingPage: '/',
+    capturedAt: validInput.capturedAt,
+  }, now));
+  assert.ok(normalizeCheckoutAnalyticsAttribution({
+    trafficSource: 'builder_landing',
+    landingPage: '/auto',
+    capturedAt: validInput.capturedAt,
+  }, now));
+  assert.deepEqual(normalizeCheckoutAnalyticsAttribution({
+    trafficSource: 'blog_article',
+    articleSlug: 'expat/minimum-wage-dpp-czech-republic-2026-en',
+    landingPage: '/blog/expat/minimum-wage-dpp-czech-republic-2026-en',
+    capturedAt: validInput.capturedAt,
+  }, now), {
+    trafficSource: 'blog_article',
+    articleSlug: 'expat/minimum-wage-dpp-czech-republic-2026-en',
+    landingPage: '/blog/expat/minimum-wage-dpp-czech-republic-2026-en',
+    capturedAt: validInput.capturedAt,
+  });
+  assert.equal(normalizeCheckoutAnalyticsAttribution({
+    trafficSource: 'builder_landing',
+    landingPage: '/interni/analytics',
+    capturedAt: validInput.capturedAt,
+  }, now), null);
+  for (const landingPage of [
+    '/customer@example.test',
+    '/blog/article?email=customer@example.test',
+    '/blog/article%40customer',
+    '/api/checkout',
+  ]) {
+    assert.equal(
+      normalizeCheckoutAnalyticsAttribution({
+        trafficSource: 'seo_landing',
+        landingPage,
+        capturedAt: validInput.capturedAt,
+      }, now),
+      null,
+      `unsafe acquisition page accepted: ${landingPage}`,
+    );
+  }
+
+  const checkout = readFileSync(join(ROOT, 'app/api/checkout/route.ts'), 'utf8');
+  const webhook = readFileSync(join(ROOT, 'app/api/stripe/webhook/route.ts'), 'utf8');
+  const reporting = readFileSync(join(ROOT, 'lib/analytics-reporting.ts'), 'utf8');
+  const trackView = readFileSync(join(ROOT, 'app/components/analytics/TrackView.tsx'), 'utf8');
+  const analyticsClient = readFileSync(join(ROOT, 'lib/analytics.ts'), 'utf8');
+  const attributionClient = readFileSync(join(ROOT, 'lib/analytics-attribution.ts'), 'utf8');
+  const cookiesBanner = readFileSync(join(ROOT, 'app/components/CookiesBanner.tsx'), 'utf8');
+  assert.match(checkout, /normalizeConsentedCheckoutAnalyticsAttribution\(/);
+  assert.match(checkout, /analyticsAttributionEventParams\(analyticsAttribution\)/);
+  assert.match(webhook, /normalizeStoredCheckoutAnalyticsAttribution\(existing\.analyticsAttribution\)/);
+  assert.match(reporting, /revenueAttribution/);
+  assert.match(reporting, /params\.acquisition_page/);
+  assert.match(reporting, /attributionViewMatchesSource\(event\.event, attributedRevenue\.trafficSource\)/);
+  assert.match(trackView, /eventName === 'package_page_view'/);
+  assert.match(trackView, /eventName === 'situation_page_view'/);
+  assert.ok(
+    trackView.indexOf('rememberTrafficAttributionIfEmpty({') < trackView.indexOf('trackEvent(eventName'),
+    'package and situation attribution must be stored before their view event is sent',
+  );
+  assert.match(analyticsClient, /!isProductAnalyticsConsentGranted\(\)/);
+  assert.match(attributionClient, /PRODUCT_ANALYTICS_CONSENT_STORAGE_KEY/);
+  assert.match(attributionClient, /if \(!granted\) clearTrafficAttribution\(\)/);
+  assert.match(cookiesBanner, /Povolit měření/);
+  assert.match(cookiesBanner, /Jen nezbytné/);
+  assert.match(reporting, /MAX_STORED_ANALYTICS_EVENTS - 1/);
+  assert.match(reporting, /partnerConversionsKnown/);
+  assert.match(reporting, /partnerImpressions/);
+  assert.doesNotMatch(checkout, /sh_journey_id|journeyId|journey_id/);
+  assert.doesNotMatch(webhook, /metadata\?\.(?:traffic|landing|article)/i);
+
+  const builders = [
+    'auto', 'darovaci', 'dpp', 'kupni', 'najem', 'nda', 'plna-moc',
+    'podnajem', 'pracovni', 'pujcka', 'sluzby', 'smlouva-o-dilo',
+    'spoluprace', 'uznani-dluhu',
+  ];
+  for (const builder of builders) {
+    const source = readFileSync(join(ROOT, 'app', builder, 'page.tsx'), 'utf8');
+    assert.match(
+      source,
+      /analyticsAttribution:\s*authorization\.analyticsAttribution/,
+      `${builder} checkout must propagate safe acquisition attribution`,
+    );
+    assert.match(
+      source,
+      /analyticsConsentGranted:\s*authorization\.analyticsConsentGranted/,
+      `${builder} checkout must propagate explicit analytics consent independently of attribution freshness`,
+    );
+  }
+
+  const partnerNextSteps = readFileSync(
+    join(ROOT, 'app/components/partners/PartnerNextSteps.tsx'),
+    'utf8',
+  );
+  assert.match(partnerNextSteps, /ORDER_SCOPED_TRACKING\s*=\s*\{\s*inheritAttribution:\s*false\s*\}/);
+  assert.match(partnerNextSteps, /trackEvent\('partner_offer_clicked',[\s\S]*ORDER_SCOPED_TRACKING\)/);
+}
+
+function testDownloadsAreRecordedOnlyAfterSuccessfulRender() {
+  const paid = readFileSync(join(ROOT, 'app/api/contracts/download/route.ts'), 'utf8');
+  const free = readFileSync(join(ROOT, 'app/api/contracts/free/download/route.ts'), 'utf8');
+  assert.ok(
+    paid.indexOf('await renderContractDocx(fullData)') < paid.indexOf('const nextDownloadCount = await nextDownloadSequence'),
+    'paid DOCX must render before the download counter changes',
+  );
+  assert.ok(
+    paid.indexOf('await renderContractPdf(fullData)') < paid.indexOf('const nextDownloadCount = await nextDownloadSequence'),
+    'paid PDF must render before the download counter changes',
+  );
+  assert.ok(
+    free.indexOf('await renderContractPdf(record.payload)') < free.indexOf("recordAnalyticsEvent('free_document_downloaded'"),
+    'free PDF must render before its download event is recorded',
+  );
+}
+
+function testBuilderCompletionRequiresServerAcceptance() {
+  const modal = readFileSync(join(ROOT, 'app/components/PaymentModal.tsx'), 'utf8');
+  const checkout = readFileSync(join(ROOT, 'app/api/checkout/route.ts'), 'utf8');
+  const freeCreate = readFileSync(join(ROOT, 'app/api/contracts/free/route.ts'), 'utf8');
+  assert.doesNotMatch(
+    modal,
+    /trackEvent\('builder_completed'/,
+    'the checkout modal must not report completion before server validation',
+  );
+  assert.match(checkout, /recordAnalyticsEvent\('builder_completed'/);
+  assert.match(freeCreate, /recordAnalyticsEvent\('builder_completed'/);
+  assert.match(
+    checkout,
+    /if \(!isCheckoutAudit && analyticsConsentGranted\) \{\s*await recordAnalyticsEvent\('builder_completed'/,
+    'paid completion analytics must require explicit consent even when attribution has expired',
+  );
+  assert.match(
+    freeCreate,
+    /if \(analyticsConsentGranted\) \{\s*await Promise\.all/,
+    'free completion analytics must require explicit consent even when attribution has expired',
+  );
+
+  const webhook = readFileSync(join(ROOT, 'app/api/stripe/webhook/route.ts'), 'utf8');
+  const paidDownload = readFileSync(join(ROOT, 'app/api/contracts/download/route.ts'), 'utf8');
+  const freeDownload = readFileSync(join(ROOT, 'app/api/contracts/free/download/route.ts'), 'utf8');
+  const paidStatus = readFileSync(join(ROOT, 'app/api/contracts/status/route.ts'), 'utf8');
+  assert.match(webhook, /if \(analyticsConsentGranted\) \{\s*await recordPaidCheckoutAnalytics/);
+  assert.match(paidDownload, /if \(draft\.analyticsConsentGranted === true\) \{\s*await recordAnalyticsEvent\('document_downloaded'/);
+  assert.match(freeDownload, /if \(record\.analyticsConsentGranted === true\) \{\s*await recordAnalyticsEvent\('free_document_downloaded'/);
+  assert.match(checkout, /monetizationMode:\s*monetizationPolicy\.mode/);
+  assert.match(checkout, /experimentId,/);
+  assert.match(checkout, /experimentVariant,/);
+  assert.match(webhook, /experiment_id:\s*options\.experimentId/);
+  assert.match(webhook, /variant:\s*options\.experimentVariant/);
+  assert.match(paidDownload, /experiment_id:\s*draft\.experimentId/);
+  assert.match(paidDownload, /variant:\s*draft\.experimentVariant/);
+  assert.match(paidStatus, /monetizationMode:\s*verifiedDraft\?\.monetizationMode/);
+}
+
+function testPrioritySeoArticlesTrackProductCtas() {
+  const articles = [
+    ['app/blog/dpp-dohoda-provedeni-prace/page.tsx', '/dpp'],
+    ['app/blog/kupni-smlouva-na-auto-2026/page.tsx', '/auto'],
+    ['app/blog/smlouva-o-sluzbach-2026/page.tsx', '/sluzby'],
+    ['app/blog/smlouva-o-zapujcce-2026/page.tsx', '/pujcka'],
+  ] as const;
+  for (const [file, destination] of articles) {
+    const source = readFileSync(join(ROOT, file), 'utf8');
+    const trackedCtas = source.match(/eventName="blog_cta_click"/g)?.length ?? 0;
+    assert.ok(trackedCtas >= 3, `${file} must track its prominent product CTAs`);
+    const escaped = destination.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    assert.doesNotMatch(
+      source,
+      new RegExp(`<Link\\s+href="${escaped}"`),
+      `${file} still has an untracked direct CTA to ${destination}`,
+    );
+  }
+}
+
 /**
  * Do analytiky nesmí prosáknout osobní údaje. Kontroluje se, že nové
  * monetizační komponenty neposílají jména, adresy ani e-maily.
@@ -634,6 +874,7 @@ function testAnalyticsEventsRegistered() {
 function testNoPiiInMonetizationAnalytics() {
   const files = [
     'app/components/partners/PartnerNextSteps.tsx',
+    'app/components/partners/PartnerEditorialOffer.tsx',
     'app/components/marketing/ContextualProductOffer.tsx',
   ];
   const forbidden =
@@ -665,6 +906,10 @@ function main() {
   testPackageUpsellIsLocalized();
   testBuildersDoNotHardcodePackageUpsell();
   testAnalyticsEventsRegistered();
+  testPrivacySafeRevenueAttribution();
+  testBuilderCompletionRequiresServerAcceptance();
+  testDownloadsAreRecordedOnlyAfterSuccessfulRender();
+  testPrioritySeoArticlesTrackProductCtas();
   testNoPiiInMonetizationAnalytics();
 
   console.log('Monetization audit passed (offers, flags, pricing source, analytics, PII).');

@@ -2,8 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { breadcrumbSchema, faqPageSchema, jsonLdScript, type FaqItem } from '@/lib/schemas';
 import { getMonetizationPolicy } from '@/lib/monetization-policy';
+import { SITE_URL } from '@/lib/seo/site';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
+const BASE_URL = SITE_URL;
 const FREE_BASIC_DPP = getMonetizationPolicy('dpp', 'cs').mode === 'free_experiment';
 
 export const metadata: Metadata = {

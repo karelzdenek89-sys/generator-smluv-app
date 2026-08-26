@@ -22,9 +22,11 @@ export function getExpatBlogHreflangAlternates(slug: string): Record<string, str
   if (alternateSlug) {
     const secondaryLang = article.audience === 'en' ? 'uk' : 'en';
     languages[secondaryLang] = getExpatBlogCanonical(alternateSlug);
+    const englishSlug = article.audience === 'en' ? slug : alternateSlug;
+    languages['x-default'] = getExpatBlogCanonical(englishSlug);
+  } else {
+    languages['x-default'] = canonical;
   }
-
-  languages['x-default'] = canonical;
 
   return languages;
 }

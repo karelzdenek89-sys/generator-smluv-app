@@ -101,10 +101,28 @@ export function isExpatContract(contractType: ContractType): contractType is Exp
 
 export function withLocale(href: string, locale: AppLocale): string {
   if (locale === 'cs') return href;
+  if (href === '/') return `/${getPublicLocalePath(locale)}`;
   const contractType = getContractTypeByPath(href);
-  if (contractType && !isExpatContract(contractType)) return href;
+  if (!contractType || !isExpatContract(contractType)) return href;
   const separator = href.includes('?') ? '&' : '?';
   return `${href}${separator}lang=${locale}`;
+}
+
+/**
+ * Resolves the locale encoded in a public pathname. Expat articles live under
+ * one shared /blog/expat route, so their locale is carried by the final slug
+ * suffix rather than by the first path segment.
+ */
+export function getLocaleFromPathname(
+  pathname: string | null | undefined,
+  fallback: AppLocale = 'cs',
+): AppLocale {
+  const path = (pathname ?? '').split(/[?#]/, 1)[0].replace(/\/+$/, '') || '/';
+  const firstSegment = path.split('/')[1] ?? '';
+  if (firstSegment === 'en' || firstSegment === 'ua') return firstSegment;
+  if (/^\/blog\/expat\/[a-z0-9-]+-ua$/.test(path)) return 'ua';
+  if (/^\/blog\/expat\/[a-z0-9-]+-en$/.test(path)) return 'en';
+  return fallback;
 }
 
 export function getPublicLocalePath(locale: AppLocale): string {

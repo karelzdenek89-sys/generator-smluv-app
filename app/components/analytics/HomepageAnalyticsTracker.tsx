@@ -8,31 +8,26 @@ import {
   subscribeToProductAnalyticsConsent,
 } from '@/lib/analytics-attribution';
 
-type SeoLandingTrackerProps = {
-  pathname: string;
-  label: string;
-};
-
-export default function SeoLandingTracker({ pathname, label }: SeoLandingTrackerProps) {
+export default function HomepageAnalyticsTracker() {
   useEffect(() => {
     let sent = false;
     const recordView = () => {
       if (sent || !isProductAnalyticsConsentGranted()) return;
       rememberTrafficAttributionIfEmpty({
-        source: 'seo_landing',
-        label,
-        pathname,
+        source: 'homepage',
+        label: 'Homepage',
+        pathname: '/',
       });
-      trackEvent('seo_landing_view', {
-        source: 'seo_landing',
-        surface: 'seo_landing',
-        pathname,
+      trackEvent('homepage_view', {
+        source: 'homepage',
+        surface: 'homepage',
+        pathname: '/',
       });
       sent = true;
     };
     recordView();
     return subscribeToProductAnalyticsConsent(recordView);
-  }, [label, pathname]);
+  }, []);
 
   return null;
 }

@@ -8,6 +8,7 @@
  */
 
 import type { Locale } from './locales';
+import { SITE_URL } from '@/lib/seo/site';
 
 export type LandingFaqItem = { q: string; a: string };
 export type LandingHowStep = { title: string; description: string };
@@ -236,7 +237,7 @@ export const LANDINGS: Record<Exclude<Locale, 'cs'>, LandingContent> = {
 import type { Metadata } from 'next';
 import { FOREIGN_LOCALES, LOCALE_META } from './locales';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
+const BASE_URL = SITE_URL;
 
 export function makeLandingMetadata(locale: Exclude<Locale, 'cs'> | 'uk' | 'ru' | 'vn' | 'de'): Metadata {
   const resolved: Exclude<Locale, 'cs'> =

@@ -23,6 +23,8 @@ import { buildPartnerContext } from '@/lib/partners/context';
 import { getEligiblePartnerOffers } from '@/lib/partners/catalog';
 import { getLocalizedPackagePresentation, getLocalizedPricingTier } from '@/lib/i18n/pricing-locale';
 import { getFulfilmentContractName } from '@/lib/i18n/fulfilment-email';
+import type { CheckoutAnalyticsAttribution } from '@/lib/analytics-attribution';
+import type { MonetizationMode } from '@/lib/monetization-policy';
 
 export const runtime = 'nodejs';
 
@@ -58,6 +60,9 @@ type DraftRecord = {
   };
   downloadToken?: string | null;
   partnerAttributionId?: string | null;
+  analyticsConsentGranted?: boolean;
+  analyticsAttribution?: CheckoutAnalyticsAttribution;
+  monetizationMode?: MonetizationMode;
 };
 
 function statusTokenMatches(draft: DraftRecord | null | undefined, token: string): boolean {
@@ -150,6 +155,7 @@ export async function GET(req: NextRequest) {
       locale: lang,
       packageKey,
       rawContractData: verifiedDraft?.payload,
+      monetizationMode: verifiedDraft?.monetizationMode ?? 'paid',
       paid: true,
       completed: true,
     });
@@ -173,6 +179,9 @@ export async function GET(req: NextRequest) {
       partnerContext,
       partnerOffers,
       partnerAttributionId: verifiedDraft?.partnerAttributionId ?? null,
+      analyticsAttribution: verifiedDraft?.analyticsConsentGranted === true
+        ? verifiedDraft.analyticsAttribution ?? null
+        : null,
     });
   } catch {
     return NextResponse.json({ status: 'error' }, { status: 500 });

@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import ProductSchemas from '@/app/components/seo/ProductSchemas';
+import { SITE_URL } from '@/lib/seo/site';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
+const BASE_URL = SITE_URL;
 
 export const metadata: Metadata = {
   title: 'Smlouva o dílo 2026 — formulář online',

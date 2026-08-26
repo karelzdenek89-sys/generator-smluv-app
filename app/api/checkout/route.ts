@@ -22,6 +22,7 @@ import {
   resolvePurchasablePackageVersion,
 } from '@/lib/packages';
 import { normalizeLocale } from '@/lib/locale';
+import { getMonetizationPolicy } from '@/lib/monetization-policy';
 import { normalizePricingTier } from '@/lib/pricing';
 import {
   CHECKOUT_ADDON_CONFIG,
@@ -45,6 +46,10 @@ import {
   type ContractType,
 } from '@/lib/checkout-validation';
 import { buildPartnerContext } from '@/lib/partners/context';
+import {
+  analyticsAttributionEventParams,
+  normalizeConsentedCheckoutAnalyticsAttribution,
+} from '@/lib/analytics-attribution';
 
 export const runtime = 'nodejs';
 
@@ -155,6 +160,11 @@ export async function POST(req: Request) {
 
     // 2. Parsování body – checkout bez jasného contractType nesmí vytvořit default objednávku
     const body = json.data;
+    const analyticsConsentGranted = body.analyticsConsentGranted === true;
+    const analyticsAttribution = normalizeConsentedCheckoutAnalyticsAttribution(
+      analyticsConsentGranted,
+      body.analyticsAttribution,
+    );
 
     // contractType
     const rawType = typeof body.contractType === 'string' ? body.contractType : '';
@@ -239,6 +249,13 @@ export async function POST(req: Request) {
     }
 
     const lang = normalizeLocale(body.lang ?? payload.lang);
+    const monetizationPolicy = getMonetizationPolicy(contractType, lang);
+    const experimentId = monetizationPolicy.mode === 'free_experiment'
+      ? monetizationPolicy.experimentId
+      : null;
+    const experimentVariant = monetizationPolicy.mode === 'free_experiment'
+      ? monetizationPolicy.variant
+      : null;
 
     const rawPackageKey =
       typeof body.packageKey === 'string'
@@ -349,6 +366,7 @@ export async function POST(req: Request) {
       // Classification reads the server-validated document model, never the
       // unvalidated request body. The original payload remains only for PDF output.
       rawContractData: payloadValidation.data,
+      monetizationMode: monetizationPolicy.mode,
       paid: false,
       completed: false,
     });
@@ -369,6 +387,11 @@ export async function POST(req: Request) {
           consent,
           partnerContext,
           partnerAttributionId,
+          analyticsConsentGranted,
+          monetizationMode: monetizationPolicy.mode,
+          experimentId,
+          experimentVariant,
+          ...(analyticsAttribution ? { analyticsAttribution } : {}),
           payload: {
             ...payload,
             contractType,
@@ -393,6 +416,24 @@ export async function POST(req: Request) {
         503,
         { contractType },
       );
+    }
+
+    const acceptedCheckoutParams = {
+      source: 'checkout_modal',
+      surface: 'checkout_endpoint',
+      contract_type: contractType,
+      tier: checkoutTier === 'basic' ? ('basic' as const) : ('complete' as const),
+      package_key: packageKey ?? undefined,
+      price_band: getEffectivePriceBand(checkoutTier, packageKey),
+      add_on_keys: addOns.join(','),
+      selected_addons_count: addOns.length,
+      monetization_mode: monetizationPolicy.mode,
+      experiment_id: experimentId ?? undefined,
+      variant: experimentVariant ?? undefined,
+      ...analyticsAttributionEventParams(analyticsAttribution),
+    };
+    if (!isCheckoutAudit && analyticsConsentGranted) {
+      await recordAnalyticsEvent('builder_completed', acceptedCheckoutParams);
     }
 
     // 5. Stripe Checkout Session
@@ -449,17 +490,8 @@ export async function POST(req: Request) {
 
     if (!session.url) throw new Error('Stripe nevrátil URL pro checkout.');
 
-    if (!isCheckoutAudit) {
-      await recordAnalyticsEvent('stripe_checkout_started', {
-        source: 'checkout_modal',
-        surface: 'checkout_endpoint',
-        contract_type: contractType,
-        tier: checkoutTier === 'basic' ? 'basic' : 'complete',
-        package_key: packageKey ?? undefined,
-        price_band: getEffectivePriceBand(checkoutTier, packageKey),
-        add_on_keys: addOns.join(','),
-        selected_addons_count: addOns.length,
-      });
+    if (!isCheckoutAudit && analyticsConsentGranted) {
+      await recordAnalyticsEvent('stripe_checkout_started', acceptedCheckoutParams);
     }
 
     return NextResponse.json({

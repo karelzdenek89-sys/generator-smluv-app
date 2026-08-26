@@ -54,6 +54,9 @@ test.describe('Homepage DPP merchandising', () => {
 
   test('sends one policy-derived card click event', async ({ page }) => {
     const analyticsPayloads: Array<Record<string, unknown>> = [];
+    await page.addInitScript(() => {
+      localStorage.setItem('sh_product_analytics_consent_v1', 'granted');
+    });
     await page.route('**/api/analytics', async (route) => {
       analyticsPayloads.push(route.request().postDataJSON() as Record<string, unknown>);
       await route.fulfill({ status: 204, body: '' });

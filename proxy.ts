@@ -30,6 +30,8 @@ const CZECH_ONLY_BUILDER_PATHS = new Set([
   '/spoluprace',
 ]);
 
+const EXPAT_BLOG_PREFIX = '/blog/expat/';
+
 /** Apex domain — canonical public host is www (matches sitemap, metadata, robots.txt). */
 const APEX_HOST = 'smlouvahned.cz';
 const CANONICAL_HOST = 'www.smlouvahned.cz';
@@ -53,6 +55,22 @@ function rewritePathSegment(pathname: string, fromSeg: string, toSeg: string): s
     return pathname.replace(`/${fromSeg}`, `/${toSeg}`);
   }
   return pathname;
+}
+
+export function resolveContentLanguage(
+  pathname: string,
+  builderLanguage: 'en' | 'ua' | null,
+): 'cs' | 'en' | 'uk' {
+  if (pathname.startsWith(EXPAT_BLOG_PREFIX)) {
+    const slug = pathname.slice(EXPAT_BLOG_PREFIX.length).replace(/\/$/, '');
+    if (slug.endsWith('-en')) return 'en';
+    if (slug.endsWith('-ua')) return 'uk';
+  }
+
+  const firstSegment = pathname.split('/')[1] ?? '';
+  if (firstSegment === 'ua' || builderLanguage === 'ua') return 'uk';
+  if (firstSegment === 'en' || builderLanguage === 'en') return 'en';
+  return 'cs';
 }
 
 export function proxy(request: NextRequest) {
@@ -90,18 +108,13 @@ export function proxy(request: NextRequest) {
   }
 
   const response = NextResponse.next();
-  const firstSegment = pathname.split('/')[1] ?? '';
   const builderLanguage = LOCALIZED_BUILDER_PATHS.has(pathname)
     ? normalizedQueryLocale
     : null;
-  response.headers.set(
-    'Content-Language',
-    firstSegment === 'ua' || builderLanguage === 'ua'
-      ? 'uk'
-      : firstSegment === 'en' || builderLanguage === 'en'
-        ? 'en'
-        : 'cs',
-  );
+  response.headers.set('Content-Language', resolveContentLanguage(pathname, builderLanguage));
+  if (builderLanguage) {
+    response.headers.set('X-Robots-Tag', 'noindex, follow');
+  }
 
   return response;
 }

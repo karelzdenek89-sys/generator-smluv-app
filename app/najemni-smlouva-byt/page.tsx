@@ -11,7 +11,6 @@ export const metadata = landingPageMetadata({
     'Průvodce nájmem bytu pro rok 2026. Pravidla pro kauci, chov zvířat, předávací protokol a další ujednání, která je dobré před podpisem promyslet.',
   keywords: [
     'nájemní smlouva byt 2026',
-    'nájemní smlouva na byt vzor',
     'nájemní smlouva byt formulář',
     'smlouva o nájmu bytu',
     'nájemní smlouva pronajímatel',
@@ -92,8 +91,8 @@ export default function NajemniSmlouvaBytPage() {
             § 2235 a násl. Občanského zákoníku
           </div>
           <h1 className="text-4xl font-black tracking-tight text-white md:text-5xl leading-tight mb-4">
-            Nájemní smlouva na byt<br />
-            <span className="text-amber-500 italic">vzor 2026</span>
+            Nájem bytu 2026<br />
+            <span className="text-amber-500 italic">kauce, zvířata a předání</span>
           </h1>
           <p className="text-lg text-slate-400 leading-relaxed max-w-2xl mb-8">
             Pronajímáte nebo si pronajímáte byt nebo dům? Nájemní smlouva pomůže přehledně zachytit kauci, pravidla, předání bytu a podmínky ukončení.

@@ -4,6 +4,11 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { getAnalyticsDefaultsForPathname, trackEvent } from '@/lib/analytics';
+import {
+  isProductAnalyticsConsentGranted,
+  rememberTrafficAttributionIfEmpty,
+  subscribeToProductAnalyticsConsent,
+} from '@/lib/analytics-attribution';
 import { getContractTypeByPath, isExpatContract } from '@/lib/locale';
 import { BuilderLocaleNotice, useBuilderLocale } from '@/app/components/BuilderLocaleNotice';
 import WhyNotGenericBlock from '@/app/components/marketing/WhyNotGenericBlock';
@@ -82,35 +87,46 @@ export default function ContractLandingSection({
   useEffect(() => {
     const currentPath = pathname ?? '/';
     if (currentPath === '/dpp' && monetizationMode === undefined) return;
-    const packageKey =
-      typeof window !== 'undefined'
-        ? new URLSearchParams(window.location.search).get('package')
-        : null;
-    const packageConfig = getThematicPackageConfig(packageKey);
-    const defaults = getAnalyticsDefaultsForPathname(currentPath);
+    let sent = false;
+    const recordView = () => {
+      if (sent || !isProductAnalyticsConsentGranted()) return;
+      const packageKey = new URLSearchParams(window.location.search).get('package');
+      const packageConfig = getThematicPackageConfig(packageKey);
+      const defaults = getAnalyticsDefaultsForPathname(currentPath);
 
-    trackEvent('builder_view', {
-      ...defaults,
-      source: 'builder',
-      surface: 'builder',
-      entry_mode: packageConfig ? 'package_flow' : 'single_document',
-      package_key: packageConfig?.key,
-      monetization_mode: monetizationMode ?? 'paid',
-      experiment_id: experimentId ?? undefined,
-      variant: experimentVariant ?? undefined,
-      landing_page: currentPath,
-    });
-
-    if (packageConfig) {
-      trackEvent('package_flow_entered', {
-        ...defaults,
-        source: 'package_landing',
-        surface: 'builder',
-        package_key: packageConfig.key,
-        entry_mode: 'package_flow',
-        price_band: getEffectivePriceBand('complete', packageConfig.key),
+      // Přímý vstup do builderu je akviziční landing. Předchozí článek, SEO
+      // landing, homepage nebo balíček však zůstává prvním dotykem relace.
+      rememberTrafficAttributionIfEmpty({
+        source: 'builder_landing',
+        label: `Builder: ${currentPath}`,
+        pathname: currentPath,
       });
-    }
+      trackEvent('builder_view', {
+        ...defaults,
+        source: 'builder',
+        surface: 'builder',
+        entry_mode: packageConfig ? 'package_flow' : 'single_document',
+        package_key: packageConfig?.key,
+        monetization_mode: monetizationMode ?? 'paid',
+        experiment_id: experimentId ?? undefined,
+        variant: experimentVariant ?? undefined,
+        landing_page: currentPath,
+      });
+
+      if (packageConfig) {
+        trackEvent('package_flow_entered', {
+          ...defaults,
+          source: 'package_landing',
+          surface: 'builder',
+          package_key: packageConfig.key,
+          entry_mode: 'package_flow',
+          price_band: getEffectivePriceBand('complete', packageConfig.key),
+        });
+      }
+      sent = true;
+    };
+    recordView();
+    return subscribeToProductAnalyticsConsent(recordView);
   }, [experimentId, experimentVariant, monetizationMode, pathname]);
 
   return (

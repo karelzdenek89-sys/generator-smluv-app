@@ -21,7 +21,7 @@ const playfair = Playfair_Display({
 
 const BASE_URL = SITE_URL;
 
-const LOCALE_BOOTSTRAP_SCRIPT = `(()=>{try{const p=location.pathname.replace(/\\/$/,"")||"/";const s=p.split("/")[1]||"";let l=s==="ua"?"uk":s==="en"?"en":"cs";if(l==="cs"&&new Set(["/najem","/podnajem","/pracovni","/dpp","/plna-moc","/auto"]).has(p)){const q=new URLSearchParams(location.search).get("lang");l=q==="ua"||q==="uk"||q==="ukr"?"uk":q==="en"?"en":"cs"}document.documentElement.lang=l}catch{}})()`;
+const LOCALE_BOOTSTRAP_SCRIPT = `(()=>{try{const p=location.pathname.replace(/\\/$/,"")||"/";const s=p.split("/")[1]||"";let l=s==="ua"?"uk":s==="en"?"en":"cs";if(p.startsWith("/blog/expat/")){l=p.endsWith("-ua")?"uk":p.endsWith("-en")?"en":l}if(l==="cs"&&new Set(["/najem","/podnajem","/pracovni","/dpp","/plna-moc","/auto"]).has(p)){const q=new URLSearchParams(location.search).get("lang");l=q==="ua"||q==="uk"||q==="ukr"?"uk":q==="en"?"en":"cs"}document.documentElement.lang=l}catch{}})()`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(BASE_URL),

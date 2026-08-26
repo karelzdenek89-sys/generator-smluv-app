@@ -1,5 +1,6 @@
 import { timingSafeEqual } from 'node:crypto';
 import type { CheckoutConsent } from '@/lib/checkout-authorization';
+import type { CheckoutAnalyticsAttribution } from '@/lib/analytics-attribution';
 import {
   CHECKOUT_CONSENT_TEXT_VERSION,
   CHECKOUT_PRIVACY_VERSION,
@@ -22,6 +23,8 @@ export type FreeDocumentRecord = {
   downloadToken: string;
   partnerContext: PartnerContext | null;
   partnerAttributionId: string;
+  analyticsConsentGranted?: boolean;
+  analyticsAttribution?: CheckoutAnalyticsAttribution;
   createdAt: string;
   expiresAt: string;
   downloadCount: number;

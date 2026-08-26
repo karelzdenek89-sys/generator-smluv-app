@@ -3,8 +3,9 @@ import ProductSchemas from '@/app/components/seo/ProductSchemas';
 import { MonetizationPolicyProvider } from '@/app/components/useMonetizationPolicy';
 import { getExpatContractHreflangAlternates } from '@/lib/i18n/expat-hreflang';
 import { getMonetizationPolicy } from '@/lib/monetization-policy';
+import { SITE_URL } from '@/lib/seo/site';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
+const BASE_URL = SITE_URL;
 const DPP_POLICY = getMonetizationPolicy('dpp', 'cs');
 const FREE_BASIC_DPP = DPP_POLICY.mode === 'free_experiment';
 

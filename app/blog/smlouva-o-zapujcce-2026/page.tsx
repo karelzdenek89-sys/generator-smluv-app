@@ -5,6 +5,7 @@ import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
+import TrackedLink from '@/app/components/analytics/TrackedLink';
 
 export const metadata = blogArticlePageMetadata("smlouva-o-zapujcce-2026", {
   title: "Smlouva o zápůjčce 2026: vzor a nejčastější chyby",
@@ -51,12 +52,14 @@ export default function SmlouvaOZapujcce2026Page() {
         <div className="mt-7 rounded-2xl border border-amber-500/20 bg-amber-500/8 p-5">
           <p className="mb-3 text-sm font-bold text-white">Chcete přeskočit teorii?</p>
           <p className="mb-4 text-sm text-slate-400">Vytvořte si smlouvu o zápůjčce online — formulář vás provede krok za krokem, hotovo za 5 minut.</p>
-          <Link
+          <TrackedLink
             href="/pujcka"
+            eventName="blog_cta_click"
+            eventParams={{ surface: 'blog_article', cta_type: 'hero_primary', destination: '/pujcka' }}
             className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-2.5 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400"
           >
             Vytvořit smlouvu o zápůjčce →
-          </Link>
+          </TrackedLink>
         </div>
       </header>
 
@@ -127,9 +130,14 @@ export default function SmlouvaOZapujcce2026Page() {
         </ul>
 
         <div className="rounded-2xl border border-amber-500/20 bg-amber-500/6 p-5">
-          <Link href="/pujcka" className="text-sm font-bold text-amber-400 underline underline-offset-4 hover:text-amber-300 transition">
+          <TrackedLink
+            href="/pujcka"
+            eventName="blog_cta_click"
+            eventParams={{ surface: 'blog_article', cta_type: 'inline_text', destination: '/pujcka' }}
+            className="text-sm font-bold text-amber-400 underline underline-offset-4 hover:text-amber-300 transition"
+          >
             Vytvořit smlouvu o zápůjčce se splátkovým kalendářem online →
-          </Link>
+          </TrackedLink>
         </div>
       </section>
 
@@ -272,6 +280,7 @@ export default function SmlouvaOZapujcce2026Page() {
         body="Smlouva o zápůjčce na SmlouvaHned pokryje výši dluhu, splatnost, úrok, splátkový kalendář a uznání závazku. Formulář vás provede, PDF stáhnete ihned."
         buttonLabel="Vytvořit smlouvu o zápůjčce"
         href="/pujcka"
+        articleSlug="smlouva-o-zapujcce-2026"
       />
 
       {/* ── SECTION 7: ZÁVĚR ────────────────────── */}
@@ -307,12 +316,14 @@ export default function SmlouvaOZapujcce2026Page() {
         <p className="mx-auto mb-6 max-w-sm text-sm leading-relaxed text-slate-400">
           Formulář vás provede každou částí smlouvy. Hotovo za méně než 5 minut, PDF ke stažení ihned.
         </p>
-        <Link
+        <TrackedLink
           href="/pujcka"
+          eventName="blog_cta_click"
+          eventParams={{ surface: 'blog_article', cta_type: 'final_primary', destination: '/pujcka' }}
           className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-8 py-4 text-sm font-black uppercase tracking-tight text-black shadow-[0_0_40px_rgba(245,158,11,0.25)] transition hover:bg-amber-400"
         >
           Vytvořit smlouvu o zápůjčce →
-        </Link>
+        </TrackedLink>
         <div className="mt-3 text-xs text-slate-600">Od 99 Kč · Dle § 2390 OZ · Platné pro 2026</div>
       </div>
 

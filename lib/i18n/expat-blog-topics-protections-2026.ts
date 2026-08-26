@@ -51,7 +51,10 @@ function topicEn(
     finalCta:
       opts.finalCta ?? {
         title: opts.primaryCta.title,
-        body: 'Open the English-guided form, fill in your details, and download the Czech PDF after payment.',
+        body:
+          opts.builderHref === '/spoluprace' || opts.builderHref === '/smlouva-o-dilo'
+            ? 'The linked form interface is available only in Czech. Fill it in to generate a Czech PDF after payment.'
+            : 'Open the English-guided form, fill in your details, and download the Czech PDF after payment.',
         buttonLabel: opts.primaryCta.buttonLabel,
       },
     trustBox: opts.trust,
@@ -113,7 +116,10 @@ function topicUa(
     finalCta:
       opts.finalCta ?? {
         title: opts.primaryCta.title,
-        body: 'Відкрийте форму українською, заповніть дані та завантажте PDF чеською після оплати.',
+        body:
+          opts.builderHref === '/spoluprace' || opts.builderHref === '/smlouva-o-dilo'
+            ? 'Інтерфейс форми за посиланням доступний лише чеською. Після оплати ви отримаєте PDF чеською.'
+            : 'Відкрийте форму українською, заповніть дані та завантажте PDF чеською після оплати.',
         buttonLabel: opts.primaryCta.buttonLabel,
       },
     trustBox: opts.trust,
@@ -453,8 +459,8 @@ export const EXPAT_BLOG_TOPICS_PROTECTIONS_2026: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Protect payment in a Czech work contract',
-      body: 'English-guided smlouva o dílo → Czech PDF with scope, price and clear payment terms.',
-      buttonLabel: 'Open work contract form (EN) →',
+      body: 'Set the scope, price and payment terms in a Czech PDF. The linked form interface is available only in Czech.',
+      buttonLabel: 'Open Czech-only work contract form →',
     },
     trust: {
       generatorSuitable: 'Freelance or business contracts where you want clear payment terms and a basis for default interest.',
@@ -516,8 +522,8 @@ export const EXPAT_BLOG_TOPICS_PROTECTIONS_2026: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Захистіть оплату в чеському договорі підряду',
-      body: 'Форма smlouva o dílo українською → чеський PDF з обсягом, ціною та чіткими умовами оплати.',
-      buttonLabel: 'Відкрити форму договору підряду (UA) →',
+      body: 'Зафіксуйте обсяг, ціну та умови оплати в PDF чеською. Інтерфейс форми доступний лише чеською.',
+      buttonLabel: 'Відкрити форму договору підряду лише чеською →',
     },
     trust: {
       generatorSuitable: 'Фріланс- або бізнес-договори, де потрібні чіткі умови оплати та підстава для відсотків за прострочення.',

@@ -164,6 +164,8 @@ export default function NdaBuilderPage() {
           contractType: 'nda',
           deliveryEmail: authorization.deliveryEmail,
           consent: authorization.consent,
+          analyticsConsentGranted: authorization.analyticsConsentGranted,
+          analyticsAttribution: authorization.analyticsAttribution,
           tier: formData.tier,
           addOns,
           notaryUpsell: formData.tier !== 'basic',

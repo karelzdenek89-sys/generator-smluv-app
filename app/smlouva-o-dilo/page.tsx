@@ -246,6 +246,8 @@ export default function WorkContractPage() {
           contractType: 'work_contract',
           deliveryEmail: authorization.deliveryEmail,
           consent: authorization.consent,
+          analyticsConsentGranted: authorization.analyticsConsentGranted,
+          analyticsAttribution: authorization.analyticsAttribution,
           annexLanguage: authorization.annexLanguage,
           tier: packageConfig?.defaultTier ?? formData.tier,
           packageKey: packageConfig?.key ?? null,

@@ -397,6 +397,8 @@ function LeaseBuilderContent() {
           contractType: 'lease',
           deliveryEmail: authorization.deliveryEmail,
           consent: authorization.consent,
+          analyticsConsentGranted: authorization.analyticsConsentGranted,
+          analyticsAttribution: authorization.analyticsAttribution,
           annexLanguage: authorization.annexLanguage,
           tier: formData.tier,
           packageKey: packageConfig?.key ?? null,
@@ -518,7 +520,13 @@ function LeaseBuilderContent() {
         faq={ui.landing.faq}
         ctaLabel={ui.landing.ctaLabel}
         formId="formular"
-        guideHref="/blog/najemni-smlouva-vzor-2026"
+        guideHref={
+          builderLocale === 'en'
+            ? '/blog/expat/rental-agreement-czech-republic-guide-en'
+            : builderLocale === 'ua'
+              ? '/blog/expat/rental-agreement-czech-republic-guide-ua'
+              : '/blog/najemni-smlouva-vzor-2026'
+        }
         guideLabel={ui.landing.guideLabel}
       />
 

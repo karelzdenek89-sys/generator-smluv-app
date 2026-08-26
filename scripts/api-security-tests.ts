@@ -1,5 +1,8 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { isBoundedJsonObject, readFirstPartyJson } from '@/lib/api-security';
+import { BROWSER_ANALYTICS_EVENT_NAMES } from '@/lib/analytics';
 
 function request(
   body: string,
@@ -57,6 +60,33 @@ async function main() {
   assert.equal(isBoundedJsonObject({ name: 'Příliš dlouhé' }, limits), false);
   assert.equal(isBoundedJsonObject({ nested: { too: { deep: true } } }, limits), false);
   assert.equal(isBoundedJsonObject({ values: [1, 2, 3] }, limits), false);
+
+  const browserEvents = new Set<string>(BROWSER_ANALYTICS_EVENT_NAMES);
+  for (const serverOwned of [
+    'builder_completed',
+    'checkout_rejected',
+    'stripe_checkout_started',
+    'checkout_addon_purchased',
+    'checkout_completed',
+    'newsletter_subscribed',
+    'document_downloaded',
+    'free_document_generated',
+    'free_document_downloaded',
+    'partner_conversion_recorded',
+  ]) {
+    assert.equal(
+      browserEvents.has(serverOwned),
+      false,
+      `${serverOwned} is server-owned and must not be accepted by the public analytics endpoint`,
+    );
+  }
+  const analyticsRoute = readFileSync(join(process.cwd(), 'app/api/analytics/route.ts'), 'utf8');
+  assert.match(analyticsRoute, /event:\s*z\.enum\(BROWSER_ANALYTICS_EVENT_NAMES\)/);
+  assert.doesNotMatch(
+    analyticsRoute,
+    /\brevenue_czk:|\btotal_price_czk:|\badd_on_price_czk:/,
+    'the public analytics schema must strip server-owned financial values',
+  );
 
   console.log('API security tests passed.');
 }

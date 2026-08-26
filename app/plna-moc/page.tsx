@@ -124,7 +124,7 @@ function PlnaMocPageContent() {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contractType: 'power_of_attorney', deliveryEmail: authorization.deliveryEmail, consent: authorization.consent, annexLanguage: authorization.annexLanguage, tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', lang: builderLocale, payload: { ...form, contractType: 'power_of_attorney', lang: builderLocale } }),
+        body: JSON.stringify({ contractType: 'power_of_attorney', deliveryEmail: authorization.deliveryEmail, consent: authorization.consent, analyticsConsentGranted: authorization.analyticsConsentGranted, analyticsAttribution: authorization.analyticsAttribution, annexLanguage: authorization.annexLanguage, tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', lang: builderLocale, payload: { ...form, contractType: 'power_of_attorney', lang: builderLocale } }),
       });
       const data = await res.json();
       if (!res.ok || !data?.url) throw new Error();

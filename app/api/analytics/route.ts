@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getClientIp, readFirstPartyJson } from '@/lib/api-security';
 import {
-  ANALYTICS_EVENT_NAMES,
+  BROWSER_ANALYTICS_EVENT_NAMES,
   type AnalyticsEventName,
   type AnalyticsEventParams,
 } from '@/lib/analytics';
@@ -12,10 +12,10 @@ import { redis } from '@/lib/redis';
 export const runtime = 'nodejs';
 
 const boundedString = z.string().max(512);
-const boundedNumber = z.number().finite().min(0).max(1_000_000);
 
 const eventSchema = z.object({
-  event: z.enum(ANALYTICS_EVENT_NAMES),
+  // Výslovný browser allowlist: dokončení, stažení a tržby zapisuje pouze server.
+  event: z.enum(BROWSER_ANALYTICS_EVENT_NAMES),
   params: z
     .object({
       pathname: boundedString.optional(),
@@ -23,7 +23,14 @@ const eventSchema = z.object({
       destination: boundedString.optional(),
       surface: boundedString.optional(),
       position: z.number().int().min(1).max(100).optional(),
-      traffic_source: boundedString.optional(),
+      traffic_source: z.enum([
+        'blog_article',
+        'seo_landing',
+        'situation_page',
+        'package_page',
+        'homepage',
+        'builder_landing',
+      ]).optional(),
       traffic_label: boundedString.optional(),
       article_slug: boundedString.optional(),
       situation_key: z.enum(['landlord', 'vehicle_sale']).optional(),
@@ -42,14 +49,14 @@ const eventSchema = z.object({
         'landlord', 'tenant', 'seller', 'buyer', 'employer', 'employee',
         'customer', 'client', 'contractor', 'supplier', 'freelancer', 'company', 'unknown',
       ]).optional(),
-      placement: z.enum(['success', 'download']).optional(),
-      revenue_czk: boundedNumber.optional(),
+      placement: z.enum(['success', 'download', 'article']).optional(),
       partner_click_id: z.string().max(128).regex(/^[a-zA-Z0-9_-]+$/).optional(),
       partner_transaction_id: z.string().uuid().optional(),
       experiment_id: boundedString.optional(),
       variant: boundedString.optional(),
       monetization_mode: z.enum(['paid', 'freemium', 'free_experiment']).optional(),
       landing_page: boundedString.optional(),
+      acquisition_page: z.string().max(256).regex(/^(?:\/|\/[a-z0-9-]+(?:\/[a-z0-9-]+)*)$/).optional(),
       contract_type: z
         .enum([
           'lease',
@@ -77,10 +84,6 @@ const eventSchema = z.object({
         .enum(['docx', 'signing_checklist', 'handover_protocol', 'extended_archive', 'bilingual_annex'])
         .optional(),
       add_on_keys: boundedString.optional(),
-      add_on_price_czk: boundedNumber.optional(),
-      addons_total_czk: boundedNumber.optional(),
-      base_price_czk: boundedNumber.optional(),
-      total_price_czk: boundedNumber.optional(),
       selected_addons_count: z.number().int().min(0).max(20).optional(),
       download_format: z.enum(['pdf', 'docx']).optional(),
       download_sequence: z.number().int().min(1).max(1000).optional(),

@@ -11,6 +11,7 @@ import {
 import {
   EXPAT_BUILDER_SITEMAP,
   getExpatBuilderSitemapAlternates,
+  getExpatHreflangLanguages,
   getExpatSeoPageHreflangAlternates,
 } from '@/lib/i18n/expat-hreflang';
 import { czechBlogSitemapEntries } from '@/lib/seo/sitemap-blog';
@@ -31,11 +32,13 @@ function staticPage(
   path: string,
   priority: number,
   changeFrequency: MetadataRoute.Sitemap[0]['changeFrequency'] = 'monthly',
+  languages?: Record<string, string>,
 ): MetadataRoute.Sitemap[0] {
   return {
     url: `${BASE_URL}${path}`,
     changeFrequency,
     priority,
+    ...(languages ? { alternates: { languages } } : {}),
   };
 }
 
@@ -70,13 +73,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     staticPage('/darovaci-smlouva', 0.93),
     staticPage('/nda-smlouva', 0.93),
     staticPage('/pujcka-smlouva', 0.93),
-    staticPage('/podnajemni-smlouva', 0.93),
-    staticPage('/plna-moc-online', 0.93),
+    staticPage('/podnajemni-smlouva', 0.93, 'monthly', getExpatHreflangLanguages('sublease')),
+    staticPage('/plna-moc-online', 0.93, 'monthly', getExpatHreflangLanguages('power_of_attorney')),
     staticPage('/uznani-dluhu-vzor', 0.93),
     staticPage('/smlouva-o-sluzbach', 0.93),
     staticPage('/najemni-smlouva-byt', 0.85),
     staticPage('/pro-pronajimatele', 0.9),
-    staticPage('/prodej-vozidla', 0.9),
+    staticPage('/prodej-vozidla', 0.9, 'monthly', getExpatHreflangLanguages('car_sale')),
     staticPage('/balicek-pronajimatel', 0.88),
     staticPage('/balicek-prodej-vozidla', 0.88),
     staticPage('/balicek-zamestnavatel', 0.9),

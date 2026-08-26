@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import PartnerNextSteps from '@/app/components/partners/PartnerNextSteps';
+import type { CheckoutAnalyticsAttribution } from '@/lib/analytics-attribution';
 import type { PartnerContext, PublicPartnerOffer } from '@/lib/partners/types';
 import { normalizeLocale, withLocale, type AppLocale } from '@/lib/locale';
 
@@ -75,6 +76,7 @@ export default function SecureDownloadPage() {
     context: PartnerContext;
     offers: PublicPartnerOffer[];
     attributionId?: string | null;
+    analyticsAttribution?: CheckoutAnalyticsAttribution | null;
   } | null>(null);
   const startedFor = useRef('');
 
@@ -167,9 +169,19 @@ export default function SecureDownloadPage() {
       cache: 'no-store',
     })
       .then((response) => response.ok ? response.json() : null)
-      .then((data: { partnerContext?: PartnerContext; partnerOffers?: PublicPartnerOffer[]; partnerAttributionId?: string | null } | null) => {
+      .then((data: {
+        partnerContext?: PartnerContext;
+        partnerOffers?: PublicPartnerOffer[];
+        partnerAttributionId?: string | null;
+        analyticsAttribution?: CheckoutAnalyticsAttribution | null;
+      } | null) => {
         if (!cancelled && data?.partnerContext && Array.isArray(data.partnerOffers)) {
-          setPartnerResult({ context: data.partnerContext, offers: data.partnerOffers, attributionId: data.partnerAttributionId });
+          setPartnerResult({
+            context: data.partnerContext,
+            offers: data.partnerOffers,
+            attributionId: data.partnerAttributionId,
+            analyticsAttribution: data.analyticsAttribution,
+          });
         }
       })
       .catch(() => {
@@ -211,6 +223,7 @@ export default function SecureDownloadPage() {
             offers={partnerResult.offers}
             sourcePage="download"
             attributionId={partnerResult.attributionId}
+            analyticsAttribution={partnerResult.analyticsAttribution}
           />
         </div>
       ) : null}

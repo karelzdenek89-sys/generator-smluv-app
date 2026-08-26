@@ -169,6 +169,8 @@ function PodnajemuPageContent() {
           contractType: 'sublease',
           deliveryEmail: authorization.deliveryEmail,
           consent: authorization.consent,
+          analyticsConsentGranted: authorization.analyticsConsentGranted,
+          analyticsAttribution: authorization.analyticsAttribution,
           annexLanguage: authorization.annexLanguage,
           tier: form.tier,
           addOns,

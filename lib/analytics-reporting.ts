@@ -9,6 +9,8 @@ import { redis } from '@/lib/redis';
 import { SITUATION_LANDINGS } from '@/lib/situations';
 import { GSC_PAGE_SNAPSHOTS, classifyGscSnapshot } from '@/lib/gsc-monetization-candidates';
 import type { AnalyticsEventName, AnalyticsEventParams, PriceBand } from './analytics';
+import { attributionViewMatchesSource } from './analytics-attribution';
+import { MAX_STORED_ANALYTICS_EVENTS } from './analytics-server';
 
 type StoredAnalyticsEvent = {
   event: AnalyticsEventName;
@@ -93,6 +95,7 @@ export type AnalyticsDashboardData = {
     contractType: string;
     locale: string;
     userRole: string;
+    placement: string;
     eligibleUsers: number;
     impressions: number;
     clicks: number;
@@ -116,6 +119,23 @@ export type AnalyticsDashboardData = {
     freeDownloads: number;
     purchases: number;
     contractRevenueCzk: number;
+    partnerRevenueCzk: number | null;
+  }>;
+  revenueAttribution: Array<{
+    landingPage: string;
+    trafficSource: string;
+    articleSlug?: string;
+    landingViews: number;
+    productCtaClicks: number;
+    builderStarts: number;
+    builderCompletions: number;
+    checkoutStarts: number;
+    purchases: number;
+    purchaseRevenueCzk: number;
+    downloads: number;
+    partnerImpressions: number;
+    partnerClicks: number;
+    partnerConversions: number | null;
     partnerRevenueCzk: number | null;
   }>;
   gscCandidates: Array<{
@@ -149,8 +169,10 @@ type PartnerAccumulator = {
   contractType: string;
   locale: string;
   userRole: string;
+  placement: string;
   eligibleIds: Set<string>;
   eligibleEvents: number;
+  impressionIds: Set<string>;
   impressions: number;
   clicks: number;
   leadStarts: number;
@@ -161,6 +183,26 @@ type PartnerAccumulator = {
   conversionsKnown: boolean;
   revenueCzk: number;
   revenueKnown: boolean;
+};
+
+type RevenueAttributionAccumulator = {
+  landingPage: string;
+  trafficSource: string;
+  articleSlug?: string;
+  landingViews: number;
+  productCtaClicks: number;
+  builderStarts: number;
+  builderCompletions: number;
+  checkoutStarts: number;
+  purchases: number;
+  purchaseRevenueCzk: number;
+  downloads: number;
+  partnerImpressions: number;
+  partnerClicks: number;
+  partnerConversions: number;
+  partnerConversionsKnown: boolean;
+  partnerRevenueCzk: number;
+  partnerRevenueKnown: boolean;
 };
 
 export const ANALYTICS_REPORTING_WINDOW_DAYS = 30;
@@ -315,7 +357,11 @@ export async function getAnalyticsDashboardData(
   const now = new Date();
   const sinceTime = now.getTime() - windowDays * 24 * 60 * 60 * 1000;
   const recentSinceTime = now.getTime() - ANALYTICS_REPORTING_RECENT_DAYS * 24 * 60 * 60 * 1000;
-  const rawEvents = ((await redis.lrange('analytics:events', 0, 1999)) ?? []) as unknown[];
+  const rawEvents = ((await redis.lrange(
+    'analytics:events',
+    0,
+    MAX_STORED_ANALYTICS_EVENTS - 1,
+  )) ?? []) as unknown[];
   const events = rawEvents
     .map(safeParseEvent)
     .filter((item): item is StoredAnalyticsEvent => Boolean(item))
@@ -399,6 +445,7 @@ export async function getAnalyticsDashboardData(
   >();
   const partnerStats = new Map<string, PartnerAccumulator>();
   const monetizationStats = new Map<string, MonetizationAccumulator>();
+  const revenueAttributionStats = new Map<string, RevenueAttributionAccumulator>();
 
   function getMonetizationStat(params: AnalyticsEventParams): MonetizationAccumulator {
     const contractType = params.contract_type ?? 'unknown';
@@ -425,15 +472,18 @@ export async function getAnalyticsDashboardData(
     const contractType = params.contract_type ?? 'unknown';
     const locale = params.locale ?? 'unknown';
     const userRole = params.user_role ?? 'unknown';
-    const key = [params.partner_id, params.product_id, contractType, locale, userRole].join('::');
+    const placement = params.placement ?? 'unknown';
+    const key = [params.partner_id, params.product_id, contractType, locale, userRole, placement].join('::');
     const current = partnerStats.get(key) ?? {
       partnerId: params.partner_id,
       offerId: params.product_id,
       contractType,
       locale,
       userRole,
+      placement,
       eligibleIds: new Set<string>(),
       eligibleEvents: 0,
+      impressionIds: new Set<string>(),
       impressions: 0,
       clicks: 0,
       leadStarts: 0,
@@ -449,6 +499,43 @@ export async function getAnalyticsDashboardData(
     return current;
   }
 
+  function getRevenueAttributionStat(
+    params: AnalyticsEventParams,
+  ): RevenueAttributionAccumulator | null {
+    const landingPage = params.acquisition_page;
+    if (
+      !landingPage
+      || !landingPage.startsWith('/')
+      || landingPage.includes('?')
+      || landingPage.includes('#')
+      || landingPage.length > 256
+    ) return null;
+    const trafficSource = params.traffic_source ?? 'unknown';
+    const key = `${trafficSource}::${landingPage}`;
+    const current = revenueAttributionStats.get(key) ?? {
+      landingPage,
+      trafficSource,
+      ...(params.article_slug ? { articleSlug: params.article_slug } : {}),
+      landingViews: 0,
+      productCtaClicks: 0,
+      builderStarts: 0,
+      builderCompletions: 0,
+      checkoutStarts: 0,
+      purchases: 0,
+      purchaseRevenueCzk: 0,
+      downloads: 0,
+      partnerImpressions: 0,
+      partnerClicks: 0,
+      partnerConversions: 0,
+      partnerConversionsKnown: false,
+      partnerRevenueCzk: 0,
+      partnerRevenueKnown: false,
+    };
+    current.articleSlug ??= params.article_slug;
+    revenueAttributionStats.set(key, current);
+    return current;
+  }
+
   for (const event of events) {
     const params = event.params ?? {};
     const destination = normalizeDestination(params.destination);
@@ -456,6 +543,71 @@ export async function getAnalyticsDashboardData(
     const inRecentWindow = withinWindow(event.received_at, recentSinceTime);
     const situationKey = params.situation_key;
     const packageKey = params.package_key;
+    const attributedRevenue = getRevenueAttributionStat(params);
+
+    if (attributedRevenue) {
+      switch (event.event) {
+        case 'blog_article_view':
+        case 'seo_landing_view':
+        case 'situation_page_view':
+        case 'package_page_view':
+        case 'homepage_view':
+          if (
+            attributionViewMatchesSource(event.event, attributedRevenue.trafficSource)
+            && params.pathname === attributedRevenue.landingPage
+          ) {
+            attributedRevenue.landingViews += 1;
+          }
+          break;
+        case 'blog_cta_click':
+        case 'seo_landing_cta_click':
+        case 'situation_cta_click':
+        case 'package_cta_click':
+          attributedRevenue.productCtaClicks += 1;
+          break;
+        case 'builder_view':
+          if (
+            attributionViewMatchesSource(event.event, attributedRevenue.trafficSource)
+            && params.pathname === attributedRevenue.landingPage
+          ) {
+            attributedRevenue.landingViews += 1;
+          }
+          attributedRevenue.builderStarts += 1;
+          break;
+        case 'builder_completed':
+          attributedRevenue.builderCompletions += 1;
+          break;
+        case 'stripe_checkout_started':
+          attributedRevenue.checkoutStarts += 1;
+          break;
+        case 'checkout_completed':
+          attributedRevenue.purchases += 1;
+          if (typeof params.total_price_czk === 'number' && Number.isFinite(params.total_price_czk)) {
+            attributedRevenue.purchaseRevenueCzk += params.total_price_czk;
+          }
+          break;
+        case 'document_downloaded':
+        case 'free_document_downloaded':
+          attributedRevenue.downloads += 1;
+          break;
+        case 'partner_offer_viewed':
+          attributedRevenue.partnerImpressions += 1;
+          break;
+        case 'partner_offer_clicked':
+          attributedRevenue.partnerClicks += 1;
+          break;
+        case 'partner_conversion_recorded':
+          attributedRevenue.partnerConversionsKnown = true;
+          attributedRevenue.partnerConversions += 1;
+          if (typeof params.revenue_czk === 'number' && Number.isFinite(params.revenue_czk)) {
+            attributedRevenue.partnerRevenueKnown = true;
+            attributedRevenue.partnerRevenueCzk += params.revenue_czk;
+          }
+          break;
+        default:
+          break;
+      }
+    }
 
     increment(ctaStats, params.cta_type);
 
@@ -749,7 +901,15 @@ export async function getAnalyticsDashboardData(
 
       case 'partner_offer_viewed': {
         const stat = getPartnerStat(params);
-        if (stat) stat.impressions += 1;
+        if (!stat) break;
+        if (params.partner_transaction_id) {
+          if (!stat.impressionIds.has(params.partner_transaction_id)) {
+            stat.impressionIds.add(params.partner_transaction_id);
+            stat.impressions += 1;
+          }
+        } else {
+          stat.impressions += 1;
+        }
         break;
       }
 
@@ -893,6 +1053,7 @@ export async function getAnalyticsDashboardData(
         contractType: stat.contractType,
         locale: stat.locale,
         userRole: stat.userRole,
+        placement: stat.placement,
         eligibleUsers,
         impressions: stat.impressions,
         clicks: stat.clicks,
@@ -925,6 +1086,32 @@ export async function getAnalyticsDashboardData(
       partnerRevenueCzk: stat.partnerRevenueKnown ? stat.partnerRevenueCzk : null,
     }))
     .sort((left, right) => right.builderStarts - left.builderStarts);
+
+  const revenueAttribution = [...revenueAttributionStats.values()]
+    .map((stat) => ({
+      landingPage: stat.landingPage,
+      trafficSource: stat.trafficSource,
+      articleSlug: stat.articleSlug,
+      landingViews: stat.landingViews,
+      productCtaClicks: stat.productCtaClicks,
+      builderStarts: stat.builderStarts,
+      builderCompletions: stat.builderCompletions,
+      checkoutStarts: stat.checkoutStarts,
+      purchases: stat.purchases,
+      purchaseRevenueCzk: stat.purchaseRevenueCzk,
+      downloads: stat.downloads,
+      partnerImpressions: stat.partnerImpressions,
+      partnerClicks: stat.partnerClicks,
+      partnerConversions: stat.partnerConversionsKnown ? stat.partnerConversions : null,
+      partnerRevenueCzk: stat.partnerRevenueKnown ? stat.partnerRevenueCzk : null,
+    }))
+    .sort((left, right) =>
+      right.purchaseRevenueCzk - left.purchaseRevenueCzk
+      || right.purchases - left.purchases
+      || right.builderStarts - left.builderStarts
+      || right.landingViews - left.landingViews,
+    )
+    .slice(0, 30);
 
   const gscCandidates = GSC_PAGE_SNAPSHOTS.map((snapshot) => ({
     ...snapshot,
@@ -1009,6 +1196,7 @@ export async function getAnalyticsDashboardData(
     seoLandingPerformance,
     partnerPerformance,
     monetizationPerformance,
+    revenueAttribution,
     gscCandidates,
     overview: [
       { key: 'article_views', label: 'Zobrazen\u00ed \u010dl\u00e1nk\u016f', value: articleViews },

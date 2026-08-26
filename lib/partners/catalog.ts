@@ -102,14 +102,17 @@ const DEFINITIONS: readonly PartnerOfferDefinition[] = [
     },
   },
   {
-    id: 'cebia_vehicle_history', partnerId: 'cebia', provider: 'Cebia',
+    id: 'cebia_vehicle_history', partnerId: 'cebia', provider: 'Cebia AUTOTRACER',
     category: 'vehicle_history', priority: 20, manualQualityScore: 80,
     destination: 'partner', supportedLocales: ['cs'], supportedCountries: ['CZ'],
     allowedHosts: ['cebia.cz'], allowedQueryKeys: [],
     isEligible: (c) => c.completed && c.contractType === 'car_sale' && c.userRole === 'buyer',
-    resolveConfig: () => configured('PARTNER_CEBIA'),
+    resolveConfig: () => {
+      const config = configured('PARTNER_CEBIA');
+      return { ...config, enabled: config.enabled && config.isAffiliate };
+    },
     copy: {
-      cs: { title: 'Prověřit dostupnou historii vozidla', description: 'Kupující si může samostatně prověřit dostupnou historii podle VIN.', cta: 'Pokračovat na Cebia', disclosure: 'Rozsah prověření závisí na dostupných záznamech. VIN ani údaje ze smlouvy se automaticky nepřenášejí.' },
+      cs: { title: 'Před koupí vozidla můžete prověřit jeho historii', description: 'Kupní smlouva upravuje právní stránku převodu. Dostupné informace o historii konkrétního vozidla lze samostatně ověřit prostřednictvím služby Cebia AUTOTRACER.', cta: 'Prověřit historii vozidla', disclosure: 'Rozsah prověření závisí na dostupných záznamech. VIN ani údaje ze smlouvy se automaticky nepřenášejí.' },
       en: CS_ONLY_FALLBACK.en, ua: CS_ONLY_FALLBACK.ua,
     },
   },
@@ -240,6 +243,29 @@ export function selectPartnerOffers(
 
 export function getEligiblePartnerOffers(context: PartnerContext): readonly PublicPartnerOffer[] {
   return selectPartnerOffers(getEligiblePartnerCandidates(context), context.locale);
+}
+
+export type EditorialPartnerOfferId = 'cebia_vehicle_history';
+
+/**
+ * Partner cards in editorial content are deliberately allowlisted separately
+ * from post-document eligibility. They still fail closed unless the global
+ * engine flag, the partner flag and an approved HTTPS destination are present.
+ */
+export function getEditorialPartnerOffer(
+  offerId: EditorialPartnerOfferId,
+  locale: PartnerLocale,
+): PublicPartnerOffer | null {
+  if (!isEngineEnabled()) return null;
+  const definition = DEFINITIONS.find((item) => item.id === offerId);
+  if (!definition || !definition.supportedLocales.includes(locale)) return null;
+
+  const config = definition.resolveConfig();
+  if (!config.enabled) return null;
+  const href = safePartnerUrl(config.href, definition);
+  if (!href) return null;
+
+  return selectPartnerOffers([{ definition, href, isAffiliate: config.isAffiliate }], locale)[0] ?? null;
 }
 
 export function getPartnerReadinessCatalog() {

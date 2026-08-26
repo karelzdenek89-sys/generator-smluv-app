@@ -263,6 +263,36 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
       </Section>
 
       <Section
+        title={'Landing page → výnos'}
+        description={'První first-party akviziční vstup v 30minutové relaci po kanonické URL. Vlastní měření se spustí jen po opt-in; načítá nejvýše 5 000 posledních událostí a počty nejsou unikátní uživatelé. Kompletní tržby ověřte ve Stripe.'}
+      >
+        <Table
+          headers={[
+            'Landing / zdroj', 'Views', 'CTA', 'Start', 'Dokončeno', 'Stripe',
+            'Platby', 'Tržba', 'Stažení', 'Partner view', 'Partner klik', 'Partner konverze', 'Partner revenue',
+          ]}
+          rows={data.revenueAttribution.map((item) => [
+            <div key={`${item.trafficSource}:${item.landingPage}`}>
+              <div className="font-medium text-[#f7f0de]">{item.landingPage}</div>
+              <div className="text-xs text-slate-500">{item.trafficSource}</div>
+            </div>,
+            formatNumber(item.landingViews),
+            formatNumber(item.productCtaClicks),
+            formatNumber(item.builderStarts),
+            formatNumber(item.builderCompletions),
+            formatNumber(item.checkoutStarts),
+            formatNumber(item.purchases),
+            formatCurrency(item.purchaseRevenueCzk),
+            formatNumber(item.downloads),
+            formatNumber(item.partnerImpressions),
+            formatNumber(item.partnerClicks),
+            item.partnerConversions === null ? 'N/A' : formatNumber(item.partnerConversions),
+            item.partnerRevenueCzk === null ? 'N/A' : formatCurrency(item.partnerRevenueCzk),
+          ])}
+        />
+      </Section>
+
+      <Section
         title={'GSC kandidáti pro monetizační experiment'}
         description={'Auditovatelný snapshot, nikoli živé Search Console. Bez stránkových dat se žádná další smlouva automaticky nepřepíná zdarma.'}
       >
@@ -286,9 +316,9 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
       >
         <Table
           headers={[
-            'Partner / nabídka', 'Kontext', 'Eligible', 'Viewed', 'Clicked', 'CTR',
+            'Partner / nabídka', 'Kontext', 'Eligible signály', 'Viewed', 'Clicked', 'CTR',
             'Lead start', 'Souhlas', 'Lead odeslán', 'Lead OK', 'Konverze', 'Revenue',
-            'Rev/click', 'Rev/eligible', 'Rev/dokument',
+            'Rev/click', 'Rev/eligible signál', 'Rev/dokument',
           ]}
           rows={data.partnerPerformance.map((item) => [
             <div key={`${item.partnerId}:${item.offerId}`}>
@@ -297,7 +327,7 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
             </div>,
             <div key={`${item.offerId}:context`} className="text-xs">
               <div>{item.contractType} / {item.userRole}</div>
-              <div className="text-slate-500">{item.locale}</div>
+              <div className="text-slate-500">{item.locale} / {item.placement}</div>
             </div>,
             formatNumber(item.eligibleUsers),
             formatNumber(item.impressions),
@@ -315,7 +345,7 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
           ])}
         />
         <p className="mt-4 text-xs leading-5 text-slate-500">
-          Revenue per click, eligible user a zakoupený dokument se počítá pouze u řádků s potvrzeným revenue; jinak zůstává N/A.
+          Revenue per click, eligible signál a zakoupený dokument se počítá pouze u řádků s potvrzeným revenue; jinak zůstává N/A. U post-document umístění se signály deduplikují podle transakce, u redakční karty jde záměrně o události bez trvalého identifikátoru uživatele.
         </p>
       </Section>
 

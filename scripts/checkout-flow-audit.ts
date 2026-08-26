@@ -78,11 +78,36 @@ function testCheckoutRouteCoverage() {
   assert.match(checkout, /normalizeCheckoutAddons/);
   assert.match(checkout, /price_data/);
   assert.match(checkout, /getCheckoutAddonMetadata/);
+  assert.match(checkout, /builder_completed/);
   assert.match(checkout, /stripe_checkout_started/);
   assert.match(checkout, /recordAnalyticsEvent/);
   assert.match(checkout, /CHECKOUT_AUDIT_SECRET/);
   assert.match(checkout, /timingSafeEqual/);
-  assert.match(checkout, /if\s*\(!isCheckoutAudit\)\s*\{\s*await recordAnalyticsEvent\('stripe_checkout_started'/);
+  assert.match(
+    checkout,
+    /if\s*\(!isCheckoutAudit && analyticsConsentGranted\)\s*\{\s*await recordAnalyticsEvent\('builder_completed', acceptedCheckoutParams\)/,
+    'Accepted paid builders must record completion only with explicit analytics consent and outside audit mode',
+  );
+  assert.match(
+    checkout,
+    /if\s*\(!isCheckoutAudit && analyticsConsentGranted\)\s*\{\s*await recordAnalyticsEvent\('stripe_checkout_started', acceptedCheckoutParams\)/,
+    'Stripe checkout starts must be recorded only with explicit analytics consent and outside audit mode',
+  );
+  assert.match(checkout, /normalizeConsentedCheckoutAnalyticsAttribution\(/);
+  assert.match(checkout, /getMonetizationPolicy\(contractType, lang\)/);
+  assert.match(checkout, /experiment_id:\s*experimentId/);
+  assert.match(checkout, /variant:\s*experimentVariant/);
+  const draftPersistIndex = checkout.indexOf('`contract:draft:${draftId}`');
+  const builderCompletedIndex = checkout.indexOf("recordAnalyticsEvent('builder_completed', acceptedCheckoutParams)");
+  const stripeCreateIndex = checkout.indexOf('stripe.checkout.sessions.create(sessionParams)');
+  const stripeStartedIndex = checkout.indexOf("recordAnalyticsEvent('stripe_checkout_started', acceptedCheckoutParams)");
+  assert.ok(
+    draftPersistIndex >= 0
+      && draftPersistIndex < builderCompletedIndex
+      && builderCompletedIndex < stripeCreateIndex
+      && stripeCreateIndex < stripeStartedIndex,
+    'Completion must follow safe draft persistence, while checkout start must follow Stripe acceptance',
+  );
   assert.match(checkout, /if\s*\(!isCheckoutAudit\)\s*\{\s*const rateLimit/);
   assert.match(checkout, /amountTotal:\s*session\.amount_total/);
   assert.doesNotMatch(
@@ -111,6 +136,16 @@ function testBuilderPayloads() {
     assert.match(src, /addOns/, `${page} must pass selected checkout add-ons`);
     assert.match(src, /deliveryEmail:\s*authorization\.deliveryEmail/, `${page} must send delivery email`);
     assert.match(src, /consent:\s*authorization\.consent/, `${page} must send consent proof`);
+    assert.match(
+      src,
+      /analyticsConsentGranted:\s*authorization\.analyticsConsentGranted/,
+      `${page} must send the explicit analytics consent choice`,
+    );
+    assert.match(
+      src,
+      /analyticsAttribution:\s*authorization\.analyticsAttribution/,
+      `${page} must send privacy-safe acquisition attribution when available`,
+    );
     if (hasLang) {
       assert.match(src, /lang:\s*builderLocale/, `${page} must pass builderLocale as lang`);
       assert.match(src, /annexLanguage:\s*authorization\.annexLanguage/, `${page} must pass selected annex language`);
@@ -145,6 +180,8 @@ function testWebhookAndDownload() {
   assert.match(webhook, /downloadToken/);
   assert.match(webhook, /checkout_completed/);
   assert.match(webhook, /checkout_addon_purchased/);
+  assert.match(webhook, /experiment_id:\s*options\.experimentId/);
+  assert.match(webhook, /variant:\s*options\.experimentVariant/);
   assert.match(webhook, /normalizeStoredCheckoutAddons/);
   assert.match(webhook, /contract:draft:/);
   assert.match(webhook, /webhook:fulfilled:/);

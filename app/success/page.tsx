@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { normalizeLocale, withLocale, type AppLocale } from '@/lib/locale';
 import PartnerNextSteps from '@/app/components/partners/PartnerNextSteps';
 import type { PartnerContext, PublicPartnerOffer } from '@/lib/partners/types';
+import type { CheckoutAnalyticsAttribution } from '@/lib/analytics-attribution';
 
 type DownloadState = 'checking' | 'ready' | 'error';
 
@@ -148,6 +149,7 @@ type SuccessStatusResponse = {
   partnerContext?: PartnerContext | null;
   partnerOffers?: PublicPartnerOffer[];
   partnerAttributionId?: string | null;
+  analyticsAttribution?: CheckoutAnalyticsAttribution | null;
   lang?: AppLocale;
 };
 
@@ -435,6 +437,7 @@ function SuccessContent() {
               offers={orderMeta.partnerOffers}
               sourcePage="success"
               attributionId={orderMeta.partnerAttributionId}
+              analyticsAttribution={orderMeta.analyticsAttribution}
             />
           ) : null}
 

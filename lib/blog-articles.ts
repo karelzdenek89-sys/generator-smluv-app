@@ -491,9 +491,9 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   },
   {
     slug: 'dpp-dohoda-provedeni-prace',
-    title: 'DPP 2026: vzor dohody, limity, odvody a pravidla',
+    title: 'DPP 2026: limit 300 hodin, odvody a povinnosti',
     excerpt:
-      'Praktický přehled, kdy je dohoda o provedení práce vhodná, jak nastavit odměnu a na co si dát pozor.',
+      'Praktický přehled limitu 300 hodin, hranice odvodů, dovolené a povinných náležitostí DPP v roce 2026.',
     category: 'Práce a zaměstnání',
     readTime: '7 min',
     date: '18. března 2026',

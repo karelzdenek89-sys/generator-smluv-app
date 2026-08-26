@@ -1,4 +1,7 @@
-import { trafficAttributionParams } from './analytics-attribution';
+import {
+  isProductAnalyticsConsentGranted,
+  trafficAttributionParams,
+} from './analytics-attribution';
 
 export const ANALYTICS_EVENT_NAMES = [
   'blog_article_view',
@@ -9,6 +12,7 @@ export const ANALYTICS_EVENT_NAMES = [
   'situation_cta_click',
   'package_page_view',
   'package_cta_click',
+  'homepage_view',
   'builder_view',
   'builder_completed',
   'package_flow_entered',
@@ -58,6 +62,56 @@ export const ANALYTICS_EVENT_NAMES = [
 
 export type AnalyticsEventName = (typeof ANALYTICS_EVENT_NAMES)[number];
 
+/**
+ * Události, které smí přijít z veřejného browser endpointu. Finanční a
+ * dokončovací signály sem záměrně nepatří — zapisuje je až validovaný server.
+ * Explicitní allowlist zajišťuje, že nová serverová událost nebude omylem
+ * veřejná jen proto, že byla přidána do ANALYTICS_EVENT_NAMES.
+ */
+export const BROWSER_ANALYTICS_EVENT_NAMES = [
+  'blog_article_view',
+  'blog_cta_click',
+  'seo_landing_view',
+  'seo_landing_cta_click',
+  'situation_page_view',
+  'situation_cta_click',
+  'package_page_view',
+  'package_cta_click',
+  'homepage_view',
+  'builder_view',
+  'package_flow_entered',
+  'builder_tier_selected',
+  'builder_upgrade_clicked',
+  'builder_checkout_modal_open',
+  'builder_checkout_modal_closed',
+  'builder_checkout_consent_missing',
+  'builder_checkout_clicked',
+  'checkout_addon_selected',
+  'checkout_addon_removed',
+  'homepage_pricing_path_click',
+  'homepage_situation_click',
+  'homepage_package_click',
+  'homepage_contract_card_click',
+  'premium_offer_viewed',
+  'premium_upgrade_clicked',
+  'content_offer_view',
+  'content_offer_click',
+  'bundle_selected',
+  'post_purchase_offer_view',
+  'post_purchase_offer_click',
+  'partner_offer_eligible',
+  'partner_offer_viewed',
+  'partner_offer_clicked',
+  'partner_lead_started',
+  'partner_lead_consent_granted',
+  'partner_lead_submitted',
+  'partner_lead_succeeded',
+  'partner_lead_failed',
+  'annual_plan_interest',
+] as const satisfies readonly AnalyticsEventName[];
+
+export type BrowserAnalyticsEventName = (typeof BROWSER_ANALYTICS_EVENT_NAMES)[number];
+
 export type PriceBand = '0' | '99' | '199' | '299' | '399' | '599';
 
 export type AnalyticsEventParams = {
@@ -89,7 +143,7 @@ export type AnalyticsEventParams = {
     | 'landlord' | 'tenant' | 'seller' | 'buyer' | 'employer'
     | 'employee' | 'customer' | 'client' | 'contractor'
     | 'supplier' | 'freelancer' | 'company' | 'unknown';
-  placement?: 'success' | 'download';
+  placement?: 'success' | 'download' | 'article';
   revenue_czk?: number;
   partner_click_id?: string;
   partner_transaction_id?: string;
@@ -97,6 +151,7 @@ export type AnalyticsEventParams = {
   variant?: string;
   monetization_mode?: 'paid' | 'freemium' | 'free_experiment';
   landing_page?: string;
+  acquisition_page?: string;
   contract_type?:
     | 'lease'
     | 'car_sale'
@@ -164,6 +219,11 @@ export type CheckoutRejectReason = (typeof CHECKOUT_REJECT_REASONS)[number];
 type AnalyticsPayload = {
   event: AnalyticsEventName;
   params?: AnalyticsEventParams;
+};
+
+export type AnalyticsTrackingOptions = {
+  /** Order-scoped surfaces pass false so an old order never inherits the current tab's acquisition. */
+  inheritAttribution?: boolean;
 };
 
 const CONTRACT_TYPE_BY_PATHNAME: Record<string, AnalyticsEventParams['contract_type']> = {
@@ -237,11 +297,15 @@ function shouldUseBeacon() {
   return typeof navigator !== 'undefined' && typeof navigator.sendBeacon === 'function';
 }
 
-export function trackEvent(event: AnalyticsEventName, params?: AnalyticsEventParams) {
-  if (typeof window === 'undefined') return;
+export function trackEvent(
+  event: AnalyticsEventName,
+  params?: AnalyticsEventParams,
+  options?: AnalyticsTrackingOptions,
+) {
+  if (typeof window === 'undefined' || !isProductAnalyticsConsentGranted()) return false;
 
   const pathname = params?.pathname ?? window.location.pathname;
-  const attribution = trafficAttributionParams();
+  const attribution = options?.inheritAttribution === false ? null : trafficAttributionParams();
   const payload: AnalyticsPayload = {
     event,
     params: {
@@ -251,6 +315,7 @@ export function trackEvent(event: AnalyticsEventName, params?: AnalyticsEventPar
             traffic_source: attribution.source,
             traffic_label: attribution.label,
             article_slug: params?.article_slug ?? attribution.article_slug,
+            acquisition_page: params?.acquisition_page ?? attribution.acquisition_page,
           }
         : {}),
       ...params,
@@ -262,8 +327,9 @@ export function trackEvent(event: AnalyticsEventName, params?: AnalyticsEventPar
     const body = JSON.stringify(payload);
 
     if (shouldUseBeacon()) {
-      navigator.sendBeacon('/api/analytics', new Blob([body], { type: 'application/json' }));
-      return;
+      if (navigator.sendBeacon('/api/analytics', new Blob([body], { type: 'application/json' }))) {
+        return true;
+      }
     }
 
     void fetch('/api/analytics', {
@@ -272,7 +338,9 @@ export function trackEvent(event: AnalyticsEventName, params?: AnalyticsEventPar
       body,
       keepalive: true,
     });
+    return true;
   } catch {
     // analytika nesmí rušit UX
+    return false;
   }
 }

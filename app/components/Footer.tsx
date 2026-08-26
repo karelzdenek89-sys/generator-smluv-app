@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import NewsletterSignup from '@/app/components/NewsletterSignup';
 import { SEO_LANDINGS, FOOTER_GROUPS } from '@/lib/internal-links';
-import { normalizeLocale, type AppLocale } from '@/lib/locale';
+import { getLocaleFromPathname, normalizeLocale, type AppLocale } from '@/lib/locale';
 
 type FooterCopy = {
   softwareTool: string;
@@ -266,13 +266,11 @@ export function LocalizedFooter({ locale }: { locale: Exclude<AppLocale, 'cs'> }
 
 export default function Footer() {
   const pathname = usePathname();
-  const firstSegment = pathname.split('/')[1] ?? '';
   const queryLocale = useSyncExternalStore(
     subscribeToLocation,
     getQueryLocaleSnapshot,
     () => null,
   );
-  const locale: AppLocale =
-    firstSegment === 'ua' ? 'ua' : firstSegment === 'en' ? 'en' : queryLocale ?? 'cs';
+  const locale = getLocaleFromPathname(pathname, queryLocale ?? 'cs');
   return <FooterContent locale={locale} />;
 }

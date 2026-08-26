@@ -28,6 +28,8 @@ export type ExpatBlogArticle = {
   dateTime: string;
   title: string;
   excerpt: string;
+  seoTitle?: string;
+  seoDescription?: string;
   intro: string;
   keywords: string[];
   builderHref: string;

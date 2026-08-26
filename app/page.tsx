@@ -7,14 +7,16 @@ import ProductScopeStrip from '@/app/components/marketing/ProductScopeStrip';
 import ExpatEntryLinks from '@/app/components/ExpatEntryLinks';
 import LanguageSwitcher from '@/app/components/LanguageSwitcher';
 import TrackedLink from '@/app/components/analytics/TrackedLink';
+import HomepageAnalyticsTracker from '@/app/components/analytics/HomepageAnalyticsTracker';
 import { SEO_LANDINGS, CLUSTER_LABELS, type ClusterKey } from '@/lib/internal-links';
 import { FOREIGN_LOCALES, LOCALE_META } from '@/lib/i18n/locales';
 import { getAvailableThematicPackages, getEffectivePriceBand } from '@/lib/packages';
 import { getFreeBasicPdfCopy } from '@/lib/monetization-copy';
 import { getMonetizationPolicy, isFreeBasicPolicy } from '@/lib/monetization-policy';
 import { PRICING_TIER_CONFIG } from '@/lib/pricing';
+import { SITE_URL } from '@/lib/seo/site';
 
-const HOMEPAGE_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
+const HOMEPAGE_BASE_URL = SITE_URL;
 const HOME_DPP_POLICY = getMonetizationPolicy('dpp', 'cs');
 const FREE_BASIC_DPP = isFreeBasicPolicy(HOME_DPP_POLICY);
 const HOME_BASIC_PRICE_LABEL = `od ${PRICING_TIER_CONFIG.basic.priceLabel}`;
@@ -175,6 +177,7 @@ const websiteSchema = {
 export default function Home() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#040c1a] text-slate-200">
+      <HomepageAnalyticsTracker />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c') }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema).replace(/</g, '\\u003c') }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema).replace(/</g, '\\u003c') }} />
@@ -255,7 +258,7 @@ export default function Home() {
             </div>
 
             <h1 className="font-serif italic text-6xl font-bold leading-[1.10] tracking-tight text-white md:text-7xl lg:text-[5rem]">
-              Smluvní dokumenty
+              Smlouvy online
               <br />
               <span className="text-[#c9a852]">sestavené přesně</span>
               <br />

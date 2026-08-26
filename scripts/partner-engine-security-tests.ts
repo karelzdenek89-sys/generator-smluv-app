@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { buildPartnerContext } from '../lib/partners/context';
-import { getEligiblePartnerOffers } from '../lib/partners/catalog';
+import { getEditorialPartnerOffer, getEligiblePartnerOffers } from '../lib/partners/catalog';
 import {
   createPartnerLeadConsent,
   tryDeliverPartnerLead,
@@ -66,8 +66,14 @@ function testContextAllowlistAndPiiRemoval() {
 
 function testUrlAndConfigFailClosed() {
   resetPartnerEnv();
+  assert.equal(
+    getEditorialPartnerOffer('cebia_vehicle_history', 'cs'),
+    null,
+    'editorial offer must be hidden while the partner engine is off',
+  );
   process.env.PARTNER_ENGINE_ENABLED = 'true';
   process.env.PARTNER_CEBIA_ENABLED = 'true';
+  process.env.PARTNER_CEBIA_IS_AFFILIATE = 'true';
   const invalid = [
     'javascript:alert(1)',
     'data:text/html,hello',
@@ -82,12 +88,36 @@ function testUrlAndConfigFailClosed() {
   for (const url of invalid) {
     process.env.PARTNER_CEBIA_URL = url;
     assert.deepEqual(getEligiblePartnerOffers(baseContext()), [], `unsafe URL accepted: ${url}`);
+    assert.equal(
+      getEditorialPartnerOffer('cebia_vehicle_history', 'cs'),
+      null,
+      `unsafe editorial URL accepted: ${url}`,
+    );
   }
   process.env.PARTNER_CEBIA_URL = 'https://www.cebia.cz/provereni/';
+  delete process.env.PARTNER_CEBIA_IS_AFFILIATE;
+  assert.deepEqual(
+    getEligiblePartnerOffers(baseContext()),
+    [],
+    'Cebia must stay hidden until the configuration explicitly marks the approved affiliate URL',
+  );
+  assert.equal(
+    getEditorialPartnerOffer('cebia_vehicle_history', 'cs'),
+    null,
+    'editorial Cebia must fail closed without the affiliate activation flag',
+  );
+  process.env.PARTNER_CEBIA_IS_AFFILIATE = 'true';
   const offers = getEligiblePartnerOffers(baseContext());
   assert.equal(offers.length, 1);
   assert.equal(new URL(offers[0].href).hostname, 'www.cebia.cz');
   assert.equal(offers[0].href.includes('420000'), false);
+  const editorialOffer = getEditorialPartnerOffer('cebia_vehicle_history', 'cs');
+  assert.ok(editorialOffer);
+  assert.equal(editorialOffer.provider, 'Cebia AUTOTRACER');
+  assert.equal(editorialOffer.cta, 'Prověřit historii vozidla');
+  assert.equal(new URL(editorialOffer.href).hostname, 'www.cebia.cz');
+  assert.equal(editorialOffer.href.includes('420000'), false);
+  assert.equal(getEditorialPartnerOffer('cebia_vehicle_history', 'en'), null);
   resetPartnerEnv();
 }
 

@@ -14,6 +14,10 @@ import {
   validateCurrentCheckoutConsent,
   type FreeDocumentRecord,
 } from '@/lib/free-documents';
+import {
+  analyticsAttributionEventParams,
+  normalizeConsentedCheckoutAnalyticsAttribution,
+} from '@/lib/analytics-attribution';
 
 export const runtime = 'nodejs';
 
@@ -33,6 +37,11 @@ export async function POST(req: Request) {
   }
 
   const body = json.data;
+  const analyticsConsentGranted = body.analyticsConsentGranted === true;
+  const analyticsAttribution = normalizeConsentedCheckoutAnalyticsAttribution(
+    analyticsConsentGranted,
+    body.analyticsAttribution,
+  );
   if (!isContractType(body.contractType) || body.tier !== 'basic') {
     return NextResponse.json({ error: 'Bezplatný režim je dostupný jen pro povolenou základní variantu.' }, { status: 400 });
   }
@@ -100,6 +109,8 @@ export async function POST(req: Request) {
     downloadToken,
     partnerContext,
     partnerAttributionId,
+    analyticsConsentGranted,
+    ...(analyticsAttribution ? { analyticsAttribution } : {}),
     createdAt: createdAt.toISOString(),
     expiresAt: new Date(createdAt.getTime() + FREE_DOCUMENT_TTL_SECONDS * 1000).toISOString(),
     downloadCount: 0,
@@ -110,7 +121,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Dokument se nyní nepodařilo bezpečně uložit.' }, { status: 503 });
   }
 
-  await recordAnalyticsEvent('free_document_generated', {
+  const completedParams = {
     contract_type: body.contractType,
     tier: 'basic',
     locale,
@@ -118,6 +129,13 @@ export async function POST(req: Request) {
     monetization_mode: policy.mode,
     experiment_id: policy.experimentId ?? undefined,
     variant: policy.variant ?? undefined,
-  });
+    ...analyticsAttributionEventParams(analyticsAttribution),
+  } as const;
+  if (analyticsConsentGranted) {
+    await Promise.all([
+      recordAnalyticsEvent('builder_completed', completedParams),
+      recordAnalyticsEvent('free_document_generated', completedParams),
+    ]);
+  }
   return NextResponse.json({ freeId, token: downloadToken, expiresAt: record.expiresAt });
 }

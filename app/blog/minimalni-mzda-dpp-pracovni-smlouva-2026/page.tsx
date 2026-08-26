@@ -6,8 +6,22 @@ import {
   MIN_WAGE_HOURLY_2026_CZK,
   MIN_WAGE_MONTHLY_2026_CZK,
 } from '@/lib/legal-constants-2026';
+import { getBlogHreflangAlternates } from '@/lib/seo/blog-hreflang-clusters';
+import { canonicalUrl } from '@/lib/seo/site';
 
-export const metadata = blogArticlePageMetadata('minimalni-mzda-dpp-pracovni-smlouva-2026');
+const SLUG = 'minimalni-mzda-dpp-pracovni-smlouva-2026';
+
+export const metadata = {
+  ...blogArticlePageMetadata(SLUG, {
+    title: 'Minimální mzda 2026: částky a DPP',
+    description:
+      'Minimální mzda 2026 je 22 400 Kč měsíčně a 134,40 Kč za hodinu při 40hodinové týdenní pracovní době. Přehled dopadů na DPP a pracovní smlouvu.',
+  }),
+  alternates: {
+    canonical: canonicalUrl(`/blog/${SLUG}`),
+    languages: getBlogHreflangAlternates(SLUG),
+  },
+};
 
 export default function MinimalniMzdaDppPracovniSmlouva2026Page() {
   return (

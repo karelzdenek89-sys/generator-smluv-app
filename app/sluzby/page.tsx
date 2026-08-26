@@ -100,7 +100,7 @@ export default function SluzbyPage() {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contractType: 'service', deliveryEmail: authorization.deliveryEmail, consent: authorization.consent, tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'service' } }),
+        body: JSON.stringify({ contractType: 'service', deliveryEmail: authorization.deliveryEmail, consent: authorization.consent, analyticsConsentGranted: authorization.analyticsConsentGranted, analyticsAttribution: authorization.analyticsAttribution, tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'service' } }),
       });
       const data = await res.json();
       if (!res.ok || !data?.url) throw new Error();

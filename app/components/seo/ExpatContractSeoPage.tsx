@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import SeoLandingTracker from '@/app/components/analytics/SeoLandingTracker';
+import TrackedLink from '@/app/components/analytics/TrackedLink';
 import { getPublicLocalePath, LEGAL_NOTICE, type AppLocale } from '@/lib/locale';
 import { LEASE_USE_NOTICE_EN, LEASE_USE_NOTICE_UK } from '@/lib/i18n/safety-copy';
 import type { ExpatSeoContent } from '@/lib/i18n/expat-seo-landings';
@@ -16,6 +18,7 @@ function extraNotice(locale: AppLocale, contractKey: ExpatSeoContent['contractKe
 
 export default function ExpatContractSeoPage({ locale, content }: Props) {
   const expatHref = `/${getPublicLocalePath(locale)}`;
+  const landingPathname = new URL(content.canonical).pathname;
   const leaseNotice = extraNotice(locale, content.contractKey);
   const faqHeading = locale === 'ua' ? 'Часті запитання' : 'FAQ';
 
@@ -51,6 +54,7 @@ export default function ExpatContractSeoPage({ locale, content }: Props) {
 
   return (
     <main className="min-h-screen bg-[#040c1a] text-slate-200">
+      <SeoLandingTracker pathname={landingPathname} label={content.breadcrumbLabel} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c') }}
@@ -84,13 +88,21 @@ export default function ExpatContractSeoPage({ locale, content }: Props) {
         <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">{content.subtitle}</p>
 
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link
+          <TrackedLink
             href={content.builderHref}
+            eventName="seo_landing_cta_click"
+            eventParams={{
+              source: 'seo_landing',
+              surface: 'seo_landing',
+              pathname: landingPathname,
+              cta_type: 'hero_primary',
+              destination: content.builderHref,
+            }}
             data-testid={`seo-${content.contractKey}-cta`}
             className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-400 px-6 py-4 text-sm font-black uppercase tracking-wide text-black hover:brightness-110 transition"
           >
             {content.cta}
-          </Link>
+          </TrackedLink>
           <Link
             href={content.blogGuideHref}
             className="inline-flex items-center justify-center rounded-2xl border border-white/15 px-6 py-4 text-sm font-semibold text-slate-300 hover:border-white/30 hover:text-white transition"
@@ -136,12 +148,20 @@ export default function ExpatContractSeoPage({ locale, content }: Props) {
         </ul>
 
         <div className="mt-12 rounded-2xl border border-amber-500/25 bg-amber-500/10 p-8 text-center space-y-4">
-          <Link
+          <TrackedLink
             href={content.builderHref}
+            eventName="seo_landing_cta_click"
+            eventParams={{
+              source: 'seo_landing',
+              surface: 'seo_landing',
+              pathname: landingPathname,
+              cta_type: 'footer_primary',
+              destination: content.builderHref,
+            }}
             className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-400 px-8 py-4 text-sm font-black uppercase tracking-wide text-black hover:brightness-110 transition"
           >
             {content.cta}
-          </Link>
+          </TrackedLink>
           <p>
             <Link href={content.blogGuideHref} className="text-sm font-semibold text-amber-200 hover:text-amber-100">
               {content.blogGuideLabel} →

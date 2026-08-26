@@ -2,8 +2,8 @@ import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 
 export const metadata = blogArticlePageMetadata("valorizace-najemneho-2026", {
-  title: "Valorizace nájemného 2026: Jak ji správně sjednat ve smlouvě",
-  description: "Inflační doložka, valorizace nájemného a roční zvyšování nájmu v roce 2026. Co zákon umožňuje, jak klauzuli formulovat a jakým chybám se vyhnout.",
+  title: "Valorizace nájemného 2026: inflační doložka",
+  description: "Inflační doložka v nájemní smlouvě pro rok 2026: co dovoluje zákon, jak nastavit výpočet zvýšení nájmu a kterým chybám se vyhnout.",
 });
 
 

@@ -5,11 +5,10 @@ import { usePathname } from 'next/navigation';
 import SiteHeader from '@/app/components/SiteHeader';
 import {
   getContractTypeByPath,
+  getLocaleFromPathname,
   isExpatContract,
   normalizeLocale,
 } from '@/lib/locale';
-
-const FOREIGN_LOCALE_SEGMENTS = new Set(['en', 'ua']);
 
 function subscribeToLocation(callback: () => void) {
   window.addEventListener('popstate', callback);
@@ -30,29 +29,21 @@ function getQueryLocaleSnapshot(): 'en' | 'ua' | null {
 
 export default function RouteChrome() {
   const pathname = usePathname();
-  const firstSegment = pathname.split('/')[1] ?? '';
-  const isForeignLocaleSegment = FOREIGN_LOCALE_SEGMENTS.has(firstSegment);
   const queryLocale = useSyncExternalStore(
     subscribeToLocation,
     getQueryLocaleSnapshot,
     () => null,
   );
+  const locale = getLocaleFromPathname(pathname, queryLocale ?? 'cs');
+  const isForeignLocale = locale !== 'cs';
 
   useEffect(() => {
-    const htmlLang = isForeignLocaleSegment
-      ? firstSegment === 'ua'
-        ? 'uk'
-        : 'en'
-      : queryLocale === 'ua'
-        ? 'uk'
-        : queryLocale ?? 'cs';
-    document.documentElement.lang = htmlLang;
-  }, [firstSegment, isForeignLocaleSegment, queryLocale]);
+    document.documentElement.lang = locale === 'ua' ? 'uk' : locale;
+  }, [locale]);
 
   const showSiteHeader =
     pathname !== '/' &&
-    !isForeignLocaleSegment &&
-    !queryLocale &&
+    !isForeignLocale &&
     !pathname.startsWith('/success');
 
   return showSiteHeader ? <SiteHeader /> : null;

@@ -6,10 +6,13 @@ import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
+import PartnerEditorialOffer from '@/app/components/partners/PartnerEditorialOffer';
+import { getEditorialPartnerOffer } from '@/lib/partners/catalog';
+import TrackedLink from '@/app/components/analytics/TrackedLink';
 
 export const metadata = blogArticlePageMetadata("kupni-smlouva-na-auto-2026", {
   title: "Kupní smlouva na auto 2026: co musí obsahovat",
-  description: "Průvodce kupní smlouvou na auto pro rok 2026. Co musí obsahovat, jak ověřit vozidlo, nejčastější chyby prodejců i kupujících a proč nestačí ruční dohoda.",
+  description: "Co má obsahovat kupní smlouva na auto v roce 2026? Zkontrolujte VIN, stav tachometru, známé vady, předání vozu i přepis na úřadě.",
   keywords: ['kupní smlouva na auto 2026',
     'co musí obsahovat kupní smlouva na auto',
     'kupní smlouva vozidlo vzor',
@@ -22,6 +25,8 @@ export const metadata = blogArticlePageMetadata("kupni-smlouva-na-auto-2026", {
 
 
 export default function KupniSmlouvaAutoPage() {
+  const cebiaOffer = getEditorialPartnerOffer('cebia_vehicle_history', 'cs');
+
   return (
     <article className="mx-auto max-w-3xl px-6 py-12">
       <BlogArticleSchemas slug="kupni-smlouva-na-auto-2026" />
@@ -54,12 +59,14 @@ export default function KupniSmlouvaAutoPage() {
         <div className="mt-7 rounded-2xl border border-amber-500/20 bg-amber-500/8 p-5">
           <p className="mb-3 text-sm font-bold text-white">Chcete přeskočit teorii?</p>
           <p className="mb-4 text-sm text-slate-400">Vytvořte si kupní smlouvu na auto online — formulář pokryje VIN, STK, emise i předání. Hotovo za 5 minut.</p>
-          <Link
+          <TrackedLink
             href="/auto"
+            eventName="blog_cta_click"
+            eventParams={{ surface: 'blog_article', cta_type: 'hero_primary', destination: '/auto' }}
             className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-2.5 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400"
           >
             Vytvořit kupní smlouvu na auto →
-          </Link>
+          </TrackedLink>
         </div>
       </header>
 
@@ -164,9 +171,14 @@ export default function KupniSmlouvaAutoPage() {
           <p className="mb-3 text-sm text-slate-300">
             Kupní smlouva na auto od SmlouvaHned pokrývá VIN, STK, stav tachometru, prohlášení o vadách i zástavní právo — vše ve strukturovaném formuláři.
           </p>
-          <Link href="/auto" className="text-sm font-bold text-amber-400 underline underline-offset-4 hover:text-amber-300 transition">
+          <TrackedLink
+            href="/auto"
+            eventName="blog_cta_click"
+            eventParams={{ surface: 'blog_article', cta_type: 'inline_text', destination: '/auto' }}
+            className="text-sm font-bold text-amber-400 underline underline-offset-4 hover:text-amber-300 transition"
+          >
             Vytvořit kupní smlouvu na auto online →
-          </Link>
+          </TrackedLink>
         </div>
       </section>
 
@@ -376,14 +388,23 @@ export default function KupniSmlouvaAutoPage() {
           Formulář pokryje VIN, STK, stav tachometru i prohlášení o vadách.
           Hotovo za méně než 5 minut, PDF ke stažení ihned po zaplacení.
         </p>
-        <Link
+        <TrackedLink
           href="/auto"
+          eventName="blog_cta_click"
+          eventParams={{ surface: 'blog_article', cta_type: 'final_primary', destination: '/auto' }}
           className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-8 py-4 text-sm font-black uppercase tracking-tight text-black shadow-[0_0_40px_rgba(245,158,11,0.25)] transition hover:bg-amber-400"
         >
           Vytvořit kupní smlouvu na auto →
-        </Link>
+        </TrackedLink>
         <div className="mt-3 text-xs text-slate-600">Od 99 Kč · Dle § 2079 OZ · Platné pro 2026</div>
       </div>
+
+      {cebiaOffer ? (
+        <PartnerEditorialOffer
+          offer={cebiaOffer}
+          sourcePage="/blog/kupni-smlouva-na-auto-2026"
+        />
+      ) : null}
 
       {/* ── RELATED ARTICLES ────────────────────── */}
       <div className="mt-12 border-t border-white/8 pt-10">

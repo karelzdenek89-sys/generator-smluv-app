@@ -25,23 +25,25 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const canonical = getExpatBlogCanonical(slug);
   const lang = article.audience === 'en' ? 'en' : 'uk';
   const languageAlternates = getExpatBlogHreflangAlternates(slug) ?? { [lang]: canonical };
+  const seoTitle = article.seoTitle ?? article.title;
+  const seoDescription = article.seoDescription ?? article.excerpt;
 
   return {
-    title: { absolute: `${article.title} | SmlouvaHned.cz` },
-    description: article.excerpt,
+    title: { absolute: `${seoTitle} | SmlouvaHned.cz` },
+    description: seoDescription,
     keywords: article.keywords,
     alternates: { canonical, languages: languageAlternates },
     openGraph: {
-      title: article.title,
-      description: article.excerpt,
+      title: seoTitle,
+      description: seoDescription,
       url: canonical,
       type: 'article',
       locale: article.audience === 'en' ? 'en_US' : 'uk_UA',
     },
     twitter: {
       card: 'summary_large_image',
-      title: article.title,
-      description: article.excerpt,
+      title: seoTitle,
+      description: seoDescription,
     },
     other: {
       'content-language': lang,

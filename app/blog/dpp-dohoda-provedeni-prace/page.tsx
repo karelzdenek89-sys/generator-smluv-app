@@ -6,6 +6,7 @@ import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
+import TrackedLink from '@/app/components/analytics/TrackedLink';
 import {
   DPP_MONTHLY_THRESHOLD_2026_CZK,
   MIN_WAGE_HOURLY_2026_CZK,
@@ -18,8 +19,8 @@ const minimumHourlyWage2026 = MIN_WAGE_HOURLY_2026_CZK.toLocaleString('cs-CZ', {
 });
 
 export const metadata = blogArticlePageMetadata("dpp-dohoda-provedeni-prace", {
-  title: "DPP 2026: vzor dohody, limity, odvody a pravidla",
-  description: "DPP 2026 přehledně: vzor dohody, limit 300 hodin, hranice odvodů 12 000 Kč a povinné náležitosti. Vytvořte dohodu online v PDF.",
+  title: "DPP 2026: limit 300 hodin, odvody a povinnosti",
+  description: "DPP 2026: limit 300 hodin a účast na pojištění při hrubém měsíčním příjmu 12 000 Kč ze všech DPP u jednoho zaměstnavatele. Přehled a formulář online.",
   keywords: ['DPP dohoda o provedení práce',
     'dohoda o provedení práce vzor 2026',
     'DPP limit hodin',
@@ -53,23 +54,25 @@ export default function DppPage() {
           <time className="text-xs text-slate-600" dateTime="2026-03-18">18. března 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
-          DPP 2026: vzor dohody, limity, odvody a pravidla
+          DPP 2026: limit 300 hodin, odvody a povinnosti
         </h1>
         <p className="mt-5 text-lg leading-relaxed text-slate-400">
-          Dohoda o provedení práce je nejoblíbenější forma brigády a přivýdělku — ale skrývá řadu pastí.
-          Změny od roku 2024 přinesly nová pravidla pro zdravotní pojištění a oznamovací povinnosti.
-          Přečtěte si, jak DPP napsat správně, aby vás nepřekvapila pokuta z kontroly.
+          Dohoda o provedení práce je oblíbená pro brigády a krátkodobý přivýdělek. Pro rok 2026 si
+          pohlídejte limit 300 hodin, hranici odvodů, dovolenou, rozvrh směn i oznamovací povinnosti.
+          Níže najdete praktický přehled toho, co má správně sepsaná DPP obsahovat.
         </p>
 
         <div className="mt-7 rounded-2xl border border-amber-500/20 bg-amber-500/8 p-5">
           <p className="mb-3 text-sm font-bold text-white">Potřebujete DPP hned?</p>
           <p className="mb-4 text-sm text-slate-400">Vytvořte dohodu o provedení práce online — s výpočtem hodinové odměny, správným vymezením práce a všemi povinnostmi zaměstnavatele. PDF ihned.</p>
-          <Link
+          <TrackedLink
             href="/dpp"
+            eventName="blog_cta_click"
+            eventParams={{ surface: 'blog_article', cta_type: 'hero_primary', destination: '/dpp' }}
             className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-2.5 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400"
           >
             {dppOffer.cta} →
-          </Link>
+          </TrackedLink>
         </div>
       </header>
 
@@ -208,9 +211,14 @@ export default function DppPage() {
         </div>
 
         <div className="rounded-2xl border border-amber-500/20 bg-amber-500/6 p-5">
-          <Link href="/dpp" className="text-sm font-bold text-amber-400 underline underline-offset-4 hover:text-amber-300 transition">
+          <TrackedLink
+            href="/dpp"
+            eventName="blog_cta_click"
+            eventParams={{ surface: 'blog_article', cta_type: 'inline_text', destination: '/dpp' }}
+            className="text-sm font-bold text-amber-400 underline underline-offset-4 hover:text-amber-300 transition"
+          >
             Vytvořit DPP se všemi náležitostmi dle zákoníku práce →
-          </Link>
+          </TrackedLink>
         </div>
       </section>
 
@@ -318,12 +326,14 @@ export default function DppPage() {
         <p className="mx-auto mb-6 max-w-sm text-sm leading-relaxed text-slate-400">
           Formulář vás provede každou částí dohody — od vymezení práce po odměnu a BOZP. PDF ke stažení ihned.
         </p>
-        <Link
+        <TrackedLink
           href="/dpp"
+          eventName="blog_cta_click"
+          eventParams={{ surface: 'blog_article', cta_type: 'final_primary', destination: '/dpp' }}
           className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-8 py-4 text-sm font-black uppercase tracking-tight text-black shadow-[0_0_40px_rgba(245,158,11,0.25)] transition hover:bg-amber-400"
         >
           {dppOffer.cta} →
-        </Link>
+        </TrackedLink>
         <div className="mt-3 text-xs text-slate-600">{dppOffer.price} · Dle ZP · Platné pro 2026</div>
       </div>
 

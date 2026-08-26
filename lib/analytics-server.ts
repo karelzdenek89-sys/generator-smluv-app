@@ -1,7 +1,7 @@
 import { redis } from '@/lib/redis';
 import type { AnalyticsEventName, AnalyticsEventParams } from './analytics';
 
-const MAX_STORED_EVENTS = 5000;
+export const MAX_STORED_ANALYTICS_EVENTS = 5000;
 
 function compactParams(params?: AnalyticsEventParams) {
   return Object.fromEntries(
@@ -30,7 +30,7 @@ export async function recordAnalyticsEvent(
     };
 
     await redis.lpush('analytics:events', JSON.stringify(record));
-    await redis.ltrim('analytics:events', 0, MAX_STORED_EVENTS - 1);
+    await redis.ltrim('analytics:events', 0, MAX_STORED_ANALYTICS_EVENTS - 1);
     await redis.hincrby(`analytics:summary:${day}:events`, event, 1);
 
     const dimensions: Array<[string, string | undefined]> = [

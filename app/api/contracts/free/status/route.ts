@@ -39,5 +39,8 @@ export async function POST(req: Request) {
     partnerContext: record.partnerContext,
     partnerOffers: record.partnerContext ? getEligiblePartnerOffers(record.partnerContext) : [],
     partnerAttributionId: record.partnerAttributionId,
+    analyticsAttribution: record.analyticsConsentGranted === true
+      ? record.analyticsAttribution ?? null
+      : null,
   });
 }

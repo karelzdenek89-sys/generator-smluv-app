@@ -83,7 +83,7 @@ test('employer package is discoverable and usable on a mobile viewport', async (
     { name: 'preferred-locale', value: 'cs', url: cookieOrigin },
     { name: 'foreign-banner-dismissed', value: '1', url: cookieOrigin },
   ]);
-  await page.addInitScript(() => localStorage.setItem('cookies_accepted', '1'));
+  await page.addInitScript(() => localStorage.setItem('sh_product_analytics_consent_v1', 'denied'));
   await page.route('**/api/analytics', (route) => route.fulfill({ status: 204, body: '' }));
 
   await page.goto('/');

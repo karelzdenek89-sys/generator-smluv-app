@@ -1,5 +1,5 @@
-/** Canonical site origin for metadata, sitemap, and JSON-LD. */
-export const SITE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
+/** Canonical public origin for metadata, sitemap, hreflang and JSON-LD. */
+export const SITE_URL = 'https://www.smlouvahned.cz';
 
 /** Static OG asset; rewritten to /opengraph-image in next.config.ts */
 export const OG_IMAGE_PATH = '/og-image.png';

@@ -87,7 +87,7 @@ export default function UznanidluhuPage() {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contractType: 'debt_acknowledgment', deliveryEmail: authorization.deliveryEmail, consent: authorization.consent, tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'debt_acknowledgment' } }),
+        body: JSON.stringify({ contractType: 'debt_acknowledgment', deliveryEmail: authorization.deliveryEmail, consent: authorization.consent, analyticsConsentGranted: authorization.analyticsConsentGranted, analyticsAttribution: authorization.analyticsAttribution, tier: form.tier, addOns, notaryUpsell: form.tier !== 'basic', payload: { ...form, contractType: 'debt_acknowledgment' } }),
       });
       const data = await res.json();
       if (!res.ok || !data?.url) throw new Error();

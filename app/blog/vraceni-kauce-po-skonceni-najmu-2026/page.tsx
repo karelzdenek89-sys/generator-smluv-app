@@ -7,7 +7,11 @@ import { canonicalUrl } from '@/lib/seo/site';
 const SLUG = 'vraceni-kauce-po-skonceni-najmu-2026';
 
 export const metadata = {
-  ...blogArticlePageMetadata(SLUG),
+  ...blogArticlePageMetadata(SLUG, {
+    title: 'Vrácení kauce 2026: lhůta, zápočty a úroky',
+    description:
+      'Jistota (kauce) se vrací při skončení nájmu. Zjistěte lhůtu, co lze započíst, jak fungují úroky podle § 2254 a jak předejít sporu.',
+  }),
   alternates: {
     canonical: canonicalUrl(`/blog/${SLUG}`),
     languages: getBlogHreflangAlternates(SLUG),

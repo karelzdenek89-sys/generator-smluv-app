@@ -214,7 +214,7 @@ function PracovniPageContent() {
       setIsProcessing(true);
       const res = await fetch('/api/checkout', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contractType: 'employment', deliveryEmail: authorization.deliveryEmail, consent: authorization.consent, annexLanguage: authorization.annexLanguage, tier: packageConfig?.defaultTier ?? form.tier, packageKey: packageConfig?.key ?? null, addOns, notaryUpsell: packageConfig ? true : form.tier !== 'basic', lang: builderLocale, payload: { ...form, contractType: 'employment', packageKey: packageConfig?.key ?? null, lang: builderLocale } }),
+        body: JSON.stringify({ contractType: 'employment', deliveryEmail: authorization.deliveryEmail, consent: authorization.consent, analyticsConsentGranted: authorization.analyticsConsentGranted, analyticsAttribution: authorization.analyticsAttribution, annexLanguage: authorization.annexLanguage, tier: packageConfig?.defaultTier ?? form.tier, packageKey: packageConfig?.key ?? null, addOns, notaryUpsell: packageConfig ? true : form.tier !== 'basic', lang: builderLocale, payload: { ...form, contractType: 'employment', packageKey: packageConfig?.key ?? null, lang: builderLocale } }),
       });
       const data = await res.json();
       if (!res.ok || !data?.url) throw new Error();

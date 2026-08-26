@@ -1,5 +1,11 @@
 import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
+import { Children, isValidElement, type ReactElement, type ReactNode } from 'react';
+import ArticleInlineCta from '../app/components/blog/ArticleInlineCta';
+import ExpatBlogArticleView from '../app/components/blog/ExpatBlogArticleView';
+import SeoLandingTracker from '../app/components/analytics/SeoLandingTracker';
+import TrackedLink from '../app/components/analytics/TrackedLink';
+import ExpatContractSeoPage from '../app/components/seo/ExpatContractSeoPage';
 import { CZECH_BLOG_ARTICLES } from '../lib/blog-articles';
 import { czechBlogSitemapEntries } from '../lib/seo/sitemap-blog';
 import { getBlogHreflangAlternates } from '../lib/seo/blog-hreflang-clusters';
@@ -8,6 +14,7 @@ import {
   EMPLOYMENT_WORK_ELIGIBILITY_NOTICE,
   EN_LEGAL_KEY_TERMS,
   EXPAT_CONTRACT_TYPES,
+  getLocaleFromPathname,
   LEGAL_NOTICE,
   normalizeLocale,
   withLocale,
@@ -39,7 +46,12 @@ import {
   buildLeasePreviewSections,
   getContractPreviewLabels,
 } from '../lib/i18n/lease-preview';
-import { getExpatBlogArticle } from '../lib/i18n/expat-blog-articles';
+import {
+  getAllExpatBlogSlugs,
+  getExpatBlogAlternateSlug,
+  getExpatBlogArticle,
+} from '../lib/i18n/expat-blog-articles';
+import { getExpatBlogHreflangAlternates } from '../lib/i18n/expat-blog-sitemap';
 import {
   getCarFormUi,
   getDppFormUi,
@@ -49,6 +61,12 @@ import {
 } from '../lib/i18n/expat-builder-forms';
 import { formatRemoteWorkForContract, REMOTE_WORK_KEYS } from '../lib/i18n/employment-remote-work';
 import { buildExpatPreviewSections } from '../lib/i18n/expat-contract-preview';
+import {
+  EXPAT_SEO_LOCALES,
+  EXPAT_SEO_SLUGS,
+  getExpatSeoLandingBySlug,
+} from '../lib/i18n/expat-seo-landings';
+import { getExpatBuilderLanding } from '../lib/i18n/expat-builder-landing';
 
 const root = process.cwd();
 const read = (path: string) => readFileSync(`${root}/${path}`, 'utf8');
@@ -83,6 +101,9 @@ function testLocalePropagation() {
   assert.equal(withLocale('/pracovni', 'ua'), '/pracovni?lang=ua');
   assert.equal(withLocale('/smlouva-o-dilo', 'en'), '/smlouva-o-dilo');
   assert.equal(withLocale('/darovaci', 'ua'), '/darovaci');
+  assert.equal(withLocale('/', 'en'), '/en');
+  assert.equal(withLocale('/', 'ua'), '/ua');
+  assert.equal(withLocale('/zakaznicka-zona', 'en'), '/zakaznicka-zona');
   assert.equal(normalizeLocale('vi'), 'cs');
   assert.equal(normalizeLocale('vn'), 'cs');
   assert.equal(normalizeLocale('ua'), 'ua');
@@ -91,6 +112,12 @@ function testLocalePropagation() {
   assert.equal(normalizeLocale('ru'), 'cs');
   assert.equal(normalizeLocale('de'), 'cs');
   assert.equal(normalizeLocale('garbage'), 'cs');
+  assert.equal(getLocaleFromPathname('/en/car-sale-agreement-czech-republic'), 'en');
+  assert.equal(getLocaleFromPathname('/ua/car-sale-agreement-czech-republic'), 'ua');
+  assert.equal(getLocaleFromPathname('/blog/expat/rental-agreement-czech-republic-guide-en'), 'en');
+  assert.equal(getLocaleFromPathname('/blog/expat/rental-agreement-czech-republic-guide-ua'), 'ua');
+  assert.equal(getLocaleFromPathname('/blog/dpp-dohoda-provedeni-prace'), 'cs');
+  assert.equal(getLocaleFromPathname('/auto', 'en'), 'en');
 
   const landing = read('app/[locale]/page.tsx');
   assert.match(landing, /Most used contracts for foreigners in the Czech Republic/);
@@ -160,6 +187,13 @@ function testLocalePropagation() {
   assert.doesNotMatch(rootLayout, /next\/headers/);
   assert.match(rootLayout, /RouteChrome/);
   assert.match(read('app/components/RouteChrome.tsx'), /usePathname/);
+  assert.match(read('app/components/RouteChrome.tsx'), /getLocaleFromPathname/);
+  assert.match(read('app/components/Footer.tsx'), /getLocaleFromPathname/);
+  assert.match(read('app/components/CookiesBanner.tsx'), /getLocaleFromPathname/);
+  assert.match(read('app/blog/layout.tsx'), /BlogLayoutShell/);
+  const blogShell = read('app/components/blog/BlogLayoutShell.tsx');
+  assert.match(blogShell, /getLocaleFromPathname/);
+  assert.match(blogShell, /data-blog-shell="expat"/);
   assert.doesNotMatch(rootLayout, /ForeignVisitorBanner/);
   assert.match(read('app/page.tsx'), /organizationSchema/);
   assert.match(localeLayout, /ExpatLocaleSchemas/);
@@ -441,6 +475,13 @@ function testExpatCapabilityDifferentiation() {
 
 function testExpatBuilderFormsLocalized() {
   const czechLandingMarkers = ['Sestaveno dle', 'Vyplňte údaje dokumentu', 'Zobrazí se náhled'];
+  const localizedContracts = [
+    'employment',
+    'dpp',
+    'sublease',
+    'power_of_attorney',
+    'car_sale',
+  ] as const;
   for (const locale of ['en', 'ua'] as const) {
     const sub = getSubleaseFormUi(locale);
     assert.equal(sub.isLocalized, true);
@@ -462,7 +503,19 @@ function testExpatBuilderFormsLocalized() {
     const car = getCarFormUi(locale);
     assert.equal(car.isLocalized, true);
     assert.ok(car.fields.sellerName);
+
+    for (const contract of localizedContracts) {
+      const guideHref = getExpatBuilderLanding(contract, locale).guideHref;
+      const slug = guideHref.replace('/blog/expat/', '');
+      assert.ok(
+        getExpatBlogArticle(slug),
+        `${contract}/${locale} builder links to missing guide ${guideHref}`,
+      );
+    }
   }
+  const leasePage = read('app/najem/page.tsx');
+  assert.match(leasePage, /rental-agreement-czech-republic-guide-en/);
+  assert.match(leasePage, /rental-agreement-czech-republic-guide-ua/);
   assert.equal(formatRemoteWorkForContract(REMOTE_WORK_KEYS.full, 'en'), 'full remote (100 %)');
   assert.equal(formatRemoteWorkForContract('plný remote (100 %)', 'cs'), 'plný home office (100 %)');
   const subleasePreview = buildExpatPreviewSections('sublease', 'en', {
@@ -687,6 +740,24 @@ function testLocalizedBlogArticles() {
   assert.equal(uaRental.builderHref, '/najem?lang=ua');
   assert.equal(enRental.seoLandingHref, '/en/rental-agreement-czech-republic');
   assert.equal(uaRental.seoLandingHref, '/ua/rental-agreement-czech-republic');
+  const enRentalAlternates = getExpatBlogHreflangAlternates(enRental.slug);
+  const uaRentalAlternates = getExpatBlogHreflangAlternates(uaRental.slug);
+  assert.deepEqual(enRentalAlternates, uaRentalAlternates, 'paired expat articles need reciprocal hreflang');
+  assert.equal(
+    enRentalAlternates?.['x-default'],
+    `${SITE_URL}/blog/expat/${enRental.slug}`,
+    'paired expat articles use the English guide as a stable x-default',
+  );
+  for (const slug of getAllExpatBlogSlugs()) {
+    const article = getExpatBlogArticle(slug);
+    const alternateSlug = getExpatBlogAlternateSlug(slug);
+    if (!article || article.audience !== 'en' || !alternateSlug) continue;
+    assert.deepEqual(
+      getExpatBlogHreflangAlternates(slug),
+      getExpatBlogHreflangAlternates(alternateSlug),
+      `${slug} and ${alternateSlug} need the same reciprocal hreflang map`,
+    );
+  }
   const enEmployment = getExpatBlogArticle('employment-contract-czech-republic-guide-en');
   assert.ok(enEmployment);
   assert.equal(enEmployment.seoLandingHref, '/en/employment-contract-czech-republic');
@@ -775,6 +846,165 @@ function testExpatSeoLandingPages() {
   assert.match(sitemap, /getExpatSeoPageHreflangAlternates/);
   assert.match(read('app/components/seo/ExpatContractSeoPage.tsx'), /blogGuideHref/);
   assert.match(read('app/najem/layout.tsx'), /getExpatContractHreflangAlternates\('lease'\)/);
+}
+
+function testCzechOnlyRelatedBuilderLinksAreDirectAndDisclosed() {
+  const contractsWithDedicatedLandingCopy = [
+    'employment',
+    'dpp',
+    'sublease',
+    'power_of_attorney',
+    'car_sale',
+  ] as const;
+  for (const contractType of contractsWithDedicatedLandingCopy) {
+    for (const locale of ['en', 'ua'] as const) {
+      for (const alternative of getExpatBuilderLanding(contractType, locale).whenOther) {
+        const targetPath = alternative.href.split('?')[0];
+        if (['/sluzby', '/spoluprace', '/smlouva-o-dilo'].includes(targetPath)) {
+          assert.equal(
+            alternative.href,
+            targetPath,
+            `${contractType}/${locale} Czech-only builder link must not trigger a locale redirect`,
+          );
+          const disclosure = `${alternative.label} ${alternative.text}`;
+          assert.match(
+            disclosure,
+            locale === 'en' ? /Czech (?:form|only)/i : /чеською|чеськ/i,
+            `${contractType}/${locale} must disclose that ${alternative.href} is Czech-only`,
+          );
+        }
+      }
+    }
+  }
+}
+
+type TestElementProps = Record<string, unknown> & { children?: ReactNode };
+
+function collectElementsByType(
+  node: ReactNode,
+  componentType: ReactElement['type'],
+  matches: ReactElement<TestElementProps>[] = [],
+): ReactElement<TestElementProps>[] {
+  Children.forEach(node, (child) => {
+    if (!isValidElement<TestElementProps>(child)) return;
+    if (child.type === componentType) matches.push(child);
+    collectElementsByType(child.props.children, componentType, matches);
+  });
+  return matches;
+}
+
+function testCzechOnlyExpatBlogCtasAreDirectAndDisclosed() {
+  const czechOnlyPaths = new Set(['/spoluprace', '/smlouva-o-dilo']);
+  const affectedArticles = new Set<string>();
+  const renderedLinks: Array<{
+    audience: 'en' | 'ua';
+    body?: string;
+    href: string;
+    label: string;
+    slug: string;
+  }> = [];
+
+  for (const slug of getAllExpatBlogSlugs()) {
+    const article = getExpatBlogArticle(slug);
+    assert.ok(article, `Missing expat article data for ${slug}`);
+    const tree = ExpatBlogArticleView({ article });
+
+    for (const cta of collectElementsByType(tree, ArticleInlineCta)) {
+      const href = String(cta.props.href);
+      if (!czechOnlyPaths.has(href.split(/[?#]/)[0])) continue;
+      affectedArticles.add(slug);
+      renderedLinks.push({
+        audience: article.audience,
+        body: String(cta.props.body),
+        href,
+        label: String(cta.props.buttonLabel),
+        slug,
+      });
+    }
+
+    for (const link of collectElementsByType(tree, TrackedLink)) {
+      const href = String(link.props.href);
+      if (!czechOnlyPaths.has(href.split(/[?#]/)[0])) continue;
+      affectedArticles.add(slug);
+      renderedLinks.push({
+        audience: article.audience,
+        href,
+        label: String(link.props.children),
+        slug,
+      });
+    }
+  }
+
+  assert.equal(affectedArticles.size, 10, 'Expected 10 current EN/UA articles with Czech-only form CTAs');
+  assert.equal(renderedLinks.length, 28, 'Expected all 28 rendered Czech-only form links to be audited');
+
+  for (const link of renderedLinks) {
+    const pathname = link.href.split(/[?#]/)[0];
+    assert.equal(
+      link.href,
+      pathname,
+      `${link.slug} Czech-only CTA must keep a queryless direct URL: ${link.href}`,
+    );
+    assert.match(
+      link.label,
+      link.audience === 'en' ? /Czech-only/i : /лише чеською/i,
+      `${link.slug} link label must disclose that ${pathname} is Czech-only: ${link.label}`,
+    );
+    assert.doesNotMatch(
+      `${link.label} ${link.body ?? ''}`,
+      link.audience === 'en' ? /English-guided|\(EN\)/i : /українською|\(UA\)/i,
+      `${link.slug} must not promise an EN/UA interface for ${pathname}`,
+    );
+    if (link.body) {
+      assert.match(
+        link.body,
+        link.audience === 'en' ? /(?:interface|form).*(?:only in Czech|Czech-only)/i : /(?:інтерфейс|форма).*лише чеською/i,
+        `${link.slug} CTA body must explicitly disclose the Czech-only interface`,
+      );
+    }
+  }
+}
+
+function testExpatSeoAnalyticsWiring() {
+  assert.match(
+    read('app/components/analytics/SeoLandingTracker.tsx'),
+    /trackEvent\('seo_landing_view'/,
+    'SEO landing tracker must emit seo_landing_view',
+  );
+
+  for (const locale of EXPAT_SEO_LOCALES) {
+    for (const slug of EXPAT_SEO_SLUGS) {
+      const content = getExpatSeoLandingBySlug(slug, locale);
+      assert.ok(content, `Missing ${locale} SEO landing content for ${slug}`);
+
+      const expectedPathname = `/${locale}/${slug}`;
+      const tree = ExpatContractSeoPage({ locale, content });
+      const trackers = collectElementsByType(tree, SeoLandingTracker);
+      assert.equal(trackers.length, 1, `${expectedPathname} must mount one SEO landing tracker`);
+      assert.equal(trackers[0].props.pathname, expectedPathname);
+      assert.equal(trackers[0].props.label, content.breadcrumbLabel);
+
+      const productCtas = collectElementsByType(tree, TrackedLink)
+        .filter((element) => element.props.href === content.builderHref);
+      assert.equal(productCtas.length, 2, `${expectedPathname} must track both product CTAs`);
+
+      const ctaTypes = new Set<string>();
+      for (const cta of productCtas) {
+        const params = cta.props.eventParams as Record<string, unknown>;
+        assert.equal(cta.props.eventName, 'seo_landing_cta_click');
+        assert.equal(params.source, 'seo_landing');
+        assert.equal(params.surface, 'seo_landing');
+        assert.equal(params.pathname, expectedPathname);
+        assert.equal(params.destination, content.builderHref);
+        ctaTypes.add(String(params.cta_type));
+      }
+      assert.deepEqual(
+        [...ctaTypes].sort(),
+        ['footer_primary', 'hero_primary'],
+        `${expectedPathname} must distinguish hero and final CTA placement`,
+      );
+    }
+  }
 }
 
 function testE2eFlowStaticPaths() {
@@ -933,6 +1163,7 @@ async function main() {
   testLocalePropagation();
   testNoMisleadingBilingualMarketing();
   testSupportedBuilders();
+  testCzechOnlyRelatedBuilderLinksAreDirectAndDisclosed();
   testUnsupportedContracts();
   testOrdersApiSecurity();
   testLegalCopy();
@@ -952,6 +1183,8 @@ async function main() {
   testUkLandingLocalizedCards();
   testSeoRentalLandingPage();
   testExpatSeoLandingPages();
+  testCzechOnlyExpatBlogCtasAreDirectAndDisclosed();
+  testExpatSeoAnalyticsWiring();
   testLocalizedBlogArticles();
   testE2eFlowStaticPaths();
   testLeasePreviewHelpers();

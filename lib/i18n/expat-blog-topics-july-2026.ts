@@ -20,6 +20,8 @@ function topicEn(
     slug: string;
     title: string;
     excerpt: string;
+    seoTitle?: string;
+    seoDescription?: string;
     intro: string;
     keywords: string[];
     readTime: string;
@@ -42,6 +44,8 @@ function topicEn(
     dateTime: DATE_TIME,
     title: opts.title,
     excerpt: opts.excerpt,
+    seoTitle: opts.seoTitle,
+    seoDescription: opts.seoDescription,
     intro: opts.intro,
     keywords: opts.keywords,
     builderHref: opts.builderHref,
@@ -53,7 +57,10 @@ function topicEn(
     finalCta:
       opts.finalCta ?? {
         title: opts.primaryCta.title,
-        body: 'Open the English-guided form, fill in your details, and download the Czech PDF after payment.',
+        body:
+          opts.builderHref === '/spoluprace' || opts.builderHref === '/smlouva-o-dilo'
+            ? 'The linked form interface is available only in Czech. Fill it in to generate a Czech PDF after payment.'
+            : 'Open the English-guided form, fill in your details, and download the Czech PDF after payment.',
         buttonLabel: opts.primaryCta.buttonLabel,
       },
     trustBox: opts.trust,
@@ -82,6 +89,8 @@ function topicUa(
     slug: string;
     title: string;
     excerpt: string;
+    seoTitle?: string;
+    seoDescription?: string;
     intro: string;
     keywords: string[];
     readTime: string;
@@ -104,6 +113,8 @@ function topicUa(
     dateTime: DATE_TIME,
     title: opts.title,
     excerpt: opts.excerpt,
+    seoTitle: opts.seoTitle,
+    seoDescription: opts.seoDescription,
     intro: opts.intro,
     keywords: opts.keywords,
     builderHref: opts.builderHref,
@@ -115,7 +126,10 @@ function topicUa(
     finalCta:
       opts.finalCta ?? {
         title: opts.primaryCta.title,
-        body: 'Відкрийте форму українською, заповніть дані та завантажте PDF чеською після оплати.',
+        body:
+          opts.builderHref === '/spoluprace' || opts.builderHref === '/smlouva-o-dilo'
+            ? 'Інтерфейс форми за посиланням доступний лише чеською. Після оплати ви отримаєте PDF чеською.'
+            : 'Відкрийте форму українською, заповніть дані та завантажте PDF чеською після оплати.',
         buttonLabel: opts.primaryCta.buttonLabel,
       },
     trustBox: opts.trust,
@@ -145,6 +159,9 @@ export const EXPAT_BLOG_TOPICS_JULY_2026: ExpatBlogArticle[] = [
     title: 'Minimum Wage 2026 in Czech Work Contracts and DPP: What to Check Before Signing',
     excerpt:
       `From 1 January 2026 the Czech minimum wage is CZK ${MIN_WAGE_MONTHLY_2026_CZK.toLocaleString('en-US')} monthly (CZK ${MIN_WAGE_HOURLY_2026_CZK} per hour at a 40-hour week). It affects employment contracts and DPP agreements — not only the headline amount but also hours, reporting and insurance thresholds.`,
+    seoTitle: 'Czech Minimum Wage 2026: DPP Rules',
+    seoDescription:
+      `Czech minimum wage in 2026: CZK ${MIN_WAGE_MONTHLY_2026_CZK.toLocaleString('en-US')} monthly and CZK ${MIN_WAGE_HOURLY_2026_CZK} per hour at a 40-hour week. Check DPP limits and contract pay.`,
     intro:
       `If you work in Czechia on an employment contract or DPP (agreement to perform work), your gross pay must meet the legal minimum where the law applies. For 2026, verify the monthly minimum (CZK ${MIN_WAGE_MONTHLY_2026_CZK.toLocaleString('en-US')}), hourly rate, the ${DPP_MAX_HOURS_PER_YEAR}-hour annual DPP cap per employer, and the CZK ${DPP_MONTHLY_THRESHOLD_2026_CZK.toLocaleString('en-US')} monthly threshold that can trigger social/health insurance on DPP.`,
     keywords: [
@@ -663,8 +680,8 @@ export const EXPAT_BLOG_TOPICS_JULY_2026: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Create a smlouva o dílo (work contract)',
-      body: 'Czech PDF with scope, price, deadlines and handover.',
-      buttonLabel: 'Open work contract form →',
+      body: 'Set the scope, price, deadlines and handover. The linked form interface and generated PDF are available only in Czech.',
+      buttonLabel: 'Open Czech-only work contract form →',
     },
     finalCta: {
       title: 'Is it actually short-term employment?',
@@ -720,8 +737,8 @@ export const EXPAT_BLOG_TOPICS_JULY_2026: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Створити smlouva o dílo (договір підряду)',
-      body: 'PDF чеською з обсягом, ціною, термінами та передачею.',
-      buttonLabel: 'Форма договору підряду →',
+      body: 'Вкажіть обсяг, ціну, терміни та передачу. Інтерфейс форми та PDF доступні лише чеською.',
+      buttonLabel: 'Відкрити форму договору підряду лише чеською →',
     },
     finalCta: {
       title: 'Це фактично короткострокова робота?',

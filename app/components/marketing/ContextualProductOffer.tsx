@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { asAnalyticsContractType, trackEvent } from '@/lib/analytics';
+import { subscribeToProductAnalyticsConsent } from '@/lib/analytics-attribution';
 
 type ContextualProductOfferProps = {
   /** Stabilní identifikátor produktu pro analytiku — např. „lease_complete". */
@@ -43,16 +44,19 @@ export default function ContextualProductOffer({
   const analyticsContractType = asAnalyticsContractType(contractType);
 
   useEffect(() => {
-    if (viewedRef.current) return;
-    viewedRef.current = true;
-    trackEvent('content_offer_view', {
-      source: 'blog_article',
-      surface: 'contextual_offer',
-      offer_type: 'content_bundle',
-      product_id: product,
-      contract_type: analyticsContractType,
-      article_slug: articleSlug,
-    });
+    const recordView = () => {
+      if (viewedRef.current) return;
+      viewedRef.current = trackEvent('content_offer_view', {
+        source: 'blog_article',
+        surface: 'contextual_offer',
+        offer_type: 'content_bundle',
+        product_id: product,
+        contract_type: analyticsContractType,
+        article_slug: articleSlug,
+      });
+    };
+    recordView();
+    return subscribeToProductAnalyticsConsent(recordView);
   }, [product, analyticsContractType, articleSlug]);
 
   return (

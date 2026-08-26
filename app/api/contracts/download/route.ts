@@ -17,8 +17,13 @@ import {
   normalizeStoredCheckoutAddons,
 } from '@/lib/checkout-addons';
 import { recordAnalyticsEvent } from '@/lib/analytics-server';
+import {
+  analyticsAttributionEventParams,
+  type CheckoutAnalyticsAttribution,
+} from '@/lib/analytics-attribution';
 import { takeRateLimit } from '@/lib/rate-limit';
 import { readFirstPartyJson } from '@/lib/api-security';
+import type { MonetizationMode } from '@/lib/monetization-policy';
 
 export const runtime = 'nodejs';
 
@@ -78,6 +83,11 @@ type DraftRecord = {
   lang?: string;
   downloadToken?: string | null;
   addOns?: unknown;
+  analyticsConsentGranted?: boolean;
+  analyticsAttribution?: CheckoutAnalyticsAttribution;
+  monetizationMode?: MonetizationMode;
+  experimentId?: string | null;
+  experimentVariant?: string | null;
 };
 
 export async function GET(req: NextRequest) {
@@ -224,6 +234,28 @@ export async function GET(req: NextRequest) {
       );
     }
     const remainingTtl = Math.max(60, Math.ceil((expiresAtMs - Date.now()) / 1000));
+
+    // Nejdřív ověřit entitlement a skutečně vyrenderovat výstup. Počítadlo i
+    // analytiku měníme až poté, takže 403 ani chyba rendereru nejsou „stažení“.
+    let output: Uint8Array<ArrayBuffer>;
+    let contentType: string;
+    let fileName: string;
+    if (format === 'docx') {
+      if (!hasCheckoutAddon(fullData, 'docx') && !packageIncludesDocx(resolvedPackageKey)) {
+        return NextResponse.json(
+          { error: 'DOCX verze nebyla součástí této objednávky.' },
+          { status: 403 },
+        );
+      }
+      output = Uint8Array.from(await renderContractDocx(fullData));
+      contentType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+      fileName = meta.fileName.replace(/\.pdf$/i, '.docx');
+    } else {
+      output = Uint8Array.from(await renderContractPdf(fullData));
+      contentType = 'application/pdf';
+      fileName = meta.fileName;
+    }
+
     const nextDownloadCount = await nextDownloadSequence(draftId, draft.downloadCount || 0, remainingTtl);
     await redis.set(
       `contract:draft:${draftId}`,
@@ -238,51 +270,37 @@ export async function GET(req: NextRequest) {
       { ex: remainingTtl },
     );
 
-    await recordAnalyticsEvent('document_downloaded', {
-      source: 'success_page',
-      surface: 'download_endpoint',
-      contract_type: resolvedContractType,
-      tier: resolvedTier === 'basic' ? 'basic' : 'complete',
-      package_key: resolvedPackageKey ?? undefined,
-      price_band: getEffectivePriceBand(
-        resolvedTier === 'basic' ? 'basic' : 'complete',
-        resolvedPackageKey,
-      ),
-      download_format: format,
-      download_sequence: nextDownloadCount,
-      add_on_keys: addOns.join(','),
-      selected_addons_count: addOns.length,
-      total_price_czk:
-        typeof session.amount_total === 'number'
-          ? Math.round(session.amount_total / 100)
-          : undefined,
-    });
-
-    if (format === 'docx') {
-      if (!hasCheckoutAddon(fullData, 'docx') && !packageIncludesDocx(resolvedPackageKey)) {
-        return NextResponse.json(
-          { error: 'DOCX verze nebyla součástí této objednávky.' },
-          { status: 403 },
-        );
-      }
-
-      const docx = await renderContractDocx(fullData);
-      return new NextResponse(new Uint8Array(docx), {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-          'Content-Disposition': `attachment; filename="${meta.fileName.replace(/\.pdf$/i, '.docx')}"`,
-          'Cache-Control': 'no-store, max-age=0',
-        },
+    if (draft.analyticsConsentGranted === true) {
+      await recordAnalyticsEvent('document_downloaded', {
+        source: 'success_page',
+        surface: 'download_endpoint',
+        contract_type: resolvedContractType,
+        tier: resolvedTier === 'basic' ? 'basic' : 'complete',
+        package_key: resolvedPackageKey ?? undefined,
+        price_band: getEffectivePriceBand(
+          resolvedTier === 'basic' ? 'basic' : 'complete',
+          resolvedPackageKey,
+        ),
+        download_format: format,
+        download_sequence: nextDownloadCount,
+        monetization_mode: draft.monetizationMode ?? 'paid',
+        experiment_id: draft.experimentId ?? undefined,
+        variant: draft.experimentVariant ?? undefined,
+        ...analyticsAttributionEventParams(draft.analyticsAttribution),
+        add_on_keys: addOns.join(','),
+        selected_addons_count: addOns.length,
+        total_price_czk:
+          typeof session.amount_total === 'number'
+            ? Math.round(session.amount_total / 100)
+            : undefined,
       });
     }
 
-    const pdf = await renderContractPdf(fullData);
-    return new NextResponse(new Uint8Array(pdf), {
+    return new NextResponse(output, {
       status: 200,
       headers: {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="${meta.fileName}"`,
+        'Content-Type': contentType,
+        'Content-Disposition': `attachment; filename="${fileName}"`,
         'Cache-Control': 'no-store, max-age=0',
       },
     });

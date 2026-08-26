@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { SITE_URL } from '@/lib/seo/site';
+import AnalyticsConsentSettings from '@/app/components/analytics/AnalyticsConsentSettings';
 
 const canonicalUrl = `${SITE_URL}/gdpr`;
 
@@ -41,7 +42,7 @@ export default function GdprPage() {
           Ochrana osobních <span className="text-amber-500">údajů</span>
         </h1>
         <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.25em] mb-12">
-          Verze 2026-08-13 • Dle nařízení EU 2016/679 (GDPR)
+          Verze 2026-08-26 • Dle nařízení EU 2016/679 (GDPR)
         </p>
 
         <div className="space-y-10 text-sm leading-relaxed">
@@ -175,9 +176,34 @@ export default function GdprPage() {
             <p>
               Pro anonymizovanou statistiku návštěvnosti používáme{' '}
               <strong className="text-white">Vercel Web Analytics</strong> (agregované zobrazení stránek, bez
-              identifikace konkrétní osoby). Produktové události (např. vstup do formuláře, klik na checkout) ukládáme
-              interně bez propojení s platební kartou; dokončené platby evidujeme až po potvrzení Stripe.
+              identifikace konkrétní osoby). Vlastní produktové události (např. vstup do formuláře nebo klik na
+              checkout) odesíláme pouze po vašem volitelném souhlasu a bez propojení s platební kartou; dokončené
+              platby eviduje až server po potvrzení Stripe.
             </p>
+            <p className="mt-3">
+              Bez ohledu na tuto volbu může server evidovat nezbytné agregované bezpečnostní a provozní signály
+              odmítnutých nebo neplatných požadavků, aby bylo možné chránit checkout a odhalit jeho výpadek. Tyto
+              signály neobsahují obsah formuláře ani kontaktní údaje a nezapočítávají se jako tržba či dokončení.
+            </p>
+            <p className="mt-3">
+              Jen po tomto souhlasu uložíme pro vyhodnocení cesty k produktu do first-party session úložiště pouze
+              kategorii prvního zdroje, veřejnou cestu stránky a případně slug článku. Záznam aktivně odstraníme po
+              30 minutách; starší záznam navíc při každém čtení odmítneme a smažeme. Samotná atribuce neobsahuje
+              UUID uživatele, obsah formuláře, VIN, jméno, e-mail, telefon ani adresu. Pokud ale následně vytvoříte
+              dokument, server připojí kopii tohoto minimalizovaného atribučního údaje k zabezpečenému záznamu
+              dokumentu, a proto může být po tuto dobu spojitelný s údaji objednávky: 24 hodin u bezplatného toku,
+              7–30 dní u placeného dokumentu, případně 90 dní s doplňkem archivace. Syrový reportovací buffer
+              obsahuje nejvýše 5 000 událostí a dashboard pracuje s posledními 30 dny. Affiliate partnerovi atribuci
+              ani údaje objednávky nepředáváme.
+            </p>
+            <p className="mt-3">
+              Odvolání souhlasu zastaví další browserové produktové události a nové atribuce a ihned smaže atribuci
+              z aktuálního panelu prohlížeče. Neodstraňuje zpětně již přijaté serverové události ani atribuci
+              připojenou k dříve vytvořenému dokumentu; serverové dokončení či stažení tohoto dříve atribuovaného
+              dokumentu se proto může evidovat po dobu jeho dostupnosti. U těchto záznamů můžete uplatnit svá práva
+              postupem v části 5.
+            </p>
+            <AnalyticsConsentSettings />
           </section>
 
           <section>

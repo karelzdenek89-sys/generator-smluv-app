@@ -185,6 +185,8 @@ export default function LoanBuilderPage() {
           contractType: 'loan',
           deliveryEmail: authorization.deliveryEmail,
           consent: authorization.consent,
+          analyticsConsentGranted: authorization.analyticsConsentGranted,
+          analyticsAttribution: authorization.analyticsAttribution,
           tier: formData.tier,
           addOns,
           notaryUpsell: formData.tier !== 'basic',

@@ -5,6 +5,7 @@ import ArticleTrustBox from '@/app/components/blog/ArticleTrustBox';
 import RelatedContracts from '@/app/components/RelatedContracts';
 import BlogArticleSchemas from '@/app/components/seo/BlogArticleSchemas';
 import RelatedArticles from '@/app/components/blog/RelatedArticles';
+import TrackedLink from '@/app/components/analytics/TrackedLink';
 
 export const metadata = blogArticlePageMetadata("smlouva-o-sluzbach-2026", {
   title: "Smlouva o poskytování služeb 2026: vzor a náležitosti",
@@ -51,12 +52,14 @@ export default function SmlouvaOSluzbach2026Page() {
         <div className="mt-7 rounded-2xl border border-amber-500/20 bg-amber-500/8 p-5">
           <p className="mb-3 text-sm font-bold text-white">Potřebujete smlouvu o službách?</p>
           <p className="mb-4 text-sm text-slate-400">Vytvořte smlouvu o poskytování služeb online — s popisem služby, cenou, reklamačními podmínkami a výpovědí. PDF ihned.</p>
-          <Link
+          <TrackedLink
             href="/sluzby"
+            eventName="blog_cta_click"
+            eventParams={{ surface: 'blog_article', cta_type: 'hero_primary', destination: '/sluzby' }}
             className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-2.5 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400"
           >
             Vytvořit smlouvu o službách →
-          </Link>
+          </TrackedLink>
         </div>
       </header>
 
@@ -144,9 +147,14 @@ export default function SmlouvaOSluzbach2026Page() {
         </div>
 
         <div className="rounded-2xl border border-amber-500/20 bg-amber-500/6 p-5">
-          <Link href="/sluzby" className="text-sm font-bold text-amber-400 underline underline-offset-4 hover:text-amber-300 transition">
+          <TrackedLink
+            href="/sluzby"
+            eventName="blog_cta_click"
+            eventParams={{ surface: 'blog_article', cta_type: 'inline_text', destination: '/sluzby' }}
+            className="text-sm font-bold text-amber-400 underline underline-offset-4 hover:text-amber-300 transition"
+          >
             Vytvořit smlouvu o poskytování služeb →
-          </Link>
+          </TrackedLink>
         </div>
       </section>
 
@@ -185,6 +193,7 @@ export default function SmlouvaOSluzbach2026Page() {
         body="Formulář na SmlouvaHned pokrývá popis služeb, cenu, reklamační podmínky i výpověď. Připraveno pro OSVČ, agentury i firmy dle OZ 2026."
         buttonLabel="Vytvořit smlouvu o službách"
         href="/sluzby"
+        articleSlug="smlouva-o-sluzbach-2026"
       />
 
       {/* ── SECTION 4 ───────────────────────────── */}
@@ -291,12 +300,14 @@ export default function SmlouvaOSluzbach2026Page() {
         <p className="mx-auto mb-6 max-w-sm text-sm leading-relaxed text-slate-400">
           Formulář vás provede popisem služeb, cenou i výpovědí. PDF ke stažení ihned.
         </p>
-        <Link
+        <TrackedLink
           href="/sluzby"
+          eventName="blog_cta_click"
+          eventParams={{ surface: 'blog_article', cta_type: 'final_primary', destination: '/sluzby' }}
           className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-8 py-4 text-sm font-black uppercase tracking-tight text-black shadow-[0_0_40px_rgba(245,158,11,0.25)] transition hover:bg-amber-400"
         >
           Vytvořit smlouvu o službách →
-        </Link>
+        </TrackedLink>
         <div className="mt-3 text-xs text-slate-600">Od 99 Kč · Dle OZ · Platné pro 2026</div>
       </div>
 

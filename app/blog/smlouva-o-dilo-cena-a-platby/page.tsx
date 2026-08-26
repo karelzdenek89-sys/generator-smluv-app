@@ -67,8 +67,8 @@ export default function SmlouvaODiloCenaAPlatbyPage() {
         primaryAction={{
           title: 'Potřebujete smlouvu o dílo sestavit online?',
           body: 'Formulář pro smlouvu o dílo — předmět díla, cena, termíny, sankce a předání. Standardizovaný dokument dle OZ č. 89/2012 Sb.',
-          buttonLabel: 'Zobrazit smlouvu o dílo online',
-          href: '/smlouva-o-dilo-online',
+          buttonLabel: 'Vytvořit smlouvu o dílo',
+          href: '/smlouva-o-dilo',
         }}
         trustBox={{
           generatorSuitable:
@@ -139,8 +139,8 @@ export default function SmlouvaODiloCenaAPlatbyPage() {
           body="Formulář pro smlouvu o dílo — pevná cena, zálohy, termíny a předávací podmínky. PDF ke stažení od 99 Kč."
           buttonLabel="Pokračovat ke smlouvě o dílo"
           href="/smlouva-o-dilo"
-          variant="subtle"
           articleSlug="smlouva-o-dilo-cena-a-platby"
+          variant="subtle"
         />
 
         <section id="platebni-milniky" className="mb-12 scroll-mt-6">

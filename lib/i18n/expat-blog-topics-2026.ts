@@ -61,7 +61,10 @@ function topicEn(
     finalCta:
       opts.finalCta ?? {
         title: opts.primaryCta.title,
-        body: 'Open the English-guided form, fill in your details, and download the Czech PDF after payment.',
+        body:
+          opts.builderHref === '/spoluprace' || opts.builderHref === '/smlouva-o-dilo'
+            ? 'The linked form interface is available only in Czech. Fill it in to generate a Czech PDF after payment.'
+            : 'Open the English-guided form, fill in your details, and download the Czech PDF after payment.',
         buttonLabel: opts.primaryCta.buttonLabel,
       },
     trustBox: opts.trust,
@@ -137,7 +140,10 @@ function topicUa(
     finalCta:
       opts.finalCta ?? {
         title: opts.primaryCta.title,
-        body: 'Відкрийте форму українською, заповніть дані та завантажте PDF чеською після оплати.',
+        body:
+          opts.builderHref === '/spoluprace' || opts.builderHref === '/smlouva-o-dilo'
+            ? 'Інтерфейс форми за посиланням доступний лише чеською. Після оплати ви отримаєте PDF чеською.'
+            : 'Відкрийте форму українською, заповніть дані та завантажте PDF чеською після оплати.',
         buttonLabel: opts.primaryCta.buttonLabel,
       },
     trustBox: opts.trust,
@@ -422,8 +428,8 @@ export const EXPAT_BLOG_TOPICS_2026: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Structure B2B cooperation in writing',
-      body: 'Cooperation agreement (smlouva o spolupráci) — scope, deliverables, acceptance and liability in Czech.',
-      buttonLabel: 'Open cooperation agreement form (EN) →',
+      body: 'The cooperation agreement covers scope, deliverables, acceptance and liability. The linked form interface is available only in Czech.',
+      buttonLabel: 'Open Czech-only cooperation form →',
     },
     finalCta: {
       title: 'Is it actually employment?',
@@ -475,8 +481,8 @@ export const EXPAT_BLOG_TOPICS_2026: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Оформити B2B співпрацю письмово',
-      body: 'Договір про співпрацю — обсяг, результат, приймання та відповідальність чеською.',
-      buttonLabel: 'Форма договору співпраці (UA) →',
+      body: 'Договір описує обсяг, результат, приймання та відповідальність. Інтерфейс форми за посиланням доступний лише чеською.',
+      buttonLabel: 'Відкрити форму співпраці лише чеською →',
     },
     finalCta: {
       title: 'Це фактично найм?',
@@ -521,8 +527,8 @@ export const EXPAT_BLOG_TOPICS_2026: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Create a Czech work contract (smlouva o dílo)',
-      body: 'Structured Czech PDF — describe work, price model, milestones and handover.',
-      buttonLabel: 'Open work contract form →',
+      body: 'Describe the work, price model, milestones and handover. The linked form interface and generated PDF are available only in Czech.',
+      buttonLabel: 'Open Czech-only work contract form →',
     },
     trust: {
       generatorSuitable: 'Typical freelance or trade projects with a defined deliverable and price model.',
@@ -561,8 +567,8 @@ export const EXPAT_BLOG_TOPICS_2026: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Створити smlouva o dílo',
-      body: 'Чеський PDF з описом робіт, моделі ціни та передачі результату.',
-      buttonLabel: 'Форма договору підряду →',
+      body: 'Опишіть роботи, модель ціни та передачу результату. Інтерфейс форми та PDF доступні лише чеською.',
+      buttonLabel: 'Відкрити форму договору підряду лише чеською →',
     },
     trust: {
       generatorSuitable: 'Типовий підряд з визначеним результатом і моделлю ціни.',
@@ -601,13 +607,13 @@ export const EXPAT_BLOG_TOPICS_2026: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Work contract with IP clauses',
-      body: 'Use smlouva o dílo for defined deliverables; add cooperation/NDA where needed for broader projects.',
-      buttonLabel: 'Open work contract form →',
+      body: 'Use smlouva o dílo for defined deliverables; add cooperation/NDA where needed. The linked form interface is available only in Czech.',
+      buttonLabel: 'Open Czech-only work contract form →',
     },
     finalCta: {
       title: 'Agency or ongoing collaboration?',
-      body: 'Cooperation agreement when the relationship is broader than a single deliverable.',
-      buttonLabel: 'Open cooperation agreement form (EN) →',
+      body: 'Use a cooperation agreement when the relationship is broader than one deliverable. The linked form interface is available only in Czech.',
+      buttonLabel: 'Open Czech-only cooperation form →',
       href: withLocale('/spoluprace', 'en'),
     },
     trust: {
@@ -647,13 +653,13 @@ export const EXPAT_BLOG_TOPICS_2026: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Договір підряду з IP',
-      body: 'Smlouva o dílo для результату; за потреби — співпраця та NDA для ширших проєктів.',
-      buttonLabel: 'Форма договору підряду →',
+      body: 'Smlouva o dílo для чіткого результату; за потреби — співпраця та NDA. Інтерфейс форми доступний лише чеською.',
+      buttonLabel: 'Відкрити форму договору підряду лише чеською →',
     },
     finalCta: {
       title: 'Співпраця з агентством?',
-      body: 'Договір про співпрацю, коли відносини ширші за один результат.',
-      buttonLabel: 'Форма договору співпраці (UA) →',
+      body: 'Договір про співпрацю для відносин, ширших за один результат. Інтерфейс форми доступний лише чеською.',
+      buttonLabel: 'Відкрити форму співпраці лише чеською →',
       href: withLocale('/spoluprace', 'ua'),
     },
     trust: {

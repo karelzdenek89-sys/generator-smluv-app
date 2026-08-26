@@ -175,6 +175,8 @@ export default function GiftContractPage() {
           contractType: 'gift',
           deliveryEmail: authorization.deliveryEmail,
           consent: authorization.consent,
+          analyticsConsentGranted: authorization.analyticsConsentGranted,
+          analyticsAttribution: authorization.analyticsAttribution,
           tier: formData.tier,
           addOns,
           notaryUpsell: formData.tier !== 'basic',

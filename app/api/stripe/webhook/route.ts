@@ -20,6 +20,11 @@ import {
 import type { AnalyticsEventParams } from '@/lib/analytics';
 import { getEffectivePriceBand, packageIncludesDocx } from '@/lib/packages';
 import { buildPartnerContext } from '@/lib/partners/context';
+import {
+  analyticsAttributionEventParams,
+  normalizeStoredCheckoutAnalyticsAttribution,
+  type CheckoutAnalyticsAttribution,
+} from '@/lib/analytics-attribution';
 
 export const runtime = 'nodejs';
 
@@ -37,6 +42,10 @@ async function recordPaidCheckoutAnalytics(
     contractType: string;
     packageKey: string | null;
     addOns: CheckoutAddonKey[];
+    monetizationMode: NonNullable<AnalyticsEventParams['monetization_mode']>;
+    experimentId?: string | null;
+    experimentVariant?: string | null;
+    analyticsAttribution?: CheckoutAnalyticsAttribution;
   },
 ) {
   const normalizedTier = normalizePricingTier(options.tier);
@@ -59,6 +68,10 @@ async function recordPaidCheckoutAnalytics(
     addons_total_czk: addonsTotalCzk,
     total_price_czk: totalPriceCzk,
     selected_addons_count: options.addOns.length,
+    monetization_mode: options.monetizationMode,
+    experiment_id: options.experimentId ?? undefined,
+    variant: options.experimentVariant ?? undefined,
+    ...analyticsAttributionEventParams(options.analyticsAttribution),
   });
 
   if (options.addOns.length === 0) return;
@@ -78,6 +91,10 @@ async function recordPaidCheckoutAnalytics(
         addons_total_czk: addonsTotalCzk,
         total_price_czk: totalPriceCzk,
         selected_addons_count: options.addOns.length,
+        monetization_mode: options.monetizationMode,
+        experiment_id: options.experimentId ?? undefined,
+        variant: options.experimentVariant ?? undefined,
+        ...analyticsAttributionEventParams(options.analyticsAttribution),
       }),
     ),
   );
@@ -170,6 +187,22 @@ export async function POST(req: Request) {
           session.metadata?.contractType || existing.contractType || existingPayload.contractType || '',
         );
         const packageKey = typeof existing.packageKey === 'string' ? existing.packageKey : null;
+        const analyticsConsentGranted = existing.analyticsConsentGranted === true;
+        const analyticsAttribution = analyticsConsentGranted
+          ? normalizeStoredCheckoutAnalyticsAttribution(existing.analyticsAttribution)
+          : null;
+        const monetizationMode = existing.monetizationMode === 'free_experiment'
+          || existing.monetizationMode === 'freemium'
+          ? existing.monetizationMode
+          : 'paid';
+        const experimentId = monetizationMode === 'free_experiment'
+          && typeof existing.experimentId === 'string'
+          ? existing.experimentId
+          : null;
+        const experimentVariant = monetizationMode === 'free_experiment'
+          && typeof existing.experimentVariant === 'string'
+          ? existing.experimentVariant
+          : null;
         const archiveDays = getArchiveDaysWithAddons(normalizePricingTier(tier), packageKey, addOns);
         const archiveTtl = archiveDays * 60 * 60 * 24;
         const paidAt = typeof existing.paidAt === 'string' ? existing.paidAt : new Date().toISOString();
@@ -200,6 +233,7 @@ export async function POST(req: Request) {
           locale: lang,
           packageKey,
           rawContractData: existingPayload,
+          monetizationMode,
           paid: true,
           completed: true,
         });
@@ -252,14 +286,20 @@ export async function POST(req: Request) {
           await redis.set(emailSentKey, '1', { ex: fulfillmentRecordTtl });
         }
 
-        await recordPaidCheckoutAnalytics(session, {
-          tier,
-          contractType,
-          packageKey,
-          addOns,
-        }).catch((analyticsError) => {
-          console.error('[webhook] Paid checkout analytics failed:', analyticsError);
-        });
+        if (analyticsConsentGranted) {
+          await recordPaidCheckoutAnalytics(session, {
+            tier,
+            contractType,
+            packageKey,
+            addOns,
+            monetizationMode,
+            experimentId,
+            experimentVariant,
+            analyticsAttribution: analyticsAttribution ?? undefined,
+          }).catch((analyticsError) => {
+            console.error('[webhook] Paid checkout analytics failed:', analyticsError);
+          });
+        }
 
         await redis.set(completedKey, '1', { ex: fulfillmentRecordTtl });
       } finally {

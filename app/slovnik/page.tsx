@@ -8,8 +8,9 @@ import {
   type GlossaryEntry,
 } from '@/lib/glossary';
 import InformativeDisclaimer from '@/app/components/blog/InformativeDisclaimer';
+import { SITE_URL } from '@/lib/seo/site';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.smlouvahned.cz';
+const BASE_URL = SITE_URL;
 
 export const metadata: Metadata = {
   title: 'Slovník právních pojmů 2026',

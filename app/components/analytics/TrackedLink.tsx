@@ -9,7 +9,7 @@ import {
   type AnalyticsEventName,
   type AnalyticsEventParams,
 } from '@/lib/analytics';
-import { rememberTrafficAttribution } from '@/lib/analytics-attribution';
+import { rememberTrafficAttributionIfEmpty } from '@/lib/analytics-attribution';
 
 type TrackedLinkProps = Omit<ComponentProps<typeof Link>, 'href'> & {
   href: ComponentProps<typeof Link>['href'];
@@ -53,26 +53,26 @@ export default function TrackedLink({
 
     if (sourcePath.startsWith('/blog/')) {
       const slug = defaults.article_slug;
-      rememberTrafficAttribution({
+      rememberTrafficAttributionIfEmpty({
         source: 'blog_article',
         label: `Článek: ${slug ?? sourcePath}`,
         article_slug: slug,
         pathname: sourcePath,
       });
     } else if (eventParams?.surface === 'seo_landing' || eventParams?.source === 'seo_landing') {
-      rememberTrafficAttribution({
+      rememberTrafficAttributionIfEmpty({
         source: 'seo_landing',
         label: `SEO: ${sourcePath}`,
         pathname: sourcePath,
       });
     } else if (eventParams?.surface === 'package_page') {
-      rememberTrafficAttribution({
+      rememberTrafficAttributionIfEmpty({
         source: 'package_page',
         label: 'Balíčková stránka',
         pathname: sourcePath,
       });
     } else if (eventParams?.surface === 'situation_page') {
-      rememberTrafficAttribution({
+      rememberTrafficAttributionIfEmpty({
         source: 'situation_page',
         label: 'Situační stránka',
         pathname: sourcePath,
