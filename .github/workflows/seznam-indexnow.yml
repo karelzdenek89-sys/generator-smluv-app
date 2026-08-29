@@ -1,0 +1,104 @@
+name: Seznam IndexNow
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: seznam-indexnow
+  cancel-in-progress: true
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for production and submit sitemap URLs
+        env:
+          SITE_URL: https://www.smlouvahned.cz
+          INDEXNOW_KEY: b389f1acf502dcba7f34acac367de3e8
+        run: |
+          node <<'NODE'
+          const site = process.env.SITE_URL.replace(/\/+$/, '');
+          const key = process.env.INDEXNOW_KEY;
+          const keyUrl = `${site}/${key}.txt`;
+          const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+          let keyIsLive = false;
+          for (let attempt = 1; attempt <= 60; attempt += 1) {
+            try {
+              const response = await fetch(keyUrl, {
+                cache: 'no-store',
+                headers: { 'user-agent': 'SmlouvaHned-IndexNow/1.0' },
+              });
+              const body = (await response.text()).trim();
+              if (response.ok && body === key) {
+                keyIsLive = true;
+                break;
+              }
+            } catch {
+              // Production deployment may still be propagating.
+            }
+            await sleep(5000);
+          }
+
+          if (!keyIsLive) {
+            throw new Error(`IndexNow key is not available at ${keyUrl}`);
+          }
+
+          const sitemapUrl = `${site}/sitemap.xml`;
+          const sitemapResponse = await fetch(sitemapUrl, {
+            cache: 'no-store',
+            headers: { 'user-agent': 'SmlouvaHned-IndexNow/1.0' },
+          });
+          if (!sitemapResponse.ok) {
+            throw new Error(`Unable to fetch sitemap: ${sitemapResponse.status} ${sitemapResponse.statusText}`);
+          }
+
+          const xml = await sitemapResponse.text();
+          const siteHost = new URL(site).hostname;
+          const urls = [...new Set(
+            [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)]
+              .map((match) => match[1].trim())
+              .filter((url) => {
+                try {
+                  return new URL(url).hostname === siteHost;
+                } catch {
+                  return false;
+                }
+              }),
+          )];
+
+          if (urls.length === 0) {
+            throw new Error('No indexable page URLs found in sitemap.xml');
+          }
+          if (urls.length > 10000) {
+            throw new Error(`Sitemap contains ${urls.length} URLs; IndexNow allows at most 10,000 URLs per request.`);
+          }
+
+          const indexNowResponse = await fetch('https://search.seznam.cz/indexnow', {
+            method: 'POST',
+            headers: {
+              'content-type': 'application/json; charset=utf-8',
+              'user-agent': 'SmlouvaHned-IndexNow/1.0',
+            },
+            body: JSON.stringify({
+              host: new URL(site).host,
+              key,
+              keyLocation: keyUrl,
+              urlList: urls,
+            }),
+          });
+          const responseBody = await indexNowResponse.text();
+
+          console.log(`Seznam IndexNow response: ${indexNowResponse.status} ${indexNowResponse.statusText}`);
+          console.log(`Submitted ${urls.length} unique sitemap URLs from ${sitemapUrl}`);
+          if (responseBody) console.log(responseBody);
+
+          if (!indexNowResponse.ok) {
+            throw new Error(`Seznam IndexNow rejected submission: ${indexNowResponse.status} ${responseBody}`);
+          }
+          NODE
