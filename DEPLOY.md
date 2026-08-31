@@ -19,6 +19,8 @@ Nastav v **Project → Settings → Environment Variables** (Production):
 | 🔴 `UPSTASH_REDIS_REST_URL` | Upstash Redis URL | console.upstash.com |
 | 🔴 `UPSTASH_REDIS_REST_TOKEN` | Upstash Redis token | console.upstash.com |
 | 🔴 `RESEND_API_KEY` | E-mail API klíč | resend.com → API Keys |
+| 🔴 `RESEND_FROM_EMAIL` | Ověřený odesílatel plateb a newsletteru | `dokumenty@smlouvahned.cz` |
+| 🔴 `RESEND_CONTACT_FROM_EMAIL` | Ověřený odesílatel kontaktního formuláře | `noreply@smlouvahned.cz` |
 | ⚪ `RESEND_NEWSLETTER_SEGMENT_ID` | Volitelně: kopie přihlášení do Resend pro broadcast | Resend → Segments |
 | 🔴 `NEXT_PUBLIC_BASE_URL` | Produkční doména | `https://www.smlouvahned.cz` |
 
@@ -72,9 +74,9 @@ Nastav v **Project → Settings → Environment Variables** (Production):
 
 - [ ] V **Vercel → Project → Analytics** zapnout **Web Analytics** (návštěvy, stránky, země, zařízení)
 - [ ] Volitelně zapnout **Speed Insights** (Core Web Vitals)
-- [ ] Nastavit `INTERNAL_REPORTING_SECRET` a jednou otevřít `/interni/analytics/auth?secret=<URL-encoded hodnota>` (cookie 30 dní); pak stačí `/interni/analytics`. Secret s `+` v URL vždy URL-enkódovat (`%2B`).
+- [ ] Nastavit `INTERNAL_REPORTING_ADMIN_EMAIL=karelzdenek89@gmail.com` a silné `INTERNAL_REPORTING_SECRET`; přihlašovat se výhradně přes `/interni/analytics/prihlaseni` (relace standardně 12 hodin).
 - [ ] V **Google Search Console** ověřit doménu `www.smlouvahned.cz` a odeslat sitemap (`/sitemap.xml`)
-- [ ] Přihlášení v patičce ukládá e-maily do Redis (Upstash) — Resend pro newsletter není nutný
+- [ ] Přihlášení v patičce odešle double-opt-in e-mail přes Resend a po potvrzení uloží souhlas do Redis i Resend kontaktů
 
 ---
 
@@ -89,7 +91,7 @@ Projdi tento scénář **se skutečnou kartou v živém módu**:
 - [ ] PDF se stáhne a je správně vygenerováno
 - [ ] Pokud byl zakoupen DOCX doplněk, stáhne se i editovatelný DOCX
 - [ ] Zkontrolovat e-mailovou schránku — potvrzovací e-mail dorazil s přímým odkazem ke stažení
-- [ ] Zákaznická zóna (`/zakaznicka-zona`) — zadat e-mail z objednávky → objednávka se zobrazí
+- [ ] Zákaznická zóna (`/zakaznicka-zona`) — použít bezpečný odkaz z e-mailu, případně zadat e-mail a ID Stripe relace → objednávka se zobrazí
 - [ ] Stripe dashboard → Payments — platba se eviduje
 
 ---
@@ -103,7 +105,7 @@ Projdi tento scénář **se skutečnou kartou v živém módu**:
 
 ## 9. Právní stránky
 
-- [ ] Ověřit `/obchodni-podminky` — obsahuje ceny, TTL dokumentů (7/14/30 dní), reklamační postup
+- [ ] Ověřit `/obchodni-podminky` — obsahuje ceny, TTL dokumentů (7/30/90 dní), reklamační postup
 - [ ] Ověřit `/gdpr` — odpovídá skutečnému zpracování dat
 - [ ] Doplnit kontaktní adresu a IČO provozovatele do obchodních podmínek
 

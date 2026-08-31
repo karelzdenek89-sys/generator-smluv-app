@@ -20,6 +20,7 @@ import {
 import type { AnalyticsEventParams } from '@/lib/analytics';
 import { getEffectivePriceBand, packageIncludesDocx } from '@/lib/packages';
 import { buildPartnerContext } from '@/lib/partners/context';
+import { getTransactionalSender } from '@/lib/email-config';
 
 export const runtime = 'nodejs';
 
@@ -320,7 +321,7 @@ async function sendDownloadEmail(
       'Idempotency-Key': `checkout-fulfilled-${sessionId}`,
     },
     body: JSON.stringify({
-      from: 'SmlouvaHned <dokumenty@planstavby.cz>',
+      from: getTransactionalSender(),
       to: [to],
       subject: copy.subject(contractName),
       html: `

@@ -61,10 +61,14 @@ export const EXPAT_CONTRACT_ROUTES: Record<ContractType, string> = {
  */
 export function readBuilderLocaleFromBrowser(): AppLocale {
   if (typeof window === 'undefined') return 'cs';
+  const params = new URLSearchParams(window.location.search);
+  if (window.location.pathname.replace(/\/$/, '') === '/zakaznicka-zona') {
+    const portalLocale = params.get('lang');
+    return isSupportedLocaleInput(portalLocale) ? normalizeLocale(portalLocale) : 'cs';
+  }
   const contractType = getContractTypeByPath(window.location.pathname);
   if (!contractType || !isExpatContract(contractType)) return 'cs';
 
-  const params = new URLSearchParams(window.location.search);
   const queryLocale = params.get('lang');
   return isSupportedLocaleInput(queryLocale) ? normalizeLocale(queryLocale) : 'cs';
 }

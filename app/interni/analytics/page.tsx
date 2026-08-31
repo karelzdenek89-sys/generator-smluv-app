@@ -139,6 +139,16 @@ function Table({
 function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
   return (
     <>
+      <div className="mb-4 flex justify-end">
+        <form method="post" action="/interni/analytics/logout">
+          <button
+            type="submit"
+            className="rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2 text-sm font-semibold text-slate-300 transition hover:border-amber-400/40 hover:text-amber-300"
+          >
+            Odhlásit se
+          </button>
+        </form>
+      </div>
       <section className="rounded-[32px] border border-[#caa45a]/20 bg-[linear-gradient(180deg,rgba(202,164,90,0.08),rgba(255,255,255,0.02))] p-8 shadow-[0_30px_100px_rgba(0,0,0,0.3)]">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div>
@@ -154,7 +164,7 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
               }
               {data.windowDays}
               {
-                ' dní; u plateb je navíc zvýrazněný poslední týden. Kompletní tržby a starší platby vždy ověřte ve Stripe. Po přihlášení zůstává přístup v prohlížeči 30 dní v zabezpečené HttpOnly cookie.'
+                ' dní; u plateb je navíc zvýrazněný poslední týden. Kompletní tržby a starší platby vždy ověřte ve Stripe. Přihlášení je vázané na schválený admin e-mail a relace vyprší nejpozději za 12 hodin.'
               }
             </p>
           </div>
@@ -174,6 +184,12 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
           </div>
         </div>
       </section>
+
+      {data.retentionLimitReached ? (
+        <div className="rounded-2xl border border-amber-400/25 bg-amber-400/10 px-5 py-4 text-sm leading-6 text-amber-100">
+          Analytický buffer dosáhl kapacity. Součty v tomto pohledu mohou pokrývat kratší dobu než {data.windowDays} dní; finanční výsledky ověřte ve Stripe.
+        </div>
+      ) : null}
 
       <Section
         title={`Posledních ${data.recentWindowDays} dní`}
@@ -235,6 +251,21 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
             </div>
           ))}
         </div>
+      </Section>
+
+      <Section
+        title="Odmítnuté checkouty"
+        description="Serverové ochrany, které zastavily checkout ještě před přesměrováním do Stripe. Růst po nasazení může signalizovat chybu formuláře, konfigurace nebo úložiště."
+      >
+        <Table
+          headers={['Důvod', 'Nejčastější pole', `Posledních ${data.recentWindowDays} dní`, `Celkem ${data.windowDays} dní`]}
+          rows={data.checkoutRejections.map((item) => [
+            item.reason,
+            item.field,
+            formatNumber(item.recentCount),
+            formatNumber(item.count),
+          ])}
+        />
       </Section>
 
       <Section

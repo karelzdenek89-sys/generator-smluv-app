@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getClientIp, readFirstPartyJson } from '@/lib/api-security';
 import { redis } from '@/lib/redis';
+import { getContactSender } from '@/lib/email-config';
 
 export const runtime = 'nodejs';
 
@@ -87,7 +88,7 @@ ${message}
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: 'SmlouvaHned <noreply@planstavby.cz>',
+      from: getContactSender(),
       to: ['info@smlouvahned.cz'],
       reply_to: email,
       subject: `[Kontakt] ${subject || name}`,

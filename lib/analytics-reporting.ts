@@ -6,6 +6,7 @@ import {
 } from '@/lib/checkout-addons';
 import { THEMATIC_PACKAGES, type ThematicPackageKey } from '@/lib/packages';
 import { redis } from '@/lib/redis';
+import { ANALYTICS_RAW_EVENT_LIMIT } from '@/lib/analytics-server';
 import { SITUATION_LANDINGS } from '@/lib/situations';
 import { GSC_PAGE_SNAPSHOTS, classifyGscSnapshot } from '@/lib/gsc-monetization-candidates';
 import type { AnalyticsEventName, AnalyticsEventParams, PriceBand } from './analytics';
@@ -34,10 +35,17 @@ export type AnalyticsDashboardData = {
   windowDays: number;
   recentWindowDays: number;
   analyzedEvents: number;
+  retentionLimitReached: boolean;
   generatedAt: string;
   overview: DashboardRow[];
   recentOverview: DashboardRow[];
   insights: AnalyticsInsight[];
+  checkoutRejections: Array<{
+    reason: string;
+    field: string;
+    count: number;
+    recentCount: number;
+  }>;
   pricingInterest: Array<{
     band: PriceBand;
     topFunnel: number;
@@ -315,7 +323,7 @@ export async function getAnalyticsDashboardData(
   const now = new Date();
   const sinceTime = now.getTime() - windowDays * 24 * 60 * 60 * 1000;
   const recentSinceTime = now.getTime() - ANALYTICS_REPORTING_RECENT_DAYS * 24 * 60 * 60 * 1000;
-  const rawEvents = ((await redis.lrange('analytics:events', 0, 1999)) ?? []) as unknown[];
+  const rawEvents = ((await redis.lrange('analytics:events', 0, ANALYTICS_RAW_EVENT_LIMIT - 1)) ?? []) as unknown[];
   const events = rawEvents
     .map(safeParseEvent)
     .filter((item): item is StoredAnalyticsEvent => Boolean(item))
@@ -362,6 +370,7 @@ export async function getAnalyticsDashboardData(
   let newsletterSubscriptions = 0;
   let seoLandingViews = 0;
   let attributedBuilderEntries = 0;
+  const checkoutRejections = new Map<string, { count: number; recentCount: number; fields: Map<string, number> }>();
 
   let recentBuilderViews = 0;
   let recentCheckoutModalOpens = 0;
@@ -731,6 +740,21 @@ export async function getAnalyticsDashboardData(
         newsletterSubscriptions += 1;
         break;
 
+      case 'checkout_rejected': {
+        const reason = params.reject_reason ?? 'unknown';
+        const field = params.reject_field ?? '—';
+        const current = checkoutRejections.get(reason) ?? {
+          count: 0,
+          recentCount: 0,
+          fields: new Map<string, number>(),
+        };
+        current.count += 1;
+        if (inRecentWindow) current.recentCount += 1;
+        current.fields.set(field, (current.fields.get(field) ?? 0) + 1);
+        checkoutRejections.set(reason, current);
+        break;
+      }
+
       case 'free_document_generated':
         getMonetizationStat(params).freeDocuments += 1;
         break;
@@ -1003,8 +1027,17 @@ export async function getAnalyticsDashboardData(
     windowDays,
     recentWindowDays: ANALYTICS_REPORTING_RECENT_DAYS,
     analyzedEvents: events.length,
+    retentionLimitReached: rawEvents.length >= ANALYTICS_RAW_EVENT_LIMIT,
     generatedAt: now.toISOString(),
     insights,
+    checkoutRejections: Array.from(checkoutRejections.entries())
+      .map(([reason, value]) => ({
+        reason,
+        field: Array.from(value.fields.entries()).sort((a, b) => b[1] - a[1])[0]?.[0] ?? '—',
+        count: value.count,
+        recentCount: value.recentCount,
+      }))
+      .sort((a, b) => b.count - a.count),
     recentOverview,
     seoLandingPerformance,
     partnerPerformance,

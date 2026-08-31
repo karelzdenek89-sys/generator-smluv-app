@@ -21,9 +21,14 @@ function subscribeToLocation(callback: () => void) {
 }
 
 function getQueryLocaleSnapshot(): 'en' | 'ua' | null {
+  const pathname = window.location.pathname.replace(/\/$/, '');
+  const raw = new URLSearchParams(window.location.search).get('lang');
+  if (pathname === '/zakaznicka-zona') {
+    const normalized = raw ? normalizeLocale(raw) : 'cs';
+    return normalized === 'en' || normalized === 'ua' ? normalized : null;
+  }
   const contractType = getContractTypeByPath(window.location.pathname);
   if (!contractType || !isExpatContract(contractType)) return null;
-  const raw = new URLSearchParams(window.location.search).get('lang');
   const normalized = raw ? normalizeLocale(raw) : 'cs';
   return normalized === 'en' || normalized === 'ua' ? normalized : null;
 }

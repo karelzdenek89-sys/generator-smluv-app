@@ -6,6 +6,10 @@ export type JsonReadResult =
   | { ok: true; data: JsonObject }
   | { ok: false; error: JsonReadError };
 
+export type FormReadResult =
+  | { ok: true; data: URLSearchParams }
+  | { ok: false; error: JsonReadError };
+
 function requestHost(req: Request): string {
   const forwardedHost = req.headers.get('x-forwarded-host')?.split(',')[0]?.trim();
   return (forwardedHost || req.headers.get('host') || new URL(req.url).host).toLowerCase();
@@ -59,6 +63,27 @@ export async function readFirstPartyJson(
       return { ok: false, error: 'invalid_json' };
     }
     return { ok: true, data: data as JsonObject };
+  } catch {
+    return { ok: false, error: 'invalid_json' };
+  }
+}
+
+export async function readFirstPartyForm(req: Request, maxBytes: number): Promise<FormReadResult> {
+  if (!hasValidBrowserOrigin(req)) return { ok: false, error: 'invalid_origin' };
+  const contentType = req.headers.get('content-type')?.toLowerCase() ?? '';
+  if (!contentType.startsWith('application/x-www-form-urlencoded')) {
+    return { ok: false, error: 'invalid_content_type' };
+  }
+  const contentLength = Number(req.headers.get('content-length'));
+  if (Number.isFinite(contentLength) && contentLength > maxBytes) {
+    return { ok: false, error: 'payload_too_large' };
+  }
+  try {
+    const text = await req.text();
+    if (new TextEncoder().encode(text).byteLength > maxBytes) {
+      return { ok: false, error: 'payload_too_large' };
+    }
+    return { ok: true, data: new URLSearchParams(text) };
   } catch {
     return { ok: false, error: 'invalid_json' };
   }

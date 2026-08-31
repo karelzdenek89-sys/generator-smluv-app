@@ -57,6 +57,51 @@ export const ANALYTICS_EVENT_NAMES = [
 
 export type AnalyticsEventName = (typeof ANALYTICS_EVENT_NAMES)[number];
 
+/** Events that a browser may legitimately observe and submit. Revenue,
+ * payment, fulfilment, subscription and verified partner outcomes are kept
+ * server-only so the reporting dashboard cannot be forged through this API. */
+export const PUBLIC_ANALYTICS_EVENT_NAMES = [
+  'blog_article_view',
+  'blog_cta_click',
+  'seo_landing_view',
+  'seo_landing_cta_click',
+  'situation_page_view',
+  'situation_cta_click',
+  'package_page_view',
+  'package_cta_click',
+  'builder_view',
+  'builder_completed',
+  'package_flow_entered',
+  'builder_tier_selected',
+  'builder_upgrade_clicked',
+  'builder_checkout_modal_open',
+  'builder_checkout_modal_closed',
+  'builder_checkout_consent_missing',
+  'builder_checkout_clicked',
+  'checkout_addon_selected',
+  'checkout_addon_removed',
+  'homepage_pricing_path_click',
+  'homepage_situation_click',
+  'homepage_package_click',
+  'premium_offer_viewed',
+  'premium_upgrade_clicked',
+  'content_offer_view',
+  'content_offer_click',
+  'bundle_selected',
+  'post_purchase_offer_view',
+  'post_purchase_offer_click',
+  'partner_offer_eligible',
+  'partner_offer_viewed',
+  'partner_offer_clicked',
+  'partner_lead_started',
+  'partner_lead_consent_granted',
+  'partner_lead_submitted',
+  'partner_lead_failed',
+  'annual_plan_interest',
+] as const satisfies readonly AnalyticsEventName[];
+
+export type PublicAnalyticsEventName = (typeof PUBLIC_ANALYTICS_EVENT_NAMES)[number];
+
 export type PriceBand = '99' | '199' | '299' | '399' | '599';
 
 export type AnalyticsEventParams = {

@@ -1,7 +1,9 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 
 const INTERNAL_REPORTING_COOKIE_BASE = 'sh_internal_reporting';
-const DEFAULT_INTERNAL_REPORTING_COOKIE_VERSION = 'v2';
+const DEFAULT_INTERNAL_REPORTING_COOKIE_VERSION = 'v3';
+const DEFAULT_INTERNAL_REPORTING_ADMIN_EMAIL = 'karelzdenek89@gmail.com';
+const DEFAULT_INTERNAL_REPORTING_SESSION_SECONDS = 60 * 60 * 12;
 
 function reportingCookieVersion() {
   return (
@@ -21,17 +23,51 @@ function cookieTokenScope() {
 
 export function getInternalReportingCookieName() {
   const normalizedVersion = reportingCookieVersion().replace(/[^a-zA-Z0-9_-]/g, '_');
-  return `${INTERNAL_REPORTING_COOKIE_BASE}_${normalizedVersion}`;
+  const prefix = process.env.NODE_ENV === 'production' ? '__Host-' : '';
+  return `${prefix}${INTERNAL_REPORTING_COOKIE_BASE}_${normalizedVersion}`;
 }
 
 export const INTERNAL_REPORTING_COOKIE = getInternalReportingCookieName();
 
-function cookieToken(secret: string) {
-  return createHmac('sha256', secret).update(cookieTokenScope()).digest('base64url');
+export function normalizeReportingEmail(value: string | undefined) {
+  return value?.trim().toLowerCase() ?? '';
 }
 
-export function createInternalReportingCookieValue(secret: string) {
-  return cookieToken(secret);
+export function getInternalReportingAdminEmail() {
+  return normalizeReportingEmail(
+    process.env.INTERNAL_REPORTING_ADMIN_EMAIL || DEFAULT_INTERNAL_REPORTING_ADMIN_EMAIL,
+  );
+}
+
+export function reportingEmailMatches(expected: string | undefined, provided: string | undefined) {
+  const normalizedExpected = normalizeReportingEmail(expected);
+  const normalizedProvided = normalizeReportingEmail(provided);
+  if (!normalizedExpected || !normalizedProvided) return false;
+  const a = Buffer.from(normalizedProvided);
+  const b = Buffer.from(normalizedExpected);
+  return a.length === b.length && timingSafeEqual(a, b);
+}
+
+function reportingSessionSeconds() {
+  const parsed = Number.parseInt(process.env.INTERNAL_REPORTING_SESSION_SECONDS ?? '', 10);
+  if (!Number.isFinite(parsed)) return DEFAULT_INTERNAL_REPORTING_SESSION_SECONDS;
+  return Math.min(Math.max(parsed, 60 * 15), 60 * 60 * 24);
+}
+
+function cookieSignature(secret: string, payload: string) {
+  return createHmac('sha256', secret)
+    .update(`${cookieTokenScope()}:${payload}`)
+    .digest('base64url');
+}
+
+export function createInternalReportingCookieValue(
+  secret: string,
+  email = getInternalReportingAdminEmail(),
+  issuedAt = Date.now(),
+) {
+  const normalizedEmail = normalizeReportingEmail(email);
+  const payload = `${Buffer.from(normalizedEmail).toString('base64url')}.${issuedAt}`;
+  return `${payload}.${cookieSignature(secret, payload)}`;
 }
 
 export function normalizeReportingSecretParam(value: string | undefined) {
@@ -53,12 +89,33 @@ export function reportingSecretMatches(
   return timingSafeEqual(a, b);
 }
 
-export function isValidInternalReportingCookie(secret: string | undefined, value: string | undefined) {
+export function isValidInternalReportingCookie(
+  secret: string | undefined,
+  value: string | undefined,
+  expectedEmail = getInternalReportingAdminEmail(),
+  now = Date.now(),
+) {
   if (!secret || !value) return false;
 
-  const expected = cookieToken(secret);
-  const a = Buffer.from(value);
-  const b = Buffer.from(expected);
+  const parts = value.split('.');
+  if (parts.length !== 3) return false;
+  const [encodedEmail, rawIssuedAt, providedSignature] = parts;
+  const issuedAt = Number(rawIssuedAt);
+  if (!Number.isSafeInteger(issuedAt)) return false;
+  const ageMs = now - issuedAt;
+  if (ageMs < -60_000 || ageMs > reportingSessionSeconds() * 1000) return false;
+
+  let email: string;
+  try {
+    email = Buffer.from(encodedEmail, 'base64url').toString('utf8');
+  } catch {
+    return false;
+  }
+  if (!reportingEmailMatches(expectedEmail, email)) return false;
+
+  const expectedSignature = cookieSignature(secret, `${encodedEmail}.${rawIssuedAt}`);
+  const a = Buffer.from(providedSignature);
+  const b = Buffer.from(expectedSignature);
   if (a.length !== b.length) return false;
 
   try {
@@ -69,16 +126,11 @@ export function isValidInternalReportingCookie(secret: string | undefined, value
 }
 
 export function getInternalReportingCookieOptions() {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? '';
-  const useSharedDomain =
-    process.env.NODE_ENV === 'production' && baseUrl.includes('smlouvahned.cz');
-
   return {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax' as const,
-    path: '/interni',
-    maxAge: 60 * 60 * 24 * 30,
-    ...(useSharedDomain ? { domain: '.smlouvahned.cz' } : {}),
+    path: '/',
+    maxAge: reportingSessionSeconds(),
   };
 }

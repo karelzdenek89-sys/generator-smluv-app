@@ -161,6 +161,7 @@ function SuccessContent() {
   const queryLang = normalizeLocale(searchParams.get('lang'));
   const [dlState, setDlState] = useState<DownloadState>('checking');
   const [progress, setProgress] = useState(0);
+  const [retryKey, setRetryKey] = useState(0);
   const [orderMeta, setOrderMeta] = useState<SuccessStatusResponse | null>(null);
   const lang = normalizeLocale(orderMeta?.lang ?? queryLang);
   const copy = SUCCESS_COPY[lang];
@@ -266,7 +267,7 @@ function SuccessContent() {
     return () => {
       cancelled = true;
     };
-  }, [encodedSessionId, sessionId, token]);
+  }, [encodedSessionId, retryKey, sessionId, token]);
 
   if (!sessionId) {
     return (
@@ -412,7 +413,9 @@ function SuccessContent() {
                 <button
                   onClick={() => {
                     attemptRef.current = 0;
+                    setProgress(0);
                     setDlState('checking');
+                    setRetryKey((current) => current + 1);
                   }}
                   className="rounded-xl bg-amber-500 px-5 py-2 text-sm font-bold text-black transition hover:bg-amber-400"
                 >

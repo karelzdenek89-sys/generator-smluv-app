@@ -14,6 +14,7 @@ const patterns = [
   { name: 'Stripe secret key', pattern: /sk_(?:live|test)_[A-Za-z0-9]{16,}/g },
   { name: 'Stripe webhook secret', pattern: /whsec_[A-Za-z0-9]{16,}/g },
   { name: 'Resend API key', pattern: /re_[A-Za-z0-9]{16,}/g },
+  { name: 'Upstash Redis token', pattern: /UPSTASH_REDIS_REST_TOKEN\s*=\s*(?!AXxx|\.\.\.)[^\s]{20,}/g },
   { name: 'Private key', pattern: /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/g },
 ];
 

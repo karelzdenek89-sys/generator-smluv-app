@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getClientIp, readFirstPartyJson } from '@/lib/api-security';
 import {
-  ANALYTICS_EVENT_NAMES,
-  type AnalyticsEventName,
+  PUBLIC_ANALYTICS_EVENT_NAMES,
+  type PublicAnalyticsEventName,
   type AnalyticsEventParams,
 } from '@/lib/analytics';
 import { recordAnalyticsEvent } from '@/lib/analytics-server';
@@ -11,11 +11,10 @@ import { redis } from '@/lib/redis';
 
 export const runtime = 'nodejs';
 
-const boundedString = z.string().max(512);
-const boundedNumber = z.number().finite().min(0).max(1_000_000);
+const boundedString = z.string().trim().min(1).max(128).regex(/^[\p{L}\p{N} ._:/?#&=%+-]+$/u);
 
 const eventSchema = z.object({
-  event: z.enum(ANALYTICS_EVENT_NAMES),
+  event: z.enum(PUBLIC_ANALYTICS_EVENT_NAMES),
   params: z
     .object({
       pathname: boundedString.optional(),
@@ -42,7 +41,6 @@ const eventSchema = z.object({
         'customer', 'client', 'contractor', 'supplier', 'freelancer', 'company', 'unknown',
       ]).optional(),
       placement: z.enum(['success', 'download']).optional(),
-      revenue_czk: boundedNumber.optional(),
       partner_click_id: z.string().max(128).regex(/^[a-zA-Z0-9_-]+$/).optional(),
       partner_transaction_id: z.string().uuid().optional(),
       experiment_id: boundedString.optional(),
@@ -76,15 +74,8 @@ const eventSchema = z.object({
         .enum(['docx', 'signing_checklist', 'handover_protocol', 'extended_archive', 'bilingual_annex'])
         .optional(),
       add_on_keys: boundedString.optional(),
-      add_on_price_czk: boundedNumber.optional(),
-      addons_total_czk: boundedNumber.optional(),
-      base_price_czk: boundedNumber.optional(),
-      total_price_czk: boundedNumber.optional(),
       selected_addons_count: z.number().int().min(0).max(20).optional(),
       download_format: z.enum(['pdf', 'docx']).optional(),
-      download_sequence: z.number().int().min(1).max(1000).optional(),
-      reject_reason: boundedString.optional(),
-      reject_field: boundedString.optional(),
     })
     .partial()
     .optional(),
@@ -92,10 +83,14 @@ const eventSchema = z.object({
 
 async function tryRateLimit(ip: string): Promise<'allowed' | 'limited' | 'unavailable'> {
   try {
-    const key = `ratelimit:analytics:${ip}`;
-    const count = await redis.incr(key);
-    if (count === 1) await redis.expire(key, 60);
-    return count <= 120 ? 'allowed' : 'limited';
+    const ipKey = `ratelimit:analytics:${ip}`;
+    const globalKey = 'ratelimit:analytics:global';
+    const [ipCount, globalCount] = await Promise.all([redis.incr(ipKey), redis.incr(globalKey)]);
+    await Promise.all([
+      ipCount === 1 ? redis.expire(ipKey, 60) : Promise.resolve(1),
+      globalCount === 1 ? redis.expire(globalKey, 60) : Promise.resolve(1),
+    ]);
+    return ipCount <= 120 && globalCount <= 3000 ? 'allowed' : 'limited';
   } catch (error) {
     console.warn('[analytics] Rate-limit unavailable:', error);
     return 'unavailable';
@@ -124,7 +119,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false }, { status: 400 });
     }
 
-    const event = parsed.data.event as AnalyticsEventName;
+    const event = parsed.data.event as PublicAnalyticsEventName;
     const params = (parsed.data.params ?? {}) as AnalyticsEventParams;
 
     const stored = await recordAnalyticsEvent(event, params);

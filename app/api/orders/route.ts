@@ -90,6 +90,7 @@ async function listOrdersForEmail(email: string) {
               : addOns;
             return {
               sessionId,
+              contractType: draft.contractType ?? null,
               contractName:
                 CONTRACT_NAMES[draft.contractType ?? ''] ?? 'Právní dokument',
               packageLabel: packageConfig?.title ?? null,
@@ -108,6 +109,7 @@ async function listOrdersForEmail(email: string) {
 
         return {
           sessionId,
+          contractType: null,
           contractName: 'Právní dokument',
           packageLabel: null,
           paidAt: null,
@@ -117,6 +119,7 @@ async function listOrdersForEmail(email: string) {
       } catch {
         return {
           sessionId,
+          contractType: null,
           contractName: 'Právní dokument',
           packageLabel: null,
           paidAt: null,
@@ -191,6 +194,7 @@ export async function GET(req: NextRequest) {
         orders: [
           {
             sessionId,
+            contractType: draft.contractType ?? null,
             contractName: CONTRACT_NAMES[draft.contractType ?? ''] ?? 'Právní dokument',
             packageLabel: packageConfig?.title ?? null,
             paidAt: draft.paidAt ?? null,
