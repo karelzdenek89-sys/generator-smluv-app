@@ -7,6 +7,7 @@
       "preview-*": true
     }
   },
+  "ignoreCommand": "node -e \"const r=process.env.VERCEL_GIT_COMMIT_REF||'';process.exit(r&&r!=='main'&&!r.startsWith('preview-')?0:1)\"",
   "redirects": [
     {
       "source": "/:path*",
