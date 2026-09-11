@@ -79,12 +79,21 @@ function assertSitemapArchitecture() {
 }
 
 function assertRedirectArchitecture() {
+  // `/smlouva-o-spolupraci` sem patřilo do 2026-09-11. Po přesměrování spadl
+  // shluk „spolupráce“ z ~2,0 impresí denně na 0,13, protože obsahová landing
+  // nesla rank, kdežto cílový builder ne. Obě role teď existují zvlášť, stejně
+  // jako u `/kupni` + `/kupni-smlouva` nebo `/nda` + `/nda-smlouva`.
   assert.deepEqual(CONTENT_CONSOLIDATION_REDIRECTS, [
     { source: '/najemni-smlouva', destination: '/najem', permanent: true },
     { source: '/pracovni-smlouva', destination: '/pracovni', permanent: true },
     { source: '/dohoda-o-provedeni-prace', destination: '/dpp', permanent: true },
-    { source: '/smlouva-o-spolupraci', destination: '/spoluprace', permanent: true },
   ]);
+
+  // Obnovená landing musí být v sitemap a nesmí být přesměrovaná.
+  assert.ok(
+    !RETIRED_CONTENT_PATHS.includes('/smlouva-o-spolupraci'),
+    '/smlouva-o-spolupraci must stay reachable',
+  );
 
   const expectedCzechAlternates = {
     lease: `${CANONICAL_ORIGIN}/najem`,

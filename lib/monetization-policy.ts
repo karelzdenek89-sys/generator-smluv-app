@@ -15,6 +15,13 @@ export type PublicMonetizationPolicy = {
 
 type DeclaredMonetizationPolicy = PublicMonetizationPolicy & {
   source: 'gsc_underperformer' | 'commercial_default';
+  /**
+   * Vyhodnocený experiment se nemaže — zůstává v registru s `mode: 'paid'`
+   * a datem ukončení, aby se stejný kandidát nenavrhl znovu bez znalosti
+   * toho, jak dopadl minule.
+   */
+  retiredOn?: string;
+  retiredReason?: string;
 };
 
 const PAID_REASON: Record<PartnerLocale, string> = {
@@ -33,12 +40,22 @@ const DECLARED_POLICIES: readonly DeclaredMonetizationPolicy[] = [
   {
     contractType: 'dpp',
     locale: 'cs',
-    mode: 'free_experiment',
-    reason: 'GSC kandidát: vysoké imprese, pozice na první stránce a dlouhodobě slabé CTR.',
+    mode: 'paid',
+    reason:
+      'Experiment gsc_dpp_free_2026_08 ukončen 2026-09-11 bez měřitelného výsledku; ' +
+      'výchozí placený režim.',
     experimentId: 'gsc_dpp_free_2026_08',
     variant: 'basic_pdf_free',
     enabledFrom: '2026-08-13',
     source: 'gsc_underperformer',
+    retiredOn: '2026-09-11',
+    retiredReason:
+      'Za 29 dní běhu neposkytl experiment žádná data. Produktové stránky DPP ' +
+      '(/dpp, /dohoda-o-provedeni-prace) měly za 169 dní 16 prokliků, tedy ~3 měsíčně — ' +
+      'na rozdíl v konverzi je to o dva řády málo. Signál navíc pocházel z blogového ' +
+      'článku, ne z produktové stránky, takže nulová cena na něj nemohla působit: ' +
+      'CTR článku ve výsledcích vyhledávání cena neovlivňuje. ' +
+      'Podrobnosti u GSC_PAGE_SNAPSHOTS.',
   },
 ];
 

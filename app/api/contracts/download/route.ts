@@ -23,38 +23,26 @@ import {
 } from '@/lib/analytics-attribution';
 import { takeRateLimit } from '@/lib/rate-limit';
 import { readFirstPartyJson } from '@/lib/api-security';
+import { normalizePaidTier, resolveArchiveTtlSeconds } from '@/lib/archive-retention';
 import type { MonetizationMode } from '@/lib/monetization-policy';
 
 export const runtime = 'nodejs';
 
-const TTL_BASIC    = 60 * 60 * 24 * 7;   // 7 dní
-const TTL_COMPLETE = 60 * 60 * 24 * 30;  // 30 dní
-
-function getTtlForTier(tier?: string): number {
-  if (tier === 'basic') return TTL_BASIC;
-  return TTL_COMPLETE;
-}
+// Okno pro počítadlo stažení. Není to archivní lhůta — tu řeší
+// resolveArchiveTtlSeconds() podle tieru, balíčku a add-onů.
+const DOWNLOAD_RATE_LIMIT_WINDOW = 60 * 60 * 24 * 30;
 
 // Rate limit: max 20 stažení per session_id za dobu životnosti dokumentu
 // Chrání před scrapingem při úniku session_id; legitimní zákazník stáhne 1–3×
 async function checkDownloadRateLimit(sessionId: string): Promise<boolean> {
   try {
-    return (await takeRateLimit(`ratelimit:download:${sessionId}`, 20, TTL_COMPLETE)).allowed;
+    return (await takeRateLimit(`ratelimit:download:${sessionId}`, 20, DOWNLOAD_RATE_LIMIT_WINDOW)).allowed;
   } catch (err) {
     console.error('Download rate limit Redis error:', err);
     // fail-open pro download: zákazník by jinak nemohl stáhnout dokument
     // při výpadku Redis — riziko přijatelné (session_id je UUID, těžko uhodnutelné)
     return true;
   }
-}
-
-type PaidTier = 'basic' | 'professional' | 'complete';
-
-function normalizePaidTier(value?: string | null): PaidTier {
-  const raw = String(value ?? 'basic').toLowerCase();
-  if (raw === 'professional') return 'professional';
-  if (raw === 'complete' || raw === 'premium') return 'complete';
-  return 'basic';
 }
 
 async function nextDownloadSequence(draftId: string, existingDownloadCount: number, ttl: number): Promise<number> {
@@ -140,7 +128,11 @@ export async function GET(req: NextRequest) {
     if (!isPaid) {
       // Failsafe: zkusit aktualizovat Redis pokud Stripe říká paid
       if (session.payment_status === 'paid' && !draft.paid) {
-        const failsafeTtl = getTtlForTier(draft.tier);
+        const failsafeTtl = resolveArchiveTtlSeconds(
+          draft,
+          session.metadata?.tier,
+          session.metadata?.packageKey,
+        );
         const paidAt = new Date().toISOString();
         await redis.set(
           `contract:draft:${draftId}`,
@@ -217,11 +209,11 @@ export async function GET(req: NextRequest) {
     const meta = getContractMeta(fullData.contractType);
 
     // Počítat stažení bez prodlužování pevné retenční lhůty od zaplacení.
-    const archiveTtl = getArchiveDaysWithAddons(
-      resolvedTier === 'professional' ? 'complete' : resolvedTier,
-      resolvedPackageKey,
-      addOns,
-    ) * 60 * 60 * 24;
+    const archiveTtl = resolveArchiveTtlSeconds(
+      draft,
+      session.metadata?.tier,
+      session.metadata?.packageKey,
+    );
     const paidAtMs = draft.paidAt ? Date.parse(draft.paidAt) : Date.now();
     const storedExpiresAtMs = draft.expiresAt ? Date.parse(draft.expiresAt) : NaN;
     const expiresAtMs = Number.isFinite(storedExpiresAtMs)
