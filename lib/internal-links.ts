@@ -48,6 +48,7 @@ const BASE_SEO_LANDINGS: readonly InternalLink[] = [
   { href: '/smlouva-o-dilo-online', label: 'Smlouva o dílo online', description: 'Vzor pro řemeslníky, freelancery i firmy.', cluster: 'prace' },
   { href: '/smlouva-o-sluzbach', label: 'Smlouva o poskytování služeb', description: 'Vzor pro opakované služby a B2B kontrakty.', cluster: 'prace' },
   { href: '/spoluprace', label: 'Smlouva o spolupráci', description: 'Online smlouva pro B2B spolupráci mezi podnikateli.', cluster: 'b2b' },
+  { href: '/smlouva-o-spolupraci', label: 'Smlouva o spolupráci 2026 — průvodce', description: 'Podíl na výnosech, IP práva, mlčenlivost a ukončení spolupráce.', cluster: 'b2b' },
 
   { href: '/pujcka-smlouva', label: 'Smlouva o zápůjčce', description: 'Vzor půjčky peněz mezi soukromými osobami.', cluster: 'finance' },
   { href: '/uznani-dluhu-vzor', label: 'Uznání dluhu', description: 'Vzor uznání dluhu a splátkového kalendáře.', cluster: 'finance' },

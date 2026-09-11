@@ -77,6 +77,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     staticPage('/plna-moc-online', 0.93, 'monthly', getExpatHreflangLanguages('power_of_attorney')),
     staticPage('/uznani-dluhu-vzor', 0.93),
     staticPage('/smlouva-o-sluzbach', 0.93),
+    staticPage('/smlouva-o-spolupraci', 0.93),
     staticPage('/najemni-smlouva-byt', 0.85),
     staticPage('/pro-pronajimatele', 0.9),
     staticPage('/prodej-vozidla', 0.9, 'monthly', getExpatHreflangLanguages('car_sale')),
