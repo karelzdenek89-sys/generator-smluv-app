@@ -19,12 +19,12 @@ import { SITE_URL } from '../lib/seo/site';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CANONICAL_ORIGIN = 'https://www.smlouvahned.cz';
-const RETIRED_ROUTE_DIRS = new Set([
-  'app/najemni-smlouva',
-  'app/pracovni-smlouva',
-  'app/dohoda-o-provedeni-prace',
-  'app/smlouva-o-spolupraci',
-]);
+// Prázdné schválně. Adresáře zrušených rout byly smazány — redirect v
+// next.config je nikdy nepustil, takže to byl nedostupný kód. A
+// `app/smlouva-o-spolupraci` je od 2026-09-11 zase živá stránka, takže pro ni
+// kontrola interních hopů musí platit; dokud tu byla, skryla dva odkazy
+// mířící na 301.
+const RETIRED_ROUTE_DIRS = new Set<string>([]);
 const SOURCE_ALLOWLIST = new Set([
   'lib/analytics-reporting.ts',
   'lib/marketing/differentiation.ts',
