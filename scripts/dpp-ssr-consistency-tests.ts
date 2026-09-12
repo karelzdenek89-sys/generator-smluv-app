@@ -130,7 +130,11 @@ const expandedCatalogHtml = htmlBetween(
 );
 const primaryDppCardHtml = contractCardHtml(primaryCatalogHtml, 'dpp');
 const paidBasicLabel = `od ${PRICING_TIER_CONFIG.basic.priceLabel}`;
-const guideText = visibleText(readBuiltHtml('dohoda-o-provedeni-prace.html'));
+// Průvodcovská landing `/dohoda-o-provedeni-prace` byla 2026-09-12 smazána:
+// od 2026-08-04 ji next.config přesměrovával na `/dpp`, takže se tu roky
+// kontrolovaly cenové texty na stránce, kterou nikdo neviděl. Cenové texty
+// pro DPP hlídají níže `dppText` (builder) a `mainArticleText` (blogový
+// průvodce) — obojí jsou živé stránky.
 const mainArticleHtml = readBuiltHtml('blog/dpp-dohoda-provedeni-prace.html');
 const mainArticleText = visibleText(mainArticleHtml);
 const comparisonArticleText = visibleText(readBuiltHtml('blog/dpp-dpc-porovnani-2026.html'));
@@ -227,8 +231,6 @@ if (freeExperiment) {
     homeHtml,
     new RegExp(`základní DPP zdarma, další dokumenty ${escapeRegex(paidBasicLabel)}`, 'i'),
   );
-  assert.ok(!guideText.includes('Od 99 Kč · PDF ke stažení'));
-  assert.match(guideText, /Základní PDF 0 Kč · rozšířená varianta 199 Kč/);
   assert.ok(!mainArticleText.includes('Od 99 Kč · Dle ZP'));
   assert.match(mainArticleText, /Základní PDF 0 Kč · rozšířená varianta 199 Kč/);
   assert.ok(!comparisonArticleText.includes('PDF ke stažení od 99 Kč'));
@@ -255,7 +257,6 @@ if (freeExperiment) {
   assert.match(primaryDppCardHtml, /data-monetization-mode="paid"/);
   assert.ok(!primaryDppCardHtml.includes('ZÁKLADNÍ PDF ZDARMA'));
   assert.ok(!primaryDppCardHtml.includes('bez registrace a bez platby'));
-  assert.match(guideText, /99–199 Kč · PDF ke stažení/);
   assert.match(mainArticleText, /99–199 Kč · Dle ZP/);
   assert.match(comparisonArticleText, /99–199 Kč/);
   assert.match(freeTemplateArticleText, /PDF ihned ke stažení po platbě/);

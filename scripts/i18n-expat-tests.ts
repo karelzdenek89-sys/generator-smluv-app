@@ -313,12 +313,16 @@ function testLegalAccuracyRegressions() {
   assert.doesNotMatch(pdf, /zápis změny vlastníka[\s\S]{0,160}15/);
   assert.doesNotMatch(contracts, /zápis změny vlastníka[\s\S]{0,220}15/);
 
+  // Zdroje míří na živé stránky. `app/dohoda-o-provedeni-prace` a
+  // `app/pracovni-smlouva` byly smazány 2026-09-12 — redirect v next.config je
+  // nikdy nepustil, takže se hlídal text, který nikdo neviděl. Nahradily je
+  // jejich kanonické cíle `/dpp` a `/pracovni`.
   const dppPages = [
-    read('app/dohoda-o-provedeni-prace/page.tsx'),
+    read('app/dpp/page.tsx'),
     read('app/blog/dpp-dohoda-provedeni-prace/page.tsx'),
     read('app/blog/dpp-vzor-zdarma-2026/page.tsx'),
     read('app/blog/dpp-dpc-porovnani-2026/page.tsx'),
-    read('app/pracovni-smlouva/page.tsx'),
+    read('app/pracovni/page.tsx'),
     read('lib/pdf.ts'),
   ].join('\n');
   assert.match(dppPages, /12 000 Kč/);
@@ -459,7 +463,9 @@ function testLeaseEnglishContractSections() {
   assert.match(ukText, /§ 2285/);
   assert.doesNotMatch(`${enText}\n${ukText}`, /Section 2230|§ 2230|within one month|протягом місяця/);
   assert.doesNotMatch(read('lib/contracts-i18n/lease.ts'), /§ 2230/);
-  assert.doesNotMatch(read('app/najemni-smlouva/page.tsx'), /vrátit do jednoho měsíce/);
+  // `app/najemni-smlouva` smazáno 2026-09-12 (nedostupné za 301); kontrola
+  // přechází na kanonický cíl `/najem`.
+  assert.doesNotMatch(read('app/najem/page.tsx'), /vrátit do jednoho měsíce/);
 }
 
 function testExpatCapabilityDifferentiation() {

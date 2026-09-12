@@ -84,12 +84,12 @@ const comparisonRows = [
   {
     document: 'Pracovní smlouva',
     when: 'Přijímáte zaměstnance do pracovněprávního poměru',
-    href: '/pracovni-smlouva',
+    href: '/pracovni',
   },
   {
     document: 'Dohoda o provedení práce (DPP)',
     when: 'Krátkodobá práce do 300 hodin ročně se zaměstnancem',
-    href: '/dohoda-o-provedeni-prace',
+    href: '/dpp',
   },
   {
     document: 'Smlouva o dílo',
@@ -302,8 +302,8 @@ export default function SmlouvaOSpolupraci() {
           <Link href="/" className="hover:text-slate-300 transition">← Všechny smlouvy</Link>
           <Link href="/spoluprace" className="hover:text-slate-300 transition">Formulář smlouvy o spolupráci</Link>
           <Link href="/smlouva-o-dilo-online" className="hover:text-slate-300 transition">Smlouva o dílo</Link>
-          <Link href="/pracovni-smlouva" className="hover:text-slate-300 transition">Pracovní smlouva</Link>
-          <Link href="/dohoda-o-provedeni-prace" className="hover:text-slate-300 transition">DPP</Link>
+          <Link href="/pracovni" className="hover:text-slate-300 transition">Pracovní smlouva</Link>
+          <Link href="/dpp" className="hover:text-slate-300 transition">DPP</Link>
           <Link href="/smlouva-o-sluzbach" className="hover:text-slate-300 transition">Smlouva o službách</Link>
           <Link href="/nda-smlouva" className="hover:text-slate-300 transition">NDA smlouva</Link>
         </div>

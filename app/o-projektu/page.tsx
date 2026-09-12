@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { O_PROJEKTU_COMPARISON_ROWS } from '@/lib/marketing/differentiation';
+import { jsonLdScript } from '@/lib/schemas';
 
 export const metadata: Metadata = {
   title: 'O projektu — Jak nástroj vznikl a jak funguje',
@@ -45,7 +46,7 @@ export default function OProjektuPage() {
     <main className="min-h-screen bg-[#05080f] text-slate-200 py-16 px-6">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(organizationSchema) }}
       />
 
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_10%,rgba(245,158,11,0.06),transparent_40%)] pointer-events-none" />

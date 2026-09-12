@@ -20,32 +20,53 @@ jobs:
         env:
           SITE_URL: https://www.smlouvahned.cz
           INDEXNOW_KEY: b389f1acf502dcba7f34acac367de3e8
+          EXPECTED_COMMIT: ${{ github.sha }}
         run: |
           node <<'NODE'
           const site = process.env.SITE_URL.replace(/\/+$/, '');
           const key = process.env.INDEXNOW_KEY;
           const keyUrl = `${site}/${key}.txt`;
+          const expectedCommit = (process.env.EXPECTED_COMMIT || '').trim();
           const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-          let keyIsLive = false;
-          for (let attempt = 1; attempt <= 60; attempt += 1) {
+          // Čekat na NASAZENÍ TOHOTO commitu, ne jen na to, že web odpovídá.
+          // Dřív se tu čekalo na klíčový soubor IndexNow — jenže ten je
+          // napříč deploymenty identický a je živý už z předchozího buildu,
+          // takže kontrola prošla okamžitě a odeslala starou sitemapu.
+          // 2026-09-11 se tím minula jediná URL, na které záleželo.
+          let deployedCommit = null;
+          for (let attempt = 1; attempt <= 90; attempt += 1) {
             try {
-              const response = await fetch(keyUrl, {
+              const response = await fetch(`${site}/api/version`, {
                 cache: 'no-store',
                 headers: { 'user-agent': 'SmlouvaHned-IndexNow/1.0' },
               });
-              const body = (await response.text()).trim();
-              if (response.ok && body === key) {
-                keyIsLive = true;
-                break;
+              if (response.ok) {
+                const payload = await response.json();
+                deployedCommit = payload && payload.commit;
+                if (!expectedCommit || deployedCommit === expectedCommit) break;
               }
             } catch {
               // Production deployment may still be propagating.
             }
+            deployedCommit = null;
             await sleep(5000);
           }
 
-          if (!keyIsLive) {
+          if (expectedCommit && deployedCommit !== expectedCommit) {
+            throw new Error(
+              `Production still serves ${deployedCommit ?? 'an unknown commit'}, expected ${expectedCommit}. ` +
+              'Refusing to submit a stale sitemap.',
+            );
+          }
+          console.log(`Production is serving ${deployedCommit ?? '(commit unknown)'}.`);
+
+          // Klíč musí být dostupný, jinak Seznam odeslání odmítne.
+          const keyResponse = await fetch(keyUrl, {
+            cache: 'no-store',
+            headers: { 'user-agent': 'SmlouvaHned-IndexNow/1.0' },
+          });
+          if (!keyResponse.ok || (await keyResponse.text()).trim() !== key) {
             throw new Error(`IndexNow key is not available at ${keyUrl}`);
           }
 
