@@ -1,8 +1,8 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import { getPriceRevealCopy } from '@/lib/price-reveal-copy';
 import {
-  PRICING_TIER_CONFIG,
   PRICING_UPSELL_COPY,
   type PricingTier,
 } from '@/lib/pricing';
@@ -52,7 +52,7 @@ export default function BuilderCheckoutSummary({
   const localizedCheckout = getLocalizedCheckoutCopy(locale);
   const paidSummaryCopy = locale === 'en'
     ? {
-        title: 'Document ready to unlock',
+        title: 'What you will receive',
         completeNote: 'The extended version adds broader clauses, a checklist and more practical materials for review before signing.',
         afterPackage: 'After payment, you can download the selected package immediately for final review and signature.',
         afterVariant: 'After payment, you can download the selected version immediately for final review and signature.',
@@ -61,7 +61,7 @@ export default function BuilderCheckoutSummary({
       }
     : locale === 'ua'
       ? {
-          title: 'Документ готовий до відкриття',
+          title: 'Що ви отримаєте',
           completeNote: 'Розширена версія додає ширші положення, чекліст і практичніші матеріали для перевірки перед підписанням.',
           afterPackage: 'Після оплати вибраний пакет можна одразу завантажити для остаточної перевірки та підписання.',
           afterVariant: 'Після оплати вибрану версію можна одразу завантажити для остаточної перевірки та підписання.',
@@ -69,7 +69,7 @@ export default function BuilderCheckoutSummary({
           security: 'Платіжні дані обробляє Stripe. Документ є стандартизованим результатом, а не індивідуальною юридичною консультацією.',
         }
       : {
-          title: 'Dokument připraven k odemknutí',
+          title: 'Co získáte',
           completeNote: 'Rozšířená varianta přidává širší klauzule, checklist a praktičtější podklady pro kontrolu před podpisem.',
           afterPackage: 'Po zaplacení získáte výstup odpovídající tomuto balíčku ihned ke stažení, připravený k závěrečné kontrole a podpisu.',
           afterVariant: 'Po zaplacení získáte výstup odpovídající zvolené variantě ihned ke stažení, připravený k závěrečné kontrole a podpisu.',
@@ -92,7 +92,7 @@ export default function BuilderCheckoutSummary({
     : getEffectiveIncludedItems(contractType, tier, packageKey, locale);
   const priceLabel = isFreeBasic
     ? freeCopy.priceLabel
-    : packageConfig ? packageConfig.priceLabel : PRICING_TIER_CONFIG[tier].priceLabel;
+    : getPriceRevealCopy(locale).short;
   const leaseOutputSummary =
     contractType === 'lease'
       ? locale === 'en'
@@ -112,7 +112,7 @@ export default function BuilderCheckoutSummary({
         <div className="mb-4 rounded-2xl border border-white/8 bg-white/3 p-4">
           <div className="flex items-start justify-between gap-4">
             <div className="text-base font-semibold text-white">{localizedPackage?.title ?? packageConfig.title}</div>
-            <div className="shrink-0 text-lg font-black text-amber-300">{priceLabel}</div>
+            <div className="max-w-32 text-right text-xs font-semibold text-amber-300">{priceLabel}</div>
           </div>
           <div className="mt-2 text-sm leading-relaxed text-slate-400">
             {localizedPackage?.checkoutDescription ?? packageConfig.checkoutDescription}
@@ -169,7 +169,7 @@ export default function BuilderCheckoutSummary({
               {getLocalizedPricingTier(isComplete ? 'complete' : 'basic', locale).title}
             </div>
           </div>
-          <div className="shrink-0 text-lg font-black text-amber-300">{priceLabel}</div>
+          <div className="max-w-32 text-right text-xs font-semibold text-amber-300">{priceLabel}</div>
         </div>
         {isComplete ? (
           <div className="mt-3 rounded-xl border border-amber-400/15 bg-amber-400/8 px-3 py-2 text-xs leading-5 text-amber-100">

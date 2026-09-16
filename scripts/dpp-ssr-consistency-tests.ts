@@ -182,8 +182,8 @@ assert.ok(
 assert.match(primaryDppCardHtml, /data-position="3"/);
 for (const paidContract of ['lease', 'car_sale', 'employment', 'work_contract']) {
   assert.ok(
-    visibleText(contractCardHtml(primaryCatalogHtml, paidContract)).includes(paidBasicLabel),
-    `${paidContract} must use the configured Basic price on the homepage`,
+    visibleText(contractCardHtml(primaryCatalogHtml, paidContract)).includes('Placený dokument'),
+    `${paidContract} must disclose a paid document before the price-reveal step`,
   );
 }
 
@@ -242,17 +242,17 @@ if (freeExperiment) {
 } else {
   assert.match(dppHtml, /<title>DPP online 2026/);
   assert.match(dppHtml, /"lowPrice":"99"/);
-  assert.match(dppText, /Základní dokument 99 Kč/);
+  assert.match(dppText, /Základní dokument Cena v dalším kroku/);
   assert.match(dppText, /Okamžité PDF ke stažení po zaplacení/);
   assert.match(dppText, /Dostanu dokument ihned po zaplacení\?/);
-  assert.match(dppText, /Dokument připraven k odemknutí/);
+  assert.match(dppText, /Co získáte/);
   assert.match(dppText, /PDF odemknete až po dokončení objednávky/);
   assert.ok(!dppText.includes('Vygenerovat základní DPP zdarma'));
   assert.ok(!dppHtml.includes('"lowPrice":"0"'));
 
   assert.match(
     homeText,
-    new RegExp(`DPP — Dohoda o provedení práce .*? ${escapeRegex(paidBasicLabel)}`),
+    /DPP — Dohoda o provedení práce .*? Placený dokument/,
   );
   assert.match(primaryDppCardHtml, /data-monetization-mode="paid"/);
   assert.ok(!primaryDppCardHtml.includes('ZÁKLADNÍ PDF ZDARMA'));

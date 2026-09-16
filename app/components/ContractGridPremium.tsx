@@ -25,7 +25,6 @@ type DppMerchandising = {
   variant: string | null;
 };
 
-const PAID_BASIC_PRICE_LABEL = `od ${PRICING_TIER_CONFIG.basic.priceLabel}`;
 const PAID_BASIC_PRICE_BAND = String(PRICING_TIER_CONFIG.basic.priceCzk) as PriceBand;
 
 const mainContracts: Contract[] = [
@@ -150,7 +149,7 @@ function ContractCard({
   const subtitle = isDpp && dppMerchandising.subtitle
     ? dppMerchandising.subtitle
     : c.subtitle;
-  const priceLabel = isDpp ? dppMerchandising.priceLabel : PAID_BASIC_PRICE_LABEL;
+  const priceLabel = isDpp && dppMerchandising.mode === 'free_experiment' ? dppMerchandising.priceLabel : 'Placený dokument';
   const monetizationMode: MonetizationMode = isDpp ? dppMerchandising.mode : 'paid';
   const priceBand: PriceBand = isDpp && monetizationMode === 'free_experiment'
     ? '0'
@@ -234,7 +233,7 @@ export default function ContractGridPremium({ dppMerchandising }: { dppMerchandi
 
       {/* Expandable section */}
       <div
-        className={`overflow-hidden transition-all duration-500 ${expanded ? 'max-h-[2000px] opacity-100 mt-4' : 'max-h-0 opacity-0'}`}
+        className={expanded ? 'mt-4' : 'hidden'}
         aria-hidden={!expanded}
         inert={!expanded}
         id="homepage-more-contracts"

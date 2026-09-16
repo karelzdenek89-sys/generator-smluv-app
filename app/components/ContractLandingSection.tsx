@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { getPriceRevealCopy, PRICE_REVEAL_VARIANT } from '@/lib/price-reveal-copy';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { getAnalyticsDefaultsForPathname, trackEvent } from '@/lib/analytics';
@@ -109,7 +110,7 @@ export default function ContractLandingSection({
         package_key: packageConfig?.key,
         monetization_mode: monetizationMode ?? 'paid',
         experiment_id: experimentId ?? undefined,
-        variant: experimentVariant ?? undefined,
+        variant: experimentVariant ?? PRICE_REVEAL_VARIANT,
         landing_page: currentPath,
       });
 
@@ -140,6 +141,10 @@ export default function ContractLandingSection({
             {h1Suffix ? <> {h1Suffix}</> : null}
           </h1>
           <p className="site-body-lg mt-6 max-w-3xl text-[#ddd5c7]">{subtitle}</p>
+          {monetizationMode !== 'free_experiment' ? (
+            <p data-testid="paid-document-notice" className="mt-4 text-sm leading-6 text-amber-200">{getPriceRevealCopy(locale).notice}</p>
+          ) : null}
+          <p className="mt-2 text-xs leading-5 text-slate-400">{getPriceRevealCopy(locale).draft}</p>
 
           <WhyNotGenericBlock
             className="mt-8"

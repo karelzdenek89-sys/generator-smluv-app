@@ -442,7 +442,9 @@ export async function POST(req: Request) {
     const cancelPath = CANCEL_URLS[contractType] ?? '/';
     const langQuery = lang === 'cs' ? '' : `&lang=${encodeURIComponent(lang)}`;
     const successTokenFragment = `#token=${encodeURIComponent(downloadToken)}`;
-    const cancelLangQuery = lang === 'cs' ? '' : `?lang=${encodeURIComponent(lang)}`;
+    const cancelParams = new URLSearchParams({ resume: '1' });
+    if (lang !== 'cs') cancelParams.set('lang', lang);
+    if (packageKey) cancelParams.set('package', packageKey);
 
     const lineItems = [
       { price: priceId, quantity: 1 },
@@ -468,7 +470,7 @@ export async function POST(req: Request) {
       locale:         (lang === 'cs' ? 'cs' : 'en') as 'cs' | 'en',
       line_items:     lineItems,
       success_url:    `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}${langQuery}${successTokenFragment}`,
-      cancel_url:     `${baseUrl}${cancelPath}${cancelLangQuery}`,
+      cancel_url:     `${baseUrl}${cancelPath}?${cancelParams.toString()}#formular`,
       metadata: {
         draftId,
         contractType,

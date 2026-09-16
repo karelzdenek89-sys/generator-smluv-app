@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
+import { useBuilderDraft } from '@/lib/use-builder-draft';
+import { getPriceRevealCopy } from '@/lib/price-reveal-copy';
 import { use, useMemo, useState } from 'react';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
@@ -75,7 +77,7 @@ function PodnajemuPageContent() {
     return { title: s?.title ?? title, subtitle: s?.subtitle ?? subtitle };
   };
   const previewLabels = useMemo(() => getExpatPreviewLabels(builderLocale), [builderLocale]);
-  const [form, setForm] = useState<FormData>({
+  const [form, setForm] = useBuilderDraft<FormData>({
     landlordName: '', landlordId: '', landlordAddress: '', landlordEmail: '',
     tenantName: '', tenantId: '', tenantAddress: '', tenantEmail: '',
     flatAddress: '', flatLayout: '', flatUnitNumber: '', cadastralArea: '', floor: '', subleaseArea: '',
@@ -198,7 +200,7 @@ function PodnajemuPageContent() {
           <div className="flex items-center gap-3">
             <span className="text-xs text-slate-400 hidden sm:block">{ui.header.docType}</span>
             <span className="text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-full px-3 py-1">
-              {form.tier === 'complete' ? '199 Kč' : '99 Kč'}
+              {getPriceRevealCopy(builderLocale).short}
             </span>
           </div>
         </div>

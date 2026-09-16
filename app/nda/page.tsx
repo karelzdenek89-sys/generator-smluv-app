@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
+import { useBuilderDraft } from '@/lib/use-builder-draft';
 import { useState, useMemo } from 'react';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
@@ -72,7 +73,7 @@ function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (v: 
 }
 
 export default function NdaBuilderPage() {
-  const [formData, setFormData] = useState<NdaFormData>({
+  const [formData, setFormData] = useBuilderDraft<NdaFormData>({
     ndaType: 'unilateral',
     disclosingName: '',
     disclosingId: '',
@@ -202,7 +203,7 @@ export default function NdaBuilderPage() {
             <span>§ 1746 odst. 2 občanského zákoníku</span>
           </div>
           <span className="text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-full px-3 py-1">
-            {formData.tier === 'complete' ? '199 Kč' : '99 Kč'}
+            Cena v dalším kroku
           </span>
         </div>
       </header>

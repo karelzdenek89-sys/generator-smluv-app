@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
+import { useBuilderDraft } from '@/lib/use-builder-draft';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
@@ -44,7 +45,7 @@ function SectionTitle({ index, title, subtitle }: { index: string; title: string
 }
 
 export default function SluzbyPage() {
-  const [form, setForm] = useState<FormData>({
+  const [form, setForm] = useBuilderDraft<FormData>({
     providerName: '', providerIco: '', providerAddress: '', providerEmail: '', providerPhone: '',
     clientName: '', clientId: '', clientAddress: '', clientEmail: '',
     serviceDescription: '', serviceDetails: '', deliverables: '',

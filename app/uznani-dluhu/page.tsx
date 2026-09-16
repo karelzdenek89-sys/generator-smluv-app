@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
+import { useBuilderDraft } from '@/lib/use-builder-draft';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
@@ -37,7 +38,7 @@ function SectionTitle({ index, title, subtitle }: { index: string; title: string
 }
 
 export default function UznanidluhuPage() {
-  const [form, setForm] = useState<FormData>({
+  const [form, setForm] = useBuilderDraft<FormData>({
     creditorName: '', creditorId: '', creditorAddress: '', creditorEmail: '',
     debtorName: '', debtorId: '', debtorAddress: '', debtorEmail: '',
     debtAmount: '', currency: 'Kč', debtAmountWords: '',

@@ -3,6 +3,8 @@
 import { use, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
+import { useBuilderDraft } from '@/lib/use-builder-draft';
+import { getPriceRevealCopy } from '@/lib/price-reveal-copy';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
@@ -93,7 +95,7 @@ function PracovniPageContent() {
     en: 'Employment contract — online form | SmlouvaHned',
     ua: 'Трудовий договір — онлайн-форма | SmlouvaHned',
   });
-  const [form, setForm] = useState<FormData>(() => {
+  const [form, setForm] = useBuilderDraft<FormData>(() => {
     const d = getEmploymentFormUi(builderLocale).page.defaults;
     return {
       partnerUserRole: 'unknown',
@@ -276,7 +278,7 @@ function PracovniPageContent() {
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/4 px-5 py-4">
                 <div className="text-xs uppercase tracking-[0.18em] text-slate-500">{packageFlowCopy?.priceHeading}</div>
-                <div className="mt-2 text-3xl font-black tracking-tight text-white">{packageConfig.priceLabel}</div>
+                <div className="mt-2 text-lg font-semibold text-white">{getPriceRevealCopy(builderLocale).short}</div>
                 <Link href="/pracovni" className="mt-3 inline-block text-xs leading-relaxed text-[#cbbba0] transition hover:text-white">
                   {packageFlowCopy?.backToStandalone}
                 </Link>

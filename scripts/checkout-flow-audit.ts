@@ -216,7 +216,11 @@ function testWebhookAndDownload() {
   assert.match(secureDownload, /'\/api\/contracts\/download'/);
   assert.match(secureDownload, /method:\s*'POST'/);
   assert.match(secureDownload, /token:\s*request\.token/);
-  assert.match(secureDownload, /window\.history\.replaceState/);
+  assert.match(secureDownload, /resolveDocumentAccess/);
+  const documentAccess = read('lib/document-access.ts');
+  assert.match(documentAccess, /window\.history\.replaceState/);
+  assert.match(documentAccess, /sessionStorage/);
+  assert.match(documentAccess, /expiresAt > Date\.now\(\)/);
   assert.match(orders, /downloadToken/);
   assert.match(orders, /export async function POST/);
   assert.match(orders, /addOns/);

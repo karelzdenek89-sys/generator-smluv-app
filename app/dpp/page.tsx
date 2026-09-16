@@ -2,6 +2,7 @@
 
 import { use, useMemo, useState } from 'react';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
+import { useBuilderDraft } from '@/lib/use-builder-draft';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
@@ -69,7 +70,7 @@ function DppPageContent() {
     en: 'Agreement to perform work (DPP) — online form | SmlouvaHned',
     ua: 'Договір про виконання роботи (DPP) — онлайн-форма | SmlouvaHned',
   });
-  const [form, setForm] = useState<FormData>({
+  const [form, setForm] = useBuilderDraft<FormData>({
     partnerUserRole: 'unknown',
     employerName: '', employerIco: '', employerAddress: '', employerEmail: '',
     employeeName: '', employeeBirth: '', employeeAddress: '', employeeEmail: '',

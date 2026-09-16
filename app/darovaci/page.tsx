@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
+import { useBuilderDraft } from '@/lib/use-builder-draft';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
@@ -49,7 +50,7 @@ type FormDataType = {
 };
 
 export default function GiftContractPage() {
-  const [formData, setFormData] = useState<FormDataType>({
+  const [formData, setFormData] = useBuilderDraft<FormDataType>({
     giftType: 'money',
     donorName: '',
     donorId: '',

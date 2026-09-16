@@ -2,6 +2,7 @@
 
 import { use, useMemo, useState } from 'react';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
+import { useBuilderDraft } from '@/lib/use-builder-draft';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
@@ -57,7 +58,7 @@ function PlnaMocPageContent() {
     return { title: s?.title ?? title, subtitle: s?.subtitle ?? subtitle };
   };
   const previewLabels = useMemo(() => getExpatPreviewLabels(builderLocale), [builderLocale]);
-  const [form, setForm] = useState<FormData>({
+  const [form, setForm] = useBuilderDraft<FormData>({
     principalName: '', principalId: '', principalAddress: '', principalEmail: '',
     agentName: '', agentId: '', agentAddress: '', agentEmail: '',
     poaType: 'general',

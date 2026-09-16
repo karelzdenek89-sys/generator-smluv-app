@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
+import { useBuilderDraft } from '@/lib/use-builder-draft';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
@@ -40,7 +41,7 @@ function SectionTitle({ index, title, subtitle }: { index: string; title: string
 }
 
 export default function SpolupraceePage() {
-  const [form, setForm] = useState<FormData>({
+  const [form, setForm] = useBuilderDraft<FormData>({
     partnerUserRole: 'unknown',
     partyAName: '', partyAId: '', partyAAddress: '', partyAEmail: '',
     partyBName: '', partyBId: '', partyBAddress: '', partyBEmail: '',

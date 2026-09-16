@@ -17,7 +17,8 @@ test('employer package keeps the 599 Kč product, included DOCX and annex langua
 
   await page.goto('/pracovni?package=employer_start');
   await expect(page.getByText('Zaměstnavatel Start 2026').first()).toBeVisible();
-  await expect(page.getByText('599 Kč').first()).toBeVisible();
+  await expect(page.getByTestId('paid-document-notice')).toBeVisible();
+  await expect(page.getByText('599 Kč', { exact: true })).toHaveCount(0);
 
   const fill = async (name: string, value: string) => page.locator(`[name="${name}"]`).fill(value);
   await fill('employerName', 'Testovací zaměstnavatel s.r.o.');
@@ -89,7 +90,7 @@ test('employer package is discoverable and usable on a mobile viewport', async (
   await page.goto('/');
   const packages = page.locator('#balicky');
   await expect(packages.getByText('Zaměstnavatel Start 2026')).toBeVisible();
-  await expect(packages.getByText('599 Kč')).toBeVisible();
+  await expect(packages.getByText('Placený balíček').first()).toBeVisible();
   expect(pageErrors, 'homepage must hydrate without errors').toEqual([]);
   pageErrors.length = 0;
 

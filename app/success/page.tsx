@@ -1,6 +1,7 @@
 'use client';
 
-import { Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { Suspense, useEffect, useMemo, useState } from 'react';
+import { resolveDocumentAccess } from '@/lib/document-access';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { normalizeLocale, withLocale, type AppLocale } from '@/lib/locale';
@@ -58,7 +59,7 @@ const SUCCESS_COPY: Record<AppLocale, SuccessCopy> = {
     preparing: 'Příprava dokumentu probíhá…',
     downloadPdf: 'Stáhnout PDF',
     downloadDocx: 'Stáhnout DOCX',
-    pendingTitle: 'Platba se ještě zpracovává',
+    pendingTitle: 'Platbu zatím nelze potvrdit',
     pendingBody: 'Odkaz ke stažení obdržíte e-mailem, nebo zkuste stránku obnovit za chvíli.',
     retry: 'Zkusit znovu',
     support: 'Kontaktovat podporu',
@@ -88,7 +89,7 @@ const SUCCESS_COPY: Record<AppLocale, SuccessCopy> = {
     preparing: 'Preparing the document…',
     downloadPdf: 'Download PDF',
     downloadDocx: 'Download DOCX',
-    pendingTitle: 'Payment is still processing',
+    pendingTitle: 'Payment not yet confirmed',
     pendingBody: 'You will receive the download link by email, or refresh this page in a moment.',
     retry: 'Try again',
     support: 'Contact support',
@@ -118,7 +119,7 @@ const SUCCESS_COPY: Record<AppLocale, SuccessCopy> = {
     preparing: 'Готуємо документ…',
     downloadPdf: 'Завантажити PDF',
     downloadDocx: 'Завантажити DOCX',
-    pendingTitle: 'Платіж ще обробляється',
+    pendingTitle: 'Платіж ще не підтверджено',
     pendingBody: 'Посилання для завантаження надійде електронною поштою. Також можна оновити сторінку за мить.',
     retry: 'Спробувати ще раз',
     support: 'Звернутися до підтримки',
@@ -160,32 +161,24 @@ function SuccessContent() {
   const sessionId = searchParams.get('session_id');
   const queryToken = searchParams.get('token')?.trim() ?? '';
   const [token, setToken] = useState(queryToken);
+  const [accessResolved, setAccessResolved] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
   const queryLang = normalizeLocale(searchParams.get('lang'));
   const [dlState, setDlState] = useState<DownloadState>('checking');
   const [progress, setProgress] = useState(0);
   const [orderMeta, setOrderMeta] = useState<SuccessStatusResponse | null>(null);
   const lang = normalizeLocale(orderMeta?.lang ?? queryLang);
   const copy = SUCCESS_COPY[lang];
-  const attemptRef = useRef(0);
   const encodedSessionId = sessionId ? encodeURIComponent(sessionId) : null;
 
   useEffect(() => {
-    const hashToken = new URLSearchParams(window.location.hash.replace(/^#/, '')).get('token')?.trim() ?? '';
-    const resolvedToken = queryToken || hashToken;
-    const tokenTimer = resolvedToken
-      ? window.setTimeout(() => setToken(resolvedToken), 0)
-      : null;
-
-    if (queryToken || hashToken) {
-      const cleanUrl = new URL(window.location.href);
-      cleanUrl.searchParams.delete('token');
-      cleanUrl.hash = '';
-      window.history.replaceState(null, '', `${cleanUrl.pathname}${cleanUrl.search}`);
-    }
-    return () => {
-      if (tokenTimer !== null) window.clearTimeout(tokenTimer);
-    };
-  }, [queryToken]);
+    const resolved = resolveDocumentAccess(new URL(window.location.href), sessionId ? `paid:${sessionId}` : '');
+    const timer = window.setTimeout(() => {
+      setToken(resolved);
+      setAccessResolved(true);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [queryToken, sessionId]);
 
   const downloadUrl = useMemo(() => {
     if (!encodedSessionId || !token) return null;
@@ -221,15 +214,24 @@ function SuccessContent() {
   }, [encodedSessionId, sessionId, lang]);
 
   useEffect(() => {
-    if (!encodedSessionId || !token) return;
+    if (!encodedSessionId || !token || !accessResolved) return;
 
     const maxAttempts = 12;
     let cancelled = false;
+    let attempt = 0;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const controller = new AbortController();
+    const deadline = setTimeout(() => {
+      cancelled = true;
+      controller.abort();
+      clearTimeout(timer);
+      setDlState('error');
+    }, 30_000);
 
     async function checkStatus() {
       if (cancelled) return;
 
-      setProgress(Math.min(90, Math.round((attemptRef.current / maxAttempts) * 90)));
+      setProgress(Math.min(90, Math.round((attempt / maxAttempts) * 90)));
 
       try {
         const res = await fetch('/api/contracts/status', {
@@ -237,26 +239,30 @@ function SuccessContent() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ sessionId, token }),
           cache: 'no-store',
+          signal: controller.signal,
         });
         const data = (await res.json()) as SuccessStatusResponse;
 
         if (cancelled) return;
 
-        if (data.status === 'paid') {
+        if (res.ok && data.status === 'paid') {
+          clearTimeout(deadline);
           setOrderMeta(data);
           setProgress(100);
           setDlState('ready');
-        } else if (attemptRef.current < maxAttempts) {
-          attemptRef.current += 1;
-          setTimeout(checkStatus, 1500);
+        } else if (res.status === 401 || res.status === 403 || res.status === 404) {
+          setDlState('error');
+        } else if (attempt < maxAttempts) {
+          attempt += 1;
+          timer = setTimeout(checkStatus, 1500);
         } else {
           setDlState('error');
         }
       } catch {
         if (cancelled) return;
-        if (attemptRef.current < maxAttempts) {
-          attemptRef.current += 1;
-          setTimeout(checkStatus, 1500);
+        if (attempt < maxAttempts) {
+          attempt += 1;
+          timer = setTimeout(checkStatus, 1500);
         } else {
           setDlState('error');
         }
@@ -267,10 +273,13 @@ function SuccessContent() {
 
     return () => {
       cancelled = true;
+      controller.abort();
+      clearTimeout(timer);
+      clearTimeout(deadline);
     };
-  }, [encodedSessionId, sessionId, token]);
+  }, [accessResolved, encodedSessionId, sessionId, token, retryCount]);
 
-  if (!sessionId) {
+  if (!sessionId || (accessResolved && !token)) {
     return (
       <main className={pageShell}>
         <div className="mx-auto max-w-xl pt-20 text-center">
@@ -286,6 +295,7 @@ function SuccessContent() {
           >
             {copy.chooseDocument}
           </Link>
+          <Link href={withLocale('/zakaznicka-zona', lang)} className="mt-5 block text-sm text-amber-400 underline">{copy.myDocuments}</Link>
         </div>
       </main>
     );
@@ -315,7 +325,7 @@ function SuccessContent() {
             )}
           </div>
           <h1 className="mb-3 text-4xl font-black uppercase tracking-tighter text-white md:text-5xl">
-            {dlState === 'checking' ? copy.checkingTitle : copy.paidTitle}
+            {dlState === 'checking' ? copy.checkingTitle : dlState === 'ready' ? copy.paidTitle : copy.pendingTitle}
           </h1>
           {dlState === 'checking' && (
             <div className="mb-4 px-4">
@@ -413,8 +423,9 @@ function SuccessContent() {
               <div className="flex flex-col justify-center gap-2 sm:flex-row">
                 <button
                   onClick={() => {
-                    attemptRef.current = 0;
                     setDlState('checking');
+                    setProgress(0);
+                    setRetryCount((current) => current + 1);
                   }}
                   className="rounded-xl bg-amber-500 px-5 py-2 text-sm font-bold text-black transition hover:bg-amber-400"
                 >

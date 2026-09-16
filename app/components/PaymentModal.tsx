@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useBuilderDraft } from '@/lib/use-builder-draft';
+import { PRICE_REVEAL_VARIANT } from '@/lib/price-reveal-copy';
 import { usePathname } from 'next/navigation';
 import { PRICING_TIER_CONFIG } from '@/lib/pricing';
 import {
@@ -196,11 +198,12 @@ export default function PaymentModal({
 }: PaymentModalProps) {
   const pathname = usePathname();
   const [gdprConsent, setGdprConsent] = useState(false);
-  const [deliveryEmail, setDeliveryEmail] = useState('');
-  const [selectedAddOns, setSelectedAddOns] = useState<CheckoutAddonKey[]>([]);
-  const [annexLanguage, setAnnexLanguage] = useState<'en' | 'ua'>(() =>
-    normalizeLocale(lang) === 'ua' ? 'ua' : 'en',
-  );
+  const [checkoutDraft, setCheckoutDraft, checkoutDraftReady] = useBuilderDraft({
+    deliveryEmail: '',
+    selectedAddOns: [] as CheckoutAddonKey[],
+    annexLanguage: (normalizeLocale(lang) === 'ua' ? 'ua' : 'en') as 'en' | 'ua',
+  }, 'checkout');
+  const { deliveryEmail, selectedAddOns, annexLanguage } = checkoutDraft;
   const modalOpenTrackedRef = useRef(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const emailInputRef = useRef<HTMLInputElement>(null);
@@ -336,7 +339,7 @@ export default function PaymentModal({
 
   useEffect(() => {
     const recordOpen = () => {
-      if (modalOpenTrackedRef.current) return;
+      if (modalOpenTrackedRef.current || !checkoutDraftReady) return;
       modalOpenTrackedRef.current = trackEvent('builder_checkout_modal_open', {
         ...analyticsDefaults,
         source: 'builder',
@@ -352,7 +355,7 @@ export default function PaymentModal({
         selected_addons_count: validSelectedAddOns.length,
         monetization_mode: isFreeBasic ? 'free_experiment' : 'paid',
         experiment_id: monetizationPolicy?.experimentId ?? undefined,
-        variant: monetizationPolicy?.variant ?? undefined,
+        variant: monetizationPolicy?.variant ?? PRICE_REVEAL_VARIANT,
       });
       if (modalOpenTrackedRef.current && monetizationPolicy?.mode === 'free_experiment') {
         trackEvent('premium_offer_viewed', {
@@ -375,6 +378,7 @@ export default function PaymentModal({
     analyticsDefaults,
     basePriceCzk,
     isFreeBasic,
+    checkoutDraftReady,
     monetizationPolicy?.experimentId,
     monetizationPolicy?.mode,
     monetizationPolicy?.variant,
@@ -418,7 +422,7 @@ export default function PaymentModal({
       selected_addons_count: nextValid.length,
     });
 
-    setSelectedAddOns(next);
+    setCheckoutDraft((current) => ({ ...current, selectedAddOns: next }));
   };
 
   const today = new Date().toLocaleDateString(
@@ -692,7 +696,7 @@ export default function PaymentModal({
                     <select
                       data-testid="checkout-annex-language"
                       value={annexLanguage}
-                      onChange={(event) => setAnnexLanguage(event.target.value as 'en' | 'ua')}
+                      onChange={(event) => setCheckoutDraft((current) => ({ ...current, annexLanguage: event.target.value as 'en' | 'ua' }))}
                       className="mt-2 w-full rounded-xl border border-sky-300/20 bg-[#111c31] px-3 py-2.5 text-sm text-white outline-none focus:border-sky-300/60"
                     >
                       <option value="en">{genericCopy.annexEnglish}</option>
@@ -756,7 +760,7 @@ export default function PaymentModal({
                   autoComplete="email"
                   required
                   value={deliveryEmail}
-                  onChange={(event) => setDeliveryEmail(event.target.value)}
+                  onChange={(event) => setCheckoutDraft((current) => ({ ...current, deliveryEmail: event.target.value }))}
                   className="w-full rounded-xl border border-white/10 bg-[#111c31] px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-amber-400/70 focus:ring-2 focus:ring-amber-400/20"
                   placeholder={locale === 'cs' ? 'vas@email.cz' : 'you@email.com'}
                 />
@@ -848,6 +852,7 @@ export default function PaymentModal({
                     return;
                   }
                   trackEvent('builder_checkout_clicked', {
+                    variant: PRICE_REVEAL_VARIANT,
                     ...analyticsDefaults,
                     source: 'checkout_modal',
                     surface: 'checkout_modal',

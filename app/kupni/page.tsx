@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
+import { useBuilderDraft } from '@/lib/use-builder-draft';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
@@ -48,7 +49,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 
 export default function KupniPage() {
-  const [form, setForm] = useState<FormData>({
+  const [form, setForm] = useBuilderDraft<FormData>({
     sellerName: '', sellerId: '', sellerAddress: '', sellerEmail: '', sellerPhone: '', sellerBankAccount: '',
     buyerName: '', buyerId: '', buyerAddress: '', buyerEmail: '', buyerPhone: '',
     buyerType: 'consumer',

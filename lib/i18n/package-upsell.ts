@@ -12,13 +12,11 @@
  * Nájemní builder má vlastní lokalizovanou sadu v `lease-form.ts`; odsud
  * přebírá pouze upozornění na jazyk příloh.
  *
- * Ceny se berou z `THEMATIC_PACKAGE_CONFIG`, aby se text nikdy nerozešel
- * s ceníkem.
+ * Konkrétní cena se ukazuje v souhrnu objednávky před platbou.
  */
 
 import { normalizeLocale, type AppLocale } from '@/lib/locale';
-import { PRICING_TIER_CONFIG } from '@/lib/pricing';
-import { THEMATIC_PACKAGE_CONFIG, type ThematicPackageKey } from '@/lib/packages';
+import type { ThematicPackageKey } from '@/lib/packages';
 
 export type PackageUpsellCopy = {
   badge: string;
@@ -50,11 +48,6 @@ export const PACKAGE_APPENDIX_LANGUAGE_NOTICE: Record<AppLocale, string> = {
   ua: 'Супровідні документи пакета надаються чеською мовою.',
 };
 
-const BASIC = PRICING_TIER_CONFIG.basic.priceLabel;
-const COMPLETE = PRICING_TIER_CONFIG.complete.priceLabel;
-const VEHICLE = THEMATIC_PACKAGE_CONFIG.vehicle_sale.priceLabel;
-const EMPLOYER = THEMATIC_PACKAGE_CONFIG.employer_start.priceLabel;
-const WORK_ORDER = THEMATIC_PACKAGE_CONFIG.work_order.priceLabel;
 
 type LocalizedEntry = Omit<PackageUpsellCopy, 'appendixNotice'>;
 
@@ -68,19 +61,19 @@ const COPY: Record<AppLocale, Partial<Record<ThematicPackageKey, LocalizedEntry>
     vehicle_sale: {
       badge: 'Tematický balíček',
       title: 'Balíček pro prodej vozidla',
-      body: `V tomto formuláři volíte mezi samostatným dokumentem za ${BASIC} a širší variantou za ${COMPLETE}. Pokud chcete řešit i předání vozidla, klíčů a dokladů, pokračujte tematickým balíčkem za ${VEHICLE}.`,
+      body: 'V tomto formuláři volíte mezi základním a rozšířeným dokumentem. Pokud chcete řešit i předání vozidla, klíčů a dokladů, pokračujte tematickým balíčkem. Přesnou cenu uvidíte v souhrnu před platbou.',
       cta: 'Zobrazit balíček →',
     },
     employer_start: {
       badge: 'Nový personální balíček',
       title: 'Zaměstnavatel Start 2026',
-      body: `Pracovní smlouva, informace podle § 37 ZP, podklady k home office a vybavení, nástupní checklist a DOCX za ${EMPLOYER}.`,
+      body: 'Pracovní smlouva, informace podle § 37 ZP, podklady k home office a vybavení, nástupní checklist a DOCX. Přesnou cenu uvidíte v souhrnu před platbou.',
       cta: 'Zobrazit obsah balíčku →',
     },
     work_order: {
       badge: 'Balíček k zakázce',
       title: 'Zakázka Plus',
-      body: `Připravte smlouvu, platební podmínky, vícepráce a předání díla v jednom balíčku za ${WORK_ORDER}.`,
+      body: 'Připravte smlouvu, platební podmínky, vícepráce a předání díla v jednom balíčku. Přesnou cenu uvidíte v souhrnu před platbou.',
       cta: 'Zobrazit obsah balíčku →',
     },
   },
@@ -88,13 +81,13 @@ const COPY: Record<AppLocale, Partial<Record<ThematicPackageKey, LocalizedEntry>
     vehicle_sale: {
       badge: 'Thematic package',
       title: 'Vehicle sale package',
-      body: `This form offers a single document for ${BASIC} or an extended version for ${COMPLETE}. If you also need to cover the handover of the vehicle, keys and documents, continue with the thematic package for ${VEHICLE}.`,
+      body: 'Choose a basic or extended document. If you also need to cover the handover of the vehicle, keys and documents, continue with the thematic package. Review the exact price before payment.',
       cta: 'View package →',
     },
     employer_start: {
       badge: 'Employer package',
       title: 'Employer Start 2026',
-      body: `Employment contract, the information sheet under § 37 of the Labour Code, remote-work and equipment records, an onboarding checklist and DOCX for ${EMPLOYER}.`,
+      body: 'Employment contract, the information sheet under § 37 of the Labour Code, remote-work and equipment records, an onboarding checklist and DOCX. Review the exact price before payment.',
       cta: 'View package contents →',
     },
   },
@@ -102,13 +95,13 @@ const COPY: Record<AppLocale, Partial<Record<ThematicPackageKey, LocalizedEntry>
     vehicle_sale: {
       badge: 'Тематичний пакет',
       title: 'Пакет для продажу автомобіля',
-      body: `У цій формі ви обираєте окремий документ за ${BASIC} або розширений варіант за ${COMPLETE}. Якщо потрібно також оформити передачу автомобіля, ключів і документів, продовжуйте з тематичним пакетом за ${VEHICLE}.`,
+      body: 'Оберіть базовий або розширений документ. Для передачі автомобіля, ключів і документів скористайтеся тематичним пакетом. Точну ціну ви побачите перед оплатою.',
       cta: 'Переглянути пакет →',
     },
     employer_start: {
       badge: 'Кадровий пакет',
       title: 'Zaměstnavatel Start 2026',
-      body: `Трудовий договір, інформація за § 37 Трудового кодексу, документи щодо дистанційної роботи та обладнання, чекліст прийому на роботу і DOCX за ${EMPLOYER}.`,
+      body: 'Трудовий договір, інформація за § 37 Трудового кодексу, документи щодо дистанційної роботи та обладнання, чекліст прийому на роботу і DOCX. Точну ціну ви побачите перед оплатою.',
       cta: 'Переглянути вміст пакета →',
     },
   },
@@ -137,7 +130,7 @@ const FLOW_COPY: Record<
   cs: {
     vehicle_sale: {
       priceHeading: 'Cena balíčku',
-      backToStandalone: 'Řešíte jen samotnou kupní smlouvu? Vraťte se na samostatný dokument 99 / 199 Kč.',
+      backToStandalone: 'Řešíte jen samotnou kupní smlouvu? Vraťte se na samostatný dokument.',
       selectedProductLabel: 'Zvolený produkt',
       selectedProductBody:
         'Součástí výstupu bude kupní smlouva na vozidlo v komplexní variantě, předávací protokol, potvrzení o převzetí vozidla, klíčů a dokladů a praktické podklady k převodu.',
@@ -148,13 +141,13 @@ const FLOW_COPY: Record<
     },
     employer_start: {
       priceHeading: 'Cena balíčku',
-      backToStandalone: 'Potřebujete jen pracovní smlouvu? Zvolte samostatný dokument 99 / 199 Kč.',
+      backToStandalone: 'Potřebujete jen pracovní smlouvu? Zvolte samostatný dokument.',
     },
   },
   en: {
     vehicle_sale: {
       priceHeading: 'Package price',
-      backToStandalone: 'Only need the purchase agreement? Return to the standalone document for CZK 99 / 199.',
+      backToStandalone: 'Only need the purchase agreement? Return to the standalone document.',
       selectedProductLabel: 'Selected product',
       selectedProductBody:
         'The output includes the extended vehicle purchase agreement, a handover report, confirmation of the vehicle, keys and documents received, and practical transfer materials.',
@@ -165,13 +158,13 @@ const FLOW_COPY: Record<
     },
     employer_start: {
       priceHeading: 'Package price',
-      backToStandalone: 'Only need the employment contract? Choose the standalone document for CZK 99 / 199.',
+      backToStandalone: 'Only need the employment contract? Choose the standalone document.',
     },
   },
   ua: {
     vehicle_sale: {
       priceHeading: 'Ціна пакета',
-      backToStandalone: 'Потрібен лише договір купівлі-продажу? Поверніться до окремого документа за 99 / 199 Kč.',
+      backToStandalone: 'Потрібен лише договір купівлі-продажу? Поверніться до окремого документа.',
       selectedProductLabel: 'Обраний продукт',
       selectedProductBody:
         'Результат містить розширений договір купівлі-продажу авто, протокол передачі, підтвердження отримання автомобіля, ключів і документів та практичні матеріали для переоформлення.',
@@ -182,7 +175,7 @@ const FLOW_COPY: Record<
     },
     employer_start: {
       priceHeading: 'Ціна пакета',
-      backToStandalone: 'Потрібен лише трудовий договір? Оберіть окремий документ за 99 / 199 Kč.',
+      backToStandalone: 'Потрібен лише трудовий договір? Оберіть окремий документ.',
     },
   },
 };

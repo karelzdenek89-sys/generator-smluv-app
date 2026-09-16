@@ -2,6 +2,8 @@
 
 import { use, useEffect, useMemo, useState } from 'react';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
+import { useBuilderDraft } from '@/lib/use-builder-draft';
+import { getPriceRevealCopy } from '@/lib/price-reveal-copy';
 import Link from 'next/link';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
@@ -134,7 +136,7 @@ function CarSaleBuilderContent() {
     setPackageKeyFromUrl(new URLSearchParams(window.location.search).get('package'));
   }, []);
 
-  const [formData, setFormData] = useState<CarSaleFormData>({
+  const [formData, setFormData] = useBuilderDraft<CarSaleFormData>({
     partnerUserRole: 'unknown',
     sellerName: '',
     sellerId: '',
@@ -514,7 +516,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   {packageFlowCopy?.priceHeading}
                 </div>
                 <div className="mt-2 text-3xl font-black tracking-tight text-white">
-                  {packageConfig.priceLabel}
+                  {getPriceRevealCopy(builderLocale).short}
                 </div>
                 <Link
                   href="/auto"

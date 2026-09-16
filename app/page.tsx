@@ -336,7 +336,7 @@ export default function Home() {
                   <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#c9a852]">
                     {item.key === 'employer_start' ? 'Novinka · personální balíček' : item.badge}
                   </p>
-                  <span className="shrink-0 text-lg font-bold text-white">{item.priceLabel}</span>
+                  <span className="text-sm font-semibold text-white">Placený balíček</span>
                 </div>
                 <h3 className="mt-4 font-serif italic text-2xl font-bold text-white">{item.title}</h3>
                 <p className="mt-3 flex-grow text-sm leading-7 text-slate-400">{item.comparisonNote}</p>
@@ -368,7 +368,7 @@ export default function Home() {
             <p className="mt-3 text-base leading-relaxed text-slate-400">
               {FREE_BASIC_DPP
                 ? `14 typů smluv sestavených podle vašich údajů. Základní DPP vytvoříte zdarma, ostatní dokumenty ${HOME_BASIC_PRICE_LABEL}.`
-                : `14 typů smluv sestavených podle vašich údajů. Dokumenty ${HOME_BASIC_PRICE_LABEL}.`}
+                : '14 typů smluv sestavených podle vašich údajů. Stažení je placené; přesnou cenu uvidíte po vyplnění formuláře, před platbou.'}
               {' '}
               Průběžně aktualizováno pro českou legislativu v roce 2026.
             </p>

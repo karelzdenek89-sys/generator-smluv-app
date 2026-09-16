@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
+import { useBuilderDraft } from '@/lib/use-builder-draft';
 import { useState, useMemo } from 'react';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
@@ -76,7 +77,7 @@ function SectionTitle({ index, title, subtitle }: { index: string; title: string
 }
 
 export default function LoanBuilderPage() {
-  const [formData, setFormData] = useState<LoanFormData>({
+  const [formData, setFormData] = useBuilderDraft<LoanFormData>({
     lenderName: '',
     lenderId: '',
     lenderAddress: '',

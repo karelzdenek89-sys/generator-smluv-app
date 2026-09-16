@@ -567,12 +567,12 @@ function testPackageUpsellIsLocalized() {
   // Neznámé locale spadne na češtinu.
   assert.equal(getPackageAppendixNotice('de'), '');
 
-  // Ceny v nabídce se berou z ceníku, ne z natvrdo psaného textu.
+  // V builderu je cena až v souhrnu před platbou, nikoli v úvodním upsellu.
   const enVehicle = getPackageUpsellCopy('vehicle_sale', 'en');
   assert.ok(enVehicle);
   assert.ok(
-    enVehicle.body.includes(THEMATIC_PACKAGE_CONFIG.vehicle_sale.priceLabel),
-    'the EN upsell must quote the price from the price list',
+    enVehicle.body.includes('exact price before payment'),
+    'the EN builder upsell must disclose the price-review step',
   );
 }
 

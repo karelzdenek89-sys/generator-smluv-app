@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { resolveDocumentAccess } from '@/lib/document-access';
 import Link from 'next/link';
 import PartnerNextSteps from '@/app/components/partners/PartnerNextSteps';
 import type { CheckoutAnalyticsAttribution } from '@/lib/analytics-attribution';
@@ -82,15 +83,13 @@ export default function SecureDownloadPage() {
 
   useEffect(() => {
     const url = new URL(window.location.href);
-    const token = new URLSearchParams(url.hash.replace(/^#/, '')).get('token')?.trim() ?? '';
     const sessionId = url.searchParams.get('session_id')?.trim() ?? '';
     const freeId = url.searchParams.get('free_id')?.trim() ?? '';
     const lang = normalizeLocale(url.searchParams.get('lang'));
     const initialCopy = DOWNLOAD_COPY[lang];
     setLocale(lang);
     const format = url.searchParams.get('format') === 'docx' ? 'docx' : 'pdf';
-    url.hash = '';
-    window.history.replaceState(null, '', `${url.pathname}${url.search}`);
+    const token = resolveDocumentAccess(url, sessionId && !freeId ? `paid:${sessionId}` : freeId && !sessionId ? `free:${freeId}` : '');
     if (!token || (!sessionId && !freeId) || (sessionId && freeId)) {
       setError(initialCopy.invalidLink);
       setState('error');
@@ -108,6 +107,8 @@ export default function SecureDownloadPage() {
     const requestCopy = DOWNLOAD_COPY[request.lang];
     setState('preparing');
     setError('');
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 30_000);
     try {
       const response = await fetch(
         request.kind === 'free' ? '/api/contracts/free/download' : '/api/contracts/download',
@@ -123,6 +124,7 @@ export default function SecureDownloadPage() {
               format: request.format,
             }),
         cache: 'no-store',
+        signal: controller.signal,
       });
       if (!response.ok) {
         const payload = (await response.json().catch(() => null)) as { error?: string } | null;
@@ -142,8 +144,10 @@ export default function SecureDownloadPage() {
       window.setTimeout(() => URL.revokeObjectURL(objectUrl), 30_000);
       setState('ready');
     } catch (downloadError) {
-      setError(downloadError instanceof Error ? downloadError.message : requestCopy.downloadError);
+      setError(controller.signal.aborted ? requestCopy.downloadError : downloadError instanceof Error ? downloadError.message : requestCopy.downloadError);
       setState('error');
+    } finally {
+      window.clearTimeout(timeout);
     }
   }, [request]);
 
@@ -205,6 +209,7 @@ export default function SecureDownloadPage() {
           <button
             type="button"
             onClick={() => void startDownload()}
+            disabled={state === 'preparing'}
             className="mt-6 w-full rounded-xl bg-amber-500 px-5 py-3 font-black text-black hover:bg-amber-400"
           >
             {copy.retry}

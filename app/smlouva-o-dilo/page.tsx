@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
+import { useBuilderDraft } from '@/lib/use-builder-draft';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
@@ -117,7 +118,7 @@ const defaultData: WorkContractData = {
 };
 
 export default function WorkContractPage() {
-  const [formData, setFormData] = useState<WorkContractData>(defaultData);
+  const [formData, setFormData] = useBuilderDraft<WorkContractData>(defaultData);
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [packageKeyFromUrl, setPackageKeyFromUrl] = useState<string | null>(null);
@@ -364,9 +365,9 @@ export default function WorkContractPage() {
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/4 px-5 py-4">
                 <div className="text-xs uppercase tracking-[0.18em] text-slate-500">Cena balíčku</div>
-                <div className="mt-2 text-3xl font-black tracking-tight text-white">{packageConfig.priceLabel}</div>
+                <div className="mt-2 text-lg font-semibold text-white">Cena v dalším kroku</div>
                 <Link href="/smlouva-o-dilo" className="mt-3 inline-block text-xs leading-relaxed text-[#cbbba0] transition hover:text-white">
-                  Potřebujete jen smlouvu o dílo? Zvolte samostatný dokument 99 / 199 Kč.
+                  Potřebujete jen smlouvu o dílo? Zvolte samostatný dokument.
                 </Link>
               </div>
             </div>

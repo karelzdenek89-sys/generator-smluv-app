@@ -2,6 +2,7 @@
 
 import { use, useEffect, useMemo, useState } from 'react';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
+import { useBuilderDraft } from '@/lib/use-builder-draft';
 import Link from 'next/link';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import LeaseBuilderSeoSection from '@/app/components/seo/LeaseBuilderSeoSection';
@@ -121,7 +122,7 @@ function LeaseBuilderContent() {
     ua: 'Договір оренди — онлайн-форма | SmlouvaHned',
   });
 
-  const [formData, setFormData] = useState<LeaseFormData>({
+  const [formData, setFormData] = useBuilderDraft<LeaseFormData>({
     partnerUserRole: 'unknown',
     landlordName: '',
     landlordId: '',
