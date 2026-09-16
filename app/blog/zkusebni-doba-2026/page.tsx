@@ -3,9 +3,9 @@ import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 
 export const metadata = blogArticlePageMetadata('zkusebni-doba-2026', {
-  title: 'Zkušební doba 2026: 4 a 8 měsíců, prodloužení',
+  title: 'Jak dlouhá je zkušební doba v roce 2026?',
   description:
-    'Zkušební doba v roce 2026: maximálně 4 měsíce, u vedoucích 8. Kdy ji sjednat, jak se prodlužuje a jaký limit platí u smlouvy na dobu určitou.',
+    'Zkušební doba je nejvýše 4 měsíce, u vedoucích 8. Na příkladu smlouvy na dobu určitou zjistíte kratší limit i pravidla prodloužení při absenci.',
 });
 
 export default function ZkusebniDoba2026Page() {
@@ -17,7 +17,7 @@ export default function ZkusebniDoba2026Page() {
       dateLabel="9. července 2026"
       breadcrumbLabel="Zkušební doba 2026"
       slug="zkusebni-doba-2026"
-      title="Zkušební doba 2026: 4 měsíce, 8 měsíců u vedoucích a pravidla prodloužení"
+      title="Jak dlouhá je zkušební doba v roce 2026?"
       intro="Zkušební doba nevzniká automaticky. Musí být mezi zaměstnancem a zaměstnavatelem písemně sjednána včas a v zákonném rozsahu. Od účinnosti flexinovely jsou limity delší než dříve, ale u pracovního poměru na dobu určitou stále platí další strop."
       toc={[
         { href: '#kdy-ji-sjednat', label: 'Kdy lze zkušební dobu sjednat' },

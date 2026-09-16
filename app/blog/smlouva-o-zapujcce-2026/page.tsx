@@ -50,15 +50,15 @@ export default function SmlouvaOZapujcce2026Page() {
         </p>
 
         <div className="mt-7 rounded-2xl border border-amber-500/20 bg-amber-500/8 p-5">
-          <p className="mb-3 text-sm font-bold text-white">Chcete přeskočit teorii?</p>
-          <p className="mb-4 text-sm text-slate-400">Vytvořte si smlouvu o zápůjčce online — formulář vás provede krok za krokem, hotovo za 5 minut.</p>
+          <p className="mb-3 text-sm font-bold text-white">Chcete dohodnutou půjčku zachytit písemně?</p>
+          <p className="mb-4 text-sm text-slate-400">Připravte si údaje věřitele a dlužníka, částku, splatnost a případný úrok. Vyplnění a náhled jsou bez platby; stažení hotového dokumentu je placené. Konečnou cenu uvidíte před zaplacením. Bez registrace a předplatného.</p>
           <TrackedLink
-            href="/pujcka"
+            href="/pujcka#formular"
             eventName="blog_cta_click"
-            eventParams={{ surface: 'blog_article', cta_type: 'hero_primary', destination: '/pujcka' }}
+            eventParams={{ surface: 'blog_article', cta_type: 'hero_primary', destination: '/pujcka#formular', variant: 'article_entry_v1' }}
             className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-2.5 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400"
           >
-            Vytvořit smlouvu o zápůjčce →
+            Vyplnit smlouvu o zápůjčce →
           </TrackedLink>
         </div>
       </header>

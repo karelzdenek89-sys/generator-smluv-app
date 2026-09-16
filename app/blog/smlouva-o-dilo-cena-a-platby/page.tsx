@@ -65,10 +65,10 @@ export default function SmlouvaODiloCenaAPlatbyPage() {
           { href: '#faq', label: 'Časté otázky' },
         ]}
         primaryAction={{
-          title: 'Potřebujete smlouvu o dílo sestavit online?',
-          body: 'Formulář pro smlouvu o dílo — předmět díla, cena, termíny, sankce a předání. Standardizovaný dokument dle OZ č. 89/2012 Sb.',
-          buttonLabel: 'Vytvořit smlouvu o dílo',
-          href: '/smlouva-o-dilo',
+          title: 'Přeneste dohodnutou cenu a zálohu do smlouvy',
+          body: 'Připravte si údaje obou stran, popis díla, cenu, zálohu a termín dokončení. Vyplnění a náhled jsou bez platby; stažení hotového dokumentu je placené. Konečnou cenu uvidíte před zaplacením. Bez registrace a předplatného.',
+          buttonLabel: 'Vyplnit smlouvu o dílo',
+          href: '/smlouva-o-dilo#formular',
         }}
         trustBox={{
           generatorSuitable:

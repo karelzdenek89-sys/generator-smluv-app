@@ -95,7 +95,7 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   },
   {
     slug: 'zkusebni-doba-2026',
-    title: 'Zkušební doba 2026: 4 a 8 měsíců, prodloužení',
+    title: 'Jak dlouhá je zkušební doba v roce 2026?',
     excerpt:
       'Aktuální pravidla pro zkušební dobu po flexinovele zákoníku práce: kdy ji sjednat, jaké platí limity pro dobu určitou a kdy ji lze písemně prodloužit.',
     category: 'Práce a zaměstnání',

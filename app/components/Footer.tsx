@@ -198,11 +198,11 @@ function FooterContent({
 
         <div className="mt-8 border-t border-[#c9a852]/10 pt-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-600">
                 {t.securePayment}
               </span>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <div className="flex items-center gap-1.5 rounded-md border border-white/8 bg-white/4 px-2.5 py-1">
                   <svg className="h-3.5 w-auto" viewBox="0 0 70 25" aria-label="Stripe">
                     <text x="2" y="18" fontSize="14" fontWeight="800" fill="#635BFF" fontFamily="Arial">stripe</text>

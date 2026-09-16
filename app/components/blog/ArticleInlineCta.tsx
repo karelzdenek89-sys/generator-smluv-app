@@ -39,6 +39,7 @@ export default function ArticleInlineCta({
             surface: 'blog_article',
             article_slug: articleSlug,
             cta_type: primary ? 'inline_primary' : 'inline_secondary',
+            ...(href.endsWith('#formular') ? { variant: 'article_entry_v1' } : {}),
           }}
           // Tlačítka mají `white-space: nowrap`; delší popisky se na mobilu
           // nevešly do sloupce článku a přetékaly z rámečku.

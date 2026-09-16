@@ -51,14 +51,14 @@ export default function SmlouvaOSluzbach2026Page() {
 
         <div className="mt-7 rounded-2xl border border-amber-500/20 bg-amber-500/8 p-5">
           <p className="mb-3 text-sm font-bold text-white">Potřebujete smlouvu o službách?</p>
-          <p className="mb-4 text-sm text-slate-400">Vytvořte smlouvu o poskytování služeb online — s popisem služby, cenou, reklamačními podmínkami a výpovědí. PDF ihned.</p>
+          <p className="mb-4 text-sm text-slate-400">Připravte si údaje poskytovatele a objednatele, rozsah služeb, odměnu a dobu spolupráce. Vyplnění a náhled jsou bez platby; stažení hotového dokumentu je placené. Konečnou cenu uvidíte před zaplacením. Bez registrace a předplatného.</p>
           <TrackedLink
-            href="/sluzby"
+            href="/sluzby#formular"
             eventName="blog_cta_click"
-            eventParams={{ surface: 'blog_article', cta_type: 'hero_primary', destination: '/sluzby' }}
+            eventParams={{ surface: 'blog_article', cta_type: 'hero_primary', destination: '/sluzby#formular', variant: 'article_entry_v1' }}
             className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-2.5 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400"
           >
-            Vytvořit smlouvu o službách →
+            Vyplnit smlouvu o službách →
           </TrackedLink>
         </div>
       </header>

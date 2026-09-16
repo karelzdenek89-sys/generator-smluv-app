@@ -82,10 +82,10 @@ export default function PracovniSmlouvaVzor2026Page() {
         </p>
 
         <ArticleInlineCta
-          title="Chcete přeskočit teorii?"
-          body="Vytvořte si pracovní smlouvu online — formulář vás provede krok za krokem, hotovo za 5 minut."
-          buttonLabel="Vytvořit pracovní smlouvu"
-          href="/pracovni"
+          title="Potřebujete pracovní smlouvu k podpisu?"
+          body="Připravte si údaje zaměstnavatele a zaměstnance, druh práce, pracoviště, nástup a mzdu. Vyplnění a náhled jsou bez platby; stažení hotového dokumentu je placené. Konečnou cenu uvidíte před zaplacením. Bez registrace a předplatného."
+          buttonLabel="Vyplnit pracovní smlouvu"
+          href="/pracovni#formular"
           articleSlug="pracovni-smlouva-2026"
         />
       </header>
