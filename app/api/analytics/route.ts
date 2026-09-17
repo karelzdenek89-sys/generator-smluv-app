@@ -30,6 +30,7 @@ const eventSchema = z.object({
         'package_page',
         'homepage',
         'builder_landing',
+        'portal_page',
       ]).optional(),
       traffic_label: boundedString.optional(),
       article_slug: boundedString.optional(),

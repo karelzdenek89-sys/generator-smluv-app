@@ -33,6 +33,12 @@ export default function TrackView({ eventName, eventParams }: TrackViewProps) {
           label: 'Situační stránka',
           pathname,
         });
+      } else if (pathname && (eventName === 'situation_viewed' || eventName === 'legal_change_viewed')) {
+        rememberTrafficAttributionIfEmpty({
+          source: 'portal_page',
+          label: `Portál: ${typeof eventParams?.surface === 'string' ? eventParams.surface : 'portal'}`,
+          pathname,
+        });
       }
       trackEvent(eventName, {
         ...eventParams,

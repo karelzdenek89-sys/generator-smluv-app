@@ -61,19 +61,19 @@ const COPY: Record<AppLocale, Partial<Record<ThematicPackageKey, LocalizedEntry>
     vehicle_sale: {
       badge: 'Tematický balíček',
       title: 'Balíček pro prodej vozidla',
-      body: 'V tomto formuláři volíte mezi základním a rozšířeným dokumentem. Pokud chcete řešit i předání vozidla, klíčů a dokladů, pokračujte tematickým balíčkem. Přesnou cenu uvidíte v souhrnu před platbou.',
+      body: 'V tomto formuláři volíte mezi základním a rozšířeným dokumentem. Pokud chcete řešit i předání vozidla, klíčů a dokladů, pokračujte tematickým balíčkem. Konkrétní doporučení podle zadané situace uvidíte před objednávkou.',
       cta: 'Zobrazit balíček →',
     },
     employer_start: {
       badge: 'Nový personální balíček',
       title: 'Zaměstnavatel Start 2026',
-      body: 'Pracovní smlouva, informace podle § 37 ZP, podklady k home office a vybavení, nástupní checklist a DOCX. Přesnou cenu uvidíte v souhrnu před platbou.',
+      body: 'Pracovní smlouva, informace podle § 37 ZP, podklady k home office a vybavení, nástupní checklist a DOCX. Konkrétní doporučení podle zadané situace uvidíte před objednávkou.',
       cta: 'Zobrazit obsah balíčku →',
     },
     work_order: {
       badge: 'Balíček k zakázce',
       title: 'Zakázka Plus',
-      body: 'Připravte smlouvu, platební podmínky, vícepráce a předání díla v jednom balíčku. Přesnou cenu uvidíte v souhrnu před platbou.',
+      body: 'Připravte smlouvu, platební podmínky, vícepráce a předání díla v jednom balíčku. Konkrétní doporučení podle zadané situace uvidíte před objednávkou.',
       cta: 'Zobrazit obsah balíčku →',
     },
   },

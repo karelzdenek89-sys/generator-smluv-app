@@ -23,15 +23,19 @@ import { isCaseDocumentConsentValid } from '@/lib/cases/checkout';
 import { applyCaseAction, markCaseDocumentPaid, parseCaseAction, prepareCaseDocument } from '@/lib/cases/service';
 import {
   buildCaseRecord,
+  CASE_RETENTION_DAYS,
+  CASE_RETENTION_DAYS_CLOSED,
+  caseTtlSeconds,
   deleteCase,
   getCase,
   listCaseIdsForEmail,
   listDueReminders,
   maskEmail,
+  PENDING_DOCUMENT_RETENTION_DAYS,
   saveCase,
   toPublicCase,
 } from '@/lib/cases/store';
-import { CASE_DOCUMENT_KINDS, WORK_ORDER_STAGES } from '@/lib/cases/types';
+import { CASE_DOCUMENT_KINDS, WORK_ORDER_STAGES, type CaseRecord } from '@/lib/cases/types';
 import {
   WORK_ORDER_STAGE_DEFINITIONS,
   buildDefaultTasks,
@@ -67,7 +71,7 @@ function sampleCase(overrides: Partial<Parameters<typeof buildCaseRecord>[0]> = 
     deadline: '2026-12-15',
     priceAmountCzk: 185000,
     priceMode: 'milestones',
-    origin: { source: 'success_page', contractType: 'work_contract', tier: 'basic', packageKey: null, orderSessionId: 'cs_test_123' },
+    origin: { source: 'success_page', contractType: 'work_contract', tier: 'basic', packageKey: null },
     ...overrides,
   });
 }
@@ -137,7 +141,9 @@ async function testStoreAndAccess() {
 
   const pub = toPublicCase(record);
   ok(!('ownerEmail' in pub), 'public projection hides e-mail');
-  ok(!('orderSessionId' in pub.origin), 'public projection hides Stripe session');
+  ok(!('orderSessionId' in pub.origin), 'public projection has no Stripe session');
+  const legacy = toPublicCase({ ...record, origin: { ...record.origin, orderSessionId: 'cs_legacy' } as CaseRecord['origin'] });
+  ok(!('orderSessionId' in legacy.origin), 'legacy Stripe session never reaches the client');
   eq(pub.ownerEmailMasked, maskEmail('jan.novak@example.cz'), 'masked e-mail exposed');
   ok(!pub.ownerEmailMasked.includes('jan.novak'), 'mask hides local part');
 }
@@ -245,7 +251,7 @@ async function testDocuments() {
   eq(again?.events.filter((event) => event.type === 'document_paid').length, 1, 'marking paid is idempotent');
 
   // Zakázka z balíčku: dokument je ihned připraven.
-  const bundle = await saveCase(sampleCase({ origin: { source: 'success_page', contractType: 'work_contract', tier: 'complete', packageKey: 'work_order', orderSessionId: 'cs_test_bundle' } }));
+  const bundle = await saveCase(sampleCase({ origin: { source: 'success_page', contractType: 'work_contract', tier: 'complete', packageKey: 'work_order' } }));
   eq(isCaseDocumentIncluded(bundle), true, 'bundle case includes documents');
   const included = await prepareCaseDocument(bundle, 'defect_notice', {
     customerName: 'Jan Novák', contractorName: 'Petr Dvořák', date: '2026-12-20', discoveredOn: '2026-12-18', defects: 'Netěsnící sifon\nOdlepený obklad', remedy: 'repair', deadlineDays: '14', delivery: 'email',
@@ -287,6 +293,56 @@ async function testDocuments() {
   await deleteCase(bundle);
 }
 
+async function testRetention() {
+  memoryRedis.reset();
+  eq(CASE_RETENTION_DAYS, 365, 'active case retention 365 days');
+  eq(CASE_RETENTION_DAYS_CLOSED, 180, 'closed case retention 180 days');
+  eq(PENDING_DOCUMENT_RETENTION_DAYS, 30, 'unpaid document retention 30 days');
+  eq(caseTtlSeconds('in_progress'), 365 * 86400, 'stage TTL: active');
+  eq(caseTtlSeconds('closed'), 180 * 86400, 'stage TTL: closed');
+
+  const now = new Date('2026-10-01T10:00:00Z');
+  const stored = await saveCase(sampleCase(), now);
+  ok(!('orderSessionId' in stored.origin), 'Stripe session is not stored on the case');
+  const raw = await memoryRedis.get<Record<string, unknown>>(`case:${stored.id}`);
+  ok(!JSON.stringify(raw).includes('orderSessionId'), 'Redis payload carries no order session');
+  ok(!JSON.stringify(raw).includes('cs_'), 'Redis payload carries no Stripe identifier');
+  eq(raw?.expiresAt, new Date(now.getTime() + 365 * 86400 * 1000).toISOString(), 'expiresAt = 365 days for active case');
+
+  // Legacy record with orderSessionId is scrubbed on the next write.
+  await memoryRedis.set(`case:${stored.id}`, { ...stored, origin: { ...stored.origin, orderSessionId: 'cs_legacy_123' } }, { ex: 1000 });
+  const rewritten = await saveCase((await getCase(stored.id)) as CaseRecord, now);
+  ok(!JSON.stringify(await memoryRedis.get(`case:${rewritten.id}`)).includes('cs_legacy_123'), 'legacy Stripe session scrubbed on write');
+
+  // Closed stage shortens TTL and expiresAt.
+  const closed = await saveCase({ ...rewritten, stage: 'closed' }, now);
+  const ttl = await memoryRedis.ttl(`case:${closed.id}`);
+  ok(ttl > 179 * 86400 && ttl <= 180 * 86400, `closed case TTL ≈ 180 days (got ${ttl})`);
+  eq(closed.expiresAt, new Date(now.getTime() + 180 * 86400 * 1000).toISOString(), 'expiresAt = 180 days for closed case');
+
+  // Unpaid documents older than 30 days are dropped; paid/fresh ones stay.
+  const fresh = { ...sampleDocument('fresh'), createdAt: new Date(now.getTime() - 5 * 86400 * 1000).toISOString() };
+  const stale = { ...sampleDocument('stale'), createdAt: new Date(now.getTime() - 31 * 86400 * 1000).toISOString() };
+  const paidOld = { ...sampleDocument('paid'), status: 'ready' as const, paidAt: now.toISOString(), createdAt: new Date(now.getTime() - 200 * 86400 * 1000).toISOString() };
+  const withDocs = await saveCase({ ...closed, documents: [fresh, stale, paidOld] }, now);
+  eq(withDocs.documents.map((document) => document.id).sort(), ['fresh', 'paid'], 'stale unpaid document purged, fresh and paid kept');
+  await deleteCase(withDocs);
+}
+
+function sampleDocument(id: string) {
+  return {
+    id,
+    kind: 'handover_protocol' as const,
+    title: 'Předávací protokol',
+    status: 'pending_payment' as const,
+    data: { customerName: 'A', contractorName: 'B' },
+    entitlement: 'paid' as const,
+    stripeSessionId: null,
+    createdAt: new Date().toISOString(),
+    paidAt: null,
+  };
+}
+
 async function testConsent() {
   const now = Date.now();
   const valid = { accepted: true, acceptedAt: new Date(now - 60_000).toISOString(), termsVersion: CHECKOUT_TERMS_VERSION, privacyVersion: CHECKOUT_PRIVACY_VERSION, textVersion: CHECKOUT_CONSENT_TEXT_VERSION };
@@ -302,8 +358,9 @@ async function main() {
   await testStoreAndAccess();
   await testActions();
   await testDocuments();
+  await testRetention();
   await testConsent();
-  console.log(`Case engine tests passed (${checks} checks: workflow, store, tokens, actions, reminders, documents, PDF, consent).`);
+  console.log(`Case engine tests passed (${checks} checks: workflow, store, tokens, actions, reminders, documents, PDF, retention, consent).`);
 }
 
 main().catch((error) => {

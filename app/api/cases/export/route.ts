@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { authorizeCaseRequest, isCaseRouteFailure } from '@/lib/cases/route-auth';
-import { CASE_RETENTION_DAYS } from '@/lib/cases/store';
+import { CASE_RETENTION_DAYS, CASE_RETENTION_DAYS_CLOSED } from '@/lib/cases/store';
 
 export const runtime = 'nodejs';
 
@@ -15,15 +15,15 @@ export async function POST(req: Request) {
   if (isCaseRouteFailure(auth)) return auth.response;
 
   const { origin, ...record } = auth.record;
-  const { orderSessionId: _orderSessionId, ...publicOrigin } = origin;
-  void _orderSessionId;
+  const { orderSessionId: _legacy, ...publicOrigin } = origin as typeof origin & { orderSessionId?: unknown };
+  void _legacy;
   const documents = record.documents.map(({ stripeSessionId: _stripeSessionId, ...document }) => {
     void _stripeSessionId;
     return document;
   });
   const payload = {
     exportedAt: new Date().toISOString(),
-    retention: `Případ se automaticky smaže ${CASE_RETENTION_DAYS} dní od poslední změny; smazat jej lze kdykoli v zakázce.`,
+    retention: `Případ se automaticky smaže ${CASE_RETENTION_DAYS} dní od poslední změny (uzavřená zakázka ${CASE_RETENTION_DAYS_CLOSED} dní); smazat jej lze kdykoli v zakázce.`,
     case: { ...record, origin: publicOrigin, documents },
   };
   return new NextResponse(JSON.stringify(payload, null, 2), {

@@ -666,6 +666,22 @@ function testPrivacySafeRevenueAttribution() {
   assert.equal(attributionViewMatchesSource('seo_landing_view', 'seo_landing'), true);
   assert.equal(attributionViewMatchesSource('homepage_view', 'homepage'), true);
   assert.equal(attributionViewMatchesSource('builder_view', 'builder_landing'), true);
+  assert.equal(attributionViewMatchesSource('situation_viewed', 'portal_page'), true);
+  assert.equal(attributionViewMatchesSource('legal_change_viewed', 'portal_page'), true);
+  assert.equal(attributionViewMatchesSource('situation_page_view', 'portal_page'), false);
+  for (const landingPage of ['/zakazka', '/zakazka/zaloha-remeslnikovi', '/zamestnavam/dpp-2027', '/nastroje/checklist-koupe-auta', '/zmeny-2027', '/zmeny-2027/zamestnavatele', '/prodej-vozidla/skryta-vada-auta', '/pro-pronajimatele/neplaceni-najemneho']) {
+    assert.ok(
+      normalizeCheckoutAnalyticsAttribution({ trafficSource: 'portal_page', landingPage, capturedAt: '2026-08-26T11:59:00.000Z' }, now),
+      `portal_page attribution accepts ${landingPage}`,
+    );
+  }
+  for (const landingPage of ['/', '/prodej-vozidla', '/blog/prepis-vozidla-2026', '/najem', '/moje-zakazka', '/interni/analytics']) {
+    assert.equal(
+      normalizeCheckoutAnalyticsAttribution({ trafficSource: 'portal_page', landingPage, capturedAt: '2026-08-26T11:59:00.000Z' }, now),
+      null,
+      `portal_page attribution rejects ${landingPage}`,
+    );
+  }
   assert.equal(
     attributionViewMatchesSource('package_page_view', 'blog_article'),
     false,

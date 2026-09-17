@@ -83,7 +83,7 @@ export default function PracovniSmlouvaVzor2026Page() {
 
         <ArticleInlineCta
           title="Potřebujete pracovní smlouvu k podpisu?"
-          body="Připravte si údaje zaměstnavatele a zaměstnance, druh práce, pracoviště, nástup a mzdu. Vyplnění a náhled jsou bez platby; stažení hotového dokumentu je placené. Konečnou cenu uvidíte před zaplacením. Bez registrace a předplatného."
+          body="Připravte si údaje zaměstnavatele a zaměstnance, druh práce, pracoviště, nástup a mzdu. Vyplnění a náhled jsou bez platby; stažení hotového dokumentu je placené. Standard od 99 Kč · Rozšířená varianta od 199 Kč. Konkrétní doporučení podle zadané situace uvidíte před objednávkou. Bez registrace a předplatného."
           buttonLabel="Vyplnit pracovní smlouvu"
           href="/pracovni#formular"
           articleSlug="pracovni-smlouva-2026"

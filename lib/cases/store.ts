@@ -17,18 +17,46 @@ import { buildDefaultTasks, planReminders } from './workflow';
  * Redis datový model Case Engine (viz docs/DATA_MAP.md):
  *
  *   case:{caseId}                 JSON CaseRecord, TTL CASE_RETENTION_DAYS od poslední změny
- *   case:owner:{sha256(email)}    SET caseId, TTL stejně jako případ
+ *                                 (CASE_RETENTION_DAYS_CLOSED po uzavření)
+ *   case:owner:{sha256(email)}    SET caseId, TTL CASE_RETENTION_DAYS
  *   case:tokens:{caseId}          SET hash tokenů (lib/cases/access.ts)
  *   case:access:{sha256(token)}   JSON CaseAccessRecord, TTL 30 dní
  *   case:reminders:due            ZSET score=dueAt(ms) member=caseId:reminderId
  *   case:docsession:{sessionId}   JSON {caseId, documentId} — mapování Stripe session
  *
- * Retence: případ bez aktivity se smaže po CASE_RETENTION_DAYS. Vlastník jej
- * může smazat kdykoli (`deleteCase`), což odstraní i indexy a připomínky.
+ * Retence: případ bez aktivity se smaže po CASE_RETENTION_DAYS; uzavřená
+ * zakázka po CASE_RETENTION_DAYS_CLOSED od uzavření (poslední změny).
+ * Rozpracovaný navazující dokument, který nebyl zaplacen do
+ * PENDING_DOCUMENT_RETENTION_DAYS, se při dalším zápisu odstraní (Stripe
+ * session stejně expiruje do 24 h). Vlastník může případ smazat kdykoli
+ * (`deleteCase`), což odstraní i indexy a připomínky.
  */
 
 export const CASE_RETENTION_DAYS = 365;
-const CASE_TTL_SECONDS = CASE_RETENTION_DAYS * 24 * 60 * 60;
+export const CASE_RETENTION_DAYS_CLOSED = 180;
+export const PENDING_DOCUMENT_RETENTION_DAYS = 30;
+const DAY_SECONDS = 24 * 60 * 60;
+const CASE_TTL_SECONDS = CASE_RETENTION_DAYS * DAY_SECONDS;
+const CASE_CLOSED_TTL_SECONDS = CASE_RETENTION_DAYS_CLOSED * DAY_SECONDS;
+
+export function caseTtlSeconds(stage: CaseRecord['stage']): number {
+  return stage === 'closed' ? CASE_CLOSED_TTL_SECONDS : CASE_TTL_SECONDS;
+}
+
+/**
+ * Data, která nemají v případu co dělat (nebo už ne), se odstraní při každém
+ * zápisu: starší záznamy mohly nést `origin.orderSessionId`; nezaplacené
+ * dokumenty po 30 dnech nikdo nedoplatí.
+ */
+function scrubForStorage(record: CaseRecord, now: Date): CaseRecord {
+  const { orderSessionId: _legacy, ...origin } = record.origin as CaseRecord['origin'] & { orderSessionId?: unknown };
+  void _legacy;
+  const pendingCutoff = now.getTime() - PENDING_DOCUMENT_RETENTION_DAYS * DAY_SECONDS * 1000;
+  const documents = record.documents.filter(
+    (document) => document.status !== 'pending_payment' || Date.parse(document.createdAt) >= pendingCutoff,
+  );
+  return { ...record, origin, documents };
+}
 const MAX_EVENTS = 200;
 export const CASE_ID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
@@ -109,13 +137,14 @@ export function buildCaseRecord(input: CreateCaseInput, now: Date = new Date()):
 }
 
 export async function saveCase(record: CaseRecord, now: Date = new Date()): Promise<CaseRecord> {
+  const ttl = caseTtlSeconds(record.stage);
   const next: CaseRecord = {
-    ...record,
+    ...scrubForStorage(record, now),
     updatedAt: now.toISOString(),
-    expiresAt: new Date(now.getTime() + CASE_TTL_SECONDS * 1000).toISOString(),
+    expiresAt: new Date(now.getTime() + ttl * 1000).toISOString(),
     events: record.events.slice(-MAX_EVENTS),
   };
-  await redis.set(caseKey(next.id), next, { ex: CASE_TTL_SECONDS });
+  await redis.set(caseKey(next.id), next, { ex: ttl });
   await redis.sadd(ownerKey(next.ownerEmail), next.id);
   await redis.expire(ownerKey(next.ownerEmail), CASE_TTL_SECONDS);
   return next;
@@ -132,7 +161,8 @@ export async function touchCaseAccess(record: CaseRecord): Promise<void> {
   // Otevření případu nesmí resetovat retenci; jen zaznamená poslední přístup.
   const ttl = await redis.ttl(caseKey(record.id));
   if (ttl <= 0) return;
-  await redis.set(caseKey(record.id), { ...record, lastAccessAt: new Date().toISOString() }, { ex: ttl });
+  const now = new Date();
+  await redis.set(caseKey(record.id), { ...scrubForStorage(record, now), lastAccessAt: now.toISOString() }, { ex: ttl });
 }
 
 export async function listCaseIdsForEmail(email: string): Promise<string[]> {
@@ -241,8 +271,9 @@ export function findDocument(record: CaseRecord, documentId: string): CaseDocume
 
 export function toPublicCase(record: CaseRecord): PublicCase {
   const { ownerEmail, origin, ...rest } = record;
-  const { orderSessionId: _orderSessionId, ...publicOrigin } = origin;
-  void _orderSessionId;
+  // Starší záznamy mohly nést orderSessionId; klientovi se nikdy nevrací.
+  const { orderSessionId: _legacy, ...publicOrigin } = origin as CaseRecord['origin'] & { orderSessionId?: unknown };
+  void _legacy;
   return {
     ...rest,
     ownerEmailMasked: maskEmail(ownerEmail),

@@ -1,5 +1,6 @@
 import type { PortalSituationKey } from '@/lib/analytics';
 import type { PortalLink } from './situations';
+import { GROWTH_ARTICLES } from './articles-growth';
 
 /**
  * Answer-first obsah portálu: otázka → stručná odpověď → co udělat → na co
@@ -40,7 +41,7 @@ const ZP = { label: 'Zákoník práce (zákon č. 262/2006 Sb.) — e-Sbírka', 
 const ZOZ = { label: 'Zákon o zaměstnanosti (zákon č. 435/2004 Sb.) — e-Sbírka', href: 'https://www.e-sbirka.cz/sb/2004/435' };
 const MPSV_MZDA = { label: 'MPSV — Minimální mzda', href: 'https://mpsv.gov.cz/minimalni-mzda' };
 
-export const ANSWER_FIRST_ARTICLES: readonly AnswerFirstArticle[] = [
+const CORE_ARTICLES: readonly AnswerFirstArticle[] = [
   // ── Zakázka ─────────────────────────────────────────────────────────────
   {
     slug: 'smlouva-s-remeslnikem',
@@ -506,6 +507,9 @@ export const ANSWER_FIRST_ARTICLES: readonly AnswerFirstArticle[] = [
     verifiedAt: UPDATED,
   },
 ];
+
+/** První vlna (11) + Growth Engine (17). Pořadí = pořadí v hubech. */
+export const ANSWER_FIRST_ARTICLES: readonly AnswerFirstArticle[] = [...CORE_ARTICLES, ...GROWTH_ARTICLES];
 
 export function getAnswerFirstArticle(section: ArticleSection, slug: string): AnswerFirstArticle | null {
   return ANSWER_FIRST_ARTICLES.find((article) => article.section === section && article.slug === slug) ?? null;

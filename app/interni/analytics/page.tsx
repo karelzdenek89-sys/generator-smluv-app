@@ -13,6 +13,7 @@ import {
   isValidInternalReportingCookie,
 } from '@/lib/internal-reporting-auth';
 import { getPortalDashboardData, type PortalDashboardData } from '@/lib/portal/reporting';
+import { buildGrowthReport, GROWTH_GSC_SNAPSHOTS, summarizeGrowthReport } from '@/lib/growth/indexation';
 
 export const dynamic = 'force-dynamic';
 
@@ -269,7 +270,7 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
       >
         <Table
           headers={[
-            'Landing / zdroj', 'Views', 'CTA', 'Start', 'Dokončeno', 'Stripe',
+            'Landing / zdroj', 'Views', 'CTA', 'Nástroj', 'Start', 'Dokončeno', 'Stripe',
             'Platby', 'Tržba', 'Stažení', 'Partner view', 'Partner klik', 'Partner konverze', 'Partner revenue',
           ]}
           rows={data.revenueAttribution.map((item) => [
@@ -279,6 +280,7 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
             </div>,
             formatNumber(item.landingViews),
             formatNumber(item.productCtaClicks),
+            formatNumber(item.toolStarts),
             formatNumber(item.builderStarts),
             formatNumber(item.builderCompletions),
             formatNumber(item.checkoutStarts),
@@ -548,6 +550,70 @@ function DashboardError() {
   );
 }
 
+function GrowthContent({ data }: { data: AnalyticsDashboardData }) {
+  const report = buildGrowthReport(data.portalAttribution);
+  const clusters = summarizeGrowthReport(report);
+  const snapshotDate = GROWTH_GSC_SNAPSHOTS.reduce<string | null>(
+    (latest, snapshot) => (latest && latest > snapshot.observedAt ? latest : snapshot.observedAt),
+    null,
+  );
+  const indexationLabel = (value: string | undefined) => {
+    switch (value) {
+      case 'indexed': return 'indexováno';
+      case 'discovered': return 'objeveno';
+      case 'crawled_not_indexed': return 'procházeno, neindexováno';
+      case 'excluded': return 'vyloučeno';
+      default: return 'bez exportu';
+    }
+  };
+  return (
+    <div className="mx-auto mt-10 max-w-6xl space-y-8">
+      <Section
+        title="Growth Engine — URL → indexace → imprese → kliky → nástroj → dokument → nákup"
+        description={`${report.length} měřených URL v clusterech zakázka / zaměstnávám / auto / pronajímám / změny 2027. Indexace a výkon ve vyhledávání pochází z ručního exportu Search Console (${snapshotDate ? `snapshot ${snapshotDate}` : 'zatím žádný export — všechny stránky jsou nové'}); zbytek trychtýře z first-party událostí se zdrojem portal_page za posledních ${ANALYTICS_REPORTING_WINDOW_DAYS} dní. Postup: docs/GROWTH_MEASUREMENT.md.`}
+      >
+        <Table
+          headers={['Cluster', 'URL', 'S exportem', 'Indexováno', 'Imprese', 'Kliky', 'Views', 'Nástroj', 'Dokument', 'Nákupy', 'Tržba']}
+          rows={clusters.map((item) => [
+            item.cluster,
+            formatNumber(item.urls),
+            formatNumber(item.withSnapshot),
+            formatNumber(item.indexed),
+            formatNumber(item.impressions),
+            formatNumber(item.clicks),
+            formatNumber(item.landingViews),
+            formatNumber(item.toolStarts),
+            formatNumber(item.documentStarts),
+            formatNumber(item.purchases),
+            formatCurrency(item.revenueCzk),
+          ])}
+        />
+        <div className="mt-6">
+          <Table
+            headers={['URL', 'Typ', 'Zveřejněno', 'Indexace', 'Imprese', 'Kliky', 'Views', 'CTA', 'Nástroj', 'Dokument', 'Nákupy']}
+            rows={report.map((row) => [
+              <div key={row.path}>
+                <div className="font-medium text-[#f7f0de]">{row.path}</div>
+                <div className="text-xs text-slate-500">{row.cluster}{row.snapshot?.queryClusters.length ? ` · ${row.snapshot.queryClusters.map((q) => q.label).join(', ')}` : ''}</div>
+              </div>,
+              row.kind,
+              row.publishedAt,
+              indexationLabel(row.snapshot?.indexation),
+              row.snapshot ? formatNumber(row.snapshot.impressions) : '—',
+              row.snapshot ? formatNumber(row.snapshot.clicks) : '—',
+              formatNumber(row.landingViews),
+              formatNumber(row.ctaClicks),
+              formatNumber(row.toolStarts),
+              formatNumber(row.documentStarts),
+              formatNumber(row.purchases),
+            ])}
+          />
+        </div>
+      </Section>
+    </div>
+  );
+}
+
 function PortalContent({ portal }: { portal: PortalDashboardData }) {
   const c = portal.counts;
   return (
@@ -689,6 +755,7 @@ export default async function InternalAnalyticsPage() {
   return (
     <div className="min-h-screen bg-[#05080f] px-6 py-12 md:px-10">
       {data ? <DashboardContent data={data} /> : <DashboardError />}
+      {data ? <GrowthContent data={data} /> : null}
       {portal ? <PortalContent portal={portal} /> : null}
     </div>
   );

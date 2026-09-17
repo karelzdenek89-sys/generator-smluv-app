@@ -17,7 +17,7 @@ const STORAGE_KEY = 'sh_traffic_attribution';
 export const PRODUCT_ANALYTICS_CONSENT_STORAGE_KEY = 'sh_product_analytics_consent_v1';
 const PRODUCT_ANALYTICS_CONSENT_EVENT = 'sh:product-analytics-consent';
 const MAX_AGE_MS = 30 * 60 * 1000;
-const SAFE_SOURCE = /^(?:blog_article|seo_landing|situation_page|package_page|homepage|builder_landing)$/;
+const SAFE_SOURCE = /^(?:blog_article|seo_landing|situation_page|package_page|homepage|builder_landing|portal_page)$/;
 const SAFE_ARTICLE_SLUG = /^(?:expat\/)?[a-z0-9-]{1,160}$/;
 
 const BUILDER_LANDING_PATHS = new Set([
@@ -39,19 +39,22 @@ const BUILDER_LANDING_PATHS = new Set([
 
 let expiryTimer: number | undefined;
 
-const LANDING_VIEW_EVENT_BY_SOURCE = {
-  blog_article: 'blog_article_view',
-  seo_landing: 'seo_landing_view',
-  situation_page: 'situation_page_view',
-  package_page: 'package_page_view',
-  homepage: 'homepage_view',
-  builder_landing: 'builder_view',
-} as const;
+const LANDING_VIEW_EVENT_BY_SOURCE: Record<string, readonly string[]> = {
+  blog_article: ['blog_article_view'],
+  seo_landing: ['seo_landing_view'],
+  situation_page: ['situation_page_view'],
+  package_page: ['package_page_view'],
+  homepage: ['homepage_view'],
+  builder_landing: ['builder_view'],
+  // Portál 2.0: situační huby, answer-first články, nástroje a radar změn.
+  portal_page: ['situation_viewed', 'legal_change_viewed'],
+};
+
+/** Cesty portálu 2.0, které se měří jako samostatné landing pages (GSC → funnel). */
+export const PORTAL_LANDING_PATH = /^(?:\/(?:zakazka|zamestnavam|nastroje|zmeny-2027)(?:\/[a-z0-9-]+)?|\/(?:pro-pronajimatele|prodej-vozidla)\/[a-z0-9-]+)$/;
 
 export function attributionViewMatchesSource(eventName: string, trafficSource: string) {
-  return LANDING_VIEW_EVENT_BY_SOURCE[
-    trafficSource as keyof typeof LANDING_VIEW_EVENT_BY_SOURCE
-  ] === eventName;
+  return LANDING_VIEW_EVENT_BY_SOURCE[trafficSource]?.includes(eventName) ?? false;
 }
 
 function cleanLandingPage(value: unknown): string | null {
@@ -77,6 +80,7 @@ function landingPageMatchesSource(source: string, landingPage: string) {
   if (source === 'situation_page') {
     return /^\/(?:pro-[a-z0-9-]+|prodej-vozidla)$/.test(landingPage);
   }
+  if (source === 'portal_page') return PORTAL_LANDING_PATH.test(landingPage);
   if (source === 'seo_landing') {
     return !/^\/(?:api|interni|newsletter|stahnout|success|zakaznicka-zona)(?:\/|$)/.test(landingPage);
   }

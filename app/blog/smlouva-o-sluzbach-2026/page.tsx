@@ -51,7 +51,7 @@ export default function SmlouvaOSluzbach2026Page() {
 
         <div className="mt-7 rounded-2xl border border-amber-500/20 bg-amber-500/8 p-5">
           <p className="mb-3 text-sm font-bold text-white">Potřebujete smlouvu o službách?</p>
-          <p className="mb-4 text-sm text-slate-400">Připravte si údaje poskytovatele a objednatele, rozsah služeb, odměnu a dobu spolupráce. Vyplnění a náhled jsou bez platby; stažení hotového dokumentu je placené. Konečnou cenu uvidíte před zaplacením. Bez registrace a předplatného.</p>
+          <p className="mb-4 text-sm text-slate-400">Připravte si údaje poskytovatele a objednatele, rozsah služeb, odměnu a dobu spolupráce. Vyplnění a náhled jsou bez platby; stažení hotového dokumentu je placené. Standard od 99 Kč · Rozšířená varianta od 199 Kč. Konkrétní doporučení podle zadané situace uvidíte před objednávkou. Bez registrace a předplatného.</p>
           <TrackedLink
             href="/sluzby#formular"
             eventName="blog_cta_click"

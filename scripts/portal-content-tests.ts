@@ -18,6 +18,9 @@ import { getAllDocumentLegalVersions } from '@/lib/legal/document-versions';
 import { ANSWER_FIRST_ARTICLES, articleHref } from '@/lib/portal/articles';
 import { HOMEPAGE_SITUATIONS, PORTAL_SITUATIONS, getPortalSituation } from '@/lib/portal/situations';
 import { PORTAL_TOOLS } from '@/lib/portal/tools';
+import { GROWTH_ARTICLES } from '@/lib/portal/articles-growth';
+import { GROWTH_GSC_SNAPSHOTS, buildGrowthReport, listGrowthUrls, summarizeGrowthReport } from '@/lib/growth/indexation';
+import { PRICE_TRANSPARENCY_LINE } from '@/lib/price-reveal-copy';
 import {
   buildCommercialIntent,
   getDeliverablePartners,
@@ -182,7 +185,7 @@ function testSituationsAndTools() {
 }
 
 function testArticles() {
-  eq(ANSWER_FIRST_ARTICLES.length, 11, 'eleven answer-first pages');
+  eq(ANSWER_FIRST_ARTICLES.length, 28, 'answer-first pages: 11 core + 17 growth');
   eq(new Set(ANSWER_FIRST_ARTICLES.map(articleHref)).size, ANSWER_FIRST_ARTICLES.length, 'article hrefs unique');
   for (const article of ANSWER_FIRST_ARTICLES) {
     const ctx = `article ${articleHref(article)}`;
@@ -264,12 +267,73 @@ async function testCommercialIntents() {
   for (const plan of SUBSCRIPTION_PLANS) eq(isSubscriptionPlanPurchasable(plan.key), false, `${plan.key} is not purchasable without a subscription backend`);
 }
 
+function testGrowthClusters() {
+  // Growth Engine (2026-09-17): každý cluster má odpověď → postup → nástroj → dokument.
+  const expected: Record<string, readonly string[]> = {
+    zakazka: [
+      'smlouva-s-remeslnikem', 'remeslnik-nedodrzel-termin', 'reklamace-dila', 'zaloha-remeslnikovi', 'viceprace-bez-souhlasu',
+      'jak-potvrdit-viceprace', 'zmena-ceny-dila', 'predavaci-protokol-stavby', 'prevzeti-dila-s-vadami', 'odpovednost-za-vady-dila',
+      'odstoupeni-od-smlouvy-o-dilo',
+    ],
+    zamestnavam: [
+      'pracovni-smlouva', 'dpp', 'osvc', 'mlcenlivost', 'zmena-podminek', 'ukonceni', 'pracovni-smlouva-2027', 'dpp-2027',
+      'nastup-zamestnance', 'dohoda-o-skonceni-pracovniho-pomeru',
+    ],
+    'prodej-vozidla': [
+      'vady-ojeteho-auta', 'postup-prodeje-auta', 'koupe-ojeteho-auta', 'odpovednost-prodavajiciho-za-vady', 'skryta-vada-auta',
+      'plna-moc-prepis-auta',
+    ],
+  };
+  for (const [section, slugs] of Object.entries(expected)) {
+    const actual = ANSWER_FIRST_ARTICLES.filter((article) => article.section === section).map((article) => article.slug);
+    for (const slug of slugs) ok(actual.includes(slug), `growth cluster ${section}: ${slug} published`);
+  }
+  for (const article of ANSWER_FIRST_ARTICLES) {
+    const ctx = `article ${articleHref(article)}`;
+    ok(article.metaTitle.length <= 60, `${ctx}: meta title ≤ 60 (SERP)`);
+    ok(article.metaDescription.length >= 120 && article.metaDescription.length <= 165, `${ctx}: meta description 120–165`);
+    // Nástroj je povinný pro růstové stránky; chybí zatím jen checklist ukončení pracovního poměru (backlog).
+    if (GROWTH_ARTICLES.includes(article) && article.slug !== 'dohoda-o-skonceni-pracovniho-pomeru') {
+      ok(article.tools.length > 0, `${ctx}: links a free tool`);
+    }
+    const hubArticles = getPortalSituation(article.situation)?.articles ?? [];
+    const section = article.section;
+    ok(
+      hubArticles.some((link) => link.href === articleHref(article)) || section === 'zamestnavam' || section === 'pro-pronajimatele',
+      `${ctx}: reachable from its situation hub`,
+    );
+  }
+
+  // Měření: každá růstová URL je v registru přesně jednou a bez odhadů.
+  const urls = listGrowthUrls();
+  eq(new Set(urls.map((url) => url.path)).size, urls.length, 'growth URL register unique');
+  ok(urls.length >= 28 + 14 + 3 + 5, 'growth register covers articles, tools, hubs and radar');
+  for (const article of ANSWER_FIRST_ARTICLES) ok(urls.some((url) => url.path === articleHref(article)), `growth register: ${articleHref(article)}`);
+  for (const snapshot of GROWTH_GSC_SNAPSHOTS) {
+    ok(urls.some((url) => url.path === snapshot.path), `GSC snapshot ${snapshot.path} maps to a growth URL`);
+    ok(/^\d{4}-\d{2}-\d{2}$/.test(snapshot.observedAt) && snapshot.observedDays > 0, `GSC snapshot ${snapshot.path} dated`);
+  }
+  const report = buildGrowthReport([
+    { landingPage: '/zakazka/zaloha-remeslnikovi', trafficSource: 'portal_page', landingViews: 10, productCtaClicks: 3, toolStarts: 2, builderStarts: 1, purchases: 1, purchaseRevenueCzk: 99 },
+    { landingPage: '/zakazka/zaloha-remeslnikovi', trafficSource: 'blog_article', landingViews: 99, productCtaClicks: 9, toolStarts: 9, builderStarts: 9, purchases: 9, purchaseRevenueCzk: 999 },
+  ]);
+  const row = report.find((entry) => entry.path === '/zakazka/zaloha-remeslnikovi');
+  eq(row && [row.landingViews, row.ctaClicks, row.toolStarts, row.documentStarts, row.purchases, row.revenueCzk], [10, 3, 2, 1, 1, 99], 'growth report joins only portal_page funnel');
+  eq(row?.snapshot, null, 'new URL has no GSC snapshot (no guessing)');
+  const summary = summarizeGrowthReport(report).find((entry) => entry.cluster === 'zakazka');
+  eq(summary?.purchases, 1, 'cluster summary aggregates purchases');
+
+  // Jednotná cenová věta.
+  eq(PRICE_TRANSPARENCY_LINE, 'Standard od 99 Kč · Rozšířená varianta od 199 Kč. Konkrétní doporučení podle zadané situace uvidíte před objednávkou.', 'single price transparency line');
+}
+
 async function main() {
   testLegalRadar();
   testSituationsAndTools();
   testArticles();
+  testGrowthClusters();
   await testCommercialIntents();
-  console.log(`Portal content tests passed (${checks} checks: legal radar, situations, tools, articles, commercial intents, subscriptions).`);
+  console.log(`Portal content tests passed (${checks} checks: legal radar, situations, tools, articles, growth clusters, commercial intents, subscriptions).`);
 }
 
 main().catch((error) => {

@@ -66,7 +66,7 @@ export default function SmlouvaODiloCenaAPlatbyPage() {
         ]}
         primaryAction={{
           title: 'Přeneste dohodnutou cenu a zálohu do smlouvy',
-          body: 'Připravte si údaje obou stran, popis díla, cenu, zálohu a termín dokončení. Vyplnění a náhled jsou bez platby; stažení hotového dokumentu je placené. Konečnou cenu uvidíte před zaplacením. Bez registrace a předplatného.',
+          body: 'Připravte si údaje obou stran, popis díla, cenu, zálohu a termín dokončení. Vyplnění a náhled jsou bez platby; stažení hotového dokumentu je placené. Standard od 99 Kč · Rozšířená varianta od 199 Kč. Konkrétní doporučení podle zadané situace uvidíte před objednávkou. Bez registrace a předplatného.',
           buttonLabel: 'Vyplnit smlouvu o dílo',
           href: '/smlouva-o-dilo#formular',
         }}

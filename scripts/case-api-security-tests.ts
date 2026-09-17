@@ -54,7 +54,7 @@ async function seedCase() {
       deadline: '2026-12-01',
       priceAmountCzk: 50000,
       priceMode: 'after_completion',
-      origin: { source: 'success_page', contractType: 'work_contract', tier: 'complete', packageKey: 'work_order', orderSessionId: 'cs_test_seed' },
+      origin: { source: 'success_page', contractType: 'work_contract', tier: 'complete', packageKey: 'work_order' },
     }),
   );
   const token = await issueCaseAccessToken(record.id, record.ownerEmail);

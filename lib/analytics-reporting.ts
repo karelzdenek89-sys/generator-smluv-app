@@ -127,6 +127,7 @@ export type AnalyticsDashboardData = {
     articleSlug?: string;
     landingViews: number;
     productCtaClicks: number;
+    toolStarts: number;
     builderStarts: number;
     builderCompletions: number;
     checkoutStarts: number;
@@ -137,6 +138,17 @@ export type AnalyticsDashboardData = {
     partnerClicks: number;
     partnerConversions: number | null;
     partnerRevenueCzk: number | null;
+  }>;
+  /** Všechny portálové landing pages (traffic_source = portal_page), bez ořezu na top 30. */
+  portalAttribution: Array<{
+    landingPage: string;
+    trafficSource: string;
+    landingViews: number;
+    productCtaClicks: number;
+    toolStarts: number;
+    builderStarts: number;
+    purchases: number;
+    purchaseRevenueCzk: number;
   }>;
   gscCandidates: Array<{
     page: string;
@@ -191,6 +203,7 @@ type RevenueAttributionAccumulator = {
   articleSlug?: string;
   landingViews: number;
   productCtaClicks: number;
+  toolStarts: number;
   builderStarts: number;
   builderCompletions: number;
   checkoutStarts: number;
@@ -518,6 +531,7 @@ export async function getAnalyticsDashboardData(
       ...(params.article_slug ? { articleSlug: params.article_slug } : {}),
       landingViews: 0,
       productCtaClicks: 0,
+      toolStarts: 0,
       builderStarts: 0,
       builderCompletions: 0,
       checkoutStarts: 0,
@@ -552,6 +566,8 @@ export async function getAnalyticsDashboardData(
         case 'situation_page_view':
         case 'package_page_view':
         case 'homepage_view':
+        case 'situation_viewed':
+        case 'legal_change_viewed':
           if (
             attributionViewMatchesSource(event.event, attributedRevenue.trafficSource)
             && params.pathname === attributedRevenue.landingPage
@@ -563,7 +579,11 @@ export async function getAnalyticsDashboardData(
         case 'seo_landing_cta_click':
         case 'situation_cta_click':
         case 'package_cta_click':
+        case 'situation_started':
           attributedRevenue.productCtaClicks += 1;
+          break;
+        case 'tool_started':
+          attributedRevenue.toolStarts += 1;
           break;
         case 'builder_view':
           if (
@@ -1094,6 +1114,7 @@ export async function getAnalyticsDashboardData(
       articleSlug: stat.articleSlug,
       landingViews: stat.landingViews,
       productCtaClicks: stat.productCtaClicks,
+      toolStarts: stat.toolStarts,
       builderStarts: stat.builderStarts,
       builderCompletions: stat.builderCompletions,
       checkoutStarts: stat.checkoutStarts,
@@ -1112,6 +1133,19 @@ export async function getAnalyticsDashboardData(
       || right.landingViews - left.landingViews,
     )
     .slice(0, 30);
+
+  const portalAttribution = [...revenueAttributionStats.values()]
+    .filter((stat) => stat.trafficSource === 'portal_page')
+    .map((stat) => ({
+      landingPage: stat.landingPage,
+      trafficSource: stat.trafficSource,
+      landingViews: stat.landingViews,
+      productCtaClicks: stat.productCtaClicks,
+      toolStarts: stat.toolStarts,
+      builderStarts: stat.builderStarts,
+      purchases: stat.purchases,
+      purchaseRevenueCzk: stat.purchaseRevenueCzk,
+    }));
 
   const gscCandidates = GSC_PAGE_SNAPSHOTS.map((snapshot) => ({
     ...snapshot,
@@ -1197,6 +1231,7 @@ export async function getAnalyticsDashboardData(
     partnerPerformance,
     monetizationPerformance,
     revenueAttribution,
+    portalAttribution,
     gscCandidates,
     overview: [
       { key: 'article_views', label: 'Zobrazen\u00ed \u010dl\u00e1nk\u016f', value: articleViews },

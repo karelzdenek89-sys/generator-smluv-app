@@ -8,9 +8,14 @@
  *   CASE DATA     — termíny, stav, workflow, druh dokumentu a minimum údajů
  *                   nutných pro pokračování (název zakázky, cenový režim).
  *
- * Případ NEOBSAHUJE jméno, adresu, IČO ani kontakt protistrany. Jediný osobní
- * údaj je e-mail vlastníka případu, protože bez něj nelze poslat návratový
- * odkaz ani připomínku.
+ * Případ NEOBSAHUJE obsah smlouvy, adresu, IČO ani kontakt protistrany a
+ * neuchovává identifikátor objednávky. Osobní údaje v případu:
+ *   - e-mail vlastníka (bez něj nelze poslat návratový odkaz ani připomínku),
+ *   - to, co vlastník sám zapíše do navazujícího dokumentu (`documents[].data`,
+ *     např. jména stran v předávacím protokolu) nebo do poznámky (`events`).
+ *
+ * Retence (lib/cases/store.ts): 365 dní od poslední změny, uzavřená zakázka
+ * 180 dní, nezaplacený rozpracovaný dokument 30 dní.
  */
 
 export const CASE_KINDS = ['work_order'] as const;
@@ -114,8 +119,6 @@ export type CaseOrigin = {
   contractType: 'work_contract';
   tier: 'basic' | 'complete';
   packageKey: 'work_order' | null;
-  /** Pouze pro interní korelaci s objednávkou; nikdy se nevrací klientovi. */
-  orderSessionId: string | null;
 };
 
 export type CaseRecord = {

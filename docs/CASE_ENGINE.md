@@ -39,7 +39,7 @@ Oddělení dat:
 | Vrstva | Kde | Co | Retence |
 |---|---|---|---|
 | DOCUMENT DATA | `contract:draft:*` | celý payload smlouvy | 7/30/90 dní |
-| CASE DATA | `case:*` | e-mail vlastníka, název, role, termín, cena/režim, fáze, úkoly, události, připomínky, data navazujících dokumentů | 365 dní od poslední změny |
+| CASE DATA | `case:*` | e-mail vlastníka, název, role, termín, cena/režim, fáze, úkoly, události, připomínky, data navazujících dokumentů | 365 dní od poslední změny; uzavřená zakázka 180 dní; nezaplacený rozpracovaný dokument 30 dní (revize polí: docs/DATA_MAP.md) |
 
 Do případu se **nekopíruje** jméno, adresa, IČO ani kontakt protistrany.
 Jména stran do navazujícího dokumentu zadává uživatel ručně (a sdílejí se mezi

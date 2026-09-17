@@ -14,6 +14,7 @@ import { getAvailableThematicPackages, getEffectivePriceBand } from '@/lib/packa
 import { getFreeBasicPdfCopy } from '@/lib/monetization-copy';
 import { getMonetizationPolicy, isFreeBasicPolicy } from '@/lib/monetization-policy';
 import { PRICING_TIER_CONFIG } from '@/lib/pricing';
+import { PRICE_TRANSPARENCY_LINE } from '@/lib/price-reveal-copy';
 import { SITE_URL } from '@/lib/seo/site';
 import SituationGrid from '@/app/components/portal/SituationGrid';
 import { LEGAL_CHANGES, LEGAL_CHANGE_STATUS_LABELS } from '@/lib/legal/radar';
@@ -114,7 +115,7 @@ const faqItems = [
   },
   {
     question: 'Jsou nástroje a legislativní radar zdarma?',
-    answer: 'Ano. Checklisty, rozhodovací průvodci i radar změn 2027 jsou bezplatné a nevyžadují e-mail ani registraci. Platíte pouze za vygenerovaný dokument, jehož cenu vidíte předem.',
+    answer: 'Ano. Checklisty, rozhodovací průvodci i radar změn 2027 jsou bezplatné a nevyžadují e-mail ani registraci. Platíte pouze za vygenerovaný dokument. ' + PRICE_TRANSPARENCY_LINE,
   },
 ];
 
@@ -339,7 +340,7 @@ export default function Home() {
             <h2 id="situace-title" className="font-serif italic text-4xl font-bold text-white md:text-5xl">Vyberte situaci, ne paragraf</h2>
             <p className="mt-3 text-base leading-relaxed text-slate-400">
               Každá situace má odpověď, bezplatný nástroj, správný dokument a přehled dalších kroků.
-              Cena je vždy vidět před vyplněním: dokumenty od {PRICING_TIER_CONFIG.basic.priceLabel}, nástroje zdarma.
+              {PRICE_TRANSPARENCY_LINE} Nástroje jsou zdarma.
             </p>
           </div>
           <SituationGrid surface="homepage_situations" />
@@ -451,7 +452,7 @@ export default function Home() {
             <p className="mt-3 text-base leading-relaxed text-slate-400">
               {FREE_BASIC_DPP
                 ? `14 typů smluv sestavených podle vašich údajů. Základní DPP vytvoříte zdarma, ostatní dokumenty ${HOME_BASIC_PRICE_LABEL}.`
-                : '14 typů smluv sestavených podle vašich údajů. Stažení je placené; přesnou cenu uvidíte po vyplnění formuláře, před platbou.'}
+                : `14 typů smluv sestavených podle vašich údajů. Stažení je placené. ${PRICE_TRANSPARENCY_LINE}`}
               {' '}
               Průběžně aktualizováno pro českou legislativu v roce 2026.
             </p>

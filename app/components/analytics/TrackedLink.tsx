@@ -11,6 +11,9 @@ import {
 } from '@/lib/analytics';
 import { rememberTrafficAttributionIfEmpty } from '@/lib/analytics-attribution';
 
+/** Plochy portálu 2.0, ze kterých se pamatuje akviziční stránka. */
+const PORTAL_SURFACES = new Set(['situation_hub', 'answer_article', 'tool_page', 'legal_radar', 'legal_radar_hub']);
+
 type TrackedLinkProps = Omit<ComponentProps<typeof Link>, 'href'> & {
   href: ComponentProps<typeof Link>['href'];
   eventName: AnalyticsEventName;
@@ -75,6 +78,12 @@ export default function TrackedLink({
       rememberTrafficAttributionIfEmpty({
         source: 'situation_page',
         label: 'Situační stránka',
+        pathname: sourcePath,
+      });
+    } else if (PORTAL_SURFACES.has(eventParams?.surface ?? '')) {
+      rememberTrafficAttributionIfEmpty({
+        source: 'portal_page',
+        label: `Portál: ${eventParams?.surface}`,
         pathname: sourcePath,
       });
     }

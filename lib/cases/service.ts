@@ -109,7 +109,6 @@ export async function createCaseFromPaidOrder(input: {
         contractType: 'work_contract',
         tier: packageKey ? 'complete' : tier,
         packageKey,
-        orderSessionId: session.id,
       },
     });
     record = await saveCase(record);
