@@ -53,6 +53,13 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.resolve(__dirname),
   },
+  experimental: {
+    // Vercel obnovuje .next/cache z předchozího deploymentu a Turbopack FS cache
+    // pak (16.3.5) vrátil zastaralé globals.css — preview cb568cb kompiloval CSS
+    // bez commitnutých pravidel. Build z čistého zdroje stojí ~20 s a je
+    // deterministický; scripts/build-integrity-check.mjs to po buildu ověřuje.
+    turbopackFileSystemCacheForBuild: false,
+  },
   images: {
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],

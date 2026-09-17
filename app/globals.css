@@ -9,6 +9,10 @@ body:has([data-localized-builder-shell]) [data-site-footer="global"] {
 }
 
 :root {
+  /* Revize tohoto souboru. Při každé změně globals.css zvedněte hodnotu —
+     scripts/build-integrity-check.mjs po buildu ověří, že zkompilované CSS
+     nese aktuální revizi (ochrana proti zastaralé build cache). */
+  --sh-css-revision: sh20260917a;
   --background: #060912;
   --foreground: #f2f4f8;
   --muted: #c9d1e1;

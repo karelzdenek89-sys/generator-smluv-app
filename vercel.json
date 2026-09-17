@@ -17,9 +17,15 @@
   "redirects": [
     {
       "source": "/:path*",
-      "has": [{ "type": "host", "value": "smlouvahned.cz" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "smlouvahned.cz"
+        }
+      ],
       "destination": "https://www.smlouvahned.cz/:path*",
       "permanent": true
     }
-  ]
+  ],
+  "buildCommand": "npm run build && node scripts/build-integrity-check.mjs"
 }

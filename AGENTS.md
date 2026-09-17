@@ -11,3 +11,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - Use `preview-*` only when an actual hosted runtime/browser preview is materially needed, preferably once after a coherent batch of changes.
 - Do not push no-op or documentation-only commits to retrigger Vercel.
 - Cost control must not weaken production verification, checkout, payment, partner-engine, or document-generation safety.
+
+## Build integrity (CSS revision)
+
+- `app/globals.css` declares `--sh-css-revision`. Bump it on every change to that file.
+- `scripts/build-integrity-check.mjs` runs after `next build` (Vercel `buildCommand` and `test:pre-deploy`) and fails the build when the compiled CSS does not carry the current revision. This caught a Vercel build that restored a stale Turbopack cache (2026-09-17); `turbopackFileSystemCacheForBuild` is therefore disabled in `next.config.ts`.
