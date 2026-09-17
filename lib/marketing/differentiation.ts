@@ -16,23 +16,23 @@ export type ComparisonColumn = {
 export const DIFFERENTIATION_PILLARS: readonly DifferentiationPillar[] = [
   {
     icon: '§',
-    title: 'Paragraf u klauzule',
-    desc: 'U důležitých ustanovení v PDF uvidíte, na který § OZ nebo zákoníku práce text navazuje. Ne jen obecnou formulaci bez kontextu.',
+    title: 'Víte, o co se klauzule opírá',
+    desc: 'U vybraných ustanovení v PDF uvádíme konkrétní § občanského zákoníku nebo zákoníku práce.',
   },
   {
     icon: '⚠',
-    title: 'Upozornění ve formuláři',
-    desc: 'Při vyplňování vás systém upozorní na volby, které bývají sporné — vysoká pokuta, chybějící souhlas pronajímatele, neobvyklá sazba. Nejde o posouzení vaší konkrétní věci.',
+    title: 'Formulář hlídá neobvyklé volby',
+    desc: 'U vysoké pokuty, chybějícího souhlasu nebo neobvyklé sazby vás upozorní dřív, než dokument dokončíte.',
   },
   {
     icon: '✓',
-    title: 'Klauzule, na které se zapomíná',
-    desc: 'Kauce u nájmu, záruky u díla, sankce mezi podnikateli. V rozšířené variantě dokumentu — ne až jako placený doplněk jinde.',
+    title: 'Rozšířená varianta přidává konkrétní obsah',
+    desc: 'Podle typu dokumentu doplní další ustanovení a praktický checklist. Před objednávkou přesně vidíte, co je zahrnuto.',
   },
   {
     icon: '→',
-    title: 'Nejdřív formulář, pak stažení',
-    desc: 'Projdete celý formulář, zkontrolujete náhled a teprve pak rozhodnete, jestli PDF stáhnete. Víte předem, co v souboru bude.',
+    title: 'Nejdřív náhled, potom objednávka',
+    desc: 'Dokument vzniká průběžně z vašich údajů. Než zaplatíte, zkontrolujete náhled, variantu i cenu.',
   },
 ];
 
@@ -99,9 +99,9 @@ export const NOT_A_LAW_FIRM_POINTS = [
 ] as const;
 
 export const WHY_NOT_GENERIC_BULLETS = [
-  'Stažený Word nebo PDF nezná vaše jméno, cenu ani termíny — musíte vše dopisovat ručně.',
-  'U generického textu snadno přehlédnete kauci, předání vozidla nebo rozsah mlčenlivosti.',
-  'Tady nejdřív doplníte údaje, projdete náhled a PDF odemknete až po dokončení objednávky.',
+  'U staženého vzoru dopisujete strany, částky i termíny ručně.',
+  'Formulář vás provede údaji, které jsou pro daný dokument podstatné.',
+  'Před objednávkou vidíte náhled, zvolenou variantu i cenu.',
 ] as const;
 
 export const O_PROJEKTU_COMPARISON_ROWS = [

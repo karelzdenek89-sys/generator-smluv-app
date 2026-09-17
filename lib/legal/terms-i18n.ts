@@ -21,7 +21,7 @@ import type { LegalDocument, LegalSection } from '@/lib/legal/types';
  * jazykové verze nemůžou rozejít při změně ceníku.
  */
 
-export const TERMS_VERSION = '2026-09-17';
+export const TERMS_VERSION = '2026-09-18';
 
 function priceRows(): Array<{ label: string; value: string }> {
   const rows = [
@@ -172,7 +172,7 @@ function enSections(): LegalSection[] {
         {
           kind: 'p',
           text:
-            'The Provider’s total liability for damage incurred by the Customer in connection with a single order is limited to the amount actually paid by the Customer for that order, unless mandatory law provides otherwise. This limitation does not apply in the case of intent or gross negligence on the part of the Provider.',
+            'Nothing in this clause limits the consumer’s statutory rights arising from defective digital content or any other rights that cannot be contractually limited or excluded.',
         },
       ],
     },
@@ -188,7 +188,7 @@ function enSections(): LegalSection[] {
         {
           kind: 'p',
           text:
-            'A complaint may be raised in particular where the generated document does not correspond to the details entered (a technical fault of the system). A complaint does not cover inappropriate use of the document or errors caused by incorrect completion by the Customer.',
+            'A complaint may be made where the digital content is defective, for example where the generated document does not correspond to correctly entered data or to the ordered scope. This does not limit any other statutory rights arising from defective performance. The Customer remains responsible for incorrect input data or use outside the selected purpose.',
         },
         {
           kind: 'p',
@@ -251,7 +251,7 @@ function enSections(): LegalSection[] {
         {
           kind: 'p',
           text:
-            'The Provider is entitled to amend the Terms unilaterally. The Provider will inform consumers of material changes by publishing the updated version here and by sending information to the e-mail address given with the order, at least 14 days before the change takes effect. A change to the Terms does not affect orders completed before it took effect. The current wording of the Terms is always available at smlouvahned.cz/obchodni-podminky.',
+            'A completed order is governed by the version of the Terms effective when the contract was concluded. Updated Terms apply to future orders; if a change affects an ongoing service, the Customer will be informed in the manner and scope required by law. The current wording is available at smlouvahned.cz/obchodni-podminky.',
         },
       ],
     },
@@ -384,7 +384,7 @@ function uaSections(): LegalSection[] {
         {
           kind: 'p',
           text:
-            'Сукупна відповідальність Надавача за шкоду, заподіяну Замовнику у зв’язку з одним замовленням, обмежується сумою, фактично сплаченою Замовником за це замовлення, якщо імперативні норми не встановлюють інше. Це обмеження не застосовується у разі умислу або грубої необережності Надавача.',
+            'Цей пункт не обмежує законні права споживача у зв’язку з недоліками цифрового вмісту або інші права, які не можуть бути обмежені чи виключені договором.',
         },
       ],
     },
@@ -399,7 +399,7 @@ function uaSections(): LegalSection[] {
         {
           kind: 'p',
           text:
-            'Рекламацію можна заявити передусім тоді, коли створений документ не відповідає внесеним даним (технічна помилка системи). Рекламація не поширюється на невідповідне використання документа чи помилки, спричинені неправильним заповненням з боку Замовника.',
+            'Рекламацію можна заявити у разі недоліку цифрового вмісту, наприклад коли створений документ не відповідає правильно внесеним даним або замовленому обсягу. Це не обмежує інші законні права Замовника у зв’язку з неналежним виконанням. За неправильні вхідні дані або використання поза обраною метою відповідає Замовник.',
         },
         {
           kind: 'p',
@@ -462,7 +462,7 @@ function uaSections(): LegalSection[] {
         {
           kind: 'p',
           text:
-            'Надавач має право змінювати Умови в односторонньому порядку. Про суттєві зміни він повідомляє споживачів публікацією оновленої версії на цій сторінці та надсиланням інформації на e-mail, зазначений при замовленні, щонайменше за 14 днів до набрання зміною чинності. Зміна Умов не впливає на замовлення, завершені до набрання нею чинності. Чинна редакція Умов завжди доступна на smlouvahned.cz/obchodni-podminky.',
+            'Для завершеного замовлення застосовується редакція Умов, чинна на момент укладення договору. Оновлена редакція застосовується до майбутніх замовлень; якщо зміна стосується триваючої послуги, Замовника буде повідомлено у спосіб та в обсязі, передбачених законом. Чинна редакція доступна на smlouvahned.cz/obchodni-podminky.',
         },
       ],
     },

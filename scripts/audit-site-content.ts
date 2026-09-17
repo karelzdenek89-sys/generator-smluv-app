@@ -191,6 +191,8 @@ function main() {
   assert.match(terms, /není plátcem DPH/, 'Terms must clarify non-VAT-payer status');
   assert.match(terms, /90 dní/, 'Terms must mention 90-day archive add-on');
   assert.doesNotMatch(terms, /vč\. DPH/i, 'Terms must not say prices include VAT');
+  assert.doesNotMatch(terms, /odpovědnost Poskytovatele[^\n]*omezena částkou/i, 'Terms must not cap statutory consumer rights by order price');
+  assert.match(terms, /zákonná práva spotřebitele z vad digitálního obsahu/, 'Terms must preserve statutory digital-content defect rights');
 
   const faq = read('app/faq/page.tsx');
   assert.match(faq, /Základní dokument 99 Kč/, 'FAQ must mention 99 Kč basic price');
@@ -224,6 +226,10 @@ function main() {
   assert.match(newsletterConfirm, /subscribeNewsletterContact/, 'Newsletter must sync to Resend only after confirmation');
   assert.match(newsletterConfirm, /export async function POST/, 'Newsletter confirmation must require POST');
   assert.match(read('app/newsletter/potvrdit/page.tsx'), /url\.hash/, 'Newsletter token must be read from a URL fragment');
+
+  const cookiesBanner = read('app/components/CookiesBanner.tsx');
+  assert.match(cookiesBanner, /Volitelné měření návštěvnosti používáme jen s vaším souhlasem/, 'Cookie banner must use concise consent copy');
+  assert.doesNotMatch(cookiesBanner, /agregovaná Vercel Analytics fungují bez marketingových cookies/, 'Cookie banner should keep vendor detail in privacy information, not the first layer');
 
   const layout = read('app/layout.tsx');
   assert.match(layout, /SiteAnalytics/, 'Root layout must include Vercel Analytics');

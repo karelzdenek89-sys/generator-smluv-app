@@ -259,9 +259,9 @@ export default function Home() {
             </h1>
             <p className={styles.heroLead}>Od první dohody až po poslední předání.</p>
             <p className={styles.heroDescription}>
-              Nejdřív zjistíte postup a cenu, potom vyplníte formulář a zkontrolujete náhled.
-              PDF získáte po dokončení objednávky; DOCX a další praktické podklady jsou volitelné podle typu dokumentu.
-              U nájmu, převodu vozidla a smlouvy o dílo můžete po nákupu volitelně pokračovat v soukromém případu s termínem a dalšími kroky.
+              Vyberete dokument, doplníte údaje a zkontrolujete náhled.
+              Před objednávkou vidíte cenu i obsah zvolené varianty.
+              U nájmu, převodu vozidla a smlouvy o dílo můžete po nákupu pokračovat v Moje případy.
             </p>
             <div className={styles.heroActions}>
               <TrackedLink href="#situace" eventName="situation_started" eventParams={{ surface: 'homepage_hero', cta_type: 'choose_situation' }} className={styles.primaryAction}>
@@ -282,10 +282,9 @@ export default function Home() {
           <ExpatEntryLinks showBlogLink />
         </div>
         <p className={styles.scopeNote} aria-label="Právní upozornění">
-          <strong>Softwarový nástroj, ne advokátní kancelář.</strong> SmlouvaHned sestavuje standardizované dokumenty
-          z údajů, které zadáte; neposkytuje právní služby ani právní poradenství ve smyslu zákona č. 85/1996 Sb.
-          U nestandardních nebo sporných situací doporučujeme individuální posouzení advokátem —{' '}
-          <a href="https://www.cak.cz" target="_blank" rel="noopener noreferrer">seznam ČAK</a>.
+          <strong>Standardizovaný dokument z vašich údajů.</strong> Nejde o individuální právní službu.
+          U sporu nebo nestandardní situace je vhodné individuální posouzení.{' '}
+          <Link href="/o-projektu">Jak služba funguje</Link>.
         </p>
       </section>
 
@@ -313,10 +312,10 @@ export default function Home() {
             <div className={styles.reveal}>
               <p className="site-kicker mb-2">Jak služba funguje</p>
               <h2 id="jak-to-funguje-title" className="font-serif italic text-3xl font-bold text-[#f2e7c8] md:text-4xl">
-                Smlouva je začátek. Důležité je zvládnout celou situaci.
+                Od dohody k předání bez zbytečného přepisování.
               </h2>
               <p className="mt-4 text-base leading-7 text-slate-400">
-                Nejdřív získáte orientaci, potom dokument. U pronájmu, převodu vozidla a zakázky můžete navíc pokračovat v soukromém případu s termínem, checklistem a připomínkami — bez nuceného účtu a bez předplatného.
+                Vyberete situaci, doplníte údaje a před objednávkou vidíte náhled i cenu. U nájmu, auta a zakázky si pak můžete uložit termín, stav a další krok.
               </p>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -335,39 +334,65 @@ export default function Home() {
           </div>
           <ProductScopeStrip className="mt-10" />
 
-          <div className={`${styles.glass} ${styles.reveal} mt-6 p-6 md:p-7`} aria-labelledby="moje-pripady-home-title">
-            <div className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-start">
+          <div
+            className={`${styles.glass} ${styles.reveal} relative mt-6 overflow-hidden !border-[#c9a852]/20 bg-[radial-gradient(circle_at_90%_0%,rgba(201,168,82,0.12),transparent_34%)] p-6 md:p-7`}
+            aria-labelledby="moje-pripady-home-title"
+          >
+            <div className="absolute -right-16 -top-20 h-52 w-52 rounded-full bg-[#c9a852]/8 blur-3xl" aria-hidden="true" />
+            <div className="relative grid gap-7 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:items-center">
               <div>
                 <p className="site-kicker mb-2">Moje případy</p>
-                <h3 id="moje-pripady-home-title" className="font-serif text-2xl font-bold italic text-[#f2e7c8] md:text-3xl">
-                  Dokument je hotový. Další kroky můžete mít na jednom místě.
+                <h3 id="moje-pripady-home-title" className="font-serif text-2xl font-semibold text-[#f2e7c8] md:text-3xl">
+                  Termín, stav a další krok na jednom místě.
                 </h3>
-                <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">
-                  U nájmu, převodu vozidla a smlouvy o dílo si po zaplacení můžete dobrovolně založit soukromý případ.
-                  Uložíte si stav, důležitý termín a checklist; u zakázky navíc navazující dokumenty.
-                  Přístup funguje přes bezpečný návratový odkaz, bez povinného účtu a bez předplatného.
+                <p className="mt-3 max-w-xl text-sm leading-7 text-slate-400">
+                  Po nákupu nájemní smlouvy, smlouvy na vozidlo nebo smlouvy o dílo si můžete založit soukromý případ.
+                  Bez další registrace si uložíte, co je hotové a co vás čeká.
                 </p>
-                <div className="mt-5 flex flex-wrap items-center gap-4">
-                  <Link href="/moje-pripady" className="text-sm font-bold text-[#e8d092] transition hover:text-white">
-                    Otevřít Moje případy →
-                  </Link>
-                  <span className="text-xs text-slate-400">Soukromá pracovní vrstva, ne veřejný profil.</span>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {['Bez povinného účtu', 'E-mailové připomínky', 'Soukromý přístup'].map((item) => (
+                    <span key={item} className="rounded-full border border-white/9 bg-white/[0.035] px-3 py-1.5 text-[10px] font-semibold text-slate-300">
+                      {item}
+                    </span>
+                  ))}
+                </div>
+                <Link
+                  href="/moje-pripady"
+                  className="mt-5 inline-flex items-center rounded-xl border border-[#c9a852]/30 bg-[#c9a852]/8 px-4 py-2.5 text-sm font-semibold text-[#e8d092] transition hover:border-[#c9a852]/55 hover:bg-[#c9a852]/12 hover:text-white"
+                >
+                  Otevřít Moje případy →
+                </Link>
+              </div>
+
+              <div className="rounded-[1.4rem] border border-white/10 bg-[#07101f]/75 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] md:p-5">
+                <div className="flex items-center justify-between gap-3 border-b border-white/8 pb-3">
+                  <div>
+                    <p className="text-[9px] font-black uppercase tracking-[0.18em] text-slate-500">Příklad pracovního přehledu</p>
+                    <p className="mt-1 text-sm font-semibold text-white">Tři situace, stejný princip</p>
+                  </div>
+                  <span className="rounded-full border border-emerald-400/20 bg-emerald-400/8 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-emerald-200">
+                    soukromé
+                  </span>
+                </div>
+                <div className="mt-3 grid gap-2.5">
+                  {[
+                    { no: '01', title: 'Pronájem', text: 'Předání bytu a vypořádání jistoty', status: 'Termín' },
+                    { no: '02', title: 'Převod vozidla', text: 'Předání, přepis a dokončení převodu', status: 'Checklist' },
+                    { no: '03', title: 'Zakázka', text: 'Fáze, předání a navazující dokumenty', status: 'Připomínky' },
+                  ].map((item) => (
+                    <div key={item.no} className="grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-xl border border-white/8 bg-white/[0.03] px-3.5 py-3">
+                      <span className="font-mono text-[10px] text-[#c9a852]">{item.no}</span>
+                      <div>
+                        <p className="text-xs font-semibold text-slate-100">{item.title}</p>
+                        <p className="mt-0.5 text-[10px] leading-4 text-slate-500">{item.text}</p>
+                      </div>
+                      <span className="rounded-lg border border-[#c9a852]/15 bg-[#c9a852]/6 px-2 py-1 text-[9px] font-semibold text-[#e8d092]">{item.status}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
-              <div className="grid gap-3">
-                {[
-                  { title: 'Pronájem', text: 'Předání bytu, důležitý termín, ukončení a vypořádání jistoty.' },
-                  { title: 'Převod vozidla', text: 'Předání vozidla, přepis a potvrzení dokončení převodu.' },
-                  { title: 'Zakázka', text: 'Fáze, termín, připomínky a navazující dokumenty k dílu.' },
-                ].map((item) => (
-                  <div key={item.title} className="rounded-2xl border border-white/8 bg-white/3 px-4 py-3">
-                    <div className="text-xs font-black uppercase tracking-wider text-[#e8d092]">{item.title}</div>
-                    <p className="mt-1 text-xs leading-5 text-slate-400">{item.text}</p>
-                  </div>
-                ))}
-              </div>
             </div>
-          </div>
+          </div>          </div>
         </section>
 
         <Divider />

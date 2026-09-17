@@ -60,7 +60,7 @@ export default function TermsPage() {
           Obchodní <span className="text-amber-500">podmínky</span>
         </h1>
         <p className="text-slate-400 text-xs font-bold uppercase tracking-[0.25em] mb-12">
-          Verze 2026-09-17 • SmlouvaHned.cz
+          Verze 2026-09-18 • SmlouvaHned.cz
         </p>
 
         <div className="space-y-10 text-sm leading-relaxed">
@@ -189,7 +189,7 @@ export default function TermsPage() {
               Šablony jsou navrženy pro typické standardní situace a nemusí být vhodné pro atypické nebo sporné případy. Poskytovatel neposkytuje právní poradenství ani právní zastoupení.
             </p>
             <p>
-              Celková odpovědnost Poskytovatele za škodu vzniklou Zákazníkovi v souvislosti s jednou objednávkou je omezena částkou skutečně zaplacenou Zákazníkem za tuto objednávku, nestanoví-li kogentní právní úprava jinak. Toto omezení se neuplatní v případě úmyslu nebo hrubé nedbalosti Poskytovatele.
+              Tímto článkem nejsou dotčena zákonná práva spotřebitele z vad digitálního obsahu ani jiná práva, která nelze smluvně omezit nebo vyloučit.
             </p>
           </section>
 
@@ -201,7 +201,7 @@ export default function TermsPage() {
               Reklamaci nebo stížnost podávejte na <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:underline">info@smlouvahned.cz</a>. Reklamaci vyřídíme do 30 dnů od jejího doručení.
             </p>
             <p className="mb-3">
-              Reklamaci lze uplatnit zejména v případě, kdy vygenerovaný dokument neodpovídá zadaným údajům (technická chyba systému). Reklamace se nevztahuje na nevhodné použití dokumentu nebo chyby vzniklé nesprávným vyplněním ze strany Zákazníka.
+              Reklamaci lze uplatnit při vadě digitálního obsahu, například pokud vygenerovaný dokument neodpovídá správně zadaným údajům nebo objednanému rozsahu. Tím nejsou omezena další zákonná práva Zákazníka z vadného plnění. Za chybu vstupních údajů nebo použití dokumentu mimo zvolený účel odpovídá Zákazník.
             </p>
             <p className="mb-3">
               Zákazník je oprávněn obrátit se na <strong className="text-white">Českou obchodní inspekci (ČOI)</strong> jako subjekt mimosoudního řešení spotřebitelských sporů. Návrh na mimosoudní řešení sporu lze podat na adrese:{' '}
@@ -215,16 +215,16 @@ export default function TermsPage() {
           {isFeatureEnabled('caseEngine') ? (
             <section>
               <h2 className="text-amber-500 font-black uppercase text-xs tracking-widest mb-4">
-                07a. Moje zakázka — pokračování případu
+                07a. Moje případy a Moje zakázka
               </h2>
               <p className="mb-3">
-                Po zaplacení smlouvy o dílo může Zákazník bezplatně založit „zakázku“: přehled s termínem, fází, úkoly, historií a volitelnými e-mailovými připomínkami termínu (30, 14, 7 dní a 1 den před termínem). Připomínky jsou funkční upozornění k zakázce Zákazníka, nikoli obchodní sdělení; lze je kdykoli vypnout. Založení zakázky nevyžaduje registraci — přístup je vázán na návratový odkaz zaslaný na doručovací e-mail objednávky. Odkaz platí 30 dní; Zákazník jej může kdykoli zneplatnit a zakázku smazat nebo exportovat.
+                Po zaplacení nájemní smlouvy, smlouvy na vozidlo nebo smlouvy o dílo může Zákazník volitelně založit soukromý případ se stavem, termínem, checklistem a e-mailovými připomínkami. Registrace není nutná; přístup je vázán na bezpečný návratový odkaz zaslaný na doručovací e-mail. Případ lze exportovat nebo smazat.
               </p>
               <p className="mb-3">
                 V zakázce lze vytvářet navazující dokumenty (předávací protokol k dílu, změnový list, potvrzení víceprací, zápis o vadách, oznámení vad a výzva k jejich odstranění) z údajů, které Zákazník doplní. U zakázek založených z balíčku Zakázka Plus jsou tyto dokumenty zahrnuty v ceně balíčku; jinak stojí každý dokument {CASE_DOCUMENT_PRICE_LABEL} a jde o digitální obsah podle čl. 04 (výslovný souhlas s okamžitým dodáním, ztráta práva na odstoupení úplným dodáním). Dokument je dostupný ke stažení po dobu trvání zakázky.
               </p>
               <p className="text-xs text-slate-400">
-                Zakázka bez aktivity se automaticky maže 12 měsíců od poslední změny, uzavřená zakázka 6 měsíců od uzavření (pevný termín); rozpracovaný nezaplacený navazující dokument se po 30 dnech od vytvoření přestane zobrazovat a nejpozději následující den je automaticky odstraněn. Zaplacený navazující dokument je neměnný: pozdější změna termínu nebo názvu zakázky jej neovlivní. Do zakázky se nekopíruje obsah smlouvy, kontaktní údaje protistrany ani identifikátor platby. Poskytovatel neodpovídá za dodržení termínů Zákazníkem; připomínky jsou pomocný nástroj, nikoli právní služba.
+                Případy a související údaje se uchovávají pouze po dobu potřebnou pro tuto funkci a mažou se podle pravidel uvedených v zásadách ochrany osobních údajů. Připomínky jsou pomocná upozornění k vlastnímu případu Zákazníka a lze je kdykoli vypnout.
               </p>
             </section>
           ) : null}
@@ -246,7 +246,7 @@ export default function TermsPage() {
               Tyto OP se řídí právním řádem České republiky. Případné spory budou řešeny věcně a místně příslušným soudem.
             </p>
             <p>
-              Poskytovatel je oprávněn OP jednostranně měnit. O podstatných změnách informuje zákazníky — spotřebitele zveřejněním aktualizované verze na tomto místě a zasláním informace na e-mailovou adresu zadanou při objednávce, a to nejméně 14 dní před nabytím účinnosti změny. Změna OP nemá vliv na objednávky dokončené před její účinností. Aktuální znění OP je vždy dostupné na smlouvahned.cz/obchodni-podminky.
+              Pro dokončenou objednávku platí znění OP účinné v okamžiku jejího uzavření. Nové znění se použije na budoucí objednávky; pokud by se změna týkala trvající služby, Zákazník bude informován způsobem a v rozsahu vyžadovaném právními předpisy. Aktuální znění OP je dostupné na smlouvahned.cz/obchodni-podminky.
             </p>
           </section>
 
