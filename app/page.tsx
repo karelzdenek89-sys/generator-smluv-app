@@ -107,7 +107,7 @@ const faqItems = [
   {
     question: 'Kolik dokument stojí?',
     answer: FREE_BASIC_DPP
-      ? `Základní DPP je v aktivním experimentu zdarma. Ostatní základní dokumenty stojí ${PRICING_TIER_CONFIG.basic.priceLabel} a rozšířená varianta ${PRICING_TIER_CONFIG.complete.priceLabel}. Tematické balíčky mají cenu podle svého obsahu. ${PRICE_TRANSPARENCY_LINE}`
+      ? `Základní DPP je aktuálně zdarma. Ostatní základní dokumenty stojí ${PRICING_TIER_CONFIG.basic.priceLabel} a rozšířená varianta ${PRICING_TIER_CONFIG.complete.priceLabel}. Tematické balíčky mají cenu podle svého obsahu. ${PRICE_TRANSPARENCY_LINE}`
       : `Základní dokument stojí ${PRICING_TIER_CONFIG.basic.priceLabel} a rozšířená varianta ${PRICING_TIER_CONFIG.complete.priceLabel}. Tematické balíčky mají cenu podle svého obsahu. ${PRICE_TRANSPARENCY_LINE}`,
   },
   {
@@ -392,7 +392,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-          </div>          </div>
+          </div>
         </section>
 
         <Divider />

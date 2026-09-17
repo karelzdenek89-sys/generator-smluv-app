@@ -39,7 +39,7 @@ const FAQ_GROUPS: FaqGroup[] = [
       {
         question: 'Kolik dokument stojí?',
         answer: FREE_BASIC_DPP
-          ? 'Základní DPP je v aktivním experimentu zdarma; rozšířená DPP stojí 199 Kč. U ostatních typů stojí Základní dokument 99 Kč, Rozšířený dokument 199 Kč, tematický balíček 299 Kč a personální balíček Zaměstnavatel Start 2026 599 Kč. Bez předplatného a skrytých poplatků.'
+          ? 'Základní DPP je aktuálně zdarma; rozšířená DPP stojí 199 Kč. U ostatních typů stojí Základní dokument 99 Kč, Rozšířený dokument 199 Kč, tematický balíček 299 Kč a personální balíček Zaměstnavatel Start 2026 599 Kč. Bez předplatného a skrytých poplatků.'
           : 'Základní dokument 99 Kč, Rozšířený dokument s ochrannými klauzulemi 199 Kč, tematický balíček pro pronájem nebo prodej vozidla 299 Kč a personální balíček Zaměstnavatel Start 2026 za 599 Kč. Cena je konečná, žádné předplatné ani skryté poplatky.',
       },
       {

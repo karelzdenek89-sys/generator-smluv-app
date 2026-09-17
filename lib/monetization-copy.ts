@@ -60,7 +60,7 @@ const COPY: Record<AppLocale, FreeBasicPdfCopy> = {
       benefit: 'Základní PDF ke stažení zdarma, bez platby a bez registrace',
       faqQuestion: 'Dostanu základní DPP opravdu zdarma?',
       faqAnswer:
-        'Ano. V aktivním experimentu vytvoříte základní PDF bez platby a bez registrace; odkaz ke stažení je dostupný 24 hodin.',
+        'Ano. Pokud je základní DPP označená jako bezplatná, vytvoříte PDF bez platby a bez registrace; odkaz ke stažení je dostupný 24 hodin.',
       landingCta: 'Vytvořit základní DPP zdarma',
       builderCta: 'Vygenerovat základní DPP zdarma →',
       previewHint: 'Náhled před bezplatným vygenerováním',
@@ -99,7 +99,7 @@ const COPY: Record<AppLocale, FreeBasicPdfCopy> = {
       benefit: 'Basic PDF free to download, with no payment or registration',
       faqQuestion: 'Is the basic DPP really free?',
       faqAnswer:
-        'Yes. While the experiment is active, you can generate the basic PDF without payment or registration; the download link is available for 24 hours.',
+        'Yes. When the basic DPP is offered for free, you can generate the PDF without payment or registration; the download link is available for 24 hours.',
       landingCta: 'Create a basic DPP for free',
       builderCta: 'Generate the basic DPP for free →',
       previewHint: 'Preview before free generation',

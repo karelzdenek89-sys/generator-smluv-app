@@ -115,7 +115,7 @@ export default function TermsPage() {
             </p>
             {FREE_BASIC_DPP ? (
               <p className="mb-3">
-                U aktuálně označené bezplatné základní DPP vzniká smluvní vztah potvrzením podmínek a požadavku na okamžité vytvoření dokumentu; platební krok se neprovádí. Bezplatnost se vztahuje pouze na základní PDF, ne na rozšířenou variantu, DOCX, doplňky ani tematické balíčky.
+                U bezplatné základní DPP vzniká smluvní vztah potvrzením podmínek a požadavku na okamžité vytvoření dokumentu; platební krok se neprovádí. Bezplatnost se vztahuje pouze na základní PDF, ne na rozšířenou variantu, DOCX, doplňky ani tematické balíčky.
               </p>
             ) : null}
             <p>
@@ -131,7 +131,7 @@ export default function TermsPage() {
               <div className="flex justify-between"><span className="text-slate-400">{PRICING_TIER_CONFIG.basic.title}</span><span className="font-bold text-white">{PRICING_TIER_CONFIG.basic.priceLabel}</span></div>
               <div className="flex justify-between"><span className="text-slate-400">{PRICING_TIER_CONFIG.complete.title}</span><span className="font-bold text-white">{PRICING_TIER_CONFIG.complete.priceLabel}</span></div>
               {FREE_BASIC_DPP ? (
-                <div className="flex justify-between"><span className="text-slate-400">Základní DPP v aktivním experimentu</span><span className="font-bold text-white">0 Kč</span></div>
+                <div className="flex justify-between"><span className="text-slate-400">Základní DPP</span><span className="font-bold text-white">0 Kč</span></div>
               ) : null}
               <div className="flex justify-between"><span className="text-slate-400">Tematický balíček</span><span className="font-bold text-white">{THEMATIC_PACKAGE_CONFIG.landlord.priceLabel}</span></div>
               <div className="flex justify-between"><span className="text-slate-400">Zaměstnavatel Start 2026</span><span className="font-bold text-white">{THEMATIC_PACKAGE_CONFIG.employer_start.priceLabel}</span></div>
