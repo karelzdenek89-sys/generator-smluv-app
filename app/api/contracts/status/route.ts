@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import type Stripe from 'stripe';
 import { redis } from '@/lib/redis';
 import {
   getEffectivePriceLabel,
@@ -46,10 +47,20 @@ function formatStripeAmount(amount: number | null, currency: string | null, loca
   }).format(amount / 100);
 }
 
+function isPlausibleCheckoutSessionId(value: string): boolean {
+  return /^cs_(?:test|live)_[A-Za-z0-9_-]+$/.test(value) && value.length <= 255;
+}
+
+function isMissingStripeCheckoutSession(error: unknown): boolean {
+  if (!error || typeof error !== 'object') return false;
+  const candidate = error as { type?: unknown; code?: unknown; statusCode?: unknown };
+  return candidate.type === 'StripeInvalidRequestError'
+    && (candidate.code === 'resource_missing' || candidate.statusCode === 404 || candidate.statusCode === 400);
+}
+
 type DraftRecord = {
   contractType?: string;
   packageKey?: string | null;
-  /** Verze obsahu balíčku zamrazená při nákupu; chybí u starších objednávek. */
   packageVersion?: number | null;
   tier?: string;
   lang?: string;
@@ -70,9 +81,6 @@ function statusTokenMatches(draft: DraftRecord | null | undefined, token: string
   return token === draft.downloadToken;
 }
 
-/**
- * Lightweight payment status check — used by the success page before download.
- */
 export async function GET(req: NextRequest) {
   try {
     const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
@@ -84,14 +92,25 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const sessionId = req.nextUrl.searchParams.get('session_id');
+    const sessionId = req.nextUrl.searchParams.get('session_id')?.trim() ?? '';
     const token = req.nextUrl.searchParams.get('token')?.trim() ?? '';
 
     if (!sessionId) {
       return NextResponse.json({ status: 'error', message: 'Missing session_id' }, { status: 400 });
     }
+    if (!isPlausibleCheckoutSessionId(sessionId)) {
+      return NextResponse.json({ status: 'error', message: 'Invalid session_id' }, { status: 400 });
+    }
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    let session: Stripe.Checkout.Session;
+    try {
+      session = await stripe.checkout.sessions.retrieve(sessionId);
+    } catch (error) {
+      if (isMissingStripeCheckoutSession(error)) {
+        return NextResponse.json({ status: 'error', message: 'Checkout session not found' }, { status: 404 });
+      }
+      throw error;
+    }
 
     if (session.payment_status !== 'paid') {
       return NextResponse.json({ status: 'pending' });
@@ -124,7 +143,8 @@ export async function GET(req: NextRequest) {
         }
         addOns = normalizeStoredCheckoutAddons(draft?.addOns ?? draft?.payload?.addOns);
       } catch {
-        // fail-open: metadata from Stripe is enough for UI
+        // Stripe metadata is enough for the minimal paid state; sensitive fulfilment
+        // details remain hidden unless the return token verifies successfully.
       }
     }
 
@@ -140,15 +160,12 @@ export async function GET(req: NextRequest) {
     const displayAddOns = packageIncludesDocx(packageKey) && !addOns.includes('docx')
       ? [...addOns, 'docx' as const]
       : addOns;
-    // Výpis odpovídá zakoupené verzi balíčku, ne aktuální nabídce — zákazník
-    // po zaplacení vidí přesně to, co dostane ve svém dokumentu.
     const packageItems = packageKey
       ? getPackageIncludedOutputs(packageKey, { locale: lang, version: packageVersion })
       : [];
 
-    const priceLabel =
-      formatStripeAmount(session.amount_total, session.currency, lang) ??
-      getEffectivePriceLabel(tier, packageKey);
+    const priceLabel = formatStripeAmount(session.amount_total, session.currency, lang)
+      ?? getEffectivePriceLabel(tier, packageKey);
     const partnerContext = buildPartnerContext({
       contractType,
       documentTier: tier,
@@ -183,7 +200,8 @@ export async function GET(req: NextRequest) {
         ? verifiedDraft.analyticsAttribution ?? null
         : null,
     });
-  } catch {
+  } catch (error) {
+    console.error('Contract status lookup failed', error);
     return NextResponse.json({ status: 'error' }, { status: 500 });
   }
 }

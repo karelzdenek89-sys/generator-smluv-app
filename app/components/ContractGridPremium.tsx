@@ -26,6 +26,7 @@ type DppMerchandising = {
 };
 
 const PAID_BASIC_PRICE_BAND = String(PRICING_TIER_CONFIG.basic.priceCzk) as PriceBand;
+const PAID_BASIC_PRICE_LABEL = `od ${PRICING_TIER_CONFIG.basic.priceLabel}`;
 
 const mainContracts: Contract[] = [
   {
@@ -149,7 +150,9 @@ function ContractCard({
   const subtitle = isDpp && dppMerchandising.subtitle
     ? dppMerchandising.subtitle
     : c.subtitle;
-  const priceLabel = isDpp && dppMerchandising.mode === 'free_experiment' ? dppMerchandising.priceLabel : 'Placený dokument';
+  const priceLabel = isDpp && dppMerchandising.mode === 'free_experiment'
+    ? dppMerchandising.priceLabel
+    : PAID_BASIC_PRICE_LABEL;
   const monetizationMode: MonetizationMode = isDpp ? dppMerchandising.mode : 'paid';
   const priceBand: PriceBand = isDpp && monetizationMode === 'free_experiment'
     ? '0'
@@ -204,7 +207,6 @@ function ContractCard({
         </span>
       </div>
 
-      {/* Arrow */}
       <span aria-hidden="true" className="absolute right-5 top-1/2 -translate-y-1/2 text-[#c9a852]/30 text-xl font-thin transition-all duration-200 group-hover:text-[#c9a852]/70 group-hover:translate-x-0.5">
         →
       </span>
@@ -218,7 +220,6 @@ export default function ContractGridPremium({ dppMerchandising }: { dppMerchandi
 
   return (
     <div>
-      {/* Main 5 contracts */}
       <div data-homepage-catalog="primary" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {mainContracts.map((c, index) => (
           <ContractCard
@@ -231,7 +232,6 @@ export default function ContractGridPremium({ dppMerchandising }: { dppMerchandi
         ))}
       </div>
 
-      {/* Expandable section */}
       <div
         className={expanded ? 'mt-4' : 'hidden'}
         aria-hidden={!expanded}
@@ -251,7 +251,6 @@ export default function ContractGridPremium({ dppMerchandising }: { dppMerchandi
         </div>
       </div>
 
-      {/* Toggle button */}
       <div data-homepage-catalog-toggle="true" className="mt-8 flex justify-center">
         <button
           onClick={() => setExpanded(v => !v)}

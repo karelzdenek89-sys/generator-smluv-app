@@ -88,6 +88,14 @@ async function main() {
     'the public analytics schema must strip server-owned financial values',
   );
 
+  const statusRoute = readFileSync(join(process.cwd(), 'app/api/contracts/status/route.ts'), 'utf8');
+  assert.match(statusRoute, /isPlausibleCheckoutSessionId/,
+    'contract status must reject malformed Stripe session ids before calling Stripe');
+  assert.match(statusRoute, /StripeInvalidRequestError/,
+    'missing Stripe checkout sessions must be classified as client/not-found responses');
+  assert.match(statusRoute, /Checkout session not found[^\n]*404/,
+    'missing Stripe checkout sessions must not become generic 500 responses');
+
   console.log('API security tests passed.');
 }
 
