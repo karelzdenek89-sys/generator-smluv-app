@@ -778,6 +778,9 @@ function DocumentForm({
         <span className="rounded-full border border-[#c9a852]/40 px-3 py-1 text-xs font-semibold text-[#e2c77b]">{included ? 'V ceně balíčku' : priceLabel}</span>
       </div>
       <p className="mt-3 rounded-xl border border-white/8 bg-white/[0.02] p-3 text-xs leading-6 text-slate-400">{definition.legalBasis}</p>
+      <p className="mt-2 text-[11px] leading-5 text-slate-500">
+        Dokument je standardizovaná šablona sestavená z údajů, které zadáte. Nejde o právní posouzení vaší situace ani o právní službu; u sporných vad nebo vyšších částek doporučujeme advokáta.
+      </p>
 
       <div className="mt-5 grid gap-4 sm:grid-cols-2">
         {definition.fields.map((field) => {

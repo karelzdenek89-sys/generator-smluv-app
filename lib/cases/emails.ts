@@ -38,7 +38,7 @@ export async function sendCaseAccessEmail(options: {
       ctaLabel: 'Otevřít zakázku',
       ctaUrl: options.url,
       secondary: 'Odkaz nikomu nepřeposílejte — kdo jej má, vidí stav zakázky. V zakázce můžete všechny odkazy kdykoli zneplatnit.',
-      footerNote: 'Pokud jste o zakázku nežádali, tento e-mail ignorujte. Zakázka bez aktivity se po 12 měsících automaticky smaže.',
+      footerNote: 'Pokud jste o zakázku nežádali, tento e-mail ignorujte. Zakázka bez aktivity se po 12 měsících automaticky smaže. SmlouvaHned je softwarový nástroj pro standardizované dokumenty, neposkytuje právní služby.',
     }),
     text: `${heading}\n\n${intro}\n\nOtevřít zakázku: ${options.url}\n\nOdkaz nikomu nepřeposílejte.`,
   });
@@ -82,7 +82,7 @@ export async function sendReminderEmail(options: {
       secondary: `Doporučený další krok: ${copy.action}`,
       ctaLabel: 'Otevřít zakázku a připravit dokument',
       ctaUrl: options.url,
-      footerNote: 'Připomínky lze v zakázce kdykoli vypnout. Toto je funkční upozornění k vaší zakázce, nikoli obchodní sdělení.',
+      footerNote: 'Připomínky lze v zakázce kdykoli vypnout. Toto je funkční upozornění k vaší zakázce, nikoli obchodní sdělení. SmlouvaHned je softwarový nástroj pro standardizované dokumenty, neposkytuje právní služby.',
     }),
     text: `${copy.heading}\n\n${copy.intro}\n\nDoporučený další krok: ${copy.action}\n\nOtevřít zakázku: ${options.url}`,
   });

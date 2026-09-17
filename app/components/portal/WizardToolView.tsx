@@ -90,7 +90,7 @@ export default function WizardToolView({ tool }: { tool: WizardTool }) {
       {outcome ? (
         <section className="space-y-5" aria-live="polite">
           <div className="rounded-2xl border border-[#c9a852]/45 bg-[#c9a852]/[0.07] p-6">
-            <div className="text-[10px] font-black uppercase tracking-widest text-[#c9a852]">Doporučení</div>
+            <div className="text-[10px] font-black uppercase tracking-widest text-[#c9a852]">Orientační doporučení</div>
             <h2 className="mt-2 font-serif italic text-2xl font-bold text-white">{outcome.title}</h2>
             <p className="mt-3 text-base leading-8 text-slate-200">{outcome.summary}</p>
             <ul className="mt-4 space-y-2 text-sm leading-7 text-slate-300">
@@ -98,6 +98,9 @@ export default function WizardToolView({ tool }: { tool: WizardTool }) {
                 <li key={line} className="flex gap-2"><span className="text-[#c9a852]">•</span><span>{line}</span></li>
               ))}
             </ul>
+            <p className="mt-4 text-xs leading-6 text-slate-500">
+              Výstup vychází jen z vašich odpovědí a slouží k orientaci; nejde o právní posouzení vaší situace ani o právní službu.
+            </p>
           </div>
           {outcome.caution ? (
             <div className="rounded-2xl border border-amber-500/25 bg-amber-500/[0.06] p-5" role="note">

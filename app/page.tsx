@@ -329,6 +329,13 @@ export default function Home() {
           <p><strong>Bydlíte nebo pracujete v Česku?</strong> Nápověda také v angličtině a ukrajinštině.</p>
           <ExpatEntryLinks showBlogLink />
         </div>
+        {/* Rozsah služby je řečený nahoře, ne jen v patičce: softwarový nástroj, ne advokátní kancelář (zákon č. 85/1996 Sb.). */}
+        <p className={styles.scopeNote} aria-label="Právní upozornění">
+          <strong>Softwarový nástroj, ne advokátní kancelář.</strong> SmlouvaHned sestavuje standardizované dokumenty
+          z údajů, které zadáte; neposkytuje právní služby ani právní poradenství ve smyslu zákona č. 85/1996 Sb.
+          U sporných nebo hodnotově významných situací doporučujeme advokáta (seznam na{' '}
+          <a href="https://www.cak.cz" target="_blank" rel="noopener noreferrer">cak.cz</a>).
+        </p>
       </section>
 
       {/* ─── MAIN CONTENT ─────────────────────────────────────────────────────── */}
