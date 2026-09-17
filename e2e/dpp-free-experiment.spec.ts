@@ -59,8 +59,8 @@ test.describe('DPP free experiment', () => {
     expect(generatedRequest).toMatchObject({ contractType: 'dpp', tier: 'basic', lang: 'cs' });
     expect(generatedRequest?.['consent']).toMatchObject({
       accepted: true,
-      termsVersion: '2026-08-13',
-      privacyVersion: '2026-08-26',
+      termsVersion: '2026-09-17',
+      privacyVersion: '2026-09-17',
     });
 
     await expect(page).toHaveURL(/\/stahnout\?free_id=free_browser_test&lang=cs$/);

@@ -9,6 +9,8 @@ import { isThematicPackageAvailable, THEMATIC_PACKAGE_CONFIG } from '@/lib/packa
 import { CHECKOUT_ADDON_CONFIG } from '@/lib/checkout-addons';
 import { SITE_URL } from '@/lib/seo/site';
 import { getMonetizationPolicy } from '@/lib/monetization-policy';
+import { isFeatureEnabled } from '@/lib/feature-flags';
+import { CASE_DOCUMENT_PRICE_LABEL } from '@/lib/cases/documents';
 
 const canonicalUrl = `${SITE_URL}/obchodni-podminky`;
 const FREE_BASIC_DPP = getMonetizationPolicy('dpp', 'cs').mode === 'free_experiment';
@@ -50,7 +52,7 @@ export default function TermsPage() {
           Obchodní <span className="text-amber-500">podmínky</span>
         </h1>
         <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.25em] mb-12">
-          Verze 2026-08-13 • SmlouvaHned.cz
+          Verze 2026-09-17 • SmlouvaHned.cz
         </p>
 
         <div className="space-y-10 text-sm leading-relaxed">
@@ -130,6 +132,9 @@ export default function TermsPage() {
               {isThematicPackageAvailable('work_order') && (
                 <div className="flex justify-between"><span className="text-slate-400">{THEMATIC_PACKAGE_CONFIG.work_order.title}</span><span className="font-bold text-white">{THEMATIC_PACKAGE_CONFIG.work_order.priceLabel}</span></div>
               )}
+              {isFeatureEnabled('caseEngine') && (
+                <div className="flex justify-between"><span className="text-slate-400">Navazující dokument v Moje zakázka (mimo balíček Zakázka Plus)</span><span className="font-bold text-white">{CASE_DOCUMENT_PRICE_LABEL}</span></div>
+              )}
             </div>
             <div className="bg-[#0c1426]/60 border border-white/5 rounded-2xl p-5 space-y-2 text-sm mb-3">
               <p className="text-xs font-black uppercase tracking-widest text-slate-500">Volitelné doplňky v checkoutu</p>
@@ -198,6 +203,23 @@ export default function TermsPage() {
               Evropská platforma pro online řešení spotřebitelských sporů (ODR) byla k 20. červenci 2025 ukončena. Pro mimosoudní řešení spotřebitelského sporu proto použijte výše uvedený portál České obchodní inspekce.
             </p>
           </section>
+
+          {isFeatureEnabled('caseEngine') ? (
+            <section>
+              <h2 className="text-amber-500 font-black uppercase text-xs tracking-widest mb-4">
+                07a. Moje zakázka — pokračování případu
+              </h2>
+              <p className="mb-3">
+                Po zaplacení smlouvy o dílo může Zákazník bezplatně založit „zakázku“: přehled s termínem, fází, úkoly, historií a volitelnými e-mailovými připomínkami termínu (30, 14, 7 dní a 1 den před termínem). Připomínky jsou funkční upozornění k zakázce Zákazníka, nikoli obchodní sdělení; lze je kdykoli vypnout. Založení zakázky nevyžaduje registraci — přístup je vázán na návratový odkaz zaslaný na doručovací e-mail objednávky. Odkaz platí 30 dní; Zákazník jej může kdykoli zneplatnit a zakázku smazat nebo exportovat.
+              </p>
+              <p className="mb-3">
+                V zakázce lze vytvářet navazující dokumenty (předávací protokol k dílu, změnový list, potvrzení víceprací, zápis o vadách, oznámení vad a výzva k jejich odstranění) z údajů, které Zákazník doplní. U zakázek založených z balíčku Zakázka Plus jsou tyto dokumenty zahrnuty v ceně balíčku; jinak stojí každý dokument {CASE_DOCUMENT_PRICE_LABEL} a jde o digitální obsah podle čl. 04 (výslovný souhlas s okamžitým dodáním, ztráta práva na odstoupení úplným dodáním). Dokument je dostupný ke stažení po dobu trvání zakázky.
+              </p>
+              <p className="text-xs text-slate-400">
+                Zakázka bez aktivity se automaticky maže 12 měsíců od poslední změny. Do zakázky se nekopíruje obsah smlouvy ani kontaktní údaje protistrany. Poskytovatel neodpovídá za dodržení termínů Zákazníkem; připomínky jsou pomocný nástroj, nikoli právní služba.
+              </p>
+            </section>
+          ) : null}
 
           <section>
             <h2 className="text-amber-500 font-black uppercase text-xs tracking-widest mb-4">

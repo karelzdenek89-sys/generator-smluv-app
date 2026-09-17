@@ -58,3 +58,23 @@ Tyto stránky se nekonsolidují bez nových dat z Google Search Console:
 2. Ověřit, že stejný záměr už nepokrývá formulář, landing ani blog.
 3. Přidat self-canonical na `www`, přímé interní odkazy a sitemap jen pro indexovatelnou URL.
 4. Pokud nová URL nahrazuje starou, přidat trvalé přesměrování a starou URL odstranit ze sitemap i navigace.
+
+## Portál 2.0 (od 2026-09-17)
+
+Nová vrstva nad katalogem dokumentů. Žádná stávající URL se neměnila ani
+nepřesměrovávala; všechny nové URL jsou aditivní a mají self-canonical.
+
+| Vrstva | URL | Záměr |
+|---|---|---|
+| Situace (hub) | `/zakazka` | „řeším zakázku“ — smlouva o dílo → vícepráce → předání → vady + Moje zakázka |
+| Situace (hub) | `/zamestnavam` | „zaměstnávám“ — rozhodovací průvodce + 6 odpovědí |
+| Odpověď | `/zakazka/smlouva-s-remeslnikem`, `/zakazka/remeslnik-nedodrzel-termin`, `/zakazka/reklamace-dila` | answer-first, informační |
+| Odpověď | `/zamestnavam/{pracovni-smlouva,dpp,osvc,mlcenlivost,zmena-podminek,ukonceni}` | answer-first, informační |
+| Odpověď | `/pro-pronajimatele/neplaceni-najemneho`, `/prodej-vozidla/vady-ojeteho-auta` | answer-first, informační |
+| Nástroje | `/nastroje`, `/nastroje/{slug}` (12 checklistů + 1 průvodce) | bezplatný výsledek → dokument |
+| Radar | `/zmeny-2027`, `/zmeny-2027/{zamestnavatele,osvc-a-podnikatele,spotrebitele,ridici-a-vozidla,smlouvy-online}` | legislativní změny se statusem a zdrojem |
+| Soukromé | `/moje-zakazka`, `/moje-zakazka/obnovit` | noindex, robots Disallow, mimo sitemap |
+
+Existující blogové články zůstávají informačními cíli svých dotazů (vícepráce,
+předávací protokol, přepis vozidla, kauce, výpověď z nájmu…); nové stránky
+odkazují na ně, nikoli naopak duplikují.

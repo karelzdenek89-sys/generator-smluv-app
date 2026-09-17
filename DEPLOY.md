@@ -21,6 +21,10 @@ Nastav v **Project → Settings → Environment Variables** (Production):
 | 🔴 `RESEND_API_KEY` | E-mail API klíč | resend.com → API Keys |
 | ⚪ `RESEND_NEWSLETTER_SEGMENT_ID` | Volitelně: kopie přihlášení do Resend pro broadcast | Resend → Segments |
 | 🔴 `NEXT_PUBLIC_BASE_URL` | Produkční doména | `https://www.smlouvahned.cz` |
+| 🟡 `CRON_SECRET` | Tajný klíč pro Vercel Cron (`/api/cron/reminders`, připomínky Moje zakázka). Bez něj cron fail-closed neposílá nic. | libovolný dlouhý náhodný řetězec |
+| ⚪ `NEXT_PUBLIC_FEATURE_CASE_ENGINE` | Kill switch Case Engine (Moje zakázka). Výchozí zapnuto; `false` vypne. | — |
+| ⚪ `NEXT_PUBLIC_FEATURE_SUBSCRIPTIONS` | Měřený zájem o předplatné (prodej není možný). Výchozí vypnuto. | — |
+| ⚪ `NEXT_PUBLIC_FEATURE_COMMERCIAL_INTENTS` | Sběr commercial intentu pro partnera. Výchozí vypnuto; fail-closed. | — |
 
 > ⚠️ Nikdy nepoužívej `sk_test_` nebo `pk_test_` klíče v produkci.
 
@@ -93,6 +97,15 @@ Projdi tento scénář **se skutečnou kartou v živém módu**:
 - [ ] Stripe dashboard → Payments — platba se eviduje
 
 ---
+
+## 7a. Smoke test portálu 2.0 (Moje zakázka)
+
+- [ ] `/api/health` vrací `status: ok` a `checks.remindersCron: configured`
+- [ ] `/zakazka`, `/zamestnavam`, `/nastroje`, `/zmeny-2027` se načtou (200) a jsou v `/sitemap.xml`
+- [ ] `/moje-zakazka` bez odkazu zobrazí „Odkaz k zakázce je neplatný“ a hlavičku `X-Robots-Tag: noindex`
+- [ ] Po zaplacení smlouvy o dílo (test mode) se na success stránce zobrazí „Pokračovat jako zakázka“, zakázka se otevře a přijde e-mail s návratovým odkazem
+- [ ] V zakázce lze nastavit termín, zapnout připomínky (objeví se plán 30/14/7/1 dní) a exportovat JSON
+- [ ] Vercel → Cron Jobs ukazuje `/api/cron/reminders` (denně 06:00 UTC); ruční spuštění bez Bearer vrací 401
 
 ## 8. SEO (doporučeno před spuštěním)
 

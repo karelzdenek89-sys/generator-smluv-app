@@ -42,7 +42,7 @@ export default function GdprPage() {
           Ochrana osobních <span className="text-amber-500">údajů</span>
         </h1>
         <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.25em] mb-12">
-          Verze 2026-08-26 • Dle nařízení EU 2016/679 (GDPR)
+          Verze 2026-09-17 • Dle nařízení EU 2016/679 (GDPR)
         </p>
 
         <div className="space-y-10 text-sm leading-relaxed">
@@ -102,6 +102,29 @@ export default function GdprPage() {
                 <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> Do odvolání souhlasu nebo odhlášení z odběru (odkaz v každém e-mailu).</div>
               </div>
               <div className="border border-white/8 rounded-2xl p-5">
+                <div className="font-bold text-white mb-2">Moje zakázka (pokračování případu)</div>
+                <p className="text-slate-400 text-xs mb-2">
+                  Pouze pokud po zaplacení smlouvy o dílo zvolíte „Pokračovat jako zakázka“. Zakázka obsahuje váš e-mail z objednávky, název zakázky, vaši roli (objednatel/zhotovitel), termín, cenu a cenový režim ze smlouvy, fázi, úkoly, poznámky, historii a údaje, které doplníte do navazujících dokumentů (např. jména stran, popis vad). Obsah smlouvy ani kontaktní údaje protistrany se do zakázky nekopírují.
+                </p>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Účel:</span> Vedení průběhu zakázky, zasílání návratových odkazů a funkčních připomínek termínu (jen pokud je zapnete), tvorba navazujících dokumentů.</div>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Právní základ:</span> Plnění smlouvy (čl. 6 odst. 1 písm. b) GDPR); připomínky jsou funkční upozornění k vaší zakázce, nikoli obchodní sdělení.</div>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> 12 měsíců od poslední změny zakázky, poté automatický výmaz. Zakázku můžete kdykoli exportovat (JSON) nebo smazat přímo ve svém přehledu; návratové odkazy (platnost 30 dní) můžete kdykoli zneplatnit.</div>
+              </div>
+              <div className="border border-white/8 rounded-2xl p-5">
+                <div className="font-bold text-white mb-2">Poptávka navazující služby (commercial intent)</div>
+                <p className="text-slate-400 text-xs mb-2">
+                  Pouze pokud výslovně požádáte o kontakt konkrétním partnerem: kategorie služby, stručný popis, naléhavost, cenové pásmo, kraj a kontaktní údaje, které sami zvolíte ke sdílení. K poptávce se ukládá záznam souhlasu (partner, účel, sdílená pole, verze textu, čas udělení a odvolání).
+                </p>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Účel:</span> Předání vaší poptávky vámi zvolenému partnerovi. Bez připraveného partnera zůstává poptávka uložená a nikam se nepředává.</div>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Právní základ:</span> Souhlas (čl. 6 odst. 1 písm. a) GDPR) udělený konkrétně pro daného partnera; lze kdykoli odvolat.</div>
+                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> 6 měsíců od vytvoření, poté automatický výmaz. Po odvolání souhlasu se kontaktní údaje z poptávky odstraní ihned.</div>
+                <div className="text-xs text-slate-500 mt-2">Tato funkce je v současnosti neaktivní; zapne se až se schváleným partnerem a jeho vlastním textem souhlasu.</div>
+              </div>
+              <div className="border border-white/8 rounded-2xl p-5">
+                <div className="font-bold text-white mb-2">Bezplatné nástroje (checklisty, průvodci)</div>
+                <p className="text-slate-400 text-xs mb-2">Stav checklistu se ukládá pouze ve vašem prohlížeči (localStorage). Na server se neodesílá žádný obsah — pouze anonymní událost „nástroj zahájen / dokončen“, a to jen se souhlasem s produktovou analytikou.</p>
+              </div>
+              <div className="border border-white/8 rounded-2xl p-5">
                 <div className="font-bold text-white mb-2">Platební údaje</div>
                 <p className="text-slate-400 text-xs mb-2">Čísla platebních karet a bankovní údaje jsou zpracovávány výhradně platební bránou <strong>Stripe</strong> (Stripe, Inc., USA). Správce k nim nemá přístup.</p>
                 <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Více o Stripe GDPR:</span> <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:underline">stripe.com/privacy</a></div>
@@ -121,6 +144,8 @@ export default function GdprPage() {
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Upstash (Redis)</strong> — dočasné uložení dat formuláře po dobu generování a stažení dokumentu (7–30 dní podle zakoupeného dokumentu, případně 90 dní s doplňkem archivace).</span></li>
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Resend</strong> — transakční e-maily, doručení odkazu k dokumentu, přenos zpráv z kontaktního formuláře a rozesílání newsletteru potvrzeným odběratelům.</span></li>
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Upstash (Redis)</strong> — dočasná evidence nepotvrzeného newsletteru po dobu 24 hodin a evidence potvrzeného souhlasu po dobu odběru.</span></li>
+              <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Upstash (Redis)</strong> — údaje zakázky (Moje zakázka) po dobu 12 měsíců od poslední změny, hash návratových tokenů a plán připomínek; poptávky navazujících služeb po dobu 6 měsíců.</span></li>
+              <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Stripe, Inc.</strong> — také platba za navazující dokument zakázky (99 Kč); Stripe obdrží váš e-mail a název dokumentu, nikoli jeho obsah.</span></li>
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Vercel</strong> — hosting platformy. Údaje jsou zpracovávány v rámci EHP nebo za odpovídajících záruk.</span></li>
             </ul>
             <p className="mt-3 text-xs text-slate-500">

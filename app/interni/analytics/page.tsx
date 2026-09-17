@@ -12,6 +12,7 @@ import {
   INTERNAL_REPORTING_COOKIE,
   isValidInternalReportingCookie,
 } from '@/lib/internal-reporting-auth';
+import { getPortalDashboardData, type PortalDashboardData } from '@/lib/portal/reporting';
 
 export const dynamic = 'force-dynamic';
 
@@ -547,6 +548,120 @@ function DashboardError() {
   );
 }
 
+function PortalContent({ portal }: { portal: PortalDashboardData }) {
+  const c = portal.counts;
+  return (
+    <div className="mx-auto mt-10 max-w-6xl space-y-8">
+      <Section
+        title="Portál 2.0 — funnel situace → nástroj → dokument → zakázka"
+        description={`Nové KPI za posledních ${portal.windowDays} dní. Cíle jsou produktové rozhodovací brány, nikoli statistická dogmata.`}
+      >
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            ['Situace zobrazeny', c.situation_viewed],
+            ['Situace zahájeny (CTA)', c.situation_started],
+            ['Nástroje zahájeny', c.tool_started],
+            ['Nástroje dokončeny', c.tool_completed],
+            ['Nabídka zakázky zobrazena', c.case_offer_viewed],
+            ['Zakázky založeny', c.case_started],
+            ['Návraty do zakázky', c.case_returned],
+            ['Připomínky zapnuty', c.reminder_enabled],
+            ['Připomínky odeslány', c.reminder_sent],
+            ['Připomínky prokliknuty', c.reminder_clicked],
+            ['Navazující dokument zahájen', c.followup_document_started],
+            ['Navazující dokument zaplacen', c.followup_document_purchased],
+            ['Bundle zobrazen', c.bundle_viewed],
+            ['Radar zobrazen', c.legal_change_viewed],
+            ['Commercial intent vytvořen', c.commercial_intent_created],
+            ['Zájem o předplatné', c.subscription_interest],
+          ].map(([label, value]) => (
+            <div key={String(label)} className="rounded-2xl border border-white/8 bg-[#0a1020]/80 p-4">
+              <div className="text-[11px] uppercase tracking-[0.18em] text-slate-500">{label}</div>
+              <div className="mt-1 text-2xl font-semibold text-[#f7f0de]">{formatNumber(Number(value))}</div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-6">
+          <Table
+            headers={['Metrika', 'Hodnota', 'Čitatel / jmenovatel', 'Cíl']}
+            rows={portal.rates.map((item) => [
+              item.label,
+              item.value === null ? 'N/A' : formatPercent(item.value),
+              `${formatNumber(item.numerator)} / ${formatNumber(item.denominator)}`,
+              item.target,
+            ])}
+          />
+        </div>
+        <p className="mt-3 text-xs text-slate-500">
+          Tržby z navazujících dokumentů: {formatCurrency(portal.followupRevenueCzk)} · aktivní zakázky (odhad z událostí):{' '}
+          {portal.activeCasesApprox === null ? 'N/A' : formatNumber(Math.max(0, portal.activeCasesApprox))} · naplánované připomínky:{' '}
+          {portal.dueRemindersApprox === null ? 'N/A' : formatNumber(portal.dueRemindersApprox)}
+        </p>
+      </Section>
+
+      <Section title="Situace a nástroje" description="Které vstupy lidé používají a kde nástroj vede dál k dokumentu.">
+        <div className="grid gap-6 lg:grid-cols-2">
+          <Table headers={['Situace', 'Zobrazení', 'Zahájení']} rows={portal.situations.map((item) => [item.key, formatNumber(item.views), formatNumber(item.starts)])} />
+          <Table headers={['Nástroj', 'Start', 'Dokončeno', 'Pokračování k dokumentu']} rows={portal.tools.map((item) => [item.key, formatNumber(item.starts), formatNumber(item.completions), formatNumber(item.saves)])} />
+        </div>
+      </Section>
+
+      <Section
+        title="Commercial intents a partner leady"
+        description="Fail-closed: bez zapnutého partnera s doručovací metodou zůstávají leady pending a nikam se neposílají. Kontakty se v reportingu nezobrazují."
+      >
+        <div className="grid gap-3 sm:grid-cols-4">
+          {[
+            ['Intenty', portal.intents.intents],
+            ['Leady pending', portal.intents.leadsPending],
+            ['Leady odeslané', portal.intents.leadsSent],
+            ['Leady přijaté', portal.intents.leadsAccepted],
+          ].map(([label, value]) => (
+            <div key={String(label)} className="rounded-2xl border border-white/8 bg-[#0a1020]/80 p-4">
+              <div className="text-[11px] uppercase tracking-[0.18em] text-slate-500">{label}</div>
+              <div className="mt-1 text-2xl font-semibold text-[#f7f0de]">{formatNumber(Number(value))}</div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-6">
+          <Table
+            headers={['Partner', 'Stav', 'Doručení', 'Kapacita / den', 'Kategorie']}
+            rows={portal.intents.partners.map((partner) => [
+              partner.displayName,
+              partner.state,
+              partner.deliveryMethod,
+              partner.capacity === 0 ? 'bez limitu' : formatNumber(partner.capacity),
+              partner.categories.join(', '),
+            ])}
+          />
+        </div>
+      </Section>
+
+      <Section
+        title="Právní obsah — stav a revize"
+        description={`Radar sleduje ${portal.legalChangesTotal} změn. Položky po 90 dnech od poslední kontroly a šablony po 180 dnech se označují k revizi.`}
+      >
+        <div className="grid gap-6 lg:grid-cols-2">
+          <Table
+            headers={['Změna k revizi', 'Status', 'Ověřeno']}
+            rows={portal.legalChangesNeedingReview.map((change) => [change.title, change.status, change.verifiedAt])}
+          />
+          <Table
+            headers={['Šablona', 'Verze', 'Platí od', 'Ověřeno', 'Stav']}
+            rows={portal.documentVersions.map((version) => [
+              version.contractType,
+              version.version,
+              version.validFrom,
+              version.verifiedAt,
+              version.status === 'published' ? 'published' : 'needs_review',
+            ])}
+          />
+        </div>
+      </Section>
+    </div>
+  );
+}
+
 export default async function InternalAnalyticsPage() {
   const expectedSecret = process.env.INTERNAL_REPORTING_SECRET;
   const cookieStore = await cookies();
@@ -558,16 +673,23 @@ export default async function InternalAnalyticsPage() {
   }
 
   let data: AnalyticsDashboardData | null = null;
+  let portal: PortalDashboardData | null = null;
 
   try {
     data = await getAnalyticsDashboardData(ANALYTICS_REPORTING_WINDOW_DAYS);
   } catch (error) {
     console.warn('[analytics] Failed to fetch dashboard data:', error);
   }
+  try {
+    portal = await getPortalDashboardData(ANALYTICS_REPORTING_WINDOW_DAYS);
+  } catch (error) {
+    console.warn('[analytics] Failed to fetch portal dashboard data:', error);
+  }
 
   return (
     <div className="min-h-screen bg-[#05080f] px-6 py-12 md:px-10">
       {data ? <DashboardContent data={data} /> : <DashboardError />}
+      {portal ? <PortalContent portal={portal} /> : null}
     </div>
   );
 }

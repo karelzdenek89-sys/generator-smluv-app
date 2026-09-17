@@ -4,8 +4,8 @@ import {
   type CheckoutAnalyticsAttribution,
 } from './analytics-attribution';
 
-export const CHECKOUT_TERMS_VERSION = '2026-08-13';
-export const CHECKOUT_PRIVACY_VERSION = '2026-08-26';
+export const CHECKOUT_TERMS_VERSION = '2026-09-17';
+export const CHECKOUT_PRIVACY_VERSION = '2026-09-17';
 export const CHECKOUT_CONSENT_TEXT_VERSION = 'digital-content-v1';
 
 export type CheckoutConsent = {
