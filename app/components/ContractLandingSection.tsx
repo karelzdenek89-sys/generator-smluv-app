@@ -82,7 +82,13 @@ export default function ContractLandingSection({
   const chromeCopy = getContractLandingChromeCopy(isLocalized ? locale : 'cs');
 
   const scrollTo = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const openDetailsAndScroll = () => {
+    const details = document.getElementById('obsah');
+    if (details instanceof HTMLDetailsElement) details.open = true;
+    window.requestAnimationFrame(() => details?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
   };
 
   useEffect(() => {
@@ -95,8 +101,6 @@ export default function ContractLandingSection({
       const packageConfig = getThematicPackageConfig(packageKey);
       const defaults = getAnalyticsDefaultsForPathname(currentPath);
 
-      // Přímý vstup do builderu je akviziční landing. Předchozí článek, SEO
-      // landing, homepage nebo balíček však zůstává prvním dotykem relace.
       rememberTrafficAttributionIfEmpty({
         source: 'builder_landing',
         label: `Builder: ${currentPath}`,
@@ -133,38 +137,30 @@ export default function ContractLandingSection({
   return (
     <>
       {contractType ? <BuilderLocaleNotice contractType={contractType} /> : null}
-      <section className="mx-auto max-w-7xl px-4 pb-12 pt-12 lg:px-8 lg:pt-16">
+      <section className="mx-auto max-w-7xl px-4 pb-8 pt-10 lg:px-8 lg:pt-14">
         <div className="max-w-3xl">
           <div className="site-kicker">{badge}</div>
           <h1 className="site-heading-xl mt-5 max-w-4xl text-[#f2e7c8]">
             {h1Main} {h1Accent ? <span className="site-gold">{h1Accent}</span> : null}
             {h1Suffix ? <> {h1Suffix}</> : null}
           </h1>
-          <p className="site-body-lg mt-6 max-w-3xl text-[#ddd5c7]">{subtitle}</p>
+          <p className="site-body-lg mt-5 max-w-3xl text-[#ddd5c7]">{subtitle}</p>
           {monetizationMode !== 'free_experiment' ? (
             <p data-testid="paid-document-notice" className="mt-4 text-sm leading-6 text-amber-200">{getPriceRevealCopy(locale).notice}</p>
           ) : null}
           <p className="mt-2 text-xs leading-5 text-slate-400">{getPriceRevealCopy(locale).draft}</p>
 
-          <WhyNotGenericBlock
-            className="mt-8"
-            compact
-            documentHint={differentiationHint}
-            contractType={contractType}
-            monetizationMode={monetizationMode}
-          />
-
-          <div className="mt-8 flex flex-wrap gap-4">
+          <div className="mt-7 flex flex-wrap gap-3">
             <button onClick={() => scrollTo(formId)} className="site-button-primary">
               {ctaLabel}
             </button>
-            <button onClick={() => scrollTo('obsah')} className="site-button-secondary">
+            <button onClick={openDetailsAndScroll} className="site-button-secondary">
               {chromeCopy.whatIsIncluded}
             </button>
           </div>
 
           {guideHref ? (
-            <div className="mt-6">
+            <div className="mt-5">
               <Link href={guideHref} className="text-sm font-medium text-[#d6ac60] hover:text-[#e0b870]">
                 {guideLabel}
               </Link>
@@ -172,107 +168,104 @@ export default function ContractLandingSection({
           ) : null}
         </div>
 
-        <div className="mt-10 grid gap-4 sm:grid-cols-2">
+        <div className="mt-8 grid gap-3 sm:grid-cols-2">
           {benefits.map((item) => (
-            <div key={item.text} className="site-content-card-soft rounded-[1.5rem] px-5 py-4">
+            <div key={item.text} className="site-content-card-soft rounded-[1.25rem] px-5 py-4">
               <div className="flex items-start gap-3">
                 <span className="text-lg leading-none">{item.icon}</span>
-                <p className="text-sm leading-7 text-[#ddd5c7]">{item.text}</p>
+                <p className="text-sm leading-6 text-[#ddd5c7]">{item.text}</p>
               </div>
             </div>
           ))}
         </div>
       </section>
 
-      <section id="obsah" className="mx-auto max-w-7xl border-t border-[rgba(166,134,91,0.12)] px-4 py-14 lg:px-8">
-        <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-          <div className="site-content-card rounded-[1.75rem] p-7">
-            <div className="site-kicker">{chromeCopy.documentContents}</div>
-            <h2 className="site-heading-lg mt-4 text-[#f2e7c8]">
-              {chromeCopy.whatDocumentIncludes}
-            </h2>
-            <p className="site-body mt-4 text-[#d2c8b9]">{chromeCopy.structuredDescription}</p>
-            <ul className="mt-6 space-y-4">
-              {contents.map((item) => (
-                <li key={item} className="flex items-start gap-3 text-base leading-8 text-[#e3dbcf]">
-                  <span className="mt-2 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[rgba(214,172,96,0.14)] text-xs font-bold text-[#d6ac60]">
-                    ✓
-                  </span>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+      <details id="obsah" className="group mx-auto max-w-7xl scroll-mt-24 px-4 pb-5 lg:px-8">
+        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-2xl border border-[rgba(166,134,91,0.18)] bg-[rgba(20,15,12,0.35)] px-5 py-4 text-left transition hover:border-[rgba(214,172,96,0.32)] [&::-webkit-details-marker]:hidden">
+          <span>
+            <span className="block text-sm font-semibold text-[#f2e7c8]">{chromeCopy.detailsTitle}</span>
+            <span className="mt-1 block text-xs leading-5 text-[#9f9584]">{chromeCopy.detailsDescription}</span>
+          </span>
+          <span className="shrink-0 text-lg text-[#d6ac60] transition-transform group-open:rotate-45">+</span>
+        </summary>
 
-          <div className="space-y-6">
-            <div className="site-content-card rounded-[1.75rem] p-7">
-              <div className="site-kicker">{chromeCopy.typicalUse}</div>
-              <h2 className="site-heading-lg mt-4 text-[#f2e7c8]">
-                {chromeCopy.whenSuitable}
-              </h2>
-              <ul className="mt-6 space-y-4">
-                {whenSuitable.map((item) => (
-                  <li key={item} className="flex items-start gap-3 text-base leading-8 text-[#ddd5c7]">
-                    <span className="mt-2 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[rgba(166,134,91,0.18)] text-xs text-[#d6ac60]">
-                      →
-                    </span>
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+        <div className="pt-6">
+          <WhyNotGenericBlock
+            compact
+            documentHint={differentiationHint}
+            contractType={contractType}
+            monetizationMode={monetizationMode}
+          />
 
-            {whenOther?.length ? (
+          <section className="mt-6 border-t border-[rgba(166,134,91,0.12)] pt-8">
+            <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
               <div className="site-content-card rounded-[1.75rem] p-7">
-                <div className="site-kicker">{chromeCopy.otherDocument}</div>
-                <h3 className="mt-4 text-2xl font-semibold tracking-[-0.03em] text-[#f2e7c8]">
-                  {chromeCopy.whenOther}
-                </h3>
-                <div className="mt-6 space-y-3">
-                  {whenOther.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="block rounded-[1.25rem] border border-[rgba(166,134,91,0.12)] bg-[rgba(20,15,12,0.3)] px-5 py-4 transition hover:border-[rgba(214,172,96,0.28)]"
-                    >
-                      <div className="text-sm font-semibold text-[#d6ac60]">{item.label}</div>
-                      <p className="mt-1 text-sm leading-7 text-[#d2c8b9]">{item.text}</p>
-                    </Link>
+                <div className="site-kicker">{chromeCopy.documentContents}</div>
+                <h2 className="site-heading-lg mt-4 text-[#f2e7c8]">{chromeCopy.whatDocumentIncludes}</h2>
+                <p className="site-body mt-4 text-[#d2c8b9]">{chromeCopy.structuredDescription}</p>
+                <ul className="mt-6 space-y-4">
+                  {contents.map((item) => (
+                    <li key={item} className="flex items-start gap-3 text-base leading-8 text-[#e3dbcf]">
+                      <span className="mt-2 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[rgba(214,172,96,0.14)] text-xs font-bold text-[#d6ac60]">✓</span>
+                      <span>{item}</span>
+                    </li>
                   ))}
-                </div>
+                </ul>
               </div>
-            ) : null}
-          </div>
-        </div>
-      </section>
 
-      <section className="mx-auto max-w-7xl border-t border-[rgba(166,134,91,0.12)] px-4 py-14 lg:px-8">
-        <div className="max-w-3xl">
-          <div className="site-kicker">{chromeCopy.faq}</div>
-          <h2 className="site-heading-lg mt-4 text-[#f2e7c8]">
-            {chromeCopy.commonQuestions}
-          </h2>
-        </div>
-        <div className="mt-8 max-w-3xl space-y-3">
-          {faq.map((item, index) => (
-            <div key={item.q} className="site-content-card-soft overflow-hidden rounded-[1.5rem]">
-              <button
-                className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
-                onClick={() => setOpenFaq(openFaq === index ? null : index)}
-                aria-expanded={openFaq === index}
-              >
-                <span className="text-base font-semibold leading-7 text-[#f2e7c8]">{item.q}</span>
-                <span className="text-xl text-[#d6ac60]">{openFaq === index ? '−' : '+'}</span>
-              </button>
-              {openFaq === index ? (
-                <div className="border-t border-[rgba(166,134,91,0.12)] px-6 pb-5 pt-4 text-base leading-8 text-[#d2c8b9]">
-                  {item.a}
+              <div className="space-y-6">
+                <div className="site-content-card rounded-[1.75rem] p-7">
+                  <div className="site-kicker">{chromeCopy.typicalUse}</div>
+                  <h2 className="site-heading-lg mt-4 text-[#f2e7c8]">{chromeCopy.whenSuitable}</h2>
+                  <ul className="mt-6 space-y-4">
+                    {whenSuitable.map((item) => (
+                      <li key={item} className="flex items-start gap-3 text-base leading-8 text-[#ddd5c7]">
+                        <span className="mt-2 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[rgba(166,134,91,0.18)] text-xs text-[#d6ac60]">→</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              ) : null}
+
+                {whenOther?.length ? (
+                  <div className="site-content-card rounded-[1.75rem] p-7">
+                    <div className="site-kicker">{chromeCopy.otherDocument}</div>
+                    <h3 className="mt-4 text-2xl font-semibold tracking-[-0.03em] text-[#f2e7c8]">{chromeCopy.whenOther}</h3>
+                    <div className="mt-6 space-y-3">
+                      {whenOther.map((item) => (
+                        <Link key={item.href} href={item.href} className="block rounded-[1.25rem] border border-[rgba(166,134,91,0.12)] bg-[rgba(20,15,12,0.3)] px-5 py-4 transition hover:border-[rgba(214,172,96,0.28)]">
+                          <div className="text-sm font-semibold text-[#d6ac60]">{item.label}</div>
+                          <p className="mt-1 text-sm leading-7 text-[#d2c8b9]">{item.text}</p>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
             </div>
-          ))}
+          </section>
+
+          <section className="mt-8 border-t border-[rgba(166,134,91,0.12)] pt-8">
+            <div className="max-w-3xl">
+              <div className="site-kicker">{chromeCopy.faq}</div>
+              <h2 className="site-heading-lg mt-4 text-[#f2e7c8]">{chromeCopy.commonQuestions}</h2>
+            </div>
+            <div className="mt-6 max-w-3xl space-y-3">
+              {faq.map((item, index) => (
+                <div key={item.q} className="site-content-card-soft overflow-hidden rounded-[1.5rem]">
+                  <button className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left" onClick={() => setOpenFaq(openFaq === index ? null : index)} aria-expanded={openFaq === index}>
+                    <span className="text-base font-semibold leading-7 text-[#f2e7c8]">{item.q}</span>
+                    <span className="text-xl text-[#d6ac60]">{openFaq === index ? '−' : '+'}</span>
+                  </button>
+                  {openFaq === index ? (
+                    <div className="border-t border-[rgba(166,134,91,0.12)] px-6 pb-5 pt-4 text-base leading-8 text-[#d2c8b9]">{item.a}</div>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          </section>
         </div>
-      </section>
+      </details>
     </>
   );
 }

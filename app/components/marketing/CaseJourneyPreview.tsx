@@ -1,12 +1,12 @@
 'use client';
 
 import { useState, useSyncExternalStore } from 'react';
-
-const subscribeNoop = () => () => {};
-const useHydrated = () => useSyncExternalStore(subscribeNoop, () => true, () => false);
 import { ArrowRight, Check, FileText, Bell } from 'lucide-react';
 import TrackedLink from '@/app/components/analytics/TrackedLink';
 import styles from './homepage.module.css';
+
+const subscribeNoop = () => () => {};
+const useHydrated = () => useSyncExternalStore(subscribeNoop, () => true, () => false);
 
 const STAGES = [
   { label: 'Dohoda', title: 'Nejdřív dobrá smlouva.', description: 'Rozsah práce, cena a termín. Podmínky, ke kterým se můžete vrátit.', document: 'Smlouva o dílo', detail: 'Rozsah · cena · termín · předání', task: 'Připravit podklady k zakázce', next: 'Po zaplacení můžete zdarma založit Moje zakázka.' },
@@ -18,9 +18,15 @@ export default function CaseJourneyPreview({ documentPrice, includesDocuments }:
   const [selected, setSelected] = useState(0);
   const hydrated = useHydrated();
   const stage = STAGES[selected];
+
   return (
     <div className={`${styles.glass} ${styles.journey}`} aria-label="Interaktivní ukázka služby Moje zakázka">
-      <div className={styles.previewLabel}><span className={styles.liveDot} /> MOJE ZAKÁZKA <span>Ukázka služby</span></div>
+      <div className={styles.previewLabel}>
+        <span className={styles.liveDot} /> PŘÍKLAD: ZAKÁZKA <span>od smlouvy po předání</span>
+      </div>
+      <p className="mt-3 text-xs leading-5 text-slate-500">
+        Ukázka jedné situace. Ostatní dokumenty fungují samostatně bez nutnosti zakládat případ.
+      </p>
       <div className={styles.journeyChoices} role="group" aria-label="Fáze ukázkové zakázky">
         {STAGES.map((item, index) => (
           <button key={item.label} type="button" aria-pressed={selected === index} disabled={!hydrated} onClick={() => setSelected(index)}>

@@ -53,7 +53,8 @@ test('homepage leads from a situation to the document builder and to the case hu
   await expect(situationLinks.filter({ hasText: 'Začít zakázku' })).toHaveAttribute('href', '/smlouva-o-dilo');
   await expect(situationLinks.filter({ hasText: 'Vyřešit zaměstnávání' })).toHaveAttribute('href', '/zamestnavam');
   await expect(page.locator('#smlouvy')).toBeVisible();
-  await expect(page.locator('#nastroje')).toBeVisible();
+  await expect(page.locator('#pomoc-zdarma')).toBeVisible();
+  await expect(page.locator('#pomoc-zdarma a[href="/nastroje"]').first()).toBeVisible();
 
   await situationLinks.filter({ hasText: 'Jak zakázka probíhá' }).click();
   await expect(page).toHaveURL(/\/zakazka$/);

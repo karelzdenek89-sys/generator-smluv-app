@@ -41,6 +41,7 @@ test('service preview explains each stage and supports reduced motion', async ({
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   const preview = page.locator('[aria-label="Interaktivní ukázka služby Moje zakázka"]');
+  await expect(preview).toContainText('PŘÍKLAD: ZAKÁZKA');
   await preview.getByRole('button', { name: '03Předání' }).click();
   await expect(preview.getByRole('button', { name: '03Předání' })).toHaveAttribute('aria-pressed', 'true');
   await expect(preview).toContainText('Předávací protokol');
@@ -49,4 +50,23 @@ test('service preview explains each stage and supports reduced motion', async ({
   expect(await animated.evaluate(element => getComputedStyle(element).animationName)).toBe('none');
   await preview.getByRole('link', { name: 'Prohlédnout Moje zakázka' }).click();
   await expect(page).toHaveURL(/\/zakazka$/);
+});
+
+test('homepage exposes real product capabilities and transparent prices', async ({ page }) => {
+  await page.goto('/');
+  const scope = page.locator('[aria-label="Co nástroj skutečně umí"]');
+  await expect(scope).toContainText('DOCX');
+  await expect(scope).toContainText('90 dní');
+  await expect(scope).toContainText('EN / UA');
+  await expect(page.locator('[data-homepage-catalog="primary"] [data-contract-type="lease"]')).toContainText('od 99 Kč');
+  await expect(page.locator('#balicky')).toContainText('299 Kč');
+});
+
+test('lease keeps long guide optional and the primary CTA reaches the form', async ({ page }) => {
+  await page.goto('/najem');
+  const guide = page.locator('details[aria-label="Průvodce nájemní smlouvou"]');
+  await expect(guide).toHaveCount(1);
+  await expect(guide).not.toHaveAttribute('open', '');
+  await page.getByRole('button', { name: 'Vytvořit nájemní smlouvu' }).first().click();
+  await expect(page.locator('#formular')).toBeInViewport();
 });

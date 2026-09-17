@@ -57,6 +57,7 @@ test.describe('builder locale isolation', () => {
 
     await expect(page.locator('html')).toHaveAttribute('lang', 'cs');
     await expect(page.getByRole('heading', { name: /Smlouva o dílo online/i })).toBeVisible();
+    await page.getByRole('button', { name: 'Co dokument obsahuje', exact: true }).click();
     await expect(page.getByText('Proč nestačí soubor stažený z webu')).toBeVisible();
     await expect(page.getByText('Лише чеська форма')).toHaveCount(0);
     await expect(page.getByText('Чому недостатньо файлу з інтернету')).toHaveCount(0);
@@ -108,6 +109,8 @@ test.describe('builder locale isolation', () => {
     expect(uaResponse?.headers()['content-language']).toBe('uk');
     await expect(page.locator('[data-site-header="global"]')).toBeHidden();
     await expect(page.getByRole('heading', { name: /Договір оренди/u }).first()).toBeVisible();
+    await expect(page.getByText('Докладніше про документ', { exact: true })).toBeVisible();
+    await expect(page.getByText('Podrobnosti o dokumentu', { exact: true })).toHaveCount(0);
     await expect(
       page.locator('[data-site-footer="localized-builder"]').getByText('Програмний інструмент', { exact: true }),
     ).toBeVisible();
@@ -120,6 +123,8 @@ test.describe('builder locale isolation', () => {
     expect(enResponse?.headers()['content-language']).toBe('en');
     await expect(page.locator('[data-site-header="global"]')).toBeHidden();
     await expect(page.getByRole('heading', { name: /Rental agreement for an apartment online/iu }).first()).toBeVisible();
+    await expect(page.getByText('Document details', { exact: true })).toBeVisible();
+    await expect(page.getByText('Podrobnosti o dokumentu', { exact: true })).toHaveCount(0);
     await expect(
       page.locator('[data-site-footer="localized-builder"]').getByText('Software tool', { exact: true }),
     ).toBeVisible();
@@ -133,6 +138,9 @@ test.describe('builder locale isolation', () => {
 
     await expect(page.locator('html')).toHaveAttribute('lang', 'uk');
     await expect(page.getByText('Що входить до документа').first()).toBeVisible();
+    await expect(page.getByText('Докладніше про документ', { exact: true })).toBeVisible();
+    await expect(page.getByText('Зміст документа', { exact: true })).toBeHidden();
+    await page.getByRole('button', { name: 'Що входить до документа', exact: true }).click();
     await expect(page.getByText('Зміст документа', { exact: true })).toBeVisible();
     await expect(page.getByText('Поширені запитання', { exact: true })).toBeVisible();
     await expect(page.getByText('What is included')).toHaveCount(0);

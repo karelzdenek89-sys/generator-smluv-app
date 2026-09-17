@@ -2,6 +2,8 @@ import type { AppLocale } from '@/lib/locale';
 
 export type ContractLandingChromeCopy = {
   whatIsIncluded: string;
+  detailsTitle: string;
+  detailsDescription: string;
   documentContents: string;
   whatDocumentIncludes: string;
   structuredDescription: string;
@@ -16,6 +18,8 @@ export type ContractLandingChromeCopy = {
 const COPY: Record<AppLocale, ContractLandingChromeCopy> = {
   cs: {
     whatIsIncluded: 'Co dokument obsahuje',
+    detailsTitle: 'Podrobnosti o dokumentu',
+    detailsDescription: 'Obsah, vhodné použití, rozdíl oproti běžnému vzoru a časté otázky.',
     documentContents: 'Obsah dokumentu',
     whatDocumentIncludes: 'Co dokument obsahuje',
     structuredDescription:
@@ -29,6 +33,8 @@ const COPY: Record<AppLocale, ContractLandingChromeCopy> = {
   },
   en: {
     whatIsIncluded: 'What is included',
+    detailsTitle: 'Document details',
+    detailsDescription: 'Contents, typical use, how it differs from a generic template, and common questions.',
     documentContents: 'Document contents',
     whatDocumentIncludes: 'What the document includes',
     structuredDescription:
@@ -42,6 +48,8 @@ const COPY: Record<AppLocale, ContractLandingChromeCopy> = {
   },
   ua: {
     whatIsIncluded: 'Що входить до документа',
+    detailsTitle: 'Докладніше про документ',
+    detailsDescription: 'Зміст, типове використання, відмінності від звичайного шаблону та поширені запитання.',
     documentContents: 'Зміст документа',
     whatDocumentIncludes: 'Що містить документ',
     structuredDescription:
