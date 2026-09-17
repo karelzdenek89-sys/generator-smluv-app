@@ -179,13 +179,13 @@ export const LEGAL_CHANGES: readonly LegalChange[] = [
       'Pro rok 2026 činí minimální mzda 22 400 Kč měsíčně (134,40 Kč za hodinu). Pro rok 2027 vláda v roce 2026 nařízením stanoví nové koeficienty a MPSV vyhlásí částku sdělením — dokud se tak nestane, konkrétní částka pro rok 2027 není známa.',
     whatChanges: [
       'Minimální mzda se od roku 2025 určuje valorizačním mechanismem podle § 111 zákoníku práce: predikce průměrné mzdy × koeficient stanovený nařízením vlády.',
-      'Koeficient pro rok 2026 je 0,434 (nařízení vlády č. 285/2024 Sb.); částka 22 400 Kč je vyhlášena sdělením MPSV č. 356/2025 Sb.',
+      'Koeficient pro rok 2026 je 0,434 (nařízení vlády č. 285/2024 Sb.); částka 22 400 Kč je vyhlášena sdělením MPSV č. 356/2025 Sb. (spolu s nejnižšími úrovněmi zaručeného platu pro platovou sféru).',
       'Pro roky 2027 a 2028 vláda stanoví koeficienty novým nařízením v roce 2026.',
     ],
     whatToDo: [
       'V pracovních smlouvách a DPP s hodinovou odměnou zkontrolujte, že sazba nespadne pod novou hodinovou minimální mzdu od 1. 1. 2027.',
       'Připravte si přepočet mzdových nákladů, jakmile MPSV částku vyhlásí; do té doby počítejte s růstem.',
-      'U zaručené mzdy (nejnižší úrovně) ověřte zařazení prací do skupin.',
+      'Zaručená mzda podle skupin prací v podnikatelské sféře od 1. 1. 2025 neplatí (novela č. 230/2024 Sb.); zaměstnavatelé odměňující platem hlídají nejnižší úrovně zaručeného platu vyhlášené sdělením MPSV.',
     ],
     affectedDocuments: [
       { contractType: 'employment', href: '/pracovni', label: 'Pracovní smlouva' },

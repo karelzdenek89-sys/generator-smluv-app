@@ -8,7 +8,7 @@ klíčové prostory s vlastním TTL. Nic ze stávajících klíčů se nemění 
 | Oblast | Klíče | Účel | Právní základ | Retence |
 |---|---|---|---|---|
 | A. Data dokumentu | `contract:draft:{id}`, `session:draft:{sessionId}`, `orders:email:{email}`, `orders:portal:token:{hash}` | vytvoření a stažení dokumentu | plnění smlouvy | 7 / 30 / 90 dní dle varianty |
-| B. Data případu (Moje zakázka) | `case:{caseId}`, `case:owner:{sha256(email)}`, `case:tokens:{caseId}`, `case:access:{sha256(token)}`, `case:reminders:due`, `case:docsession:{sessionId}` | průběh zakázky, návratové odkazy, připomínky, navazující dokumenty | plnění smlouvy | 365 dní od poslední změny; uzavřená zakázka 180 dní; nezaplacený rozpracovaný dokument 30 dní; odkazy 30 dní (návrat z platby 7 dní); smazání na žádost kdykoli |
+| B. Data případu (Moje zakázka) | `case:{caseId}`, `case:rev:{caseId}`, `case:seen:{caseId}`, `case:owner:{sha256(email)}`, `case:tokens:{caseId}`, `case:access:{sha256(token)}`, `case:reminders:due`, `case:documents:pending`, `case:docsession:{sessionId}` | průběh zakázky, návratové odkazy, připomínky, navazující dokumenty | plnění smlouvy | 365 dní od poslední změny; uzavřená zakázka 180 dní od `closedAt` (pevný termín); nezaplacený rozpracovaný dokument 30 dní od vytvoření (po lhůtě se nevrací, denní cron jej fyzicky maže); odkazy 30 dní; smazání na žádost kdykoli |
 | C. Produktová analytika | `analytics:events`, `analytics:summary:{day}:*` | funnel bez PII | souhlas (cookie lišta) | rolling 5 000 událostí / denní agregace |
 | D. Commercial intent | `partner:intent:{id}`, `partner:intent:index` | vyžádaná poptávka služby | souhlas pro konkrétního partnera | 180 dní; kontakt odstraněn ihned po odvolání |
 | E. Partner consent + lead | `partner:consent:{id}`, `partner:lead:{id}`, `partner:lead:index` | auditovatelné předání partnerovi | souhlas | 180 dní |
@@ -18,7 +18,7 @@ klíčové prostory s vlastním TTL. Nic ze stávajících klíčů se nemění 
 
 ## Co se do jednotlivých oblastí NIKDY nekopíruje
 
-- **B (případ):** obsah smlouvy, jméno/adresa/IČO/kontakt protistrany, download token, Stripe session smlouvy (od 2026-09-17 se `orderSessionId` neukládá vůbec; starší záznamy se při dalším zápisu vyčistí).
+- **B (případ):** obsah smlouvy, adresa/IČO/kontakt protistrany ze smlouvy, download token, Stripe session smlouvy (od 2026-09-17 se `orderSessionId` neukládá vůbec; starší záznamy se při dalším zápisu vyčistí). Jména stran se **ne**přebírají ze smlouvy; ukládají se jen tehdy, když je vlastník sám zadá do navazujícího dokumentu (`documents[].data`).
 
 ### Co přesně žije v `case:{caseId}` (revize 2026-09-17)
 
@@ -30,7 +30,12 @@ klíčové prostory s vlastním TTL. Nic ze stávajících klíčů se nemění 
 | `priceAmountCzk`, `priceMode` | cena/režim ze smlouvy | ne | ano — kontext platebních milníků | s případem |
 | `origin.source/contractType/tier/packageKey` | objednávka | ne | ano — nárok na dokumenty v ceně (Zakázka Plus) | s případem |
 | ~~`origin.orderSessionId`~~ | Stripe | ne (identifikátor platby) | **ne** — nikde se nečte | **odstraněno** |
-| `documents[].data` | vlastník vyplní do navazujícího dokumentu (jména stran, popis prací, vady) | může být (jména stran) | ano — PDF se renderuje z těchto dat při stažení | s případem; **nezaplacený** dokument 30 dní |
+| `documents[].data` | vlastník vyplní do navazujícího dokumentu (jména stran, popis prací, vady) | může být (jména stran) | ano — vstup dokumentu | s případem; **nezaplacený** dokument 30 dní |
+| `documents[].snapshot` | sekce dokumentu, název a termín zakázky, verze šablony zmrazené při vytvoření | totéž co `data` | ano — vydaný dokument je neměnný; PDF se renderuje ze snapshotu, ne z aktuálního stavu | s dokumentem |
+| `documents[].checkoutAttempts` | počet založených Stripe session | ne | ano — idempotency key `case-doc:{documentId}:{attempt}` | s dokumentem |
+| `closedAt` | systém při přechodu do fáze `closed` | ne | ano — pevný termín výmazu uzavřené zakázky | s případem |
+| `revision` (`case:rev:*`) | systém | ne | ano — compare-and-set proti souběhu (webhook vs. druhá karta) | s případem |
+| `case:seen:*` | systém při otevření | ne | ano — poslední přístup bez přepisu záznamu | s případem |
 | `documents[].stripeSessionId` | Stripe (jen placené dokumenty) | ne | ano — úklid `case:docsession:*` při smazání | s případem; klientovi se nevrací |
 | `tasks[]` | šablona workflow | ne | ano | s případem |
 | `events[]` (≤200, poznámky ≤500 zn.) | systém + poznámky vlastníka | může být (volný text) | ano — historie případu | s případem |
@@ -38,7 +43,7 @@ klíčové prostory s vlastním TTL. Nic ze stávajících klíčů se nemění 
 | `createdAt/updatedAt/lastAccessAt/expiresAt` | systém | ne | ano | s případem |
 
 Obsah smlouvy (`contract:draft:*`) se do případu nekopíruje; adresa, IČO ani kontakt protistrany v případu nejsou.
-TTL nastavuje `saveCase` podle fáze: `closed` → 180 dní, jinak 365 dní od poslední změny; otevření případu retenci neprodlužuje.
+TTL nastavuje `saveCase` podle fáze: `closed` → zbytek do `closedAt + 180 dní` (další zápisy termín neprodlužují), jinak 365 dní od poslední změny; otevření případu retenci neprodlužuje (zapisuje jen `case:seen:*`). Nezaplacené dokumenty po 30 dnech: `getCase` je nevrací, `saveCase` je odstraní a `purgeExpiredPendingDocuments` (denní cron `/api/cron/reminders`) je fyzicky smaže i z netknutých případů.
 - **C (analytika):** e-mail, název zakázky, obsah dokumentů, tokeny, session ID; pouze kategoriální klíče (`case_stage`, `document_kind`, `tool_key`, …).
 - **D/E (partner):** rodné číslo, číslo OP, plná adresa, obsah dokumentu, údaje protistrany. Kontakt jen v rozsahu polí, ke kterým byl udělen souhlas.
 

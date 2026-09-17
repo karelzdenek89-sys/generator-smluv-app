@@ -2,15 +2,19 @@ import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { recordAnalyticsEvent } from '@/lib/analytics-server';
 import { authorizeCaseRequest, isCaseRouteFailure } from '@/lib/cases/route-auth';
+import { caseDocumentSessionMatches } from '@/lib/cases/checkout';
 import { markCaseDocumentPaid } from '@/lib/cases/service';
-import { findDocument, toPublicCase } from '@/lib/cases/store';
+import { findDocument, resolveDocumentSession, toPublicCase } from '@/lib/cases/store';
 
 export const runtime = 'nodejs';
 
 /**
  * Failsafe po návratu z platební brány: pokud webhook ještě nedorazil,
- * ověří stav session přímo u Stripe. Session musí patřit tomuto dokumentu.
+ * ověří stav session přímo u Stripe. Ověřuje se session, ze které se
+ * zákazník vrací (`session_id` v návratové URL) — musí být zmapovaná na tento
+ * dokument; teprve bez ní se použije poslední session uložená u dokumentu.
  */
+const SESSION_ID_RE = /^cs_[A-Za-z0-9_]{8,200}$/;
 export async function POST(req: Request) {
   const auth = await authorizeCaseRequest(req, {
     rateLimitKey: 'case-doc-sync',
@@ -26,17 +30,19 @@ export async function POST(req: Request) {
   if (document.status === 'ready') {
     return NextResponse.json({ case: toPublicCase(auth.record), status: 'ready' });
   }
-  if (!document.stripeSessionId) {
+  const returnedSessionId = typeof auth.body.sessionId === 'string' && SESSION_ID_RE.test(auth.body.sessionId) ? auth.body.sessionId : '';
+  let sessionId = document.stripeSessionId ?? '';
+  if (returnedSessionId) {
+    const mapping = await resolveDocumentSession(returnedSessionId);
+    if (mapping && mapping.caseId === auth.record.id && mapping.documentId === document.id) sessionId = returnedSessionId;
+  }
+  if (!sessionId) {
     return NextResponse.json({ case: toPublicCase(auth.record), status: 'pending' });
   }
 
   try {
-    const session = await stripe.checkout.sessions.retrieve(document.stripeSessionId);
-    const matches =
-      session.metadata?.kind === 'case_document' &&
-      session.metadata?.caseId === auth.record.id &&
-      session.metadata?.documentId === document.id;
-    if (!matches || session.payment_status !== 'paid') {
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    if (!caseDocumentSessionMatches(session, auth.record.id, document.id) || session.payment_status !== 'paid') {
       return NextResponse.json({ case: toPublicCase(auth.record), status: 'pending' });
     }
     const updated = await markCaseDocumentPaid(auth.record.id, document.id, session.id);

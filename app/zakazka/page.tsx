@@ -155,8 +155,9 @@ export default function ZakazkaHubPage() {
                   („Blíží se termín předání. Připravte předávací protokol.“), ne jen „máte připomínku“.
                 </p>
                 <p>
-                  Do zakázky neukládáme obsah smlouvy ani údaje protistrany — jen to, co potřebujete k pokračování.
-                  Zakázku můžete kdykoli exportovat nebo smazat.
+                  Obsah smlouvy ani údaje protistrany se ze smlouvy do zakázky nepřebírají — zakázka nese název, termín, fázi
+                  a to, co sami doplníte do navazujících dokumentů (například jména stran v předávacím protokolu). Uchovává se 12 měsíců
+                  od poslední změny, uzavřená 6 měsíců; kdykoli ji můžete exportovat nebo smazat.
                 </p>
               </div>
               <div className="site-content-card rounded-2xl p-5">

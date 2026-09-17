@@ -207,7 +207,7 @@ const CORE_ARTICLES: readonly AnswerFirstArticle[] = [
     risks: [
       { title: 'Zkušební doba dodatečně', text: 'Zkušební dobu lze sjednat jen nejpozději v den nástupu; později už ne.' },
       { title: 'Doba určitá bez limitu', text: 'Pracovní poměr na dobu určitou lze sjednat nejvýše na 3 roky a opakovat nejvýše dvakrát (§ 39 ZP).' },
-      { title: 'Mzda pod minimální nebo zaručenou', text: 'Pro rok 2026 je minimální mzda 22 400 Kč / 134,40 Kč za hodinu; u skupin prací platí zaručená mzda.' },
+      { title: 'Mzda pod minimální mzdou', text: 'Pro rok 2026 je minimální mzda 22 400 Kč / 134,40 Kč za hodinu. Zaručená mzda podle skupin prací v podnikatelské sféře od 1. 1. 2025 neplatí; nejnižší úrovně zaručeného platu zůstávají jen u zaměstnavatelů odměňujících platem (stát, obce, příspěvkové organizace).' },
     ],
     faq: [
       { q: 'Můžu pracovní smlouvu podepsat elektronicky?', a: 'Ano, zákoník práce umožňuje elektronické uzavření; zaměstnanec má právo od takto uzavřené smlouvy do 7 dnů odstoupit, pokud nezačal pracovat.' },
@@ -371,7 +371,7 @@ const CORE_ARTICLES: readonly AnswerFirstArticle[] = [
     ],
     risks: [
       { title: 'Změna „e-mailem“ bez podpisu', text: 'Bez písemné dohody se sjednané podmínky nemění a spor vyhrává původní smlouva.' },
-      { title: 'Snížení sjednané mzdy jednostranně', text: 'Sjednanou mzdu nelze snížit bez souhlasu; mzdový výměr ano, ale ne pod minimální/zaručenou mzdu.' },
+      { title: 'Snížení sjednané mzdy jednostranně', text: 'Sjednanou mzdu nelze snížit bez souhlasu; mzdový výměr ano, ale ne pod minimální mzdu (u zaměstnavatelů odměňujících platem pod zaručený plat).' },
     ],
     documents: [{ href: '/pracovni', label: 'Pracovní smlouva online (nové znění)' }],
     tools: [],

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { recordAnalyticsEvent } from '@/lib/analytics-server';
 import { authorizeCaseRequest, isCaseRouteFailure } from '@/lib/cases/route-auth';
 import { findDocument } from '@/lib/cases/store';
-import { CASE_DOCUMENT_DEFINITIONS, CASE_DOCUMENT_SIGNATURE_TITLE } from '@/lib/cases/documents';
+import { CASE_DOCUMENT_DEFINITIONS, CASE_DOCUMENT_SIGNATURE_TITLE, resolveCaseDocumentRender } from '@/lib/cases/documents';
 import { formatCzechDate } from '@/lib/cases/workflow';
 import { renderSimpleDocumentPdf } from '@/lib/pdf';
 
@@ -40,14 +40,16 @@ export async function POST(req: Request) {
 
   try {
     const definition = CASE_DOCUMENT_DEFINITIONS[document.kind];
-    const sections = definition.buildSections(auth.record, document.data);
+    // Vydaný dokument je neměnný: sekce, název zakázky i termín pocházejí ze
+    // snapshotu z doby vytvoření a datum z document.createdAt.
+    const render = resolveCaseDocumentRender(auth.record, document);
     const pdf = await renderSimpleDocumentPdf({
       title: definition.title,
       subtitleLines: [
-        `Zakázka: ${auth.record.title}`,
-        `Termín dokončení podle smlouvy: ${formatCzechDate(auth.record.deadline)} · Vytvořeno ${new Date().toLocaleDateString('cs-CZ')}`,
+        `Zakázka: ${render.caseTitle}`,
+        `Termín dokončení podle smlouvy: ${formatCzechDate(render.caseDeadline)} · Vytvořeno ${new Date(document.createdAt).toLocaleDateString('cs-CZ')} · Šablona ${render.templateVersion}`,
       ],
-      sections,
+      sections: render.sections,
       signatureSectionTitle: CASE_DOCUMENT_SIGNATURE_TITLE,
       signatureLabels: definition.signatureLabels,
       docId: `SH-Z-${document.id.slice(0, 8).toUpperCase()}`,

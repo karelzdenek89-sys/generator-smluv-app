@@ -30,17 +30,25 @@ export async function POST(req: Request) {
   }
   try {
     const checkout = await createCaseDocumentCheckout(auth.record, document, auth.email);
-    await recordAnalyticsEvent('checkout_started', {
-      source: 'case_page',
-      surface: 'case_engine',
-      case_kind: 'work_order',
-      case_stage: auth.record.stage,
-      document_kind: document.kind,
-      price_band: '99',
-      cta_type: 'case_document_retry',
-    });
+    if (checkout.status === 'ready') {
+      return NextResponse.json({ case: toPublicCase(checkout.record), documentId, ready: true });
+    }
+    if (!checkout.reused) {
+      await recordAnalyticsEvent('checkout_started', {
+        source: 'case_page',
+        surface: 'case_engine',
+        case_kind: 'work_order',
+        case_stage: auth.record.stage,
+        document_kind: document.kind,
+        price_band: '99',
+        cta_type: 'case_document_retry',
+      });
+    }
     return NextResponse.json({ case: toPublicCase(checkout.record), documentId, ready: false, url: checkout.url });
   } catch (error) {
+    if (error instanceof Error && error.message === 'checkout_locked') {
+      return NextResponse.json({ error: 'Platba se právě zahajuje v jiném okně. Zkuste to za chvíli.' }, { status: 409 });
+    }
     console.error('[cases] document checkout retry failed', error instanceof Error ? error.message : 'unknown');
     return NextResponse.json({ error: 'Platbu se nepodařilo zahájit. Zkuste to prosím znovu.' }, { status: 500 });
   }

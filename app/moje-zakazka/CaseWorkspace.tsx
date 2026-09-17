@@ -65,6 +65,7 @@ export default function CaseWorkspace() {
   const searchParams = useSearchParams();
   const caseId = searchParams.get('id')?.trim() ?? '';
   const paidDocumentId = searchParams.get('paid') === '1' ? searchParams.get('doc')?.trim() ?? '' : '';
+  const returnedSessionId = searchParams.get('session_id')?.trim() ?? '';
   const cancelled = searchParams.get('cancelled') === '1';
   const reminderId = searchParams.get('reminder')?.trim() ?? '';
 
@@ -114,30 +115,41 @@ export default function CaseWorkspace() {
   }, [state, load]);
 
   // Návrat z platební brány: dokud webhook nedorazí, ověř stav u Stripe.
+  // Effect závisí jen na primitivech (id, token, stav dokumentu), aby ho
+  // každá odpověď „pending“ neresetovala — jinak by se pokusy nepočítaly
+  // a dvousekundový rozestup by se neuplatnil.
+  const paidDocumentStatus = record?.documents.find((item) => item.id === paidDocumentId)?.status ?? null;
   useEffect(() => {
-    if (!paidDocumentId || !record || !token) return;
-    const document = record.documents.find((item) => item.id === paidDocumentId);
-    if (!document || document.status === 'ready') return;
+    if (!paidDocumentId || !token || paidDocumentStatus !== 'pending_payment') return;
     let attempts = 0;
     let cancelledPoll = false;
+    let timer: number | undefined;
     const poll = async () => {
       if (cancelledPoll) return;
       attempts += 1;
-      const response = await postJson<{ case: PublicCase; status: 'ready' | 'pending' }>('/api/cases/documents/sync', { caseId, token, documentId: paidDocumentId });
+      const response = await postJson<{ case: PublicCase; status: 'ready' | 'pending' }>('/api/cases/documents/sync', {
+        caseId,
+        token,
+        documentId: paidDocumentId,
+        ...(returnedSessionId ? { sessionId: returnedSessionId } : {}),
+      });
       if (cancelledPoll) return;
       if (response.ok && response.data.case) {
-        setData((current) => (current ? { ...current, case: response.data.case } : current));
         if (response.data.status === 'ready') {
+          setData((current) => (current ? { ...current, case: response.data.case } : current));
           setMessage({ tone: 'success', text: 'Platba přijata. Dokument je připravený ke stažení.' });
           return;
         }
       }
-      if (attempts < 8) window.setTimeout(poll, 2000);
+      if (attempts < 8) timer = window.setTimeout(poll, 2000);
       else setMessage({ tone: 'info', text: 'Platbu ještě ověřujeme. Pokud dokument nebude do několika minut připravený, obnovte stránku.' });
     };
     void poll();
-    return () => { cancelledPoll = true; };
-  }, [paidDocumentId, record, token, caseId]);
+    return () => {
+      cancelledPoll = true;
+      if (timer !== undefined) window.clearTimeout(timer);
+    };
+  }, [paidDocumentId, paidDocumentStatus, token, caseId, returnedSessionId]);
 
   useEffect(() => {
     if (cancelled) setMessage({ tone: 'info', text: 'Platba nebyla dokončena. Dokument zůstal uložený — můžete ji dokončit kdykoli.' });
@@ -244,7 +256,7 @@ export default function CaseWorkspace() {
             <div className="site-content-card rounded-2xl p-4">
               <dt className="text-[10px] font-black uppercase tracking-widest text-slate-500">Cena a režim</dt>
               <dd className="mt-1 text-sm font-semibold text-white">
-                {record.priceAmountCzk ? `${record.priceAmountCzk.toLocaleString('cs-CZ')} Kč` : '—'}
+                {record.priceAmountCzk ? `${record.priceAmountCzk.toLocaleString('cs-CZ', { minimumFractionDigits: 0, maximumFractionDigits: 2 })} Kč` : '—'}
                 <span className="ml-2 text-xs font-normal text-slate-400">{PRICE_MODE_LABEL[record.priceMode]}</span>
               </dd>
             </div>

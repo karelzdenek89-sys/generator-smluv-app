@@ -463,7 +463,7 @@ export const PORTAL_TOOLS: readonly PortalTool[] = [
         items: [
           { key: 'minwage', label: 'Odměna nejméně 134,40 Kč/h (minimální mzda 2026) — platí pro DPP i pracovní poměr.' },
           { key: 'threshold', label: 'Měsíční odměna z DPP dosáhne 12 000 Kč → vzniká účast na pojištění a odvody.' },
-          { key: 'salary', label: 'U pracovní smlouvy odvody vždy; mzda podle zaručené mzdy a skupiny prací.' },
+          { key: 'salary', label: 'U pracovní smlouvy odvody vždy; mzda nejméně ve výši minimální mzdy (zaručená mzda podle skupin prací v podnikatelské sféře od 1. 1. 2025 neplatí).' },
         ],
       },
       {
@@ -622,7 +622,7 @@ export const PORTAL_TOOLS: readonly PortalTool[] = [
         items: [
           { key: 'protocol', label: 'Předávací protokol s klíči, doklady a stavem tachometru.', link: { href: '/blog/predani-vozidla-kupujicimu-2026', label: 'Předání vozidla' } },
           { key: 'registry', label: 'Zápis změny vlastníka do 10 pracovních dnů (Portál dopravy nebo úřad).', link: { href: '/nastroje/prepis-vozidla-co-potrebuji', label: 'Přepis vozidla' } },
-          { key: 'insurance', label: 'Ukončit povinné ručení až po přepisu; zkontrolovat zelenou kartu.' },
+          { key: 'insurance', label: 'Ukončit povinné ručení až po přepisu; kupující musí mít sjednané své (úřad si ho ověří, zelená karta se nepředkládá).' },
         ],
       },
     ],
@@ -683,12 +683,16 @@ export const PORTAL_TOOLS: readonly PortalTool[] = [
     description: 'Doklady, lhůta a postup zápisu změny vlastníka vozidla — online přes Portál dopravy nebo na úřadě.',
     metaTitle: 'Přepis vozidla 2026: doklady, lhůta 10 dnů, online postup',
     metaDescription:
-      'Doklady k přepisu vozidla, lhůta 10 pracovních dnů, společná žádost prodávajícího a kupujícího, plná moc, zelená karta a evidenční kontrola.',
+      'Doklady k přepisu vozidla, lhůta 10 pracovních dnů, společná žádost prodávajícího a kupujícího, plná moc. Pojištění a evidenční kontrolu ověří úřad sám.',
     situation: 'auto',
     answer:
-      'Změnu vlastníka zapisuje kterýkoli obecní úřad obce s rozšířenou působností (nebo online Portál dopravy) na společnou žádost prodávajícího a kupujícího do 10 pracovních dnů od převodu. Potřebujete doklady totožnosti, technický průkaz, zelenou kartu kupujícího a protokol o evidenční kontrole; za nepřítomnou stranu jedná zmocněnec s plnou mocí.',
-    legalNote: 'Zákon č. 56/2001 Sb., § 8 a násl. (zápis změny vlastníka). Plná moc pro zápis vyžaduje úředně ověřený podpis, není-li podána elektronicky s uznávaným podpisem.',
-    sources: [{ label: 'Zákon č. 56/2001 Sb. — e-Sbírka', href: 'https://www.e-sbirka.cz/sb/2001/56' }],
+      'Změnu vlastníka zapisuje kterýkoli obecní úřad obce s rozšířenou působností (nebo online Portál dopravy) na společnou žádost prodávajícího a kupujícího do 10 pracovních dnů od převodu. Předkládáte doklady totožnosti, osvědčení o registraci a technický průkaz (byl-li vydán). Povinné ručení kupujícího i platnou evidenční kontrolu ověří úřad sám — zelená karta se nepředkládá. Evidenční kontrola platí od 1. 7. 2025 dva roky a u osobního auta s platnou pravidelnou STK ji nahrazuje protokol z STK; samostatně ji řešíte u ojetiny mladší čtyř let. Za nepřítomnou stranu jedná zmocněnec s plnou mocí.',
+    legalNote: 'Zákon č. 56/2001 Sb., § 8 a násl. (zápis změny vlastníka). Plná moc pro zápis vyžaduje úředně ověřený podpis, není-li podána elektronicky s uznávaným podpisem. Postup a doklady podle Ministerstva dopravy (ověřeno 2026-09-17).',
+    sources: [
+      { label: 'Zákon č. 56/2001 Sb. — e-Sbírka', href: 'https://www.e-sbirka.cz/sb/2001/56' },
+      { label: 'Ministerstvo dopravy — Změna vlastníka vozidla (životní situace)', href: 'https://md.gov.cz/Zivotni-situace/Registr-vozidel/zmena-vlastnika' },
+      { label: 'Ministerstvo dopravy — Prodloužená platnost evidenční kontroly (od 1. 7. 2025)', href: 'https://md.gov.cz/Media/Media-a-tiskove-zpravy/Prodlouzena-platnost-evidencni-kontroly-osobnich-a' },
+    ],
     primaryDocument: { href: '/plna-moc', label: 'Vytvořit plnou moc k přepisu' },
     related: [
       { href: '/blog/prepis-vozidla-2026', label: 'Přepis vozidla 2026 — průvodce' },
@@ -701,8 +705,8 @@ export const PORTAL_TOOLS: readonly PortalTool[] = [
         items: [
           { key: 'id', label: 'Doklad totožnosti obou stran (nebo zmocněnce).' },
           { key: 'tp', label: 'Technický průkaz / osvědčení o registraci vozidla.' },
-          { key: 'green', label: 'Zelená karta (doklad o povinném ručení) kupujícího.' },
-          { key: 'inspection', label: 'Protokol o evidenční kontrole (ne starší než 1 rok).' },
+          { key: 'insurance', label: 'Povinné ručení sjednané kupujícím — úřad je ověří u České kanceláře pojistitelů, zelená karta se nepředkládá.' },
+          { key: 'inspection', label: 'Platná evidenční kontrola: platí 2 roky; u auta s platnou pravidelnou STK ji nahrazuje protokol z STK, u ojetiny mladší 4 let ji nechte udělat.' },
           { key: 'poa', label: 'Plná moc s úředně ověřeným podpisem, pokud jedna strana není přítomna.', link: { href: '/plna-moc', label: 'Plná moc' } },
         ],
       },

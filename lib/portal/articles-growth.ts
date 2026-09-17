@@ -17,6 +17,8 @@ const MPSV_MZDA = { label: 'MPSV — Minimální mzda', href: 'https://mpsv.gov.
 const CSSZ_JMHZ = { label: 'ČSSZ — Co je JMHZ', href: 'https://www.cssz.gov.cz/co-je-jmhz-' };
 const VOZIDLA = { label: 'Zákon č. 56/2001 Sb., o podmínkách provozu vozidel — e-Sbírka', href: 'https://www.e-sbirka.cz/sb/2001/56' };
 const HOTOVOST = { label: 'Zákon č. 254/2004 Sb., o omezení plateb v hotovosti — e-Sbírka', href: 'https://www.e-sbirka.cz/sb/2004/254' };
+const MD_ZMENA_VLASTNIKA = { label: 'Ministerstvo dopravy — Změna vlastníka vozidla (životní situace)', href: 'https://md.gov.cz/Zivotni-situace/Registr-vozidel/zmena-vlastnika' };
+const MD_EVIDENCNI_KONTROLA = { label: 'Ministerstvo dopravy — Prodloužená platnost evidenční kontroly (od 1. 7. 2025)', href: 'https://md.gov.cz/Media/Media-a-tiskove-zpravy/Prodlouzena-platnost-evidencni-kontroly-osobnich-a' };
 
 export const GROWTH_ARTICLES: readonly AnswerFirstArticle[] = [
   // ── Zakázka ─────────────────────────────────────────────────────────────
@@ -376,13 +378,13 @@ export const GROWTH_ARTICLES: readonly AnswerFirstArticle[] = [
     steps: [
       { title: 'Zkontrolujte zkušební dobu a doručování', text: 'Zkušební doba nejvýše 4 měsíce (8 u vedoucích), u doby určité nejvýše polovina sjednané doby; ujednání o doručování sladit s § 334 a násl. ZP.' },
       { title: 'Aktualizujte informaci podle § 37 ZP', text: 'Písemná informace do 7 dnů od vzniku pracovního poměru — pokud ji vzor neobsahuje, doplňte samostatný dokument.' },
-      { title: 'Připravte mzdové sazby na 2027', text: 'Po vyhlášení minimální mzdy pro rok 2027 přepočítejte hodinové sazby a zaručené mzdy; dokud není vyhlášena, počítejte s růstem.' },
+      { title: 'Připravte mzdové sazby na 2027', text: 'Po vyhlášení minimální mzdy pro rok 2027 přepočítejte hodinové sazby; dokud není vyhlášena, počítejte s růstem. Zaručená mzda podle skupin prací v podnikatelské sféře od 1. 1. 2025 neplatí — hlídáte jen minimální mzdu (zaručený plat zůstává u zaměstnavatelů odměňujících platem).' },
       { title: 'Ověřte procesy hlášení', text: 'Nástup a změny hlaste jednotným měsíčním hlášením; mzdový software musí umět podání i potvrzení.' },
     ],
     risks: [
       { title: 'Starší vzor s výpovědní dobou od 1. dne měsíce', text: 'Po flexinovele běží zpravidla ode dne doručení; staré formulace matou obě strany.' },
       { title: 'Zkušební doba sjednaná po nástupu', text: 'Lze ji sjednat nejpozději v den nástupu; pozdější ujednání je neplatné.' },
-      { title: 'Mzda pod minimální/zaručenou', text: 'Nová hodnota pro 2027 platí od 1. 1. 2027; nezapomeňte na zaručenou mzdu podle skupiny prací.' },
+      { title: 'Mzda pod minimální mzdou', text: 'Nová hodnota pro 2027 platí od 1. 1. 2027 i pro hodinové sazby v DPP a DPČ. Starší vzory a checklisty se skupinami zaručené mzdy jsou pro podnikatelskou sféru zastaralé.' },
     ],
     documents: [
       { href: '/pracovni', label: 'Vytvořit pracovní smlouvu (aktuální vzor)' },
@@ -536,7 +538,7 @@ export const GROWTH_ARTICLES: readonly AnswerFirstArticle[] = [
       'Zápis změny vlastníka do 10 pracovních dnů od převodu: zákon č. 56/2001 Sb. Omezení hotovosti 270 000 Kč: zákon č. 254/2004 Sb.',
     ],
     steps: [
-      { title: 'Doklady a stav', text: 'Technický průkaz / ORV, servisní kniha, STK, evidenční kontrola (ne starší než 1 rok). Sepište známé vady a historii.' },
+      { title: 'Doklady a stav', text: 'Osvědčení o registraci, technický průkaz (byl-li vydán), servisní kniha, platná STK. Evidenční kontrola platí 2 roky a u auta s platnou pravidelnou STK ji nahrazuje protokol z STK; úřad si ji ověří sám. Sepište známé vady a historii.' },
       { title: 'Inzerát a prohlídka', text: 'Uveďte VIN, rok, nájezd, výbavu a vady; umožněte prohlídku v servisu. Zamlčená vada se vrací jako reklamace.' },
       { title: 'Kupní smlouva', text: 'Identifikace stran, VIN, SPZ, stav tachometru, cena a způsob úhrady, výčet vad, kdo a do kdy zajistí přepis.' },
       { title: 'Platba', text: 'Převodem před předáním, nebo hotově do 270 000 Kč proti podpisu. Nepředávejte vozidlo bez uhrazené ceny.' },
@@ -562,7 +564,7 @@ export const GROWTH_ARTICLES: readonly AnswerFirstArticle[] = [
       { href: '/blog/doklady-pri-prodeji-auta-2026', label: 'Doklady při prodeji auta' },
       { href: '/prodej-vozidla/odpovednost-prodavajiciho-za-vady', label: 'Odpovědnost prodávajícího za vady' },
     ],
-    sources: [OZ, VOZIDLA, HOTOVOST],
+    sources: [OZ, VOZIDLA, HOTOVOST, MD_ZMENA_VLASTNIKA, MD_EVIDENCNI_KONTROLA],
     updatedAt: UPDATED,
     verifiedAt: UPDATED,
   },
@@ -586,7 +588,7 @@ export const GROWTH_ARTICLES: readonly AnswerFirstArticle[] = [
       { title: 'Prohlídka a jízda', text: 'Nezávislý technik nebo servis; kontrola laku, podvozku, elektroniky, chybových kódů.' },
       { title: 'Smlouva', text: 'VIN, SPZ, stav tachometru, prohlášení o nájezdu a nehodách, vyjmenované vady, cena, okamžik přechodu vlastnictví, kdo zajistí přepis.' },
       { title: 'Předání a pojištění', text: 'Protokol s klíči a doklady; povinné ručení od okamžiku převzetí.' },
-      { title: 'Přepis', text: 'Do 10 pracovních dnů společně nebo plnou mocí; potřebujete zelenou kartu a evidenční kontrolu.' },
+      { title: 'Přepis', text: 'Do 10 pracovních dnů společně nebo plnou mocí. Sjednejte si povinné ručení předem — úřad je ověří u České kanceláře pojistitelů, zelená karta se nepředkládá; evidenční kontrolu ověří úřad, u ojetiny mladší 4 let ji nechte udělat.' },
     ],
     risks: [
       { title: 'Koupě bez smlouvy nebo s minimální smlouvou', text: 'Bez zapsaného stavu tachometru a vad prokazujete zamlčení jen těžko.' },
@@ -606,7 +608,7 @@ export const GROWTH_ARTICLES: readonly AnswerFirstArticle[] = [
       { href: '/prodej-vozidla/skryta-vada-auta', label: 'Skrytá vada auta' },
       { href: '/prodej-vozidla/vady-ojeteho-auta', label: 'Vady ojetého auta — reklamace' },
     ],
-    sources: [OZ, VOZIDLA],
+    sources: [OZ, VOZIDLA, MD_ZMENA_VLASTNIKA, MD_EVIDENCNI_KONTROLA],
     updatedAt: UPDATED,
     verifiedAt: UPDATED,
   },
@@ -710,7 +712,7 @@ export const GROWTH_ARTICLES: readonly AnswerFirstArticle[] = [
       { title: 'Rozhodněte, kdo přepis vyřídí', text: 'Nejčastěji kupující; prodávající mu dá plnou moc. Nebo obráceně, případně třetí osoba.' },
       { title: 'Sepište plnou moc', text: 'Zmocnitel, zmocněnec (jméno, datum narození, adresa), vozidlo (tovární značka, VIN, SPZ), rozsah (podání žádosti o zápis změny vlastníka, převzetí dokladů), datum a podpis.' },
       { title: 'Ověřte podpis', text: 'Czech POINT, notář, obecní úřad; nebo podepište uznávaným elektronickým podpisem.' },
-      { title: 'Podejte žádost do 10 pracovních dnů', text: 'S plnou mocí, doklady totožnosti, technickým průkazem, zelenou kartou a evidenční kontrolou.' },
+      { title: 'Podejte žádost do 10 pracovních dnů', text: 'S plnou mocí, dokladem totožnosti, osvědčením o registraci a technickým průkazem (byl-li vydán). Povinné ručení i platnou evidenční kontrolu ověří úřad sám — zelená karta se nepředkládá.' },
     ],
     risks: [
       { title: 'Neověřený podpis', text: 'Úřad plnou moc bez ověřeného podpisu odmítne; lhůta 10 dnů běží dál.' },
@@ -727,7 +729,7 @@ export const GROWTH_ARTICLES: readonly AnswerFirstArticle[] = [
       { href: '/blog/prepis-auta-online-portal-dopravy-2026', label: 'Přepis online přes Portál dopravy' },
       { href: '/blog/plna-moc-2026', label: 'Plná moc 2026 — obecně' },
     ],
-    sources: [OZ, VOZIDLA],
+    sources: [OZ, VOZIDLA, MD_ZMENA_VLASTNIKA],
     updatedAt: UPDATED,
     verifiedAt: UPDATED,
   },

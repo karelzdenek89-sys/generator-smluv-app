@@ -39,7 +39,15 @@ Oddělení dat:
 | Vrstva | Kde | Co | Retence |
 |---|---|---|---|
 | DOCUMENT DATA | `contract:draft:*` | celý payload smlouvy | 7/30/90 dní |
-| CASE DATA | `case:*` | e-mail vlastníka, název, role, termín, cena/režim, fáze, úkoly, události, připomínky, data navazujících dokumentů | 365 dní od poslední změny; uzavřená zakázka 180 dní; nezaplacený rozpracovaný dokument 30 dní (revize polí: docs/DATA_MAP.md) |
+| CASE DATA | `case:*` | e-mail vlastníka, název, role, termín, cena/režim (jen CZK, haléře zachovány), fáze, úkoly, události, připomínky, data a neměnný snapshot navazujících dokumentů | 365 dní od poslední změny; uzavřená zakázka 180 dní od `closedAt`; nezaplacený rozpracovaný dokument 30 dní s denním úklidem (revize polí: docs/DATA_MAP.md) |
+
+### Integrita a souběh (2026-09-17, po nezávislém review)
+
+- **Compare-and-set:** `saveCase` zapisuje jen při shodě revize (`case:rev:{id}`, Lua skript); `commitCase(caseId, mutate)` načte čerstvý záznam, aplikuje změnu a při konfliktu zopakuje. Všechny mutace (akce, dokumenty, webhook, cron) jdou přes něj — starý snapshot z klienta nikdy nepřepíše potvrzenou platbu. Otevření případu zapisuje pouze `case:seen:{id}`.
+- **Neměnný dokument:** `prepareCaseDocument` zmrazí sekce, název a termín zakázky a verzi šablony (`CASE_DOCUMENT_TEMPLATE_VERSION`) do `documents[].snapshot`; download renderuje ze snapshotu a datum bere z `createdAt`. Dokumenty bez snapshotu (před 2026-09-17) se renderují z aktuálního stavu a nesou označení `legacy`.
+- **Text se nekrátí:** jediný limit je validace (textarea 4 000 znaků) před platbou; PDF stránkuje.
+- **Checkout bez dvojí platby:** zámek na dokument, opětovné použití otevřené session, označení zaplacené session bez webhooku, expirace nahrazované session, idempotency key `case-doc:{documentId}:{attempt}`; návratová URL nese `session_id` a sync ověřuje právě tuto session (musí být zmapovaná na dokument). Přístupový token po návratu drží sessionStorage; bez něj vede stránka na `/moje-zakazka/obnovit`.
+- **Cena díla:** přebírá se jen v CZK a s haléři; cizí měna se do případu nepřenáší.
 
 Do případu se **nekopíruje** jméno, adresa, IČO ani kontakt protistrany.
 Jména stran do navazujícího dokumentu zadává uživatel ručně (a sdílejí se mezi

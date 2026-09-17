@@ -141,7 +141,7 @@ export const PORTAL_SITUATIONS: readonly PortalSituation[] = [
     key: 'auto',
     area: 'auto',
     label: 'Prodávám nebo kupuji auto',
-    title: 'Prodej a koupě auta bez rizika',
+    title: 'Prodej a koupě auta s jasnými pravidly',
     description:
       'Kupní smlouva na vozidlo, předání, přepis a vady ojetého auta — co potřebujete a v jakém pořadí.',
     hubHref: '/prodej-vozidla',

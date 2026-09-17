@@ -5,7 +5,7 @@ import { recordAnalyticsEvent } from '@/lib/analytics-server';
 import { issueCaseAccessToken } from '@/lib/cases/access';
 import { buildCaseUrl, sendReminderEmail } from '@/lib/cases/emails';
 import { isCaseEngineEnabled } from '@/lib/cases/service';
-import { getCase, listDueReminders, newEvent, removeDueReminder, saveCase } from '@/lib/cases/store';
+import { commitCase, getCase, listDueReminders, newEvent, purgeExpiredPendingDocuments, removeDueReminder } from '@/lib/cases/store';
 import { isTransactionalEmailConfigured } from '@/lib/email/transactional';
 
 export const runtime = 'nodejs';
@@ -45,9 +45,16 @@ export async function GET(req: Request) {
     return NextResponse.json({ ok: true, skipped: 'locked' });
   }
 
-  const summary = { due: 0, sent: 0, skipped: 0, failed: 0 };
+  const summary = { due: 0, sent: 0, skipped: 0, failed: 0, purgedDocuments: 0 };
   try {
     const now = Date.now();
+    // Retence: fyzický výmaz nezaplacených dokumentů po 30 dnech (docs/DATA_MAP.md).
+    try {
+      const purge = await purgeExpiredPendingDocuments(now);
+      summary.purgedDocuments = purge.purged;
+    } catch (error) {
+      console.error('[cron] pending document purge failed', error instanceof Error ? error.name : 'unknown');
+    }
     const due = await listDueReminders(now, BATCH_LIMIT);
     summary.due = due.length;
 
@@ -69,13 +76,13 @@ export async function GET(req: Request) {
           continue;
         }
         const sentAt = new Date().toISOString();
-        await saveCase({
-          ...record,
-          reminders: record.reminders.map((item) =>
+        await commitCase(record.id, (fresh) => ({
+          ...fresh,
+          reminders: fresh.reminders.map((item) =>
             item.id === reminder.id ? { ...item, status: 'sent', sentAt } : item,
           ),
-          events: [...record.events, newEvent('reminder_sent', `Připomínka termínu odeslána (${reminder.offsetDays} dní předem)`, sentAt)],
-        });
+          events: [...fresh.events, newEvent('reminder_sent', `Připomínka termínu odeslána (${reminder.offsetDays} dní předem)`, sentAt)],
+        }));
         await removeDueReminder(ref.member);
         await recordAnalyticsEvent('reminder_sent', {
           source: 'cron',
@@ -94,6 +101,6 @@ export async function GET(req: Request) {
     await redis.del(LOCK_KEY).catch(() => undefined);
   }
 
-  console.log(`[cron] reminders due=${summary.due} sent=${summary.sent} skipped=${summary.skipped} failed=${summary.failed}`);
+  console.log(`[cron] reminders due=${summary.due} sent=${summary.sent} skipped=${summary.skipped} failed=${summary.failed} purgedDocuments=${summary.purgedDocuments}`);
   return NextResponse.json({ ok: summary.failed === 0, ...summary });
 }

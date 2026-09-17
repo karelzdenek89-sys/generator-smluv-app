@@ -323,6 +323,24 @@ function testGrowthClusters() {
   const summary = summarizeGrowthReport(report).find((entry) => entry.cluster === 'zakazka');
   eq(summary?.purchases, 1, 'cluster summary aggregates purchases');
 
+  // Věcné opravy po nezávislém review (2026-09-17): přepis vozidla podle MD, zaručená mzda podle MPSV.
+  const vehicleTexts = [
+    ...PORTAL_TOOLS.filter((tool) => tool.situation === 'auto').flatMap((tool) => [tool.answer, tool.metaDescription, ...(tool.kind === 'checklist' ? tool.sections.flatMap((section) => section.items.map((item) => item.label)) : [])]),
+    ...ANSWER_FIRST_ARTICLES.filter((article) => article.situation === 'auto').flatMap((article) => [article.answer, ...article.steps.map((step) => step.text), ...article.risks.map((risk) => risk.text)]),
+  ].join('\n');
+  ok(!/zelen(ou|á) kart[ua](?![\s\S]{0,80}nepředkládá)/i.test(vehicleTexts), 'vehicle content never lists the green card as a document to present');
+  ok(!/ne starší než (1 rok|rok)/i.test(vehicleTexts), 'vehicle content no longer claims a one-year evidenční kontrola');
+  ok(/nepředkládá/.test(vehicleTexts) && /2 roky|dva roky/.test(vehicleTexts), 'vehicle content states MD rules: no green card, EK valid 2 years');
+  const transferTool = PORTAL_TOOLS.find((tool) => tool.slug === 'prepis-vozidla-co-potrebuji');
+  ok(transferTool?.sources.some((source) => source.href.includes('md.gov.cz')), 'transfer checklist cites the Ministry of Transport');
+  const wageTexts = [
+    ...PORTAL_TOOLS.filter((tool) => tool.situation === 'zamestnavam').flatMap((tool) => [tool.answer, ...(tool.kind === 'checklist' ? tool.sections.flatMap((section) => section.items.map((item) => item.label)) : [])]),
+    ...ANSWER_FIRST_ARTICLES.filter((article) => article.situation === 'zamestnavam').flatMap((article) => [article.answer, ...article.steps.map((step) => step.text), ...article.risks.map((risk) => risk.text)]),
+    ...LEGAL_CHANGES.flatMap((change) => [...change.whatChanges, ...change.whatToDo]),
+  ].join('\n');
+  ok(!/zaručen(á|é|ou) mzd[aeuy](?![\s\S]{0,160}(neplatí|zastaral))/i.test(wageTexts), 'employer content never presents zaručená mzda as a live obligation in the business sphere');
+  ok(!/skupin[ya]? prací(?![\s\S]{0,160}(neplatí|zastaral))/i.test(wageTexts), 'employer content no longer sends employers to wage groups');
+
   // Jednotná cenová věta.
   eq(PRICE_TRANSPARENCY_LINE, 'Standard od 99 Kč · Rozšířená varianta od 199 Kč. Konkrétní doporučení podle zadané situace uvidíte před objednávkou.', 'single price transparency line');
 }

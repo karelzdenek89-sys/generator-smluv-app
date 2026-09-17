@@ -14,8 +14,10 @@
  *   - to, co vlastník sám zapíše do navazujícího dokumentu (`documents[].data`,
  *     např. jména stran v předávacím protokolu) nebo do poznámky (`events`).
  *
- * Retence (lib/cases/store.ts): 365 dní od poslední změny, uzavřená zakázka
- * 180 dní, nezaplacený rozpracovaný dokument 30 dní.
+ * Retence (lib/cases/store.ts): 365 dní od poslední změny; uzavřená zakázka
+ * 180 dní od uzavření (pevný termín, další zápisy jej neprodlužují);
+ * nezaplacený rozpracovaný dokument 30 dní od vytvoření — po uplynutí se
+ * neservíruje a denní úklid (cron) jej fyzicky odstraní.
  */
 
 export const CASE_KINDS = ['work_order'] as const;
@@ -51,6 +53,18 @@ export type CaseDocumentKind = (typeof CASE_DOCUMENT_KINDS)[number];
 
 export type CaseDocumentStatus = 'pending_payment' | 'ready';
 
+/**
+ * Neměnná podoba dokumentu zachycená při jeho vytvoření. Stažení nikdy
+ * neskládá vydaný dokument znovu z aktuálního stavu zakázky — změna termínu
+ * nebo názvu zakázky smí ovlivnit jen dokumenty vytvořené později.
+ */
+export type CaseDocumentSnapshot = {
+  templateVersion: string;
+  caseTitle: string;
+  caseDeadline: string | null;
+  sections: readonly { title: string; body: readonly string[] }[];
+};
+
 export type CaseDocument = {
   id: string;
   kind: CaseDocumentKind;
@@ -61,6 +75,10 @@ export type CaseDocument = {
   /** `included` = součást balíčku Zakázka Plus; `paid` = samostatně zaplaceno. */
   entitlement: 'included' | 'paid';
   stripeSessionId?: string | null;
+  /** Kolikrát byla pro dokument založena platební session (idempotence). */
+  checkoutAttempts?: number;
+  /** Chybí jen u dokumentů vytvořených před 2026-09-17 (renderují se z aktuálního stavu). */
+  snapshot?: CaseDocumentSnapshot;
   createdAt: string;
   paidAt?: string | null;
 };
@@ -129,6 +147,8 @@ export type CaseRecord = {
   ownerRole: CaseOwnerRole;
   title: string;
   stage: CaseStage;
+  /** Kdy byla zakázka označena jako uzavřená — od tohoto data běží 180denní výmaz. */
+  closedAt?: string | null;
   startDate: string | null;
   deadline: string | null;
   priceAmountCzk: number | null;
@@ -139,6 +159,8 @@ export type CaseRecord = {
   events: CaseEvent[];
   reminders: CaseReminder[];
   remindersEnabled: boolean;
+  /** Optimistická verze záznamu; každý zápis ji zvyšuje (compare-and-set v Redis). */
+  revision?: number;
   createdAt: string;
   updatedAt: string;
   lastAccessAt: string;

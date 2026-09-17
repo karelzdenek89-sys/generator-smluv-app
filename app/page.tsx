@@ -102,8 +102,8 @@ const faqItems = [
   {
     question: 'Jsou bezpečně uložena moje data?',
     answer: FREE_BASIC_DPP
-      ? 'Údaje bezplatné základní DPP jsou v šifrovaném úložišti dostupné 24 hodin. U placených dokumentů je doba 7–30 dní, případně 90 dní s doplňkem archivace; poté se data automaticky smažou. Platební údaje zpracovává výhradně Stripe.'
-      : 'Údaje jsou uloženy pouze dočasně v šifrovaném úložišti po dobu 7–30 dní dle zakoupeného dokumentu, případně 90 dní s doplňkem archivace, a poté automaticky smazány. Platební údaje zpracovává výhradně Stripe — na naše servery se nikdy nedostanou.',
+      ? 'Údaje bezplatné základní DPP jsou v šifrovaném úložišti dostupné 24 hodin. U placených dokumentů je doba 7–30 dní, případně 90 dní s doplňkem archivace; poté se data automaticky smažou. Volitelná Moje zakázka (jen u smlouvy o dílo) se uchovává 12 měsíců od poslední změny, uzavřená 6 měsíců. Platební údaje zpracovává výhradně Stripe.'
+      : 'Údaje dokumentu jsou uloženy pouze dočasně v šifrovaném úložišti po dobu 7–30 dní dle zakoupeného dokumentu, případně 90 dní s doplňkem archivace, a poté automaticky smazány. Volitelná Moje zakázka (jen u smlouvy o dílo) se uchovává 12 měsíců od poslední změny, uzavřená 6 měsíců, a kdykoli ji můžete smazat. Platební údaje zpracovává výhradně Stripe — na naše servery se nikdy nedostanou.',
   },
   {
     question: 'Je to náhrada individuální právní služby?',
@@ -252,17 +252,35 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-2 md:hidden">
-            <Link
-              href="/blog"
-              className="rounded-lg border border-white/10 px-2.5 py-1.5 text-[11px] font-semibold text-slate-400 hover:text-white"
-            >
-              Blog
-            </Link>
             <LanguageSwitcher current="cs" variant="desktop" />
+            {/* Mobilní menu bez JS: stejné vstupy jako na desktopu (Situace, Dokumenty, Nástroje, Změny 2027, Blog). */}
+            <details className="group relative">
+              <summary
+                className="flex cursor-pointer select-none list-none items-center gap-1.5 rounded-lg border border-[#c9a852]/30 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-[#c9a852] [&::-webkit-details-marker]:hidden"
+                aria-label="Otevřít menu"
+              >
+                Menu <span aria-hidden="true" className="text-[10px] transition-transform group-open:rotate-180">▾</span>
+              </summary>
+              <div className="absolute right-0 z-40 mt-2 w-56 rounded-xl border border-[#c9a852]/25 bg-[#040c1a]/95 p-2 text-sm shadow-[0_18px_60px_rgba(0,0,0,0.45)] backdrop-blur-md">
+                {[
+                  { href: '#situace', label: 'Situace' },
+                  { href: '#smlouvy', label: 'Dokumenty' },
+                  { href: '/nastroje', label: 'Nástroje zdarma' },
+                  { href: '/zmeny-2027', label: 'Změny 2027' },
+                  { href: '/blog', label: 'Blog' },
+                  { href: '/zakaznicka-zona', label: 'Moje dokumenty' },
+                ].map((item) => (
+                  <Link key={item.href} href={item.href} className="block rounded-lg px-3 py-2 text-slate-200 hover:bg-white/5 hover:text-white">
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            </details>
           </div>
         </nav>
 
-        <div className="relative z-10 mx-auto w-full max-w-7xl px-6 md:px-10">
+        {/* Na mobilu až pod hlavní akcí, aby hero začínalo H1 a CTA. */}
+        <div className="relative z-10 order-2 mx-auto w-full max-w-7xl px-6 pb-8 md:order-none md:px-10 md:pb-0">
           <div className="flex flex-col gap-3 rounded-2xl border border-[#c9a852]/25 bg-[#040c1a]/75 px-4 py-3 text-sm text-slate-300 shadow-[0_18px_60px_rgba(0,0,0,0.25)] backdrop-blur-sm md:flex-row md:items-center md:justify-between">
             <div className="flex flex-col gap-1 leading-relaxed md:flex-row md:flex-wrap md:items-center md:gap-x-3 md:gap-y-1">
               <span className="font-semibold text-white">Potřebujete smlouvu v cizím jazyce?</span>
@@ -273,17 +291,17 @@ export default function Home() {
         </div>
 
         {/* Hero content */}
-        <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-6 pb-24 pt-6 md:px-10">
+        <div className="relative z-10 order-1 mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-6 pb-10 pt-4 md:order-none md:px-10 md:pb-24 md:pt-6">
           <div className="max-w-2xl">
 
-            <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-[#c9a852]/25 bg-[#040c1a]/70 px-4 py-2 backdrop-blur-sm">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#c9a852]/25 bg-[#040c1a]/70 px-4 py-2 backdrop-blur-sm md:mb-7">
               <span className="h-1.5 w-1.5 rounded-full bg-[#c9a852]" />
               <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#c9a852]">
                 Aktualizováno · Česká legislativa 2026
               </span>
             </div>
 
-            <h1 className="font-serif italic text-5xl font-bold leading-[1.10] tracking-tight text-white md:text-6xl lg:text-[4.5rem]">
+            <h1 className="font-serif italic text-4xl font-bold leading-[1.10] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-[4.5rem]">
               Smlouvy online
               <br />
               pro důležité <span className="text-[#c9a852]">životní</span>
@@ -291,14 +309,14 @@ export default function Home() {
               a podnikatelské situace.
             </h1>
 
-            <p className="mt-6 text-xl font-semibold text-slate-200">Od první dohody až po poslední předání.</p>
+            <p className="mt-4 text-lg font-semibold text-slate-200 md:mt-6 md:text-xl">Od první dohody až po poslední předání.</p>
 
-            <p className="mt-4 max-w-lg text-lg leading-relaxed text-slate-300">
-              Vyberte, co právě řešíte. Připravíme potřebné dokumenty, vysvětlíme další kroky
-              a pomůžeme vám pohlídat důležité termíny.
+            <p className="mt-3 max-w-lg text-base leading-relaxed text-slate-300 md:mt-4 md:text-lg">
+              Vyberte, co právě řešíte. Nejdřív zjistíte postup a cenu, pak dokument. U smlouvy o dílo
+              můžete pokračovat v Moje zakázka: termín, připomínky a další dokumenty na jednom místě.
             </p>
 
-            <div className="mt-9 flex flex-wrap items-center gap-4">
+            <div className="mt-6 flex flex-wrap items-center gap-4 md:mt-9">
               <Link
                 href="#situace"
                 className="inline-flex items-center gap-2 rounded-xl bg-[#c9a852] px-8 py-4 text-base font-bold text-[#040c1a] transition-all duration-200 hover:bg-[#d4b86a] hover:shadow-[0_0_32px_rgba(201,168,82,0.35)]"
@@ -310,12 +328,12 @@ export default function Home() {
               </Link>
             </div>
 
-            <div className="mt-9 flex flex-wrap items-center gap-x-5 gap-y-2">
+            <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 md:mt-9">
               {[
                 '✓ Zákonná struktura OZ/ZP',
                 '✓ PDF ihned ke stažení',
                 FREE_BASIC_DPP ? '✓ Základní DPP bez platby' : '✓ Bezpečná platba Stripe',
-                FREE_BASIC_DPP ? '✓ Data základní DPP smazána po 24 hodinách' : '✓ Data smazána po 7–30 dnech, s add-onem 90 dní',
+                FREE_BASIC_DPP ? '✓ Data základní DPP smazána po 24 hodinách' : '✓ Data dokumentu smazána po 7–30 dnech, s add-onem 90 dní',
               ].map(t => (
                 <span key={t} className="text-sm text-slate-400">{t}</span>
               ))}
@@ -324,7 +342,7 @@ export default function Home() {
         </div>
 
         {/* Scroll hint */}
-        <div className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 flex flex-col items-center gap-1.5 opacity-40">
+        <div className="absolute bottom-8 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-1.5 opacity-40 md:flex">
           <div className="h-8 w-px bg-gradient-to-b from-transparent to-[#c9a852]" />
           <span className="text-[10px] uppercase tracking-[0.25em] text-[#c9a852]">Smlouvy</span>
         </div>
@@ -339,7 +357,7 @@ export default function Home() {
             <p className="site-kicker mb-2">Co právě řešíte?</p>
             <h2 id="situace-title" className="font-serif italic text-4xl font-bold text-white md:text-5xl">Vyberte situaci, ne paragraf</h2>
             <p className="mt-3 text-base leading-relaxed text-slate-400">
-              Každá situace má odpověď, bezplatný nástroj, správný dokument a přehled dalších kroků.
+              Každá situace má odpověď, správný dokument a přehled dalších kroků; u zakázky, zaměstnávání, auta a pronájmu také bezplatný checklist nebo průvodce.
               {PRICE_TRANSPARENCY_LINE} Nástroje jsou zdarma.
             </p>
           </div>
@@ -347,6 +365,52 @@ export default function Home() {
           <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-slate-400">
             <Link href="/zmeny-2027" className="transition-colors hover:text-white">Sleduji změny zákonů → Legislativní radar 2027</Link>
             <Link href="/nastroje" className="transition-colors hover:text-white">Všechny nástroje zdarma →</Link>
+          </div>
+        </section>
+
+        <div className="my-16 h-px bg-gradient-to-r from-transparent via-[#c9a852]/20 to-transparent md:my-20" />
+
+        {/* ── NÁSTROJE ZDARMA + RADAR ──────────────────────────────────────────── */}
+        <section id="nastroje" className="scroll-mt-24" aria-labelledby="nastroje-title">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
+            <div>
+              <p className="site-kicker mb-2">Nástroje zdarma</p>
+              <h2 id="nastroje-title" className="font-serif italic text-3xl font-bold text-white md:text-4xl">Rozhodněte se dřív, než něco zaplatíte</h2>
+              <p className="mt-3 text-base leading-relaxed text-slate-400">
+                Checklisty a průvodci dají výsledek hned — bez e-mailu a bez registrace.
+              </p>
+              <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                {HOMEPAGE_TOOLS.map((tool) => (
+                  <Link key={tool.slug} href={`/nastroje/${tool.slug}`} className="site-content-card group rounded-2xl p-4 transition hover:border-[#c9a852]/40">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">{tool.kind === 'wizard' ? 'Průvodce' : 'Checklist'}</span>
+                    <span className="mt-1 block text-sm font-semibold text-white group-hover:text-[#e2c77b]">{tool.title}</span>
+                  </Link>
+                ))}
+              </div>
+              <Link href="/nastroje" className="mt-5 inline-block text-sm font-semibold text-[#c9a852] transition-colors hover:text-[#f2d58a]">
+                Všechny nástroje →
+              </Link>
+            </div>
+            <div className="site-content-card rounded-[1.5rem] p-6">
+              <p className="site-kicker mb-2">Legislativní radar 2027</p>
+              <h3 className="font-serif italic text-2xl font-bold text-white">Co platí, co je schválené a co se teprve projednává</h3>
+              <ul className="mt-4 space-y-3">
+                {HOMEPAGE_RADAR.map((change) => (
+                  <li key={change.key} className="flex items-start justify-between gap-3 text-sm">
+                    <Link href={`/zmeny-2027#${change.key}`} className="text-slate-300 transition-colors hover:text-white">{change.title}</Link>
+                    <span className={`flex-shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-widest ${
+                      change.status === 'in_force' ? 'border-emerald-500/40 text-emerald-300' : change.status === 'approved_pending' ? 'border-sky-500/40 text-sky-300' : 'border-amber-500/40 text-amber-300'
+                    }`}>
+                      {LEGAL_CHANGE_STATUS_LABELS[change.status]}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-4 text-xs text-slate-500">Každá položka má datum účinnosti, oficiální zdroj a datum poslední kontroly.</p>
+              <Link href="/zmeny-2027" className="mt-4 inline-block text-sm font-semibold text-[#c9a852] transition-colors hover:text-[#f2d58a]">
+                Otevřít radar 2027 →
+              </Link>
+            </div>
           </div>
         </section>
 
@@ -362,7 +426,7 @@ export default function Home() {
               </h2>
               <p className="mt-4 text-base leading-relaxed text-slate-400">
                 Smlouva je jen začátek. U zakázky přijde změna rozsahu, vícepráce, předání a někdy vady.
-                U pronájmu předání bytu, kauce a ukončení. Dokumenty na sebe navazují a termíny pohlídáme za vás.
+                U pronájmu předání bytu, kauce a ukončení. Dokumenty na sebe navazují; u smlouvy o dílo můžete pokračovat v Moje zakázka s termínem, připomínkami a dalšími dokumenty.
               </p>
               <ul className="mt-5 space-y-2 text-sm text-slate-300">
                 {[
@@ -475,52 +539,6 @@ export default function Home() {
               PDF zůstává v češtině; u vybraných smluv může být přiložen orientační překlad (ne úřední).
             </p>
             <ExpatEntryLinks className="mt-5 flex flex-wrap gap-2" showBlogLink />
-          </div>
-        </section>
-
-        <div className="my-20 h-px bg-gradient-to-r from-transparent via-[#c9a852]/20 to-transparent md:my-24" />
-
-        {/* ── NÁSTROJE ZDARMA + RADAR ──────────────────────────────────────────── */}
-        <section id="nastroje" className="scroll-mt-24" aria-labelledby="nastroje-title">
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
-            <div>
-              <p className="site-kicker mb-2">Nástroje zdarma</p>
-              <h2 id="nastroje-title" className="font-serif italic text-3xl font-bold text-white md:text-4xl">Rozhodněte se dřív, než něco zaplatíte</h2>
-              <p className="mt-3 text-base leading-relaxed text-slate-400">
-                Checklisty a průvodci dají výsledek hned — bez e-mailu a bez registrace.
-              </p>
-              <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                {HOMEPAGE_TOOLS.map((tool) => (
-                  <Link key={tool.slug} href={`/nastroje/${tool.slug}`} className="site-content-card group rounded-2xl p-4 transition hover:border-[#c9a852]/40">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">{tool.kind === 'wizard' ? 'Průvodce' : 'Checklist'}</span>
-                    <span className="mt-1 block text-sm font-semibold text-white group-hover:text-[#e2c77b]">{tool.title}</span>
-                  </Link>
-                ))}
-              </div>
-              <Link href="/nastroje" className="mt-5 inline-block text-sm font-semibold text-[#c9a852] transition-colors hover:text-[#f2d58a]">
-                Všechny nástroje →
-              </Link>
-            </div>
-            <div className="site-content-card rounded-[1.5rem] p-6">
-              <p className="site-kicker mb-2">Legislativní radar 2027</p>
-              <h3 className="font-serif italic text-2xl font-bold text-white">Co platí, co je schválené a co se teprve projednává</h3>
-              <ul className="mt-4 space-y-3">
-                {HOMEPAGE_RADAR.map((change) => (
-                  <li key={change.key} className="flex items-start justify-between gap-3 text-sm">
-                    <Link href={`/zmeny-2027#${change.key}`} className="text-slate-300 transition-colors hover:text-white">{change.title}</Link>
-                    <span className={`flex-shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-widest ${
-                      change.status === 'in_force' ? 'border-emerald-500/40 text-emerald-300' : change.status === 'approved_pending' ? 'border-sky-500/40 text-sky-300' : 'border-amber-500/40 text-amber-300'
-                    }`}>
-                      {LEGAL_CHANGE_STATUS_LABELS[change.status]}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-4 text-xs text-slate-500">Každá položka má datum účinnosti, oficiální zdroj a datum poslední kontroly.</p>
-              <Link href="/zmeny-2027" className="mt-4 inline-block text-sm font-semibold text-[#c9a852] transition-colors hover:text-[#f2d58a]">
-                Otevřít radar 2027 →
-              </Link>
-            </div>
           </div>
         </section>
 

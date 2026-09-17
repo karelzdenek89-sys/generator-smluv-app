@@ -216,7 +216,7 @@ export default function TermsPage() {
                 V zakázce lze vytvářet navazující dokumenty (předávací protokol k dílu, změnový list, potvrzení víceprací, zápis o vadách, oznámení vad a výzva k jejich odstranění) z údajů, které Zákazník doplní. U zakázek založených z balíčku Zakázka Plus jsou tyto dokumenty zahrnuty v ceně balíčku; jinak stojí každý dokument {CASE_DOCUMENT_PRICE_LABEL} a jde o digitální obsah podle čl. 04 (výslovný souhlas s okamžitým dodáním, ztráta práva na odstoupení úplným dodáním). Dokument je dostupný ke stažení po dobu trvání zakázky.
               </p>
               <p className="text-xs text-slate-400">
-                Zakázka bez aktivity se automaticky maže 12 měsíců od poslední změny, uzavřená zakázka 6 měsíců od uzavření; rozpracovaný nezaplacený navazující dokument se maže po 30 dnech. Do zakázky se nekopíruje obsah smlouvy, kontaktní údaje protistrany ani identifikátor platby. Poskytovatel neodpovídá za dodržení termínů Zákazníkem; připomínky jsou pomocný nástroj, nikoli právní služba.
+                Zakázka bez aktivity se automaticky maže 12 měsíců od poslední změny, uzavřená zakázka 6 měsíců od uzavření (pevný termín); rozpracovaný nezaplacený navazující dokument se po 30 dnech od vytvoření přestane zobrazovat a nejpozději následující den je automaticky odstraněn. Zaplacený navazující dokument je neměnný: pozdější změna termínu nebo názvu zakázky jej neovlivní. Do zakázky se nekopíruje obsah smlouvy, kontaktní údaje protistrany ani identifikátor platby. Poskytovatel neodpovídá za dodržení termínů Zákazníkem; připomínky jsou pomocný nástroj, nikoli právní služba.
               </p>
             </section>
           ) : null}

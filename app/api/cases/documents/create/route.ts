@@ -62,6 +62,9 @@ export async function POST(req: Request) {
 
   try {
     const checkout = await createCaseDocumentCheckout(prepared.record, prepared.document, auth.email);
+    if (checkout.status === 'ready') {
+      return NextResponse.json({ case: toPublicCase(checkout.record), documentId: prepared.document.id, ready: true });
+    }
     await recordAnalyticsEvent('checkout_started', {
       ...analyticsBase,
       price_band: '99',

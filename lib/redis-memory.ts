@@ -3,8 +3,9 @@
  *
  * Aktivuje se výhradně přes `SMLOUVAHNED_FAKE_REDIS=1` mimo produkci
  * (viz lib/redis.ts). Implementuje jen podmnožinu příkazů, které aplikace
- * používá, včetně TTL, NX a jednoduchého vyhodnocení dvou Lua skriptů
- * (rate limit INCR+EXPIRE, uvolnění zámku podle vlastníka).
+ * používá, včetně TTL, NX a jednoduchého vyhodnocení tří Lua skriptů
+ * (rate limit INCR+EXPIRE, uvolnění zámku podle vlastníka, compare-and-set
+ * případu).
  */
 
 type Entry = { value: unknown; expiresAt: number | null };
@@ -200,6 +201,14 @@ export class MemoryRedis {
       const current = await this.get<string>(keys[0]);
       if (current === args[0]) return this.del(keys[0]);
       return 0;
+    }
+    if (script.includes("if current ~= ARGV[1] then return 0 end")) {
+      // Compare-and-set případu (lib/cases/store.ts): revize v KEYS[2].
+      const current = this.live(keys[1])?.value;
+      if (String(current ?? '0') !== args[0]) return 0;
+      this.write(keys[0], JSON.parse(args[1]), Number(args[3]));
+      this.write(keys[1], args[2], Number(args[3]));
+      return 1;
     }
     throw new Error('MemoryRedis: unsupported script');
   }

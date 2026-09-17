@@ -141,6 +141,12 @@ Projdi tento scénář **se skutečnou kartou v živém módu**:
 
 *Tento soubor lze smazat po úspěšném nasazení.*
 
+## Rollback (fix release po nezávislém review, 2026-09-17)
+
+- Produkční SHA před releasem: `b739196` (deployment `generator-smluv-heqfki8at`).
+- Datový model případu je dopředně kompatibilní: nové klíče `case:rev:*`, `case:seen:*`, `case:documents:pending` a pole `snapshot`, `checkoutAttempts`, `closedAt`, `revision` starší build ignoruje; rollback nevyžaduje migraci. Dokumenty vytvořené novým buildem nesou snapshot, který starší build nečte (renderuje z aktuálního stavu).
+- Návratová URL z platby už nenese `#access=`; při rollbacku na `b739196` se návrat z platby chová postaru (token opět v URL).
+
 ## Rollback (release Growth Engine, 2026-09-17)
 
 - Produkční SHA před releasem: `0072f76` (deployment `generator-smluv-n6j8jlr7q`, promoted po nastavení CRON_SECRET).

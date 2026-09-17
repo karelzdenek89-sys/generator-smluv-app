@@ -8,6 +8,7 @@ import { issueCaseAccessToken, revokeCaseAccessTokens } from './access';
 import { buildCaseUrl, sendCaseAccessEmail } from './emails';
 import {
   buildCaseRecord,
+  commitCase,
   deleteCase,
   getCase,
   listCaseIdsForEmail,
@@ -15,7 +16,13 @@ import {
   rescheduleReminders,
   saveCase,
 } from './store';
-import { CASE_DOCUMENT_DEFINITIONS, isCaseDocumentIncluded, validateCaseDocumentData, isCaseDocumentKind } from './documents';
+import {
+  CASE_DOCUMENT_DEFINITIONS,
+  buildCaseDocumentSnapshot,
+  isCaseDocumentIncluded,
+  validateCaseDocumentData,
+  isCaseDocumentKind,
+} from './documents';
 import type { CaseDocument, CaseOwnerRole, CasePriceMode, CaseRecord } from './types';
 import { WORK_ORDER_STAGE_DEFINITIONS, isCaseStage, parseIsoDate } from './workflow';
 
@@ -47,12 +54,19 @@ function parsePriceMode(value: unknown): CasePriceMode {
   return value === 'after_completion' || value === 'with_deposit' || value === 'milestones' ? value : 'unknown';
 }
 
-function parseAmountCzk(value: unknown): number | null {
-  if (typeof value === 'number' && Number.isFinite(value)) return Math.round(value);
-  if (typeof value !== 'string') return null;
-  const cleaned = value.replace(/kč/i, '').replace(/\s/g, '').replace(',', '.');
-  const num = Number(cleaned);
-  return Number.isFinite(num) && num > 0 ? Math.round(num) : null;
+/**
+ * Cena díla se přebírá jen v korunách a s haléřovou přesností. Smlouva může
+ * být v jiné měně — pak se částka do případu nepřenáší, protože bez
+ * přepočtu by se v UI označila jako Kč.
+ */
+export function parseAmountCzk(value: unknown, currency: unknown = 'Kč'): number | null {
+  const unit = typeof currency === 'string' ? currency.trim().toLowerCase() : '';
+  if (unit && unit !== 'kč' && unit !== 'czk' && unit !== 'kc') return null;
+  let num: number;
+  if (typeof value === 'number') num = value;
+  else if (typeof value === 'string') num = Number(value.replace(/kč/i, '').replace(/\s/g, '').replace(',', '.'));
+  else return null;
+  return Number.isFinite(num) && num > 0 ? Math.round(num * 100) / 100 : null;
 }
 
 /**
@@ -102,7 +116,7 @@ export async function createCaseFromPaidOrder(input: {
       title: typeof payload.workTitle === 'string' ? payload.workTitle : 'Zakázka',
       startDate: parseIsoDate(payload.startDate) ? String(payload.startDate) : null,
       deadline: parseIsoDate(payload.endDate) ? String(payload.endDate) : null,
-      priceAmountCzk: parseAmountCzk(payload.priceAmount),
+      priceAmountCzk: parseAmountCzk(payload.priceAmount, payload.currency),
       priceMode: parsePriceMode(payload.paymentType),
       origin: {
         source: 'success_page',
@@ -222,83 +236,91 @@ export function parseCaseAction(input: unknown): CaseAction | null {
   }
 }
 
+/**
+ * Akce se validují proti záznamu, který klient viděl, ale zapisují se nad
+ * čerstvým stavem (commitCase): souběžný webhook nebo druhá karta nemohou
+ * být přepsány starým snapshotem.
+ */
 export async function applyCaseAction(record: CaseRecord, action: CaseAction): Promise<CaseActionResult> {
   const now = new Date();
+  const commit = async (mutate: (fresh: CaseRecord) => CaseRecord | Promise<CaseRecord>): Promise<CaseRecord | null> =>
+    commitCase(record.id, mutate, now);
+  const gone: CaseActionResult = { ok: false, message: 'Zakázka už neexistuje.' };
   switch (action.type) {
     case 'set_stage': {
       if (!isCaseStage(action.stage)) return { ok: false, message: 'Neplatná fáze zakázky.', field: 'stage' };
       if (action.stage === record.stage) return { ok: true, record, eventType: 'noop' };
-      const label = WORK_ORDER_STAGE_DEFINITIONS[action.stage].label;
-      const next = await saveCase(
-        { ...record, stage: action.stage, events: [...record.events, newEvent('stage_changed', `Fáze změněna na „${label}“`)] },
-        now,
-      );
-      return { ok: true, record: next, eventType: 'stage_changed' };
+      const stage = action.stage;
+      const label = WORK_ORDER_STAGE_DEFINITIONS[stage].label;
+      const next = await commit((fresh) => ({
+        ...fresh,
+        stage,
+        closedAt: stage === 'closed' ? fresh.closedAt ?? now.toISOString() : null,
+        events: [...fresh.events, newEvent('stage_changed', `Fáze změněna na „${label}“`)],
+      }));
+      return next ? { ok: true, record: next, eventType: 'stage_changed' } : gone;
     }
     case 'set_deadline': {
       if (action.deadline !== null && !parseIsoDate(action.deadline)) {
         return { ok: false, message: 'Zadejte platné datum ve formátu RRRR-MM-DD.', field: 'deadline' };
       }
-      const withDeadline: CaseRecord = {
-        ...record,
-        deadline: action.deadline,
-        tasks: record.tasks.map((task) =>
-          task.key === 'deadline_set' ? { ...task, done: Boolean(action.deadline), doneAt: action.deadline ? now.toISOString() : null } : task,
-        ),
-        events: [
-          ...record.events,
-          newEvent('deadline_set', action.deadline ? `Termín dokončení nastaven na ${action.deadline}` : 'Termín dokončení odstraněn'),
-        ],
-      };
-      const rescheduled = await rescheduleReminders(withDeadline, withDeadline.remindersEnabled && Boolean(action.deadline), now);
-      const next = await saveCase(rescheduled, now);
-      return { ok: true, record: next, eventType: 'deadline_set' };
+      const next = await commit(async (fresh) => {
+        const withDeadline: CaseRecord = {
+          ...fresh,
+          deadline: action.deadline,
+          tasks: fresh.tasks.map((task) =>
+            task.key === 'deadline_set' ? { ...task, done: Boolean(action.deadline), doneAt: action.deadline ? now.toISOString() : null } : task,
+          ),
+          events: [
+            ...fresh.events,
+            newEvent('deadline_set', action.deadline ? `Termín dokončení nastaven na ${action.deadline}` : 'Termín dokončení odstraněn'),
+          ],
+        };
+        return rescheduleReminders(withDeadline, withDeadline.remindersEnabled && Boolean(action.deadline), now);
+      });
+      return next ? { ok: true, record: next, eventType: 'deadline_set' } : gone;
     }
     case 'set_title': {
       const title = action.title.trim().slice(0, 120);
       if (!title) return { ok: false, message: 'Název zakázky nesmí být prázdný.', field: 'title' };
-      const next = await saveCase({ ...record, title }, now);
-      return { ok: true, record: next, eventType: 'title_changed' };
+      const next = await commit((fresh) => ({ ...fresh, title }));
+      return next ? { ok: true, record: next, eventType: 'title_changed' } : gone;
     }
     case 'toggle_task': {
       const task = record.tasks.find((item) => item.key === action.taskKey);
       if (!task) return { ok: false, message: 'Úkol nebyl nalezen.', field: 'taskKey' };
-      const next = await saveCase(
-        {
-          ...record,
-          tasks: record.tasks.map((item) =>
-            item.key === action.taskKey ? { ...item, done: action.done, doneAt: action.done ? now.toISOString() : null } : item,
-          ),
-          events: [...record.events, newEvent(action.done ? 'task_done' : 'task_reopened', `${action.done ? 'Splněno' : 'Znovu otevřeno'}: ${task.label}`)],
-        },
-        now,
-      );
-      return { ok: true, record: next, eventType: action.done ? 'task_done' : 'task_reopened' };
+      const next = await commit((fresh) => ({
+        ...fresh,
+        tasks: fresh.tasks.map((item) =>
+          item.key === action.taskKey ? { ...item, done: action.done, doneAt: action.done ? now.toISOString() : null } : item,
+        ),
+        events: [...fresh.events, newEvent(action.done ? 'task_done' : 'task_reopened', `${action.done ? 'Splněno' : 'Znovu otevřeno'}: ${task.label}`)],
+      }));
+      return next ? { ok: true, record: next, eventType: action.done ? 'task_done' : 'task_reopened' } : gone;
     }
     case 'set_reminders': {
       if (action.enabled && !record.deadline) {
         return { ok: false, message: 'Nejdřív nastavte termín dokončení.', field: 'deadline' };
       }
-      const rescheduled = await rescheduleReminders(record, action.enabled, now);
-      const next = await saveCase(
-        {
+      const next = await commit(async (fresh) => {
+        const rescheduled = await rescheduleReminders(fresh, action.enabled && Boolean(fresh.deadline), now);
+        return {
           ...rescheduled,
-          events: [...record.events, newEvent(action.enabled ? 'reminders_enabled' : 'reminders_disabled', action.enabled ? 'Připomínky termínu zapnuty' : 'Připomínky termínu vypnuty')],
-        },
-        now,
-      );
-      return { ok: true, record: next, eventType: action.enabled ? 'reminders_enabled' : 'reminders_disabled' };
+          events: [...fresh.events, newEvent(action.enabled ? 'reminders_enabled' : 'reminders_disabled', action.enabled ? 'Připomínky termínu zapnuty' : 'Připomínky termínu vypnuty')],
+        };
+      });
+      return next ? { ok: true, record: next, eventType: action.enabled ? 'reminders_enabled' : 'reminders_disabled' } : gone;
     }
     case 'add_note': {
       const note = action.note.trim().slice(0, 500);
       if (!note) return { ok: false, message: 'Poznámka nesmí být prázdná.', field: 'note' };
-      const next = await saveCase({ ...record, events: [...record.events, newEvent('note', note)] }, now);
-      return { ok: true, record: next, eventType: 'note' };
+      const next = await commit((fresh) => ({ ...fresh, events: [...fresh.events, newEvent('note', note)] }));
+      return next ? { ok: true, record: next, eventType: 'note' } : gone;
     }
     case 'revoke_links': {
       await revokeCaseAccessTokens(record.id);
-      const next = await saveCase({ ...record, events: [...record.events, newEvent('links_revoked', 'Všechny návratové odkazy zneplatněny')] }, now);
-      return { ok: true, record: next, eventType: 'links_revoked' };
+      const next = await commit((fresh) => ({ ...fresh, events: [...fresh.events, newEvent('links_revoked', 'Všechny návratové odkazy zneplatněny')] }));
+      return next ? { ok: true, record: next, eventType: 'links_revoked' } : gone;
     }
     case 'delete': {
       await revokeCaseAccessTokens(record.id);
@@ -324,43 +346,52 @@ export async function prepareCaseDocument(record: CaseRecord, kindInput: unknown
 
   const included = isCaseDocumentIncluded(record);
   const now = new Date();
-  const document: CaseDocument = {
-    id: randomUUID(),
-    kind: kindInput,
-    title: CASE_DOCUMENT_DEFINITIONS[kindInput].title,
-    status: included ? 'ready' : 'pending_payment',
-    data: validation.data,
-    entitlement: included ? 'included' : 'paid',
-    stripeSessionId: null,
-    createdAt: now.toISOString(),
-    paidAt: included ? now.toISOString() : null,
-  };
-  const next = await saveCase(
-    {
-      ...record,
-      documents: [...record.documents, document],
-      events: [...record.events, newEvent('document_created', `${document.title} připraven${included ? '' : ' (čeká na platbu)'}`)],
-    },
-    now,
-  );
+  const kind = kindInput;
+  let document: CaseDocument | null = null;
+  const next = await commitCase(record.id, (fresh) => {
+    if (fresh.documents.length >= 40) throw new Error('document_limit');
+    // Podoba dokumentu se zmrazí nad čerstvým stavem zakázky; pozdější změna
+    // termínu nebo názvu už vydaný dokument nemění.
+    document = {
+      id: randomUUID(),
+      kind,
+      title: CASE_DOCUMENT_DEFINITIONS[kind].title,
+      status: included ? 'ready' : 'pending_payment',
+      data: validation.data,
+      entitlement: included ? 'included' : 'paid',
+      stripeSessionId: null,
+      checkoutAttempts: 0,
+      snapshot: buildCaseDocumentSnapshot(kind, fresh, validation.data),
+      createdAt: now.toISOString(),
+      paidAt: included ? now.toISOString() : null,
+    };
+    return {
+      ...fresh,
+      documents: [...fresh.documents, document],
+      events: [...fresh.events, newEvent('document_created', `${document.title} připraven${included ? '' : ' (čeká na platbu)'}`)],
+    };
+  }, now).catch((error: unknown) => {
+    if (error instanceof Error && error.message === 'document_limit') return null;
+    throw error;
+  });
+  if (!next || !document) return { ok: false, message: 'Zakázka již obsahuje maximální počet dokumentů.' };
   return { ok: true, record: next, document, requiresPayment: !included };
 }
 
 export async function markCaseDocumentPaid(caseId: string, documentId: string, stripeSessionId: string): Promise<CaseRecord | null> {
-  const record = await getCase(caseId);
-  if (!record) return null;
-  const document = record.documents.find((item) => item.id === documentId);
-  if (!document) return null;
-  if (document.status === 'ready') return record;
   const now = new Date();
-  return saveCase(
-    {
-      ...record,
-      documents: record.documents.map((item) =>
-        item.id === documentId ? { ...item, status: 'ready', paidAt: now.toISOString(), stripeSessionId } : item,
+  let found = true;
+  const next = await commitCase(caseId, (fresh) => {
+    const document = fresh.documents.find((item) => item.id === documentId);
+    if (!document) { found = false; return fresh; }
+    if (document.status === 'ready') return fresh;
+    return {
+      ...fresh,
+      documents: fresh.documents.map((item) =>
+        item.id === documentId ? { ...item, status: 'ready' as const, paidAt: now.toISOString(), stripeSessionId } : item,
       ),
-      events: [...record.events, newEvent('document_paid', `${document.title} zaplacen a připraven ke stažení`)],
-    },
-    now,
-  );
+      events: [...fresh.events, newEvent('document_paid', `${document.title} zaplacen a připraven ke stažení`)],
+    };
+  }, now);
+  return found ? next : null;
 }

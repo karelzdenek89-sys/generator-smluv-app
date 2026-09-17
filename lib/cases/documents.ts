@@ -1,5 +1,5 @@
 import type { ContractSection } from '@/lib/contracts';
-import { CASE_DOCUMENT_KINDS, type CaseDocumentKind, type CaseRecord } from './types';
+import { CASE_DOCUMENT_KINDS, type CaseDocument, type CaseDocumentKind, type CaseDocumentSnapshot, type CaseRecord } from './types';
 import { formatCzechDate, parseIsoDate } from './workflow';
 
 /**
@@ -61,11 +61,20 @@ const PARTY_FIELDS: readonly CaseDocumentField[] = [
   },
 ];
 
-const text = (value: unknown, fallback = '—', max = 2000): string => {
+/**
+ * Verze šablon navazujících dokumentů. Zvyšte při každé změně textu sekcí;
+ * vydané dokumenty nesou verzi ve svém snapshotu.
+ */
+export const CASE_DOCUMENT_TEMPLATE_VERSION = '2026.2-case.1';
+
+// Text se nikdy tiše nezkracuje: validace (MAX_FIELD_LENGTH) je jediný limit
+// a platí už před zaplacením. Strop tu slouží jen jako pojistka proti
+// nevalidovaným hodnotám a je stejný jako limit textarea.
+const text = (value: unknown, fallback = '—', max = 4000): string => {
   if (value === null || value === undefined) return fallback;
   const str = String(value).trim();
   if (!str) return fallback;
-  return str.length > max ? `${str.slice(0, max)}…` : str;
+  return str.length > max ? str.slice(0, max) : str;
 };
 
 const dateText = (value: unknown): string => (parseIsoDate(value) ? formatCzechDate(String(value)) : '—');
@@ -481,6 +490,50 @@ export function validateCaseDocumentData(kind: CaseDocumentKind, input: unknown)
     data[field.key] = value;
   }
   return { ok: true, data };
+}
+
+/** Neměnná podoba dokumentu pro uložení k případu (viz CaseDocumentSnapshot). */
+export function buildCaseDocumentSnapshot(
+  kind: CaseDocumentKind,
+  record: Pick<CaseRecord, 'title' | 'deadline' | 'priceAmountCzk'>,
+  data: Record<string, string>,
+): CaseDocumentSnapshot {
+  return {
+    templateVersion: CASE_DOCUMENT_TEMPLATE_VERSION,
+    caseTitle: record.title,
+    caseDeadline: record.deadline,
+    sections: CASE_DOCUMENT_DEFINITIONS[kind].buildSections(record, data).map((section) => ({
+      title: section.title,
+      body: [...section.body],
+    })),
+  };
+}
+
+/**
+ * Sekce a hlavička pro stažení: vydaný dokument se renderuje ze snapshotu.
+ * Dokumenty z doby před snapshoty (do 2026-09-17) se skládají z aktuálního
+ * stavu zakázky — jediná možnost, jak je vůbec vydat.
+ */
+export function resolveCaseDocumentRender(record: CaseRecord, document: CaseDocument): {
+  sections: ContractSection[];
+  caseTitle: string;
+  caseDeadline: string | null;
+  templateVersion: string;
+} {
+  if (document.snapshot) {
+    return {
+      sections: document.snapshot.sections.map((section) => ({ title: section.title, body: [...section.body] })),
+      caseTitle: document.snapshot.caseTitle,
+      caseDeadline: document.snapshot.caseDeadline,
+      templateVersion: document.snapshot.templateVersion,
+    };
+  }
+  return {
+    sections: CASE_DOCUMENT_DEFINITIONS[document.kind].buildSections(record, document.data),
+    caseTitle: record.title,
+    caseDeadline: record.deadline,
+    templateVersion: 'legacy',
+  };
 }
 
 /** Sdílené hodnoty (např. strany) z posledního dokumentu případu pro předvyplnění. */

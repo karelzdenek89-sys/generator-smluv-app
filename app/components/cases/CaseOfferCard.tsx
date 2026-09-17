@@ -80,7 +80,7 @@ export default function CaseOfferCard({
         {included ? ' máte v ceně balíčku Zakázka Plus' : ' vytvoříte v zakázce za 99 Kč za dokument'}. Bez registrace — vracíte se odkazem z e-mailu.
       </p>
       <ul className="mt-3 space-y-1 text-xs leading-6 text-slate-400">
-        <li>• Do zakázky se neukládá obsah smlouvy ani údaje protistrany.</li>
+        <li>• Obsah smlouvy ani údaje protistrany se ze smlouvy nepřebírají; ukládá se jen to, co sami doplníte do navazujících dokumentů (např. jména stran v protokolu).</li>
         <li>• Zakázku můžete kdykoli exportovat nebo smazat.</li>
       </ul>
 
