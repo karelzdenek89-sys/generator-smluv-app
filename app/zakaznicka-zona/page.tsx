@@ -202,7 +202,6 @@ export default function CustomerZone() {
   useEffect(() => {
     const currentUrl = new URL(window.location.href);
     const nextLocale = urlLocale();
-    setLocale(nextLocale);
     document.documentElement.lang = nextLocale === 'ua' ? 'uk' : nextLocale;
 
     const hashAccess = new URLSearchParams(currentUrl.hash.replace(/^#/, '')).get('access')?.trim() ?? '';
@@ -227,7 +226,11 @@ export default function CustomerZone() {
       currentUrl.hash = stored ? '' : `access=${encodeURIComponent(supplied)}`;
       window.history.replaceState(window.history.state, '', `${currentUrl.pathname}${currentUrl.search}${currentUrl.hash}`);
     }
-    setPortalAccess(access);
+    const timer = window.setTimeout(() => {
+      setLocale(nextLocale);
+      setPortalAccess(access);
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, []);
 
   const applyOrders = useCallback((nextOrders: Order[]) => {
@@ -274,7 +277,10 @@ export default function CustomerZone() {
   useEffect(() => {
     if (!portalAccess || autoFetchedAccess.current === portalAccess) return;
     autoFetchedAccess.current = portalAccess;
-    void fetchWithAccess(portalAccess);
+    const timer = window.setTimeout(() => {
+      void fetchWithAccess(portalAccess);
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, [portalAccess, fetchWithAccess]);
 
   const requestLink = async (event: FormEvent<HTMLFormElement>) => {
