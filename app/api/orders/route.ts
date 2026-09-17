@@ -130,6 +130,7 @@ export async function GET(req: NextRequest) {
   const sessionId = req.nextUrl.searchParams.get('session_id')?.trim();
   const emailParam = req.nextUrl.searchParams.get('email')?.toLowerCase().trim();
 
+  // Block legacy email-only enumeration (P0 security).
   if (emailParam && !accessToken && !sessionId) {
     return json({ error: 'Vyhledání pouze podle e-mailu není podporováno. Použijte bezpečný odkaz nebo e-mail spolu s ID relace.' }, { status: 401 });
   }
