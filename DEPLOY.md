@@ -141,6 +141,13 @@ Projdi tento scénář **se skutečnou kartou v živém módu**:
 
 *Tento soubor lze smazat po úspěšném nasazení.*
 
+## Rollback (release Growth Engine, 2026-09-17)
+
+- Produkční SHA před releasem: `0072f76` (deployment `generator-smluv-n6j8jlr7q`, promoted po nastavení CRON_SECRET).
+- Release SHA: `b739196` (`main`), preview ověřen na `preview-growth-engine-clusters` (195/196 hosted checks — chybí jen health 503 bez Redis na preview; Playwright 30/30).
+- Rychlý rollback: Vercel → Deployments → `generator-smluv-n6j8jlr7q` → „Promote to Production“. Žádná migrace dat: retence případů se mění jen TTL při dalším zápisu, starší build záznamy bez `orderSessionId` čte beze změny.
+- Po rollbacku zůstane 17 nových URL v indexu bez cíle (404) — proto rollback jen při skutečné regresi funnelu, ne kvůli obsahu; obsahovou chybu opravit dopředu.
+
 ## Rollback (release SmlouvaHned 2.0, 2026-09-17)
 
 - Produkční SHA před releasem: `f903e20e3593abc18668cf1157c8b118b2837184` (deployment `dpl_F1xKMF85sTs8Qg1D1ufL5wHr4v42`).

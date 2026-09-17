@@ -71,10 +71,18 @@ nepřesměrovávala; všechny nové URL jsou aditivní a mají self-canonical.
 | Odpověď | `/zakazka/smlouva-s-remeslnikem`, `/zakazka/remeslnik-nedodrzel-termin`, `/zakazka/reklamace-dila` | answer-first, informační |
 | Odpověď | `/zamestnavam/{pracovni-smlouva,dpp,osvc,mlcenlivost,zmena-podminek,ukonceni}` | answer-first, informační |
 | Odpověď | `/pro-pronajimatele/neplaceni-najemneho`, `/prodej-vozidla/vady-ojeteho-auta` | answer-first, informační |
+| Odpověď (Growth Engine, 2026-09-17) | `/zakazka/{zaloha-remeslnikovi,viceprace-bez-souhlasu,jak-potvrdit-viceprace,zmena-ceny-dila,predavaci-protokol-stavby,prevzeti-dila-s-vadami,odpovednost-za-vady-dila,odstoupeni-od-smlouvy-o-dilo}` | priorita A — zakázky; každá stránka: odpověď → postup → nástroj → smlouva → případ |
+| Odpověď (Growth Engine) | `/zamestnavam/{pracovni-smlouva-2027,dpp-2027,nastup-zamestnance,dohoda-o-skonceni-pracovniho-pomeru}` | priorita B — zaměstnávám (největší GSC signál; cesta k balíčku Zaměstnavatel Start) |
+| Odpověď (Growth Engine) | `/prodej-vozidla/{postup-prodeje-auta,koupe-ojeteho-auta,odpovednost-prodavajiciho-za-vady,skryta-vada-auta,plna-moc-prepis-auta}` | priorita C — auto (později Partner Engine: historie, pojištění); komerční intenty zůstávají vypnuté |
 | Nástroje | `/nastroje`, `/nastroje/{slug}` (13 checklistů + 1 průvodce) | bezplatný výsledek → dokument |
 | Radar | `/zmeny-2027`, `/zmeny-2027/{zamestnavatele,osvc-a-podnikatele,spotrebitele,ridici-a-vozidla,smlouvy-online}` | legislativní změny se statusem a zdrojem |
 | Soukromé | `/moje-zakazka`, `/moje-zakazka/obnovit` | noindex, robots Disallow, mimo sitemap |
 
 Existující blogové články zůstávají informačními cíli svých dotazů (vícepráce,
 předávací protokol, přepis vozidla, kauce, výpověď z nájmu…); nové stránky
-odkazují na ně, nikoli naopak duplikují.
+odkazují na ně, nikoli naopak duplikují. Témata z růstového zadání, která už
+blog pokrývá (`pracovní smlouva vs DPP`, `DPP vs DPČ`, `co musí obsahovat
+pracovní smlouva`, `zkušební doba`, `výpovědní doba`, `NDA zaměstnanec`,
+`švarcsystém`, `přepis auta`, `co potřebuji k přepisu`, `předávací protokol
+vozidla`), nedostaly duplicitní answer-first stránku — měří se v GSC jako
+stávající URL (docs/GROWTH_MEASUREMENT.md).
