@@ -15,7 +15,7 @@ import { DEFAULT_OG_IMAGE, canonicalUrl } from '@/lib/seo/site';
 export const metadata: Metadata = {
   title: { absolute: 'Změny 2027: legislativní radar pro zaměstnavatele, OSVČ, spotřebitele a řidiče | SmlouvaHned' },
   description:
-    'Legislativní radar 2027: každá změna se statusem PLATÍ / SCHVÁLENO / PROJEDNÁVÁ SE / NÁVRH, datem účinnosti, dopadem na dokumenty a oficiálním zdrojem. Minimální mzda, JMHZ, OSVČ, právo na opravu, digitální identita.',
+    'Legislativní radar 2027: každá změna se statusem (platí / schváleno / projednává se), datem účinnosti, dopadem na dokumenty a oficiálním zdrojem. Bez marketingu.',
   alternates: { canonical: canonicalUrl('/zmeny-2027') },
   openGraph: {
     type: 'website',

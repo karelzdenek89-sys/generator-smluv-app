@@ -4,7 +4,7 @@ import RequestCaseLinkForm from './RequestCaseLinkForm';
 
 export const metadata: Metadata = {
   title: 'Návratový odkaz k zakázce',
-  description: 'Nechte si poslat návratový odkaz ke své zakázce e-mailem. Bez hesla, bez registrace.',
+  description: 'Nechte si poslat návratový odkaz ke své zakázce na e-mail z objednávky. Bez hesla a bez registrace; odkaz platí 30 dní a lze jej kdykoli zneplatnit.',
   robots: { index: false, follow: true },
 };
 

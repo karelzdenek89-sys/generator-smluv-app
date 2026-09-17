@@ -369,6 +369,20 @@ body {
   transform: translateY(0);
 }
 
+/* Na úzkých displejích se dlouhý popisek tlačítka zalomí místo přetečení stránky. */
+.site-button-primary,
+.site-button-secondary {
+  max-width: 100%;
+}
+@media (max-width: 640px) {
+  .site-button-primary,
+  .site-button-secondary {
+    white-space: normal;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
 /* ─── Cards ─────────────────────────────────────────────────────────────────── */
 
 .site-content-card {

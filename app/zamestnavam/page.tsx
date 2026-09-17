@@ -26,7 +26,7 @@ const EMPLOYER_START = THEMATIC_PACKAGE_CONFIG.employer_start;
 export const metadata: Metadata = {
   title: { absolute: 'Zaměstnávám: pracovní smlouva, DPP, OSVČ, ukončení — co potřebujete vyřešit | SmlouvaHned' },
   description:
-    'Rozcestník pro zaměstnavatele: jaký vztah potřebuji (pracovní smlouva, DPP, OSVČ), mlčenlivost, změna podmínek, ukončení pracovního poměru a změny 2027. Rozhodovací průvodce a dokumenty online.',
+    'Rozcestník pro zaměstnavatele: pracovní smlouva, DPP nebo OSVČ, mlčenlivost, změna podmínek, ukončení pracovního poměru a změny 2027. Průvodce a dokumenty online.',
   alternates: { canonical: canonicalUrl('/zamestnavam') },
   openGraph: {
     type: 'website',

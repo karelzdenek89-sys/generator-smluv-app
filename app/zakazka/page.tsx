@@ -25,7 +25,7 @@ const WORK_ORDER = THEMATIC_PACKAGE_CONFIG.work_order;
 export const metadata: Metadata = {
   title: { absolute: 'Řeším zakázku: smlouva o dílo, vícepráce, předání a vady na jednom místě | SmlouvaHned' },
   description:
-    'Zakázka od smlouvy po předání: smlouva o dílo, změnový list, potvrzení víceprací, předávací protokol a evidence vad s termíny a připomínkami. Bez registrace, transparentní cena.',
+    'Zakázka od smlouvy po předání: smlouva o dílo, změnový list, vícepráce, předávací protokol a evidence vad s termíny a připomínkami. Bez registrace.',
   alternates: { canonical: canonicalUrl('/zakazka') },
   openGraph: {
     type: 'website',

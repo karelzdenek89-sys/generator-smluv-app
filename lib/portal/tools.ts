@@ -143,7 +143,7 @@ export const PORTAL_TOOLS: readonly PortalTool[] = [
     description: 'Jak převzít nebo předat dílo tak, aby byl jasný stav, vady a začátek záruky.',
     metaTitle: 'Checklist předání zakázky: převzetí díla bez sporů',
     metaDescription:
-      'Bezplatný checklist k předání a převzetí díla: prohlídka, výhrady, protokol, lhůty k odstranění vad, doplatek a záruka. Připravte předávací protokol rovnou v zakázce.',
+      'Bezplatný checklist k předání a převzetí díla: prohlídka, výhrady, protokol, lhůty k odstranění vad, doplatek a záruka. Předávací protokol rovnou v zakázce.',
     situation: 'zakazka',
     answer:
       'Dílo se předává společnou prohlídkou a písemným protokolem. Objednatel převezme dílo bez výhrad, nebo s výhradami (soupis vad a lhůta k odstranění). Vady, které mohl při převzetí zjistit a nevytkl, později zpravidla neuplatní.',
@@ -190,9 +190,9 @@ export const PORTAL_TOOLS: readonly PortalTool[] = [
     title: 'Průvodce vícepracemi',
     shortTitle: 'Vícepráce',
     description: 'Kdy má zhotovitel nárok na úhradu prací navíc a jak vícepráce správně odsouhlasit.',
-    metaTitle: 'Vícepráce ve smlouvě o dílo: kdy je platit a jak je odsouhlasit',
+    metaTitle: 'Vícepráce ve smlouvě o dílo: kdy je platit a jak odsouhlasit',
     metaDescription:
-      'Praktický průvodce vícepracemi: pevná cena vs. rozpočet, oznamovací povinnost, písemné odsouhlasení, dopad na termín. Připravte potvrzení víceprací nebo změnový list.',
+      'Průvodce vícepracemi: pevná cena vs. rozpočet, oznamovací povinnost, písemné odsouhlasení, dopad na termín. Potvrzení víceprací nebo změnový list v zakázce.',
     situation: 'zakazka',
     answer:
       'Práce navíc je bezpečné provádět až po písemném odsouhlasení rozsahu, ceny a dopadu na termín. Při pevné ceně nebo zaručeném rozpočtu nelze cenu jednostranně zvýšit; u rozpočtu s výhradou nezávaznosti musí zhotovitel potřebu prací navíc oznámit bez zbytečného odkladu.',
@@ -239,7 +239,7 @@ export const PORTAL_TOOLS: readonly PortalTool[] = [
     description: 'Co si připravit, aby smlouva o dílo vznikla rychle a bez dohadování.',
     metaTitle: 'Podklady k zakázce: co připravit před smlouvou o dílo',
     metaDescription:
-      'Seznam podkladů, které potřebujete před sepsáním smlouvy o dílo: identifikace stran, popis díla, rozpočet, termíny, platební podmínky. Odškrtejte a pokračujte k dokumentu.',
+      'Seznam podkladů před sepsáním smlouvy o dílo: identifikace stran, popis díla, rozpočet, termíny, platební podmínky. Odškrtejte a pokračujte k dokumentu.',
     situation: 'zakazka',
     answer:
       'Připravte si identifikaci stran, popis díla s podklady, cenu a platební režim, termíny a informaci o materiálu. S těmito údaji vyplníte smlouvu o dílo během několika minut.',
@@ -285,7 +285,7 @@ export const PORTAL_TOOLS: readonly PortalTool[] = [
     description: 'Pracovní smlouva, DPP, DPČ, nebo spolupráce s OSVČ? Několik otázek a doporučení s vysvětlením.',
     metaTitle: 'Pracovní smlouva, DPP, nebo OSVČ? Průvodce výběrem vztahu',
     metaDescription:
-      'Bezplatný rozhodovací průvodce pro zaměstnavatele: podle délky spolupráce, řízení práce a rozsahu hodin doporučí pracovní smlouvu, DPP, DPČ nebo smlouvu s OSVČ. S upozorněním na švarcsystém.',
+      'Bezplatný průvodce pro zaměstnavatele: podle délky spolupráce, řízení práce a rozsahu hodin doporučí pracovní smlouvu, DPP, DPČ nebo smlouvu s OSVČ.',
     situation: 'zamestnavam',
     answer:
       'Dlouhodobá práce, kterou řídíte a určujete její dobu i místo, je závislá práce — patří do pracovní smlouvy (nebo DPČ/DPP v omezeném rozsahu). Samostatný podnikatel s vlastními prostředky, riziky a více klienty může spolupracovat na obchodní smlouvě. Rozhoduje skutečný průběh vztahu, ne název smlouvy.',
@@ -437,7 +437,7 @@ export const PORTAL_TOOLS: readonly PortalTool[] = [
     description: 'Porovnání limitů, odvodů a povinností. Zaškrtněte, co platí pro vaši situaci, a uvidíte, kam to vede.',
     metaTitle: 'DPP vs. pracovní smlouva 2026: limity, odvody, povinnosti',
     metaDescription:
-      'Porovnání dohody o provedení práce a pracovní smlouvy pro rok 2026: 300 hodin, rozhodná částka 12 000 Kč, minimální mzda, dovolená, výpověď. Vyberte správný dokument.',
+      'Porovnání DPP a pracovní smlouvy pro rok 2026: 300 hodin, rozhodná částka 12 000 Kč, minimální mzda, dovolená, výpověď. Vyberte správný dokument.',
     situation: 'zamestnavam',
     answer:
       'DPP je pro práci do 300 hodin ročně u jednoho zaměstnavatele; odvody vznikají od měsíční odměny 12 000 Kč (2026). Pracovní smlouva je pro pravidelnou práci bez limitu hodin, s plnou ochranou zaměstnance i s povinnostmi zaměstnavatele (dovolená, výpovědní doba, informace podle § 37 ZP).',
@@ -486,7 +486,7 @@ export const PORTAL_TOOLS: readonly PortalTool[] = [
     description: 'Dokumenty a povinnosti při nástupu nového zaměstnance — před nástupem, v den nástupu a do konce měsíce.',
     metaTitle: 'Checklist nástupu zaměstnance 2026: dokumenty a povinnosti',
     metaDescription:
-      'Bezplatný checklist nástupu zaměstnance: pracovní smlouva, informace podle § 37 ZP, přihlášení k pojištění, lékařská prohlídka, BOZP, jednotné měsíční hlášení. Odškrtejte a připravte dokumenty.',
+      'Bezplatný checklist nástupu zaměstnance: pracovní smlouva, informace podle § 37 ZP, přihlášení k pojištění, lékařská prohlídka, BOZP a měsíční hlášení.',
     situation: 'zamestnavam',
     answer:
       'Před nástupem podepište pracovní smlouvu a zajistěte vstupní lékařskou prohlídku. V den nástupu proveďte školení BOZP a předejte informaci podle § 37 ZP. Do 8 dnů přihlaste zaměstnance k pojištění a od roku 2026 hlaste údaje jednotným měsíčním hlášením.',
@@ -533,9 +533,9 @@ export const PORTAL_TOOLS: readonly PortalTool[] = [
     title: 'Kontrola připravenosti na změny 2027',
     shortTitle: 'Připravenost 2027',
     description: 'Projděte, zda máte vyřešené změny, které se zaměstnavatelů a podnikatelů týkají v přechodu na rok 2027.',
-    metaTitle: 'Kontrola připravenosti na změny 2027 pro zaměstnavatele a OSVČ',
+    metaTitle: 'Kontrola připravenosti na změny 2027: zaměstnavatel a OSVČ',
     metaDescription:
-      'Bezplatná kontrola připravenosti: minimální mzda 2027, jednotné měsíční hlášení, DPP limity, zálohy OSVČ, paušální daň. Každý bod odkazuje na oficiální zdroj v legislativním radaru.',
+      'Bezplatná kontrola připravenosti: minimální mzda 2027, jednotné měsíční hlášení, limity DPP, zálohy OSVČ, paušální daň. Každý bod s oficiálním zdrojem.',
     situation: 'zamestnavam',
     answer:
       'Většina změn pro rok 2027 navazuje na už účinné předpisy (JMHZ, valorizace minimální mzdy, snížení minima OSVČ). Nové hodnoty pro rok 2027 se vyhlašují na podzim 2026 — zkontrolujte smlouvy a nastavení mzdového systému, jakmile budou známy.',
@@ -586,7 +586,7 @@ export const PORTAL_TOOLS: readonly PortalTool[] = [
     description: 'Od inzerátu po přepis: co připravit, co uvést do smlouvy a co si pohlídat při předání.',
     metaTitle: 'Checklist prodeje auta 2026: smlouva, předání, přepis',
     metaDescription:
-      'Bezplatný checklist pro prodávajícího: doklady, popis stavu a vad, kupní smlouva s VIN a stavem tachometru, předání, přepis do 10 dnů, pojištění. Pokračujte k dokumentu.',
+      'Bezplatný checklist pro prodávajícího: doklady, popis stavu a vad, kupní smlouva s VIN a tachometrem, předání, přepis do 10 dnů, pojištění.',
     situation: 'auto',
     answer:
       'Prodávající potřebuje technický průkaz, doklad totožnosti a poctivý popis stavu vozidla. Kupní smlouva má obsahovat VIN, stav tachometru, cenu a známé vady. Po předání je nutné do 10 pracovních dnů zapsat změnu vlastníka v registru vozidel.',
@@ -635,7 +635,7 @@ export const PORTAL_TOOLS: readonly PortalTool[] = [
     description: 'Co prověřit před koupí ojetého auta a co musí být ve smlouvě, abyste se dovolali práv z vad.',
     metaTitle: 'Checklist koupě ojetého auta 2026: prověření, smlouva, vady',
     metaDescription:
-      'Bezplatný checklist pro kupujícího: prověření VIN a historie, prohlídka, zkušební jízda, smlouva se stavem tachometru a vadami, přepis, pojištění. Pokračujte k dokumentu.',
+      'Bezplatný checklist pro kupujícího: prověření VIN a historie, prohlídka, zkušební jízda, smlouva s tachometrem a vadami, přepis a pojištění.',
     situation: 'auto',
     answer:
       'Před koupí prověřte VIN, historii a technický stav, do smlouvy nechte zapsat stav tachometru, známé vady a prohlášení prodávajícího. Po převzetí zařiďte přepis do 10 pracovních dnů a povinné ručení od prvního dne.',
@@ -681,9 +681,9 @@ export const PORTAL_TOOLS: readonly PortalTool[] = [
     title: 'Přepis vozidla — co potřebuji',
     shortTitle: 'Přepis vozidla',
     description: 'Doklady, lhůta a postup zápisu změny vlastníka vozidla — online přes Portál dopravy nebo na úřadě.',
-    metaTitle: 'Přepis vozidla 2026: co potřebuji, lhůta 10 dnů, online postup',
+    metaTitle: 'Přepis vozidla 2026: doklady, lhůta 10 dnů, online postup',
     metaDescription:
-      'Seznam dokladů k přepisu vozidla, lhůta 10 pracovních dnů, společná žádost prodávajícího a kupujícího, plná moc, zelená karta a evidenční kontrola. Bezplatný checklist.',
+      'Doklady k přepisu vozidla, lhůta 10 pracovních dnů, společná žádost prodávajícího a kupujícího, plná moc, zelená karta a evidenční kontrola.',
     situation: 'auto',
     answer:
       'Změnu vlastníka zapisuje kterýkoli obecní úřad obce s rozšířenou působností (nebo online Portál dopravy) na společnou žádost prodávajícího a kupujícího do 10 pracovních dnů od převodu. Potřebujete doklady totožnosti, technický průkaz, zelenou kartu kupujícího a protokol o evidenční kontrole; za nepřítomnou stranu jedná zmocněnec s plnou mocí.',
@@ -726,7 +726,7 @@ export const PORTAL_TOOLS: readonly PortalTool[] = [
     description: 'Co si dohodnout a ověřit před podpisem nájemní smlouvy na byt nebo dům.',
     metaTitle: 'Checklist uzavření nájmu bytu 2026: smlouva, kauce, předání',
     metaDescription:
-      'Bezplatný checklist pro pronajímatele i nájemce před podpisem nájemní smlouvy: doba nájmu, nájemné a služby, kauce do 3 nájmů, zvířata, předávací protokol, energie. Pokračujte k dokumentu.',
+      'Checklist před podpisem nájemní smlouvy: doba nájmu, nájemné a služby, kauce do 3 nájmů, zvířata, předávací protokol a energie. Pro pronajímatele i nájemce.',
     situation: 'pronajimam',
     answer:
       'Nájemní smlouva na byt musí být písemná a musí být jasné, co se pronajímá, za kolik a na jak dlouho. Kauce smí být nejvýše trojnásobek měsíčního nájemného. Předání bytu zachyťte protokolem se stavem měřidel.',
@@ -774,7 +774,7 @@ export const PORTAL_TOOLS: readonly PortalTool[] = [
     title: 'Checklist předání bytu',
     shortTitle: 'Předání bytu',
     description: 'Jak předat byt nájemci (nebo ho převzít zpět), aby nevznikl spor o stav, vybavení a kauci.',
-    metaTitle: 'Checklist předání bytu nájemci 2026: protokol, měřidla, vybavení',
+    metaTitle: 'Checklist předání bytu 2026: protokol, měřidla, vybavení',
     metaDescription:
       'Bezplatný checklist k předání bytu: stav místností, vybavení, stavy měřidel, klíče, fotodokumentace, podpis protokolu. Vhodné pro nastěhování i vrácení bytu.',
     situation: 'pronajimam',
@@ -823,7 +823,7 @@ export const PORTAL_TOOLS: readonly PortalTool[] = [
     description: 'Výpověď nebo dohoda, převzetí bytu zpět, vyúčtování služeb a vrácení kauce — krok za krokem.',
     metaTitle: 'Checklist ukončení nájmu bytu 2026: výpověď, předání, kauce',
     metaDescription:
-      'Bezplatný checklist ukončení nájmu: písemná výpověď s důvodem a poučením, výpovědní doba, převzetí bytu protokolem, vyúčtování služeb, vrácení kauce s úroky. Pro pronajímatele i nájemce.',
+      'Checklist ukončení nájmu: písemná výpověď s důvodem a poučením, výpovědní doba, převzetí bytu protokolem, vyúčtování služeb a vrácení kauce.',
     situation: 'pronajimam',
     answer:
       'Nájem končí dohodou, uplynutím doby nebo výpovědí. Výpověď musí být písemná; pronajímatel může vypovědět jen ze zákonných důvodů a musí nájemce poučit o právu namítat neoprávněnost. Byt se vrací protokolem, kauce se vrací po skončení nájmu se započtením dluhů.',

@@ -54,8 +54,8 @@ export const metadata: Metadata = {
   title: { absolute: 'Smlouvy online pro životní a podnikatelské situace — PDF ihned | SmlouvaHned' },
   description:
     FREE_BASIC_DPP
-      ? 'Smlouvy online podle situace: zakázka, zaměstnávání, pronájem, auto, půjčka. 14 typů smluv dle OZ 2026, základní DPP zdarma, další od 99 Kč. Bezplatné checklisty, radar změn 2027 a pokračování zakázky s připomínkami.'
-      : 'Smlouvy online podle situace: zakázka, zaměstnávání, pronájem, auto, půjčka. 14 typů smluv dle OZ 2026 od 99 Kč, PDF ihned. Bezplatné checklisty, radar změn 2027 a pokračování zakázky s termíny a připomínkami.',
+      ? 'Smlouvy online podle situace: zakázka, zaměstnávání, pronájem, auto, půjčka. 14 typů smluv dle OZ 2026, základní DPP zdarma, další od 99 Kč. Nástroje zdarma.'
+      : 'Smlouvy online podle situace: zakázka, zaměstnávání, pronájem, auto, půjčka. 14 typů smluv dle OZ 2026 od 99 Kč, PDF ihned. Nástroje zdarma a radar změn 2027.',
   alternates: { canonical: HOMEPAGE_BASE_URL, languages: homepageLanguageAlternates },
   openGraph: {
     title: 'Smlouvy online pro životní a podnikatelské situace — PDF ihned',

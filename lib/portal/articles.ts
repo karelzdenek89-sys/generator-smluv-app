@@ -49,7 +49,7 @@ export const ANSWER_FIRST_ARTICLES: readonly AnswerFirstArticle[] = [
     title: 'Smlouva s řemeslníkem: co si ohlídat, než začne pracovat',
     metaTitle: 'Smlouva s řemeslníkem: co si ohlídat před začátkem prací',
     metaDescription:
-      'Praktická odpověď pro objednatele i řemeslníky: co musí obsahovat smlouva o dílo, jak nastavit cenu, zálohy, termín, vícepráce a předání. Bez právničiny, s odkazy na zákon.',
+      'Co musí obsahovat smlouva o dílo s řemeslníkem: rozsah, cena, zálohy, termín, vícepráce a předání. Praktická odpověď s odkazy na občanský zákoník.',
     question: 'Potřebuji smlouvu s řemeslníkem?',
     answer:
       'Ano, pokud jde o víc než drobnou opravu. Písemná smlouva o dílo s popisem prací, cenou, termínem a pravidly pro změny je jediný spolehlivý způsob, jak později prokázat, co bylo dohodnuto. Ústní dohoda platí také, ale spor o rozsah nebo cenu se bez ní řeší jen tvrzením proti tvrzení.',
@@ -98,7 +98,7 @@ export const ANSWER_FIRST_ARTICLES: readonly AnswerFirstArticle[] = [
     title: 'Řemeslník nedodržel termín: co můžete udělat',
     metaTitle: 'Řemeslník nedodržel termín: postup, pokuta, odstoupení',
     metaDescription:
-      'Co dělat, když zhotovitel nestíhá termín: písemná výzva s dodatečnou lhůtou, smluvní pokuta, náhrada škody, odstoupení od smlouvy. Praktický postup s odkazy na občanský zákoník.',
+      'Zhotovitel nestíhá termín: písemná výzva s dodatečnou lhůtou, smluvní pokuta, náhrada škody a odstoupení od smlouvy. Postup podle občanského zákoníku.',
     question: 'Co dělat, když řemeslník nedodrží termín?',
     answer:
       'Nejdřív písemně vyzvěte zhotovitele k dokončení v dodatečné přiměřené lhůtě a zaznamenejte, co chybí. Máte-li ve smlouvě smluvní pokutu, můžete ji uplatnit. Pokud ani po dodatečné lhůtě nedokončí, jde zpravidla o podstatné porušení a můžete od smlouvy odstoupit a požadovat náhradu škody.',
@@ -143,7 +143,7 @@ export const ANSWER_FIRST_ARTICLES: readonly AnswerFirstArticle[] = [
     title: 'Reklamace díla: vady po předání a jak je uplatnit',
     metaTitle: 'Reklamace díla: vady po předání, lhůty, oznámení vad',
     metaDescription:
-      'Jak uplatnit vady díla po předání: oznámení bez zbytečného odkladu, volba nápravy (oprava, sleva), lhůty 2 roky / 5 let u stavby, záruka. Praktický postup a vzor oznámení v zakázce.',
+      'Jak uplatnit vady díla po předání: včasné oznámení, volba nápravy (oprava, sleva), lhůty 2 roky a 5 let u stavby, záruka. Postup a oznámení vad v zakázce.',
     question: 'Jak reklamovat vadné dílo?',
     answer:
       'Vady oznamte zhotoviteli písemně bez zbytečného odkladu poté, co jste je zjistili nebo mohli zjistit, a uveďte, jakou nápravu požadujete (nejčastěji odstranění vady, jinak slevu). U běžného díla lze skryté vady vytknout nejpozději do 2 let od předání, u stavby do 5 let. Vady zjevné při převzetí vytkněte rovnou v předávacím protokolu.',
@@ -189,7 +189,7 @@ export const ANSWER_FIRST_ARTICLES: readonly AnswerFirstArticle[] = [
     title: 'Pracovní smlouva: kdy ji potřebujete a co musí obsahovat',
     metaTitle: 'Pracovní smlouva 2026: kdy ji použít a co musí obsahovat',
     metaDescription:
-      'Kdy je nutná pracovní smlouva, tři povinné náležitosti, zkušební doba po flexinovele, informace podle § 37 ZP a povinnosti při nástupu. Answer-first průvodce pro zaměstnavatele.',
+      'Kdy je nutná pracovní smlouva, tři povinné náležitosti, zkušební doba po flexinovele, informace podle § 37 ZP a nástupní povinnosti zaměstnavatele.',
     question: 'Kdy potřebuji pracovní smlouvu?',
     answer:
       'Pracovní smlouvu potřebujete, když má člověk pracovat pravidelně, podle vašich pokynů a ve vámi určené době — to je závislá práce. Musí být písemná a obsahovat druh práce, místo výkonu a den nástupu; ostatní (mzda, zkušební doba, pracovní doba) se sjedná ve smlouvě nebo v informaci podle § 37 ZP.',
@@ -234,9 +234,9 @@ export const ANSWER_FIRST_ARTICLES: readonly AnswerFirstArticle[] = [
     section: 'zamestnavam',
     situation: 'zamestnavam',
     title: 'DPP: limity, odvody a povinnosti zaměstnavatele v roce 2026',
-    metaTitle: 'DPP 2026 pro zaměstnavatele: 300 hodin, 12 000 Kč, povinnosti',
+    metaTitle: 'DPP 2026 pro zaměstnavatele: 300 hodin, 12 000 Kč, odvody',
     metaDescription:
-      'Dohoda o provedení práce v roce 2026: limit 300 hodin, rozhodná částka 12 000 Kč pro pojištění, minimální mzda, dovolená, výpověď a jednotné měsíční hlášení. Kdy DPP použít a kdy ne.',
+      'DPP v roce 2026: limit 300 hodin, rozhodná částka 12 000 Kč pro pojištění, minimální mzda, dovolená, výpověď a měsíční hlášení. Kdy DPP použít a kdy ne.',
     question: 'Kdy použít DPP a co hlídat?',
     answer:
       'DPP je vhodná pro práci do 300 hodin ročně u jednoho zaměstnavatele. Musí být písemná, odměna nesmí být pod minimální hodinovou mzdou (134,40 Kč v roce 2026) a od měsíční odměny 12 000 Kč vzniká účast na pojištění a odvody. Pro pravidelnou celoroční práci DPP nestačí — patří do pracovní smlouvy.',
@@ -276,7 +276,7 @@ export const ANSWER_FIRST_ARTICLES: readonly AnswerFirstArticle[] = [
     title: 'Spolupráce s OSVČ bez švarcsystému',
     metaTitle: 'Spolupráce s OSVČ bez švarcsystému: hranice a smlouva',
     metaDescription:
-      'Kdy je spolupráce s OSVČ v pořádku a kdy jde o skrytý pracovní poměr: znaky závislé práce, rizika pokut, jak nastavit smlouvu o spolupráci nebo o dílo. Answer-first průvodce.',
+      'Kdy je spolupráce s OSVČ v pořádku a kdy jde o skrytý pracovní poměr: znaky závislé práce, rizika pokut a jak nastavit smlouvu o spolupráci nebo o dílo.',
     question: 'Můžu s člověkem spolupracovat „na IČO“?',
     answer:
       'Ano, pokud skutečně podniká: pracuje samostatně, vlastními prostředky, na vlastní riziko a typicky pro více klientů. Pokud mu určujete pracovní dobu, místo a způsob práce a pracuje pod vaším vedením, jde o závislou práci — a ta musí být v pracovněprávním vztahu bez ohledu na fakturaci.',
@@ -318,7 +318,7 @@ export const ANSWER_FIRST_ARTICLES: readonly AnswerFirstArticle[] = [
     title: 'Mlčenlivost zaměstnanců a spolupracovníků: kdy stačí zákon a kdy potřebujete NDA',
     metaTitle: 'Mlčenlivost zaměstnance a OSVČ: kdy potřebujete NDA',
     metaDescription:
-      'Zaměstnanec má povinnost mlčenlivosti ze zákona, spolupracující OSVČ ne. Kdy sjednat NDA, co do ní patří, smluvní pokuta a obchodní tajemství. Answer-first průvodce pro zaměstnavatele.',
+      'Zaměstnanec má mlčenlivost ze zákona, spolupracující OSVČ ne. Kdy sjednat NDA, co do ní patří, smluvní pokuta a obchodní tajemství. Průvodce pro zaměstnavatele.',
     question: 'Potřebuji od zaměstnance nebo OSVČ smlouvu o mlčenlivosti?',
     answer:
       'U zaměstnance plyne základní mlčenlivost ze zákoníku práce a lze ji upřesnit ve smlouvě; samostatná NDA se hodí u citlivého know-how. U spolupracující OSVČ, dodavatele nebo kandidáta žádná zákonná mlčenlivost neplatí — tam je NDA se smluvní pokutou jediná účinná ochrana.',
@@ -353,9 +353,9 @@ export const ANSWER_FIRST_ARTICLES: readonly AnswerFirstArticle[] = [
     section: 'zamestnavam',
     situation: 'zamestnavam',
     title: 'Změna pracovních podmínek: dodatek, mzdový výměr, nebo nová smlouva',
-    metaTitle: 'Změna pracovních podmínek: dodatek k pracovní smlouvě, mzda, místo',
+    metaTitle: 'Změna pracovních podmínek: dodatek, mzdový výměr, místo',
     metaDescription:
-      'Jak změnit mzdu, místo výkonu práce, druh práce nebo pracovní dobu: kdy stačí mzdový výměr, kdy je nutný písemný dodatek se souhlasem zaměstnance a kdy jde o převedení. Praktický postup.',
+      'Jak změnit mzdu, místo, druh práce nebo pracovní dobu: kdy stačí mzdový výměr, kdy je nutný písemný dodatek se souhlasem zaměstnance a kdy jde o převedení.',
     question: 'Jak změnit podmínky v pracovní smlouvě?',
     answer:
       'Co je sjednáno ve smlouvě (druh práce, místo, doba trvání, pracovní doba), lze změnit jen písemným dodatkem se souhlasem zaměstnance. Mzdu určenou mzdovým výměrem může zaměstnavatel změnit jednostranně, sjednanou mzdu jen dohodou. Jednostranné převedení na jinou práci je možné jen ve výjimečných zákonných případech.',
@@ -389,7 +389,7 @@ export const ANSWER_FIRST_ARTICLES: readonly AnswerFirstArticle[] = [
     title: 'Ukončení pracovního poměru: dohoda, výpověď, zkušební doba',
     metaTitle: 'Ukončení pracovního poměru 2026: dohoda, výpověď, lhůty',
     metaDescription:
-      'Jak správně ukončit pracovní poměr: dohoda, výpověď ze strany zaměstnavatele jen ze zákonných důvodů, výpovědní doba od doručení po flexinovele, zrušení ve zkušební době, odstupné. Praktický postup.',
+      'Jak ukončit pracovní poměr: dohoda, výpověď jen ze zákonných důvodů, výpovědní doba od doručení po flexinovele, zrušení ve zkušební době a odstupné.',
     question: 'Jak ukončit pracovní poměr?',
     answer:
       'Nejjednodušší je písemná dohoda. Výpověď ze strany zaměstnavatele je možná jen ze zákonných důvodů, musí být písemná a doručená; výpovědní doba je zpravidla dva měsíce a po flexinovele běží od doručení. Ve zkušební době lze poměr zrušit bez důvodu. U organizačních důvodů náleží odstupné.',
@@ -428,7 +428,7 @@ export const ANSWER_FIRST_ARTICLES: readonly AnswerFirstArticle[] = [
     title: 'Nájemce neplatí nájem: co dělat krok za krokem',
     metaTitle: 'Nájemce neplatí nájem: výzva, výpověď, kauce, vyklizení',
     metaDescription:
-      'Postup pronajímatele při neplacení nájemného: písemná výzva, započtení kauce, výpověď bez výpovědní doby při dluhu za 3 měsíce, žaloba na vyklizení. Co nikdy nedělat (výměna zámků).',
+      'Postup pronajímatele při neplacení nájmu: písemná výzva, kauce, výpověď bez výpovědní doby při dluhu za 3 měsíce, žaloba na vyklizení. Co nikdy nedělat.',
     question: 'Co dělat, když nájemce neplatí?',
     answer:
       'Nejdřív písemně vyzvěte k úhradě s krátkou lhůtou a nabídněte splátky. Dluh za tři měsíce nájemného je hrubé porušení, které umožňuje výpověď bez výpovědní doby (§ 2291 OZ) — ale teprve po výzvě k nápravě. Byt nikdy nevyklízejte svépomocí ani neměňte zámky; pokud se nájemce nevystěhuje, zbývá žaloba na vyklizení.',
@@ -471,7 +471,7 @@ export const ANSWER_FIRST_ARTICLES: readonly AnswerFirstArticle[] = [
     title: 'Vady ojetého auta: kdy je můžete reklamovat a jak',
     metaTitle: 'Vady ojetého auta: reklamace, lhůty, stočený tachometr',
     metaDescription:
-      'Práva kupujícího při vadách ojetého auta: koupě od bazaru vs. od soukromé osoby, skryté vady, stočený tachometr, oznámení vad, sleva nebo odstoupení. Praktický postup podle občanského zákoníku.',
+      'Práva kupujícího při vadách ojetého auta: koupě od bazaru vs. od soukromé osoby, skryté vady, stočený tachometr, oznámení vad, sleva nebo odstoupení.',
     question: 'Můžu reklamovat vady ojetého auta?',
     answer:
       'Ano, ale záleží na tom, od koho jste kupovali. Od podnikatele (bazaru) máte jako spotřebitel práva z vad v délce nejméně 12 měsíců u použité věci, podle novely OZ z roku 2023 zpravidla 2 roky s možností zkrácení na 1 rok. Od soukromé osoby odpovídá prodávající za vady, které vozidlo mělo při převzetí a nebyly uvedeny ve smlouvě; opotřebení odpovídající stáří vadou není. Vadu oznamte písemně bez zbytečného odkladu.',

@@ -282,7 +282,9 @@ function main() {
   assert.doesNotMatch(rootLayout, /alternates:\s*\{[\s\S]*canonical:\s*BASE_URL/, 'Root layout must not force homepage canonical on child pages');
   assert.match(rootLayout, /<RouteChrome \/>/, 'Root layout must render route-aware shared chrome');
   assert.match(routeChrome, /<SiteHeader \/>/, 'Non-home public pages should use the shared site header');
-  for (const label of ['Smlouvy', 'Postup', 'Blog', 'FAQ', 'Moje dokumenty']) {
+  // IA 2.0 (2026-09): hlavní vstup je situace, dokumenty zůstávají přímou cestou,
+  // nástroje a legislativní radar jsou samostatné vrstvy portálu.
+  for (const label of ['Situace', 'Dokumenty', 'Nástroje', 'Změny 2027', 'Blog', 'FAQ', 'Moje dokumenty']) {
     assert.match(siteHeader, new RegExp(label), `Shared site header missing ${label}`);
   }
 

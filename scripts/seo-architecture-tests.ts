@@ -16,6 +16,9 @@ import {
 import { getExpatBlogArticle } from '../lib/i18n/expat-blog-articles';
 import { getBlogHreflangAlternates } from '../lib/seo/blog-hreflang-clusters';
 import { SITE_URL } from '../lib/seo/site';
+import { LEGAL_AUDIENCE_LIST } from '../lib/legal/radar';
+import { ANSWER_FIRST_ARTICLES, articleHref } from '../lib/portal/articles';
+import { PORTAL_TOOLS } from '../lib/portal/tools';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CANONICAL_ORIGIN = 'https://www.smlouvahned.cz';
@@ -220,11 +223,45 @@ function assertPriorityCtrCopy() {
   }
 }
 
+function assertPortalArchitecture() {
+  const entries = sitemap();
+  const urls = new Set(entries.map(({ url }) => new URL(url).pathname));
+  for (const path of ['/zakazka', '/zamestnavam', '/nastroje', '/zmeny-2027']) {
+    assert.ok(urls.has(path), `portal hub ${path} must be in the sitemap`);
+  }
+  for (const article of ANSWER_FIRST_ARTICLES) {
+    assert.ok(urls.has(articleHref(article)), `answer-first page ${articleHref(article)} must be in the sitemap`);
+  }
+  for (const tool of PORTAL_TOOLS) {
+    assert.ok(urls.has(`/nastroje/${tool.slug}`), `tool /nastroje/${tool.slug} must be in the sitemap`);
+  }
+  for (const hub of LEGAL_AUDIENCE_LIST) {
+    assert.ok(urls.has(hub.href), `radar hub ${hub.href} must be in the sitemap`);
+  }
+  for (const privatePath of ['/moje-zakazka', '/moje-zakazka/obnovit', '/api/cron/reminders', '/api/health']) {
+    assert.ok(!urls.has(privatePath), `private route ${privatePath} must not be in the sitemap`);
+  }
+
+  const robots = readFileSync(join(ROOT, 'public/robots.txt'), 'utf8');
+  assert.match(robots, /Disallow: \/moje-zakazka/, 'robots must disallow the private case page');
+
+  const privateCase = proxy(new NextRequest(
+    `${CANONICAL_ORIGIN}/moje-zakazka?id=test`,
+    { headers: { host: 'www.smlouvahned.cz' } },
+  ));
+  assert.equal(privateCase.headers.get('x-robots-tag'), 'noindex, nofollow, noarchive', 'private case page must be noindex');
+
+  const hub = proxy(new NextRequest(`${CANONICAL_ORIGIN}/zakazka`, { headers: { host: 'www.smlouvahned.cz' } }));
+  assert.equal(hub.headers.get('x-robots-tag'), null, 'public hub must stay indexable');
+  assert.equal(hub.headers.get('content-language'), 'cs', 'portal pages are Czech');
+}
+
 assertSitemapArchitecture();
 assertRedirectArchitecture();
 assertContentLanguageArchitecture();
 assertNoInternalRedirectHops();
 assertCanonicalHostSources();
 assertPriorityCtrCopy();
+assertPortalArchitecture();
 
-console.log('SEO architecture tests passed (redirects, sitemap, www host, hreflang, links and CTR copy).');
+console.log('SEO architecture tests passed (redirects, sitemap, www host, hreflang, links, CTR copy and portal routes).');

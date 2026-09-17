@@ -8,7 +8,7 @@ import { DEFAULT_OG_IMAGE, canonicalUrl } from '@/lib/seo/site';
 export const metadata: Metadata = {
   title: { absolute: 'Bezplatné nástroje: checklisty a průvodci pro smlouvy | SmlouvaHned' },
   description:
-    'Bezplatné checklisty a rozhodovací průvodci: zakázka a smlouva o dílo, zaměstnávání (jaký vztah potřebuji), prodej a koupě auta, pronájem bytu. Výsledek hned, bez registrace.',
+    'Bezplatné checklisty a rozhodovací průvodci: zakázka a smlouva o dílo, zaměstnávání, prodej a koupě auta, pronájem bytu. Výsledek hned, bez registrace.',
   alternates: { canonical: canonicalUrl('/nastroje') },
   openGraph: {
     type: 'website',

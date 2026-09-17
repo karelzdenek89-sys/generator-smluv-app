@@ -412,7 +412,7 @@ export const CASE_DOCUMENT_DEFINITIONS: Record<CaseDocumentKind, CaseDocumentDef
           title: 'II. OZNÁMENÍ VAD',
           body: [
             `Datum oznámení: ${dateText(data.date)}. Vady byly zjištěny dne ${dateText(data.discoveredOn)}.`,
-            `Objednatel tímto oznamuje zhotoviteli následující vady díla: ${text(data.defects)}`,
+            `Objednatel tímto bez zbytečného odkladu (§ 2618 OZ) oznamuje zhotoviteli následující vady díla: ${text(data.defects)}`,
             `Doplňující informace: ${text(data.notes)}`,
           ],
         },

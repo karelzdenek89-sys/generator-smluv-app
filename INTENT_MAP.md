@@ -71,7 +71,7 @@ nepřesměrovávala; všechny nové URL jsou aditivní a mají self-canonical.
 | Odpověď | `/zakazka/smlouva-s-remeslnikem`, `/zakazka/remeslnik-nedodrzel-termin`, `/zakazka/reklamace-dila` | answer-first, informační |
 | Odpověď | `/zamestnavam/{pracovni-smlouva,dpp,osvc,mlcenlivost,zmena-podminek,ukonceni}` | answer-first, informační |
 | Odpověď | `/pro-pronajimatele/neplaceni-najemneho`, `/prodej-vozidla/vady-ojeteho-auta` | answer-first, informační |
-| Nástroje | `/nastroje`, `/nastroje/{slug}` (12 checklistů + 1 průvodce) | bezplatný výsledek → dokument |
+| Nástroje | `/nastroje`, `/nastroje/{slug}` (13 checklistů + 1 průvodce) | bezplatný výsledek → dokument |
 | Radar | `/zmeny-2027`, `/zmeny-2027/{zamestnavatele,osvc-a-podnikatele,spotrebitele,ridici-a-vozidla,smlouvy-online}` | legislativní změny se statusem a zdrojem |
 | Soukromé | `/moje-zakazka`, `/moje-zakazka/obnovit` | noindex, robots Disallow, mimo sitemap |
 

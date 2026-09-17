@@ -62,7 +62,7 @@ export const LEGAL_AUDIENCE_HUBS: Record<LegalAudience, LegalAudienceHub> = {
       'Minimální mzda, jednotné měsíční hlášení, dohody a pracovní smlouvy — co platí, co se schvaluje a co má zaměstnavatel udělat.',
     metaTitle: 'Změny 2027 pro zaměstnavatele: minimální mzda, JMHZ, dohody',
     metaDescription:
-      'Přehled legislativních změn pro zaměstnavatele s explicitním statusem (platí / schváleno / projednává se), datem účinnosti a oficiálními zdroji. Co udělat a které dokumenty upravit.',
+      'Legislativní změny pro zaměstnavatele se statusem (platí / schváleno / projednává se), datem účinnosti a oficiálními zdroji. Co udělat a které dokumenty upravit.',
     nextSteps: [
       { href: '/zamestnavam', label: 'Zaměstnávám — co potřebuji vyřešit' },
       { href: '/nastroje/kontrola-pripravenosti-2027', label: 'Kontrola připravenosti na změny 2027' },
@@ -78,7 +78,7 @@ export const LEGAL_AUDIENCE_HUBS: Record<LegalAudience, LegalAudienceHub> = {
     shortTitle: 'OSVČ a podnikatelé',
     description:
       'Minimální zálohy, paušální daň, účetnictví a smluvní vztahy podnikatelů — status, termíny a oficiální zdroje.',
-    metaTitle: 'Změny 2027 pro OSVČ a podnikatele: zálohy, paušální daň, účetnictví',
+    metaTitle: 'Změny 2027 pro OSVČ: zálohy, paušální daň, účetnictví',
     metaDescription:
       'Legislativní radar pro OSVČ a menší firmy: minimální zálohy na pojistné, paušální daň, nový zákon o účetnictví. Každá změna se statusem, datem a oficiálním zdrojem.',
     nextSteps: [
@@ -95,9 +95,9 @@ export const LEGAL_AUDIENCE_HUBS: Record<LegalAudience, LegalAudienceHub> = {
     shortTitle: 'Spotřebitelé',
     description:
       'Právo na opravu, delší záruka po opravě, greenwashing a další spotřebitelské změny — co je schválené a co se teprve projednává.',
-    metaTitle: 'Změny 2027 pro spotřebitele: právo na opravu, záruka, reklamace',
+    metaTitle: 'Změny 2027 pro spotřebitele: právo na opravu a záruka',
     metaDescription:
-      'Co se mění pro spotřebitele: novela zákona o ochraně spotřebitele a občanského zákoníku (právo na opravu, záruka po opravě). Status, datum a oficiální zdroje bez marketingu.',
+      'Co se mění pro spotřebitele: novela zákona o ochraně spotřebitele a občanského zákoníku (právo na opravu, záruka po opravě). Status, datum a oficiální zdroje.',
     nextSteps: [
       { href: '/kupni', label: 'Kupní smlouva online' },
       { href: '/blog/odstoupeni-od-smlouvy-2026', label: 'Odstoupení od smlouvy — kdy lze' },
@@ -111,9 +111,9 @@ export const LEGAL_AUDIENCE_HUBS: Record<LegalAudience, LegalAudienceHub> = {
     shortTitle: 'Řidiči a vozidla',
     description:
       'Digitální řidičský průkaz, evropská peněženka digitální identity a převod vozidla — co platí a co teprve přijde.',
-    metaTitle: 'Změny 2027 pro řidiče a vozidla: digitální řidičák, převod vozidla',
+    metaTitle: 'Změny 2027 pro řidiče: digitální řidičák, převod vozidla',
     metaDescription:
-      'Legislativní radar pro řidiče: nová evropská směrnice o řidičských průkazech, digitální identita a praktické dopady na prodej a přepis vozidla. Status a oficiální zdroje.',
+      'Legislativní radar pro řidiče: nová směrnice o řidičských průkazech, digitální identita a dopady na prodej a přepis vozidla. Status a oficiální zdroje.',
     nextSteps: [
       { href: '/prodej-vozidla', label: 'Prodávám nebo kupuji auto' },
       { href: '/nastroje/prepis-vozidla-co-potrebuji', label: 'Přepis vozidla — co potřebuji' },
