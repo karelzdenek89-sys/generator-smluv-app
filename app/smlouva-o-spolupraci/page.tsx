@@ -119,7 +119,7 @@ export default function SmlouvaOSpolupraci() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(132,204,22,0.07),transparent_30%)] pointer-events-none" />
 
       <div className="relative z-10 mx-auto max-w-4xl px-6 py-16">
-        <nav className="mb-8 text-xs text-slate-500">
+        <nav className="mb-8 text-xs text-slate-400">
           <Link href="/" className="hover:text-slate-300 transition">SmlouvaHned</Link>
           <span className="mx-2">›</span>
           <span className="text-slate-400">Smlouva o spolupráci</span>
@@ -133,7 +133,7 @@ export default function SmlouvaOSpolupraci() {
         </header>
 
         <div className="mb-12">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-lime-500/20 bg-lime-500/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.2em] text-lime-400">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.2em] text-emerald-400">
             § 1746 odst. 2 Občanského zákoníku
           </div>
           <h1 className="text-4xl font-black tracking-tight text-white md:text-5xl leading-tight mb-4">
@@ -145,7 +145,7 @@ export default function SmlouvaOSpolupraci() {
             výnosy? Smlouva o spolupráci pomůže písemně vymezit role, odměnu, mlčenlivost,
             odpovědnost a podmínky ukončení — bez zakládání nové společnosti.
           </p>
-          <p className="text-sm text-slate-500 leading-relaxed max-w-2xl mb-8">
+          <p className="text-sm text-slate-400 leading-relaxed max-w-2xl mb-8">
             Vyplníte formulář online a stáhnete dokument ve formátu PDF; editovatelný DOCX lze
             volitelně přidat v checkoutu. Nejde o individuální právní poradenství.
           </p>
@@ -155,7 +155,7 @@ export default function SmlouvaOSpolupraci() {
               Vytvořit smlouvu o spolupráci →
             </Link>
           </div>
-          <div className="text-sm text-slate-500">Od 99 Kč · PDF ihned · Volitelně DOCX</div>
+          <div className="text-sm text-slate-400">Od 99 Kč · PDF ihned · Volitelně DOCX</div>
         </div>
 
         <section className="mb-12 rounded-3xl border border-white/8 bg-[#0c1426] p-8">
@@ -188,7 +188,7 @@ export default function SmlouvaOSpolupraci() {
           <div className="overflow-hidden rounded-2xl border border-white/8">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-white/8 bg-[#0c1426] text-xs uppercase tracking-wider text-slate-500">
+                <tr className="border-b border-white/8 bg-[#0c1426] text-xs uppercase tracking-wider text-slate-400">
                   <th className="px-4 py-3 font-bold">Dokument</th>
                   <th className="px-4 py-3 font-bold">Typická situace</th>
                 </tr>
@@ -262,7 +262,7 @@ export default function SmlouvaOSpolupraci() {
               'Závěrečná ustanovení a podpisy',
             ].map((item) => (
               <div key={item} className="flex items-start gap-2 text-sm text-slate-300">
-                <span className="text-lime-400 flex-shrink-0 mt-0.5">✓</span>
+                <span className="text-emerald-400 flex-shrink-0 mt-0.5">✓</span>
                 <span>{item}</span>
               </div>
             ))}
@@ -273,10 +273,10 @@ export default function SmlouvaOSpolupraci() {
           <h2 className="text-2xl font-black text-white mb-6">Časté otázky ke smlouvě o spolupráci</h2>
           <div className="space-y-3">
             {faq.map((item) => (
-              <details key={item.q} className="group rounded-2xl border border-white/8 bg-[#0c1426] p-5 open:border-lime-500/30">
+              <details key={item.q} className="group rounded-2xl border border-white/8 bg-[#0c1426] p-5 open:border-emerald-500/30">
                 <summary className="cursor-pointer list-none font-bold text-white text-sm flex items-center justify-between gap-4">
                   <span>{item.q}</span>
-                  <span className="text-slate-500 group-open:rotate-45 transition flex-shrink-0">+</span>
+                  <span className="text-slate-400 group-open:rotate-45 transition flex-shrink-0">+</span>
                 </summary>
                 <p className="mt-3 text-sm text-slate-400 leading-relaxed">{item.a}</p>
               </details>
@@ -284,7 +284,7 @@ export default function SmlouvaOSpolupraci() {
           </div>
         </section>
 
-        <section className="rounded-3xl border border-lime-500/20 bg-gradient-to-br from-lime-500/10 to-transparent p-8 text-center">
+        <section className="rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/10 to-transparent p-8 text-center">
           <h2 className="text-2xl font-black text-white mb-3">Sestavte smlouvu o spolupráci online</h2>
           <p className="text-slate-400 text-sm mb-6 max-w-md mx-auto">
             Formulář pokrývá role, výnosy, IP práva, mlčenlivost a ukončení spolupráce. PDF ke stažení ihned po zaplacení.
@@ -295,10 +295,10 @@ export default function SmlouvaOSpolupraci() {
               Vytvořit smlouvu o spolupráci →
             </Link>
           </div>
-          <div className="mt-3 text-xs text-slate-600">Od 99 Kč · § 1746 OZ · PDF ihned · Volitelně DOCX</div>
+          <div className="mt-3 text-xs text-slate-400">Od 99 Kč · § 1746 OZ · PDF ihned · Volitelně DOCX</div>
         </section>
 
-        <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">
+        <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-400">
           <Link href="/" className="hover:text-slate-300 transition">← Všechny smlouvy</Link>
           <Link href="/spoluprace" className="hover:text-slate-300 transition">Formulář smlouvy o spolupráci</Link>
           <Link href="/smlouva-o-dilo-online" className="hover:text-slate-300 transition">Smlouva o dílo</Link>

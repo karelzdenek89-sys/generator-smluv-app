@@ -9,7 +9,7 @@ export default function OfficialSources({ sources }: { sources: readonly Officia
       <h2 id="official-sources-heading" className="mb-3 text-2xl font-black tracking-tight text-white">
         Oficiální zdroje
       </h2>
-      <p className="mb-4 text-sm leading-7 text-slate-500">
+      <p className="mb-4 text-sm leading-7 text-slate-400">
         Pravidla se mohou měnit. Před konkrétním krokem zkontrolujte aktuální znění.
       </p>
       <ul className="list-disc space-y-2 pl-5 text-sm leading-7 text-slate-400">

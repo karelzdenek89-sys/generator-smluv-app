@@ -39,7 +39,7 @@ export default function RelatedArticles({ currentSlug, limit = 3 }: Props) {
 
   return (
     <section className="mt-14 border-t border-white/8 pt-10" aria-labelledby="related-articles-heading">
-      <div className="mb-5 text-[11px] font-black uppercase tracking-widest text-slate-500">
+      <div className="mb-5 text-[11px] font-black uppercase tracking-widest text-slate-400">
         Další články z blogu
       </div>
       <h2 id="related-articles-heading" className="mb-6 text-xl font-black tracking-tight text-white">
@@ -56,12 +56,12 @@ export default function RelatedArticles({ currentSlug, limit = 3 }: Props) {
               <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-amber-400">
                 {article.category}
               </span>
-              <span className="text-[11px] text-slate-600">{article.readTime}</span>
+              <span className="text-[11px] text-slate-400">{article.readTime}</span>
             </div>
             <h3 className="mb-2 text-sm font-black leading-snug tracking-tight text-white transition group-hover:text-amber-400">
               {article.title}
             </h3>
-            <p className="line-clamp-3 text-xs leading-relaxed text-slate-500">
+            <p className="line-clamp-3 text-xs leading-relaxed text-slate-400">
               {article.excerpt}
             </p>
             <div className="mt-3 text-[11px] font-bold uppercase tracking-wider text-amber-400">

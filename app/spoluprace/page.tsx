@@ -12,6 +12,7 @@ import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/LazyPaymentModal';
 import BuilderUserRoleField from '@/app/components/partners/BuilderUserRoleField';
 import type { PartnerUserRole } from '@/lib/partners/types';
+import BuilderHeader from '@/app/components/BuilderHeader';
 
 type FormData = {
   partnerUserRole: PartnerUserRole;
@@ -102,20 +103,12 @@ export default function SpolupraceePage() {
     } catch { alert('Chyba platební brány.'); setIsProcessing(false); }
   };
 
-  const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-rose-400';
+  const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-red-400';
 
   return (
     <>
     <main className="site-page contract-builder min-h-screen pb-24">
-      <header className="contract-builder-header sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500 text-slate-900 font-black text-sm">SH</div>
-            <div><div className="font-bold tracking-tight text-white">SmlouvaHned</div><div className="text-[11px] text-slate-500">Smlouva o spolupráci</div></div>
-          </div>
-          <button onClick={() => window.location.href = '/'} className="text-sm text-slate-400 hover:text-white transition">Zavřít</button>
-        </div>
-      </header>
+      <BuilderHeader docType="Smlouva o spolupráci — § 1746 odst. 2 OZ" />
 
       <ContractLandingSection
         badge="§ 1746 odst. 2 občanského zákoníku"
@@ -168,7 +161,7 @@ export default function SpolupraceePage() {
             <div id="formular" className="space-y-6">
               <div className="mb-6 border-t border-slate-800/60 pt-8">
                 <h2 className="text-lg font-black text-white uppercase tracking-wide">Vyplňte údaje dokumentu</h2>
-                <p className="text-sm text-slate-500 mt-1">Všechna povinná pole jsou označena *</p>
+                <p className="text-sm text-slate-400 mt-1">Všechna povinná pole jsou označena *</p>
               </div>
               <BuilderUserRoleField
                 contractType="cooperation"
@@ -204,7 +197,7 @@ export default function SpolupraceePage() {
                     <input className={inputClass} name="cooperationScope" value={form.cooperationScope} onChange={set} placeholder="Společný vývoj softwaru, marketingová kampaň, e-shop…" required />
                   </Field>
                   <Field label="Podrobný popis (nepovinné)">
-                    <textarea className="w-full min-h-[80px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="cooperationDetails" value={form.cooperationDetails} onChange={set} placeholder="Strana A dodá technologické řešení, Strana B zajistí obchodní kanály…" />
+                    <textarea className="w-full min-h-[80px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-400 focus:border-amber-500/60 transition" name="cooperationDetails" value={form.cooperationDetails} onChange={set} placeholder="Strana A dodá technologické řešení, Strana B zajistí obchodní kanály…" />
                   </Field>
                   <Field label="Cíl spolupráce"><input className={inputClass} name="cooperationGoal" value={form.cooperationGoal} onChange={set} placeholder="Uvedení produktu na trh do Q3 2026" /></Field>
                   <Field label="Začátek spolupráce"><input className={inputClass} name="startDate" value={form.startDate} onChange={set} type="date" /></Field>
@@ -215,10 +208,10 @@ export default function SpolupraceePage() {
                 <SectionTitle index="04" title="Příspěvky stran" subtitle="Co každá strana přináší — know-how, práce, peníze, kontakty." />
                 <div className="grid sm:grid-cols-2 gap-4">
                   <Field label={`${form.partyAName || 'Strana A'} přispívá`}>
-                    <textarea className="w-full min-h-[70px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="partyAContribution" value={form.partyAContribution} onChange={set} placeholder="Technologie, vývoj, pracovní kapacita…" />
+                    <textarea className="w-full min-h-[70px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-400 focus:border-amber-500/60 transition" name="partyAContribution" value={form.partyAContribution} onChange={set} placeholder="Technologie, vývoj, pracovní kapacita…" />
                   </Field>
                   <Field label={`${form.partyBName || 'Strana B'} přispívá`}>
-                    <textarea className="w-full min-h-[70px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="partyBContribution" value={form.partyBContribution} onChange={set} placeholder="Obchodní kanály, klientela, finance…" />
+                    <textarea className="w-full min-h-[70px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-400 focus:border-amber-500/60 transition" name="partyBContribution" value={form.partyBContribution} onChange={set} placeholder="Obchodní kanály, klientela, finance…" />
                   </Field>
                 </div>
               </section>
@@ -241,7 +234,7 @@ export default function SpolupraceePage() {
                     </>
                   )}
                   {form.revenueModel === 'fixed_fee' && <Field label={`Pevná odměna ${form.partyBName || 'Straně B'} (Kč/měsíc)`}><input className={inputClass} name="fixedFee" value={form.fixedFee} onChange={set} type="number" placeholder="20000" /></Field>}
-                  {form.revenueModel === 'custom' && <div className="sm:col-span-2"><Field label="Popis odměňování"><textarea className="w-full min-h-[70px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="revenueDesc" value={form.revenueDesc} onChange={set} placeholder="Popište způsob odměňování…" /></Field></div>}
+                  {form.revenueModel === 'custom' && <div className="sm:col-span-2"><Field label="Popis odměňování"><textarea className="w-full min-h-[70px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-400 focus:border-amber-500/60 transition" name="revenueDesc" value={form.revenueDesc} onChange={set} placeholder="Popište způsob odměňování…" /></Field></div>}
                 </div>
               </section>
 
@@ -288,7 +281,7 @@ export default function SpolupraceePage() {
 
                 {/* Řešení sporů */}
                 <div className="mb-6">
-                  <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
+                  <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Řešení sporů</div>
                   <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set} aria-label="Řešení sporů">
                     <option value="court">Obecný soud (výchozí)</option>
                     <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
@@ -316,10 +309,10 @@ export default function SpolupraceePage() {
               <div className="builder-kicker mb-4">Analýza smlouvy</div>
               <div className="flex items-center gap-4 mb-4">
                 <div className={`text-5xl font-black ${scoreColor}`}>{risk.score}</div>
-                <div><div className={`font-bold ${scoreColor}`}>{risk.label}</div><div className="text-xs text-slate-500">ze 100 bodů</div></div>
+                <div><div className={`font-bold ${scoreColor}`}>{risk.label}</div><div className="text-xs text-slate-400">ze 100 bodů</div></div>
               </div>
               {risk.warnings.length === 0 ? <p className="text-sm text-emerald-400">✓ Smlouva o spolupráci je kompletní.</p>
-                : <ul className="space-y-2">{risk.warnings.map((w, i) => (<li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-rose-500/10 text-rose-300' : 'bg-amber-500/10 text-amber-300'}`}>{w.level === 'high' ? '⚠ ' : '▲ '}{w.text}</li>))}</ul>}
+                : <ul className="space-y-2">{risk.warnings.map((w, i) => (<li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-red-500/10 text-red-300' : 'bg-amber-500/10 text-amber-300'}`}>{w.level === 'high' ? '⚠ ' : '▲ '}{w.text}</li>))}</ul>}
             </div>
             <div className={cardClass}>
               <BuilderCheckoutSummary
@@ -340,12 +333,12 @@ export default function SpolupraceePage() {
                 <button
                   data-builder-generate=""
                   onClick={() => setShowPreviewModal(true)}
-                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
+                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-amber-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >
                   Vygenerovat smlouvu →
                 </button>
 
-                <p className="mt-3 text-center text-[11px] text-slate-500">
+                <p className="mt-3 text-center text-[11px] text-slate-400">
                   Zobrazí se náhled dokumentu připraveného k odemčení
                 </p>
             </div>

@@ -20,6 +20,7 @@ import { isFeatureEnabled } from '@/lib/feature-flags';
 import { getPackageUpsellCopy } from '@/lib/i18n/package-upsell';
 import BuilderUserRoleField from '@/app/components/partners/BuilderUserRoleField';
 import type { PartnerUserRole } from '@/lib/partners/types';
+import BuilderHeader from '@/app/components/BuilderHeader';
 
 type PaymentType = 'after_completion' | 'with_deposit' | 'milestones';
 
@@ -152,8 +153,8 @@ export default function WorkContractPage() {
     );
   }, [isWorkOrderPackage]);
 
-  const inputClass = 'w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition text-sm';
-  const textareaClass = 'w-full min-h-[90px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition text-sm';
+  const inputClass = 'w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-400 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition text-sm';
+  const textareaClass = 'w-full min-h-[90px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-400 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition text-sm';
   const cardClass = 'bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]';
 
   const riskAnalysis = useMemo(() => {
@@ -208,7 +209,7 @@ export default function WorkContractPage() {
       ? 'text-emerald-400'
       : riskAnalysis.score >= 65
         ? 'text-amber-400'
-        : 'text-rose-400';
+        : 'text-red-400';
 
   const previewSections = useMemo(() => {
     try {
@@ -275,18 +276,7 @@ export default function WorkContractPage() {
   return (
     <>
     <main className="min-h-screen bg-[#05080f] text-slate-200 font-sans pb-24">
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#08101e]/90 backdrop-blur">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500 text-slate-900 font-black text-sm">SH</div>
-            <div>
-              <div className="font-bold tracking-tight text-white">SmlouvaHned</div>
-              <div className="text-[11px] text-slate-500">Smlouva o dílo — § 2586 OZ</div>
-            </div>
-          </div>
-          <button onClick={() => window.location.href = '/'} className="text-sm text-slate-400 hover:text-white transition">Zavřít</button>
-        </div>
-      </header>
+      <BuilderHeader docType="Smlouva o dílo — § 2586 OZ" />
 
       <ContractLandingSection
         badge="§ 2586 a násl. občanského zákoníku"
@@ -364,7 +354,7 @@ export default function WorkContractPage() {
                 </p>
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/4 px-5 py-4">
-                <div className="text-xs uppercase tracking-[0.18em] text-slate-500">Cena balíčku</div>
+                <div className="text-xs uppercase tracking-[0.18em] text-slate-400">Cena balíčku</div>
                 <div className="mt-2 text-lg font-semibold text-white">Cena v dalším kroku</div>
                 <Link href="/smlouva-o-dilo" className="mt-3 inline-block text-xs leading-relaxed text-[#cbbba0] transition hover:text-white">
                   Potřebujete jen smlouvu o dílo? Zvolte samostatný dokument.
@@ -382,7 +372,7 @@ export default function WorkContractPage() {
             <div id="formular" className="space-y-8">
               <div className="mb-6 border-t border-slate-800/60 pt-8">
                 <h2 className="text-lg font-black text-white uppercase tracking-wide">Vyplňte údaje dokumentu</h2>
-                <p className="text-sm text-slate-500 mt-1">Všechna povinná pole jsou označena *</p>
+                <p className="text-sm text-slate-400 mt-1">Všechna povinná pole jsou označena *</p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-8">
@@ -857,13 +847,13 @@ export default function WorkContractPage() {
                 </div>
                 <div>
                   <div className={`font-bold ${scoreColor}`}>{riskAnalysis.score >= 85 ? 'Dobré nastavení' : riskAnalysis.score >= 65 ? 'Průměrná ochrana' : 'Doporučená doplnění'}</div>
-                  <div className="text-xs text-slate-500">ze 100 bodů</div>
+                  <div className="text-xs text-slate-400">ze 100 bodů</div>
                 </div>
               </div>
               {riskAnalysis.warnings.length === 0
                 ? <p className="text-sm text-emerald-400">✓ Smlouva o dílo je v pořádku.</p>
                 : <ul className="space-y-2">{riskAnalysis.warnings.map((w, i) => (
-                    <li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-rose-500/10 text-rose-300' : 'bg-amber-500/10 text-amber-300'}`}>{w.level === 'high' ? '⚠ ' : '▲ '}{w.text}</li>
+                    <li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-red-500/10 text-red-300' : 'bg-amber-500/10 text-amber-300'}`}>{w.level === 'high' ? '⚠ ' : '▲ '}{w.text}</li>
                   ))}</ul>
               }
             </div>
@@ -883,12 +873,12 @@ export default function WorkContractPage() {
                 <button
                   data-builder-generate=""
                   onClick={() => setShowPreviewModal(true)}
-                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
+                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-amber-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >
                   Vygenerovat smlouvu →
                 </button>
 
-                <p className="mt-3 text-center text-[11px] text-slate-500">
+                <p className="mt-3 text-center text-[11px] text-slate-400">
                   Zobrazí se náhled dokumentu připraveného k odemčení
                 </p>
             </div>

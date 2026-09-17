@@ -41,17 +41,17 @@ export default function DifferentiationSection() {
 
       <div className="mt-8 grid gap-3 lg:grid-cols-[1fr_auto_1fr] text-sm">
         <div className="rounded-2xl border border-slate-800 bg-slate-900/40 px-5 py-5">
-          <p className="mb-3 text-xs font-black uppercase tracking-widest text-slate-500">
+          <p className="mb-3 text-xs font-black uppercase tracking-widest text-slate-400">
             {generic.label}
           </p>
           {generic.lines.map((line) => (
-            <p key={line} className="mb-1.5 text-xs text-slate-500 line-through decoration-slate-700">
+            <p key={line} className="mb-1.5 text-xs text-slate-400 line-through decoration-slate-700">
               ✗ {line}
             </p>
           ))}
         </div>
 
-        <div className="hidden items-center justify-center text-2xl text-slate-700 lg:flex">vs.</div>
+        <div className="hidden items-center justify-center text-2xl text-slate-400 lg:flex">vs.</div>
 
         <div className="rounded-2xl border border-[#c9a852]/20 bg-[#c9a852]/5 px-5 py-5">
           <p className="mb-3 text-xs font-black uppercase tracking-widest text-[#c9a852]">
@@ -66,7 +66,7 @@ export default function DifferentiationSection() {
       </div>
 
       <div className="mt-8 rounded-2xl border border-white/8 bg-[#0c1426]/80 px-6 py-6 md:px-8">
-        <p className="text-xs font-black uppercase tracking-widest text-slate-500">Co to není</p>
+        <p className="text-xs font-black uppercase tracking-widest text-slate-400">Co to není</p>
         <div className="mt-4 grid gap-5 md:grid-cols-3">
           {NOT_A_LAW_FIRM_POINTS.map((item) => (
             <div key={item.title}>
@@ -75,7 +75,7 @@ export default function DifferentiationSection() {
             </div>
           ))}
         </div>
-        <p className="mt-5 text-sm leading-relaxed text-slate-500">
+        <p className="mt-5 text-sm leading-relaxed text-slate-400">
           Více o provozovateli, metodice šablon a limitech nástroje na{' '}
           <Link href="/o-projektu" className="text-[#c9a852] underline-offset-2 hover:underline">
             stránce O projektu

@@ -132,7 +132,7 @@ export default function ArticlePageLayout({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLdScript(crumbs) }}
       />
-      <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">
+      <nav className="mb-8 text-xs text-slate-400" aria-label="Breadcrumb">
         <Link href="/" className="transition hover:text-slate-300">
           {ui.home}
         </Link>
@@ -149,13 +149,13 @@ export default function ArticlePageLayout({
           <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-amber-400">
             {category}
           </span>
-          <span className="text-xs text-slate-600">{readTime}</span>
-          <time className="text-xs text-slate-600" dateTime={dateTime}>
+          <span className="text-xs text-slate-400">{readTime}</span>
+          <time className="text-xs text-slate-400" dateTime={dateTime}>
             {dateLabel}
           </time>
           {dateModified && dateModifiedLabel ? (
             <time
-              className="text-xs text-slate-600"
+              className="text-xs text-slate-400"
               dateTime={dateModified}
               title={ui.updatedTitle}
             >
@@ -169,7 +169,7 @@ export default function ArticlePageLayout({
         <p className="mt-5 text-lg leading-relaxed text-slate-400">{intro}</p>
 
         <div
-          className="mt-5 flex items-center gap-3 text-xs text-slate-500"
+          className="mt-5 flex items-center gap-3 text-xs text-slate-400"
           itemScope
           itemType="https://schema.org/Person"
         >
@@ -185,7 +185,7 @@ export default function ArticlePageLayout({
               {CONTENT_AUTHOR.name}
             </span>
             <span className="mx-2 text-slate-700">·</span>
-            <span itemProp="jobTitle" className="text-slate-500">
+            <span itemProp="jobTitle" className="text-slate-400">
               {CONTENT_AUTHOR.jobTitle}
             </span>
           </div>
@@ -206,7 +206,7 @@ export default function ArticlePageLayout({
       </header>
 
       <nav className="mb-10 rounded-2xl border border-white/8 bg-[#0c1426] p-6" aria-label={ui.tocAria}>
-        <div className="mb-3 text-xs font-black uppercase tracking-widest text-slate-500">
+        <div className="mb-3 text-xs font-black uppercase tracking-widest text-slate-400">
           {ui.toc}
         </div>
         <ol className="space-y-1.5 text-sm text-slate-400">
@@ -263,7 +263,7 @@ export default function ArticlePageLayout({
       <WhyUsArticleCallout className="mt-10" currentSlug={slug} compact />
 
       <div className="mt-12 border-t border-white/8 pt-10">
-        <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-600">
+        <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-400">
           {ui.relatedPages}
         </div>
         <div className="flex flex-wrap gap-3">

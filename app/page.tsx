@@ -25,6 +25,7 @@ import ContentFinder, { type FinderItem } from '@/app/components/marketing/Conte
 import styles from '@/app/components/marketing/homepage.module.css';
 import { CASE_DOCUMENT_PRICE_LABEL } from '@/lib/cases/documents';
 import { isFeatureEnabled } from '@/lib/feature-flags';
+import { SITE_NAV_ITEMS, SITE_NAV_MY_DOCUMENTS, siteNavHref } from '@/lib/site-nav';
 
 const HOMEPAGE_BASE_URL = SITE_URL;
 const HOMEPAGE_TOOLS = [
@@ -216,17 +217,17 @@ export default function Home() {
             <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#c9a852]/40 bg-[#040c1a]/80 text-xs font-black text-[#c9a852]">SH</div>
             <div>
               <div className="font-serif text-sm font-semibold tracking-tight text-white">SmlouvaHned</div>
-              <div className="hidden text-[10px] uppercase tracking-[0.2em] text-slate-500 sm:block">Smluvní dokumenty online</div>
+              <div className="hidden text-[10px] uppercase tracking-[0.2em] text-slate-400 sm:block">Smluvní dokumenty online</div>
             </div>
           </Link>
 
-          <div className="hidden items-center gap-7 text-[13px] text-slate-400 md:flex">
-            <Link href="#situace" className="transition-colors hover:text-white">Situace</Link>
-            <Link href="#smlouvy" className="transition-colors hover:text-white">Dokumenty</Link>
-            <Link href="/nastroje" className="transition-colors hover:text-white">Nástroje</Link>
-            <Link href="/zmeny-2027" className="transition-colors hover:text-white">Změny 2027</Link>
-            <Link href="/blog" className="transition-colors hover:text-white">Blog</Link>
-            <Link href="/zakaznicka-zona" className="rounded-lg border border-[#c9a852]/30 px-4 py-1.5 text-[#c9a852] transition hover:border-[#c9a852]/60 hover:text-[#d4b86a]">Moje dokumenty</Link>
+          <div className="hidden items-center gap-7 text-[13px] text-slate-300 md:flex">
+            {SITE_NAV_ITEMS.map((item) => (
+              <Link key={item.href} href={siteNavHref(item, true)} className="transition-colors hover:text-white">
+                {item.label}
+              </Link>
+            ))}
+            <Link href={SITE_NAV_MY_DOCUMENTS.href} className="rounded-lg border border-[#c9a852]/30 px-4 py-1.5 text-[#c9a852] transition hover:border-[#c9a852]/60 hover:text-[#d4b86a]">{SITE_NAV_MY_DOCUMENTS.label}</Link>
             <LanguageSwitcher current="cs" variant="desktop" />
           </div>
 
@@ -237,15 +238,8 @@ export default function Home() {
                 Menu <span aria-hidden="true" className="text-[10px] transition-transform group-open:rotate-180">▾</span>
               </summary>
               <div className="absolute right-0 z-40 mt-2 w-56 rounded-xl border border-[#c9a852]/25 bg-[#040c1a]/95 p-2 text-sm shadow-[0_18px_60px_rgba(0,0,0,0.45)] backdrop-blur-md">
-                {[
-                  { href: '#situace', label: 'Situace' },
-                  { href: '#smlouvy', label: 'Dokumenty' },
-                  { href: '/nastroje', label: 'Nástroje zdarma' },
-                  { href: '/zmeny-2027', label: 'Změny 2027' },
-                  { href: '/blog', label: 'Blog' },
-                  { href: '/zakaznicka-zona', label: 'Moje dokumenty' },
-                ].map((item) => (
-                  <Link key={item.href} href={item.href} className="block rounded-lg px-3 py-2 text-slate-200 hover:bg-white/5 hover:text-white">{item.label}</Link>
+                {[...SITE_NAV_ITEMS, SITE_NAV_MY_DOCUMENTS].map((item) => (
+                  <Link key={item.href} href={siteNavHref(item, true)} className="block rounded-lg px-3 py-2 text-slate-200 hover:bg-white/5 hover:text-white">{item.label}</Link>
                 ))}
               </div>
             </details>

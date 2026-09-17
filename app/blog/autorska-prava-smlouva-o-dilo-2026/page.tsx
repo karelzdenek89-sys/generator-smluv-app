@@ -230,8 +230,8 @@ export default function AutorskaPravaSmlouvaODilo2026Page() {
           připouští a stranami sjednáno. Pro spolupráci s OSVČ na fakturu se zaměstnanecké
           dílo neuplatní — tam je nutné mít licenční ujednání ve smlouvě.
         </p>
-        <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm leading-relaxed text-slate-400">
-          <strong className="text-blue-400">📌 Praktický důsledek:</strong> Pokud řešíte
+        <div className="rounded-2xl border border-sky-500/15 bg-sky-500/5 p-5 text-sm leading-relaxed text-slate-400">
+          <strong className="text-sky-400">📌 Praktický důsledek:</strong> Pokud řešíte
           vývoj produktu kombinací interních zaměstnanců a externích freelancerů, máte
           dva právní režimy najednou. Zaměstnanecká část je 'automaticky" u firmy,
           freelancerská část vyžaduje výslovná licenční ustanovení.

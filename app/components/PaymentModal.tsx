@@ -13,6 +13,7 @@ import {
 import { getLocalizedPackagePresentation, getLocalizedPricingTier } from '@/lib/i18n/pricing-locale';
 import { getPackageAppendixNotice } from '@/lib/i18n/package-upsell';
 import { LEGAL_NOTICE, normalizeLocale, type AppLocale } from '@/lib/locale';
+import { privacyHref, termsHref } from '@/lib/legal/links';
 import type { LeaseFormUi } from '@/lib/i18n/lease-form';
 import { getAnalyticsDefaultsForPathname, trackEvent } from '@/lib/analytics';
 import {
@@ -546,7 +547,7 @@ export default function PaymentModal({
             {/* Výběr varianty — pouze pokud není package */}
             {!packageConfig && (
               <div className="mb-5 space-y-2">
-                <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">{copy?.tierHeading ?? genericCopy.tierHeading}</div>
+                <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">{copy?.tierHeading ?? genericCopy.tierHeading}</div>
                 {(['basic', 'complete'] as const).map((t) => {
                   const cfg = PRICING_TIER_CONFIG[t];
                   const isSelected = tier === t;
@@ -624,7 +625,7 @@ export default function PaymentModal({
                   {localizedPackage?.checkoutDescription ?? packageConfig.checkoutDescription}
                 </p>
                 {packageAppendixNotice ? (
-                  <p className="mt-2 text-xs leading-5 text-slate-500">
+                  <p className="mt-2 text-xs leading-5 text-slate-400">
                     {packageAppendixNotice}
                   </p>
                 ) : null}
@@ -633,7 +634,7 @@ export default function PaymentModal({
 
             {/* Co je součástí */}
             <div className="mb-5 rounded-xl border border-slate-700/50 bg-slate-800/40 px-4 py-3">
-              <div className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-500">{copy?.includedHeading ?? genericCopy.includedHeading}</div>
+              <div className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-400">{copy?.includedHeading ?? genericCopy.includedHeading}</div>
               <ul className="space-y-1.5">
                 {[...includedItems, ...selectedAddonItems].map((item) => (
                   <li key={item} className="flex items-start gap-2 text-xs text-slate-300">
@@ -646,7 +647,7 @@ export default function PaymentModal({
 
             {availableAddOns.length > 0 && (
               <div className="mb-5 space-y-2">
-                <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">
                   {genericCopy.addonsHeading}
                 </div>
                 {availableAddOns.map((addon) => {
@@ -722,7 +723,7 @@ export default function PaymentModal({
                 </div>
               ) : null}
               <div className="mt-3 flex items-center justify-between border-t border-white/8 pt-3">
-                <span className="text-xs font-black uppercase tracking-widest text-slate-500">{genericCopy.total}</span>
+                <span className="text-xs font-black uppercase tracking-widest text-slate-400">{genericCopy.total}</span>
                 <span className="text-xl font-black text-amber-400">{checkoutPrice}</span>
               </div>
             </div>
@@ -761,10 +762,10 @@ export default function PaymentModal({
                   required
                   value={deliveryEmail}
                   onChange={(event) => setCheckoutDraft((current) => ({ ...current, deliveryEmail: event.target.value }))}
-                  className="w-full rounded-xl border border-white/10 bg-[#111c31] px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-amber-400/70 focus:ring-2 focus:ring-amber-400/20"
+                  className="w-full rounded-xl border border-white/10 bg-[#111c31] px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-400 focus:border-amber-400/70 focus:ring-2 focus:ring-amber-400/20"
                   placeholder={locale === 'cs' ? 'vas@email.cz' : 'you@email.com'}
                 />
-                <p className="mt-1.5 text-[11px] leading-5 text-slate-500">
+                <p className="mt-1.5 text-[11px] leading-5 text-slate-400">
                   {locale === 'en'
                     ? 'The download link and customer-zone access will be sent only to this address.'
                     : locale === 'ua'
@@ -786,20 +787,20 @@ export default function PaymentModal({
                   {copy?.consentLabel ? (
                     <>
                       {copy.consentLabel}{' '}
-                      <a href="/obchodni-podminky" target="_blank" rel="noopener noreferrer" className="text-amber-400 underline hover:text-amber-300">
+                      <a href={termsHref(locale)} target="_blank" rel="noopener noreferrer" className="text-amber-400 underline hover:text-amber-300">
                         {locale === 'en' ? 'Terms' : locale === 'ua' ? 'Умови' : 'Obchodní podmínky'}
                       </a>
                       {' · '}
-                      <a href="/gdpr" target="_blank" rel="noopener noreferrer" className="text-amber-400 underline hover:text-amber-300">
+                      <a href={privacyHref(locale)} target="_blank" rel="noopener noreferrer" className="text-amber-400 underline hover:text-amber-300">
                         {locale === 'en' ? 'Privacy Policy' : locale === 'ua' ? 'Політика конфіденційності' : 'Ochrana osobních údajů'}
                       </a>
                     </>
                   ) : (
                     <>
                       {genericCopy.consentStart}{' '}
-                      <a href="/obchodni-podminky" target="_blank" rel="noopener noreferrer" className="text-amber-400 underline hover:text-amber-300">{genericCopy.terms}</a>
+                      <a href={termsHref(locale)} target="_blank" rel="noopener noreferrer" className="text-amber-400 underline hover:text-amber-300">{genericCopy.terms}</a>
                       {' '}{genericCopy.consentMiddle}{' '}
-                      <a href="/gdpr" target="_blank" rel="noopener noreferrer" className="text-amber-400 underline hover:text-amber-300">{genericCopy.privacy}</a>.{' '}
+                      <a href={privacyHref(locale)} target="_blank" rel="noopener noreferrer" className="text-amber-400 underline hover:text-amber-300">{genericCopy.privacy}</a>.{' '}
                       {genericCopy.consentDelivery}{' '}
                       <strong className="text-slate-300">{genericCopy.consentLoss}</strong>{' '}
                       {genericCopy.consentLegal}
@@ -873,7 +874,7 @@ export default function PaymentModal({
                   );
                 }}
                 disabled={isProcessing}
-                className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-5 bg-gradient-to-r from-amber-500 to-amber-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isProcessing ? (
                   <span className="flex items-center justify-center gap-2">
@@ -887,7 +888,7 @@ export default function PaymentModal({
                 )}
               </button>
 
-              <p className="text-center text-[11px] text-slate-500">
+              <p className="text-center text-[11px] text-slate-400">
                 {isFreeBasic
                   ? freeCopy.footerSecure
                   : (copy?.footerSecure ?? genericCopy.footerSecure)}

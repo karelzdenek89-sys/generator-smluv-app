@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 import { Children, isValidElement, type ReactElement, type ReactNode } from 'react';
 import ArticleInlineCta from '../app/components/blog/ArticleInlineCta';
@@ -197,11 +197,24 @@ function testLocalePropagation() {
   assert.doesNotMatch(rootLayout, /ForeignVisitorBanner/);
   assert.match(read('app/page.tsx'), /organizationSchema/);
   assert.match(localeLayout, /ExpatLocaleSchemas/);
-  assert.match(localeLayout, /document\.documentElement\.lang/);
-  for (const retired of ['de', 'ru', 'vn', 'uk']) {
-    const retiredLayout = read(`app/${retired}/layout.tsx`);
-    assert.match(retiredLayout, /index: false/);
-    assert.doesNotMatch(retiredLayout, /makeLandingMetadata/);
+  // Jazyk obsahu musí být v odpovědi serveru, ne až po spuštění JavaScriptu:
+  // kořenový <html lang> je staticky "cs", proto /en a /ua nesou `lang` na
+  // vlastním wrapperu a skript v <head> jen srovná <html>.
+  assert.match(localeLayout, /lang=\{htmlLang\}/);
+  assert.match(read('lib/locale-bootstrap.ts'), /documentElement\.lang/);
+  assert.match(read('app/components/LocalizedBuilderShell.tsx'), /lang=\{isForeign \?/);
+  assert.match(read('app/components/blog/BlogLayoutShell.tsx'), /lang=\{articleLocale/);
+
+  // Vyřazené jazykové segmenty už nemají vlastní stránky — redirect 308 je
+  // silnější záruka než noindex layout a řeší ho proxy i next.config.
+  const nextConfig = read('next.config.ts');
+  for (const retired of ['de', 'ru', 'vn', 'vi', 'uk']) {
+    assert.ok(
+      !existsSync(`${root}/app/${retired}`),
+      `Retired locale route app/${retired} must not exist`,
+    );
+    assert.match(proxy, new RegExp(`${retired}: '/(en|ua)'`));
+    assert.match(nextConfig, new RegExp(`source: '/${retired}'`));
   }
   assert.match(proxy, /LOCALIZED_BUILDER_PATHS/);
   assert.match(proxy, /CZECH_ONLY_BUILDER_PATHS/);

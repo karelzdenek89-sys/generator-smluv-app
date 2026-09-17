@@ -53,7 +53,7 @@ export default function WizardToolView({ tool }: { tool: WizardTool }) {
   return (
     <div className="space-y-6">
       {path.length > 0 ? (
-        <ol className="flex flex-wrap gap-2 text-xs text-slate-500" aria-label="Vaše odpovědi">
+        <ol className="flex flex-wrap gap-2 text-xs text-slate-400" aria-label="Vaše odpovědi">
           {path.map((step, index) => (
             <li key={`${step.questionKey}-${index}`} className="rounded-full border border-white/8 bg-white/[0.02] px-3 py-1">
               {step.optionLabel}
@@ -64,7 +64,7 @@ export default function WizardToolView({ tool }: { tool: WizardTool }) {
 
       {question ? (
         <section className="site-content-card rounded-2xl p-6" aria-live="polite">
-          <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">Otázka {path.length + 1}</div>
+          <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">Otázka {path.length + 1}</div>
           <h2 className="mt-2 font-serif italic text-2xl font-bold text-white">{question.question}</h2>
           {question.help ? <p className="mt-2 text-sm leading-7 text-slate-400">{question.help}</p> : null}
           <div className="mt-5 grid gap-3">
@@ -98,7 +98,7 @@ export default function WizardToolView({ tool }: { tool: WizardTool }) {
                 <li key={line} className="flex gap-2"><span className="text-[#c9a852]">•</span><span>{line}</span></li>
               ))}
             </ul>
-            <p className="mt-4 text-xs leading-6 text-slate-500">
+            <p className="mt-4 text-xs leading-6 text-slate-400">
               Výstup vychází jen z vašich odpovědí a slouží k orientaci; nejde o právní posouzení vaší situace ani o právní službu.
             </p>
           </div>

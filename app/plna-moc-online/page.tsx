@@ -57,7 +57,7 @@ export default function PlnaMocOnlinePage() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(71,85,105,0.07),transparent_30%)] pointer-events-none" />
 
       <div className="relative z-10 mx-auto max-w-4xl px-6 py-16">
-        <nav className="mb-8 text-xs text-slate-500">
+        <nav className="mb-8 text-xs text-slate-400">
           <Link href="/" className="hover:text-slate-300 transition">SmlouvaHned</Link>
           <span className="mx-2">›</span>
           <span className="text-slate-400">Plná moc</span>
@@ -87,7 +87,7 @@ export default function PlnaMocOnlinePage() {
               Vytvořit plnou moc →
             </Link>
           </div>
-          <div className="text-sm text-slate-500">Od 99 Kč · PDF ihned · Dle § 441 OZ</div>
+          <div className="text-sm text-slate-400">Od 99 Kč · PDF ihned · Dle § 441 OZ</div>
         </div>
 
         <section className="mb-12 rounded-3xl border border-white/8 bg-[#0c1426] p-8">
@@ -140,7 +140,7 @@ export default function PlnaMocOnlinePage() {
               <details key={item.q} className="group rounded-2xl border border-white/8 bg-[#0c1426] p-5 open:border-slate-500/30">
                 <summary className="cursor-pointer list-none font-bold text-white text-sm flex items-center justify-between gap-4">
                   <span>{item.q}</span>
-                  <span className="text-slate-500 group-open:rotate-45 transition flex-shrink-0">+</span>
+                  <span className="text-slate-400 group-open:rotate-45 transition flex-shrink-0">+</span>
                 </summary>
                 <p className="mt-3 text-sm text-slate-400 leading-relaxed">{item.a}</p>
               </details>
@@ -159,10 +159,10 @@ export default function PlnaMocOnlinePage() {
               Vytvořit plnou moc →
             </Link>
           </div>
-          <div className="mt-3 text-xs text-slate-600">Od 99 Kč · § 441 OZ · PDF ihned</div>
+          <div className="mt-3 text-xs text-slate-400">Od 99 Kč · § 441 OZ · PDF ihned</div>
         </section>
 
-        <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">
+        <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-400">
           <Link href="/" className="hover:text-slate-300 transition">← Všechny smlouvy</Link>
           <Link href="/najem" className="hover:text-slate-300 transition">Nájemní smlouva</Link>
           <Link href="/kupni-smlouva" className="hover:text-slate-300 transition">Kupní smlouva</Link>

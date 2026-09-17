@@ -65,7 +65,7 @@ export default function NotFound() {
 
         {/* Quick links */}
         <div className="mt-12 border-t border-white/[0.05] pt-8">
-          <div className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-600 mb-5">
+          <div className="text-[10px] font-black uppercase tracking-[0.22em] text-slate-400 mb-5">
             Nejčastěji hledané
           </div>
           <div className="flex flex-wrap justify-center gap-2">
@@ -80,7 +80,7 @@ export default function NotFound() {
               <Link
                 key={href}
                 href={href}
-                className="rounded-full border border-white/8 bg-white/[0.03] px-3.5 py-1.5 text-xs text-slate-500 transition hover:border-white/14 hover:text-slate-300"
+                className="rounded-full border border-white/8 bg-white/[0.03] px-3.5 py-1.5 text-xs text-slate-400 transition hover:border-white/14 hover:text-slate-300"
               >
                 {label}
               </Link>

@@ -53,7 +53,7 @@ export default function LegalRadarPage() {
               <div key={status} className="rounded-2xl border border-white/8 bg-white/[0.02] p-4">
                 <div className="flex items-center justify-between gap-2">
                   <LegalStatusBadge status={status} />
-                  <span className="text-xs text-slate-500">{counts[status]}</span>
+                  <span className="text-xs text-slate-400">{counts[status]}</span>
                 </div>
                 <p className="mt-2 text-xs leading-6 text-slate-400">{LEGAL_CHANGE_STATUS_DESCRIPTIONS[status]}</p>
               </div>
@@ -70,7 +70,7 @@ export default function LegalRadarPage() {
                   <span className="text-[10px] font-black uppercase tracking-widest text-[#c9a852]">{hub.shortTitle}</span>
                   <span className="mt-2 font-serif italic text-lg font-bold text-white group-hover:text-[#e2c77b]">{hub.title}</span>
                   <span className="mt-2 flex-grow text-sm leading-7 text-slate-400">{hub.description}</span>
-                  <span className="mt-4 text-xs text-slate-500">{hubChanges.length} položek · otevřít →</span>
+                  <span className="mt-4 text-xs text-slate-400">{hubChanges.length} položek · otevřít →</span>
                 </Link>
               );
             })}

@@ -71,7 +71,7 @@ export default function BuilderUserRoleField({
     <section className="rounded-2xl border border-slate-800/80 bg-[#0c1426] p-4 sm:p-5">
       <label className="block">
         <span className="block text-sm font-semibold text-white">{copy.title}</span>
-        <span className="mt-1 block text-xs leading-5 text-slate-500">{copy.hint}</span>
+        <span className="mt-1 block text-xs leading-5 text-slate-400">{copy.hint}</span>
         <select
           name="partnerUserRole"
           value={value}

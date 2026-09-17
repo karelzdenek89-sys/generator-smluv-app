@@ -10,6 +10,7 @@ import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/LazyPaymentModal';
+import BuilderHeader from '@/app/components/BuilderHeader';
 
 type GiftType = 'money' | 'car' | 'property' | 'thing';
 type TransferMethod = 'cash' | 'transfer';
@@ -91,8 +92,8 @@ export default function GiftContractPage() {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const inputClass = 'w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition text-sm';
-  const textareaClass = 'w-full min-h-[90px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition text-sm';
+  const inputClass = 'w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-400 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition text-sm';
+  const textareaClass = 'w-full min-h-[90px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-400 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition text-sm';
   const cardClass = 'bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]';
 
   const riskAnalysis = useMemo(() => {
@@ -202,18 +203,7 @@ export default function GiftContractPage() {
   return (
     <>
     <main className="min-h-screen bg-[#05080f] text-slate-200 pb-24">
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#08101e]/90 backdrop-blur">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500 text-slate-900 font-black text-sm">SH</div>
-            <div>
-              <div className="font-bold tracking-tight text-white">SmlouvaHned</div>
-              <div className="text-[11px] text-slate-500">Prémiový generátor darovací smlouvy</div>
-            </div>
-          </div>
-          <button onClick={() => (window.location.href = '/')} className="text-sm text-slate-400 hover:text-white transition">Zavřít</button>
-        </div>
-      </header>
+      <BuilderHeader docType="Darovací smlouva — § 2055 OZ" />
 
       <ContractLandingSection
         badge="§ 2055 a násl. občanského zákoníku"
@@ -259,7 +249,7 @@ export default function GiftContractPage() {
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8" id="formular">
         <div className="mb-6 border-t border-slate-800/60 pt-8">
           <h2 className="text-lg font-black text-white uppercase tracking-wide">Vyplňte údaje dokumentu</h2>
-          <p className="text-sm text-slate-500 mt-1">Všechna povinná pole jsou označena *</p>
+          <p className="text-sm text-slate-400 mt-1">Všechna povinná pole jsou označena *</p>
         </div>
 
         <div className="grid lg:grid-cols-12 gap-8 items-start">
@@ -639,13 +629,13 @@ export default function GiftContractPage() {
                     <h3 className="font-black text-white text-sm uppercase tracking-[0.18em]">Kontrola rizik</h3>
                     <p className="text-sm text-slate-400 mt-1">{riskAnalysis.score >= 85 ? 'Silná smlouva' : riskAnalysis.score >= 65 ? 'Průměrná ochrana' : 'Doplňte údaje'}</p>
                   </div>
-                  <div className={`text-3xl font-black ${riskAnalysis.score >= 85 ? 'text-emerald-400' : riskAnalysis.score >= 65 ? 'text-amber-400' : 'text-rose-400'}`}>
+                  <div className={`text-3xl font-black ${riskAnalysis.score >= 85 ? 'text-emerald-400' : riskAnalysis.score >= 65 ? 'text-amber-400' : 'text-red-400'}`}>
                     {riskAnalysis.score}/100
                   </div>
                 </div>
                 <div className="h-2 rounded-full bg-slate-800 overflow-hidden mb-4">
                   <div
-                    className={`h-full rounded-full transition-all ${riskAnalysis.score >= 85 ? 'bg-emerald-400' : riskAnalysis.score >= 65 ? 'bg-amber-400' : 'bg-rose-400'}`}
+                    className={`h-full rounded-full transition-all ${riskAnalysis.score >= 85 ? 'bg-emerald-400' : riskAnalysis.score >= 65 ? 'bg-amber-400' : 'bg-red-400'}`}
                     style={{ width: `${riskAnalysis.score}%` }}
                   />
                 </div>
@@ -673,12 +663,12 @@ export default function GiftContractPage() {
                 <button
                   data-builder-generate=""
                   onClick={() => setShowPreviewModal(true)}
-                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
+                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-amber-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >
                   Vygenerovat smlouvu →
                 </button>
 
-                <p className="mt-3 text-center text-[11px] text-slate-500">
+                <p className="mt-3 text-center text-[11px] text-slate-400">
                   Zobrazí se náhled dokumentu připraveného k odemčení
                 </p>
               </div>

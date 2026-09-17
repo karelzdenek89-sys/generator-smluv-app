@@ -154,7 +154,7 @@ export default function DppDpcPorovnani2026Page() {
               </tbody>
             </table>
           </div>
-          <p className="text-sm leading-relaxed text-slate-500">
+          <p className="text-sm leading-relaxed text-slate-400">
             Limity odvodů se mohou meziročně měnit. Před uzavřením dohody doporučujeme ověřit
             aktuální hodnoty na stránkách ČSSZ nebo u mzdové účetní.
           </p>

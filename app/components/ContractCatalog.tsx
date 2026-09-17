@@ -6,21 +6,30 @@ type AccentKey =
   | 'sale' | 'employment' | 'dpp' | 'service' | 'sublease'
   | 'poa' | 'debt' | 'coop';
 
+/**
+ * Akcenty karet dokumentů.
+ *
+ * Do 17. 9. 2026 měla každá ze 14 karet vlastní barevnou rodinu (fuchsia,
+ * violet, lime, teal, pink, orange…) — na zlato-modrém webu to byla duha.
+ * Rozlišení podle oblasti zůstává, ale jen v tónech, které design systém má:
+ * zlatá (bydlení a peníze), modrá (věci a smlouvy o plnění), zelená (práce),
+ * břidlicová (administrativa). Dva stupně sytosti drží sousední karty odlišené.
+ */
 const accentMap: Record<AccentKey, string> = {
-  lease:      'from-amber-500/20 to-yellow-500/5',
-  car:        'from-sky-500/20 to-cyan-500/5',
-  gift:       'from-emerald-500/20 to-green-500/5',
-  work:       'from-fuchsia-500/20 to-purple-500/5',
-  loan:       'from-rose-500/20 to-red-500/5',
-  nda:        'from-violet-500/20 to-indigo-500/5',
-  sale:       'from-teal-500/20 to-cyan-500/5',
-  employment: 'from-blue-500/20 to-sky-500/5',
-  dpp:        'from-orange-500/20 to-amber-500/5',
-  service:    'from-pink-500/20 to-rose-500/5',
-  sublease:   'from-yellow-500/20 to-amber-500/5',
-  poa:        'from-slate-500/20 to-gray-500/5',
-  debt:       'from-red-600/20 to-rose-500/5',
-  coop:       'from-lime-500/20 to-green-500/5',
+  lease:      'from-amber-500/20 to-amber-500/5',
+  sublease:   'from-amber-400/16 to-amber-500/5',
+  loan:       'from-amber-600/18 to-amber-500/5',
+  debt:       'from-amber-700/20 to-amber-600/5',
+  car:        'from-sky-500/20 to-sky-500/5',
+  sale:       'from-sky-400/16 to-sky-500/5',
+  service:    'from-sky-600/18 to-sky-500/5',
+  gift:       'from-sky-300/14 to-sky-400/5',
+  employment: 'from-emerald-500/20 to-emerald-500/5',
+  dpp:        'from-emerald-400/16 to-emerald-500/5',
+  work:       'from-emerald-600/18 to-emerald-500/5',
+  coop:       'from-emerald-300/14 to-emerald-400/5',
+  nda:        'from-slate-400/18 to-slate-500/5',
+  poa:        'from-slate-300/14 to-slate-400/5',
 };
 
 interface ContractItem {
@@ -232,7 +241,7 @@ function ContractCard({ contract, dppPriceLabel }: { contract: ContractItem; dpp
         <h3 className="mb-1 text-sm font-black tracking-tight text-white leading-snug">
           {contract.title}
         </h3>
-        <div className="mb-3 text-[10px] font-medium text-slate-600">
+        <div className="mb-3 text-[10px] font-medium text-slate-400">
           {contract.paragraph}
         </div>
         <p className="mb-4 flex-grow text-xs leading-relaxed text-slate-400">
@@ -269,7 +278,7 @@ export default function ContractCatalog() {
               <h3 className="text-sm font-black uppercase tracking-[0.14em] text-slate-300">
                 {group.label}
               </h3>
-              <p className="text-xs text-slate-600">{group.desc}</p>
+              <p className="text-xs text-slate-400">{group.desc}</p>
             </div>
           </div>
 

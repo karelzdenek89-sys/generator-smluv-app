@@ -74,7 +74,7 @@ export default function ChecklistToolView({ tool }: { tool: ChecklistTool }) {
       <div className="site-content-card rounded-2xl p-5" role="status" aria-live="polite">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <div className="text-[10px] font-black uppercase tracking-widest text-slate-500">Váš postup</div>
+            <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">Váš postup</div>
             <div className="mt-1 text-lg font-semibold text-white">
               {doneCount} z {total} bodů{doneCount === total && total > 0 ? ' — hotovo' : ''}
             </div>
@@ -114,7 +114,7 @@ export default function ChecklistToolView({ tool }: { tool: ChecklistTool }) {
                     />
                     <span>
                       <span className={`block text-sm font-medium ${done ? 'text-slate-400 line-through decoration-slate-600' : 'text-white'}`}>{item.label}</span>
-                      {item.detail ? <span className="mt-1 block text-xs leading-6 text-slate-500">{item.detail}</span> : null}
+                      {item.detail ? <span className="mt-1 block text-xs leading-6 text-slate-400">{item.detail}</span> : null}
                       {item.link ? (
                         <Link href={item.link.href} className="mt-1 inline-block text-xs font-semibold text-[#e2c77b] transition hover:text-white">
                           {item.link.label} →

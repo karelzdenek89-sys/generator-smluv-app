@@ -11,6 +11,7 @@ import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/LazyPaymentModal';
 import { isValidMoney } from '@/lib/money';
+import BuilderHeader from '@/app/components/BuilderHeader';
 
 type FormData = {
   creditorName: string; creditorId: string; creditorAddress: string; creditorEmail: string;
@@ -96,7 +97,7 @@ export default function UznanidluhuPage() {
     } catch { alert('Chyba platební brány.'); setIsProcessing(false); }
   };
 
-  const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-rose-400';
+  const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-red-400';
 
   const landingProps = {
     badge: '§ 2053 a násl. občanského zákoníku',
@@ -144,22 +145,14 @@ export default function UznanidluhuPage() {
   return (
     <>
     <main className="site-page contract-builder min-h-screen pb-24">
-      <header className="contract-builder-header sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500 text-slate-900 font-black text-sm">SH</div>
-            <div><div className="font-bold tracking-tight text-white">SmlouvaHned</div><div className="text-[11px] text-slate-500">Uznání dluhu</div></div>
-          </div>
-          <button onClick={() => window.location.href = '/'} className="text-sm text-slate-400 hover:text-white transition">Zavřít</button>
-        </div>
-      </header>
+      <BuilderHeader docType="Uznání dluhu — § 2053 OZ" />
 
       <ContractLandingSection {...landingProps} />
 
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8" id="formular">
         <div className="mb-6 border-t border-slate-800/60 pt-8">
           <h2 className="text-lg font-black text-white uppercase tracking-wide">Vyplňte údaje dokumentu</h2>
-          <p className="text-sm text-slate-500 mt-1">Všechna povinná pole jsou označena *</p>
+          <p className="text-sm text-slate-400 mt-1">Všechna povinná pole jsou označena *</p>
         </div>
 
         <div className="grid lg:grid-cols-12 gap-8 items-start">
@@ -238,7 +231,7 @@ export default function UznanidluhuPage() {
 
               {/* Řešení sporů */}
               <div className="mb-6">
-                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
+                <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Řešení sporů</div>
                 <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set} aria-label="Řešení sporů">
                   <option value="court">Obecný soud (výchozí)</option>
                   <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
@@ -266,7 +259,7 @@ export default function UznanidluhuPage() {
               <div className="builder-kicker mb-4">Analýza smlouvy</div>
               <div className="flex items-center gap-4 mb-4">
                 <div className={`text-5xl font-black ${scoreColor}`}>{risk.score}</div>
-                <div><div className={`font-bold ${scoreColor}`}>{risk.label}</div><div className="text-xs text-slate-500">ze 100 bodů</div></div>
+                <div><div className={`font-bold ${scoreColor}`}>{risk.label}</div><div className="text-xs text-slate-400">ze 100 bodů</div></div>
               </div>
               {risk.warnings.length === 0 ? <p className="text-sm text-emerald-400">✓ Uznání dluhu je kompletní.</p>
                 : <ul className="space-y-2">{risk.warnings.map((w, i) => (<li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-amber-500/10 text-amber-300' : 'bg-amber-500/10 text-amber-300'}`}>{w.level === 'high' ? '⚠ ' : '▲ '}{w.text}</li>))}</ul>}
@@ -290,12 +283,12 @@ export default function UznanidluhuPage() {
                 <button
                   data-builder-generate=""
                   onClick={() => setShowPreviewModal(true)}
-                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
+                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-amber-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >
                   Vygenerovat smlouvu →
                 </button>
 
-                <p className="mt-3 text-center text-[11px] text-slate-500">
+                <p className="mt-3 text-center text-[11px] text-slate-400">
                   Zobrazí se náhled dokumentu připraveného k odemčení
                 </p>
             </div>

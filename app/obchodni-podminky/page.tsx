@@ -18,7 +18,15 @@ const FREE_BASIC_DPP = getMonetizationPolicy('dpp', 'cs').mode === 'free_experim
 export const metadata: Metadata = {
   title: 'Obchodní podmínky',
   description: 'Obchodní podmínky platné pro využívání automatizované platformy SmlouvaHned.cz pro tvorbu standardizovaných smluvních dokumentů.',
-  alternates: { canonical: canonicalUrl },
+  alternates: {
+    canonical: canonicalUrl,
+    languages: {
+      cs: `${SITE_URL}/obchodni-podminky`,
+      en: `${SITE_URL}/en/terms`,
+      uk: `${SITE_URL}/ua/terms`,
+      'x-default': `${SITE_URL}/obchodni-podminky`,
+    },
+  },
   openGraph: {
     title: 'Obchodní podmínky',
     description: 'Obchodní podmínky platformy SmlouvaHned.cz pro tvorbu standardizovaných smluvních dokumentů.',
@@ -43,7 +51,7 @@ export default function TermsPage() {
 
       <div className="max-w-3xl mx-auto relative z-10">
         <div className="mb-3">
-          <Link href="/" className="text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-amber-400 transition">
+          <Link href="/" className="text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-amber-400 transition">
             ← SmlouvaHned
           </Link>
         </div>
@@ -51,7 +59,7 @@ export default function TermsPage() {
         <h1 className="text-4xl md:text-5xl font-black text-white mb-3 uppercase italic tracking-tighter">
           Obchodní <span className="text-amber-500">podmínky</span>
         </h1>
-        <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.25em] mb-12">
+        <p className="text-slate-400 text-xs font-bold uppercase tracking-[0.25em] mb-12">
           Verze 2026-09-17 • SmlouvaHned.cz
         </p>
 
@@ -137,7 +145,7 @@ export default function TermsPage() {
               )}
             </div>
             <div className="bg-[#0c1426]/60 border border-white/5 rounded-2xl p-5 space-y-2 text-sm mb-3">
-              <p className="text-xs font-black uppercase tracking-widest text-slate-500">Volitelné doplňky v checkoutu</p>
+              <p className="text-xs font-black uppercase tracking-widest text-slate-400">Volitelné doplňky v checkoutu</p>
               {Object.values(CHECKOUT_ADDON_CONFIG).map((addon) => (
                 <div key={addon.key} className="flex justify-between gap-4">
                   <span className="text-slate-400">{addon.title}</span>
@@ -145,7 +153,7 @@ export default function TermsPage() {
                 </div>
               ))}
             </div>
-            <p className="mb-3 text-xs text-slate-500">
+            <p className="mb-3 text-xs text-slate-400">
               Poskytovatel není plátcem DPH. Uvedené ceny jsou konečné.
             </p>
             <p className="mb-3">
@@ -243,7 +251,7 @@ export default function TermsPage() {
           </section>
 
           <section className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-[10px] text-slate-600 uppercase tracking-widest">Karel Zdeněk · IČO 23660295 · SmlouvaHned.cz © 2026</p>
+            <p className="text-[10px] text-slate-400 uppercase tracking-widest">Karel Zdeněk · IČO 23660295 · SmlouvaHned.cz © 2026</p>
             <Link href="/" className="px-8 py-3 bg-white/5 border border-white/10 rounded-full text-white text-[10px] font-black uppercase hover:bg-amber-500 hover:text-black transition">
               Zpět na úvodní stránku
             </Link>

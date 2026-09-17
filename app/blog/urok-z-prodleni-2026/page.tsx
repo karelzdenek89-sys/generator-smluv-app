@@ -137,7 +137,7 @@ export default function UrokZProdleniPage() {
             <li key={item} className="flex items-start gap-3"><span className="mt-1 text-amber-500">•</span><span>{item}</span></li>
           ))}
         </ul>
-        <p className="mt-6 text-sm leading-relaxed text-slate-500">
+        <p className="mt-6 text-sm leading-relaxed text-slate-400">
           Zdroj: <a className="text-amber-400 hover:text-amber-300" href="https://www.zakonyprolidi.cz/cs/2013-351" target="_blank" rel="noreferrer">nařízení vlády č. 351/2013 Sb.</a> a § 1970 zákona č. 89/2012 Sb.; výpočet a repo sazby viz <a className="text-amber-400 hover:text-amber-300" href="https://www.cnb.cz/cs/casto-kladene-dotazy/Vypocet-uroku-z-prodleni/" target="_blank" rel="noreferrer">Česká národní banka</a>.
         </p>
       </section>

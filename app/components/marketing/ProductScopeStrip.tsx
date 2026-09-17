@@ -11,7 +11,7 @@ export default function ProductScopeStrip({ className = '' }: { className?: stri
       className={`rounded-[1.5rem] border border-white/8 bg-[#0c1426]/60 px-6 py-6 md:px-8 ${className}`}
       aria-label="Co nástroj skutečně umí"
     >
-      <p className="text-center text-[10px] font-black uppercase tracking-widest text-slate-500">
+      <p className="text-center text-[10px] font-black uppercase tracking-widest text-slate-400">
         Co dostanete podle zvolené varianty
       </p>
       <div className="mt-5 grid grid-cols-2 gap-4 md:grid-cols-4">
@@ -22,7 +22,7 @@ export default function ProductScopeStrip({ className = '' }: { className?: stri
           </div>
         ))}
       </div>
-      <p className="mx-auto mt-5 max-w-3xl border-t border-white/8 pt-4 text-center text-xs leading-6 text-slate-500">
+      <p className="mx-auto mt-5 max-w-3xl border-t border-white/8 pt-4 text-center text-xs leading-6 text-slate-400">
         Bez povinné registrace a bez předplatného. V checkoutu lze podle typu dokumentu přidat checklist před podpisem,
         předávací protokol nebo archiv odkazu na 90 dní. K zakoupeným dokumentům se můžete vrátit přes Moje dokumenty.
       </p>

@@ -151,7 +151,7 @@ export default function VraceniKaucePage() {
             <li key={item} className="flex items-start gap-3"><span className="mt-1 text-amber-500">•</span><span>{item}</span></li>
           ))}
         </ul>
-        <p className="mt-6 text-sm leading-relaxed text-slate-500">
+        <p className="mt-6 text-sm leading-relaxed text-slate-400">
           Zdroj: <a className="text-amber-400 hover:text-amber-300" href="https://www.zakonyprolidi.cz/cs/2012-89" target="_blank" rel="noreferrer">§ 2254 zákona č. 89/2012 Sb., občanský zákoník</a> (jistota při nájmu bytu, její limit, vrácení a úročení).
         </p>
       </section>

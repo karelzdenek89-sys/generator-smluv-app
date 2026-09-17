@@ -50,7 +50,7 @@ export default function NewsletterConfirmationPage() {
         ) : (
           <p className="mt-4 text-slate-400">Odběr aktivujeme až po vašem výslovném potvrzení tlačítkem.</p>
         )}
-        {state === 'error' ? <p role="alert" className="mt-4 text-rose-300">{error}</p> : null}
+        {state === 'error' ? <p role="alert" className="mt-4 text-red-300">{error}</p> : null}
         {token && state !== 'success' ? (
           <button
             type="button"

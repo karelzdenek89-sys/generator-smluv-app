@@ -68,7 +68,7 @@ export default function BlogArticleSchemas({
       {withVisibleHeader ? (
         <div className="mb-8 space-y-4">
           <div
-            className="flex items-center gap-3 text-xs text-slate-500"
+            className="flex items-center gap-3 text-xs text-slate-400"
             itemScope
             itemType="https://schema.org/Person"
           >
@@ -84,7 +84,7 @@ export default function BlogArticleSchemas({
                 {CONTENT_AUTHOR.name}
               </span>
               <span className="mx-2 text-slate-700">·</span>
-              <span itemProp="jobTitle" className="text-slate-500">
+              <span itemProp="jobTitle" className="text-slate-400">
                 {CONTENT_AUTHOR.jobTitle}
               </span>
             </div>

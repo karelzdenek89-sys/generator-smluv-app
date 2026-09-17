@@ -279,14 +279,23 @@ function main() {
   const rootLayout = read('app/layout.tsx');
   const routeChrome = read('app/components/RouteChrome.tsx');
   const siteHeader = read('app/components/SiteHeader.tsx');
+  const siteNav = read('lib/site-nav.ts');
+  const homePage = read('app/page.tsx');
   assert.doesNotMatch(rootLayout, /alternates:\s*\{[\s\S]*canonical:\s*BASE_URL/, 'Root layout must not force homepage canonical on child pages');
   assert.match(rootLayout, /<RouteChrome \/>/, 'Root layout must render route-aware shared chrome');
   assert.match(routeChrome, /<SiteHeader \/>/, 'Non-home public pages should use the shared site header');
   // IA 2.0 (2026-09): hlavní vstup je situace, dokumenty zůstávají přímou cestou,
   // nástroje a legislativní radar jsou samostatné vrstvy portálu.
+  // Položky navigace mají od 17. 9. 2026 jediný zdroj (lib/site-nav.ts); hlavička
+  // i homepage z něj čtou, takže se nemůžou rozejít jako dřív.
   for (const label of ['Situace', 'Dokumenty', 'Nástroje', 'Změny 2027', 'Blog', 'FAQ', 'Moje dokumenty']) {
-    assert.match(siteHeader, new RegExp(label), `Shared site header missing ${label}`);
+    assert.match(siteNav, new RegExp(label), `Shared site navigation missing ${label}`);
   }
+  assert.match(siteHeader, /SITE_NAV_ITEMS/, 'Shared site header must render the shared navigation source');
+  assert.match(homePage, /SITE_NAV_ITEMS/, 'Homepage must render the shared navigation source');
+  // Mobilní navigace musí existovat na obou plochách (<details> funguje i bez JS).
+  assert.match(siteHeader, /<details[\s\S]*SITE_NAV_ITEMS/, 'Shared site header must offer a mobile menu');
+  assert.match(homePage, /<details[\s\S]*SITE_NAV_ITEMS/, 'Homepage must offer a mobile menu');
 
   assert.ok(existsSync(join(ROOT, 'app/slovnik/page.tsx')), '/slovnik page must exist');
 

@@ -25,7 +25,7 @@ export default function NdaSmlouvaPage() {
       <BlogArticleSchemas slug="nda-smlouva-mlcenlivost" />
 
       {/* Breadcrumb */}
-      <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">
+      <nav className="mb-8 text-xs text-slate-400" aria-label="Breadcrumb">
         <Link href="/" className="hover:text-slate-300 transition">SmlouvaHned</Link>
         <span className="mx-2 text-slate-700">›</span>
         <Link href="/blog" className="hover:text-slate-300 transition">Blog</Link>
@@ -37,8 +37,8 @@ export default function NdaSmlouvaPage() {
       <header className="mb-10">
         <div className="mb-4 flex flex-wrap items-center gap-3">
           <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-amber-400">Podnikatelé a OSVČ</span>
-          <span className="text-xs text-slate-600">8 min čtení</span>
-          <time className="text-xs text-slate-600" dateTime="2026-04-01">1. dubna 2026</time>
+          <span className="text-xs text-slate-400">8 min čtení</span>
+          <time className="text-xs text-slate-400" dateTime="2026-04-01">1. dubna 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
           NDA smlouva o mlčenlivosti 2026: co musí obsahovat
@@ -63,7 +63,7 @@ export default function NdaSmlouvaPage() {
 
       {/* Table of contents */}
       <nav className="mb-10 rounded-2xl border border-white/8 bg-[#0c1426] p-6" aria-label="Obsah článku">
-        <div className="mb-3 text-xs font-black uppercase tracking-widest text-slate-500">Obsah článku</div>
+        <div className="mb-3 text-xs font-black uppercase tracking-widest text-slate-400">Obsah článku</div>
         <ol className="space-y-1.5 text-sm text-slate-400">
           <li><a href="#co-chrani-nda" className="hover:text-amber-400 transition">1. Co NDA chrání — a co nechrání</a></li>
           <li><a href="#co-musi-obsahovat" className="hover:text-amber-400 transition">2. Co musí NDA obsahovat</a></li>
@@ -98,7 +98,7 @@ export default function NdaSmlouvaPage() {
           </div>
           <div className="rounded-2xl border border-red-500/15 bg-red-500/5 p-5">
             <div className="mb-3 text-sm font-black text-red-400">✗ Co NDA nechrání</div>
-            <ul className="space-y-1.5 text-sm text-slate-500">
+            <ul className="space-y-1.5 text-sm text-slate-400">
               <li className="flex items-start gap-2"><span className="flex-shrink-0">•</span>Veřejně dostupné informace</li>
               <li className="flex items-start gap-2"><span className="flex-shrink-0">•</span>Informace, které druhá strana znala před NDA</li>
               <li className="flex items-start gap-2"><span className="flex-shrink-0">•</span>Informace získané legálně od třetí strany</li>
@@ -108,8 +108,8 @@ export default function NdaSmlouvaPage() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm text-slate-400 leading-relaxed">
-          <strong className="text-blue-400">📌 Poznámka:</strong> NDA nenahrazuje ochranu autorskými právy ani ochranu softwaru.
+        <div className="rounded-2xl border border-sky-500/15 bg-sky-500/5 p-5 text-sm text-slate-400 leading-relaxed">
+          <strong className="text-sky-400">📌 Poznámka:</strong> NDA nenahrazuje ochranu autorskými právy ani ochranu softwaru.
           Pokud sdílíte software nebo umělecká díla, zvažte i licenční smlouvu vedle NDA.
         </div>
       </section>
@@ -129,7 +129,7 @@ export default function NdaSmlouvaPage() {
           ].map(i => (
             <div key={i.t} className="rounded-xl border border-white/8 bg-[#0c1426] p-4">
               <div className="mb-1 text-sm font-black text-white">{i.t}</div>
-              <p className="text-xs text-slate-500 leading-relaxed">{i.d}</p>
+              <p className="text-xs text-slate-400 leading-relaxed">{i.d}</p>
             </div>
           ))}
         </div>
@@ -152,7 +152,7 @@ export default function NdaSmlouvaPage() {
               Chrání informace pouze jedné strany. Typicky: firma sdílí informace s dodavatelem,
               konzultantem nebo potenciálním partnerem. Povinnost mlčenlivosti dopadá jen na příjemce.
             </p>
-            <div className="text-xs text-slate-500">Vhodná pro: zaměstnanecké smlouvy, oslovení dodavatele, demo produktu investorovi</div>
+            <div className="text-xs text-slate-400">Vhodná pro: zaměstnanecké smlouvy, oslovení dodavatele, demo produktu investorovi</div>
           </div>
           <div className="rounded-2xl border border-white/8 bg-[#0c1426] p-5">
             <div className="mb-3 text-sm font-black text-white">Vzájemná NDA</div>
@@ -160,7 +160,7 @@ export default function NdaSmlouvaPage() {
               Obě strany sdílejí důvěrné informace a obě se zavazují k mlčenlivosti. Typicky: M&A
               jednání, joint venture, výzkumná spolupráce, obchodní partnerství.
             </p>
-            <div className="text-xs text-slate-500">Vhodná pro: partnerská jednání, co-development, oboustranné sdílení dat</div>
+            <div className="text-xs text-slate-400">Vhodná pro: partnerská jednání, co-development, oboustranné sdílení dat</div>
           </div>
         </div>
       </section>
@@ -190,8 +190,8 @@ export default function NdaSmlouvaPage() {
           </li>
         </ul>
 
-        <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm text-slate-400 leading-relaxed">
-          <strong className="text-blue-400">📌 Doporučení:</strong> Pro standardní obchodní spolupráci sjednejte 3–5 let po ukončení spolupráce.
+        <div className="rounded-2xl border border-sky-500/15 bg-sky-500/5 p-5 text-sm text-slate-400 leading-relaxed">
+          <strong className="text-sky-400">📌 Doporučení:</strong> Pro standardní obchodní spolupráci sjednejte 3–5 let po ukončení spolupráce.
           Delší doba zvyšuje riziko napadení jako nepřiměřené omezení obchodní soutěže.
         </div>
       </section>
@@ -300,12 +300,12 @@ export default function NdaSmlouvaPage() {
         >
           Vytvořit NDA smlouvu →
         </Link>
-        <div className="mt-3 text-xs text-slate-600">Od 99 Kč · Dle OZ · Platné pro 2026</div>
+        <div className="mt-3 text-xs text-slate-400">Od 99 Kč · Dle OZ · Platné pro 2026</div>
       </div>
 
       {/* ── RELATED ─────────────────────────────── */}
       <div className="mt-12 border-t border-white/8 pt-10">
-        <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-600">Mohlo by vás zajímat</div>
+        <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-400">Mohlo by vás zajímat</div>
         <div className="flex flex-wrap gap-3">
           {[
             { href: '/nda-smlouva', label: '🔒 NDA smlouva — přehled' },

@@ -116,7 +116,7 @@ function Table({
           <tbody className="divide-y divide-white/8">
             {rows.length === 0 ? (
               <tr>
-                <td colSpan={headers.length} className="px-4 py-6 text-center text-sm text-slate-500">
+                <td colSpan={headers.length} className="px-4 py-6 text-center text-sm text-slate-400">
                   {'Zat\u00edm nejsou k dispozici \u017e\u00e1dn\u00e1 data za zvolen\u00e9 obdob\u00ed.'}
                 </td>
               </tr>
@@ -214,7 +214,7 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
                 {item.value}
               </div>
               {item.hint ? (
-                <p className="mt-3 text-sm leading-6 text-slate-500">{item.hint}</p>
+                <p className="mt-3 text-sm leading-6 text-slate-400">{item.hint}</p>
               ) : null}
             </div>
           ))}
@@ -251,7 +251,7 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
           rows={data.monetizationPerformance.map((item) => [
             <div key={`${item.contractType}:${item.mode}`}>
               <div className="font-medium text-[#f7f0de]">{item.contractType}</div>
-              <div className="text-xs text-slate-500">{item.mode}</div>
+              <div className="text-xs text-slate-400">{item.mode}</div>
             </div>,
             formatNumber(item.builderStarts),
             formatNumber(item.builderCompletions),
@@ -276,7 +276,7 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
           rows={data.revenueAttribution.map((item) => [
             <div key={`${item.trafficSource}:${item.landingPage}`}>
               <div className="font-medium text-[#f7f0de]">{item.landingPage}</div>
-              <div className="text-xs text-slate-500">{item.trafficSource}</div>
+              <div className="text-xs text-slate-400">{item.trafficSource}</div>
             </div>,
             formatNumber(item.landingViews),
             formatNumber(item.productCtaClicks),
@@ -326,11 +326,11 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
           rows={data.partnerPerformance.map((item) => [
             <div key={`${item.partnerId}:${item.offerId}`}>
               <div className="font-medium text-[#f7f0de]">{item.partnerId}</div>
-              <div className="text-xs text-slate-500">{item.offerId}</div>
+              <div className="text-xs text-slate-400">{item.offerId}</div>
             </div>,
             <div key={`${item.offerId}:context`} className="text-xs">
               <div>{item.contractType} / {item.userRole}</div>
-              <div className="text-slate-500">{item.locale} / {item.placement}</div>
+              <div className="text-slate-400">{item.locale} / {item.placement}</div>
             </div>,
             formatNumber(item.eligibleUsers),
             formatNumber(item.impressions),
@@ -347,7 +347,7 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
             item.revenuePerPurchasedDocument === null ? 'N/A' : formatCurrency(item.revenuePerPurchasedDocument),
           ])}
         />
-        <p className="mt-4 text-xs leading-5 text-slate-500">
+        <p className="mt-4 text-xs leading-5 text-slate-400">
           Revenue per click, eligible signál a zakoupený dokument se počítá pouze u řádků s potvrzeným revenue; jinak zůstává N/A. U post-document umístění se signály deduplikují podle transakce, u redakční karty jde záměrně o události bez trvalého identifikátoru uživatele.
         </p>
       </Section>
@@ -363,7 +363,7 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
           rows={data.pricingInterest.map((item) => [
             <div key={`${item.band}-label`}>
               <div className="font-medium text-[#f7f0de]">{bandLabel(item.band)}</div>
-              <div className="text-xs text-slate-500">{item.band} K\u010d</div>
+              <div className="text-xs text-slate-400">{item.band} K\u010d</div>
             </div>,
             formatNumber(item.topFunnel),
             formatNumber(item.selection),
@@ -383,7 +383,7 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
           rows={data.addOnPerformance.map((item) => [
             <div key={item.key}>
               <div className="font-medium text-[#f7f0de]">{item.title}</div>
-              <div className="text-xs text-slate-500">{item.key}</div>
+              <div className="text-xs text-slate-400">{item.key}</div>
             </div>,
             formatCurrency(item.priceCzk),
             formatNumber(item.selections),
@@ -405,7 +405,7 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
             rows={data.seoLandingPerformance.map((item) => [
               <div key={item.pathname}>
                 <div className="font-medium text-[#f7f0de]">{item.label}</div>
-                <div className="text-xs text-slate-500">{item.pathname}</div>
+                <div className="text-xs text-slate-400">{item.pathname}</div>
               </div>,
               formatNumber(item.views),
               formatNumber(item.toBuilder),
@@ -451,7 +451,7 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
             rows={data.articlePerformance.map((item) => [
               <div key={item.articleSlug}>
                 <div className="font-medium text-[#f7f0de]">{item.title}</div>
-                <div className="text-xs text-slate-500">/{item.articleSlug}</div>
+                <div className="text-xs text-slate-400">/{item.articleSlug}</div>
               </div>,
               formatNumber(item.views),
               formatNumber(item.toBuilder),
@@ -594,7 +594,7 @@ function GrowthContent({ data }: { data: AnalyticsDashboardData }) {
             rows={report.map((row) => [
               <div key={row.path}>
                 <div className="font-medium text-[#f7f0de]">{row.path}</div>
-                <div className="text-xs text-slate-500">{row.cluster}{row.snapshot?.queryClusters.length ? ` · ${row.snapshot.queryClusters.map((q) => q.label).join(', ')}` : ''}</div>
+                <div className="text-xs text-slate-400">{row.cluster}{row.snapshot?.queryClusters.length ? ` · ${row.snapshot.queryClusters.map((q) => q.label).join(', ')}` : ''}</div>
               </div>,
               row.kind,
               row.publishedAt,
@@ -642,7 +642,7 @@ function PortalContent({ portal }: { portal: PortalDashboardData }) {
             ['Zájem o předplatné', c.subscription_interest],
           ].map(([label, value]) => (
             <div key={String(label)} className="rounded-2xl border border-white/8 bg-[#0a1020]/80 p-4">
-              <div className="text-[11px] uppercase tracking-[0.18em] text-slate-500">{label}</div>
+              <div className="text-[11px] uppercase tracking-[0.18em] text-slate-400">{label}</div>
               <div className="mt-1 text-2xl font-semibold text-[#f7f0de]">{formatNumber(Number(value))}</div>
             </div>
           ))}
@@ -658,7 +658,7 @@ function PortalContent({ portal }: { portal: PortalDashboardData }) {
             ])}
           />
         </div>
-        <p className="mt-3 text-xs text-slate-500">
+        <p className="mt-3 text-xs text-slate-400">
           Tržby z navazujících dokumentů: {formatCurrency(portal.followupRevenueCzk)} · aktivní zakázky (odhad z událostí):{' '}
           {portal.activeCasesApprox === null ? 'N/A' : formatNumber(Math.max(0, portal.activeCasesApprox))} · naplánované připomínky:{' '}
           {portal.dueRemindersApprox === null ? 'N/A' : formatNumber(portal.dueRemindersApprox)}
@@ -684,7 +684,7 @@ function PortalContent({ portal }: { portal: PortalDashboardData }) {
             ['Leady přijaté', portal.intents.leadsAccepted],
           ].map(([label, value]) => (
             <div key={String(label)} className="rounded-2xl border border-white/8 bg-[#0a1020]/80 p-4">
-              <div className="text-[11px] uppercase tracking-[0.18em] text-slate-500">{label}</div>
+              <div className="text-[11px] uppercase tracking-[0.18em] text-slate-400">{label}</div>
               <div className="mt-1 text-2xl font-semibold text-[#f7f0de]">{formatNumber(Number(value))}</div>
             </div>
           ))}

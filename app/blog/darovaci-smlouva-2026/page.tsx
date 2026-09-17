@@ -56,7 +56,7 @@ export default function DarovaciSmlouvaVzor2026Page() {
       />
 
       {/* Breadcrumb */}
-      <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">
+      <nav className="mb-8 text-xs text-slate-400" aria-label="Breadcrumb">
         <Link href="/" className="hover:text-slate-300 transition">SmlouvaHned</Link>
         <span className="mx-2 text-slate-700">›</span>
         <Link href="/blog" className="hover:text-slate-300 transition">Blog</Link>
@@ -68,8 +68,8 @@ export default function DarovaciSmlouvaVzor2026Page() {
       <header className="mb-10">
         <div className="mb-4 flex flex-wrap items-center gap-3">
           <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-amber-400">Osobní a finanční</span>
-          <span className="text-xs text-slate-600">7 min čtení</span>
-          <time className="text-xs text-slate-600" dateTime="2026-03-15">15. března 2026</time>
+          <span className="text-xs text-slate-400">7 min čtení</span>
+          <time className="text-xs text-slate-400" dateTime="2026-03-15">15. března 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
           Darovací smlouva vzor 2026: Auto, peníze i movité věci
@@ -99,7 +99,7 @@ export default function DarovaciSmlouvaVzor2026Page() {
 
       {/* Table of contents */}
       <nav className="mb-10 rounded-2xl border border-white/8 bg-[#0c1426] p-6" aria-label="Obsah článku">
-        <div className="mb-3 text-xs font-black uppercase tracking-widest text-slate-500">Obsah článku</div>
+        <div className="mb-3 text-xs font-black uppercase tracking-widest text-slate-400">Obsah článku</div>
         <ol className="space-y-1.5 text-sm text-slate-400">
           <li><a href="#co-je-darovaci-smlouva" className="hover:text-amber-400 transition">1. Co je darovací smlouva a kdy ji potřebujete</a></li>
           <li><a href="#co-musi-obsahovat" className="hover:text-amber-400 transition">2. Co musí darovací smlouva obsahovat</a></li>
@@ -136,8 +136,8 @@ export default function DarovaciSmlouvaVzor2026Page() {
           <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span>Darování v rámci dědického plánování (anticipace dědictví)</li>
         </ul>
 
-        <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm text-slate-400 leading-relaxed">
-          <strong className="text-blue-400">📌 Poznámka:</strong> Darování peněz v rodině (manžel, děti, rodiče) je od daně
+        <div className="rounded-2xl border border-sky-500/15 bg-sky-500/5 p-5 text-sm text-slate-400 leading-relaxed">
+          <strong className="text-sky-400">📌 Poznámka:</strong> Darování peněz v rodině (manžel, děti, rodiče) je od daně
           z příjmů osvobozeno. Přesto je vhodné mít písemný záznam — zejména pokud jde o vyšší sumy
           darované jako příspěvek na koupi nemovitosti. Banka nebo finanční úřad mohou dokumentaci vyžadovat.
         </div>
@@ -161,7 +161,7 @@ export default function DarovaciSmlouvaVzor2026Page() {
           ].map(i => (
             <div key={i.t} className="rounded-xl border border-white/8 bg-[#0c1426] p-4">
               <div className="mb-1 text-sm font-black text-white">{i.t}</div>
-              <p className="text-xs text-slate-500 leading-relaxed">{i.d}</p>
+              <p className="text-xs text-slate-400 leading-relaxed">{i.d}</p>
             </div>
           ))}
         </div>
@@ -235,7 +235,7 @@ export default function DarovaciSmlouvaVzor2026Page() {
           </div>
           <div className="rounded-2xl border border-slate-700/40 bg-slate-800/20 p-5">
             <div className="mb-3 text-sm font-black text-slate-400">Písemná forma není zákonem vyžadována</div>
-            <ul className="space-y-2 text-sm text-slate-500">
+            <ul className="space-y-2 text-sm text-slate-400">
               <li className="flex items-start gap-2"><span className="flex-shrink-0">•</span>Darování movité věci při současném odevzdání</li>
               <li className="flex items-start gap-2"><span className="flex-shrink-0">•</span>Darování menší sumy peněz v hotovosti</li>
               <li className="flex items-start gap-2"><span className="flex-shrink-0">•</span>Drobné dary (narozeninový dárek apod.)</li>
@@ -284,8 +284,8 @@ export default function DarovaciSmlouvaVzor2026Page() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm text-slate-400 leading-relaxed">
-          <strong className="text-blue-400">📌 Doporučení:</strong> Daňové dopady darování se liší dle konkrétní situace.
+        <div className="rounded-2xl border border-sky-500/15 bg-sky-500/5 p-5 text-sm text-slate-400 leading-relaxed">
+          <strong className="text-sky-400">📌 Doporučení:</strong> Daňové dopady darování se liší dle konkrétní situace.
           Pro darování nemovitostí vyšší hodnoty nebo darování mimo příbuzenstvo vždy doporučujeme konzultovat
           daňového poradce.
         </div>
@@ -361,7 +361,7 @@ export default function DarovaciSmlouvaVzor2026Page() {
               Dárce může dar odvolat, pokud obdarovaný dárci nebo jeho blízké osobě úmyslně nebo hrubě
               ublíží. Odvolání musí být písemné a musí obsahovat konkrétní důvod.
             </p>
-            <div className="text-xs text-slate-500">Lhůta: 1 rok od okamžiku, kdy se dárce o nevděku dozvěděl</div>
+            <div className="text-xs text-slate-400">Lhůta: 1 rok od okamžiku, kdy se dárce o nevděku dozvěděl</div>
           </div>
           <div className="rounded-2xl border border-white/8 bg-[#0c1426] p-5">
             <div className="mb-2 text-sm font-black text-white">Odvolání pro nouzi (§ 2068 OZ)</div>
@@ -370,7 +370,7 @@ export default function DarovaciSmlouvaVzor2026Page() {
               mu obdarovaný vydal dar zpět nebo zaplatil jeho cenu — maximálně do výše, v jaké
               obdarovaný z daru ještě prospívá.
             </p>
-            <div className="text-xs text-slate-500">Předpoklad: dar nesmí být již spotřebován</div>
+            <div className="text-xs text-slate-400">Předpoklad: dar nesmí být již spotřebován</div>
           </div>
         </div>
 
@@ -444,7 +444,7 @@ export default function DarovaciSmlouvaVzor2026Page() {
             >
               <summary className="cursor-pointer list-none font-bold text-white text-sm flex items-center justify-between gap-4">
                 <span>{item.q}</span>
-                <span className="text-slate-500 group-open:rotate-45 transition flex-shrink-0">+</span>
+                <span className="text-slate-400 group-open:rotate-45 transition flex-shrink-0">+</span>
               </summary>
               <p className="mt-3 text-sm text-slate-400 leading-relaxed">{item.a}</p>
             </details>
@@ -472,12 +472,12 @@ export default function DarovaciSmlouvaVzor2026Page() {
         >
           Vytvořit darovací smlouvu →
         </Link>
-        <div className="mt-3 text-xs text-slate-600">Od 99 Kč · Dle § 2055 OZ · Platné pro 2026</div>
+        <div className="mt-3 text-xs text-slate-400">Od 99 Kč · Dle § 2055 OZ · Platné pro 2026</div>
       </div>
 
       {/* ── RELATED ARTICLES ────────────────────── */}
       <div className="mt-12 border-t border-white/8 pt-10">
-        <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-600">Mohlo by vás zajímat</div>
+        <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-400">Mohlo by vás zajímat</div>
         <div className="flex flex-wrap gap-3">
           {[
             { href: '/darovaci', label: '🎁 Vytvořit darovací smlouvu' },

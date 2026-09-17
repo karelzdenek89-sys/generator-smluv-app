@@ -8,7 +8,15 @@ const canonicalUrl = `${SITE_URL}/gdpr`;
 export const metadata: Metadata = {
   title: 'Ochrana osobních údajů (GDPR)',
   description: 'Zásady zpracování osobních údajů platformy SmlouvaHned.cz v souladu s GDPR (nařízení EU 2016/679) — jaké údaje zpracováváme, proč a jak dlouho.',
-  alternates: { canonical: canonicalUrl },
+  alternates: {
+    canonical: canonicalUrl,
+    languages: {
+      cs: `${SITE_URL}/gdpr`,
+      en: `${SITE_URL}/en/privacy`,
+      uk: `${SITE_URL}/ua/privacy`,
+      'x-default': `${SITE_URL}/gdpr`,
+    },
+  },
   openGraph: {
     title: 'Ochrana osobních údajů (GDPR)',
     description: 'Jak SmlouvaHned.cz zpracovává osobní údaje při tvorbě a zpřístupnění smluvních dokumentů.',
@@ -33,7 +41,7 @@ export default function GdprPage() {
 
       <div className="max-w-3xl mx-auto relative z-10">
         <div className="mb-3">
-          <Link href="/" className="text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-amber-400 transition">
+          <Link href="/" className="text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-amber-400 transition">
             ← SmlouvaHned
           </Link>
         </div>
@@ -41,7 +49,7 @@ export default function GdprPage() {
         <h1 className="text-4xl md:text-5xl font-black text-white mb-3 uppercase italic tracking-tighter">
           Ochrana osobních <span className="text-amber-500">údajů</span>
         </h1>
-        <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.25em] mb-12">
+        <p className="text-slate-400 text-xs font-bold uppercase tracking-[0.25em] mb-12">
           Verze 2026-09-17 • Dle nařízení EU 2016/679 (GDPR)
         </p>
 
@@ -74,51 +82,51 @@ export default function GdprPage() {
               <div className="border border-white/8 rounded-2xl p-5">
                 <div className="font-bold text-white mb-2">Údaje zadané do formuláře smlouvy</div>
                 <p className="text-slate-400 text-xs mb-2">Jména, adresy, data narození, čísla OP a IČO smluvních stran, které do formuláře zadáte vy sami.</p>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Účel:</span> Vygenerování standardizovaného smluvního dokumentu dle vašich zadaných dat.</div>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Právní základ:</span> Plnění smlouvy (čl. 6 odst. 1 písm. b) GDPR).</div>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> U bezplatného experimentu nejvýše 24 hodin od vytvoření; e-mail pro tento tok nevyžadujeme. U placeného dokumentu 7–30 dní od zaplacení podle zakoupené varianty, případně 90 dní s doplňkem archivace. Poté jsou data automaticky smazána z dočasného úložiště.</div>
+                <div className="text-xs text-slate-400"><span className="text-amber-400 font-bold">Účel:</span> Vygenerování standardizovaného smluvního dokumentu dle vašich zadaných dat.</div>
+                <div className="text-xs text-slate-400"><span className="text-amber-400 font-bold">Právní základ:</span> Plnění smlouvy (čl. 6 odst. 1 písm. b) GDPR).</div>
+                <div className="text-xs text-slate-400"><span className="text-amber-400 font-bold">Doba uchování:</span> U bezplatného experimentu nejvýše 24 hodin od vytvoření; e-mail pro tento tok nevyžadujeme. U placeného dokumentu 7–30 dní od zaplacení podle zakoupené varianty, případně 90 dní s doplňkem archivace. Poté jsou data automaticky smazána z dočasného úložiště.</div>
               </div>
               <div className="border border-white/8 rounded-2xl p-5">
                 <div className="font-bold text-white mb-2">E-mailová adresa</div>
                 <p className="text-slate-400 text-xs mb-2">E-mail pro doručení dokumentu zadává objednatel před přechodem k platbě.</p>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Účel:</span> Zaslání odkazu ke stažení, potvrzení objednávky a zabezpečeného přístupu do zákaznické zóny.</div>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Právní základ:</span> Plnění smlouvy + oprávněný zájem (čl. 6 odst. 1 písm. b) a f) GDPR).</div>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> 7–30 dní od objednávky podle zakoupeného dokumentu, případně 90 dní s doplňkem archivace, poté automaticky smazáno.</div>
+                <div className="text-xs text-slate-400"><span className="text-amber-400 font-bold">Účel:</span> Zaslání odkazu ke stažení, potvrzení objednávky a zabezpečeného přístupu do zákaznické zóny.</div>
+                <div className="text-xs text-slate-400"><span className="text-amber-400 font-bold">Právní základ:</span> Plnění smlouvy + oprávněný zájem (čl. 6 odst. 1 písm. b) a f) GDPR).</div>
+                <div className="text-xs text-slate-400"><span className="text-amber-400 font-bold">Doba uchování:</span> 7–30 dní od objednávky podle zakoupeného dokumentu, případně 90 dní s doplňkem archivace, poté automaticky smazáno.</div>
               </div>
               <div className="border border-white/8 rounded-2xl p-5">
                 <div className="font-bold text-white mb-2">Kontaktní formulář</div>
                 <p className="text-slate-400 text-xs mb-2">Jméno, e-mail, předmět a obsah zprávy, které odešlete na stránce Kontakt.</p>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Účel:</span> Vyřízení dotazu, reklamace nebo žádosti zákazníka.</div>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Právní základ:</span> Jednání o smlouvě, plnění smlouvy nebo oprávněný zájem na zákaznické podpoře (čl. 6 odst. 1 písm. b) a f) GDPR).</div>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> Po dobu vyřízení požadavku, nejdéle 12 měsíců od poslední komunikace; déle pouze vyžaduje-li to právní předpis nebo ochrana právních nároků.</div>
+                <div className="text-xs text-slate-400"><span className="text-amber-400 font-bold">Účel:</span> Vyřízení dotazu, reklamace nebo žádosti zákazníka.</div>
+                <div className="text-xs text-slate-400"><span className="text-amber-400 font-bold">Právní základ:</span> Jednání o smlouvě, plnění smlouvy nebo oprávněný zájem na zákaznické podpoře (čl. 6 odst. 1 písm. b) a f) GDPR).</div>
+                <div className="text-xs text-slate-400"><span className="text-amber-400 font-bold">Doba uchování:</span> Po dobu vyřízení požadavku, nejdéle 12 měsíců od poslední komunikace; déle pouze vyžaduje-li to právní předpis nebo ochrana právních nároků.</div>
               </div>
               <div className="border border-white/8 rounded-2xl p-5">
                 <div className="font-bold text-white mb-2">Newsletter (tipy a novinky)</div>
                 <p className="text-slate-400 text-xs mb-2">
                   Pouze pokud se v patičce webu výslovně přihlásíte, zaškrtnete souhlas a následně odběr potvrdíte odkazem zaslaným na uvedený e-mail (double opt-in).
                 </p>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Účel:</span> Zasílání praktických tipů k dokumentům a informací o službě SmlouvaHned.</div>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Právní základ:</span> Souhlas (čl. 6 odst. 1 písm. a) GDPR).</div>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> Do odvolání souhlasu nebo odhlášení z odběru (odkaz v každém e-mailu).</div>
+                <div className="text-xs text-slate-400"><span className="text-amber-400 font-bold">Účel:</span> Zasílání praktických tipů k dokumentům a informací o službě SmlouvaHned.</div>
+                <div className="text-xs text-slate-400"><span className="text-amber-400 font-bold">Právní základ:</span> Souhlas (čl. 6 odst. 1 písm. a) GDPR).</div>
+                <div className="text-xs text-slate-400"><span className="text-amber-400 font-bold">Doba uchování:</span> Do odvolání souhlasu nebo odhlášení z odběru (odkaz v každém e-mailu).</div>
               </div>
               <div className="border border-white/8 rounded-2xl p-5">
                 <div className="font-bold text-white mb-2">Moje zakázka (pokračování případu)</div>
                 <p className="text-slate-400 text-xs mb-2">
                   Pouze pokud po zaplacení smlouvy o dílo zvolíte „Pokračovat jako zakázka“. Zakázka obsahuje váš e-mail z objednávky, název zakázky, vaši roli (objednatel/zhotovitel), termín, cenu a cenový režim ze smlouvy, fázi, úkoly, poznámky, historii a údaje, které doplníte do navazujících dokumentů (např. jména stran, popis vad). Obsah smlouvy ani kontaktní údaje protistrany se do zakázky nekopírují.
                 </p>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Účel:</span> Vedení průběhu zakázky, zasílání návratových odkazů a funkčních připomínek termínu (jen pokud je zapnete), tvorba navazujících dokumentů.</div>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Právní základ:</span> Plnění smlouvy (čl. 6 odst. 1 písm. b) GDPR); připomínky jsou funkční upozornění k vaší zakázce, nikoli obchodní sdělení.</div>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> 12 měsíců od poslední změny zakázky; zakázka označená jako uzavřená 6 měsíců od uzavření (pevný termín, který další úpravy neprodlužují); rozpracovaný navazující dokument, který nebyl zaplacen, 30 dní od vytvoření — poté se už nezobrazuje a nejpozději následující den jej odstraní automatický denní úklid. Do zakázky se neukládá obsah smlouvy ani identifikátor platby; z navazujících dokumentů se uchovává jen to, co do nich sami zapíšete. Zakázku můžete kdykoli exportovat (JSON) nebo smazat přímo ve svém přehledu; návratové odkazy (platnost 30 dní) můžete kdykoli zneplatnit.</div>
+                <div className="text-xs text-slate-400"><span className="text-amber-400 font-bold">Účel:</span> Vedení průběhu zakázky, zasílání návratových odkazů a funkčních připomínek termínu (jen pokud je zapnete), tvorba navazujících dokumentů.</div>
+                <div className="text-xs text-slate-400"><span className="text-amber-400 font-bold">Právní základ:</span> Plnění smlouvy (čl. 6 odst. 1 písm. b) GDPR); připomínky jsou funkční upozornění k vaší zakázce, nikoli obchodní sdělení.</div>
+                <div className="text-xs text-slate-400"><span className="text-amber-400 font-bold">Doba uchování:</span> 12 měsíců od poslední změny zakázky; zakázka označená jako uzavřená 6 měsíců od uzavření (pevný termín, který další úpravy neprodlužují); rozpracovaný navazující dokument, který nebyl zaplacen, 30 dní od vytvoření — poté se už nezobrazuje a nejpozději následující den jej odstraní automatický denní úklid. Do zakázky se neukládá obsah smlouvy ani identifikátor platby; z navazujících dokumentů se uchovává jen to, co do nich sami zapíšete. Zakázku můžete kdykoli exportovat (JSON) nebo smazat přímo ve svém přehledu; návratové odkazy (platnost 30 dní) můžete kdykoli zneplatnit.</div>
               </div>
               <div className="border border-white/8 rounded-2xl p-5">
                 <div className="font-bold text-white mb-2">Poptávka navazující služby (commercial intent)</div>
                 <p className="text-slate-400 text-xs mb-2">
                   Pouze pokud výslovně požádáte o kontakt konkrétním partnerem: kategorie služby, stručný popis, naléhavost, cenové pásmo, kraj a kontaktní údaje, které sami zvolíte ke sdílení. K poptávce se ukládá záznam souhlasu (partner, účel, sdílená pole, verze textu, čas udělení a odvolání).
                 </p>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Účel:</span> Předání vaší poptávky vámi zvolenému partnerovi. Bez připraveného partnera zůstává poptávka uložená a nikam se nepředává.</div>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Právní základ:</span> Souhlas (čl. 6 odst. 1 písm. a) GDPR) udělený konkrétně pro daného partnera; lze kdykoli odvolat.</div>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Doba uchování:</span> 6 měsíců od vytvoření, poté automatický výmaz. Po odvolání souhlasu se kontaktní údaje z poptávky odstraní ihned.</div>
-                <div className="text-xs text-slate-500 mt-2">Tato funkce je v současnosti neaktivní; zapne se až se schváleným partnerem a jeho vlastním textem souhlasu.</div>
+                <div className="text-xs text-slate-400"><span className="text-amber-400 font-bold">Účel:</span> Předání vaší poptávky vámi zvolenému partnerovi. Bez připraveného partnera zůstává poptávka uložená a nikam se nepředává.</div>
+                <div className="text-xs text-slate-400"><span className="text-amber-400 font-bold">Právní základ:</span> Souhlas (čl. 6 odst. 1 písm. a) GDPR) udělený konkrétně pro daného partnera; lze kdykoli odvolat.</div>
+                <div className="text-xs text-slate-400"><span className="text-amber-400 font-bold">Doba uchování:</span> 6 měsíců od vytvoření, poté automatický výmaz. Po odvolání souhlasu se kontaktní údaje z poptávky odstraní ihned.</div>
+                <div className="text-xs text-slate-400 mt-2">Tato funkce je v současnosti neaktivní; zapne se až se schváleným partnerem a jeho vlastním textem souhlasu.</div>
               </div>
               <div className="border border-white/8 rounded-2xl p-5">
                 <div className="font-bold text-white mb-2">Bezplatné nástroje (checklisty, průvodci)</div>
@@ -127,7 +135,7 @@ export default function GdprPage() {
               <div className="border border-white/8 rounded-2xl p-5">
                 <div className="font-bold text-white mb-2">Platební údaje</div>
                 <p className="text-slate-400 text-xs mb-2">Čísla platebních karet a bankovní údaje jsou zpracovávány výhradně platební bránou <strong>Stripe</strong> (Stripe, Inc., USA). Správce k nim nemá přístup.</p>
-                <div className="text-xs text-slate-500"><span className="text-amber-400 font-bold">Více o Stripe GDPR:</span> <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:underline">stripe.com/privacy</a></div>
+                <div className="text-xs text-slate-400"><span className="text-amber-400 font-bold">Více o Stripe GDPR:</span> <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:underline">stripe.com/privacy</a></div>
               </div>
             </div>
           </section>
@@ -148,10 +156,10 @@ export default function GdprPage() {
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Stripe, Inc.</strong> — také platba za navazující dokument zakázky (99 Kč); Stripe obdrží váš e-mail a název dokumentu, nikoli jeho obsah.</span></li>
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Vercel</strong> — hosting platformy. Údaje jsou zpracovávány v rámci EHP nebo za odpovídajících záruk.</span></li>
             </ul>
-            <p className="mt-3 text-xs text-slate-500">
+            <p className="mt-3 text-xs text-slate-400">
               Navazující partner není příjemcem obsahu smlouvy ani kontaktních údajů automaticky. Nabídka se vybírá z minimalizovaných kategorií. Teprve vědomým kliknutím uživatel přejde na web konkrétního poskytovatele; případné předání kontaktních údajů vyžaduje samostatný, konkrétní souhlas pro daného partnera.
             </p>
-            <p className="mt-3 text-xs text-slate-500">
+            <p className="mt-3 text-xs text-slate-400">
               Správce neprodává osobní údaje třetím stranám. Marketingové e-maily (newsletter) zasíláme výhradně na základě
               dobrovolného souhlasu, který můžete kdykoli odvolat.
             </p>
@@ -250,7 +258,7 @@ export default function GdprPage() {
           </section>
 
           <section className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-[10px] text-slate-600 uppercase tracking-widest">SmlouvaHned © 2026</p>
+            <p className="text-[10px] text-slate-400 uppercase tracking-widest">SmlouvaHned © 2026</p>
             <Link href="/" className="px-8 py-3 bg-white/5 border border-white/10 rounded-full text-white text-[10px] font-black uppercase hover:bg-amber-500 hover:text-black transition">
               Zpět na úvodní stránku
             </Link>

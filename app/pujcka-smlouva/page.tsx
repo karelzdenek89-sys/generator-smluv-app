@@ -69,7 +69,7 @@ export default function PujckaSmlouvaPage() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(244,63,94,0.07),transparent_30%)] pointer-events-none" />
 
       <div className="relative z-10 mx-auto max-w-4xl px-6 py-16">
-        <nav className="mb-8 text-xs text-slate-500">
+        <nav className="mb-8 text-xs text-slate-400">
           <Link href="/" className="hover:text-slate-300 transition">SmlouvaHned</Link>
           <span className="mx-2">›</span>
           <span className="text-slate-400">Smlouva o zápůjčce</span>
@@ -83,7 +83,7 @@ export default function PujckaSmlouvaPage() {
         </header>
 
         <div className="mb-12">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-rose-500/20 bg-rose-500/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.2em] text-rose-400">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.2em] text-red-400">
             § 2390 a násl. Občanského zákoníku
           </div>
           <h1 className="text-4xl font-black tracking-tight text-white md:text-5xl leading-tight mb-4">
@@ -99,7 +99,7 @@ export default function PujckaSmlouvaPage() {
               Vytvořit smlouvu →
             </Link>
           </div>
-          <div className="text-sm text-slate-500">Od 99 Kč · PDF ihned · Dle § 2390 OZ</div>
+          <div className="text-sm text-slate-400">Od 99 Kč · PDF ihned · Dle § 2390 OZ</div>
         </div>
 
         <section className="mb-12 rounded-3xl border border-white/8 bg-[#0c1426] p-8">
@@ -138,7 +138,7 @@ export default function PujckaSmlouvaPage() {
               'Závěrečná установení a podpisy',
             ].map(item => (
               <div key={item} className="flex items-start gap-2 text-sm text-slate-300">
-                <span className="text-rose-400 flex-shrink-0 mt-0.5">✓</span>
+                <span className="text-red-400 flex-shrink-0 mt-0.5">✓</span>
                 <span>{item}</span>
               </div>
             ))}
@@ -149,10 +149,10 @@ export default function PujckaSmlouvaPage() {
           <h2 className="text-2xl font-black text-white mb-6">Časté otázky ke smlouvě o zápůjčce</h2>
           <div className="space-y-3">
             {faq.map(item => (
-              <details key={item.q} className="group rounded-2xl border border-white/8 bg-[#0c1426] p-5 open:border-rose-500/30">
+              <details key={item.q} className="group rounded-2xl border border-white/8 bg-[#0c1426] p-5 open:border-red-500/30">
                 <summary className="cursor-pointer list-none font-bold text-white text-sm flex items-center justify-between gap-4">
                   <span>{item.q}</span>
-                  <span className="text-slate-500 group-open:rotate-45 transition flex-shrink-0">+</span>
+                  <span className="text-slate-400 group-open:rotate-45 transition flex-shrink-0">+</span>
                 </summary>
                 <p className="mt-3 text-sm text-slate-400 leading-relaxed">{item.a}</p>
               </details>
@@ -160,7 +160,7 @@ export default function PujckaSmlouvaPage() {
           </div>
         </section>
 
-        <section className="rounded-3xl border border-rose-500/20 bg-gradient-to-br from-rose-500/10 to-transparent p-8 text-center">
+        <section className="rounded-3xl border border-red-500/20 bg-gradient-to-br from-red-500/10 to-transparent p-8 text-center">
           <h2 className="text-2xl font-black text-white mb-3">Sestavte smlouvu o zápůjčce</h2>
           <p className="text-slate-400 text-sm mb-6 max-w-md mx-auto">
             Formulář pro půjčku peněz — splátky, úroky, zajištění, PDF ihned.
@@ -171,10 +171,10 @@ export default function PujckaSmlouvaPage() {
               Vytvořit smlouvu →
             </Link>
           </div>
-          <div className="mt-3 text-xs text-slate-600">Od 99 Kč · § 2390 OZ · PDF ihned</div>
+          <div className="mt-3 text-xs text-slate-400">Od 99 Kč · § 2390 OZ · PDF ihned</div>
         </section>
 
-        <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">
+        <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-400">
           <Link href="/" className="hover:text-slate-300 transition">← Všechny smlouvy</Link>
           <Link href="/uznani-dluhu" className="hover:text-slate-300 transition">Uznání dluhu</Link>
           <Link href="/kupni-smlouva" className="hover:text-slate-300 transition">Kupní smlouva</Link>

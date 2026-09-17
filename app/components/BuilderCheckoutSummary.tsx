@@ -120,7 +120,7 @@ export default function BuilderCheckoutSummary({
         </div>
 
         <div className="mt-4 rounded-xl border border-slate-700/50 bg-slate-800/40 px-4 py-3">
-          <div className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-500">
+          <div className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
             {copy?.packageIncludes ?? localizedCheckout.packageIncludesHeading}
           </div>
           <ul className="space-y-1.5">
@@ -209,7 +209,7 @@ export default function BuilderCheckoutSummary({
       ) : null}
 
       <div className="mt-4 rounded-xl border border-slate-700/50 bg-slate-800/40 px-4 py-3">
-        <div className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-500">
+        <div className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-400">
           {copy?.variantIncludes ?? localizedCheckout.variantIncludesHeading}
         </div>
         <ul className="space-y-1.5">

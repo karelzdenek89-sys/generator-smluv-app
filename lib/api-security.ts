@@ -102,6 +102,25 @@ export function isBoundedJsonObject(
   return visit(value, 0);
 }
 
+/**
+ * IP klienta pro rate limity.
+ *
+ * `x-forwarded-for` posílá i klient a nejlevější položka je proto ovlivnitelná
+ * zvenčí — rotací smyšlené hodnoty šlo obejít limit na checkoutu. Vercel plní
+ * `x-vercel-forwarded-for` a `x-real-ip` na svém okraji, klientskou hlavičku do
+ * nich nepropisuje; bereme je proto přednostně a XFF necháváme jako poslední
+ * záchranu pro lokální běh a testy.
+ */
 export function getClientIp(req: Request): string {
-  return req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+  const trusted =
+    req.headers.get('x-vercel-forwarded-for')?.split(',')[0]?.trim() ||
+    req.headers.get('x-real-ip')?.trim();
+  if (trusted) return trusted;
+
+  const forwarded = req.headers.get('x-forwarded-for');
+  if (!forwarded) return 'unknown';
+  // Bez důvěryhodné hlavičky je poslední položka ta, kterou připsal nejbližší
+  // proxy — klient ji přepsat nemůže.
+  const hops = forwarded.split(',').map((hop) => hop.trim()).filter(Boolean);
+  return hops[hops.length - 1] || 'unknown';
 }

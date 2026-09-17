@@ -37,7 +37,7 @@ export default function LanguageSwitcher({
   if (variant === 'mobile') {
     return (
       <div className="mt-4 border-t border-white/10 pt-4">
-        <div className="text-[10px] uppercase tracking-[0.25em] text-slate-500 mb-3">
+        <div className="text-[10px] uppercase tracking-[0.25em] text-slate-400 mb-3">
           Language / Jazyk
         </div>
         <div className="flex flex-wrap gap-2">

@@ -80,7 +80,7 @@ export default function ZamestnavamHubPage() {
                 <span className="text-[10px] font-black uppercase tracking-widest text-[#c9a852]">{article.question}</span>
                 <span className="mt-2 font-serif italic text-lg font-bold text-white group-hover:text-[#e2c77b]">{article.title}</span>
                 <span className="mt-2 flex-grow text-sm leading-7 text-slate-400">{article.answer.split('. ')[0]}.</span>
-                <span className="mt-4 text-xs font-semibold text-slate-500">Odpověď a postup →</span>
+                <span className="mt-4 text-xs font-semibold text-slate-400">Odpověď a postup →</span>
               </Link>
             ))}
           </div>
@@ -134,7 +134,7 @@ export default function ZamestnavamHubPage() {
           <div className="grid gap-4 md:grid-cols-3">
             {tools.map((tool) => (
               <Link key={tool.slug} href={`/nastroje/${tool.slug}`} className="site-content-card group rounded-2xl p-5 transition hover:border-[#c9a852]/40">
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Checklist</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Checklist</span>
                 <span className="mt-2 block font-serif italic text-lg font-bold text-white group-hover:text-[#e2c77b]">{tool.title}</span>
                 <span className="mt-2 block text-sm leading-7 text-slate-400">{tool.description}</span>
               </Link>
@@ -148,7 +148,7 @@ export default function ZamestnavamHubPage() {
               <li key={change.key} className="site-content-card flex flex-wrap items-center justify-between gap-3 rounded-2xl p-4">
                 <div className="min-w-0">
                   <Link href={`/zmeny-2027/zamestnavatele#${change.key}`} className="font-semibold text-white transition hover:text-[#e2c77b]">{change.title}</Link>
-                  <div className="text-xs text-slate-500">{change.dateLabel}</div>
+                  <div className="text-xs text-slate-400">{change.dateLabel}</div>
                 </div>
                 <LegalStatusBadge status={change.status} />
               </li>

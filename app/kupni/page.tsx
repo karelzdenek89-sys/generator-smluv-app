@@ -11,6 +11,7 @@ import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/LazyPaymentModal';
 import { isValidMoney } from '@/lib/money';
+import BuilderHeader from '@/app/components/BuilderHeader';
 
 type FormData = {
   sellerName: string; sellerId: string; sellerAddress: string; sellerEmail: string; sellerPhone: string; sellerBankAccount: string;
@@ -26,7 +27,7 @@ type FormData = {
   disputeResolution: 'court' | 'mediation';
 };
 
-const inputClass = 'w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition';
+const inputClass = 'w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-400 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition';
 const cardClass = 'bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]';
 
 function SectionTitle({ index, title, subtitle }: { index: string; title: string; subtitle?: string }) {
@@ -116,18 +117,7 @@ export default function KupniPage() {
   return (
     <>
     <main className="min-h-screen bg-[#05080f] text-slate-200 font-sans pb-24">
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#08101e]/90 backdrop-blur">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500 text-slate-900 font-black text-sm">SH</div>
-            <div>
-              <div className="font-bold tracking-tight text-white">SmlouvaHned</div>
-              <div className="text-[11px] text-slate-500">Kupní smlouva — § 2079 OZ</div>
-            </div>
-          </div>
-          <button onClick={() => window.location.href = '/'} className="text-sm text-slate-400 hover:text-white transition">Zavřít</button>
-        </div>
-      </header>
+      <BuilderHeader docType="Kupní smlouva — § 2079 OZ" />
 
       {/* ═══════════════════════════════════════════════════
           LANDING SECTION (hero, obsah, FAQ)
@@ -181,7 +171,7 @@ export default function KupniPage() {
       <div id="formular" className="max-w-7xl mx-auto px-4 py-8 lg:px-8">
         <div className="mb-6 border-t border-slate-800/60 pt-8">
           <h2 className="text-lg font-black text-white uppercase tracking-wide">Vyplňte údaje smlouvy</h2>
-          <p className="text-sm text-slate-500 mt-1">Všechna povinná pole jsou označena *</p>
+          <p className="text-sm text-slate-400 mt-1">Všechna povinná pole jsou označena *</p>
         </div>
 
         <div className="grid lg:grid-cols-12 gap-8 items-start">
@@ -231,7 +221,7 @@ export default function KupniPage() {
                 </Field>
                 {form.itemType !== 'car' && (
                   <>
-                    <Field label="Popis předmětu *"><textarea className="w-full min-h-[90px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="itemDescription" value={form.itemDescription} onChange={set} placeholder="Např. Dřevěná zahradní lavička, hnědá, rozměry 180×60 cm, rok výroby 2022" required /></Field>
+                    <Field label="Popis předmětu *"><textarea className="w-full min-h-[90px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-400 focus:border-amber-500/60 transition" name="itemDescription" value={form.itemDescription} onChange={set} placeholder="Např. Dřevěná zahradní lavička, hnědá, rozměry 180×60 cm, rok výroby 2022" required /></Field>
                     {form.itemType === 'electronics' && <Field label="Výrobní / sériové číslo"><input className={inputClass} name="serialNumber" value={form.serialNumber} onChange={set} placeholder="SN1234567890" /></Field>}
                   </>
                 )}
@@ -256,7 +246,7 @@ export default function KupniPage() {
                   </select>
                 </Field>
                 <Field label="Známé vady (nebo 'bez vad')">
-                  <textarea className="w-full min-h-[70px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="knownDefects" value={form.knownDefects} onChange={set} placeholder="Např. Škrábance na levém boku, jinak bez vad" />
+                  <textarea className="w-full min-h-[70px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-400 focus:border-amber-500/60 transition" name="knownDefects" value={form.knownDefects} onChange={set} placeholder="Např. Škrábance na levém boku, jinak bez vad" />
                 </Field>
               </div>
             </section>
@@ -295,7 +285,7 @@ export default function KupniPage() {
             <section className={cardClass}>
               {/* Řešení sporů */}
               <div className="mb-6">
-                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
+                <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Řešení sporů</div>
                 <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set} aria-label="Řešení sporů">
                   <option value="court">Obecný soud (výchozí)</option>
                   <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
@@ -327,7 +317,7 @@ export default function KupniPage() {
                 <div className={`text-5xl font-black ${scoreColor}`}>{risk.score}</div>
                 <div>
                   <div className={`font-bold ${scoreColor}`}>{risk.label}</div>
-                  <div className="text-xs text-slate-500">ze 100 bodů</div>
+                  <div className="text-xs text-slate-400">ze 100 bodů</div>
                 </div>
               </div>
               {risk.warnings.length === 0
@@ -361,12 +351,12 @@ export default function KupniPage() {
                 <button
                   data-builder-generate=""
                   onClick={() => setShowPreviewModal(true)}
-                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
+                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-amber-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >
                   Vygenerovat smlouvu →
                 </button>
 
-                <p className="mt-3 text-center text-[11px] text-slate-500">
+                <p className="mt-3 text-center text-[11px] text-slate-400">
                   Zobrazí se náhled dokumentu připraveného k odemčení
                 </p>
             </div>

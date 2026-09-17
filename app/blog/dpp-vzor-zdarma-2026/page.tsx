@@ -41,7 +41,7 @@ export default function DppVzorZdarmaPage() {
       <BlogArticleSchemas slug="dpp-vzor-zdarma-2026" />
 
       {/* Breadcrumb */}
-      <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">
+      <nav className="mb-8 text-xs text-slate-400" aria-label="Breadcrumb">
         <Link href="/" className="hover:text-slate-300 transition">SmlouvaHned</Link>
         <span className="mx-2 text-slate-700">›</span>
         <Link href="/blog" className="hover:text-slate-300 transition">Blog</Link>
@@ -53,8 +53,8 @@ export default function DppVzorZdarmaPage() {
       <header className="mb-10">
         <div className="mb-4 flex flex-wrap items-center gap-3">
           <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-amber-400">Práce a zaměstnání</span>
-          <span className="text-xs text-slate-600">7 min čtení</span>
-          <time className="text-xs text-slate-600" dateTime="2026-05-20">20. května 2026</time>
+          <span className="text-xs text-slate-400">7 min čtení</span>
+          <time className="text-xs text-slate-400" dateTime="2026-05-20">20. května 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
           DPP vzor zdarma 2026 — co v něm chybí a proč na tom záleží
@@ -82,7 +82,7 @@ export default function DppVzorZdarmaPage() {
 
       {/* TOC */}
       <nav className="mb-10 rounded-2xl border border-white/8 bg-[#0c1426] p-6" aria-label="Obsah článku">
-        <div className="mb-3 text-xs font-black uppercase tracking-widest text-slate-500">Obsah článku</div>
+        <div className="mb-3 text-xs font-black uppercase tracking-widest text-slate-400">Obsah článku</div>
         <ol className="space-y-1.5 text-sm text-slate-400">
           <li><a href="#vzory-zdarma" className="hover:text-amber-400 transition">1. Kde vzory DPP zdarma najdete</a></li>
           <li><a href="#co-chybi" className="hover:text-amber-400 transition">2. Co volné vzory typicky vynechávají</a></li>
@@ -142,8 +142,8 @@ export default function DppVzorZdarmaPage() {
               dopad: 'Vzory z roku 2022 pracují se starým hraničním příjmem pro zdravotní pojištění. Od roku 2024 platí jiná pravidla.',
             },
           ].map(item => (
-            <div key={item.problem} className="rounded-2xl border border-rose-500/15 bg-rose-500/5 p-5">
-              <p className="mb-1 text-sm font-bold text-rose-300">✗ {item.problem}</p>
+            <div key={item.problem} className="rounded-2xl border border-red-500/15 bg-red-500/5 p-5">
+              <p className="mb-1 text-sm font-bold text-red-300">✗ {item.problem}</p>
               <p className="text-xs leading-relaxed text-slate-400">{item.dopad}</p>
             </div>
           ))}
@@ -161,8 +161,8 @@ export default function DppVzorZdarmaPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-white/8 bg-[#0c1426]">
-                <th className="px-5 py-3 text-left text-xs font-black uppercase tracking-widest text-slate-500">Oblast</th>
-                <th className="px-5 py-3 text-left text-xs font-black uppercase tracking-widest text-slate-500">Pravidlo 2026</th>
+                <th className="px-5 py-3 text-left text-xs font-black uppercase tracking-widest text-slate-400">Oblast</th>
+                <th className="px-5 py-3 text-left text-xs font-black uppercase tracking-widest text-slate-400">Pravidlo 2026</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
@@ -182,7 +182,7 @@ export default function DppVzorZdarmaPage() {
           </table>
         </div>
 
-        <p className="text-sm text-slate-500 leading-relaxed">
+        <p className="text-sm text-slate-400 leading-relaxed">
           Volné vzory tyto změny zpravidla nezohledňují — jsou statické a neaktualizují se automaticky.
         </p>
       </section>
@@ -193,7 +193,7 @@ export default function DppVzorZdarmaPage() {
 
         <div className="mb-6 grid gap-4 sm:grid-cols-2">
           <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6">
-            <p className="mb-4 text-xs font-black uppercase tracking-widest text-slate-500">Vzor ke stažení zdarma</p>
+            <p className="mb-4 text-xs font-black uppercase tracking-widest text-slate-400">Vzor ke stažení zdarma</p>
             {[
               'Blanketní text — nevyplní se automaticky',
               'Zastaralé sazby a pravidla',
@@ -202,7 +202,7 @@ export default function DppVzorZdarmaPage() {
               'Nelze přizpůsobit bez znalosti práva',
               'Nelze ověřit datum poslední aktualizace',
             ].map(line => (
-              <p key={line} className="mb-1.5 text-xs text-slate-500 line-through decoration-slate-700">✗ {line}</p>
+              <p key={line} className="mb-1.5 text-xs text-slate-400 line-through decoration-slate-700">✗ {line}</p>
             ))}
           </div>
           <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-6">
@@ -294,7 +294,7 @@ export default function DppVzorZdarmaPage() {
 
       {/* Related */}
       <nav aria-label="Související články">
-        <p className="mb-4 text-xs font-black uppercase tracking-widest text-slate-500">Související články</p>
+        <p className="mb-4 text-xs font-black uppercase tracking-widest text-slate-400">Související články</p>
         <div className="grid gap-3 sm:grid-cols-2">
           {[
             { href: '/blog/dpp-dohoda-provedeni-prace', title: 'DPP 2026 — limity, odvody a jak ji správně napsat' },

@@ -149,7 +149,7 @@ export default function AnswerFirstArticleView({ article }: { article: AnswerFir
           </div>
         </section>
 
-        <div className="text-xs text-slate-500">
+        <div className="text-xs text-slate-400">
           Autor: <span className="text-slate-400">{CONTENT_AUTHOR.name}</span> · {CONTENT_AUTHOR.jobTitle}
         </div>
         <PortalDisclaimer />

@@ -187,7 +187,7 @@ export default async function LocaleLandingPage({ params }: LocalePageProps) {
             >
               {locale === 'en' ? 'Blog' : 'Блог'}
             </Link>
-          <div className="flex flex-wrap gap-2 text-xs font-bold uppercase tracking-widest text-slate-500">
+          <div className="flex flex-wrap gap-2 text-xs font-bold uppercase tracking-widest text-slate-400">
             {localeLinks.map((item) => (
               <Link
                 key={item.locale}
@@ -293,7 +293,7 @@ export default async function LocaleLandingPage({ params }: LocalePageProps) {
       <section className="mx-auto max-w-7xl px-6 pb-20 md:px-10">
         <div className="mb-6">
           <h2 className="font-serif italic text-3xl font-bold text-white">{copy.otherHeading}</h2>
-          <p className="mt-2 text-sm leading-7 text-slate-500">{otherContractsHint}</p>
+          <p className="mt-2 text-sm leading-7 text-slate-400">{otherContractsHint}</p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {otherContracts.map(({ title, href }) => (
@@ -302,7 +302,7 @@ export default async function LocaleLandingPage({ params }: LocalePageProps) {
               href={withLocale(href, locale)}
               className="rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-slate-300 transition hover:border-white/20 hover:text-white"
             >
-              <div className="mb-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">
+              <div className="mb-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">
                 {copy.czechBadge}
               </div>
               {title}

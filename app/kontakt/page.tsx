@@ -37,7 +37,7 @@ export default function KontaktPage() {
         <div className="mb-6">
           <Link
             href="/"
-            className="text-xs font-bold uppercase tracking-widest text-slate-500 transition hover:text-amber-400"
+            className="text-xs font-bold uppercase tracking-widest text-slate-400 transition hover:text-amber-400"
           >
             ← SmlouvaHned
           </Link>
@@ -62,7 +62,7 @@ export default function KontaktPage() {
 
         <div className="my-8 flex items-center gap-4">
           <div className="h-px flex-1 bg-slate-800" />
-          <span className="text-xs text-slate-600 uppercase tracking-widest">nebo kontaktujte přímo</span>
+          <span className="text-xs text-slate-400 uppercase tracking-widest">nebo kontaktujte přímo</span>
           <div className="h-px flex-1 bg-slate-800" />
         </div>
 
@@ -74,14 +74,14 @@ export default function KontaktPage() {
             <div className="mb-4 text-3xl">✉️</div>
             <div className="mb-1 text-xs font-black uppercase tracking-widest text-amber-400">E-mail</div>
             <div className="text-sm font-bold text-white transition group-hover:text-amber-400">info@smlouvahned.cz</div>
-            <p className="mt-1 text-xs text-slate-500">Objednávky, reklamace, technická podpora</p>
+            <p className="mt-1 text-xs text-slate-400">Objednávky, reklamace, technická podpora</p>
           </a>
 
           <div className="rounded-3xl border border-slate-800 bg-[#0c1426] p-7">
             <div className="mb-4 text-3xl">⏱️</div>
             <div className="mb-1 text-xs font-black uppercase tracking-widest text-amber-400">Rychlost odpovědi</div>
             <div className="text-sm font-bold text-white">Obvykle do 2 pracovních dnů</div>
-            <p className="mt-1 text-xs text-slate-500">Po–Pá</p>
+            <p className="mt-1 text-xs text-slate-400">Po–Pá</p>
           </div>
         </div>
 
@@ -109,7 +109,7 @@ export default function KontaktPage() {
               <details key={item.q} className="group rounded-2xl border border-white/5 p-4">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-bold text-white">
                   <span>{item.q}</span>
-                  <span className="flex-shrink-0 text-slate-500 transition-transform group-open:rotate-45">+</span>
+                  <span className="flex-shrink-0 text-slate-400 transition-transform group-open:rotate-45">+</span>
                 </summary>
                 <p className="mt-3 text-xs leading-relaxed text-slate-400">{item.a}</p>
               </details>

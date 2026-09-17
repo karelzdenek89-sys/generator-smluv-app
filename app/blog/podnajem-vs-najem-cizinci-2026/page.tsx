@@ -73,8 +73,8 @@ export default function PodnajemVsNajemCizinciPage() {
             </div>
           </li>
         </ul>
-        <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm text-slate-400 leading-relaxed">
-          <strong className="text-blue-400">Příklad:</strong> Pokud si pronajímáte byt od družstva (družstevní byt), družstvo je vlastník, člen družstva je nájemce a vy jste z právního hlediska podnájemce. Smlouva, kterou podepisujete, je podnájemní smlouva.
+        <div className="rounded-2xl border border-sky-500/15 bg-sky-500/5 p-5 text-sm text-slate-400 leading-relaxed">
+          <strong className="text-sky-400">Příklad:</strong> Pokud si pronajímáte byt od družstva (družstevní byt), družstvo je vlastník, člen družstva je nájemce a vy jste z právního hlediska podnájemce. Smlouva, kterou podepisujete, je podnájemní smlouva.
         </div>
       </section>
 

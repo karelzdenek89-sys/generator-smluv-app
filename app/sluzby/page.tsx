@@ -10,6 +10,7 @@ import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/LazyPaymentModal';
+import BuilderHeader from '@/app/components/BuilderHeader';
 
 type FormData = {
   providerName: string; providerIco: string; providerAddress: string; providerEmail: string; providerPhone: string;
@@ -109,23 +110,12 @@ export default function SluzbyPage() {
     } catch { alert('Chyba platební brány.'); setIsProcessing(false); }
   };
 
-  const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-rose-400';
+  const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-red-400';
 
   return (
     <>
     <main className="site-page contract-builder min-h-screen pb-24">
-      <header className="contract-builder-header sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500 text-slate-900 font-black text-sm">SH</div>
-            <div>
-              <div className="font-bold tracking-tight text-white">SmlouvaHned</div>
-              <div className="text-[11px] text-slate-500">Smlouva o poskytování služeb — § 1746 OZ</div>
-            </div>
-          </div>
-          <button onClick={() => window.location.href = '/'} className="text-sm text-slate-400 hover:text-white transition">Zavřít</button>
-        </div>
-      </header>
+      <BuilderHeader docType="Smlouva o poskytování služeb — § 1746 OZ" />
 
       <ContractLandingSection
         badge="§ 1746 odst. 2 občanského zákoníku"
@@ -177,7 +167,7 @@ export default function SluzbyPage() {
             <div id="formular" className="space-y-6">
               <div className="mb-6 border-t border-slate-800/60 pt-8">
                 <h2 className="text-lg font-black text-white uppercase tracking-wide">Vyplňte údaje dokumentu</h2>
-                <p className="text-sm text-slate-500 mt-1">Všechna povinná pole jsou označena *</p>
+                <p className="text-sm text-slate-400 mt-1">Všechna povinná pole jsou označena *</p>
               </div>
 
               <section className={cardClass}>
@@ -211,10 +201,10 @@ export default function SluzbyPage() {
                 <SectionTitle index="03" title="Předmět a rozsah služeb" subtitle="Čím přesnější, tím menší riziko sporů o rozsah plnění." />
                 <div className="space-y-4">
                   <Field label="Název / popis služeb *">
-                    <textarea className="w-full min-h-[80px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="serviceDescription" value={form.serviceDescription} onChange={set} placeholder="Správa sociálních sítí, tvorba obsahu, SEO optimalizace…" required />
+                    <textarea className="w-full min-h-[80px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-400 focus:border-amber-500/60 transition" name="serviceDescription" value={form.serviceDescription} onChange={set} placeholder="Správa sociálních sítí, tvorba obsahu, SEO optimalizace…" required />
                   </Field>
                   <Field label="Podrobná specifikace">
-                    <textarea className="w-full min-h-[70px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="serviceDetails" value={form.serviceDetails} onChange={set} placeholder="2× týdně příspěvky na Instagram a Facebook, měsíční report, 4 blogové články/měsíc…" />
+                    <textarea className="w-full min-h-[70px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-400 focus:border-amber-500/60 transition" name="serviceDetails" value={form.serviceDetails} onChange={set} placeholder="2× týdně příspěvky na Instagram a Facebook, měsíční report, 4 blogové články/měsíc…" />
                   </Field>
                   <Field label="Výstupy / dodávky (co konkrétně objednatel dostane)">
                     <input className={inputClass} name="deliverables" value={form.deliverables} onChange={set} placeholder="Reporty, zdrojové soubory, přístup k analytics…" />
@@ -289,7 +279,7 @@ export default function SluzbyPage() {
 
                 {/* Řešení sporů */}
                 <div className="mb-6">
-                  <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
+                  <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Řešení sporů</div>
                   <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={set} aria-label="Řešení sporů">
                     <option value="court">Obecný soud (výchozí)</option>
                     <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
@@ -318,12 +308,12 @@ export default function SluzbyPage() {
               <div className="builder-kicker mb-4">Analýza smlouvy</div>
               <div className="flex items-center gap-4 mb-4">
                 <div className={`text-5xl font-black ${scoreColor}`}>{risk.score}</div>
-                <div><div className={`font-bold ${scoreColor}`}>{risk.label}</div><div className="text-xs text-slate-500">ze 100 bodů</div></div>
+                <div><div className={`font-bold ${scoreColor}`}>{risk.label}</div><div className="text-xs text-slate-400">ze 100 bodů</div></div>
               </div>
               {risk.warnings.length === 0
                 ? <p className="text-sm text-emerald-400">✓ Smlouva je kompletní.</p>
                 : <ul className="space-y-2">{risk.warnings.map((w, i) => (
-                    <li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-rose-500/10 text-rose-300' : 'bg-amber-500/10 text-amber-300'}`}>
+                    <li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-red-500/10 text-red-300' : 'bg-amber-500/10 text-amber-300'}`}>
                       {w.level === 'high' ? '⚠ ' : '▲ '}{w.text}
                     </li>
                   ))}</ul>
@@ -349,12 +339,12 @@ export default function SluzbyPage() {
                 <button
                   data-builder-generate=""
                   onClick={() => setShowPreviewModal(true)}
-                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
+                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-amber-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >
                   Vygenerovat smlouvu →
                 </button>
 
-                <p className="mt-3 text-center text-[11px] text-slate-500">
+                <p className="mt-3 text-center text-[11px] text-slate-400">
                   Zobrazí se náhled dokumentu připraveného k odemčení
                 </p>
             </div>

@@ -44,7 +44,7 @@ export default function NewsletterSignup() {
     return (
       <div className="mt-5 rounded-xl border border-emerald-500/20 bg-emerald-500/5 px-4 py-3">
         <p className="text-xs font-semibold text-emerald-300">Zkontrolujte prosím svůj e-mail.</p>
-        <p className="mt-1 text-[11px] leading-relaxed text-slate-500">
+        <p className="mt-1 text-[11px] leading-relaxed text-slate-400">
           Odběr začne až po kliknutí na potvrzovací odkaz. Pokud už odběr máte aktivní, není potřeba nic dalšího dělat.
         </p>
       </div>
@@ -53,10 +53,10 @@ export default function NewsletterSignup() {
 
   return (
     <form onSubmit={submit} className="mt-5 space-y-3">
-      <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600">
+      <div className="text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">
         Tipy k dokumentům
       </div>
-      <p className="text-[11px] leading-relaxed text-slate-500">
+      <p className="text-[11px] leading-relaxed text-slate-400">
         Praktické rady k nájemním a kupním smlouvám a novinky o službě — bez spamu.
       </p>
       <label className="sr-only" htmlFor="newsletter-email">
@@ -70,7 +70,7 @@ export default function NewsletterSignup() {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="vas@email.cz"
-        className="w-full rounded-lg border border-white/10 bg-[#07111e] px-3 py-2.5 text-sm text-white placeholder:text-slate-600 focus:border-[#c9a852]/50 focus:outline-none transition"
+        className="w-full rounded-lg border border-white/10 bg-[#07111e] px-3 py-2.5 text-sm text-white placeholder:text-slate-400 focus:border-[#c9a852]/50 focus:outline-none transition"
       />
       <input
         type="text"
@@ -82,7 +82,7 @@ export default function NewsletterSignup() {
         className="hidden"
         aria-hidden
       />
-      <label className="flex cursor-pointer items-start gap-2.5 text-[11px] leading-relaxed text-slate-500">
+      <label className="flex cursor-pointer items-start gap-2.5 text-[11px] leading-relaxed text-slate-400">
         <input
           type="checkbox"
           checked={consent}
@@ -99,7 +99,7 @@ export default function NewsletterSignup() {
         </span>
       </label>
       {state === 'error' && errorMessage && (
-        <p className="rounded-lg border border-rose-500/20 bg-rose-500/10 px-3 py-2 text-[11px] text-rose-300">
+        <p className="rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-2 text-[11px] text-red-300">
           {errorMessage}
         </p>
       )}

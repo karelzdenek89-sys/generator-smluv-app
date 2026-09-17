@@ -115,7 +115,7 @@ export default function ZakazkaHubPage() {
               Otevřete ji odkazem z e-mailu, nebo si nechte poslat nový návratový odkaz. Bez hesla, bez registrace.
             </p>
             <Link href="/moje-zakazka/obnovit" className="site-button-secondary mt-5">Poslat návratový odkaz</Link>
-            <p className="mt-4 text-xs leading-6 text-slate-500">
+            <p className="mt-4 text-xs leading-6 text-slate-400">
               Pro odhad ceny stavby nebo rozpočet použijte samostatnou službu{' '}
               <a href="https://www.planstavby.cz/?utm_source=smlouvahned&utm_medium=cross_sell&utm_campaign=zakazka" target="_blank" rel="noopener noreferrer" className="text-[#e2c77b] underline underline-offset-2">PlanStavby.cz</a>
               . Údaje z vaší smlouvy se nepřenášejí.
@@ -133,7 +133,7 @@ export default function ZakazkaHubPage() {
                 </div>
                 <p className="mt-3 text-sm leading-7 text-slate-400">{stage.description}</p>
                 {stage.documents.length > 0 ? (
-                  <p className="mt-3 text-xs text-slate-500">
+                  <p className="mt-3 text-xs text-slate-400">
                     Dokumenty: {stage.documents.map((kind) => CASE_DOCUMENT_LIST.find((doc) => doc.kind === kind)?.shortTitle).filter(Boolean).join(', ')}
                   </p>
                 ) : null}
@@ -166,11 +166,11 @@ export default function ZakazkaHubPage() {
                   {CASE_DOCUMENT_LIST.map((document) => (
                     <li key={document.kind}>
                       <div className="text-sm font-semibold text-white">{document.title}</div>
-                      <div className="text-xs leading-6 text-slate-500">{document.whenToUse}</div>
+                      <div className="text-xs leading-6 text-slate-400">{document.whenToUse}</div>
                     </li>
                   ))}
                 </ul>
-                <p className="mt-4 text-xs leading-6 text-slate-500">
+                <p className="mt-4 text-xs leading-6 text-slate-400">
                   {zakazkaPlus ? `V balíčku Zakázka Plus jsou všechny v ceně. ` : ''}U samostatné smlouvy {CASE_DOCUMENT_PRICE_LABEL} za dokument.
                 </p>
               </div>
@@ -182,7 +182,7 @@ export default function ZakazkaHubPage() {
           <div className="grid gap-4 md:grid-cols-2">
             {tools.map((tool) => (
               <Link key={tool.slug} href={`/nastroje/${tool.slug}`} className="site-content-card group rounded-2xl p-5 transition hover:border-[#c9a852]/40">
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">{tool.kind === 'wizard' ? 'Průvodce' : 'Checklist'}</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">{tool.kind === 'wizard' ? 'Průvodce' : 'Checklist'}</span>
                 <span className="mt-2 block font-serif italic text-lg font-bold text-white group-hover:text-[#e2c77b]">{tool.title}</span>
                 <span className="mt-2 block text-sm leading-7 text-slate-400">{tool.description}</span>
               </Link>

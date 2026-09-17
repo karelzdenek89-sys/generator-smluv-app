@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import NewsletterSignup from '@/app/components/NewsletterSignup';
 import { SEO_LANDINGS, FOOTER_GROUPS } from '@/lib/internal-links';
 import { getLocaleFromPathname, normalizeLocale, type AppLocale } from '@/lib/locale';
+import { privacyHref, termsHref } from '@/lib/legal/links';
 
 type FooterCopy = {
   softwareTool: string;
@@ -116,13 +117,13 @@ function FooterContent({
               <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#c9a852]/40 bg-[#07111e] text-xs font-bold text-[#c9a852]">SH</div>
               <div>
                 <div className="font-serif text-sm font-semibold text-white">SmlouvaHned</div>
-                <div className="text-[10px] uppercase tracking-[0.18em] text-slate-600">{t.softwareTool}</div>
+                <div className="text-[10px] uppercase tracking-[0.18em] text-slate-400">{t.softwareTool}</div>
               </div>
             </div>
-            <p className="mt-4 text-xs leading-relaxed text-slate-500">
+            <p className="mt-4 text-xs leading-relaxed text-slate-400">
               {t.tagline}
             </p>
-            <div className="mt-3 space-y-0.5 text-[11px] text-slate-600">
+            <div className="mt-3 space-y-0.5 text-[11px] text-slate-400">
               <p>{t.operator}: Karel Zdeněk</p>
               <p>IČO: 23660295</p>
               <p>
@@ -136,10 +137,10 @@ function FooterContent({
 
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4 text-[13px]">
             <div>
-              <div className="mb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600">
+              <div className="mb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">
                 {t.navHeading}
               </div>
-              <div className="flex flex-col gap-2 text-slate-500">
+              <div className="flex flex-col gap-2 text-slate-400">
                 {showCzechSeoColumns ? (
                   <>
                     <Link href="/#situace" className="hover:text-white transition-colors">Co právě řešíte?</Link>
@@ -183,10 +184,10 @@ function FooterContent({
                       : [];
                   return (
                     <div key={group.label}>
-                      <div className="mb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600">
+                      <div className="mb-3 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">
                         {group.label}
                       </div>
-                      <div className="flex flex-col gap-2 text-slate-500">
+                      <div className="flex flex-col gap-2 text-slate-400">
                         {[...items, ...extra].map((link) => (
                           <Link
                             key={link.href}
@@ -207,7 +208,7 @@ function FooterContent({
         <div className="mt-8 border-t border-[#c9a852]/10 pt-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-wrap items-center gap-3">
-              <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-600">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                 {t.securePayment}
               </span>
               <div className="flex flex-wrap items-center gap-2">
@@ -232,33 +233,33 @@ function FooterContent({
                 </div>
               </div>
             </div>
-            <p className="text-[11px] text-slate-600">
+            <p className="text-[11px] text-slate-400">
               {t.paymentNote}
             </p>
           </div>
         </div>
 
         <div className="mt-5 border-t border-[#c9a852]/8 pt-5">
-          <div className="mb-3 rounded-xl border border-white/5 bg-[#07111e] px-4 py-3 text-xs leading-relaxed text-slate-600">
-            <span className="font-semibold text-slate-500">{t.disclaimerLabel}</span>{' '}
+          <div className="mb-3 rounded-xl border border-white/5 bg-[#07111e] px-4 py-3 text-xs leading-relaxed text-slate-400">
+            <span className="font-semibold text-slate-400">{t.disclaimerLabel}</span>{' '}
             {t.disclaimer}{' '}
             <a
               href="https://www.cak.cz"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-slate-500 hover:text-slate-400 underline underline-offset-2 transition"
+              className="text-slate-400 hover:text-slate-400 underline underline-offset-2 transition"
             >
               {t.lawyerDirectory}
             </a>
             .
           </div>
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between text-[11px] text-slate-600">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between text-[11px] text-slate-400">
             <p>
               © 2024–{new Date().getFullYear()} Karel Zdeněk, IČO: 23660295 · SmlouvaHned.cz
             </p>
             <div className="flex flex-wrap gap-4">
-              <Link href="/obchodni-podminky" className="hover:text-slate-400 transition-colors">{t.terms}</Link>
-              <Link href="/gdpr" className="hover:text-slate-400 transition-colors">GDPR</Link>
+              <Link href={termsHref(locale)} className="hover:text-slate-400 transition-colors">{t.terms}</Link>
+              <Link href={privacyHref(locale)} className="hover:text-slate-400 transition-colors">GDPR</Link>
               <Link href="/sitemap.xml" className="hover:text-slate-400 transition-colors">Sitemap</Link>
             </div>
           </div>

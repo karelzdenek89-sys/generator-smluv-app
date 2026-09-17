@@ -62,7 +62,7 @@ export default function GlobalError({
             </p>
 
             {error.digest && (
-              <div className="mb-6 rounded-xl border border-white/6 bg-white/[0.025] px-4 py-2 text-xs text-slate-600 font-mono">
+              <div className="mb-6 rounded-xl border border-white/6 bg-white/[0.025] px-4 py-2 text-xs text-slate-400 font-mono">
                 Kód chyby: {error.digest}
               </div>
             )}

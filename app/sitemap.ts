@@ -108,6 +108,36 @@ export default function sitemap(): MetadataRoute.Sitemap {
     staticPage('/partneri', 0.4, 'yearly'),
     staticPage('/obchodni-podminky', 0.3, 'yearly'),
     staticPage('/gdpr', 0.3, 'yearly'),
+    // Informativní překlady právních dokumentů; závazné zůstává české znění,
+    // proto x-default míří na češtinu.
+    ...FOREIGN_LOCALES.flatMap((l) => [
+      {
+        url: `${BASE_URL}/${l}/terms`,
+        changeFrequency: 'yearly' as const,
+        priority: 0.25,
+        alternates: {
+          languages: {
+            cs: `${BASE_URL}/obchodni-podminky`,
+            en: `${BASE_URL}/en/terms`,
+            uk: `${BASE_URL}/ua/terms`,
+            'x-default': `${BASE_URL}/obchodni-podminky`,
+          },
+        },
+      },
+      {
+        url: `${BASE_URL}/${l}/privacy`,
+        changeFrequency: 'yearly' as const,
+        priority: 0.25,
+        alternates: {
+          languages: {
+            cs: `${BASE_URL}/gdpr`,
+            en: `${BASE_URL}/en/privacy`,
+            uk: `${BASE_URL}/ua/privacy`,
+            'x-default': `${BASE_URL}/gdpr`,
+          },
+        },
+      },
+    ]),
     ...EXPAT_BUILDER_SITEMAP.map(({ path, contractKey }) => {
       const languages = getExpatBuilderSitemapAlternates(contractKey);
       return {

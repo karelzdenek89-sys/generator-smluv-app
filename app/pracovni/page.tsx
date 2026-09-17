@@ -32,6 +32,7 @@ import { getThematicPackageConfig } from '@/lib/packages';
 import { getPackageBuilderFlowCopy, getPackageUpsellCopy } from '@/lib/i18n/package-upsell';
 import BuilderUserRoleField from '@/app/components/partners/BuilderUserRoleField';
 import type { PartnerUserRole } from '@/lib/partners/types';
+import BuilderHeader from '@/app/components/BuilderHeader';
 
 type FormData = {
   partnerUserRole: PartnerUserRole;
@@ -54,7 +55,7 @@ type FormData = {
   tier: 'basic' | 'complete';
 };
 
-const inputClass = 'w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition';
+const inputClass = 'w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-400 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition';
 const cardClass = 'bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]';
 
 function SectionTitle({ index, title, subtitle }: { index: string; title: string; subtitle?: string }) {
@@ -227,23 +228,12 @@ function PracovniPageContent() {
     }
   };
 
-  const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-rose-400';
+  const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-red-400';
 
   return (
     <>
     <main className="min-h-screen bg-[#05080f] text-slate-200 font-sans pb-24">
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#08101e]/90 backdrop-blur">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500 text-slate-900 font-black text-sm">SH</div>
-            <div>
-              <div className="font-bold tracking-tight text-white">{ui.header.brand}</div>
-              <div className="text-[11px] text-slate-500">{ui.header.docType}</div>
-            </div>
-          </div>
-          <button onClick={() => window.location.href = '/'} className="text-sm text-slate-400 hover:text-white transition">{ui.header.close}</button>
-        </div>
-      </header>
+      <BuilderHeader docType={ui.header.docType} brand={ui.header.brand} locale={builderLocale} />
 
       <ContractLandingSection
         badge={ui.landing.badge}
@@ -277,7 +267,7 @@ function PracovniPageContent() {
                 </p>
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/4 px-5 py-4">
-                <div className="text-xs uppercase tracking-[0.18em] text-slate-500">{packageFlowCopy?.priceHeading}</div>
+                <div className="text-xs uppercase tracking-[0.18em] text-slate-400">{packageFlowCopy?.priceHeading}</div>
                 <div className="mt-2 text-lg font-semibold text-white">{getPriceRevealCopy(builderLocale).short}</div>
                 <Link href="/pracovni" className="mt-3 inline-block text-xs leading-relaxed text-[#cbbba0] transition hover:text-white">
                   {packageFlowCopy?.backToStandalone}
@@ -313,7 +303,7 @@ function PracovniPageContent() {
             <div id="formular" className="space-y-6">
               <div className="mb-6 border-t border-slate-800/60 pt-8">
                 <h2 className="text-lg font-black text-white uppercase tracking-wide">{ui.form.title}</h2>
-                <p className="text-sm text-slate-500 mt-1">{ui.form.requiredHint}</p>
+                <p className="text-sm text-slate-400 mt-1">{ui.form.requiredHint}</p>
               </div>
               <BuilderUserRoleField
                 contractType="employment"
@@ -349,7 +339,7 @@ function PracovniPageContent() {
                   <Field label={ui.fields.workPlace}><input className={inputClass} name="workPlace" value={form.workPlace} onChange={set} placeholder={ui.page.placeholders.workPlace} required /></Field>
                   <div className="sm:col-span-2">
                     <Field label={ui.fields.jobDescription}>
-                      <textarea className="w-full min-h-[80px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 transition" name="jobDescription" value={form.jobDescription} onChange={set} placeholder={ui.page.placeholders.jobDescription} />
+                      <textarea className="w-full min-h-[80px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-400 focus:border-amber-500/60 transition" name="jobDescription" value={form.jobDescription} onChange={set} placeholder={ui.page.placeholders.jobDescription} />
                     </Field>
                   </div>
                   <Field label={ui.fields.remoteWork}>
@@ -377,7 +367,7 @@ function PracovniPageContent() {
                   <Field label={ui.fields.trialMonths}>
                     <input className={inputClass} name="trialPeriodMonths" value={form.trialPeriodMonths} onChange={set} type="number" min="0" max={form.isManager ? 8 : 4} step="1" />
                     {Number(form.trialPeriodMonths) > (form.isManager ? 8 : 4) && (
-                      <p className="mt-1.5 text-xs text-rose-400 font-medium">⚠ {ui.page.hints.trialMaxWarning(form.isManager ? 8 : 4)}</p>
+                      <p className="mt-1.5 text-xs text-red-400 font-medium">⚠ {ui.page.hints.trialMaxWarning(form.isManager ? 8 : 4)}</p>
                     )}
                   </Field>
                   <Field label={ui.fields.noticePeriod}><input className={inputClass} name="noticePeriod" value={form.noticePeriod} onChange={set} type="number" min="2" max="6" /></Field>
@@ -541,12 +531,12 @@ function PracovniPageContent() {
               <div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90 mb-4">{ui.form.analysisTitle}</div>
               <div className="flex items-center gap-4 mb-4">
                 <div className={`text-5xl font-black ${scoreColor}`}>{risk.score}</div>
-                <div><div className={`font-bold ${scoreColor}`}>{risk.label}</div><div className="text-xs text-slate-500">{ui.form.scoreOf}</div></div>
+                <div><div className={`font-bold ${scoreColor}`}>{risk.label}</div><div className="text-xs text-slate-400">{ui.form.scoreOf}</div></div>
               </div>
               {risk.warnings.length === 0
                 ? <p className="text-sm text-emerald-400">{ui.page.hints.contractCompliant}</p>
                 : <ul className="space-y-2">{risk.warnings.map((w, i) => (
-                    <li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-rose-500/10 text-rose-300' : w.level === 'medium' ? 'bg-amber-500/10 text-amber-300' : 'bg-slate-700/40 text-slate-400'}`}>
+                    <li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-red-500/10 text-red-300' : w.level === 'medium' ? 'bg-amber-500/10 text-amber-300' : 'bg-slate-700/40 text-slate-400'}`}>
                       {w.level === 'high' ? '⚠ ' : '▲ '}{w.text}
                     </li>
                   ))}</ul>
@@ -574,12 +564,12 @@ function PracovniPageContent() {
                 <button
                   data-builder-generate=""
                   onClick={() => setShowPreviewModal(true)}
-                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
+                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-amber-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >
                   {ui.form.generate}
                 </button>
 
-                <p className="mt-3 text-center text-[11px] text-slate-500">
+                <p className="mt-3 text-center text-[11px] text-slate-400">
                   {ui.form.previewHint}
                 </p>
             </div>

@@ -204,7 +204,7 @@ export default function SecureDownloadPage() {
         {state === 'ready' ? (
           <p className="mt-4 text-emerald-300">{copy.ready}</p>
         ) : null}
-        {state === 'error' ? <p role="alert" className="mt-4 text-rose-300">{error}</p> : null}
+        {state === 'error' ? <p role="alert" className="mt-4 text-red-300">{error}</p> : null}
         {request ? (
           <button
             type="button"

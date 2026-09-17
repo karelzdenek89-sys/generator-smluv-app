@@ -55,7 +55,7 @@ export default function OProjektuPage() {
 
         {/* Breadcrumb */}
         <div className="mb-8">
-          <Link href="/" className="text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-amber-400 transition">
+          <Link href="/" className="text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-amber-400 transition">
             ← SmlouvaHned
           </Link>
         </div>
@@ -86,7 +86,7 @@ export default function OProjektuPage() {
                 { label: 'Povaha nástroje', value: 'SaaS — document automation software' },
               ].map(item => (
                 <div key={item.label} className="flex flex-col gap-0.5">
-                  <span className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-500">{item.label}</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400">{item.label}</span>
                   <span className="text-white font-semibold">{item.value}</span>
                 </div>
               ))}
@@ -113,10 +113,10 @@ export default function OProjektuPage() {
                 key={row.source}
                 className="rounded-2xl border border-white/8 bg-[#0c1426]/60 p-5 md:p-6"
               >
-                <p className="text-xs font-black uppercase tracking-widest text-slate-500">
+                <p className="text-xs font-black uppercase tracking-widest text-slate-400">
                   {row.source}
                 </p>
-                <p className="mt-2 text-sm text-slate-500 leading-relaxed">{row.problem}</p>
+                <p className="mt-2 text-sm text-slate-400 leading-relaxed">{row.problem}</p>
                 <p className="mt-3 text-sm text-slate-300 leading-relaxed">
                   <span className="text-amber-400 font-semibold">SmlouvaHned: </span>
                   {row.ours}
@@ -166,7 +166,7 @@ export default function OProjektuPage() {
                 },
               ].map(item => (
                 <div key={item.title} className="flex items-start gap-3">
-                  <span className="text-slate-500 font-black mt-0.5 flex-shrink-0">—</span>
+                  <span className="text-slate-400 font-black mt-0.5 flex-shrink-0">—</span>
                   <div>
                     <div className="font-bold text-white text-sm mb-1">{item.title}</div>
                     <p className="text-xs text-slate-400 leading-relaxed">{item.desc}</p>
@@ -251,7 +251,7 @@ export default function OProjektuPage() {
         </div>
 
         {/* Legal note */}
-        <div className="mt-10 pt-8 border-t border-white/8 text-xs text-slate-600 leading-relaxed">
+        <div className="mt-10 pt-8 border-t border-white/8 text-xs text-slate-400 leading-relaxed">
           <p>Provozovatel: Karel Zdeněk · IČO: 23660295 · smlouvahned.cz</p>
           <p className="mt-1">SmlouvaHned.cz je softwarový nástroj pro tvorbu standardizovaných dokumentů. Neposkytuje právní poradenství a není advokátní kanceláří ve smyslu zákona č. 85/1996 Sb.</p>
         </div>

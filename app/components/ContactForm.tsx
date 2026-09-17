@@ -42,30 +42,30 @@ export default function ContactForm() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">Jméno *</label>
+          <label className="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-400">Jméno *</label>
           <input
             required
             value={form.name}
             onChange={set('name')}
             placeholder="Jan Novák"
-            className="w-full rounded-xl border border-slate-700 bg-slate-800/60 px-4 py-3 text-sm text-white placeholder:text-slate-600 focus:border-amber-500/60 focus:outline-none transition"
+            className="w-full rounded-xl border border-slate-700 bg-slate-800/60 px-4 py-3 text-sm text-white placeholder:text-slate-400 focus:border-amber-500/60 focus:outline-none transition"
           />
         </div>
         <div>
-          <label className="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">E-mail *</label>
+          <label className="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-400">E-mail *</label>
           <input
             required
             type="email"
             value={form.email}
             onChange={set('email')}
             placeholder="vas@email.cz"
-            className="w-full rounded-xl border border-slate-700 bg-slate-800/60 px-4 py-3 text-sm text-white placeholder:text-slate-600 focus:border-amber-500/60 focus:outline-none transition"
+            className="w-full rounded-xl border border-slate-700 bg-slate-800/60 px-4 py-3 text-sm text-white placeholder:text-slate-400 focus:border-amber-500/60 focus:outline-none transition"
           />
         </div>
       </div>
 
       <div>
-        <label className="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">Předmět</label>
+        <label className="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-400">Předmět</label>
         <select
           value={form.subject}
           onChange={set('subject')}
@@ -80,19 +80,19 @@ export default function ContactForm() {
       </div>
 
       <div>
-        <label className="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-500">Zpráva *</label>
+        <label className="mb-1.5 block text-xs font-bold uppercase tracking-widest text-slate-400">Zpráva *</label>
         <textarea
           required
           rows={5}
           value={form.message}
           onChange={set('message')}
           placeholder="Popište svůj dotaz nebo problém…"
-          className="w-full rounded-xl border border-slate-700 bg-slate-800/60 px-4 py-3 text-sm text-white placeholder:text-slate-600 focus:border-amber-500/60 focus:outline-none transition resize-none"
+          className="w-full rounded-xl border border-slate-700 bg-slate-800/60 px-4 py-3 text-sm text-white placeholder:text-slate-400 focus:border-amber-500/60 focus:outline-none transition resize-none"
         />
       </div>
 
       {state === 'error' && (
-        <p className="rounded-xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-xs text-rose-300">
+        <p className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-xs text-red-300">
           Odeslání se nezdařilo. Zkuste to prosím znovu nebo napište přímo na info@smlouvahned.cz.
         </p>
       )}
@@ -105,7 +105,7 @@ export default function ContactForm() {
         {state === 'sending' ? 'Odesílám…' : 'Odeslat zprávu →'}
       </button>
 
-      <p className="text-center text-[11px] text-slate-600">
+      <p className="text-center text-[11px] text-slate-400">
         Odpovídáme zpravidla do 2 pracovních dnů · Po–Pá
       </p>
     </form>

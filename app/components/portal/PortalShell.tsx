@@ -47,7 +47,7 @@ export default function PortalShell({
     <main className="site-page">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbSchema([...crumbs])) }} />
       <div className={`mx-auto ${maxWidth} px-6 py-10 md:py-14`}>
-        <nav className="mb-6 text-xs text-slate-500" aria-label="Drobečková navigace">
+        <nav className="mb-6 text-xs text-slate-400" aria-label="Drobečková navigace">
           <ol className="flex flex-wrap items-center gap-1">
             {crumbs.map((crumb, index) => {
               const last = index === crumbs.length - 1;
@@ -70,7 +70,7 @@ export default function PortalShell({
           <h1 className="font-serif italic text-3xl font-bold leading-tight text-white md:text-5xl">{title}</h1>
           {lead ? <p className="mt-5 text-lg leading-relaxed text-slate-400">{lead}</p> : null}
           {updatedAt || verifiedAt ? (
-            <dl className="mt-5 flex flex-wrap gap-x-6 gap-y-1 text-xs text-slate-500">
+            <dl className="mt-5 flex flex-wrap gap-x-6 gap-y-1 text-xs text-slate-400">
               {updatedAt ? (
                 <div className="flex gap-1">
                   <dt>Aktualizováno:</dt>
@@ -144,14 +144,14 @@ export function LinkList({
   if (items.length === 0) return null;
   return (
     <div>
-      {eyebrow ? <div className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-500">{eyebrow}</div> : null}
+      {eyebrow ? <div className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-400">{eyebrow}</div> : null}
       <ul className="space-y-2">
         {items.map((item) => (
           <li key={item.href + item.label}>
             <Link href={item.href} className="text-sm text-slate-300 transition hover:text-[#e2c77b]">
               {item.label}
             </Link>
-            {item.note ? <span className="ml-2 text-xs text-slate-500">{item.note}</span> : null}
+            {item.note ? <span className="ml-2 text-xs text-slate-400">{item.note}</span> : null}
           </li>
         ))}
       </ul>
@@ -164,7 +164,7 @@ export function OfficialSourceList({ sources }: { sources: readonly { label: str
   return (
     <section className="rounded-2xl border border-white/8 bg-[#0c1426] p-6" aria-labelledby="official-sources-heading">
       <h2 id="official-sources-heading" className="mb-2 text-lg font-bold text-white">Oficiální zdroje</h2>
-      <p className="mb-3 text-sm leading-7 text-slate-500">Pravidla se mění. Před konkrétním krokem zkontrolujte aktuální znění.</p>
+      <p className="mb-3 text-sm leading-7 text-slate-400">Pravidla se mění. Před konkrétním krokem zkontrolujte aktuální znění.</p>
       <ul className="list-disc space-y-1.5 pl-5 text-sm leading-7 text-slate-400">
         {sources.map((source) => (
           <li key={source.href}>
@@ -180,7 +180,7 @@ export function OfficialSourceList({ sources }: { sources: readonly { label: str
 
 export function PortalDisclaimer({ className = '' }: { className?: string }) {
   return (
-    <aside className={`rounded-2xl border border-white/8 bg-white/[0.02] p-5 text-xs leading-6 text-slate-500 ${className}`} aria-label="Právní upozornění">
+    <aside className={`rounded-2xl border border-white/8 bg-white/[0.02] p-5 text-xs leading-6 text-slate-400 ${className}`} aria-label="Právní upozornění">
       <strong className="text-slate-400">Informativní obsah.</strong> SmlouvaHned je softwarový nástroj pro tvorbu
       standardizovaných dokumentů. Není advokátní kanceláří a neposkytuje právní poradenství ve smyslu zákona
       č. 85/1996 Sb. Pro nestandardní, sporné nebo hodnotově významné situace doporučujeme konzultaci s advokátem

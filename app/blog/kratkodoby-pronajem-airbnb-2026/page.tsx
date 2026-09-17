@@ -79,8 +79,8 @@ export default function KratkodobyPronajemAirbnb2026Page() {
           výpovědí nájemci, který byt využíval ke krátkodobému ubytování přes Airbnb nebo
           Booking — výsledek závisí na konkrétních okolnostech a znění smlouvy.
         </p>
-        <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm leading-relaxed text-slate-400">
-          <strong className="text-blue-400">Pozn.:</strong> Tento článek nerozhoduje, zda
+        <div className="rounded-2xl border border-sky-500/15 bg-sky-500/5 p-5 text-sm leading-relaxed text-slate-400">
+          <strong className="text-sky-400">Pozn.:</strong> Tento článek nerozhoduje, zda
           konkrétní případ je podnájem, ubytovací služba nebo porušení nájmu. U sporných
           situací nebo opakovaného provozu více bytů je vhodná konzultace s advokátem.
         </div>
@@ -173,8 +173,8 @@ export default function KratkodobyPronajemAirbnb2026Page() {
           požadavkům na evidenční knihu ubytovaných. Rozsah povinností se liší podle typu
           objektu, délky pobytu a vyhlášek obce.
         </p>
-        <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm leading-relaxed text-slate-400">
-          <strong className="text-blue-400">Pozn.:</strong> Tento článek nerozlišuje konkrétní
+        <div className="rounded-2xl border border-sky-500/15 bg-sky-500/5 p-5 text-sm leading-relaxed text-slate-400">
+          <strong className="text-sky-400">Pozn.:</strong> Tento článek nerozlišuje konkrétní
           režimy ubytovacích služeb ani hotelového typu provozu. U opakovaného krátkodobého
           pronájmu více bytů nebo celých domů bývá v praxi vhodná konzultace s účetním,
           místním úřadem a advokátem — jde často o podnikatelskou činnost, ne jen o běžný nájem.

@@ -74,7 +74,7 @@ export default function ProcSmlouvahnedMistoVzoru2026Page() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c') }}
       />
 
-      <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">
+      <nav className="mb-8 text-xs text-slate-400" aria-label="Breadcrumb">
         <Link href="/" className="transition hover:text-slate-300">
           SmlouvaHned
         </Link>
@@ -91,8 +91,8 @@ export default function ProcSmlouvahnedMistoVzoru2026Page() {
           <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-amber-400">
             Obecné a praktické
           </span>
-          <span className="text-xs text-slate-600">9 min čtení</span>
-          <time className="text-xs text-slate-600" dateTime="2026-07-01">
+          <span className="text-xs text-slate-400">9 min čtení</span>
+          <time className="text-xs text-slate-400" dateTime="2026-07-01">
             1. července 2026
           </time>
         </div>
@@ -133,7 +133,7 @@ export default function ProcSmlouvahnedMistoVzoru2026Page() {
       </header>
 
       <nav className="mb-10 rounded-2xl border border-white/8 bg-[#0c1426] p-6" aria-label="Obsah článku">
-        <div className="mb-3 text-xs font-black uppercase tracking-widest text-slate-500">Obsah článku</div>
+        <div className="mb-3 text-xs font-black uppercase tracking-widest text-slate-400">Obsah článku</div>
         <ol className="space-y-1.5 text-sm text-slate-400">
           <li>
             <a href="#proc-lide-hledaji-vzor" className="transition hover:text-amber-400">
@@ -215,8 +215,8 @@ export default function ProcSmlouvahnedMistoVzoru2026Page() {
             </li>
           ))}
         </ul>
-        <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm leading-relaxed text-slate-400">
-          <strong className="text-blue-400">Praktická poznámka:</strong> Vzor z internetu neřeší, jestli
+        <div className="rounded-2xl border border-sky-500/15 bg-sky-500/5 p-5 text-sm leading-relaxed text-slate-400">
+          <strong className="text-sky-400">Praktická poznámka:</strong> Vzor z internetu neřeší, jestli
           jste sjednali podmínky, které zákon umožňuje nebo naopak omezuje — jen nabízí obecnou formulaci.
           Posouzení konkrétní věci patří advokátovi.
         </div>
@@ -273,7 +273,7 @@ export default function ProcSmlouvahnedMistoVzoru2026Page() {
             </div>
           ))}
         </div>
-        <p className="mt-6 text-sm leading-relaxed text-slate-500">
+        <p className="mt-6 text-sm leading-relaxed text-slate-400">
           Více o metodice a limitech nástroje na{' '}
           <Link href="/o-projektu" className="text-amber-400 underline-offset-2 hover:underline">
             stránce O projektu
@@ -289,7 +289,7 @@ export default function ProcSmlouvahnedMistoVzoru2026Page() {
             <thead>
               <tr className="border-b border-white/8 bg-[#0c1426]">
                 <th className="px-4 py-3 font-black text-slate-400">Kritérium</th>
-                <th className="px-4 py-3 font-black text-slate-500">Vzor z webu</th>
+                <th className="px-4 py-3 font-black text-slate-400">Vzor z webu</th>
                 <th className="px-4 py-3 font-black text-amber-400">SmlouvaHned</th>
               </tr>
             </thead>
@@ -377,7 +377,7 @@ export default function ProcSmlouvahnedMistoVzoru2026Page() {
       />
 
       <div className="mt-12 border-t border-white/8 pt-10">
-        <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-600">
+        <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-400">
           Mohlo by vás zajímat
         </div>
         <div className="flex flex-wrap gap-3">

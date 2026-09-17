@@ -114,7 +114,7 @@ export default function PartnerNextSteps({
 
   return (
     <section className="mt-10 space-y-4" aria-label={copy.label}>
-      <h2 className="text-xs font-black uppercase tracking-[0.18em] text-slate-500">
+      <h2 className="text-xs font-black uppercase tracking-[0.18em] text-slate-400">
         {copy.heading}
       </h2>
       {offers.slice(0, 3).map((offer) => (
@@ -135,9 +135,9 @@ export default function PartnerNextSteps({
               </span>
             ) : null}
           </div>
-          <p className="mt-1 text-xs text-slate-500">{offer.provider}</p>
+          <p className="mt-1 text-xs text-slate-400">{offer.provider}</p>
           <p className="mt-3 text-sm leading-relaxed text-slate-300">{offer.description}</p>
-          <p className="mt-3 text-xs leading-relaxed text-slate-500">{offer.disclosure}</p>
+          <p className="mt-3 text-xs leading-relaxed text-slate-400">{offer.disclosure}</p>
           <a
             href={offer.href}
             target="_blank"

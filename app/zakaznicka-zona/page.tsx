@@ -180,7 +180,7 @@ export default function CustomerZone() {
 
       <div className="relative z-10 max-w-2xl mx-auto">
         <div className="mb-6">
-          <Link href="/" className="text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-amber-400 transition">
+          <Link href="/" className="text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-amber-400 transition">
             ← SmlouvaHned
           </Link>
         </div>
@@ -189,7 +189,7 @@ export default function CustomerZone() {
           <div className="w-12 h-12 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-center justify-center text-xl">📁</div>
           <div>
             <h1 className="text-3xl font-black text-white uppercase italic tracking-tighter">Moje dokumenty</h1>
-            <p className="text-slate-500 text-xs mt-0.5">
+            <p className="text-slate-400 text-xs mt-0.5">
               Použijte bezpečný odkaz z potvrzovacího e-mailu, nebo ověřte jeden dokument e-mailem a ID relace.
             </p>
           </div>
@@ -224,9 +224,9 @@ export default function CustomerZone() {
             </button>
           </div>
           {errorMsg && (
-            <p className="mt-2 text-xs text-rose-400">{errorMsg}</p>
+            <p className="mt-2 text-xs text-red-400">{errorMsg}</p>
           )}
-          <p className="mt-3 text-xs text-slate-600">
+          <p className="mt-3 text-xs text-slate-400">
             Seznam všech dokumentů je jen přes odkaz „Moje dokumenty“ v e-mailu po platbě.
           </p>
         </form>
@@ -247,7 +247,7 @@ export default function CustomerZone() {
             </div>
           ) : (
             <div className="space-y-3 mb-6">
-              <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-2 px-1">
+              <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">
                 Nalezeno {orders.length} {orders.length === 1 ? 'dokument' : orders.length < 5 ? 'dokumenty' : 'dokumentů'}
               </div>
               {orders.map((order) => {
@@ -264,9 +264,9 @@ export default function CustomerZone() {
                         <div className="flex items-center gap-2 mt-0.5">
                           <span className={`text-xs font-bold ${tierInfo.color}`}>{tierInfo.label}</span>
                           <span className="text-slate-700">·</span>
-                          <span className="text-xs text-slate-500">{formatDate(order.paidAt)}</span>
+                          <span className="text-xs text-slate-400">{formatDate(order.paidAt)}</span>
                         </div>
-                        <div className="text-xs text-slate-600 mt-0.5">Platnost odkazu: {ttlLabel} od zaplacení</div>
+                        <div className="text-xs text-slate-400 mt-0.5">Platnost odkazu: {ttlLabel} od zaplacení</div>
                         {order.includedItems && order.includedItems.length > 0 ? (
                           <div className="mt-1 flex flex-wrap gap-1">
                             {order.includedItems.map((item) => (

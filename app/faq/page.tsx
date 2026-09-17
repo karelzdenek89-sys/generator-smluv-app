@@ -159,7 +159,7 @@ export default function FaqPage() {
       />
 
       <div className="mx-auto max-w-3xl">
-        <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">
+        <nav className="mb-8 text-xs text-slate-400" aria-label="Breadcrumb">
           <Link href="/" className="transition hover:text-slate-300">
             SmlouvaHned
           </Link>

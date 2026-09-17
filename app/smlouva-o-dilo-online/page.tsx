@@ -70,7 +70,7 @@ export default function SmlouvaODiloOnlinePage() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(168,85,247,0.07),transparent_30%)] pointer-events-none" />
 
       <div className="relative z-10 mx-auto max-w-4xl px-6 py-16">
-        <nav className="mb-8 text-xs text-slate-500">
+        <nav className="mb-8 text-xs text-slate-400">
           <Link href="/" className="hover:text-slate-300 transition">SmlouvaHned</Link>
           <span className="mx-2">›</span>
           <span className="text-slate-400">Smlouva o dílo</span>
@@ -84,7 +84,7 @@ export default function SmlouvaODiloOnlinePage() {
         </header>
 
         <div className="mb-12">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-fuchsia-500/20 bg-fuchsia-500/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.2em] text-fuchsia-400">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.2em] text-emerald-400">
             § 2586 a násl. Občanského zákoníku
           </div>
           <h1 className="text-4xl font-black tracking-tight text-white md:text-5xl leading-tight mb-4">
@@ -99,7 +99,7 @@ export default function SmlouvaODiloOnlinePage() {
             className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-8 py-4 text-base font-black uppercase tracking-tight text-black shadow-[0_0_30px_rgba(245,158,11,0.25)] transition hover:bg-amber-400">
             Sestavit smlouvu o dílo →
           </Link>
-          <div className="mt-4 text-sm text-slate-500">Od 99 Kč · PDF ihned · Dle § 2586 OZ</div>
+          <div className="mt-4 text-sm text-slate-400">Od 99 Kč · PDF ihned · Dle § 2586 OZ</div>
         </div>
 
         <section className="mb-12 rounded-3xl border border-white/8 bg-[#0c1426] p-8">
@@ -152,7 +152,7 @@ export default function SmlouvaODiloOnlinePage() {
               <details key={item.q} className="group rounded-2xl border border-white/8 bg-[#0c1426] p-5 open:border-amber-500/30">
                 <summary className="cursor-pointer list-none font-bold text-white text-sm flex items-center justify-between gap-4">
                   <span>{item.q}</span>
-                  <span className="text-slate-500 group-open:rotate-45 transition flex-shrink-0">+</span>
+                  <span className="text-slate-400 group-open:rotate-45 transition flex-shrink-0">+</span>
                 </summary>
                 <p className="mt-3 text-sm text-slate-400 leading-relaxed">{item.a}</p>
               </details>
@@ -169,12 +169,12 @@ export default function SmlouvaODiloOnlinePage() {
             className="inline-flex items-center gap-2 rounded-2xl bg-amber-500 px-8 py-4 text-sm font-black uppercase tracking-tight text-black transition hover:bg-amber-400">
             Sestavit smlouvu o dílo →
           </Link>
-          <div className="mt-3 text-xs text-slate-600">Od 99 Kč · § 2586 OZ · PDF ihned</div>
+          <div className="mt-3 text-xs text-slate-400">Od 99 Kč · § 2586 OZ · PDF ihned</div>
         </section>
 
         <ContextualProductOffer {...getContextualOffer('work_contract')} />
 
-        <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">
+        <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-400">
           <Link href="/" className="hover:text-slate-300 transition">← Všechny smlouvy</Link>
           <Link href="/sluzby" className="hover:text-slate-300 transition">Smlouva o poskytování služeb</Link>
           <Link href="/nda" className="hover:text-slate-300 transition">Smlouva o mlčenlivosti</Link>

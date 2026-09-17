@@ -92,7 +92,7 @@ export default function SlovnikPage() {
       />
 
       <div className="mx-auto max-w-4xl">
-        <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">
+        <nav className="mb-8 text-xs text-slate-400" aria-label="Breadcrumb">
           <Link href="/" className="transition hover:text-slate-300">
             SmlouvaHned
           </Link>
@@ -118,7 +118,7 @@ export default function SlovnikPage() {
         <InformativeDisclaimer className="mb-10" />
 
         <nav className="mb-12 rounded-2xl border border-white/8 bg-[#0c1426] p-6" aria-label="Kategorie">
-          <div className="mb-3 text-xs font-black uppercase tracking-widest text-slate-500">
+          <div className="mb-3 text-xs font-black uppercase tracking-widest text-slate-400">
             Kategorie
           </div>
           <ul className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 text-sm">
@@ -130,7 +130,7 @@ export default function SlovnikPage() {
                     className="text-slate-300 transition hover:text-amber-400"
                   >
                     {GLOSSARY_CATEGORIES[cat]}{' '}
-                    <span className="text-slate-600">({grouped.get(cat)!.length})</span>
+                    <span className="text-slate-400">({grouped.get(cat)!.length})</span>
                   </a>
                 </li>
               ) : null,
@@ -170,7 +170,7 @@ export default function SlovnikPage() {
                           {entry.term}
                         </a>
                         {entry.aliases && entry.aliases.length > 0 ? (
-                          <span className="text-xs text-slate-600">
+                          <span className="text-xs text-slate-400">
                             také: {entry.aliases.join(', ')}
                           </span>
                         ) : null}
@@ -179,8 +179,8 @@ export default function SlovnikPage() {
                         {entry.definition}
                       </dd>
                       {entry.legalReference ? (
-                        <p className="mt-3 text-xs text-slate-600">
-                          <span className="font-semibold text-slate-500">Právní úprava: </span>
+                        <p className="mt-3 text-xs text-slate-400">
+                          <span className="font-semibold text-slate-400">Právní úprava: </span>
                           {entry.legalReference}
                         </p>
                       ) : null}

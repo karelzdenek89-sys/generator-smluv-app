@@ -335,7 +335,7 @@ function SuccessContent() {
               </div>
               <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/5">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 transition-all duration-700 ease-out"
+                  className="h-full rounded-full bg-gradient-to-r from-amber-500 to-amber-400 transition-all duration-700 ease-out"
                   style={{ width: `${Math.max(5, progress)}%` }}
                 />
               </div>
@@ -351,7 +351,7 @@ function SuccessContent() {
             <div className="flex-shrink-0 text-4xl">📄</div>
             <div>
               <div className="text-base font-bold text-white">{purchaseTitle}</div>
-              <div className="mt-0.5 text-xs uppercase tracking-wider text-slate-500">
+              <div className="mt-0.5 text-xs uppercase tracking-wider text-slate-400">
                 {copy.generated}
               </div>
             </div>
@@ -360,7 +360,7 @@ function SuccessContent() {
           {orderMeta?.tierLabel && orderMeta?.priceLabel && (
             <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
               <div className="rounded-2xl border border-white/5 bg-white/3 p-4">
-                <div className="mb-1 text-[10px] font-black uppercase tracking-widest text-slate-500">
+                <div className="mb-1 text-[10px] font-black uppercase tracking-widest text-slate-400">
                   {copy.purchasedVariant}
                 </div>
                 <div className="text-sm font-semibold text-white">
@@ -368,7 +368,7 @@ function SuccessContent() {
                 </div>
               </div>
               <div className="rounded-2xl border border-white/5 bg-white/3 p-4">
-                <div className="mb-1 text-[10px] font-black uppercase tracking-widest text-slate-500">
+                <div className="mb-1 text-[10px] font-black uppercase tracking-widest text-slate-400">
                   {copy.paidAmount}
                 </div>
                 <div className="text-sm font-semibold text-white">
@@ -376,7 +376,7 @@ function SuccessContent() {
                 </div>
               </div>
               <div className="rounded-2xl border border-white/5 bg-white/3 p-4">
-                <div className="mb-1 text-[10px] font-black uppercase tracking-widest text-slate-500">
+                <div className="mb-1 text-[10px] font-black uppercase tracking-widest text-slate-400">
                   {copy.linkAvailability}
                 </div>
                 <div className="text-sm font-semibold text-white">
@@ -388,7 +388,7 @@ function SuccessContent() {
 
           {dlState === 'checking' && (
             <div className="flex flex-col items-center justify-center gap-3 py-5">
-              <p className="text-sm italic text-slate-500">
+              <p className="text-sm italic text-slate-400">
                 {copy.preparing}
               </p>
             </div>
@@ -398,7 +398,7 @@ function SuccessContent() {
             <div className="space-y-3">
               <a
                 href={downloadUrl ?? '#'}
-                className="block w-full rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-400 py-5 text-center text-xl font-black tracking-tight text-black shadow-[0_0_40px_rgba(245,158,11,0.25)] transition-all hover:brightness-110 active:scale-[0.98]"
+                className="block w-full rounded-2xl bg-gradient-to-r from-amber-500 to-amber-400 py-5 text-center text-xl font-black tracking-tight text-black shadow-[0_0_40px_rgba(245,158,11,0.25)] transition-all hover:brightness-110 active:scale-[0.98]"
               >
                 {copy.downloadPdf}
               </a>
@@ -484,7 +484,7 @@ function SuccessContent() {
               <div className="mb-0.5 text-xs font-bold text-emerald-400">
                 {copy.downloadLink}
               </div>
-              <div className="text-xs text-slate-500">
+              <div className="text-xs text-slate-400">
                 {orderMeta?.archiveDays
                   ? copy.daysFromPayment(orderMeta.archiveDays)
                   : copy.archiveFallback}
@@ -494,7 +494,7 @@ function SuccessContent() {
               <div className="mb-0.5 text-xs font-bold text-emerald-400">
                 {copy.redownload}
               </div>
-              <div className="text-xs text-slate-500">{copy.untilExpiry}</div>
+              <div className="text-xs text-slate-400">{copy.untilExpiry}</div>
             </div>
           </div>
         </div>

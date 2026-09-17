@@ -32,7 +32,7 @@ export default function KupniSmlouvaAutoPage() {
       <BlogArticleSchemas slug="kupni-smlouva-na-auto-2026" />
 
       {/* Breadcrumb */}
-      <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">
+      <nav className="mb-8 text-xs text-slate-400" aria-label="Breadcrumb">
         <Link href="/" className="hover:text-slate-300 transition">SmlouvaHned</Link>
         <span className="mx-2 text-slate-700">›</span>
         <Link href="/blog" className="hover:text-slate-300 transition">Blog</Link>
@@ -44,8 +44,8 @@ export default function KupniSmlouvaAutoPage() {
       <header className="mb-10">
         <div className="mb-4 flex flex-wrap items-center gap-3">
           <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-amber-400">Vozidla</span>
-          <span className="text-xs text-slate-600">9 min čtení</span>
-          <time className="text-xs text-slate-600" dateTime="2026-03-15">15. března 2026</time>
+          <span className="text-xs text-slate-400">9 min čtení</span>
+          <time className="text-xs text-slate-400" dateTime="2026-03-15">15. března 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
           Kupní smlouva na auto 2026: co musí obsahovat
@@ -72,7 +72,7 @@ export default function KupniSmlouvaAutoPage() {
 
       {/* Table of contents */}
       <nav className="mb-10 rounded-2xl border border-white/8 bg-[#0c1426] p-6" aria-label="Obsah článku">
-        <div className="mb-3 text-xs font-black uppercase tracking-widest text-slate-500">Obsah článku</div>
+        <div className="mb-3 text-xs font-black uppercase tracking-widest text-slate-400">Obsah článku</div>
         <ol className="space-y-1.5 text-sm text-slate-400">
           <li><a href="#proc-pisemna-smlouva" className="hover:text-amber-400 transition">1. Proč nestačí jen ústní dohoda nebo rukou psaný lístek</a></li>
           <li><a href="#co-musi-obsahovat" className="hover:text-amber-400 transition">2. Co musí kupní smlouva na auto obsahovat</a></li>
@@ -102,8 +102,8 @@ export default function KupniSmlouvaAutoPage() {
           <li className="flex items-start gap-2"><span className="mt-1 text-amber-500 flex-shrink-0">•</span>Spory o kupní cenu nebo způsob platby</li>
         </ul>
 
-        <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm text-slate-400 leading-relaxed">
-          <strong className="text-blue-400">📌 Praktická poznámka:</strong> Rukou psaná smlouva sepsaná na parkovišti
+        <div className="rounded-2xl border border-sky-500/15 bg-sky-500/5 p-5 text-sm text-slate-400 leading-relaxed">
+          <strong className="text-sky-400">📌 Praktická poznámka:</strong> Rukou psaná smlouva sepsaná na parkovišti
           je sice lepší než nic — ale zpravidla postrádá klíčové náležitosti (VIN, přesný popis stavu,
           prohlášení o vadách), bez nichž může být obtížně vymahatelná.
         </div>
@@ -130,7 +130,7 @@ export default function KupniSmlouvaAutoPage() {
           ].map(i => (
             <div key={i.t} className="rounded-xl border border-white/8 bg-[#0c1426] p-4">
               <div className="mb-1 text-sm font-black text-white">{i.t}</div>
-              <p className="text-xs text-slate-500 leading-relaxed">{i.d}</p>
+              <p className="text-xs text-slate-400 leading-relaxed">{i.d}</p>
             </div>
           ))}
         </div>
@@ -210,8 +210,8 @@ export default function KupniSmlouvaAutoPage() {
           <li className="flex items-start gap-2"><span className="mt-1 text-amber-500 flex-shrink-0">•</span>Případné závady zjištěné při poslední STK (včetně tzv. doporučení)</li>
         </ul>
 
-        <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm text-slate-400 leading-relaxed">
-          <strong className="text-blue-400">📌 Pozor:</strong> Pokud prodávající uvede platnou STK, ale v době prodeje
+        <div className="rounded-2xl border border-sky-500/15 bg-sky-500/5 p-5 text-sm text-slate-400 leading-relaxed">
+          <strong className="text-sky-400">📌 Pozor:</strong> Pokud prodávající uvede platnou STK, ale v době prodeje
           je STK ve skutečnosti propadlá nebo vozidlo STK neprošlo, jde o podstatnou vadu věci.
           Kupující má právo na slevu z kupní ceny nebo odstoupení od smlouvy.
         </div>
@@ -396,7 +396,7 @@ export default function KupniSmlouvaAutoPage() {
         >
           Vytvořit kupní smlouvu na auto →
         </TrackedLink>
-        <div className="mt-3 text-xs text-slate-600">Od 99 Kč · Dle § 2079 OZ · Platné pro 2026</div>
+        <div className="mt-3 text-xs text-slate-400">Od 99 Kč · Dle § 2079 OZ · Platné pro 2026</div>
       </div>
 
       {cebiaOffer ? (
@@ -408,7 +408,7 @@ export default function KupniSmlouvaAutoPage() {
 
       {/* ── RELATED ARTICLES ────────────────────── */}
       <div className="mt-12 border-t border-white/8 pt-10">
-        <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-600">Mohlo by vás zajímat</div>
+        <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-400">Mohlo by vás zajímat</div>
         <div className="flex flex-wrap gap-3">
           {[
             { href: '/auto', label: '🚗 Kupní smlouva na auto — landing page' },

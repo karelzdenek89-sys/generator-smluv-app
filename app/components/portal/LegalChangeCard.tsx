@@ -31,7 +31,7 @@ export default function LegalChangeCard({ change, compact = false }: { change: L
     <article id={change.key} className="site-content-card scroll-mt-24 rounded-2xl p-6" aria-labelledby={`${change.key}-title`}>
       <div className="flex flex-wrap items-center gap-3">
         <LegalStatusBadge status={change.status} />
-        <span className="text-xs text-slate-500">{change.dateLabel}</span>
+        <span className="text-xs text-slate-400">{change.dateLabel}</span>
       </div>
       <h3 id={`${change.key}-title`} className="mt-3 font-serif italic text-xl font-bold text-white md:text-2xl">
         {change.title}
@@ -41,7 +41,7 @@ export default function LegalChangeCard({ change, compact = false }: { change: L
       {!compact ? (
         <div className="mt-5 grid gap-6 md:grid-cols-2">
           <div>
-            <div className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-500">Co se konkrétně mění</div>
+            <div className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-400">Co se konkrétně mění</div>
             <ul className="space-y-2 text-sm leading-7 text-slate-400">
               {change.whatChanges.map((item) => (
                 <li key={item} className="flex gap-2"><span className="text-[#c9a852]">•</span><span>{item}</span></li>
@@ -49,7 +49,7 @@ export default function LegalChangeCard({ change, compact = false }: { change: L
             </ul>
           </div>
           <div>
-            <div className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-500">Co máte udělat</div>
+            <div className="mb-2 text-[10px] font-black uppercase tracking-widest text-slate-400">Co máte udělat</div>
             <ul className="space-y-2 text-sm leading-7 text-slate-400">
               {change.whatToDo.map((item) => (
                 <li key={item} className="flex gap-2"><span className="text-emerald-400">✓</span><span>{item}</span></li>
@@ -74,18 +74,18 @@ export default function LegalChangeCard({ change, compact = false }: { change: L
               ))}
             </div>
           ) : null}
-          <ul className="mt-3 space-y-1 text-xs text-slate-500">
+          <ul className="mt-3 space-y-1 text-xs text-slate-400">
             {change.sources.map((source) => (
               <li key={source.href}>
                 <a href={source.href} target="_blank" rel="noopener noreferrer" className="text-amber-400/90 transition hover:text-amber-300">
                   {source.label}
                 </a>
-                <span className="ml-1 text-slate-600">({source.publisher})</span>
+                <span className="ml-1 text-slate-400">({source.publisher})</span>
               </li>
             ))}
           </ul>
         </div>
-        <div className="text-xs text-slate-500">
+        <div className="text-xs text-slate-400">
           Ověřeno <time dateTime={change.verifiedAt} className="text-slate-400">{formatIsoDateCz(change.verifiedAt)}</time>
         </div>
       </div>

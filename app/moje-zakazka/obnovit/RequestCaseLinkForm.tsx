@@ -52,7 +52,7 @@ export default function RequestCaseLinkForm() {
           autoComplete="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          className="mt-1 w-full rounded-lg border border-white/15 bg-[#0c1426] px-3 py-3 text-sm text-white placeholder:text-slate-600"
+          className="mt-1 w-full rounded-lg border border-white/15 bg-[#0c1426] px-3 py-3 text-sm text-white placeholder:text-slate-400"
           placeholder="jan@priklad.cz"
         />
       </div>

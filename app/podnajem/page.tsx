@@ -1,6 +1,5 @@
 ﻿'use client';
 
-import Link from 'next/link';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import { useBuilderDraft } from '@/lib/use-builder-draft';
 import { getPriceRevealCopy } from '@/lib/price-reveal-copy';
@@ -24,6 +23,7 @@ import {
   type BuilderSearchParams,
 } from '@/lib/locale';
 import { isValidMoney } from '@/lib/money';
+import BuilderHeader from '@/app/components/BuilderHeader';
 
 type FormData = {
   landlordName: string; landlordId: string; landlordAddress: string; landlordEmail: string;
@@ -40,8 +40,8 @@ type FormData = {
   disputeResolution: 'court' | 'mediation';
 };
 
-const inputClass = 'w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition';
-const textareaClass = 'w-full min-h-[100px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition';
+const inputClass = 'w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-400 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition';
+const textareaClass = 'w-full min-h-[100px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-400 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition';
 const cardClass = 'bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]';
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
@@ -131,7 +131,7 @@ function PodnajemuPageContent() {
     }
   }, [form, builderLocale]);
 
-  const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-rose-400';
+  const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-red-400';
 
   const handlePayment = async (addOns: string[], authorization: CheckoutAuthorization) => {
     const missing: string[] = [];
@@ -193,18 +193,7 @@ function PodnajemuPageContent() {
   return (
     <>
     <main className="min-h-screen bg-[#080f1e] text-white pb-20">
-      {/* Header */}
-      <div className="sticky top-0 z-30 bg-[#080f1e]/95 backdrop-blur border-b border-slate-800/80">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-          <Link href="/" className="text-amber-400 font-black text-lg tracking-tight">{ui.header.brand}</Link>
-          <div className="flex items-center gap-3">
-            <span className="text-xs text-slate-400 hidden sm:block">{ui.header.docType}</span>
-            <span className="text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-full px-3 py-1">
-              {getPriceRevealCopy(builderLocale).short}
-            </span>
-          </div>
-        </div>
-      </div>
+      <BuilderHeader docType={ui.header.docType} brand={ui.header.brand} locale={builderLocale} badge={getPriceRevealCopy(builderLocale).short} />
 
       <ContractLandingSection
         badge={ui.landing.badge}
@@ -226,7 +215,7 @@ function PodnajemuPageContent() {
         <div className="grid lg:grid-cols-12 gap-8">
           {/* Left column – form */}
           <div id="formular" className="lg:col-span-7 space-y-6">
-            <div className="mb-6 border-t border-slate-800/60 pt-8"><h2 className="text-lg font-black text-white uppercase tracking-wide">{ui.form.title}</h2><p className="text-sm text-slate-500 mt-1">{ui.form.requiredHint}</p></div>
+            <div className="mb-6 border-t border-slate-800/60 pt-8"><h2 className="text-lg font-black text-white uppercase tracking-wide">{ui.form.title}</h2><p className="text-sm text-slate-400 mt-1">{ui.form.requiredHint}</p></div>
 
             {/* 01 Podnajímatel */}
             <section className={cardClass}>
@@ -284,7 +273,7 @@ function PodnajemuPageContent() {
                   </div>
                 )}
                 {form.landlordConsent === 'no' && (
-                  <div className="rounded-xl bg-rose-500/10 border border-rose-500/30 px-4 py-3 text-sm text-rose-300">
+                  <div className="rounded-xl bg-red-500/10 border border-red-500/30 px-4 py-3 text-sm text-red-300">
                     ⚠ Podnájem bez souhlasu pronajímatele je porušením hlavní nájemní smlouvy a může vést k výpovědi nebo soudnímu sporu. Doporučujeme souhlas zajistit předem.
                   </div>
                 )}
@@ -367,7 +356,7 @@ function PodnajemuPageContent() {
             {/* 09 Výběr balíčku */}
             <section className={cardClass}>
               <div className="mb-6">
-                <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">{fl('disputeResolution', 'Řešení sporů')}</div>
+                <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">{fl('disputeResolution', 'Řešení sporů')}</div>
                 <select className={inputClass} name="disputeResolution" value={form.disputeResolution} onChange={handleChange} aria-label={fl('disputeResolution', 'Řešení sporů')}>
                   <option value="court">{fl('dispute_court', 'Obecný soud (výchozí)')}</option>
                   <option value="mediation">{fl('dispute_mediation', 'Mediace (zákon č. 202/2012 Sb.)')}</option>
@@ -397,13 +386,13 @@ function PodnajemuPageContent() {
                 <div className={`text-5xl font-black ${scoreColor}`}>{risk.score}</div>
                 <div>
                   <div className={`font-bold ${scoreColor}`}>{risk.label}</div>
-                  <div className="text-xs text-slate-500">{ui.form.scoreOf}</div>
+                  <div className="text-xs text-slate-400">{ui.form.scoreOf}</div>
                 </div>
               </div>
               {risk.warnings.length === 0
                 ? <p className="text-sm text-emerald-400">✓ Podnájemní smlouva je v pořádku.</p>
                 : <ul className="space-y-2">{risk.warnings.map((w, i) => (
-                    <li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-rose-500/10 text-rose-300' : 'bg-amber-500/10 text-amber-300'}`}>
+                    <li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-red-500/10 text-red-300' : 'bg-amber-500/10 text-amber-300'}`}>
                       {w.level === 'high' ? '⚠ ' : '▲ '}{w.text}
                     </li>
                   ))}</ul>
@@ -424,12 +413,12 @@ function PodnajemuPageContent() {
                 <button
                   data-builder-generate=""
                   onClick={() => setShowPreviewModal(true)}
-                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
+                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-amber-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >
                   {ui.form.generate}
                 </button>
 
-                <p className="mt-3 text-center text-[11px] text-slate-500">
+                <p className="mt-3 text-center text-[11px] text-slate-400">
                   {ui.form.previewHint}
                 </p>
             </div>

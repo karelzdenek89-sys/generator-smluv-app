@@ -1,6 +1,5 @@
 ﻿'use client';
 
-import Link from 'next/link';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import { useBuilderDraft } from '@/lib/use-builder-draft';
 import { useState, useMemo } from 'react';
@@ -11,6 +10,7 @@ import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/LazyPaymentModal';
+import BuilderHeader from '@/app/components/BuilderHeader';
 
 type NdaFormData = {
   ndaType: 'unilateral' | 'bilateral';
@@ -40,9 +40,9 @@ type NdaFormData = {
 };
 
 const inputClass =
-  'w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition text-sm';
+  'w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-400 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition text-sm';
 const textareaClass =
-  'w-full min-h-[90px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition text-sm';
+  'w-full min-h-[90px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-400 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition text-sm';
 const cardClass =
   'bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]';
 const labelClass = 'block text-xs font-bold uppercase tracking-[0.12em] text-slate-400 mb-1.5';
@@ -52,7 +52,7 @@ function SectionTitle({ index, title, subtitle }: { index: string; title: string
     <div className="mb-5">
       <div className="text-[10px] font-black uppercase tracking-[0.22em] text-amber-400 mb-1">{index}</div>
       <h2 className="text-lg font-black text-white tracking-tight">{title}</h2>
-      {subtitle && <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>}
+      {subtitle && <p className="text-xs text-slate-400 mt-0.5">{subtitle}</p>}
     </div>
   );
 }
@@ -145,7 +145,7 @@ export default function NdaBuilderPage() {
     }
   }, [formData]);
 
-  const scoreColor = riskAnalysis.score >= 85 ? 'text-emerald-400' : riskAnalysis.score >= 65 ? 'text-amber-400' : 'text-rose-400';
+  const scoreColor = riskAnalysis.score >= 85 ? 'text-emerald-400' : riskAnalysis.score >= 65 ? 'text-amber-400' : 'text-red-400';
 
   const handleSubmit = async (addOns: string[], authorization: CheckoutAuthorization) => {
     if (!formData.disclosingName || !formData.receivingName) {
@@ -188,25 +188,7 @@ export default function NdaBuilderPage() {
     <main className="min-h-screen bg-[#05080f] text-slate-200 pb-20">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.07),transparent_30%)] pointer-events-none" />
 
-      <header className="relative z-10 border-b border-white/5 bg-[#05080f]/80 backdrop-blur-sm sticky top-0">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-amber-500 rounded-xl flex items-center justify-center text-xs font-black text-black">SH</div>
-            <div>
-              <div className="font-black text-white text-sm">SmlouvaHned</div>
-              <div className="text-[10px] uppercase tracking-widest text-slate-500">Legal document builder</div>
-            </div>
-          </Link>
-          <div className="hidden md:flex items-center gap-4 text-xs text-slate-400">
-            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />Platba zabezpečena Stripe</span>
-            <span>•</span>
-            <span>§ 1746 odst. 2 občanského zákoníku</span>
-          </div>
-          <span className="text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-full px-3 py-1">
-            Cena v dalším kroku
-          </span>
-        </div>
-      </header>
+      <BuilderHeader docType="NDA — § 1746 odst. 2 OZ" note="Platba zabezpečena přes Stripe" badge="Cena v dalším kroku" />
 
       <ContractLandingSection
         badge="§ 1746 odst. 2 občanského zákoníku"
@@ -261,7 +243,7 @@ export default function NdaBuilderPage() {
             <div id="formular">
               <div className="mb-6 border-t border-slate-800/60 pt-8">
                 <h2 className="text-lg font-black text-white uppercase tracking-wide">Vyplňte údaje dokumentu</h2>
-                <p className="text-sm text-slate-500 mt-1">Všechna povinná pole jsou označena *</p>
+                <p className="text-sm text-slate-400 mt-1">Všechna povinná pole jsou označena *</p>
               </div>
 
               {/* 01 Typ NDA */}
@@ -336,7 +318,7 @@ export default function NdaBuilderPage() {
                       placeholder="Obchodní strategie, cenové kalkulace, zdrojové kódy, databáze zákazníků, výrobní postupy…"
                       aria-label="Obchodní strategie, cenové kalkulace, zdrojové kódy, databáze zákazníků, výrobní postupy…"
                       className={textareaClass} />
-                    <p className="text-xs text-slate-500 mt-1">Čím přesnější popis, tím silnější ochrana v případě sporu.</p>
+                    <p className="text-xs text-slate-400 mt-1">Čím přesnější popis, tím silnější ochrana v případě sporu.</p>
                   </div>
                   <div>
                     <label className={labelClass}>Účel sdílení informací</label>
@@ -368,7 +350,7 @@ export default function NdaBuilderPage() {
                   <div>
                     <label className={labelClass}>Smluvní pokuta (Kč)</label>
                     <input type="number" value={formData.penaltyAmount} onChange={e => set('penaltyAmount', e.target.value)} placeholder="100 000" aria-label="Smluvní pokuta (Kč)" className={inputClass} />
-                    <p className="text-xs text-slate-500 mt-1">Min. 50 000 Kč pro reálnou odstrašující hodnotu.</p>
+                    <p className="text-xs text-slate-400 mt-1">Min. 50 000 Kč pro reálnou odstrašující hodnotu.</p>
                   </div>
                 </div>
               </section>
@@ -407,7 +389,7 @@ export default function NdaBuilderPage() {
               {/* Řešení sporů */}
               <section className={cardClass}>
                 <div className="mb-4">
-                  <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
+                  <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Řešení sporů</div>
                   <select aria-label="Obecný soud (výchozí)" className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' }))}>
                     <option value="court">Obecný soud (výchozí)</option>
                     <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
@@ -444,13 +426,13 @@ export default function NdaBuilderPage() {
                 <div className={`text-5xl font-black ${scoreColor}`}>{riskAnalysis.score}</div>
                 <div>
                   <div className={`font-bold ${scoreColor}`}>{riskAnalysis.label}</div>
-                  <div className="text-xs text-slate-500">ze 100 bodů</div>
+                  <div className="text-xs text-slate-400">ze 100 bodů</div>
                 </div>
               </div>
               {riskAnalysis.warnings.length === 0
                 ? <p className="text-sm text-emerald-400">✓ NDA je v pořádku.</p>
                 : <ul className="space-y-2">{riskAnalysis.warnings.map((w, i) => (
-                    <li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-rose-500/10 text-rose-300' : 'bg-amber-500/10 text-amber-300'}`}>
+                    <li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-red-500/10 text-red-300' : 'bg-amber-500/10 text-amber-300'}`}>
                       {w.level === 'high' ? '⚠ ' : '▲ '}{w.text}
                     </li>
                   ))}</ul>
@@ -471,12 +453,12 @@ export default function NdaBuilderPage() {
                 <button
                   data-builder-generate=""
                   onClick={() => setShowPreviewModal(true)}
-                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
+                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-amber-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >
                   Vygenerovat smlouvu →
                 </button>
 
-                <p className="mt-3 text-center text-[11px] text-slate-500">
+                <p className="mt-3 text-center text-[11px] text-slate-400">
                   Zobrazí se náhled dokumentu připraveného k odemčení
                 </p>
             </div>

@@ -57,7 +57,7 @@ export default function PracovniSmlouvaVzor2026Page() {
       />
 
       {/* Breadcrumb */}
-      <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">
+      <nav className="mb-8 text-xs text-slate-400" aria-label="Breadcrumb">
         <Link href="/" className="hover:text-slate-300 transition">SmlouvaHned</Link>
         <span className="mx-2 text-slate-700">›</span>
         <Link href="/blog" className="hover:text-slate-300 transition">Blog</Link>
@@ -69,8 +69,8 @@ export default function PracovniSmlouvaVzor2026Page() {
       <header className="mb-10">
         <div className="mb-4 flex flex-wrap items-center gap-3">
           <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-amber-400">Práce a zaměstnání</span>
-          <span className="text-xs text-slate-600">9 min čtení</span>
-          <time className="text-xs text-slate-600" dateTime="2026-03-20">20. března 2026</time>
+          <span className="text-xs text-slate-400">9 min čtení</span>
+          <time className="text-xs text-slate-400" dateTime="2026-03-20">20. března 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
           Pracovní smlouva vzor 2026: Co musí obsahovat
@@ -92,7 +92,7 @@ export default function PracovniSmlouvaVzor2026Page() {
 
       {/* Table of contents */}
       <nav className="mb-10 rounded-2xl border border-white/8 bg-[#0c1426] p-6" aria-label="Obsah článku">
-        <div className="mb-3 text-xs font-black uppercase tracking-widest text-slate-500">Obsah článku</div>
+        <div className="mb-3 text-xs font-black uppercase tracking-widest text-slate-400">Obsah článku</div>
         <ol className="space-y-1.5 text-sm text-slate-400">
           <li><a href="#tri-povinne-nalezitosti" className="hover:text-amber-400 transition">1. Tři povinné náležitosti dle zákoníku práce</a></li>
           <li><a href="#co-smlouva-obsahovat-musi" className="hover:text-amber-400 transition">2. Co smlouva obsahovat musí a co doporučujeme přidat</a></li>
@@ -142,13 +142,13 @@ export default function PracovniSmlouvaVzor2026Page() {
                 {i.n}
               </div>
               <div className="mb-1 text-sm font-black text-white">{i.t}</div>
-              <p className="text-xs text-slate-500 leading-relaxed">{i.d}</p>
+              <p className="text-xs text-slate-400 leading-relaxed">{i.d}</p>
             </div>
           ))}
         </div>
 
-        <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm text-slate-400 leading-relaxed">
-          <strong className="text-blue-400">📌 Klíčové:</strong> Chybí-li ve smlouvě byť jedna z těchto tří náležitostí,
+        <div className="rounded-2xl border border-sky-500/15 bg-sky-500/5 p-5 text-sm text-slate-400 leading-relaxed">
+          <strong className="text-sky-400">📌 Klíčové:</strong> Chybí-li ve smlouvě byť jedna z těchto tří náležitostí,
           pracovní poměr sice může fakticky vzniknout (zaměstnanec začne pracovat), ale smlouva je vadná.
           To může způsobit komplikace při výpovědi nebo sporech. Vždy ověřte, že smlouva všechny tři
           obsahuje ještě před podpisem.
@@ -233,7 +233,7 @@ export default function PracovniSmlouvaVzor2026Page() {
           ].map(i => (
             <div key={i.t} className="rounded-xl border border-white/8 bg-[#0c1426] p-4">
               <div className="mb-1 text-sm font-black text-white">{i.t}</div>
-              <p className="text-xs text-slate-500 leading-relaxed">{i.d}</p>
+              <p className="text-xs text-slate-400 leading-relaxed">{i.d}</p>
             </div>
           ))}
         </div>
@@ -262,10 +262,10 @@ export default function PracovniSmlouvaVzor2026Page() {
           jsou zákonné. Praxe se liší:
         </p>
         <ul className="mb-5 space-y-2 text-slate-400">
-          <li className="flex items-start gap-2"><span className="mt-1 text-slate-500 flex-shrink-0">→</span>
+          <li className="flex items-start gap-2"><span className="mt-1 text-slate-400 flex-shrink-0">→</span>
             <span><strong className="text-slate-300">Mzda ve smlouvě</strong> — přehledné, ale změna mzdy vyžaduje písemný dodatek ke smlouvě.</span>
           </li>
-          <li className="flex items-start gap-2"><span className="mt-1 text-slate-500 flex-shrink-0">→</span>
+          <li className="flex items-start gap-2"><span className="mt-1 text-slate-400 flex-shrink-0">→</span>
             <span><strong className="text-slate-300">Mzda v mzdovém výměru</strong> — flexibilnější, změnu lze provést vydáním nového výměru bez úpravy smlouvy.</span>
           </li>
         </ul>
@@ -281,8 +281,8 @@ export default function PracovniSmlouvaVzor2026Page() {
           <li className="flex items-start gap-2"><span className="mt-1 flex-shrink-0 text-amber-500">•</span>U vedoucích lze sjednat mzdu „s přihlédnutím k přesčasům" — ale pouze do rozsahu 150/325 hodin ročně</li>
         </ul>
 
-        <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm text-slate-400 leading-relaxed">
-          <strong className="text-blue-400">📌 Tip:</strong> Benefity (stravenkový paušál, sick days, příspěvek na sport) nelze přímo vymáhat,
+        <div className="rounded-2xl border border-sky-500/15 bg-sky-500/5 p-5 text-sm text-slate-400 leading-relaxed">
+          <strong className="text-sky-400">📌 Tip:</strong> Benefity (stravenkový paušál, sick days, příspěvek na sport) nelze přímo vymáhat,
           pokud nejsou zakotveny ve smlouvě nebo interní směrnici zaměstnavatele. Zaměstnanec, který spoléhá
           na ústně přislíbené benefity bez smlouvy, nemá právní nárok na jejich poskytnutí.
         </div>
@@ -391,7 +391,7 @@ export default function PracovniSmlouvaVzor2026Page() {
               organizační důvody (nadbytečnost), zdravotní způsobilost, nesplňování předpokladů nebo
               závažné porušení pracovní kázně.
             </p>
-            <div className="text-xs text-slate-500">
+            <div className="text-xs text-slate-400">
               Výpověď musí být písemná, doručena zaměstnanci a musí obsahovat přesný zákonný důvod. Nesprávný nebo chybějící důvod → výpověď je neplatná.
             </div>
           </div>
@@ -405,8 +405,8 @@ export default function PracovniSmlouvaVzor2026Page() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm text-slate-400 leading-relaxed">
-          <strong className="text-blue-400">📌 Poznámka:</strong> Spory ze skončení pracovního poměru patří k nejčastějším
+        <div className="rounded-2xl border border-sky-500/15 bg-sky-500/5 p-5 text-sm text-slate-400 leading-relaxed">
+          <strong className="text-sky-400">📌 Poznámka:</strong> Spory ze skončení pracovního poměru patří k nejčastějším
           pracovněprávním sporům. Pro neplatnou výpověď zaměstnavatele platí: zaměstnanec může do 2 měsíců
           uplatnit neplatnost u soudu a domáhat se náhrady mzdy za dobu neplatného rozvázání.
         </div>
@@ -482,7 +482,7 @@ export default function PracovniSmlouvaVzor2026Page() {
             >
               <summary className="cursor-pointer list-none font-bold text-white text-sm flex items-center justify-between gap-4">
                 <span>{item.q}</span>
-                <span className="text-slate-500 group-open:rotate-45 transition flex-shrink-0">+</span>
+                <span className="text-slate-400 group-open:rotate-45 transition flex-shrink-0">+</span>
               </summary>
               <p className="mt-3 text-sm text-slate-400 leading-relaxed">{item.a}</p>
             </details>
@@ -503,7 +503,7 @@ export default function PracovniSmlouvaVzor2026Page() {
 
       {/* ── RELATED ARTICLES ────────────────────── */}
       <div className="mt-12 border-t border-white/8 pt-10">
-        <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-600">Mohlo by vás zajímat</div>
+        <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-400">Mohlo by vás zajímat</div>
         <div className="flex flex-wrap gap-3">
           {[
             { href: '/pracovni', label: '👔 Vytvořit pracovní smlouvu' },

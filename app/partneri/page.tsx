@@ -54,7 +54,7 @@ export default function PartneriPage() {
       <section className="relative overflow-hidden border-b border-white/5 px-6 py-20 sm:py-28">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_10%,rgba(245,158,11,0.12),transparent_42%)]" />
         <div className="relative mx-auto max-w-6xl">
-          <Link href="/" className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500 transition hover:text-amber-400">
+          <Link href="/" className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 transition hover:text-amber-400">
             ← SmlouvaHned
           </Link>
           <div className="mt-12 max-w-4xl">
@@ -93,7 +93,7 @@ export default function PartneriPage() {
               <p className="mt-2 text-sm text-slate-400">primární umístění nabídek až po dostupnosti zakoupeného dokumentu</p>
             </div>
           </div>
-          <p className="mt-4 text-xs text-slate-600">Údaje výše se odvozují z aktuální konfigurace produktu; neuvádíme neověřené počty návštěv ani zákazníků.</p>
+          <p className="mt-4 text-xs text-slate-400">Údaje výše se odvozují z aktuální konfigurace produktu; neuvádíme neověřené počty návštěv ani zákazníků.</p>
         </div>
       </section>
 

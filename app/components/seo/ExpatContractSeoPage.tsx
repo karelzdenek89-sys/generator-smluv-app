@@ -69,7 +69,7 @@ export default function ExpatContractSeoPage({ locale, content }: Props) {
       />
 
       <section className="mx-auto max-w-4xl px-6 py-12 md:py-16">
-        <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">
+        <nav className="mb-8 text-xs text-slate-400" aria-label="Breadcrumb">
           <Link href="/" className="hover:text-slate-300 transition">
             SmlouvaHned
           </Link>
@@ -99,7 +99,7 @@ export default function ExpatContractSeoPage({ locale, content }: Props) {
               destination: content.builderHref,
             }}
             data-testid={`seo-${content.contractKey}-cta`}
-            className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-400 px-6 py-4 text-sm font-black uppercase tracking-wide text-black hover:brightness-110 transition"
+            className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-amber-500 to-amber-400 px-6 py-4 text-sm font-black uppercase tracking-wide text-black hover:brightness-110 transition"
           >
             {content.cta}
           </TrackedLink>
@@ -158,7 +158,7 @@ export default function ExpatContractSeoPage({ locale, content }: Props) {
               cta_type: 'footer_primary',
               destination: content.builderHref,
             }}
-            className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-400 px-8 py-4 text-sm font-black uppercase tracking-wide text-black hover:brightness-110 transition"
+            className="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-amber-500 to-amber-400 px-8 py-4 text-sm font-black uppercase tracking-wide text-black hover:brightness-110 transition"
           >
             {content.cta}
           </TrackedLink>

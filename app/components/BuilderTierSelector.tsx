@@ -89,7 +89,7 @@ export default function BuilderTierSelector({
   return (
     <div className="space-y-3">
       <div className="mb-4">
-        <div className="mb-2 text-xs font-black uppercase tracking-widest text-slate-500">
+        <div className="mb-2 text-xs font-black uppercase tracking-widest text-slate-400">
           {resolvedTitle}
         </div>
         <p className="text-sm leading-relaxed text-slate-400">{resolvedSubtitle}</p>

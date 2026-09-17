@@ -8,11 +8,16 @@ import { getLocaleFromPathname } from '@/lib/locale';
 
 export default function BlogLayoutShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const isExpatArticle = getLocaleFromPathname(pathname) !== 'cs';
+  const articleLocale = getLocaleFromPathname(pathname);
+  const isExpatArticle = articleLocale !== 'cs';
 
   if (isExpatArticle) {
     return (
-      <div className="site-page blog-shell min-h-screen" data-blog-shell="expat">
+      <div
+        className="site-page blog-shell min-h-screen"
+        lang={articleLocale === 'ua' ? 'uk' : 'en'}
+        data-blog-shell="expat"
+      >
         <BlogAnalyticsTracker />
         <main className="relative z-10">{children}</main>
       </div>
@@ -36,7 +41,7 @@ export default function BlogLayoutShell({ children }: { children: ReactNode }) {
               seznam advokátů na cak.cz
             </a>.
           </div>
-          <div className="mt-6 flex flex-col gap-3 text-xs text-slate-600 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-6 flex flex-col gap-3 text-xs text-slate-400 sm:flex-row sm:items-center sm:justify-between">
             <span>© 2024–2026 Karel Zdeněk, IČO 23660295 · SmlouvaHned.cz</span>
             <div className="flex items-center gap-4">
               <Link href="/obchodni-podminky" className="transition hover:text-slate-400">Obchodní podmínky</Link>

@@ -24,7 +24,7 @@ export default function CaseJourneyPreview({ documentPrice, includesDocuments }:
       <div className={styles.previewLabel}>
         <span className={styles.liveDot} /> PŘÍKLAD: ZAKÁZKA <span>od smlouvy po předání</span>
       </div>
-      <p className="mt-3 text-xs leading-5 text-slate-500">
+      <p className="mt-3 text-xs leading-5 text-slate-400">
         Ukázka jedné situace. Ostatní dokumenty fungují samostatně bez nutnosti zakládat případ.
       </p>
       <div className={styles.journeyChoices} role="group" aria-label="Fáze ukázkové zakázky">

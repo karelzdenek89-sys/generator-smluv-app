@@ -40,7 +40,7 @@ export default function ToolsIndexPage() {
             <div className="grid gap-4 md:grid-cols-2">
               {tools.map((tool) => (
                 <Link key={tool.slug} href={`/nastroje/${tool.slug}`} className="site-content-card group flex h-full flex-col rounded-2xl p-5 transition hover:border-[#c9a852]/40">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
                     {tool.kind === 'wizard' ? 'Rozhodovací průvodce' : 'Checklist'}
                   </span>
                   <span className="mt-2 font-serif italic text-lg font-bold text-white group-hover:text-[#e2c77b]">{tool.title}</span>

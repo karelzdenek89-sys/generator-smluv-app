@@ -24,7 +24,7 @@ export default function PodnajemniSmlouvaPage() {
       <BlogArticleSchemas slug="podnajemni-smlouva-2026" />
 
       {/* Breadcrumb */}
-      <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">
+      <nav className="mb-8 text-xs text-slate-400" aria-label="Breadcrumb">
         <Link href="/" className="hover:text-slate-300 transition">SmlouvaHned</Link>
         <span className="mx-2 text-slate-700">›</span>
         <Link href="/blog" className="hover:text-slate-300 transition">Blog</Link>
@@ -36,8 +36,8 @@ export default function PodnajemniSmlouvaPage() {
       <header className="mb-10">
         <div className="mb-4 flex flex-wrap items-center gap-3">
           <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-amber-400">Bydlení</span>
-          <span className="text-xs text-slate-600">8 min čtení</span>
-          <time className="text-xs text-slate-600" dateTime="2026-04-02">2. dubna 2026</time>
+          <span className="text-xs text-slate-400">8 min čtení</span>
+          <time className="text-xs text-slate-400" dateTime="2026-04-02">2. dubna 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
           Podnájemní smlouva 2026: obsah a souhlas pronajímatele
@@ -62,7 +62,7 @@ export default function PodnajemniSmlouvaPage() {
 
       {/* Table of contents */}
       <nav className="mb-10 rounded-2xl border border-white/8 bg-[#0c1426] p-6" aria-label="Obsah článku">
-        <div className="mb-3 text-xs font-black uppercase tracking-widest text-slate-500">Obsah článku</div>
+        <div className="mb-3 text-xs font-black uppercase tracking-widest text-slate-400">Obsah článku</div>
         <ol className="space-y-1.5 text-sm text-slate-400">
           <li><a href="#co-je-podnajem" className="hover:text-amber-400 transition">1. Co je podnájem a jak se liší od nájmu</a></li>
           <li><a href="#souhlas-pronajimatele" className="hover:text-amber-400 transition">2. Souhlas pronajímatele — kdy je povinný</a></li>
@@ -138,7 +138,7 @@ export default function PodnajemniSmlouvaPage() {
               V tomto případě <strong className="text-white">souhlas pronajímatele není ze zákona nutný</strong>,
               ale nájemce musí pronajímatele o záměru informovat.
             </p>
-            <div className="text-xs text-slate-500">§ 2274 OZ</div>
+            <div className="text-xs text-slate-400">§ 2274 OZ</div>
           </div>
           <div className="rounded-2xl border border-red-500/15 bg-red-500/5 p-5">
             <div className="mb-3 text-sm font-black text-red-400">Nájemce v bytě nebydlí</div>
@@ -147,12 +147,12 @@ export default function PodnajemniSmlouvaPage() {
               V tomto případě <strong className="text-white">je souhlas pronajímatele povinný</strong>.
               Podnájem bez souhlasu může vést k výpovědi nájemní smlouvy.
             </p>
-            <div className="text-xs text-slate-500">§ 2275 OZ</div>
+            <div className="text-xs text-slate-400">§ 2275 OZ</div>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm text-slate-400 leading-relaxed">
-          <strong className="text-blue-400">📌 Doporučení:</strong> Vždy si vyžádejte souhlas pronajímatele písemně — i v případech,
+        <div className="rounded-2xl border border-sky-500/15 bg-sky-500/5 p-5 text-sm text-slate-400 leading-relaxed">
+          <strong className="text-sky-400">📌 Doporučení:</strong> Vždy si vyžádejte souhlas pronajímatele písemně — i v případech,
           kde zákon výslovně nevyžaduje. Chrání to nájemce i podnájemce před budoucími spory.
         </div>
       </section>
@@ -172,7 +172,7 @@ export default function PodnajemniSmlouvaPage() {
           ].map(i => (
             <div key={i.t} className="rounded-xl border border-white/8 bg-[#0c1426] p-4">
               <div className="mb-1 text-sm font-black text-white">{i.t}</div>
-              <p className="text-xs text-slate-500 leading-relaxed">{i.d}</p>
+              <p className="text-xs text-slate-400 leading-relaxed">{i.d}</p>
             </div>
           ))}
         </div>
@@ -315,12 +315,12 @@ export default function PodnajemniSmlouvaPage() {
         >
           Vytvořit podnájemní smlouvu →
         </Link>
-        <div className="mt-3 text-xs text-slate-600">Od 99 Kč · Dle OZ · Platné pro 2026</div>
+        <div className="mt-3 text-xs text-slate-400">Od 99 Kč · Dle OZ · Platné pro 2026</div>
       </div>
 
       {/* ── RELATED ─────────────────────────────── */}
       <div className="mt-12 border-t border-white/8 pt-10">
-        <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-600">Mohlo by vás zajímat</div>
+        <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-400">Mohlo by vás zajímat</div>
         <div className="flex flex-wrap gap-3">
           {[
             { href: '/podnajemni-smlouva', label: '🏠 Podnájemní smlouva — přehled' },

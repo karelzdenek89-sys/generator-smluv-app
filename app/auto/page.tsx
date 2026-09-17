@@ -28,6 +28,7 @@ import {
 import { isValidMoney } from '@/lib/money';
 import BuilderUserRoleField from '@/app/components/partners/BuilderUserRoleField';
 import type { PartnerUserRole } from '@/lib/partners/types';
+import BuilderHeader from '@/app/components/BuilderHeader';
 
 type PaymentMethod = 'cash' | 'transfer';
 
@@ -430,8 +431,8 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
         className={`block rounded-2xl border p-4 cursor-pointer transition ${
           danger
             ? checked
-              ? 'border-rose-500/70 bg-rose-500/10'
-              : 'border-rose-900/40 bg-[#111c31]'
+              ? 'border-red-500/70 bg-red-500/10'
+              : 'border-red-900/40 bg-[#111c31]'
             : checked
               ? 'border-amber-500/70 bg-amber-500/10'
               : 'border-slate-700/80 bg-[#111c31]'
@@ -443,7 +444,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
             name={String(name)}
             checked={checked}
             onChange={handleChange}
-            className={`mt-1 h-5 w-5 ${danger ? 'accent-rose-500' : 'accent-amber-500'}`}
+            className={`mt-1 h-5 w-5 ${danger ? 'accent-red-500' : 'accent-amber-500'}`}
           />
           <div>
             <div className="text-sm font-semibold text-white">{label}</div>
@@ -457,28 +458,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
   return (
     <>
     <main className="site-page contract-builder pb-24">
-      <header className="contract-builder-header">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500 text-slate-900 font-black text-[11px]">
-              AUTO
-            </div>
-            <div>
-              <div className="font-bold tracking-tight text-[#f2e7c8] uppercase">{ui.header.brand}</div>
-              <div className="text-[11px] uppercase tracking-[0.18em] text-[#bba98c]">
-                {ui.header.docType}
-              </div>
-            </div>
-          </div>
-
-          <button
-            onClick={() => (window.location.href = '/')}
-            className="text-sm text-[#d2c8b9] hover:text-[#f2e7c8] transition"
-          >
-            {ui.header.close}
-          </button>
-        </div>
-      </header>
+      <BuilderHeader docType={ui.header.docType} brand={ui.header.brand} locale={builderLocale} />
 
       <ContractLandingSection
         badge={ui.landing.badge}
@@ -512,7 +492,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 </p>
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/4 px-5 py-4">
-                <div className="text-xs uppercase tracking-[0.18em] text-slate-500">
+                <div className="text-xs uppercase tracking-[0.18em] text-slate-400">
                   {packageFlowCopy?.priceHeading}
                 </div>
                 <div className="mt-2 text-3xl font-black tracking-tight text-white">
@@ -570,7 +550,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
       <div className="max-w-7xl mx-auto px-4 py-8 lg:px-8" id="formular">
         <div className="mb-6 border-t border-slate-800/60 pt-8">
           <h2 className="text-lg font-black text-white uppercase tracking-wide">{ui.form.title}</h2>
-          <p className="text-sm text-slate-500 mt-1">{ui.form.requiredHint}</p>
+          <p className="text-sm text-slate-400 mt-1">{ui.form.requiredHint}</p>
         </div>
 
         <div className="grid lg:grid-cols-12 gap-8 items-start">
@@ -1115,7 +1095,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                         ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20'
                         : completion >= 60
                           ? 'bg-amber-500/10 text-amber-300 border border-amber-500/20'
-                          : 'bg-rose-500/10 text-rose-300 border border-rose-500/20'
+                          : 'bg-red-500/10 text-red-300 border border-red-500/20'
                     }`}
                   >
                     {completion >= 85 ? 'Skoro hotovo' : completion >= 60 ? 'Dobré' : 'Doplň údaje'}
@@ -1125,7 +1105,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 <div className="mt-4 h-3 rounded-full bg-slate-800 overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all ${
-                      completion >= 85 ? 'bg-emerald-400' : completion >= 60 ? 'bg-amber-400' : 'bg-rose-400'
+                      completion >= 85 ? 'bg-emerald-400' : completion >= 60 ? 'bg-amber-400' : 'bg-red-400'
                     }`}
                     style={{ width: `${completion}%` }}
                   />
@@ -1146,7 +1126,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                         ? 'text-emerald-400'
                         : riskAnalysis.score >= 70
                           ? 'text-amber-400'
-                          : 'text-rose-400'
+                          : 'text-red-400'
                     }`}
                   >
                     {riskAnalysis.score}/100
@@ -1160,7 +1140,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                         key={i}
                         className={`rounded-xl border p-3 text-xs leading-relaxed ${
                           w.level === 'high'
-                            ? 'border-rose-500/20 bg-rose-500/10 text-rose-200'
+                            ? 'border-red-500/20 bg-red-500/10 text-red-200'
                             : w.level === 'medium'
                               ? 'border-amber-500/20 bg-amber-500/10 text-amber-100'
                               : 'border-sky-500/20 bg-sky-500/10 text-sky-100'
@@ -1180,10 +1160,10 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
               <div className="bg-white rounded-3xl p-6 shadow-[0_20px_60px_rgba(0,0,0,0.28)] border border-slate-300 relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-1.5 bg-amber-500" />
                 <div className="mb-3">
-                  <div className="text-[10px] font-black uppercase tracking-[0.24em] text-slate-400">
+                  <div className="text-[10px] font-black uppercase tracking-[0.24em] text-slate-600">
                     Náhled výstupu
                   </div>
-                  <div className="mt-1 text-xs text-slate-500">
+                  <div className="mt-1 text-xs text-slate-600">
                     Každý klik i každé písmeno se okamžitě propíše sem.
                   </div>
                 </div>
@@ -1214,7 +1194,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
               <div className={cardClass}>
                 {/* Řešení sporů */}
                 <div className="mb-6">
-                  <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">
+                  <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">
                     {fl('disputeResolution', 'Řešení sporů')}
                   </div>
                   <select className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' }))} aria-label={fl('disputeResolution', 'Řešení sporů')}>
@@ -1276,12 +1256,12 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 <button
                   data-builder-generate=""
                   onClick={() => setShowPreviewModal(true)}
-                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
+                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-amber-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >
                   {ui.form.generate}
                 </button>
 
-                <p className="mt-3 text-center text-[11px] text-slate-500">
+                <p className="mt-3 text-center text-[11px] text-slate-400">
                   {ui.form.previewHint}
                 </p>
               </div>

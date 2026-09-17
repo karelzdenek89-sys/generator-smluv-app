@@ -245,7 +245,7 @@ export default function SmlouvaODiloCenaAPlatbyPage() {
               >
                 <summary className="cursor-pointer list-none font-bold text-white text-sm flex items-center justify-between gap-4">
                   <span>{item.q}</span>
-                  <span className="text-slate-500 group-open:rotate-45 transition flex-shrink-0">+</span>
+                  <span className="text-slate-400 group-open:rotate-45 transition flex-shrink-0">+</span>
                 </summary>
                 <p className="mt-3 text-sm text-slate-400 leading-relaxed">{item.a}</p>
               </details>

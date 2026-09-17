@@ -28,7 +28,7 @@ export default function SmlouvaODiloPage() {
       <BlogArticleSchemas slug="smlouva-o-dilo-2026" />
 
       {/* Breadcrumb */}
-      <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">
+      <nav className="mb-8 text-xs text-slate-400" aria-label="Breadcrumb">
         <Link href="/" className="hover:text-slate-300 transition">SmlouvaHned</Link>
         <span className="mx-2 text-slate-700">›</span>
         <Link href="/blog" className="hover:text-slate-300 transition">Blog</Link>
@@ -40,8 +40,8 @@ export default function SmlouvaODiloPage() {
       <header className="mb-10">
         <div className="mb-4 flex flex-wrap items-center gap-3">
           <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-amber-400">Podnikání</span>
-          <span className="text-xs text-slate-600">10 min čtení</span>
-          <time className="text-xs text-slate-600" dateTime="2026-03-20">20. března 2026</time>
+          <span className="text-xs text-slate-400">10 min čtení</span>
+          <time className="text-xs text-slate-400" dateTime="2026-03-20">20. března 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
           Smlouva o dílo 2026: vzor, náležitosti a chyby
@@ -63,7 +63,7 @@ export default function SmlouvaODiloPage() {
 
       {/* Table of contents */}
       <nav className="mb-10 rounded-2xl border border-white/8 bg-[#0c1426] p-6" aria-label="Obsah článku">
-        <div className="mb-3 text-xs font-black uppercase tracking-widest text-slate-500">Obsah článku</div>
+        <div className="mb-3 text-xs font-black uppercase tracking-widest text-slate-400">Obsah článku</div>
         <ol className="space-y-1.5 text-sm text-slate-400">
           <li><a href="#co-je-smlouva-o-dilo" className="hover:text-amber-400 transition">1. Co je smlouva o dílo a kdy ji použít</a></li>
           <li><a href="#co-musi-obsahovat" className="hover:text-amber-400 transition">2. Co musí smlouva o dílo obsahovat</a></li>
@@ -98,8 +98,8 @@ export default function SmlouvaODiloPage() {
           <li className="flex items-start gap-2"><span className="mt-1 text-amber-500 flex-shrink-0">•</span>Výroba nábytku, strojů nebo jiných hmotných věcí na zakázku</li>
         </ul>
 
-        <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm text-slate-400 leading-relaxed">
-          <strong className="text-blue-400">📌 Praktická poznámka:</strong> Zákon nevyžaduje, aby smlouva o dílo
+        <div className="rounded-2xl border border-sky-500/15 bg-sky-500/5 p-5 text-sm text-slate-400 leading-relaxed">
+          <strong className="text-sky-400">📌 Praktická poznámka:</strong> Zákon nevyžaduje, aby smlouva o dílo
           měla písemnou formu. V praxi je však písemná smlouva <strong className="text-slate-300">naprosto nezbytná</strong> —
           při ceně nad desítky tisíc korun je spor bez písemné smlouvy prakticky neřešitelný.
         </div>
@@ -124,7 +124,7 @@ export default function SmlouvaODiloPage() {
           ].map(i => (
             <div key={i.t} className="rounded-xl border border-white/8 bg-[#0c1426] p-4">
               <div className="mb-1 text-sm font-black text-white">{i.t}</div>
-              <p className="text-xs text-slate-500 leading-relaxed">{i.d}</p>
+              <p className="text-xs text-slate-400 leading-relaxed">{i.d}</p>
             </div>
           ))}
         </div>
@@ -210,8 +210,8 @@ export default function SmlouvaODiloPage() {
             <div key={c.type} className="rounded-2xl border border-white/8 bg-[#0c1426] p-5">
               <div className="mb-2 text-sm font-black text-white">{c.type}</div>
               <div className="grid sm:grid-cols-2 gap-3">
-                <div className="text-xs text-slate-500"><span className="text-emerald-400">✓</span> {c.pros}</div>
-                <div className="text-xs text-slate-500"><span className="text-red-400">✗</span> {c.cons}</div>
+                <div className="text-xs text-slate-400"><span className="text-emerald-400">✓</span> {c.pros}</div>
+                <div className="text-xs text-slate-400"><span className="text-red-400">✗</span> {c.cons}</div>
               </div>
             </div>
           ))}
@@ -223,8 +223,8 @@ export default function SmlouvaODiloPage() {
           že zhotovitel je provádí na vlastní riziko — objednatel nemusí vícepráce zaplatit,
           pokud je předem neodsouhlasil.
         </p>
-        <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm text-slate-400 leading-relaxed">
-          <strong className="text-blue-400">📌 Doporučení:</strong> Sjednejte ve smlouvě, že každá změna rozsahu
+        <div className="rounded-2xl border border-sky-500/15 bg-sky-500/5 p-5 text-sm text-slate-400 leading-relaxed">
+          <strong className="text-sky-400">📌 Doporučení:</strong> Sjednejte ve smlouvě, že každá změna rozsahu
           musí být odsouhlasena <strong className="text-slate-300">písemně (e-mailem nebo podpisem change requestu)</strong> před zahájením prací.
           Ústní pokyny k víceprácím se špatně dokazují a jsou zdrojem sporů číslo jedna.
         </div>
@@ -358,7 +358,7 @@ export default function SmlouvaODiloPage() {
           </div>
           <div className="rounded-2xl border border-slate-700/60 bg-slate-800/30 p-5">
             <div className="mb-3 text-sm font-black text-slate-300">🔧 Smlouva o poskytování služeb (§ 1746 OZ)</div>
-            <ul className="space-y-2 text-sm text-slate-500">
+            <ul className="space-y-2 text-sm text-slate-400">
               <li className="flex items-start gap-2"><span className="flex-shrink-0">•</span>Závazek k činnosti — ne nutně k výsledku</li>
               <li className="flex items-start gap-2"><span className="flex-shrink-0">•</span>Odpovědnost za odborný postup, ne za výsledek</li>
               <li className="flex items-start gap-2"><span className="flex-shrink-0">•</span>Cena zpravidla průběžná (měsíčně, hodinově)</li>
@@ -368,7 +368,7 @@ export default function SmlouvaODiloPage() {
           </div>
         </div>
 
-        <p className="text-sm text-slate-500 leading-relaxed">
+        <p className="text-sm text-slate-400 leading-relaxed">
           V praxi není vždy snadné typ smlouvy jednoznačně zařadit — záleží na konkrétním obsahu
           závazku. Pokud je výsledek jasně definován (funkční web, hotový byt), jde zpravidla o dílo.
           Pokud jde o průběžné zajišťování určité agendy (správa sociálních sítí, vedení účetnictví), jde zpravidla o služby.
@@ -413,7 +413,7 @@ export default function SmlouvaODiloPage() {
 
       {/* ── RELATED ARTICLES ────────────────────── */}
       <div className="mt-12 border-t border-white/8 pt-10">
-        <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-600">Mohlo by vás zajímat</div>
+        <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-400">Mohlo by vás zajímat</div>
         <div className="flex flex-wrap gap-3">
           {[
             { href: '/smlouva-o-dilo', label: '📐 Smlouva o dílo — landing page' },

@@ -24,7 +24,7 @@ export default function KupniSmlouvaMovitaVecPage() {
       <BlogArticleSchemas slug="kupni-smlouva-movita-vec" />
 
       {/* Breadcrumb */}
-      <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">
+      <nav className="mb-8 text-xs text-slate-400" aria-label="Breadcrumb">
         <Link href="/" className="hover:text-slate-300 transition">SmlouvaHned</Link>
         <span className="mx-2 text-slate-700">›</span>
         <Link href="/blog" className="hover:text-slate-300 transition">Blog</Link>
@@ -36,8 +36,8 @@ export default function KupniSmlouvaMovitaVecPage() {
       <header className="mb-10">
         <div className="mb-4 flex flex-wrap items-center gap-3">
           <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-amber-400">Prodej a koupě</span>
-          <span className="text-xs text-slate-600">7 min čtení</span>
-          <time className="text-xs text-slate-600" dateTime="2026-03-25">25. března 2026</time>
+          <span className="text-xs text-slate-400">7 min čtení</span>
+          <time className="text-xs text-slate-400" dateTime="2026-03-25">25. března 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
           Kupní smlouva na movitou věc 2026: obsah a chyby
@@ -62,7 +62,7 @@ export default function KupniSmlouvaMovitaVecPage() {
 
       {/* Table of contents */}
       <nav className="mb-10 rounded-2xl border border-white/8 bg-[#0c1426] p-6" aria-label="Obsah článku">
-        <div className="mb-3 text-xs font-black uppercase tracking-widest text-slate-500">Obsah článku</div>
+        <div className="mb-3 text-xs font-black uppercase tracking-widest text-slate-400">Obsah článku</div>
         <ol className="space-y-1.5 text-sm text-slate-400">
           <li><a href="#co-musi-obsahovat" className="hover:text-amber-400 transition">1. Co musí kupní smlouva obsahovat</a></li>
           <li><a href="#popis-predmetu" className="hover:text-amber-400 transition">2. Jak správně popsat předmět koupě</a></li>
@@ -93,13 +93,13 @@ export default function KupniSmlouvaMovitaVecPage() {
           ].map(i => (
             <div key={i.t} className="rounded-xl border border-white/8 bg-[#0c1426] p-4">
               <div className="mb-1 text-sm font-black text-white">{i.t}</div>
-              <p className="text-xs text-slate-500 leading-relaxed">{i.d}</p>
+              <p className="text-xs text-slate-400 leading-relaxed">{i.d}</p>
             </div>
           ))}
         </div>
 
-        <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm text-slate-400 leading-relaxed">
-          <strong className="text-blue-400">📌 Kdy je kupní smlouva povinně písemná?</strong> Pro movité věci zákon písemnou formu nevyžaduje —
+        <div className="rounded-2xl border border-sky-500/15 bg-sky-500/5 p-5 text-sm text-slate-400 leading-relaxed">
+          <strong className="text-sky-400">📌 Kdy je kupní smlouva povinně písemná?</strong> Pro movité věci zákon písemnou formu nevyžaduje —
           věc lze platně prodat i ústní dohodou při předání. V praxi ale doporučujeme písemnou smlouvu
           vždy, kdy hodnota přesahuje 5 000 Kč. Bez ní nemůžete v případě sporu prokázat dohodnuté podmínky.
         </div>
@@ -149,7 +149,7 @@ export default function KupniSmlouvaMovitaVecPage() {
           </div>
           <div className="rounded-2xl border border-slate-700/40 bg-slate-800/20 p-5">
             <div className="mb-3 text-sm font-black text-slate-400">C2C — fyzická osoba prodává fyzické osobě</div>
-            <ul className="space-y-2 text-sm text-slate-500">
+            <ul className="space-y-2 text-sm text-slate-400">
               <li className="flex items-start gap-2"><span className="flex-shrink-0">•</span>Záruka jen pokud ji smlouva výslovně sjednává</li>
               <li className="flex items-start gap-2"><span className="flex-shrink-0">•</span>Lze sjednat kratší záruční dobu (i nulovou)</li>
               <li className="flex items-start gap-2"><span className="flex-shrink-0">•</span>Prodávající odpovídá za vady, o nichž věděl a mlčel</li>
@@ -286,12 +286,12 @@ export default function KupniSmlouvaMovitaVecPage() {
         >
           Vytvořit kupní smlouvu →
         </Link>
-        <div className="mt-3 text-xs text-slate-600">Od 99 Kč · Dle § 2079 OZ · Platné pro 2026</div>
+        <div className="mt-3 text-xs text-slate-400">Od 99 Kč · Dle § 2079 OZ · Platné pro 2026</div>
       </div>
 
       {/* ── RELATED ─────────────────────────────── */}
       <div className="mt-12 border-t border-white/8 pt-10">
-        <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-600">Mohlo by vás zajímat</div>
+        <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-400">Mohlo by vás zajímat</div>
         <div className="flex flex-wrap gap-3">
           {[
             { href: '/kupni-smlouva', label: '🛒 Kupní smlouva — přehled' },

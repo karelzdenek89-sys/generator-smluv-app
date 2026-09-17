@@ -121,7 +121,7 @@ export default function ZkusebniDoba2026Page() {
             <li key={item} className="flex items-start gap-3"><span className="mt-1 text-amber-500">•</span><span>{item}</span></li>
           ))}
         </ul>
-        <p className="mt-6 text-sm leading-relaxed text-slate-500">
+        <p className="mt-6 text-sm leading-relaxed text-slate-400">
           Zdroj: <a className="text-amber-400 hover:text-amber-300" href="https://ppropo.mpsv.cz/IV14Sjednanizkusebnidoby" target="_blank" rel="noreferrer">MPSV - sjednání zkušební doby (§ 35 zákoníku práce)</a>.
         </p>
       </section>

@@ -18,6 +18,7 @@ export default function LocalizedBuilderShell({
     <BuilderLocaleProvider initialLocale={initialLocale}>
       <div
         className="contents"
+        lang={isForeign ? (initialLocale === 'ua' ? 'uk' : 'en') : undefined}
         data-localized-builder-shell={isForeign ? initialLocale : undefined}
       >
         {children}

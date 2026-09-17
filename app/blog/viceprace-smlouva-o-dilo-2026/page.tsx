@@ -171,8 +171,8 @@ export default function VicepraceSmlouvaODilo2026Page() {
             </span>
           </li>
         </ul>
-        <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm leading-relaxed text-slate-400">
-          <strong className="text-blue-400">📌 Pozor:</strong> Pokud se objevila vícepráce
+        <div className="rounded-2xl border border-sky-500/15 bg-sky-500/5 p-5 text-sm leading-relaxed text-slate-400">
+          <strong className="text-sky-400">📌 Pozor:</strong> Pokud se objevila vícepráce
           a zhotovitel objednatele bez prodlení neupozornil, hrozí, že na navýšení nebude
           mít právo. Komunikace má v této oblasti zásadní význam — písemný záznam (e-mail,
           změnový list) bývá rozhodující.

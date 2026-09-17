@@ -16,15 +16,20 @@ export default async function ExpatLocaleLayout({ children, params }: Props) {
 
   const htmlLang = locale === 'ua' ? 'uk' : 'en';
 
+  /**
+   * Jazyk obsahu je v odpovědi serveru, ne až po spuštění JavaScriptu.
+   *
+   * Kořenový <html lang> je staticky „cs“, protože celý web sdílí jeden root
+   * layout a udělat ho závislým na requestu by zrušilo statické generování
+   * všech českých stránek. Skript v <head> (LOCALE_BOOTSTRAP_SCRIPT) srovná
+   * <html lang> hned při parsování, tenhle wrapper navíc nese správný jazyk
+   * i bez JavaScriptu — odečítačky obrazovky a překladače berou nejbližší
+   * nadřazený `lang`, takže /en a /ua se už nečtou jako česká stránka.
+   */
   return (
-    <>
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `document.documentElement.lang=${JSON.stringify(htmlLang)}`,
-        }}
-      />
+    <div lang={htmlLang} data-locale-root={locale}>
       <ExpatLocaleSchemas locale={locale} />
       {children}
-    </>
+    </div>
   );
 }

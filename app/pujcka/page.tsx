@@ -1,6 +1,5 @@
 ﻿'use client';
 
-import Link from 'next/link';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import { useBuilderDraft } from '@/lib/use-builder-draft';
 import { useState, useMemo } from 'react';
@@ -12,6 +11,7 @@ import { buildContractSections } from '@/lib/contracts';
 import type { StoredContractData } from '@/lib/contracts';
 import { isValidMoney } from '@/lib/money';
 import PaymentModal from '@/app/components/LazyPaymentModal';
+import BuilderHeader from '@/app/components/BuilderHeader';
 
 type RepaymentType = 'lump_sum' | 'installments';
 
@@ -59,9 +59,9 @@ type LoanFormData = {
 };
 
 const inputClass =
-  'w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition text-sm';
+  'w-full bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-400 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition text-sm';
 const textareaClass =
-  'w-full min-h-[90px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-500 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition text-sm';
+  'w-full min-h-[90px] resize-y bg-[#111c31] border border-slate-700/80 text-white rounded-xl px-4 py-3 outline-none placeholder:text-slate-400 focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/10 transition text-sm';
 const cardClass =
   'bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]';
 const labelClass = 'block text-xs font-bold uppercase tracking-[0.12em] text-slate-400 mb-1.5';
@@ -71,7 +71,7 @@ function SectionTitle({ index, title, subtitle }: { index: string; title: string
     <div className="mb-5">
       <div className="text-[10px] font-black uppercase tracking-[0.22em] text-amber-400 mb-1">{index}</div>
       <h2 className="text-lg font-black text-white tracking-tight">{title}</h2>
-      {subtitle && <p className="text-xs text-slate-500 mt-0.5">{subtitle}</p>}
+      {subtitle && <p className="text-xs text-slate-400 mt-0.5">{subtitle}</p>}
     </div>
   );
 }
@@ -166,7 +166,7 @@ export default function LoanBuilderPage() {
     }
   }, [formData]);
 
-  const scoreColor = riskScore.score >= 80 ? 'text-emerald-400' : riskScore.score >= 50 ? 'text-amber-400' : 'text-rose-400';
+  const scoreColor = riskScore.score >= 80 ? 'text-emerald-400' : riskScore.score >= 50 ? 'text-amber-400' : 'text-red-400';
 
   const handleSubmit = async (addOns: string[], authorization: CheckoutAuthorization) => {
     const missing: string[] = [];
@@ -209,25 +209,7 @@ export default function LoanBuilderPage() {
     <main className="min-h-screen bg-[#05080f] text-slate-200 pb-20">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.07),transparent_30%)] pointer-events-none" />
 
-      <header className="relative z-10 border-b border-white/5 bg-[#05080f]/80 backdrop-blur-sm sticky top-0">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-amber-500 rounded-xl flex items-center justify-center text-xs font-black text-black">SH</div>
-            <div>
-              <div className="font-black text-white text-sm">SmlouvaHned</div>
-              <div className="text-[10px] uppercase tracking-widest text-slate-500">Legal document builder</div>
-            </div>
-          </Link>
-          <div className="hidden md:flex items-center gap-4 text-xs text-slate-400">
-            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />Platba zabezpečena Stripe</span>
-            <span>•</span>
-            <span>§ 2390 a násl. OZ</span>
-          </div>
-          <span className="text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-full px-3 py-1">
-            {formData.tier === 'complete' ? '199 Kč' : '99 Kč'}
-          </span>
-        </div>
-      </header>
+      <BuilderHeader docType="Smlouva o zápůjčce — § 2390 OZ" note="Platba zabezpečena přes Stripe" badge={formData.tier === 'complete' ? '199 Kč' : '99 Kč'} />
 
       <ContractLandingSection
         badge="§ 2390 a násl. občanského zákoníku"
@@ -281,7 +263,7 @@ export default function LoanBuilderPage() {
             <div id="formular">
               <div className="mb-6 border-t border-slate-800/60 pt-8">
                 <h2 className="text-lg font-black text-white uppercase tracking-wide">Vyplňte údaje dokumentu</h2>
-                <p className="text-sm text-slate-500 mt-1">Všechna povinná pole jsou označena *</p>
+                <p className="text-sm text-slate-400 mt-1">Všechna povinná pole jsou označena *</p>
               </div>
 
               <div className="mb-6 rounded-2xl border border-amber-500/20 bg-amber-500/5 px-5 py-4 text-xs leading-relaxed text-slate-400">
@@ -371,8 +353,8 @@ export default function LoanBuilderPage() {
                     <label className={labelClass}>Úroková sazba (% p.a.)</label>
                     <input type="number" step="0.1" value={formData.interestRate} onChange={e => set('interestRate', e.target.value)} placeholder="0" aria-label="Úroková sazba (% p.a.)" className={inputClass} />
                     {Number(formData.interestRate) > 15
-                      ? <p className="text-xs text-rose-400 font-medium mt-1">⚠ Nad 15 % p.a. hrozí neplatnost pro lichvu (§ 1796 OZ). Doporučujeme max. 15 %.</p>
-                      : <p className="text-xs text-slate-500 mt-1">Bezúročná zápůjčka = 0 %</p>
+                      ? <p className="text-xs text-red-400 font-medium mt-1">⚠ Nad 15 % p.a. hrozí neplatnost pro lichvu (§ 1796 OZ). Doporučujeme max. 15 %.</p>
+                      : <p className="text-xs text-slate-400 mt-1">Bezúročná zápůjčka = 0 %</p>
                     }
                   </div>
                   {Number(formData.interestRate) > 0 && (
@@ -515,7 +497,7 @@ export default function LoanBuilderPage() {
               {/* Řešení sporů */}
               <section className={cardClass}>
                 <div className="mb-4">
-                  <div className="text-xs font-black uppercase tracking-widest text-slate-500 mb-3">Řešení sporů</div>
+                  <div className="text-xs font-black uppercase tracking-widest text-slate-400 mb-3">Řešení sporů</div>
                   <select aria-label="Obecný soud (výchozí)" className={inputClass} name="disputeResolution" value={formData.disputeResolution} onChange={(e) => setFormData(p => ({ ...p, disputeResolution: e.target.value as 'court' | 'mediation' }))}>
                     <option value="court">Obecný soud (výchozí)</option>
                     <option value="mediation">Mediace (zákon č. 202/2012 Sb.)</option>
@@ -552,13 +534,13 @@ export default function LoanBuilderPage() {
                 <div className={`text-5xl font-black ${scoreColor}`}>{riskScore.score}</div>
                 <div>
                   <div className={`font-bold ${scoreColor}`}>{riskScore.label}</div>
-                  <div className="text-xs text-slate-500">ze 100 bodů</div>
+                  <div className="text-xs text-slate-400">ze 100 bodů</div>
                 </div>
               </div>
               {riskScore.warnings.length === 0
                 ? <p className="text-sm text-emerald-400">✓ Smlouva o zápůjčce je v pořádku.</p>
                 : <ul className="space-y-2">{riskScore.warnings.map((w, i) => (
-                    <li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-rose-500/10 text-rose-300' : 'bg-amber-500/10 text-amber-300'}`}>
+                    <li key={i} className={`text-xs rounded-lg px-3 py-2 ${w.level === 'high' ? 'bg-red-500/10 text-red-300' : 'bg-amber-500/10 text-amber-300'}`}>
                       {w.level === 'high' ? '⚠ ' : '▲ '}{w.text}
                     </li>
                   ))}</ul>
@@ -579,12 +561,12 @@ export default function LoanBuilderPage() {
                 <button
                   data-builder-generate=""
                   onClick={() => setShowPreviewModal(true)}
-                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-yellow-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
+                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-amber-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >
                   Vygenerovat smlouvu →
                 </button>
 
-                <p className="mt-3 text-center text-[11px] text-slate-500">
+                <p className="mt-3 text-center text-[11px] text-slate-400">
                   Zobrazí se náhled dokumentu připraveného k odemčení
                 </p>
             </div>

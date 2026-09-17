@@ -89,8 +89,8 @@ export default function EnergetickyStitekNajemne2026Page() {
             <span>Pronájmu budovy nebo její ucelené části (typicky byt).</span>
           </li>
         </ul>
-        <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm leading-relaxed text-slate-400">
-          <strong className="text-blue-400">📌 Pozn.:</strong> U bytové jednotky může vlastník
+        <div className="rounded-2xl border border-sky-500/15 bg-sky-500/5 p-5 text-sm leading-relaxed text-slate-400">
+          <strong className="text-sky-400">📌 Pozn.:</strong> U bytové jednotky může vlastník
           v určitých situacích splnit informační povinnost předložením vyúčtování energií za
           poslední tři roky — zejména pokud si PENB od SVJ nebo společenství vlastníků písemně
           vyžádal a nedostal jej v zákonem stanovené lhůtě. MPO uvádí také výjimku pro budovy

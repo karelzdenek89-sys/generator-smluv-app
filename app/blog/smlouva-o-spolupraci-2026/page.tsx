@@ -25,7 +25,7 @@ export default function SmlouvaOSpolupraci2026Page() {
       <BlogArticleSchemas slug="smlouva-o-spolupraci-2026" />
 
       {/* Breadcrumb */}
-      <nav className="mb-8 text-xs text-slate-500" aria-label="Breadcrumb">
+      <nav className="mb-8 text-xs text-slate-400" aria-label="Breadcrumb">
         <Link href="/" className="hover:text-slate-300 transition">SmlouvaHned</Link>
         <span className="mx-2 text-slate-700">›</span>
         <Link href="/blog" className="hover:text-slate-300 transition">Blog</Link>
@@ -37,8 +37,8 @@ export default function SmlouvaOSpolupraci2026Page() {
       <header className="mb-10">
         <div className="mb-4 flex flex-wrap items-center gap-3">
           <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-amber-400">Podnikání a OSVČ</span>
-          <span className="text-xs text-slate-600">9 min čtení</span>
-          <time className="text-xs text-slate-600" dateTime="2026-04-02">2. dubna 2026</time>
+          <span className="text-xs text-slate-400">9 min čtení</span>
+          <time className="text-xs text-slate-400" dateTime="2026-04-02">2. dubna 2026</time>
         </div>
         <h1 className="text-3xl font-black leading-tight tracking-tight text-white md:text-4xl">
           Smlouva o spolupráci OSVČ 2026: co musí obsahovat
@@ -63,7 +63,7 @@ export default function SmlouvaOSpolupraci2026Page() {
 
       {/* Table of contents */}
       <nav className="mb-10 rounded-2xl border border-white/8 bg-[#0c1426] p-6" aria-label="Obsah článku">
-        <div className="mb-3 text-xs font-black uppercase tracking-widest text-slate-500">Obsah článku</div>
+        <div className="mb-3 text-xs font-black uppercase tracking-widest text-slate-400">Obsah článku</div>
         <ol className="space-y-1.5 text-sm text-slate-400">
           <li><a href="#co-je-smlouva-o-spolupraci" className="hover:text-amber-400 transition">1. Co je smlouva o spolupráci a kdy ji použít</a></li>
           <li><a href="#co-musi-obsahovat" className="hover:text-amber-400 transition">2. Co musí smlouva obsahovat</a></li>
@@ -97,7 +97,7 @@ export default function SmlouvaOSpolupraci2026Page() {
           ].map(i => (
             <div key={i.t} className="rounded-xl border border-white/8 bg-[#0c1426] p-4">
               <div className="mb-1 text-sm font-black text-white">{i.t}</div>
-              <p className="text-xs text-slate-500 leading-relaxed">{i.d}</p>
+              <p className="text-xs text-slate-400 leading-relaxed">{i.d}</p>
             </div>
           ))}
         </div>
@@ -118,7 +118,7 @@ export default function SmlouvaOSpolupraci2026Page() {
           ].map(i => (
             <div key={i.t} className="rounded-xl border border-white/8 bg-[#0c1426] p-4">
               <div className="mb-1 text-sm font-black text-white">{i.t}</div>
-              <p className="text-xs text-slate-500 leading-relaxed">{i.d}</p>
+              <p className="text-xs text-slate-400 leading-relaxed">{i.d}</p>
             </div>
           ))}
         </div>
@@ -193,8 +193,8 @@ export default function SmlouvaOSpolupraci2026Page() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-blue-500/15 bg-blue-500/5 p-5 text-sm text-slate-400 leading-relaxed">
-          <strong className="text-blue-400">📌 Pozor:</strong> Morální autorská práva (právo být uveden jako autor, právo na nedotknutelnost díla)
+        <div className="rounded-2xl border border-sky-500/15 bg-sky-500/5 p-5 text-sm text-slate-400 leading-relaxed">
+          <strong className="text-sky-400">📌 Pozor:</strong> Morální autorská práva (právo být uveden jako autor, právo na nedotknutelnost díla)
           nelze převést — zůstávají autorovi vždy.
         </div>
       </section>
@@ -300,12 +300,12 @@ export default function SmlouvaOSpolupraci2026Page() {
         >
           Vytvořit smlouvu o spolupráci →
         </Link>
-        <div className="mt-3 text-xs text-slate-600">Od 99 Kč · Dle OZ · Platné pro 2026</div>
+        <div className="mt-3 text-xs text-slate-400">Od 99 Kč · Dle OZ · Platné pro 2026</div>
       </div>
 
       {/* ── RELATED ─────────────────────────────── */}
       <div className="mt-12 border-t border-white/8 pt-10">
-        <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-600">Mohlo by vás zajímat</div>
+        <div className="mb-5 text-xs font-black uppercase tracking-widest text-slate-400">Mohlo by vás zajímat</div>
         <div className="flex flex-wrap gap-3">
           {[
             { href: '/spoluprace', label: '🤝 Vytvořit smlouvu o spolupráci' },

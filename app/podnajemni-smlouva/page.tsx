@@ -57,7 +57,7 @@ export default function PodnajemniSmlouvaPage() {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(234,179,8,0.07),transparent_30%)] pointer-events-none" />
 
       <div className="relative z-10 mx-auto max-w-4xl px-6 py-16">
-        <nav className="mb-8 text-xs text-slate-500">
+        <nav className="mb-8 text-xs text-slate-400">
           <Link href="/" className="hover:text-slate-300 transition">SmlouvaHned</Link>
           <span className="mx-2">›</span>
           <span className="text-slate-400">Podnájemní smlouva</span>
@@ -71,7 +71,7 @@ export default function PodnajemniSmlouvaPage() {
         </header>
 
         <div className="mb-12">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-yellow-500/20 bg-yellow-500/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.2em] text-yellow-400">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-amber-500/20 bg-amber-500/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.2em] text-amber-400">
             § 2274 a násl. Občanského zákoníku
           </div>
           <h1 className="text-4xl font-black tracking-tight text-white md:text-5xl leading-tight mb-4">
@@ -87,7 +87,7 @@ export default function PodnajemniSmlouvaPage() {
               Vytvořit podnájemní smlouvu →
             </Link>
           </div>
-          <div className="text-sm text-slate-500">Od 99 Kč · PDF ihned · Dle § 2274 OZ</div>
+          <div className="text-sm text-slate-400">Od 99 Kč · PDF ihned · Dle § 2274 OZ</div>
         </div>
 
         <section className="mb-12 rounded-3xl border border-white/8 bg-[#0c1426] p-8">
@@ -126,7 +126,7 @@ export default function PodnajemniSmlouvaPage() {
               'Závěrečná установení a podpisy',
             ].map(item => (
               <div key={item} className="flex items-start gap-2 text-sm text-slate-300">
-                <span className="text-yellow-400 flex-shrink-0 mt-0.5">✓</span>
+                <span className="text-amber-400 flex-shrink-0 mt-0.5">✓</span>
                 <span>{item}</span>
               </div>
             ))}
@@ -137,10 +137,10 @@ export default function PodnajemniSmlouvaPage() {
           <h2 className="text-2xl font-black text-white mb-6">Časté otázky k podnájemní smlouvě</h2>
           <div className="space-y-3">
             {faq.map(item => (
-              <details key={item.q} className="group rounded-2xl border border-white/8 bg-[#0c1426] p-5 open:border-yellow-500/30">
+              <details key={item.q} className="group rounded-2xl border border-white/8 bg-[#0c1426] p-5 open:border-amber-500/30">
                 <summary className="cursor-pointer list-none font-bold text-white text-sm flex items-center justify-between gap-4">
                   <span>{item.q}</span>
-                  <span className="text-slate-500 group-open:rotate-45 transition flex-shrink-0">+</span>
+                  <span className="text-slate-400 group-open:rotate-45 transition flex-shrink-0">+</span>
                 </summary>
                 <p className="mt-3 text-sm text-slate-400 leading-relaxed">{item.a}</p>
               </details>
@@ -148,7 +148,7 @@ export default function PodnajemniSmlouvaPage() {
           </div>
         </section>
 
-        <section className="rounded-3xl border border-yellow-500/20 bg-gradient-to-br from-yellow-500/10 to-transparent p-8 text-center">
+        <section className="rounded-3xl border border-amber-500/20 bg-gradient-to-br from-amber-500/10 to-transparent p-8 text-center">
           <h2 className="text-2xl font-black text-white mb-3">Sestavte podnájemní smlouvu</h2>
           <p className="text-slate-400 text-sm mb-6 max-w-md mx-auto">
             Formulář pro podnájem bytu nebo pokoje — se souhlasem pronajímatele, PDF ihned.
@@ -159,10 +159,10 @@ export default function PodnajemniSmlouvaPage() {
               Vytvořit podnájemní smlouvu →
             </Link>
           </div>
-          <div className="mt-3 text-xs text-slate-600">Od 99 Kč · § 2274 OZ · PDF ihned</div>
+          <div className="mt-3 text-xs text-slate-400">Od 99 Kč · § 2274 OZ · PDF ihned</div>
         </section>
 
-        <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-500">
+        <div className="mt-12 pt-8 border-t border-white/8 flex flex-wrap gap-4 text-xs text-slate-400">
           <Link href="/" className="hover:text-slate-300 transition">← Všechny smlouvy</Link>
           <Link href="/najem" className="hover:text-slate-300 transition">Nájemní smlouva</Link>
           <Link href="/darovaci" className="hover:text-slate-300 transition">Darovací smlouva</Link>

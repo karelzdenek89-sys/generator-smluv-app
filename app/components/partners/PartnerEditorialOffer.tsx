@@ -85,9 +85,9 @@ export default function PartnerEditorialOffer({ offer, sourcePage }: PartnerEdit
           </span>
         ) : null}
       </div>
-      <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-slate-500">{offer.provider}</p>
+      <p className="mt-2 text-xs font-semibold uppercase tracking-wider text-slate-400">{offer.provider}</p>
       <p className="mt-3 text-sm leading-relaxed text-slate-300">{offer.description}</p>
-      <p className="mt-3 text-xs leading-relaxed text-slate-500">{offer.disclosure}</p>
+      <p className="mt-3 text-xs leading-relaxed text-slate-400">{offer.disclosure}</p>
       <a
         href={offer.href}
         target="_blank"

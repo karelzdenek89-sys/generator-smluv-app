@@ -230,7 +230,7 @@ export default function CaseWorkspace() {
   return (
     <main className="site-page">
       <div className="mx-auto max-w-6xl px-6 py-10 md:py-14">
-        <nav className="mb-6 text-xs text-slate-500" aria-label="Drobečková navigace">
+        <nav className="mb-6 text-xs text-slate-400" aria-label="Drobečková navigace">
           <Link href="/" className="transition hover:text-slate-300">SmlouvaHned</Link>
           <span className="mx-2 text-slate-700">›</span>
           <Link href="/zakazka" className="transition hover:text-slate-300">Řeším zakázku</Link>
@@ -243,18 +243,18 @@ export default function CaseWorkspace() {
           <TitleEditor title={record.title} busy={busy} onSave={(title) => applyAction({ type: 'set_title', title }, 'Název uložen.')} />
           <dl className="mt-5 grid gap-3 sm:grid-cols-3">
             <div className="site-content-card rounded-2xl p-4">
-              <dt className="text-[10px] font-black uppercase tracking-widest text-slate-500">Fáze</dt>
+              <dt className="text-[10px] font-black uppercase tracking-widest text-slate-400">Fáze</dt>
               <dd className="mt-1 text-sm font-semibold text-white">{stage.label}</dd>
             </div>
             <div className="site-content-card rounded-2xl p-4">
-              <dt className="text-[10px] font-black uppercase tracking-widest text-slate-500">Termín dokončení</dt>
+              <dt className="text-[10px] font-black uppercase tracking-widest text-slate-400">Termín dokončení</dt>
               <dd className="mt-1 text-sm font-semibold text-white">
                 {formatCzechDate(record.deadline)}
                 {days !== null ? <span className="ml-2 text-xs font-normal text-slate-400">{days > 0 ? `za ${days} dní` : days === 0 ? 'dnes' : `před ${Math.abs(days)} dny`}</span> : null}
               </dd>
             </div>
             <div className="site-content-card rounded-2xl p-4">
-              <dt className="text-[10px] font-black uppercase tracking-widest text-slate-500">Cena a režim</dt>
+              <dt className="text-[10px] font-black uppercase tracking-widest text-slate-400">Cena a režim</dt>
               <dd className="mt-1 text-sm font-semibold text-white">
                 {record.priceAmountCzk ? `${record.priceAmountCzk.toLocaleString('cs-CZ', { minimumFractionDigits: 0, maximumFractionDigits: 2 })} Kč` : '—'}
                 <span className="ml-2 text-xs font-normal text-slate-400">{PRICE_MODE_LABEL[record.priceMode]}</span>
@@ -327,7 +327,7 @@ export default function CaseWorkspace() {
                         <span className="min-w-0">
                           <span className={`block text-sm ${task.done ? 'text-slate-400 line-through decoration-slate-600' : 'text-white'}`}>{task.label}</span>
                           <span className="mt-1 flex flex-wrap gap-3 text-xs">
-                            <span className="text-slate-500">{WORK_ORDER_STAGE_DEFINITIONS[task.stage].short}</span>
+                            <span className="text-slate-400">{WORK_ORDER_STAGE_DEFINITIONS[task.stage].short}</span>
                             {task.documentKind ? (
                               <button type="button" onClick={() => setOpenDocument(task.documentKind ?? null)} className="font-semibold text-[#e2c77b] transition hover:text-white">
                                 Připravit: {CASE_DOCUMENT_DEFINITIONS[task.documentKind].shortTitle}
@@ -346,7 +346,7 @@ export default function CaseWorkspace() {
             <section className="site-content-card rounded-2xl p-6" aria-labelledby="documents-title">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <h2 id="documents-title" className="font-serif italic text-xl font-bold text-white">Dokumenty zakázky</h2>
-                <span className="text-xs text-slate-500">
+                <span className="text-xs text-slate-400">
                   {data.documentsIncluded ? 'Navazující dokumenty jsou v ceně balíčku Zakázka Plus' : `Navazující dokument ${data.documentPriceLabel}`}
                 </span>
               </div>
@@ -481,7 +481,7 @@ export default function CaseWorkspace() {
               <ol className="mt-4 space-y-2 text-sm">
                 {[...record.events].reverse().slice(0, 30).map((event) => (
                   <li key={event.id} className="flex gap-3 border-l border-white/10 pl-3">
-                    <time dateTime={event.at} className="w-32 flex-shrink-0 text-xs text-slate-500">{formatDateTime(event.at)}</time>
+                    <time dateTime={event.at} className="w-32 flex-shrink-0 text-xs text-slate-400">{formatDateTime(event.at)}</time>
                     <span className={event.type === 'note' ? 'text-slate-200' : 'text-slate-400'}>{event.label}</span>
                   </li>
                 ))}
@@ -511,7 +511,7 @@ export default function CaseWorkspace() {
                   {record.reminders.map((reminder) => (
                     <li key={reminder.id} className="flex justify-between gap-2">
                       <span>{reminder.offsetDays} {reminder.offsetDays === 1 ? 'den' : 'dní'} předem</span>
-                      <span className={reminder.status === 'sent' ? 'text-emerald-300' : reminder.status === 'cancelled' ? 'text-slate-600' : 'text-slate-500'}>
+                      <span className={reminder.status === 'sent' ? 'text-emerald-300' : reminder.status === 'cancelled' ? 'text-slate-400' : 'text-slate-400'}>
                         {reminder.status === 'sent' ? 'odesláno' : reminder.status === 'cancelled' ? 'zrušeno' : formatCzechDate(reminder.dueAt.slice(0, 10))}
                       </span>
                     </li>
@@ -579,7 +579,7 @@ export default function CaseWorkspace() {
                 <li><Link href="/zakazka/remeslnik-nedodrzel-termin" className="text-slate-300 transition hover:text-[#e2c77b]">Řemeslník nedodržel termín</Link></li>
                 <li><Link href="/zakazka/reklamace-dila" className="text-slate-300 transition hover:text-[#e2c77b]">Reklamace díla a vady</Link></li>
               </ul>
-              <p className="mt-4 text-xs leading-6 text-slate-500">
+              <p className="mt-4 text-xs leading-6 text-slate-400">
                 Potřebujete rozpočet stavby? Samostatná služba <a href="https://www.planstavby.cz/?utm_source=smlouvahned&utm_medium=cross_sell&utm_campaign=case" target="_blank" rel="noopener noreferrer" className="text-[#e2c77b] underline underline-offset-2">PlanStavby.cz</a>. Údaje ze zakázky se nepřenášejí.
               </p>
             </section>
@@ -671,7 +671,7 @@ function NoteForm({ busy, onSubmit }: { busy: boolean; onSubmit: (note: string) 
       }}
     >
       <label htmlFor="case-note" className="sr-only">Poznámka</label>
-      <input id="case-note" value={note} onChange={(event) => setNote(event.target.value)} maxLength={500} placeholder="Poznámka k průběhu (např. domluven termín přejímky)" className="flex-1 rounded-lg border border-white/15 bg-[#0c1426] px-3 py-2 text-sm text-white placeholder:text-slate-600" />
+      <input id="case-note" value={note} onChange={(event) => setNote(event.target.value)} maxLength={500} placeholder="Poznámka k průběhu (např. domluven termín přejímky)" className="flex-1 rounded-lg border border-white/15 bg-[#0c1426] px-3 py-2 text-sm text-white placeholder:text-slate-400" />
       <button type="submit" disabled={busy || !note.trim()} className="site-button-secondary text-xs disabled:opacity-40">Přidat</button>
     </form>
   );
@@ -706,7 +706,7 @@ function DocumentRow({
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="text-sm font-semibold text-white">{document.title}</div>
-          <div className="text-xs text-slate-500">
+          <div className="text-xs text-slate-400">
             {formatDateTime(document.createdAt)} · {document.entitlement === 'included' ? 'v ceně balíčku' : document.status === 'ready' ? 'zaplaceno' : 'čeká na platbu'}
           </div>
         </div>
@@ -778,7 +778,7 @@ function DocumentForm({
         <span className="rounded-full border border-[#c9a852]/40 px-3 py-1 text-xs font-semibold text-[#e2c77b]">{included ? 'V ceně balíčku' : priceLabel}</span>
       </div>
       <p className="mt-3 rounded-xl border border-white/8 bg-white/[0.02] p-3 text-xs leading-6 text-slate-400">{definition.legalBasis}</p>
-      <p className="mt-2 text-[11px] leading-5 text-slate-500">
+      <p className="mt-2 text-[11px] leading-5 text-slate-400">
         Dokument je standardizovaná šablona sestavená z údajů, které zadáte. Nejde o právní posouzení vaší situace ani o právní službu; u sporných vad nebo vyšších částek doporučujeme advokáta.
       </p>
 
@@ -792,7 +792,7 @@ function DocumentForm({
             value: values[field.key] ?? '',
             onChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
               setValues((current) => ({ ...current, [field.key]: event.target.value })),
-            className: 'mt-1 w-full rounded-lg border border-white/15 bg-[#0c1426] px-3 py-2 text-sm text-white placeholder:text-slate-600',
+            className: 'mt-1 w-full rounded-lg border border-white/15 bg-[#0c1426] px-3 py-2 text-sm text-white placeholder:text-slate-400',
           };
           return (
             <div key={field.key} className={field.type === 'textarea' ? 'sm:col-span-2' : ''}>
@@ -811,7 +811,7 @@ function DocumentForm({
               ) : (
                 <input {...common} type={field.type === 'date' ? 'date' : field.type === 'number' ? 'number' : 'text'} placeholder={field.placeholder} maxLength={200} inputMode={field.type === 'money' ? 'decimal' : undefined} />
               )}
-              {field.help ? <p className="mt-1 text-xs text-slate-500">{field.help}</p> : null}
+              {field.help ? <p className="mt-1 text-xs text-slate-400">{field.help}</p> : null}
             </div>
           );
         })}
@@ -829,7 +829,7 @@ function DocumentForm({
         </button>
         <button type="button" onClick={onCancel} className="site-button-secondary">Zrušit</button>
       </div>
-      <p className="mt-3 text-xs leading-6 text-slate-500">Údaje dokumentu se ukládají v zakázce. Jména stran se předvyplní u dalšího dokumentu.</p>
+      <p className="mt-3 text-xs leading-6 text-slate-400">Údaje dokumentu se ukládají v zakázce. Jména stran se předvyplní u dalšího dokumentu.</p>
     </form>
   );
 }
