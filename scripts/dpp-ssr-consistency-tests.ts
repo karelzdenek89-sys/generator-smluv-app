@@ -182,8 +182,8 @@ assert.ok(
 assert.match(primaryDppCardHtml, /data-position="3"/);
 for (const paidContract of ['lease', 'car_sale', 'employment', 'work_contract']) {
   assert.ok(
-    visibleText(contractCardHtml(primaryCatalogHtml, paidContract)).includes('Placený dokument'),
-    `${paidContract} must disclose a paid document before the price-reveal step`,
+    visibleText(contractCardHtml(primaryCatalogHtml, paidContract)).includes(paidBasicLabel),
+    `${paidContract} must disclose its basic price on the homepage card before checkout`,
   );
 }
 
@@ -223,10 +223,8 @@ if (freeExperiment) {
     visibleText(primaryDppCardHtml),
     /DPP 2026 do 300 hodin ročně\. Základní PDF vytvoříte bez registrace a bez platby\./,
   );
-  assert.match(
-    homeText,
-    new RegExp(`Základní DPP vytvoříte zdarma, ostatní dokumenty ${escapeRegex(paidBasicLabel)}`),
-  );
+  assert.match(homeText, /Základní DPP zdarma/);
+  assert.match(homeText, new RegExp(`Dokumenty ${escapeRegex(paidBasicLabel)}`));
   assert.match(
     homeHtml,
     new RegExp(`základní DPP zdarma, další dokumenty ${escapeRegex(paidBasicLabel)}`, 'i'),
@@ -252,7 +250,7 @@ if (freeExperiment) {
 
   assert.match(
     homeText,
-    /DPP — Dohoda o provedení práce .*? Placený dokument/,
+    new RegExp(`DPP — Dohoda o provedení práce .*? ${escapeRegex(paidBasicLabel)}`),
   );
   assert.match(primaryDppCardHtml, /data-monetization-mode="paid"/);
   assert.ok(!primaryDppCardHtml.includes('ZÁKLADNÍ PDF ZDARMA'));
