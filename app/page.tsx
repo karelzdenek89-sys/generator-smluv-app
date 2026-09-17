@@ -116,11 +116,11 @@ const faqItems = [
   },
   {
     question: 'Musím se registrovat nebo platit předplatné?',
-    answer: 'Ne. Jednotlivé dokumenty vytvoříte bez povinné registrace a bez předplatného. K zakoupeným dokumentům se můžete vrátit přes Moje dokumenty. U smlouvy o dílo lze navíc volitelně pokračovat v Moje zakázka pomocí návratového odkazu.',
+    answer: 'Ne. Jednotlivé dokumenty vytvoříte bez povinné registrace a bez předplatného. K zakoupeným dokumentům se můžete vrátit přes Moje dokumenty. U nájmu, převodu vozidla a smlouvy o dílo můžete volitelně pokračovat v soukromém případu pomocí bezpečného návratového odkazu.',
   },
   {
-    question: 'Co je Moje zakázka?',
-    answer: 'Je to volitelné pokračování pro smlouvu o dílo. U zakázky můžete sledovat fázi a termín, zapnout e-mailové připomínky a připravovat navazující dokumenty, například změnový list nebo předávací protokol. Ostatní typy dokumentů fungují samostatně.',
+    question: 'Co jsou Moje případy a Moje zakázka?',
+    answer: 'Moje případy jsou volitelné pokračování po nákupu pro pronájem, převod vozidla a smlouvu o dílo. Uložíte si stav, důležitý termín a checklist a můžete zapnout e-mailové připomínky. Moje zakázka je specializované rozhraní pro smlouvu o dílo, kde lze navíc připravovat navazující dokumenty. Přístup funguje bez povinného účtu přes bezpečný návratový odkaz.',
   },
   {
     question: 'Je SmlouvaHned advokátní kancelář?',
@@ -157,7 +157,7 @@ const softwareSchema = {
     'Anglická a ukrajinská nápověda u vybraných formulářů',
     'Bezplatné checklisty a rozhodovací průvodci',
     'Legislativní radar 2027 s oficiálními zdroji',
-    'Pokračování zakázky: termín, připomínky a navazující dokumenty',
+    'Moje případy pro pronájem, převod vozidla a zakázku: termíny, checklisty a připomínky',
   ],
   provider: { '@type': 'Organization', name: 'SmlouvaHned', url: HOMEPAGE_BASE_URL },
   offers: {
@@ -261,7 +261,7 @@ export default function Home() {
             <p className={styles.heroDescription}>
               Nejdřív zjistíte postup a cenu, potom vyplníte formulář a zkontrolujete náhled.
               PDF získáte po dokončení objednávky; DOCX a další praktické podklady jsou volitelné podle typu dokumentu.
-              U smlouvy o dílo můžete pokračovat v Moje zakázka.
+              U nájmu, převodu vozidla a smlouvy o dílo můžete po nákupu volitelně pokračovat v soukromém případu s termínem a dalšími kroky.
             </p>
             <div className={styles.heroActions}>
               <TrackedLink href="#situace" eventName="situation_started" eventParams={{ surface: 'homepage_hero', cta_type: 'choose_situation' }} className={styles.primaryAction}>
@@ -316,7 +316,7 @@ export default function Home() {
                 Smlouva je začátek. Důležité je zvládnout celou situaci.
               </h2>
               <p className="mt-4 text-base leading-7 text-slate-400">
-                Nejdřív získáte orientaci, potom dokument. U vybraných scénářů navazují přílohy, checklisty nebo další kroky — bez nuceného účtu a bez předplatného.
+                Nejdřív získáte orientaci, potom dokument. U pronájmu, převodu vozidla a zakázky můžete navíc pokračovat v soukromém případu s termínem, checklistem a připomínkami — bez nuceného účtu a bez předplatného.
               </p>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -324,7 +324,7 @@ export default function Home() {
                 { step: '01', title: 'Vyberete situaci', text: 'Dostanete relevantní dokument, návod nebo bezplatný checklist.' },
                 { step: '02', title: 'Vyplníte údaje', text: 'Formulář vás provede podmínkami a průběžný náhled ukazuje vznikající dokument.' },
                 { step: '03', title: 'Znáte cenu předem', text: 'Před objednávkou vidíte variantu, cenu a případné volitelné doplňky.' },
-                { step: '04', title: 'Stáhnete a pokračujete', text: 'PDF získáte po dokončení objednávky. Podle situace můžete navázat dalšími dokumenty nebo případem.' },
+                { step: '04', title: 'Stáhnete a pokračujete', text: 'PDF získáte po dokončení objednávky. U nájmu, převodu vozidla a zakázky můžete dobrovolně založit případ a vracet se k termínům, checklistu a dalším krokům.' },
               ].map((item) => (
                 <div key={item.step} className={`${styles.glass} ${styles.tile} ${styles.reveal} p-5`}>
                   <div className="text-[10px] font-black uppercase tracking-widest text-[#e8d092]">{item.step} · {item.title}</div>
@@ -334,6 +334,40 @@ export default function Home() {
             </div>
           </div>
           <ProductScopeStrip className="mt-10" />
+
+          <div className={`${styles.glass} ${styles.reveal} mt-6 p-6 md:p-7`} aria-labelledby="moje-pripady-home-title">
+            <div className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-start">
+              <div>
+                <p className="site-kicker mb-2">Moje případy</p>
+                <h3 id="moje-pripady-home-title" className="font-serif text-2xl font-bold italic text-[#f2e7c8] md:text-3xl">
+                  Dokument je hotový. Další kroky můžete mít na jednom místě.
+                </h3>
+                <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">
+                  U nájmu, převodu vozidla a smlouvy o dílo si po zaplacení můžete dobrovolně založit soukromý případ.
+                  Uložíte si stav, důležitý termín a checklist; u zakázky navíc navazující dokumenty.
+                  Přístup funguje přes bezpečný návratový odkaz, bez povinného účtu a bez předplatného.
+                </p>
+                <div className="mt-5 flex flex-wrap items-center gap-4">
+                  <Link href="/moje-pripady" className="text-sm font-bold text-[#e8d092] transition hover:text-white">
+                    Otevřít Moje případy →
+                  </Link>
+                  <span className="text-xs text-slate-400">Soukromá pracovní vrstva, ne veřejný profil.</span>
+                </div>
+              </div>
+              <div className="grid gap-3">
+                {[
+                  { title: 'Pronájem', text: 'Předání bytu, důležitý termín, ukončení a vypořádání jistoty.' },
+                  { title: 'Převod vozidla', text: 'Předání vozidla, přepis a potvrzení dokončení převodu.' },
+                  { title: 'Zakázka', text: 'Fáze, termín, připomínky a navazující dokumenty k dílu.' },
+                ].map((item) => (
+                  <div key={item.title} className="rounded-2xl border border-white/8 bg-white/3 px-4 py-3">
+                    <div className="text-xs font-black uppercase tracking-wider text-[#e8d092]">{item.title}</div>
+                    <p className="mt-1 text-xs leading-5 text-slate-400">{item.text}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </section>
 
         <Divider />

@@ -18,7 +18,7 @@
  * The server authenticates the audit secret before bypassing its normal rate
  * limit and analytics writes. The secret is never exposed to page JavaScript.
  * Audit responses expose the Stripe Session total and currency, so the test
- * verifies the configured 99/199/299/599 Kč prices instead of just seeing a URL.
+ * verifies the configured 99/199/299/399/599 Kč prices instead of just seeing a URL.
  */
 import { expect, test, type Page } from '@playwright/test';
 
@@ -30,9 +30,9 @@ const AUDIT_EMAIL = 'checkout-audit@example.com';
 
 type BaseTarget = { route: string; label: string };
 type Target = BaseTarget & {
-  expectedAmountTotal: 9900 | 19900 | 29900 | 59900;
+  expectedAmountTotal: 9900 | 19900 | 29900 | 39900 | 59900;
   expectedTier: 'basic' | 'complete';
-  expectedPackageKey: 'landlord' | 'employer_start' | null;
+  expectedPackageKey: 'landlord' | 'vehicle_sale' | 'employer_start' | 'work_order' | null;
   selectTier?: 'complete';
   priceMatrix?: true;
 };
@@ -95,6 +95,22 @@ const TARGETS: Target[] = [
     expectedAmountTotal: 29900,
     expectedTier: 'complete',
     expectedPackageKey: 'landlord',
+    priceMatrix: true,
+  },
+  {
+    route: '/auto?package=vehicle_sale',
+    label: 'balíček pro prodej vozidla',
+    expectedAmountTotal: 29900,
+    expectedTier: 'complete',
+    expectedPackageKey: 'vehicle_sale',
+    priceMatrix: true,
+  },
+  {
+    route: '/smlouva-o-dilo?package=work_order',
+    label: 'Zakázka Plus',
+    expectedAmountTotal: 39900,
+    expectedTier: 'complete',
+    expectedPackageKey: 'work_order',
     priceMatrix: true,
   },
   {
@@ -168,7 +184,7 @@ test.describe('live checkout audit', () => {
           amountTotal: number | null;
           currency: string | null;
           tier: 'basic' | 'complete';
-          packageKey: 'landlord' | 'vehicle_sale' | 'employer_start' | null;
+          packageKey: 'landlord' | 'vehicle_sale' | 'employer_start' | 'work_order' | null;
         };
       };
       const answers: CheckoutAnswer[] = [];

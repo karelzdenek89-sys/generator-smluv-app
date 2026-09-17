@@ -22,6 +22,7 @@ import {
   normalizeAnnexLanguage,
 } from '../lib/checkout-addons';
 import { resolveTierFeatures } from '../lib/contracts';
+import { getContractTierCopy, getTierIncludedItems } from '../lib/tier-copy';
 
 function withEnv() {
   process.env.STRIPE_PRICE_ID_BASIC = 'price_basic';
@@ -222,6 +223,47 @@ function testTierFeaturesForPackages() {
   assert.equal(basicPackage.archiveDays, 30);
 }
 
+
+function testCustomerPromiseMatchesEntitlement() {
+  const contractTypes = [
+    'lease', 'car_sale', 'gift', 'work_contract', 'loan', 'nda', 'general_sale',
+    'employment', 'dpp', 'service', 'sublease', 'power_of_attorney',
+    'debt_acknowledgment', 'cooperation',
+  ] as const;
+
+  for (const contractType of contractTypes) {
+    const basic = getTierIncludedItems(contractType, 'basic');
+    const complete = getTierIncludedItems(contractType, 'complete');
+    assert.equal(
+      basic.filter((item) => /Dostupnost odkazu ke stažení 7 dní/.test(item)).length,
+      1,
+      `${contractType}: basic must promise exactly the 7-day entitlement`,
+    );
+    assert.equal(
+      complete.some((item) => /Dostupnost odkazu ke stažení 7 dní/.test(item)),
+      false,
+      `${contractType}: complete must not also promise the basic 7-day archive`,
+    );
+    assert.equal(
+      complete.filter((item) => /Dostupnost odkazu ke stažení 30 dní/.test(item)).length,
+      1,
+      `${contractType}: complete must promise exactly the 30-day entitlement`,
+    );
+  }
+
+  const debt = getContractTierCopy('debt_acknowledgment');
+  assert.doesNotMatch(
+    debt.completeHighlights.join(' ') + ' ' + debt.completeIncludes.join(' '),
+    /přímá vykonatelnost/i,
+    'checkout copy must not imply the private document itself is an enforcement title',
+  );
+  assert.match(
+    debt.completeIncludes.join(' '),
+    /notářskému zápisu se svolením k vykonatelnosti/i,
+    'checkout copy must describe the notarial-deed pathway precisely',
+  );
+}
+
 function main() {
   withEnv();
   testStripePriceMapping();
@@ -229,6 +271,7 @@ function main() {
   testPackageContractGuard();
   testAddonMatrix();
   testTierFeaturesForPackages();
+  testCustomerPromiseMatchesEntitlement();
   testFeatureFlagGate();
   testAnnualPlanStaysOff();
   console.log('Pricing matrix audit passed (99 / 199 / 299 / 399 / 599 + add-ons + flag gates).');

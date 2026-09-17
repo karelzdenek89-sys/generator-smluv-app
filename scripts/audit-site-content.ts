@@ -293,6 +293,10 @@ function main() {
   }
   assert.match(siteHeader, /SITE_NAV_ITEMS/, 'Shared site header must render the shared navigation source');
   assert.match(homePage, /SITE_NAV_ITEMS/, 'Homepage must render the shared navigation source');
+  assert.match(homePage, /Moje případy/, 'Homepage must communicate the private case layer');
+  assert.match(homePage, /U nájmu, převodu vozidla a smlouvy o dílo/, 'Homepage must name all supported post-purchase case scenarios');
+  assert.match(homePage, /Otevřít Moje případy/, 'Homepage must provide a direct route to the case hub');
+  assert.doesNotMatch(homePage, /Ostatní typy dokumentů fungují samostatně/, 'Homepage must not describe rental/vehicle case support as unavailable');
   // Mobilní navigace musí existovat na obou plochách (<details> funguje i bez JS).
   assert.match(siteHeader, /<details[\s\S]*SITE_NAV_ITEMS/, 'Shared site header must offer a mobile menu');
   assert.match(homePage, /<details[\s\S]*SITE_NAV_ITEMS/, 'Homepage must offer a mobile menu');

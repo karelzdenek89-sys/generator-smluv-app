@@ -2402,7 +2402,9 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
     if (isLeaseProtocol(section.title)) {
       sectionPageMap?.set(section.title, currentPageNumber() + 1);
       drawLeaseProtocolForm(doc, data, meta.title, docId);
-      inProtocol = true;
+      // Custom renderer already owns a complete appendix page. A following
+      // landlord-package receipt must start on a new page.
+      inProtocol = false;
       continue;
     }
 
