@@ -66,8 +66,11 @@ const builders = {
 for (const [path, field] of Object.entries(builders)) {
   test(`${path} preserves a draft through checkout return`, async ({ page }) => {
     await page.goto(`/${path}`);
-    await expect(page.getByTestId('paid-document-notice')).toBeVisible();
-    await expect(page.locator('body')).not.toContainText(/\b(?:99|199)\s*Kč/);
+    // Cenové pásmo je vidět před vyplněním (transparentnost); přesná cena a
+    // doporučená varianta až v souhrnu před platbou.
+    await expect(page.getByTestId('paid-document-notice')).toContainText('99 Kč');
+    await expect(page.getByTestId('paid-document-notice')).toContainText('199 Kč');
+    await expect(page.getByText('Cena v dalším kroku').first()).toBeVisible();
     const input = page.locator(`input[name="${field}"]`);
     await input.fill('TEST recovery');
     await page.locator('input[name="tier"][value="complete"]').check();
@@ -83,7 +86,7 @@ test('price is revealed after completion; checkout details recover but consent d
   for (const [name, value] of Object.entries({ landlordName: 'Test Landlord', tenantName: 'Test Tenant', flatAddress: 'Test 1, Praha', rentAmount: '15000', startDate: '2026-10-01', endDate: '2027-10-01' })) {
     await page.locator(`[name="${name}"]`).fill(value);
   }
-  await expect(page.locator('body')).not.toContainText('99 Kč');
+  await expect(page.getByTestId('paid-document-notice')).toContainText('99 Kč');
   await page.getByTestId('lease-open-checkout').click();
   await expect(page.getByTestId('lease-checkout-pay')).toContainText('99 Kč');
   await page.getByTestId('lease-checkout-modal').getByRole('button', { name: /Editovatelná DOCX verze/ }).click();

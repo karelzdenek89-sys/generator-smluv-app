@@ -86,3 +86,22 @@ Engine proto nikdy není způsob, jak obejít autorizaci dokumentu.
 2. `<OFFER_PREFIX>_ENABLED=false` vypne konkrétní offer.
 3. Neplatná/chybějící URL offer automaticky skryje.
 4. Vypnutí nevyžaduje změnu checkoutu ani dokumentového flow.
+
+## Commercial intent a partner lead (od 2026-09-17)
+
+`lib/partners/commercial-intent.ts` doplňuje explicitní model místo generického
+marketingového souhlasu:
+
+```text
+commercial_intent  (co člověk potřebuje: kategorie, služba, urgence, pásmo, kraj)
+partner_consent    (komu, proč, jaká pole, verze textu, kdy uděleno / odvoláno)
+partner_lead       (stav předání: pending | sent | accepted | rejected | withdrawn | failed)
+```
+
+Každý partner má explicitní `state` (`enabled` / `temporary_pause` / `disabled`),
+`capacity` a `deliveryMethod` (`none` / `email` / `api`). Bez `enabled` +
+doručovací metody zůstává lead `pending` a nikam se neposílá (fail-closed).
+Veřejná route `POST /api/partners/intent` je za flagem
+`NEXT_PUBLIC_FEATURE_COMMERCIAL_INTENTS` (výchozí vypnuto) a vyžaduje buď
+ověřený case token, nebo e-mail žadatele. Odvolání souhlasu vymaže kontakt
+z intentu okamžitě. Souhrn bez kontaktů je v `/interni/analytics`.
