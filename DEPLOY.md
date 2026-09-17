@@ -141,6 +141,13 @@ Projdi tento scénář **se skutečnou kartou v živém módu**:
 
 *Tento soubor lze smazat po úspěšném nasazení.*
 
+## Rollback (design 2027 + case store hardening, 2026-09-17)
+
+- Produkční SHA před releasem: `c1a469f` (deployment `generator-smluv-ggc9519z0`).
+- Změny: homepage 2027 (glass/neon, finder, ukázka zakázky), Newsreader pro nadpisy na celém webu (CSS revize `sh20260917b`), atomický Lua zápis případu vč. indexu nezaplacených dokumentů (ověřeno na Upstash: cjson, TTL preserve, SCAN), checkout s uloženým požadavkem před voláním Stripe.
+- Datový model zůstává dopředně kompatibilní (`checkoutRequest`, snapshoty `legacy-frozen-2026.2`, `case:maintenance:pending-scan`); rollback nevyžaduje migraci.
+- Lokální náhled bez dotyku produkce: `npm run dev:local` (port 3200, paměťový Redis, vypnutý Stripe).
+
 ## Rollback (fix release po nezávislém review, 2026-09-17)
 
 - Produkční SHA před releasem: `b739196` (deployment `generator-smluv-heqfki8at`).
