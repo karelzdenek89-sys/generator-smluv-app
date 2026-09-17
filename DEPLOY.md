@@ -140,3 +140,10 @@ Projdi tento scénář **se skutečnou kartou v živém módu**:
 ---
 
 *Tento soubor lze smazat po úspěšném nasazení.*
+
+## Rollback (release SmlouvaHned 2.0, 2026-09-17)
+
+- Produkční SHA před releasem: `f903e20e3593abc18668cf1157c8b118b2837184` (deployment `dpl_F1xKMF85sTs8Qg1D1ufL5wHr4v42`).
+- Rychlý rollback: Vercel → Deployments → předchozí production deployment → „Promote to Production“ (žádná DB migrace neproběhla; nové Redis klíče `case:*` a `partner:*` jsou aditivní a starší build je ignoruje).
+- Měkký rollback bez redeploye: `NEXT_PUBLIC_FEATURE_CASE_ENGINE=false` + redeploy skryje Moje zakázku (nové routy portálu zůstávají, jsou statické a bez závislostí).
+- Cron připomínek je fail-closed bez `CRON_SECRET`; jeho odstranění zastaví odesílání.
