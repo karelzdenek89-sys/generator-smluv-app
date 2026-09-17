@@ -25,6 +25,8 @@ import {
   normalizeStoredCheckoutAnalyticsAttribution,
   type CheckoutAnalyticsAttribution,
 } from '@/lib/analytics-attribution';
+import { markCaseDocumentPaid } from '@/lib/cases/service';
+import { resolveDocumentSession } from '@/lib/cases/store';
 
 export const runtime = 'nodejs';
 
@@ -148,6 +150,36 @@ export async function POST(req: Request) {
         console.warn(
           `[webhook] checkout.session.completed without paid status (${session.id}: ${session.payment_status})`,
         );
+        return NextResponse.json({ received: true });
+      }
+
+      // Navazující dokument zakázky (Moje zakázka) — samostatná větev, která
+      // nikdy nesahá na plnění smluv. Idempotentní přes stejný fulfilled klíč.
+      if (session.metadata?.kind === 'case_document') {
+        const caseCompletedKey = `webhook:fulfilled:${session.id}`;
+        if (await redis.get(caseCompletedKey)) {
+          return NextResponse.json({ received: true });
+        }
+        const caseId = session.metadata?.caseId ?? '';
+        const documentId = session.metadata?.documentId ?? '';
+        const mapping = await resolveDocumentSession(session.id);
+        if (!mapping || mapping.caseId !== caseId || mapping.documentId !== documentId) {
+          throw new Error(`Case document session ${session.id} does not match a stored document.`);
+        }
+        const updated = await markCaseDocumentPaid(caseId, documentId, session.id);
+        if (!updated) throw new Error(`Case ${caseId} or document ${documentId} not found for session ${session.id}.`);
+        await recordAnalyticsEvent('followup_document_purchased', {
+          source: 'stripe_webhook',
+          surface: 'case_engine',
+          case_kind: 'work_order',
+          case_stage: updated.stage,
+          document_kind: session.metadata?.documentKind,
+          price_band: '99',
+          total_price_czk: typeof session.amount_total === 'number' ? Math.round(session.amount_total / 100) : undefined,
+        }).catch((analyticsError) => {
+          console.error('[webhook] Case document analytics failed:', analyticsError);
+        });
+        await redis.set(caseCompletedKey, '1', { ex: 60 * 60 * 24 * 90 });
         return NextResponse.json({ received: true });
       }
 

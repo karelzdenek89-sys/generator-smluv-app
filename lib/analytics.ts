@@ -58,6 +58,36 @@ export const ANALYTICS_EVENT_NAMES = [
   'partner_conversion_recorded',
   // Zájem o roční plán; měří poptávku dřív, než vznikne recurring backend
   'annual_plan_interest',
+  // SmlouvaHned 2.0 — portálový funnel: situace → nástroj → dokument → případ
+  'situation_viewed',
+  'situation_started',
+  'tool_started',
+  'tool_completed',
+  'tool_result_saved',
+  'document_started',
+  'document_completed',
+  'checkout_started',
+  'purchase_completed',
+  'case_offer_viewed',
+  'case_started',
+  'case_saved',
+  'case_returned',
+  'case_deleted',
+  'reminder_enabled',
+  'reminder_sent',
+  'reminder_clicked',
+  'followup_document_viewed',
+  'followup_document_started',
+  'followup_document_purchased',
+  'bundle_viewed',
+  'bundle_purchased',
+  'legal_change_viewed',
+  'commercial_intent_started',
+  'commercial_intent_created',
+  'partner_consent_given',
+  'partner_lead_sent',
+  'partner_lead_accepted',
+  'subscription_interest',
 ] as const;
 
 export type AnalyticsEventName = (typeof ANALYTICS_EVENT_NAMES)[number];
@@ -108,6 +138,23 @@ export const BROWSER_ANALYTICS_EVENT_NAMES = [
   'partner_lead_succeeded',
   'partner_lead_failed',
   'annual_plan_interest',
+  // Portál 2.0 — pouze UI signály. Vytvoření případu, připomínek, nákupů a
+  // partnerských leadů zapisuje výhradně validovaný server.
+  'situation_viewed',
+  'situation_started',
+  'tool_started',
+  'tool_completed',
+  'tool_result_saved',
+  'document_started',
+  'case_offer_viewed',
+  'case_returned',
+  'reminder_clicked',
+  'followup_document_viewed',
+  'followup_document_started',
+  'bundle_viewed',
+  'legal_change_viewed',
+  'commercial_intent_started',
+  'subscription_interest',
 ] as const satisfies readonly AnalyticsEventName[];
 
 export type BrowserAnalyticsEventName = (typeof BROWSER_ANALYTICS_EVENT_NAMES)[number];
@@ -190,7 +237,43 @@ export type AnalyticsEventParams = {
   reject_reason?: CheckoutRejectReason;
   /** Payload field that failed validation, when the guard identified one. */
   reject_field?: string;
+  // ── Portál 2.0 ────────────────────────────────────────────────────────
+  /** Tematická oblast / situace z homepage rozcestníku („Co právě řešíte?“). */
+  portal_situation?: PortalSituationKey;
+  /** Stabilní klíč bezplatného nástroje (checklist, průvodce). */
+  tool_key?: string;
+  /** Druh nástroje — checklist / rozhodovací průvodce. */
+  tool_kind?: 'checklist' | 'wizard';
+  /** Výsledek rozhodovacího průvodce (klíč doporučení, nikdy volný text). */
+  tool_outcome?: string;
+  /** Druh případu v Case Engine. */
+  case_kind?: 'work_order';
+  /** Fáze případu podle workflow. */
+  case_stage?: string;
+  /** Odkud případ vznikl. */
+  case_origin?: 'success_page' | 'package' | 'manual';
+  /** Předstih připomínky ve dnech. */
+  reminder_offset_days?: number;
+  /** Druh navazujícího dokumentu případu. */
+  document_kind?: string;
+  /** Klíč legislativní změny (radar 2027). */
+  legal_change_key?: string;
+  /** Kategorie commercial intentu — bez PII. */
+  intent_category?: string;
+  urgency?: 'now' | 'month' | 'quarter' | 'later';
+  budget_band?: string;
+  /** Recurring plán, o který byl projeven zájem. */
+  plan_key?: string;
 };
+
+export type PortalSituationKey =
+  | 'zakazka'
+  | 'zamestnavam'
+  | 'pronajimam'
+  | 'auto'
+  | 'pujcuji'
+  | 'majetek'
+  | 'zmeny-2027';
 
 /**
  * A rejected checkout is invisible to the buyer and to us: the request never

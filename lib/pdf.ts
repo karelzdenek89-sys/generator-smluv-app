@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { jsPDF } from 'jspdf';
-import { getContractMeta, buildContractSections, resolveTierFeatures, type StoredContractData, type ContractType } from './contracts';
+import { getContractMeta, buildContractSections, resolveTierFeatures, type StoredContractData, type ContractType, type ContractSection } from './contracts';
 import { LEGAL_STATE_DISCLAIMER } from './legal-constants-2026';
 import { isExpatContract, normalizeLocale } from './locale';
 import { getExpatAnnexMeta, getPage1ExpatNoticeLines } from './i18n/expat-pdf-annex';
@@ -2525,5 +2525,106 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
   // ── Footers (post-processing pass) ──
   drawFooter(doc, docId, hash);
 
+  return Buffer.from(doc.output('arraybuffer'));
+}
+
+// ─────────────────────────────────────────────
+//  CASE DOCUMENTS (Moje zakázka — navazující dokumenty)
+// ─────────────────────────────────────────────
+
+export type SimpleDocumentInput = {
+  title: string;
+  /** Řádky pod nadpisem — např. odkaz na zakázku a datum. */
+  subtitleLines?: readonly string[];
+  sections: readonly ContractSection[];
+  /** Název sekce, kterou vykreslit jako podpisový blok. */
+  signatureSectionTitle: string;
+  signatureLabels: [string, string];
+  /** Stabilní identifikátor do hlavičky/patičky. */
+  docId: string;
+  keywords?: string;
+};
+
+/**
+ * Jednoduchý dokument bez souhrnného boxu a bez tierových příloh. Používá
+ * stejnou typografii, hlavičku, patičku a podpisový blok jako smlouvy, aby
+ * navazující dokumenty zakázky vypadaly konzistentně s hlavní smlouvou.
+ */
+export async function renderSimpleDocumentPdf(input: SimpleDocumentInput): Promise<Buffer> {
+  const doc = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
+  await ensurePdfFonts(doc);
+
+  const hash = createHash('sha256')
+    .update(stableSerialize({ title: input.title, sections: input.sections }))
+    .digest('hex')
+    .slice(0, 16);
+  const generatedDate = new Date().toLocaleDateString('cs-CZ');
+  doc.setProperties({
+    title: input.title,
+    subject: `Dokument vygenerovaný na SmlouvaHned.cz – ${generatedDate} – ${input.docId}`,
+    author: 'SmlouvaHned.cz',
+    keywords: input.keywords ?? 'zakázka, smlouva o dílo, česká republika',
+    creator: 'SmlouvaHned.cz',
+  });
+
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const contentWidth = pageWidth - MARGIN * 2;
+
+  drawHeader(doc, input.title, true, input.docId);
+  let y = 42;
+
+  if (input.subtitleLines?.length) {
+    doc.setFont('Roboto', 'normal');
+    doc.setFontSize(9.5);
+    doc.setTextColor(META_R, META_G, META_B);
+    for (const line of input.subtitleLines) {
+      const split = doc.splitTextToSize(line, contentWidth);
+      doc.text(split, pageWidth / 2, y, { align: 'center' });
+      y += split.length * 5;
+    }
+    y += 6;
+  }
+
+  let endOfTextDrawn = false;
+  for (const section of input.sections) {
+    if (section.title === input.signatureSectionTitle) {
+      if (!endOfTextDrawn) {
+        y = drawEndOfTextMarker(doc, y, input.title);
+        endOfTextDrawn = true;
+      }
+      y = drawSignatureSection(doc, section.title, input.signatureLabels[0], input.signatureLabels[1], y, input.title);
+      continue;
+    }
+
+    const orphanBuffer = section.body.length > 0 ? 32 : 20;
+    if (y + orphanBuffer > 272) {
+      doc.addPage();
+      drawHeader(doc, input.title, false, input.docId);
+      y = 22;
+    }
+
+    y += 4;
+    y = drawSectionTitle(doc, section.title, y, contentWidth, false);
+
+    for (const rawLine of section.body.slice(0, 80)) {
+      const raw = rawLine != null ? String(rawLine) : '';
+      const safe = raw.length > 1600 ? `${raw.substring(0, 1600)}…` : raw.trim() || ' ';
+      const split = doc.splitTextToSize(safe, contentWidth);
+      const lh = split.length * BODY_LEAD + 2;
+      if (y + lh + 8 > 272) {
+        doc.addPage();
+        drawHeader(doc, input.title, false, input.docId);
+        y = 22;
+        doc.setFont('Roboto', 'normal');
+        doc.setFontSize(10);
+        doc.setTextColor(BODY_R, BODY_G, BODY_B);
+      }
+      doc.text(split, MARGIN, y, { align: 'justify', maxWidth: contentWidth });
+      y += lh;
+    }
+    y += SECTION_GAP;
+  }
+
+  drawFooter(doc, input.docId, hash);
   return Buffer.from(doc.output('arraybuffer'));
 }
