@@ -18,7 +18,6 @@ export type BuilderSearchParams = {
 };
 
 export const VALID_LOCALE_INPUTS = ['cs', 'en', 'ua', 'ukr', 'uk'] as const;
-
 export const APP_LOCALES: AppLocale[] = ['cs', 'en', 'ua'];
 
 export const EXPAT_CONTRACT_TYPES = [
@@ -54,6 +53,8 @@ export const EXPAT_CONTRACT_ROUTES: Record<ContractType, string> = {
   cooperation: '/spoluprace',
 };
 
+const QUERY_LOCALIZED_ROUTES = new Set(['/zakaznicka-zona']);
+
 /**
  * Browser-only locale for the six builders that have complete EN/UA guidance.
  * The URL is the only authority: persisted preferences must not translate
@@ -69,17 +70,8 @@ export function readBuilderLocaleFromBrowser(): AppLocale {
   return isSupportedLocaleInput(queryLocale) ? normalizeLocale(queryLocale) : 'cs';
 }
 
-/**
- * Request-time locale for localized builder pages. Keeping this normalization
- * shared with the browser reader prevents SSR and hydration from choosing
- * different languages for the same URL.
- */
-export function getBuilderLocaleFromSearchParams(
-  searchParams: BuilderSearchParams,
-): AppLocale {
-  const raw = Array.isArray(searchParams.lang)
-    ? searchParams.lang[0]
-    : searchParams.lang;
+export function getBuilderLocaleFromSearchParams(searchParams: BuilderSearchParams): AppLocale {
+  const raw = Array.isArray(searchParams.lang) ? searchParams.lang[0] : searchParams.lang;
   return isSupportedLocaleInput(raw) ? normalizeLocale(raw) : 'cs';
 }
 
@@ -99,13 +91,21 @@ export function isExpatContract(contractType: ContractType): contractType is Exp
   return (EXPAT_CONTRACT_TYPES as readonly ContractType[]).includes(contractType);
 }
 
+/**
+ * Preserves language through builders and the post-payment customer zone.
+ * Private customer-zone pages stay on their canonical Czech path and carry the
+ * UI language only in `?lang=`; no duplicate indexable locale URL is created.
+ */
 export function withLocale(href: string, locale: AppLocale): string {
   if (locale === 'cs') return href;
   if (href === '/') return `/${getPublicLocalePath(locale)}`;
-  const contractType = getContractTypeByPath(href);
-  if (!contractType || !isExpatContract(contractType)) return href;
-  const separator = href.includes('?') ? '&' : '?';
-  return `${href}${separator}lang=${locale}`;
+  const [pathWithQuery, fragment] = href.split('#', 2);
+  const path = pathWithQuery.split('?', 1)[0].replace(/\/$/, '') || '/';
+  const contractType = getContractTypeByPath(path);
+  if ((!contractType || !isExpatContract(contractType)) && !QUERY_LOCALIZED_ROUTES.has(path)) return href;
+  const separator = pathWithQuery.includes('?') ? '&' : '?';
+  const localized = `${pathWithQuery}${separator}lang=${locale}`;
+  return fragment ? `${localized}#${fragment}` : localized;
 }
 
 /**
@@ -113,10 +113,7 @@ export function withLocale(href: string, locale: AppLocale): string {
  * one shared /blog/expat route, so their locale is carried by the final slug
  * suffix rather than by the first path segment.
  */
-export function getLocaleFromPathname(
-  pathname: string | null | undefined,
-  fallback: AppLocale = 'cs',
-): AppLocale {
+export function getLocaleFromPathname(pathname: string | null | undefined, fallback: AppLocale = 'cs'): AppLocale {
   const path = (pathname ?? '').split(/[?#]/, 1)[0].replace(/\/+$/, '') || '/';
   const firstSegment = path.split('/')[1] ?? '';
   if (firstSegment === 'en' || firstSegment === 'ua') return firstSegment;
@@ -149,7 +146,6 @@ export const EN_LEGAL_KEY_TERMS = [
 ];
 
 export const UNSUPPORTED_FORM_NOTICE = UNSUPPORTED_FORM_NOTICE_BY_LOCALE.en;
-
 export const FALLBACK_ENGLISH_UI_NOTICE = FALLBACK_UI_NOTICE_BY_LOCALE.en;
 
 export type { BuilderCopy } from '@/lib/i18n/expat-locale-copy';

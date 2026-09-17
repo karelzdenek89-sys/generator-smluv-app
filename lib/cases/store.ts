@@ -1,24 +1,25 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { redis } from '@/lib/redis';
 import {
+  CASE_KINDS,
   CASE_SCHEMA_VERSION,
   type CaseDocument,
   type CaseEvent,
   type CaseEventType,
+  type CaseKind,
   type CaseOwnerRole,
   type CasePriceMode,
   type CaseRecord,
   type CaseReminder,
   type PublicCase,
 } from './types';
-import { buildDefaultTasks, planReminders } from './workflow';
+import { buildDefaultTasks, initialStageForKind, planReminders } from './workflow';
 import { buildCaseDocumentSnapshot } from './documents';
 
 /**
  * Redis datový model Case Engine (viz docs/DATA_MAP.md):
  *
  *   case:{caseId}                 JSON CaseRecord, TTL CASE_RETENTION_DAYS od poslední změny
- *                                 (CASE_RETENTION_DAYS_CLOSED po uzavření)
  *   case:rev:{caseId}             číslo revize pro compare-and-set (stejné TTL)
  *   case:seen:{caseId}            ISO čas posledního otevření (stejné TTL, samostatný zápis)
  *   case:owner:{sha256(email)}    SET caseId, TTL CASE_RETENTION_DAYS
@@ -26,18 +27,11 @@ import { buildCaseDocumentSnapshot } from './documents';
  *   case:access:{sha256(token)}   JSON CaseAccessRecord, TTL 30 dní
  *   case:reminders:due            ZSET score=dueAt(ms) member=caseId:reminderId
  *   case:docsession:{sessionId}   JSON {caseId, documentId} — mapování Stripe session
- *
  *   case:documents:pending        ZSET score=purgeAt(ms) member=caseId:documentId
  *
- * Retence: případ bez aktivity se smaže po CASE_RETENTION_DAYS; uzavřená
- * zakázka po CASE_RETENTION_DAYS_CLOSED od okamžiku uzavření (`closedAt`) —
- * TTL se při dalších zápisech dopočítává k tomuto pevnému termínu.
- * Rozpracovaný navazující dokument, který nebyl zaplacen do
- * PENDING_DOCUMENT_RETENTION_DAYS od vytvoření, se po uplynutí lhůty už
- * nevrací ze čtení, odstraní se při dalším zápisu a denní úklid
- * (`purgeExpiredPendingDocuments`, cron) jej fyzicky smaže i z neaktivních
- * případů. Vlastník může případ smazat kdykoli (`deleteCase`), což odstraní
- * i indexy a připomínky.
+ * V2 zachovává stejný namespace, tokeny, CAS a retenci pro všechny case typy.
+ * Aktivní případ se maže po 365 dnech od poslední změny; uzavřený po 180 dnech
+ * od uzavření. Vlastník může případ smazat kdykoli.
  */
 
 export const CASE_RETENTION_DAYS = 365;
@@ -46,10 +40,8 @@ export const PENDING_DOCUMENT_RETENTION_DAYS = 30;
 const DAY_SECONDS = 24 * 60 * 60;
 const CASE_TTL_SECONDS = CASE_RETENTION_DAYS * DAY_SECONDS;
 const CASE_CLOSED_TTL_SECONDS = CASE_RETENTION_DAYS_CLOSED * DAY_SECONDS;
-
 const MIN_TTL_SECONDS = 60;
 
-/** TTL případu: 365 dní od zápisu, u uzavřené zakázky zbytek do closedAt + 180 dní. */
 export function caseTtlSeconds(record: Pick<CaseRecord, 'stage' | 'closedAt'>, now: Date = new Date()): number {
   if (record.stage !== 'closed') return CASE_TTL_SECONDS;
   const closedAtMs = Date.parse(record.closedAt ?? '');
@@ -66,22 +58,15 @@ function isExpiredPendingDocument(document: CaseDocument, nowMs: number): boolea
   return document.status === 'pending_payment' && pendingDocumentPurgeAt(document) <= nowMs;
 }
 
-/**
- * Data, která nemají v případu co dělat (nebo už ne), se odstraní při každém
- * zápisu: starší záznamy mohly nést `origin.orderSessionId`; nezaplacené
- * dokumenty po 30 dnech nikdo nedoplatí.
- */
 function scrubForStorage(record: CaseRecord, now: Date): CaseRecord {
   const { orderSessionId: _legacy, ...origin } = record.origin as CaseRecord['origin'] & { orderSessionId?: unknown };
   void _legacy;
   const documents = record.documents.filter((document) => !isExpiredPendingDocument(document, now.getTime()));
-  // closedAt drží pevný termín výmazu uzavřené zakázky; při návratu do jiné fáze se ruší.
   const closedAt = record.stage === 'closed' ? record.closedAt ?? now.toISOString() : null;
   return { ...record, origin, documents, closedAt };
 }
 const MAX_EVENTS = 200;
 export const CASE_ID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
-
 const REMINDERS_DUE_KEY = 'case:reminders:due';
 const PENDING_DOCUMENTS_KEY = 'case:documents:pending';
 
@@ -113,6 +98,7 @@ export function newEvent(type: CaseEventType, label: string, at: string = new Da
 }
 
 export type CreateCaseInput = {
+  kind?: CaseKind;
   ownerEmail: string;
   ownerRole: CaseOwnerRole;
   title: string;
@@ -123,25 +109,40 @@ export type CreateCaseInput = {
   origin: CaseRecord['origin'];
 };
 
+const CREATED_LABEL: Record<CaseKind, string> = {
+  work_order: 'Zakázka založena ze smlouvy o dílo',
+  rental: 'Pronájem uložen jako případ',
+  vehicle_transfer: 'Převod vozidla uložen jako případ',
+};
+const FALLBACK_TITLE: Record<CaseKind, string> = {
+  work_order: 'Zakázka',
+  rental: 'Pronájem',
+  vehicle_transfer: 'Převod vozidla',
+};
+
 export function buildCaseRecord(input: CreateCaseInput, now: Date = new Date()): CaseRecord {
   const nowIso = now.toISOString();
   const id = randomUUID();
-  const tasks = buildDefaultTasks();
-  const events: CaseEvent[] = [newEvent('created', 'Zakázka založena ze smlouvy o dílo', nowIso)];
+  const kind = input.kind ?? 'work_order';
+  const tasks = buildDefaultTasks(kind);
+  const events: CaseEvent[] = [newEvent('created', CREATED_LABEL[kind], nowIso)];
   const reminders: CaseReminder[] = [];
   if (input.deadline) {
-    tasks.find((task) => task.key === 'deadline_set')!.done = true;
-    tasks.find((task) => task.key === 'deadline_set')!.doneAt = nowIso;
-    events.push(newEvent('deadline_set', `Termín dokončení nastaven ze smlouvy`, nowIso));
+    const deadlineTask = tasks.find((task) => task.key === 'deadline_set');
+    if (deadlineTask) {
+      deadlineTask.done = true;
+      deadlineTask.doneAt = nowIso;
+    }
+    events.push(newEvent('deadline_set', 'Nejbližší důležitý termín nastaven při založení případu', nowIso));
   }
   return {
     id,
     schemaVersion: CASE_SCHEMA_VERSION,
-    kind: 'work_order',
+    kind,
     ownerEmail: input.ownerEmail.trim().toLowerCase(),
     ownerRole: input.ownerRole,
-    title: input.title.trim().slice(0, 120) || 'Zakázka',
-    stage: 'contract_signed',
+    title: input.title.trim().slice(0, 120) || FALLBACK_TITLE[kind],
+    stage: initialStageForKind(kind),
     startDate: input.startDate,
     deadline: input.deadline,
     priceAmountCzk: input.priceAmountCzk,
@@ -167,7 +168,6 @@ function seenKey(caseId: string): string {
   return `case:seen:${caseId}`;
 }
 
-/** Zápis případu selhal, protože jej mezitím změnil jiný požadavek (webhook, druhá karta). */
 export class CaseConflictError extends Error {
   constructor(caseId: string) {
     super(`case ${caseId} was modified concurrently`);
@@ -175,11 +175,6 @@ export class CaseConflictError extends Error {
   }
 }
 
-/**
- * Compare-and-set: zapíše případ jen tehdy, když je uložená revize stejná,
- * jakou nesl načtený záznam. Záznam, revize a index dokumentů se mění
- * atomicky (stejný kontrakt v Upstash i v paměťové náhradě).
- */
 const SAVE_CASE_SCRIPT = `
 local current = redis.call('GET', KEYS[2])
 if current == false then current = '0' end
@@ -228,16 +223,9 @@ export async function saveCase(record: CaseRecord, now: Date = new Date(), optio
   if (Number(stored) !== 1) throw new CaseConflictError(next.id);
   await redis.sadd(ownerKey(next.ownerEmail), next.id);
   await redis.expire(ownerKey(next.ownerEmail), CASE_TTL_SECONDS);
-  // Dokument a jeho úklidový index jsou součástí stejného atomického zápisu.
   return next;
 }
 
-/**
- * Změna případu odolná proti souběhu: načte čerstvý záznam, aplikuje
- * `mutate` a uloží; při konfliktu revize to zopakuje nad novým stavem.
- * Starý snapshot (z klienta nebo z jiné routy) tak nikdy nepřepíše novější
- * zápis — typicky potvrzení platby webhookem.
- */
 export async function commitCase(
   caseId: string,
   mutate: (fresh: CaseRecord) => CaseRecord | Promise<CaseRecord>,
@@ -248,8 +236,6 @@ export async function commitCase(
   for (let attempt = 0; attempt < attempts; attempt += 1) {
     const fresh = await getCase(caseId);
     if (!fresh) return null;
-    // Freeze legacy content before an action can change its source case.
-    // Historical contents cannot be reconstructed; this prevents further drift.
     const stable = {
       ...fresh,
       documents: fresh.documents.map((document) => document.snapshot ? document : ({
@@ -273,23 +259,17 @@ export async function getCase(caseId: string): Promise<CaseRecord | null> {
     redis.get<CaseRecord>(caseKey(caseId)),
     redis.get<string>(seenKey(caseId)),
   ]);
-  if (!record || record.kind !== 'work_order' || !Array.isArray(record.tasks)) return null;
+  if (!record || !(CASE_KINDS as readonly string[]).includes(record.kind) || !Array.isArray(record.tasks)) return null;
   const nowMs = Date.now();
   return {
     ...record,
-    // Prošlý nezaplacený dokument se nevrací ani před fyzickým úklidem.
-    documents: record.documents.filter((document) => !isExpiredPendingDocument(document, nowMs)),
-    // Revize musí pocházet ze stejného JSON snapshotu jako data. Samostatný
-    // GET revize by mohl starým datům přiřadit verzi novějšího zápisu.
+    schemaVersion: record.schemaVersion ?? 1,
+    documents: Array.isArray(record.documents) ? record.documents.filter((document) => !isExpiredPendingDocument(document, nowMs)) : [],
     revision: record.revision ?? 0,
     lastAccessAt: typeof seenAt === 'string' && seenAt > record.lastAccessAt ? seenAt : record.lastAccessAt,
   };
 }
 
-/**
- * Denní úklid: fyzicky odstraní nezaplacené dokumenty po lhůtě i z případů,
- * kterých se nikdo nedotkl. Vrací počty pro log cronu.
- */
 export async function purgeExpiredPendingDocuments(nowMs: number = Date.now(), limit = 200): Promise<{ due: number; purged: number; missing: number }> {
   const entries = (await redis.zrange(PENDING_DOCUMENTS_KEY, 0, nowMs, { byScore: true, withScores: true, offset: 0, count: limit })) as (string | number)[];
   const members: string[] = [];
@@ -298,7 +278,7 @@ export async function purgeExpiredPendingDocuments(nowMs: number = Date.now(), l
   for (const member of members) {
     const [caseId, documentId] = member.split(':');
     const raw = isCaseIdFormat(caseId) ? await redis.get<CaseRecord>(caseKey(caseId)) : null;
-    const document = raw?.documents.find((item) => item.id === documentId);
+    const document = raw?.documents?.find((item) => item.id === documentId);
     if (!raw || !document) {
       summary.missing += 1;
       await redis.zrem(PENDING_DOCUMENTS_KEY, member);
@@ -308,12 +288,10 @@ export async function purgeExpiredPendingDocuments(nowMs: number = Date.now(), l
       await redis.zrem(PENDING_DOCUMENTS_KEY, member);
       continue;
     }
-    // Zápis bez prodloužení retence: TTL zůstává, jen dokument zmizí.
     const cleaned = await commitCase(caseId, (fresh) => ({
       ...fresh,
       documents: fresh.documents.filter((item) => item.id !== documentId || !isExpiredPendingDocument(item, nowMs)),
     }), new Date(nowMs), 4, { preserveRetention: true });
-    // A payment may have won the CAS race. Keep its session mapping intact.
     if (cleaned?.documents.some((item) => item.id === documentId)) continue;
     if (document.stripeSessionId) await redis.del(`case:docsession:${document.stripeSessionId}`);
     await redis.zrem(PENDING_DOCUMENTS_KEY, member);
@@ -322,7 +300,6 @@ export async function purgeExpiredPendingDocuments(nowMs: number = Date.now(), l
   return summary;
 }
 
-/** Bounded, resumable backfill for cases created before the pending index existed. */
 export async function indexLegacyPendingDocuments(maxPages = 10): Promise<{ scanned: number; complete: boolean }> {
   const cursorKey = 'case:maintenance:pending-scan';
   let cursor = Number(await redis.get<string | number>(cursorKey) ?? 0);
@@ -333,7 +310,7 @@ export async function indexLegacyPendingDocuments(maxPages = 10): Promise<{ scan
       const id = key.slice('case:'.length);
       if (!isCaseIdFormat(id)) continue;
       const record = await redis.get<CaseRecord>(key);
-      if (!record || record.kind !== 'work_order' || !Array.isArray(record.documents)) continue;
+      if (!record || !Array.isArray(record.documents)) continue;
       scanned += 1;
       for (const document of record.documents) {
         if (document.status === 'pending_payment') {
@@ -349,8 +326,6 @@ export async function indexLegacyPendingDocuments(maxPages = 10): Promise<{ scan
 }
 
 export async function touchCaseAccess(record: Pick<CaseRecord, 'id'>): Promise<void> {
-  // Otevření případu nesmí resetovat retenci ani přepsat záznam: čas přístupu
-  // jde do samostatného klíče se zbývajícím TTL případu.
   const ttl = await redis.ttl(caseKey(record.id));
   if (ttl <= 0) return;
   await redis.set(seenKey(record.id), new Date().toISOString(), { ex: ttl });
@@ -361,13 +336,17 @@ export async function listCaseIdsForEmail(email: string): Promise<string[]> {
   return Array.isArray(ids) ? ids.filter(isCaseIdFormat) : [];
 }
 
+export async function listCasesForEmail(email: string, limit = 50): Promise<CaseRecord[]> {
+  const ids = (await listCaseIdsForEmail(email)).slice(0, Math.max(1, Math.min(limit, 100)));
+  const records = await Promise.all(ids.map((id) => getCase(id)));
+  return records.filter((record): record is CaseRecord => Boolean(record)).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+}
+
 export async function deleteCase(record: CaseRecord): Promise<void> {
   await Promise.all([
     ...record.reminders.map((reminder) => redis.zrem(REMINDERS_DUE_KEY, `${record.id}:${reminder.id}`)),
     ...record.documents.map((document) => redis.zrem(PENDING_DOCUMENTS_KEY, `${record.id}:${document.id}`)),
-    ...record.documents
-      .filter((document) => document.stripeSessionId)
-      .map((document) => redis.del(`case:docsession:${document.stripeSessionId}`)),
+    ...record.documents.filter((document) => document.stripeSessionId).map((document) => redis.del(`case:docsession:${document.stripeSessionId}`)),
   ]);
   await redis.srem(ownerKey(record.ownerEmail), record.id);
   await redis.del(caseKey(record.id));
@@ -375,44 +354,23 @@ export async function deleteCase(record: CaseRecord): Promise<void> {
   await redis.del(seenKey(record.id));
 }
 
-// ── Připomínky ─────────────────────────────────────────────────────────────
-
 export async function indexReminder(caseId: string, reminder: CaseReminder): Promise<void> {
-  await redis.zadd(REMINDERS_DUE_KEY, {
-    score: Date.parse(reminder.dueAt),
-    member: `${caseId}:${reminder.id}`,
-  });
+  await redis.zadd(REMINDERS_DUE_KEY, { score: Date.parse(reminder.dueAt), member: `${caseId}:${reminder.id}` });
 }
 
 export async function unindexReminder(caseId: string, reminderId: string): Promise<void> {
   await redis.zrem(REMINDERS_DUE_KEY, `${caseId}:${reminderId}`);
 }
 
-/**
- * Přeplánuje připomínky podle termínu. Odeslané připomínky zůstávají
- * v historii; naplánované se nahradí novým plánem.
- */
-export async function rescheduleReminders(
-  record: CaseRecord,
-  enabled: boolean,
-  now: Date = new Date(),
-): Promise<CaseRecord> {
+export async function rescheduleReminders(record: CaseRecord, enabled: boolean, now: Date = new Date()): Promise<CaseRecord> {
   const kept = record.reminders.filter((reminder) => reminder.status === 'sent');
-  await Promise.all(
-    record.reminders
-      .filter((reminder) => reminder.status === 'scheduled')
-      .map((reminder) => unindexReminder(record.id, reminder.id)),
-  );
+  await Promise.all(record.reminders.filter((reminder) => reminder.status === 'scheduled').map((reminder) => unindexReminder(record.id, reminder.id)));
   const scheduled: CaseReminder[] = [];
   if (enabled && record.deadline) {
     for (const entry of planReminders(record.deadline, now)) {
       const reminder: CaseReminder = {
-        id: randomUUID(),
-        dueAt: entry.dueAt.toISOString(),
-        offsetDays: entry.offsetDays,
-        anchor: 'deadline',
-        status: 'scheduled',
-        createdAt: now.toISOString(),
+        id: randomUUID(), dueAt: entry.dueAt.toISOString(), offsetDays: entry.offsetDays,
+        anchor: 'deadline', status: 'scheduled', createdAt: now.toISOString(),
       };
       scheduled.push(reminder);
     }
@@ -424,12 +382,7 @@ export async function rescheduleReminders(
 export type DueReminderRef = { caseId: string; reminderId: string; member: string; dueAtMs: number };
 
 export async function listDueReminders(nowMs: number, limit = 200): Promise<DueReminderRef[]> {
-  const members = (await redis.zrange(REMINDERS_DUE_KEY, 0, nowMs, {
-    byScore: true,
-    withScores: true,
-    offset: 0,
-    count: limit,
-  })) as Array<string | number>;
+  const members = (await redis.zrange(REMINDERS_DUE_KEY, 0, nowMs, { byScore: true, withScores: true, offset: 0, count: limit })) as Array<string | number>;
   const refs: DueReminderRef[] = [];
   for (let i = 0; i + 1 < members.length; i += 2) {
     const member = String(members[i]);
@@ -445,8 +398,6 @@ export async function removeDueReminder(member: string): Promise<void> {
   await redis.zrem(REMINDERS_DUE_KEY, member);
 }
 
-// ── Dokumenty ──────────────────────────────────────────────────────────────
-
 export async function mapDocumentSession(sessionId: string, caseId: string, documentId: string, ttlSeconds = CASE_TTL_SECONDS): Promise<void> {
   await redis.set(`case:docsession:${sessionId}`, { caseId, documentId }, { ex: ttlSeconds });
 }
@@ -461,21 +412,14 @@ export function findDocument(record: CaseRecord, documentId: string): CaseDocume
   return record.documents.find((document) => document.id === documentId) ?? null;
 }
 
-// ── Projekce ───────────────────────────────────────────────────────────────
-
 export function toPublicCase(record: CaseRecord): PublicCase {
   const { ownerEmail, origin, ...rest } = record;
-  // Starší záznamy mohly nést orderSessionId; klientovi se nikdy nevrací.
   const { orderSessionId: _legacy, ...publicOrigin } = origin as CaseRecord['origin'] & { orderSessionId?: unknown };
   void _legacy;
   return {
     ...rest,
     ownerEmailMasked: maskEmail(ownerEmail),
     origin: publicOrigin,
-    documents: record.documents.map((document) => ({
-      ...document,
-      stripeSessionId: null,
-      checkoutRequest: null,
-    })),
+    documents: record.documents.map((document) => ({ ...document, stripeSessionId: null, checkoutRequest: null })),
   };
 }

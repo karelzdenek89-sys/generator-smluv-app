@@ -3,7 +3,7 @@ import { redis } from '@/lib/redis';
 import { stripe } from '@/lib/stripe';
 import { normalizePricingTier } from '@/lib/pricing';
 import { isFeatureEnabled } from '@/lib/feature-flags';
-import { escapeHtml, sendTransactionalEmail } from '@/lib/email/transactional';
+import { escapeHtml, renderEmailShell, sendTransactionalEmail } from '@/lib/email/transactional';
 import { issueCaseAccessToken, revokeCaseAccessTokens } from './access';
 import { buildCaseUrl, sendCaseAccessEmail } from './emails';
 import {
@@ -20,14 +20,21 @@ import {
   CASE_DOCUMENT_DEFINITIONS,
   buildCaseDocumentSnapshot,
   isCaseDocumentIncluded,
-  validateCaseDocumentData,
   isCaseDocumentKind,
+  validateCaseDocumentData,
 } from './documents';
-import type { CaseDocument, CaseOwnerRole, CasePriceMode, CaseRecord } from './types';
-import { WORK_ORDER_STAGE_DEFINITIONS, isCaseStage, parseIsoDate } from './workflow';
+import type { CaseDocument, CaseKind, CaseOwnerRole, CasePriceMode, CaseRecord } from './types';
+import { getStageDefinition, isCaseStageForKind, parseIsoDate } from './workflow';
 
 export function isCaseEngineEnabled(): boolean {
   return isFeatureEnabled('caseEngine');
+}
+
+export function isCaseKindEnabled(kind: CaseKind): boolean {
+  if (!isCaseEngineEnabled()) return false;
+  if (kind === 'rental') return isFeatureEnabled('caseRental');
+  if (kind === 'vehicle_transfer') return isFeatureEnabled('caseVehicle');
+  return true;
 }
 
 type DraftRecord = {
@@ -46,41 +53,76 @@ export type CreateCaseFromOrderResult =
   | { ok: true; record: CaseRecord; token: string; url: string; created: boolean; emailSent: boolean }
   | { ok: false; reason: 'not_found' | 'not_paid' | 'forbidden' | 'unsupported' | 'disabled' };
 
-function parseOwnerRole(value: unknown): CaseOwnerRole {
-  return value === 'contractor' || value === 'customer' ? value : 'unknown';
+function caseKindForContract(contractType: string): CaseKind | null {
+  if (contractType === 'work_contract') return 'work_order';
+  if (contractType === 'lease') return 'rental';
+  if (contractType === 'car_sale') return 'vehicle_transfer';
+  return null;
+}
+
+function parseOwnerRole(value: unknown, kind: CaseKind): CaseOwnerRole {
+  if (kind === 'work_order' && (value === 'contractor' || value === 'customer')) return value;
+  if (kind === 'rental' && (value === 'landlord' || value === 'tenant')) return value;
+  if (kind === 'vehicle_transfer' && (value === 'seller' || value === 'buyer')) return value;
+  return 'unknown';
 }
 
 function parsePriceMode(value: unknown): CasePriceMode {
   return value === 'after_completion' || value === 'with_deposit' || value === 'milestones' ? value : 'unknown';
 }
 
-/**
- * Cena díla se přebírá jen v korunách a s haléřovou přesností. Smlouva může
- * být v jiné měně — pak se částka do případu nepřenáší, protože bez
- * přepočtu by se v UI označila jako Kč.
- */
 export function parseAmountCzk(value: unknown, currency: unknown = 'Kč'): number | null {
   const unit = typeof currency === 'string' ? currency.trim().toLowerCase() : '';
   if (unit && unit !== 'kč' && unit !== 'czk' && unit !== 'kc') return null;
-  let num: number;
-  if (typeof value === 'number') num = value;
-  else if (typeof value === 'string') num = Number(value.replace(/kč/i, '').replace(/\s/g, '').replace(',', '.'));
-  else return null;
-  return Number.isFinite(num) && num > 0 ? Math.round(num * 100) / 100 : null;
+  const number = typeof value === 'number'
+    ? value
+    : typeof value === 'string'
+      ? Number(value.replace(/kč/i, '').replace(/\s/g, '').replace(',', '.'))
+      : Number.NaN;
+  return Number.isFinite(number) && number > 0 ? Math.round(number * 100) / 100 : null;
+}
+
+function text(payload: Record<string, unknown>, key: string): string {
+  return typeof payload[key] === 'string' ? String(payload[key]).trim() : '';
 }
 
 /**
- * Založí zakázku ze zaplacené objednávky smlouvy o dílo.
- *
- * Autorizace: Stripe session musí být `paid` a token musí odpovídat
- * download tokenu draftu (stejná kapabilita, kterou má kupující na success
- * stránce). Bez ní by kdokoli se session_id mohl založit případ na cizí e-mail.
- * Idempotentní: opakované volání vrátí existující případ a nový odkaz.
+ * Case title deliberately avoids copying an address, VIN, party name or other
+ * contract identifiers into the long-lived workflow layer.
  */
-export async function createCaseFromPaidOrder(input: {
-  sessionId: string;
-  token: string;
-}): Promise<CreateCaseFromOrderResult> {
+function buildTitle(kind: CaseKind, payload: Record<string, unknown>, role: CaseOwnerRole): string {
+  if (kind === 'work_order') return text(payload, 'workTitle') || 'Zakázka';
+  if (kind === 'rental') return 'Pronájem bytu';
+  const vehicle = [text(payload, 'carMake'), text(payload, 'carModel')].filter(Boolean).join(' ').slice(0, 70);
+  const prefix = role === 'buyer' ? 'Koupě' : role === 'seller' ? 'Prodej' : 'Převod';
+  return vehicle ? `${prefix} ${vehicle}` : `${prefix} vozidla`;
+}
+
+function caseDates(kind: CaseKind, payload: Record<string, unknown>) {
+  if (kind === 'work_order') {
+    return {
+      startDate: parseIsoDate(payload.startDate) ? String(payload.startDate) : null,
+      deadline: parseIsoDate(payload.endDate) ? String(payload.endDate) : null,
+    };
+  }
+  if (kind === 'rental') {
+    const startDate = parseIsoDate(payload.startDate) ? String(payload.startDate) : null;
+    const handover = parseIsoDate(payload.handoverDate) ? String(payload.handoverDate) : null;
+    const endDate = parseIsoDate(payload.endDate) ? String(payload.endDate) : null;
+    return { startDate, deadline: handover ?? endDate };
+  }
+  const handover = parseIsoDate(payload.handoverDate) ? String(payload.handoverDate) : null;
+  return { startDate: handover, deadline: handover };
+}
+
+function packageForCase(kind: CaseKind, packageKey: unknown): CaseRecord['origin']['packageKey'] {
+  if (kind === 'work_order' && packageKey === 'work_order') return 'work_order';
+  if (kind === 'rental' && packageKey === 'landlord') return 'landlord';
+  if (kind === 'vehicle_transfer' && packageKey === 'vehicle_sale') return 'vehicle_sale';
+  return null;
+}
+
+export async function createCaseFromPaidOrder(input: { sessionId: string; token: string }): Promise<CreateCaseFromOrderResult> {
   if (!isCaseEngineEnabled()) return { ok: false, reason: 'disabled' };
 
   const session = await stripe.checkout.sessions.retrieve(input.sessionId);
@@ -94,53 +136,67 @@ export async function createCaseFromPaidOrder(input: {
   if (!draft.downloadToken || draft.downloadToken !== input.token) return { ok: false, reason: 'forbidden' };
 
   const contractType = String(session.metadata?.contractType || draft.contractType || '');
-  if (contractType !== 'work_contract') return { ok: false, reason: 'unsupported' };
+  const kind = caseKindForContract(contractType);
+  if (!kind) return { ok: false, reason: 'unsupported' };
+  if (!isCaseKindEnabled(kind)) return { ok: false, reason: 'disabled' };
 
-  const ownerEmail = String(draft.deliveryEmail || draft.customerEmail || session.customer_details?.email || '')
-    .trim()
-    .toLowerCase();
+  const ownerEmail = String(draft.deliveryEmail || draft.customerEmail || session.customer_details?.email || '').trim().toLowerCase();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ownerEmail)) return { ok: false, reason: 'not_found' };
 
-  let record: CaseRecord | null = null;
+  let record = typeof draft.caseId === 'string' ? await getCase(draft.caseId) : null;
   let created = false;
-  if (typeof draft.caseId === 'string') {
-    record = await getCase(draft.caseId);
-  }
   if (!record) {
     const payload = draft.payload && typeof draft.payload === 'object' ? draft.payload : {};
+    const ownerRole = parseOwnerRole(payload.partnerUserRole, kind);
     const tier = normalizePricingTier(String(session.metadata?.tier || draft.tier || 'basic'));
-    const packageKey = draft.packageKey === 'work_order' ? 'work_order' : null;
+    const packageKey = packageForCase(kind, draft.packageKey);
+    const dates = caseDates(kind, payload);
+
     record = buildCaseRecord({
+      kind,
       ownerEmail,
-      ownerRole: parseOwnerRole(payload.partnerUserRole),
-      title: typeof payload.workTitle === 'string' ? payload.workTitle : 'Zakázka',
-      startDate: parseIsoDate(payload.startDate) ? String(payload.startDate) : null,
-      deadline: parseIsoDate(payload.endDate) ? String(payload.endDate) : null,
-      priceAmountCzk: parseAmountCzk(payload.priceAmount, payload.currency),
-      priceMode: parsePriceMode(payload.paymentType),
+      ownerRole,
+      title: buildTitle(kind, payload, ownerRole),
+      startDate: dates.startDate,
+      deadline: dates.deadline,
+      priceAmountCzk: kind === 'work_order' ? parseAmountCzk(payload.priceAmount, payload.currency) : null,
+      priceMode: kind === 'work_order' ? parsePriceMode(payload.paymentType) : 'unknown',
       origin: {
         source: 'success_page',
-        contractType: 'work_contract',
+        contractType: contractType as CaseRecord['origin']['contractType'],
         tier: packageKey ? 'complete' : tier,
         packageKey,
       },
     });
+
+    if (kind === 'rental') {
+      record.stage = 'rental_contract';
+      record.tasks = record.tasks.map((task) => task.key === 'rental_contract_ready'
+        ? { ...task, done: true, doneAt: new Date().toISOString() }
+        : task);
+    }
+    if (kind === 'vehicle_transfer') {
+      record.stage = 'vehicle_contract';
+      record.tasks = record.tasks.map((task) => task.key === 'vehicle_contract_ready'
+        ? { ...task, done: true, doneAt: new Date().toISOString() }
+        : task);
+    }
+
     record = await saveCase(record);
     created = true;
-    // Propojení objednávky s případem, aby opakované kliknutí nevytvořilo duplikát.
     const ttl = await redis.ttl(draftKey);
     await redis.set(draftKey, { ...draft, caseId: record.id }, ttl > 0 ? { ex: ttl } : undefined);
   }
 
   const token = await issueCaseAccessToken(record.id, ownerEmail);
-  const url = buildCaseUrl(record.id, token);
+  const url = buildCaseUrl(record.id, token, undefined, record.kind);
   let emailSent = false;
   if (created) {
     const emailToken = await issueCaseAccessToken(record.id, ownerEmail);
     const result = await sendCaseAccessEmail({
       to: ownerEmail,
-      caseTitle: record.title,
-      url: buildCaseUrl(record.id, emailToken),
+      record,
+      url: buildCaseUrl(record.id, emailToken, undefined, record.kind),
       idempotencyKey: `case-created-${record.id}`,
       reason: 'created',
     });
@@ -149,49 +205,32 @@ export async function createCaseFromPaidOrder(input: {
   return { ok: true, record, token, url, created, emailSent };
 }
 
-/**
- * Pošle návratové odkazy ke všem zakázkám e-mailu. Volající vždy odpovídá
- * stejně, ať e-mail případy má nebo ne (žádná enumerace).
- */
 export async function sendCaseLinksForEmail(email: string): Promise<{ cases: number; emailSent: boolean }> {
   const ids = await listCaseIdsForEmail(email);
-  const records = (await Promise.all(ids.map((id) => getCase(id)))).filter((record): record is CaseRecord => Boolean(record));
-  if (records.length === 0) return { cases: 0, emailSent: false };
+  const records = (await Promise.all(ids.map((id) => getCase(id)))).filter((item): item is CaseRecord => Boolean(item));
+  if (!records.length) return { cases: 0, emailSent: false };
 
-  const links = await Promise.all(
-    records.slice(0, 10).map(async (record) => ({
-      record,
-      url: buildCaseUrl(record.id, await issueCaseAccessToken(record.id, email)),
-    })),
-  );
-
-  const items = links
-    .map(
-      ({ record, url }) =>
-        `<li style="margin:0 0 12px;"><a href="${escapeHtml(url)}" style="color:#e2c77b;font-weight:700;text-decoration:none;">${escapeHtml(record.title)}</a><br><span style="color:#94a3b8;font-size:12px;">Fáze: ${escapeHtml(WORK_ORDER_STAGE_DEFINITIONS[record.stage].label)}</span></li>`,
-    )
-    .join('');
-  const html = `<!DOCTYPE html><html lang="cs"><head><meta charset="UTF-8"><title>Návratové odkazy k zakázkám</title></head>
-<body style="background:#05080f;font-family:Arial,sans-serif;color:#e2e8f0;padding:40px 20px;margin:0;">
-  <div style="max-width:580px;margin:0 auto;background:#0c1426;border-radius:24px;border:1px solid #1e2940;padding:40px;">
-    <div style="text-align:center;margin-bottom:28px;"><div style="display:inline-block;background:#c9a852;color:#07111e;font-weight:900;font-size:18px;padding:10px 18px;border-radius:12px;">SmlouvaHned</div></div>
-    <h1 style="color:#fff;font-size:24px;font-weight:800;margin:0 0 12px;text-align:center;">Vaše zakázky</h1>
-    <p style="color:#94a3b8;font-size:15px;line-height:1.6;text-align:center;margin:0 0 24px;">Požádali jste o návratové odkazy. Každý odkaz platí 30 dní a je určený jen vám.</p>
-    <ul style="list-style:none;padding:0;margin:0 0 24px;">${items}</ul>
-    <p style="color:#64748b;font-size:12px;line-height:1.6;text-align:center;margin:0;">Pokud jste o odkazy nežádali, tento e-mail ignorujte. Odkazy nikomu nepřeposílejte.</p>
-  </div>
-</body></html>`;
+  const links = await Promise.all(records.slice(0, 10).map(async (record) => ({
+    record,
+    url: buildCaseUrl(record.id, await issueCaseAccessToken(record.id, email), undefined, record.kind),
+  })));
+  const list = links.map(({ record, url }) => {
+    const stage = getStageDefinition(record.kind, record.stage);
+    return `<li style="margin:0 0 12px"><a href="${escapeHtml(url)}">${escapeHtml(record.title)}</a> — ${escapeHtml(stage?.label ?? 'Aktivní')}</li>`;
+  }).join('');
   const result = await sendTransactionalEmail({
     to: email,
-    subject: `Návratové odkazy k vašim zakázkám (${records.length})`,
-    html,
-    text: `Vaše zakázky:\n\n${links.map(({ record, url }) => `${record.title}: ${url}`).join('\n')}`,
+    subject: `Návratové odkazy k vašim případům (${records.length})`,
     idempotencyKey: `case-links-${randomUUID()}`,
+    html: renderEmailShell({
+      heading: 'Vaše případy',
+      intro: `<ul style="padding-left:18px">${list}</ul>`,
+      footerNote: 'Odkazy jsou funkční přístupové klíče. Nikomu je nepřeposílejte.',
+    }),
+    text: links.map(({ record, url }) => `${record.title}: ${url}`).join('\n'),
   });
   return { cases: records.length, emailSent: result.ok };
 }
-
-// ── Akce nad případem ─────────────────────────────────────────────────────
 
 export type CaseAction =
   | { type: 'set_stage'; stage: string }
@@ -210,139 +249,100 @@ export type CaseActionResult =
 export function parseCaseAction(input: unknown): CaseAction | null {
   if (!input || typeof input !== 'object' || Array.isArray(input)) return null;
   const body = input as Record<string, unknown>;
-  switch (body.type) {
-    case 'set_stage':
-      return typeof body.stage === 'string' ? { type: 'set_stage', stage: body.stage } : null;
-    case 'set_deadline':
-      return body.deadline === null || typeof body.deadline === 'string'
-        ? { type: 'set_deadline', deadline: body.deadline }
-        : null;
-    case 'set_title':
-      return typeof body.title === 'string' ? { type: 'set_title', title: body.title } : null;
-    case 'toggle_task':
-      return typeof body.taskKey === 'string' && typeof body.done === 'boolean'
-        ? { type: 'toggle_task', taskKey: body.taskKey, done: body.done }
-        : null;
-    case 'set_reminders':
-      return typeof body.enabled === 'boolean' ? { type: 'set_reminders', enabled: body.enabled } : null;
-    case 'add_note':
-      return typeof body.note === 'string' ? { type: 'add_note', note: body.note } : null;
-    case 'revoke_links':
-      return { type: 'revoke_links' };
-    case 'delete':
-      return { type: 'delete' };
-    default:
-      return null;
-  }
+  if (body.type === 'set_stage' && typeof body.stage === 'string') return { type: 'set_stage', stage: body.stage };
+  if (body.type === 'set_deadline' && (body.deadline === null || typeof body.deadline === 'string')) return { type: 'set_deadline', deadline: body.deadline };
+  if (body.type === 'set_title' && typeof body.title === 'string') return { type: 'set_title', title: body.title };
+  if (body.type === 'toggle_task' && typeof body.taskKey === 'string' && typeof body.done === 'boolean') return { type: 'toggle_task', taskKey: body.taskKey, done: body.done };
+  if (body.type === 'set_reminders' && typeof body.enabled === 'boolean') return { type: 'set_reminders', enabled: body.enabled };
+  if (body.type === 'add_note' && typeof body.note === 'string') return { type: 'add_note', note: body.note };
+  if (body.type === 'revoke_links') return { type: 'revoke_links' };
+  if (body.type === 'delete') return { type: 'delete' };
+  return null;
 }
 
-/**
- * Akce se validují proti záznamu, který klient viděl, ale zapisují se nad
- * čerstvým stavem (commitCase): souběžný webhook nebo druhá karta nemohou
- * být přepsány starým snapshotem.
- */
 export async function applyCaseAction(record: CaseRecord, action: CaseAction): Promise<CaseActionResult> {
   const now = new Date();
-  const commit = async (mutate: (fresh: CaseRecord) => CaseRecord | Promise<CaseRecord>): Promise<CaseRecord | null> =>
-    commitCase(record.id, mutate, now);
-  const gone: CaseActionResult = { ok: false, message: 'Zakázka už neexistuje.' };
-  switch (action.type) {
-    case 'set_stage': {
-      if (!isCaseStage(action.stage)) return { ok: false, message: 'Neplatná fáze zakázky.', field: 'stage' };
-      if (action.stage === record.stage) return { ok: true, record, eventType: 'noop' };
-      const stage = action.stage;
-      const label = WORK_ORDER_STAGE_DEFINITIONS[stage].label;
-      const next = await commit((fresh) => ({
-        ...fresh,
-        stage,
-        closedAt: stage === 'closed' ? fresh.closedAt ?? now.toISOString() : null,
-        events: [...fresh.events, newEvent('stage_changed', `Fáze změněna na „${label}“`)],
-      }));
-      return next ? { ok: true, record: next, eventType: 'stage_changed' } : gone;
-    }
-    case 'set_deadline': {
-      if (action.deadline !== null && !parseIsoDate(action.deadline)) {
-        return { ok: false, message: 'Zadejte platné datum ve formátu RRRR-MM-DD.', field: 'deadline' };
-      }
-      const next = await commit(async (fresh) => {
-        const withDeadline: CaseRecord = {
-          ...fresh,
-          deadline: action.deadline,
-          tasks: fresh.tasks.map((task) =>
-            task.key === 'deadline_set' ? { ...task, done: Boolean(action.deadline), doneAt: action.deadline ? now.toISOString() : null } : task,
-          ),
-          events: [
-            ...fresh.events,
-            newEvent('deadline_set', action.deadline ? `Termín dokončení nastaven na ${action.deadline}` : 'Termín dokončení odstraněn'),
-          ],
-        };
-        return rescheduleReminders(withDeadline, withDeadline.remindersEnabled && Boolean(action.deadline), now);
-      });
-      return next ? { ok: true, record: next, eventType: 'deadline_set' } : gone;
-    }
-    case 'set_title': {
-      const title = action.title.trim().slice(0, 120);
-      if (!title) return { ok: false, message: 'Název zakázky nesmí být prázdný.', field: 'title' };
-      const next = await commit((fresh) => ({ ...fresh, title }));
-      return next ? { ok: true, record: next, eventType: 'title_changed' } : gone;
-    }
-    case 'toggle_task': {
-      const task = record.tasks.find((item) => item.key === action.taskKey);
-      if (!task) return { ok: false, message: 'Úkol nebyl nalezen.', field: 'taskKey' };
-      const next = await commit((fresh) => ({
-        ...fresh,
-        tasks: fresh.tasks.map((item) =>
-          item.key === action.taskKey ? { ...item, done: action.done, doneAt: action.done ? now.toISOString() : null } : item,
-        ),
-        events: [...fresh.events, newEvent(action.done ? 'task_done' : 'task_reopened', `${action.done ? 'Splněno' : 'Znovu otevřeno'}: ${task.label}`)],
-      }));
-      return next ? { ok: true, record: next, eventType: action.done ? 'task_done' : 'task_reopened' } : gone;
-    }
-    case 'set_reminders': {
-      if (action.enabled && !record.deadline) {
-        return { ok: false, message: 'Nejdřív nastavte termín dokončení.', field: 'deadline' };
-      }
-      const next = await commit(async (fresh) => {
-        const rescheduled = await rescheduleReminders(fresh, action.enabled && Boolean(fresh.deadline), now);
-        return {
-          ...rescheduled,
-          events: [...fresh.events, newEvent(action.enabled ? 'reminders_enabled' : 'reminders_disabled', action.enabled ? 'Připomínky termínu zapnuty' : 'Připomínky termínu vypnuty')],
-        };
-      });
-      return next ? { ok: true, record: next, eventType: action.enabled ? 'reminders_enabled' : 'reminders_disabled' } : gone;
-    }
-    case 'add_note': {
-      const note = action.note.trim().slice(0, 500);
-      if (!note) return { ok: false, message: 'Poznámka nesmí být prázdná.', field: 'note' };
-      const next = await commit((fresh) => ({ ...fresh, events: [...fresh.events, newEvent('note', note)] }));
-      return next ? { ok: true, record: next, eventType: 'note' } : gone;
-    }
-    case 'revoke_links': {
-      await revokeCaseAccessTokens(record.id);
-      const next = await commit((fresh) => ({ ...fresh, events: [...fresh.events, newEvent('links_revoked', 'Všechny návratové odkazy zneplatněny')] }));
-      return next ? { ok: true, record: next, eventType: 'links_revoked' } : gone;
-    }
-    case 'delete': {
-      await revokeCaseAccessTokens(record.id);
-      await deleteCase(record);
-      return { ok: true, record: null, eventType: 'deleted' };
-    }
-    default:
-      return { ok: false, message: 'Neznámá akce.' };
-  }
-}
+  const save = (mutate: (fresh: CaseRecord) => CaseRecord | Promise<CaseRecord>) => commitCase(record.id, mutate, now);
+  const gone: CaseActionResult = { ok: false, message: 'Případ už neexistuje.' };
 
-// ── Navazující dokumenty ──────────────────────────────────────────────────
+  if (action.type === 'set_stage') {
+    if (!isCaseStageForKind(record.kind, action.stage)) return { ok: false, message: 'Neplatná fáze případu.', field: 'stage' };
+    if (action.stage === record.stage) return { ok: true, record, eventType: 'noop' };
+    const stage = action.stage;
+    const label = getStageDefinition(record.kind, stage)?.label ?? stage;
+    const next = await save((fresh) => ({ ...fresh, stage, closedAt: stage === 'closed' ? fresh.closedAt ?? now.toISOString() : null, events: [...fresh.events, newEvent('stage_changed', `Fáze změněna na „${label}“`)] }));
+    return next ? { ok: true, record: next, eventType: stage === 'closed' ? 'case_completed' : 'stage_changed' } : gone;
+  }
+
+  if (action.type === 'set_deadline') {
+    if (action.deadline !== null && !parseIsoDate(action.deadline)) return { ok: false, message: 'Zadejte platné datum ve formátu RRRR-MM-DD.', field: 'deadline' };
+    const next = await save(async (fresh) => {
+      const withDeadline: CaseRecord = {
+        ...fresh,
+        deadline: action.deadline,
+        tasks: fresh.tasks.map((task) => task.key === 'deadline_set' ? { ...task, done: Boolean(action.deadline), doneAt: action.deadline ? now.toISOString() : null } : task),
+        events: [...fresh.events, newEvent('deadline_set', action.deadline ? `Důležitý termín nastaven na ${action.deadline}` : 'Důležitý termín odstraněn')],
+      };
+      return rescheduleReminders(withDeadline, withDeadline.remindersEnabled && Boolean(action.deadline), now);
+    });
+    return next ? { ok: true, record: next, eventType: 'deadline_set' } : gone;
+  }
+
+  if (action.type === 'set_title') {
+    const title = action.title.trim().slice(0, 120);
+    if (!title) return { ok: false, message: 'Název případu nesmí být prázdný.', field: 'title' };
+    const next = await save((fresh) => ({ ...fresh, title }));
+    return next ? { ok: true, record: next, eventType: 'title_changed' } : gone;
+  }
+
+  if (action.type === 'toggle_task') {
+    const task = record.tasks.find((item) => item.key === action.taskKey);
+    if (!task) return { ok: false, message: 'Úkol nebyl nalezen.', field: 'taskKey' };
+    const next = await save((fresh) => ({
+      ...fresh,
+      tasks: fresh.tasks.map((item) => item.key === action.taskKey ? { ...item, done: action.done, doneAt: action.done ? now.toISOString() : null } : item),
+      events: [...fresh.events, newEvent(action.done ? 'task_done' : 'task_reopened', `${action.done ? 'Splněno' : 'Znovu otevřeno'}: ${task.label}`)],
+    }));
+    return next ? { ok: true, record: next, eventType: action.done ? 'task_done' : 'task_reopened' } : gone;
+  }
+
+  if (action.type === 'set_reminders') {
+    if (action.enabled && !record.deadline) return { ok: false, message: 'Nejdřív nastavte důležitý termín.', field: 'deadline' };
+    const next = await save(async (fresh) => {
+      const rescheduled = await rescheduleReminders(fresh, action.enabled && Boolean(fresh.deadline), now);
+      return { ...rescheduled, events: [...fresh.events, newEvent(action.enabled ? 'reminders_enabled' : 'reminders_disabled', action.enabled ? 'Připomínky termínu zapnuty' : 'Připomínky termínu vypnuty')] };
+    });
+    return next ? { ok: true, record: next, eventType: action.enabled ? 'reminders_enabled' : 'reminders_disabled' } : gone;
+  }
+
+  if (action.type === 'add_note') {
+    const note = action.note.trim().slice(0, 500);
+    if (!note) return { ok: false, message: 'Poznámka nesmí být prázdná.', field: 'note' };
+    const next = await save((fresh) => ({ ...fresh, events: [...fresh.events, newEvent('note', note)] }));
+    return next ? { ok: true, record: next, eventType: 'note' } : gone;
+  }
+
+  if (action.type === 'revoke_links') {
+    await revokeCaseAccessTokens(record.id);
+    const next = await save((fresh) => ({ ...fresh, events: [...fresh.events, newEvent('links_revoked', 'Všechny návratové odkazy zneplatněny')] }));
+    return next ? { ok: true, record: next, eventType: 'links_revoked' } : gone;
+  }
+
+  await revokeCaseAccessTokens(record.id);
+  await deleteCase(record);
+  return { ok: true, record: null, eventType: 'deleted' };
+}
 
 export type PrepareDocumentResult =
   | { ok: true; record: CaseRecord; document: CaseDocument; requiresPayment: boolean }
   | { ok: false; message: string; field?: string };
 
 export async function prepareCaseDocument(record: CaseRecord, kindInput: unknown, dataInput: unknown): Promise<PrepareDocumentResult> {
+  if (record.kind !== 'work_order') return { ok: false, message: 'Tento navazující dokument je zatím dostupný pouze pro zakázku.' };
   if (!isCaseDocumentKind(kindInput)) return { ok: false, message: 'Neznámý typ dokumentu.', field: 'kind' };
   const validation = validateCaseDocumentData(kindInput, dataInput);
   if (!validation.ok) return { ok: false, message: validation.message, field: validation.field };
-  if (record.documents.length >= 40) return { ok: false, message: 'Zakázka již obsahuje maximální počet dokumentů.' };
+  if (record.documents.length >= 40) return { ok: false, message: 'Případ již obsahuje maximální počet dokumentů.' };
 
   const included = isCaseDocumentIncluded(record);
   const now = new Date();
@@ -350,8 +350,6 @@ export async function prepareCaseDocument(record: CaseRecord, kindInput: unknown
   let document: CaseDocument | null = null;
   const next = await commitCase(record.id, (fresh) => {
     if (fresh.documents.length >= 40) throw new Error('document_limit');
-    // Podoba dokumentu se zmrazí nad čerstvým stavem zakázky; pozdější změna
-    // termínu nebo názvu už vydaný dokument nemění.
     document = {
       id: randomUUID(),
       kind,
@@ -365,16 +363,12 @@ export async function prepareCaseDocument(record: CaseRecord, kindInput: unknown
       createdAt: now.toISOString(),
       paidAt: included ? now.toISOString() : null,
     };
-    return {
-      ...fresh,
-      documents: [...fresh.documents, document],
-      events: [...fresh.events, newEvent('document_created', `${document.title} připraven${included ? '' : ' (čeká na platbu)'}`)],
-    };
+    return { ...fresh, documents: [...fresh.documents, document], events: [...fresh.events, newEvent('document_created', `${document.title} připraven${included ? '' : ' (čeká na platbu)'}`)] };
   }, now).catch((error: unknown) => {
     if (error instanceof Error && error.message === 'document_limit') return null;
     throw error;
   });
-  if (!next || !document) return { ok: false, message: 'Zakázka již obsahuje maximální počet dokumentů.' };
+  if (!next || !document) return { ok: false, message: 'Případ již obsahuje maximální počet dokumentů.' };
   return { ok: true, record: next, document, requiresPayment: !included };
 }
 
@@ -383,13 +377,14 @@ export async function markCaseDocumentPaid(caseId: string, documentId: string, s
   let found = true;
   const next = await commitCase(caseId, (fresh) => {
     const document = fresh.documents.find((item) => item.id === documentId);
-    if (!document) { found = false; return fresh; }
+    if (!document) {
+      found = false;
+      return fresh;
+    }
     if (document.status === 'ready') return fresh;
     return {
       ...fresh,
-      documents: fresh.documents.map((item) =>
-        item.id === documentId ? { ...item, status: 'ready' as const, paidAt: now.toISOString(), stripeSessionId } : item,
-      ),
+      documents: fresh.documents.map((item) => item.id === documentId ? { ...item, status: 'ready' as const, paidAt: now.toISOString(), stripeSessionId } : item),
       events: [...fresh.events, newEvent('document_paid', `${document.title} zaplacen a připraven ke stažení`)],
     };
   }, now);

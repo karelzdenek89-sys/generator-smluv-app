@@ -1,10 +1,9 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   quality:
@@ -15,11 +14,12 @@ jobs:
         with:
           node-version: '24'
           cache: npm
-      - run: npm ci
       # Audit the production supply chain (what actually ships). Dev-only lint
-      # tooling (eslint/brace-expansion) is excluded — its advisories never reach
-      # the browser bundle and would otherwise block deploys on upstream churn.
+      # tooling is excluded because its advisories never reach the browser bundle.
+      - run: npm ci
       - run: npm audit --audit-level=moderate --omit=dev
+      # Full suite runs once on the final PR SHA. Acceptance preview and the
+      # subsequent fast-forward production release reuse that exact SHA.
       - run: npm run test:pre-deploy
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e

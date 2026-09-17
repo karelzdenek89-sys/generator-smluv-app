@@ -20,8 +20,9 @@ function subscribeToLocation(callback: () => void) {
 }
 
 function getQueryLocaleSnapshot(): 'en' | 'ua' | null {
-  const contractType = getContractTypeByPath(window.location.pathname);
-  if (!contractType || !isExpatContract(contractType)) return null;
+  const pathname = window.location.pathname;
+  const contractType = getContractTypeByPath(pathname);
+  if ((!contractType || !isExpatContract(contractType)) && pathname !== '/zakaznicka-zona') return null;
   const raw = new URLSearchParams(window.location.search).get('lang');
   const normalized = raw ? normalizeLocale(raw) : 'cs';
   return normalized === 'en' || normalized === 'ua' ? normalized : null;
@@ -29,22 +30,18 @@ function getQueryLocaleSnapshot(): 'en' | 'ua' | null {
 
 export default function RouteChrome() {
   const pathname = usePathname();
-  const queryLocale = useSyncExternalStore(
-    subscribeToLocation,
-    getQueryLocaleSnapshot,
-    () => null,
-  );
+  const queryLocale = useSyncExternalStore(subscribeToLocation, getQueryLocaleSnapshot, () => null);
   const locale = getLocaleFromPathname(pathname, queryLocale ?? 'cs');
-  const isForeignLocale = locale !== 'cs';
 
   useEffect(() => {
     document.documentElement.lang = locale === 'ua' ? 'uk' : locale;
   }, [locale]);
 
-  const showSiteHeader =
-    pathname !== '/' &&
-    !isForeignLocale &&
-    !pathname.startsWith('/success');
+  // Private post-purchase surfaces deliberately render without the global Czech
+  // header. This prevents a foreign-language customer from landing under Czech
+  // navigation even when an older purchase e-mail did not carry ?lang=.
+  const privateSurface = pathname === '/zakaznicka-zona' || pathname.startsWith('/success');
+  const showSiteHeader = pathname !== '/' && locale === 'cs' && !privateSurface;
 
   return showSiteHeader ? <SiteHeader /> : null;
 }
