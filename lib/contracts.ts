@@ -1094,6 +1094,35 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
     if (translations[i]) sections[i].translations = translations[i];
   }
 
+  // Balíček Pronajímatel výslovně zahrnuje potvrzení o převzetí kauce.
+  // Samotné potvrzení pouze dokládá převzetí částky; nemění obsah smlouvy.
+  if (d.packageKey === 'landlord') {
+    sections.push({
+      title: 'PŘÍLOHA Č. 2 – POTVRZENÍ O PŘEVZETÍ PENĚŽITÉ JISTOTY (KAUCE)',
+      body: hasDeposit
+        ? [
+            `Pronajímatel ${asText(d.landlordName)} potvrzuje, že od nájemce ${asText(d.tenantName)} převzal peněžitou jistotu k nájmu bytu na adrese ${propertyAddress}.`,
+            `Výše převzaté jistoty: ${formatAmount(d.depositAmount)} Kč.`,
+            'Datum převzetí / připsání částky: ................................',
+            'Způsob úhrady: [ ] hotovost  [ ] bankovní převod  [ ] jiný: ................................',
+            'Poznámka / identifikace platby: ................................',
+            'Toto potvrzení osvědčuje pouze převzetí uvedené částky. Nemění účel, podmínky započtení ani vrácení jistoty sjednané v nájemní smlouvě a podle právních předpisů.',
+            'V ................................ dne ................................',
+            'Pronajímatel – podpis: ................................  Nájemce – potvrzení převzetí dokladu: ................................',
+          ]
+        : [
+            `Nájemní smlouva k bytu na adrese ${propertyAddress} peněžitou jistotu nesjednává.`,
+            'Tento formulář je proto pouze připraveným vzorem pro případ, že strany peněžitou jistotu později výslovně písemně sjednají a nájemce ji skutečně uhradí.',
+            'Samotné vyplnění tohoto potvrzení peněžitou jistotu nezakládá ani nemění nájemní smlouvu.',
+            'Výše převzaté jistoty: ................................ Kč',
+            'Datum převzetí / připsání částky: ................................',
+            'Způsob úhrady: [ ] hotovost  [ ] bankovní převod  [ ] jiný: ................................',
+            'V ................................ dne ................................',
+            'Pronajímatel – podpis: ................................  Nájemce – potvrzení převzetí dokladu: ................................',
+          ],
+    });
+  }
+
   return sections;
 }
 
@@ -2345,7 +2374,7 @@ function buildDebtAcknowledgmentSections(d: StoredContractData): ContractSection
 
   const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
-      title: 'V. PŘÍMÁ VYKONATELNOST (EXEKUČNÍ DOLOŽKA)',
+      title: 'V. SOUČINNOST K NOTÁŘSKÉMU ZÁPISU SE SVOLENÍM K VYKONATELNOSTI',
       body: [
         'Dlužník výslovně souhlasí s tím, aby toto uznání dluhu bylo na výzvu věřitele sepsáno formou notářského zápisu se svolením k přímé vykonatelnosti podle § 71b zákona č. 358/1992 Sb., notářský řád. Tato listina sama o sobě přímou vykonatelnost nezakládá; tu zakládá až notářský zápis pořízený dle tohoto ujednání.',
         'Dlužník se zavazuje dostavit se k notáři určenému dohodou stran (popř. zvolenému věřitelem) do 30 dnů od písemné výzvy věřitele a poskytnout součinnost potřebnou k sepsání notářského zápisu, včetně předložení dokladu totožnosti a podkladů osvědčujících existenci a výši dluhu.',

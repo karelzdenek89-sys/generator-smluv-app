@@ -79,7 +79,7 @@ async function pdfOutput(data: StoredContractData) {
 }
 
 async function main() {
-  assert.deepEqual(getCheckoutAddonIncludedItems(['docx']), ['Editovatelná DOCX verze dokumentu']);
+  assert.deepEqual(getCheckoutAddonIncludedItems(['docx']), ['Editovatelná DOCX verze hlavního smluvního dokumentu']);
   assert.equal(getCheckoutAddonsTotalCzk(['docx', 'handover_protocol']), 128);
   assert.equal(getArchiveDaysWithAddons('basic', null, ['extended_archive']), 90);
 
@@ -106,6 +106,25 @@ async function main() {
 
   const carHandover = await pdfOutput({ ...carSample, addOns: ['handover_protocol'] });
   assert.match(carHandover.text, /PŘEDÁVACÍ PROTOKOL K VOZIDLU/i);
+
+  const landlordPackage = await pdfOutput({
+    ...leaseSample,
+    tier: 'complete',
+    packageKey: 'landlord',
+    packageVersion: 1,
+  });
+  assert.match(landlordPackage.text, /PROTOKOL O PŘEDÁNÍ A PŘEVZETÍ BYTU/i);
+  assert.match(landlordPackage.text, /POTVRZENÍ O PŘEVZETÍ PENĚŽITÉ JISTOTY/i);
+  assert.match(landlordPackage.text, /36\s*000\s*Kč/i);
+
+  const vehiclePackage = await pdfOutput({
+    ...carSample,
+    tier: 'complete',
+    packageKey: 'vehicle_sale',
+    packageVersion: 1,
+  });
+  assert.match(vehiclePackage.text, /PŘEDÁVACÍ PROTOKOL K VOZIDLU/i);
+  assert.match(vehiclePackage.text, /vozidlo, klíče a doklady byly předány/i);
 
   const checklistPdf = await renderContractPdf({ ...leaseSample, addOns: ['signing_checklist'] });
   const checklistParsed = await pdfParse(checklistPdf);
@@ -134,7 +153,7 @@ async function main() {
   const docx = await renderContractDocx({ ...leaseSample, addOns: ['docx'] });
   assert.ok(docx.length > 7_000, 'DOCX add-on should produce a non-empty Word document');
 
-  console.log('Add-on value audit passed (DOCX, checklist, handover, archive, bilingual).');
+  console.log('Add-on/package value audit passed (DOCX, checklist, handover, deposit receipt, archive, bilingual).');
 }
 
 main().catch((error) => {

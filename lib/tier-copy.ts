@@ -45,7 +45,7 @@ const CONTRACT_TIER_COPY: Record<TierCopyContractType, TierContractCopy> = {
       'checklist předání bytu',
     ],
     completeIncludes: [
-      ...sharedBasicItems,
+      ...CHECKOUT_INCLUDED_ITEMS,
       'Rozšířené klauzule k doručování, sankcím a povinnostem stran',
       'Příloha s instrukcemi k podpisu a checklistem předání bytu',
       `Dostupnost odkazu ke stažení ${COMPLETE_ARCHIVE_DAYS} dní`,
@@ -63,7 +63,7 @@ const CONTRACT_TIER_COPY: Record<TierCopyContractType, TierContractCopy> = {
       'checklist převodu vozidla',
     ],
     completeIncludes: [
-      ...sharedBasicItems,
+      ...CHECKOUT_INCLUDED_ITEMS,
       'Rozšířené klauzule ke stavu vozidla, dokladům a prohlášením prodávajícího',
       'Příloha s instrukcemi k převodu a checklistem předání vozidla',
       `Dostupnost odkazu ke stažení ${COMPLETE_ARCHIVE_DAYS} dní`,
@@ -81,7 +81,7 @@ const CONTRACT_TIER_COPY: Record<TierCopyContractType, TierContractCopy> = {
       'pokyny k předání a evidenci',
     ],
     completeIncludes: [
-      ...sharedBasicItems,
+      ...CHECKOUT_INCLUDED_ITEMS,
       'Rozšířené klauzule k právnímu stavu daru a podmínkám vrácení',
       'Příloha s instrukcemi k podpisu a praktickým checklistem',
       `Dostupnost odkazu ke stažení ${COMPLETE_ARCHIVE_DAYS} dní`,
@@ -103,7 +103,7 @@ const CONTRACT_TIER_COPY: Record<TierCopyContractType, TierContractCopy> = {
       'checklist převzetí díla',
     ],
     completeIncludes: [
-      ...sharedBasicItems,
+      ...CHECKOUT_INCLUDED_ITEMS,
       'Rozšířené klauzule k vícepracím, předání díla a duševnímu vlastnictví',
       'Příloha s instrukcemi k podpisu a checklistem převzetí díla',
       `Dostupnost odkazu ke stažení ${COMPLETE_ARCHIVE_DAYS} dní`,
@@ -121,7 +121,7 @@ const CONTRACT_TIER_COPY: Record<TierCopyContractType, TierContractCopy> = {
       'checklist pro podpis a archivaci',
     ],
     completeIncludes: [
-      ...sharedBasicItems,
+      ...CHECKOUT_INCLUDED_ITEMS,
       'Rozšířené klauzule k zajištění pohledávky a prodlení dlužníka',
       'Příloha s instrukcemi k podpisu a checklistem pro archivaci',
       `Dostupnost odkazu ke stažení ${COMPLETE_ARCHIVE_DAYS} dní`,
@@ -139,7 +139,7 @@ const CONTRACT_TIER_COPY: Record<TierCopyContractType, TierContractCopy> = {
       'checklist práce s důvěrnými daty',
     ],
     completeIncludes: [
-      ...sharedBasicItems,
+      ...CHECKOUT_INCLUDED_ITEMS,
       'Rozšířené klauzule k ochraně know-how, auditu a navazujícím omezením',
       'Příloha s instrukcemi k podpisu a checklistem práce s důvěrnými informacemi',
       `Dostupnost odkazu ke stažení ${COMPLETE_ARCHIVE_DAYS} dní`,
@@ -157,7 +157,7 @@ const CONTRACT_TIER_COPY: Record<TierCopyContractType, TierContractCopy> = {
       'checklist předání věci',
     ],
     completeIncludes: [
-      ...sharedBasicItems,
+      ...CHECKOUT_INCLUDED_ITEMS,
       'Rozšířené klauzule k vadám, reklamacím a právnímu stavu věci',
       'Příloha s instrukcemi k podpisu a checklistem předání věci',
       `Dostupnost odkazu ke stažení ${COMPLETE_ARCHIVE_DAYS} dní`,
@@ -175,7 +175,7 @@ const CONTRACT_TIER_COPY: Record<TierCopyContractType, TierContractCopy> = {
       'checklist nástupu',
     ],
     completeIncludes: [
-      ...sharedBasicItems,
+      ...CHECKOUT_INCLUDED_ITEMS,
       'Rozšířené klauzule k mlčenlivosti, konkurenční doložce a ochraně zaměstnavatele',
       'Příloha s instrukcemi k podpisu a checklistem nástupu',
       `Dostupnost odkazu ke stažení ${COMPLETE_ARCHIVE_DAYS} dní`,
@@ -194,7 +194,7 @@ const CONTRACT_TIER_COPY: Record<TierCopyContractType, TierContractCopy> = {
       'checklist nástupu a předání',
     ],
     completeIncludes: [
-      ...sharedBasicItems,
+      ...CHECKOUT_INCLUDED_ITEMS,
       'Rozšířené klauzule k mlčenlivosti, výsledkům práce a ukončení dohody',
       'Příloha s instrukcemi k podpisu a checklistem nástupu',
       `Dostupnost odkazu ke stažení ${COMPLETE_ARCHIVE_DAYS} dní`,
@@ -213,7 +213,7 @@ const CONTRACT_TIER_COPY: Record<TierCopyContractType, TierContractCopy> = {
       'checklist předání služeb',
     ],
     completeIncludes: [
-      ...sharedBasicItems,
+      ...CHECKOUT_INCLUDED_ITEMS,
       'Rozšířené klauzule k úrovni služeb, sankcím a právům k výstupům',
       'Příloha s instrukcemi k podpisu a checklistem předání služeb',
       `Dostupnost odkazu ke stažení ${COMPLETE_ARCHIVE_DAYS} dní`,
@@ -232,7 +232,7 @@ const CONTRACT_TIER_COPY: Record<TierCopyContractType, TierContractCopy> = {
       'checklist předání prostoru',
     ],
     completeIncludes: [
-      ...sharedBasicItems,
+      ...CHECKOUT_INCLUDED_ITEMS,
       'Rozšířené klauzule k návaznosti na hlavní nájem, sankcím a doručování',
       'Příloha s instrukcemi k podpisu a checklistem předání prostoru',
       `Dostupnost odkazu ke stažení ${COMPLETE_ARCHIVE_DAYS} dní`,
@@ -250,7 +250,7 @@ const CONTRACT_TIER_COPY: Record<TierCopyContractType, TierContractCopy> = {
       'pokyny k úřednímu použití',
     ],
     completeIncludes: [
-      ...sharedBasicItems,
+      ...CHECKOUT_INCLUDED_ITEMS,
       'Rozšířené klauzule k ověření podpisu, odpovědnosti a použití vůči třetím stranám',
       'Příloha s instrukcemi k podpisu a checklistem pro úřední použití',
       `Dostupnost odkazu ke stažení ${COMPLETE_ARCHIVE_DAYS} dní`,
@@ -262,20 +262,20 @@ const CONTRACT_TIER_COPY: Record<TierCopyContractType, TierContractCopy> = {
     basicDescription:
       'Plnohodnotné uznání dluhu pro standardní potvrzení závazku a jeho splatnosti.',
     completeDescription:
-      'Rozšířená varianta pro případy, kde chcete detailněji upravit vykonatelnost, sankce a navazující kroky.',
+      'Rozšířená varianta pro případy, kde chcete podrobněji upravit sankce, splácení a součinnost k případnému notářskému zápisu se svolením k vykonatelnosti.',
     completeHighlights: [
-      'přímá vykonatelnost',
+      'součinnost k případnému notářskému zápisu',
       'sankce a splatnost',
       'checklist podpisu a vymáhání',
     ],
     completeIncludes: [
-      ...sharedBasicItems,
-      'Rozšířené klauzule k přímé vykonatelnosti, sankcím a navazujícím krokům',
+      ...CHECKOUT_INCLUDED_ITEMS,
+      'Ujednání o součinnosti k případnému notářskému zápisu se svolením k vykonatelnosti',
       'Příloha s instrukcemi k podpisu a checklistem pro archivaci a vymáhání',
       `Dostupnost odkazu ke stažení ${COMPLETE_ARCHIVE_DAYS} dní`,
     ],
     upsellReason:
-      'Vyšší varianta dává smysl tam, kde je důležité podrobněji upravit vymáhání dluhu nebo praktický postup po podpisu.',
+      'Vyšší varianta dává smysl tam, kde chcete podrobněji upravit sankce, splácení a praktický postup pro případné pořízení notářského zápisu.',
   },
   cooperation: {
     basicDescription:
@@ -288,7 +288,7 @@ const CONTRACT_TIER_COPY: Record<TierCopyContractType, TierContractCopy> = {
       'checklist pro zahájení spolupráce',
     ],
     completeIncludes: [
-      ...sharedBasicItems,
+      ...CHECKOUT_INCLUDED_ITEMS,
       'Rozšířené klauzule k ochraně know-how, zákazníkům a řešení sporů',
       'Příloha s instrukcemi k podpisu a checklistem pro zahájení spolupráce',
       `Dostupnost odkazu ke stažení ${COMPLETE_ARCHIVE_DAYS} dní`,
@@ -309,7 +309,7 @@ const DEFAULT_TIER_COPY: TierContractCopy = {
     'delší dostupnost odkazu',
   ],
   completeIncludes: [
-    ...sharedBasicItems,
+    ...CHECKOUT_INCLUDED_ITEMS,
     'Rozšířené varianty ustanovení podle typu dokumentu',
     'Příloha s instrukcemi k podpisu a checklistem',
     `Dostupnost odkazu ke stažení ${COMPLETE_ARCHIVE_DAYS} dní`,
