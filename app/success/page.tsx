@@ -442,13 +442,19 @@ function SuccessContent() {
             </div>
           )}
 
-          {/* Pokračování zakázky až po ověřené platbě; jednorázový funnel zůstává beze změny. */}
-          {dlState === 'ready' && sessionId && token && orderMeta?.contractType === 'work_contract' && lang === 'cs' ? (
+          {/* Volitelné pokračování případu až po jediném ověření platby.
+              Status už je známý z tohoto flow, takže nájem/auto nespouští druhý polling. */}
+          {dlState === 'ready' && sessionId && token && lang === 'cs' && (
+            orderMeta?.contractType === 'work_contract' ||
+            orderMeta?.contractType === 'lease' ||
+            orderMeta?.contractType === 'car_sale'
+          ) ? (
             <CaseOfferCard
               sessionId={sessionId}
               token={token}
               packageKey={orderMeta.packageKey}
               tier={orderMeta.tier}
+              contractType={orderMeta.contractType}
             />
           ) : null}
 

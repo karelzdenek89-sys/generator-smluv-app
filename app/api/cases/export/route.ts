@@ -4,7 +4,7 @@ import { CASE_RETENTION_DAYS, CASE_RETENTION_DAYS_CLOSED } from '@/lib/cases/sto
 
 export const runtime = 'nodejs';
 
-/** Export údajů případu (GDPR čl. 15/20) — JSON bez interních identifikátorů objednávky. */
+/** Export vlastních údajů případu — bez interních Stripe identifikátorů a checkout requestů. */
 export async function POST(req: Request) {
   const auth = await authorizeCaseRequest(req, {
     rateLimitKey: 'case-export',
@@ -24,15 +24,16 @@ export async function POST(req: Request) {
   });
   const payload = {
     exportedAt: new Date().toISOString(),
-    retention: `Případ se automaticky smaže ${CASE_RETENTION_DAYS} dní od poslední změny (uzavřená zakázka ${CASE_RETENTION_DAYS_CLOSED} dní); smazat jej lze kdykoli v zakázce.`,
+    retention: `Aktivní případ se automaticky smaže ${CASE_RETENTION_DAYS} dní od poslední změny; uzavřený případ nejpozději ${CASE_RETENTION_DAYS_CLOSED} dní od uzavření. Smazat jej lze kdykoli v pracovním prostředí.`,
     case: { ...record, origin: publicOrigin, documents },
   };
   return new NextResponse(JSON.stringify(payload, null, 2), {
     status: 200,
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
-      'Content-Disposition': `attachment; filename="zakazka-${auth.record.id.slice(0, 8)}.json"`,
+      'Content-Disposition': `attachment; filename="pripad-${auth.record.id.slice(0, 8)}.json"`,
       'Cache-Control': 'private, no-store',
+      'X-Content-Type-Options': 'nosniff',
     },
   });
 }

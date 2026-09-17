@@ -34,7 +34,7 @@ test('mobile homepage exposes the main action and a working menu without overflo
   expect(box!.y + box!.height).toBeLessThan(812);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await page.locator('nav summary').filter({ hasText: 'Menu' }).click();
-  await expect(page.locator('nav details[open]').getByRole('link', { name: 'Nástroje zdarma' })).toBeVisible();
+  await expect(page.locator('nav details[open]').getByRole('link', { name: 'Nástroje', exact: true })).toBeVisible();
 });
 
 test('service preview explains each stage and supports reduced motion', async ({ page }) => {

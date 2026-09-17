@@ -9,7 +9,7 @@ import {
   getCheckoutAddonIncludedItems,
   normalizeStoredCheckoutAddons,
 } from '@/lib/checkout-addons';
-import { readFirstPartyJson } from '@/lib/api-security';
+import { getClientIp, readFirstPartyJson } from '@/lib/api-security';
 import { takeRateLimit } from '@/lib/rate-limit';
 
 export const runtime = 'nodejs';
@@ -62,70 +62,49 @@ function draftEmail(draft: DraftData | null | undefined): string | null {
   return normalized.includes('@') ? normalized : null;
 }
 
+function toOrder(sessionId: string, draft: DraftData) {
+  const packageConfig = getThematicPackageConfig(draft.packageKey);
+  const tier = normalizePricingTier(draft.tier);
+  const addOns = normalizeStoredCheckoutAddons(draft.addOns ?? draft.payload?.addOns);
+  const displayAddOns = packageIncludesDocx(draft.packageKey) && !addOns.includes('docx')
+    ? [...addOns, 'docx' as const]
+    : addOns;
+  return {
+    sessionId,
+    contractName: CONTRACT_NAMES[draft.contractType ?? ''] ?? 'Právní dokument',
+    packageLabel: packageConfig?.title ?? null,
+    paidAt: draft.paidAt ?? null,
+    tier,
+    lang: normalizeLocale(draft.lang ?? draft.payload?.lang),
+    downloadToken: draft.downloadToken ?? null,
+    archiveDays: getArchiveDaysWithAddons(tier, draft.packageKey, addOns),
+    addOns: displayAddOns,
+    includedItems: packageConfig
+      ? [...packageConfig.includedOutputs, ...getCheckoutAddonIncludedItems(addOns)]
+      : getCheckoutAddonIncludedItems(addOns),
+  };
+}
+
 async function listOrdersForEmail(email: string) {
-  const emailKey = `orders:email:${email}`;
-  const sessionIds = (await redis.smembers(emailKey)) as string[];
+  const sessionIds = (await redis.smembers(`orders:email:${email}`)) as string[];
+  if (!sessionIds?.length) return [];
 
-  if (!sessionIds?.length) {
-    return [];
-  }
-
-  const orders = await Promise.all(
-    sessionIds.map(async (sessionId) => {
-      try {
-        const draftId = await redis.get<string>(`session:draft:${sessionId}`);
-
-        if (draftId) {
-          const draft = await redis.get<DraftData>(`contract:draft:${draftId}`);
-          const ownerEmail = draftEmail(draft);
-          if (ownerEmail && ownerEmail !== email) {
-            return null;
-          }
-          if (draft?.paid) {
-            const packageConfig = getThematicPackageConfig(draft.packageKey);
-            const tier = normalizePricingTier(draft.tier);
-            const addOns = normalizeStoredCheckoutAddons(draft.addOns ?? draft.payload?.addOns);
-            const displayAddOns = packageIncludesDocx(draft.packageKey) && !addOns.includes('docx')
-              ? [...addOns, 'docx' as const]
-              : addOns;
-            return {
-              sessionId,
-              contractName:
-                CONTRACT_NAMES[draft.contractType ?? ''] ?? 'Právní dokument',
-              packageLabel: packageConfig?.title ?? null,
-              paidAt: draft.paidAt ?? null,
-              tier,
-              lang: normalizeLocale(draft.lang ?? draft.payload?.lang),
-              downloadToken: draft.downloadToken ?? null,
-              archiveDays: getArchiveDaysWithAddons(tier, draft.packageKey, addOns),
-              addOns: displayAddOns,
-              includedItems: packageConfig
-                ? [...packageConfig.includedOutputs, ...getCheckoutAddonIncludedItems(addOns)]
-                : getCheckoutAddonIncludedItems(addOns),
-            };
-          }
-        }
-
-        return {
-          sessionId,
-          contractName: 'Právní dokument',
-          packageLabel: null,
-          paidAt: null,
-          tier: 'basic',
-          lang: 'cs',
-        };
-      } catch {
-        return {
-          sessionId,
-          contractName: 'Právní dokument',
-          packageLabel: null,
-          paidAt: null,
-          tier: 'basic',
-          lang: 'cs',
-        };
-      }
-    }),
-  );
+  const orders = await Promise.all(sessionIds.map(async (sessionId) => {
+    try {
+      const draftId = await redis.get<string>(`session:draft:${sessionId}`);
+      // Expired drafts are intentionally omitted: returning a fallback row here
+      // creates a dead download button after the paid archive has expired.
+      if (!draftId) return null;
+      const draft = await redis.get<DraftData>(`contract:draft:${draftId}`);
+      if (!draft?.paid) return null;
+      const ownerEmail = draftEmail(draft);
+      if (!ownerEmail || ownerEmail !== email) return null;
+      return toOrder(sessionId, draft);
+    } catch (error) {
+      console.error('[orders API] Failed to hydrate stored order:', error instanceof Error ? error.name : 'unknown');
+      return null;
+    }
+  }));
 
   return orders
     .filter((order): order is NonNullable<typeof order> => order !== null)
@@ -136,15 +115,16 @@ async function listOrdersForEmail(email: string) {
     });
 }
 
+function json(data: unknown, init?: ResponseInit) {
+  return NextResponse.json(data, {
+    ...init,
+    headers: { 'Cache-Control': 'no-store, private', ...(init?.headers ?? {}) },
+  });
+}
+
 export async function GET(req: NextRequest) {
-  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
-  const allowed = await checkRateLimit(ip);
-  if (!allowed) {
-    return NextResponse.json(
-      { error: 'Příliš mnoho dotazů. Zkuste to za chvíli.' },
-      { status: 429 },
-    );
-  }
+  const allowed = await checkRateLimit(getClientIp(req));
+  if (!allowed) return json({ error: 'Příliš mnoho dotazů. Zkuste to za chvíli.' }, { status: 429 });
 
   const accessToken = req.nextUrl.searchParams.get('access')?.trim();
   const sessionId = req.nextUrl.searchParams.get('session_id')?.trim();
@@ -152,100 +132,52 @@ export async function GET(req: NextRequest) {
 
   // Block legacy email-only enumeration (P0 security).
   if (emailParam && !accessToken && !sessionId) {
-    return NextResponse.json(
-      {
-        error:
-          'Vyhledání pouze podle e-mailu není podporováno. Použijte bezpečný odkaz z potvrzovacího e-mailu nebo e-mail spolu s ID relace.',
-      },
-      { status: 401 },
-    );
+    return json({ error: 'Vyhledání pouze podle e-mailu není podporováno. Použijte bezpečný odkaz nebo e-mail spolu s ID relace.' }, { status: 401 });
   }
 
-  // Single-document lookup: session_id from purchase e-mail (no e-mail index leak).
   if (sessionId) {
     if (!emailParam || !emailParam.includes('@')) {
-      return NextResponse.json(
-        { error: 'Pro stažení zadejte e-mail použitý při platbě spolu s ID relace z potvrzovacího e-mailu.' },
-        { status: 400 },
-      );
+      return json({ error: 'Zadejte e-mail použitý při platbě spolu s ID relace.' }, { status: 400 });
     }
-
     try {
       const draftId = await redis.get<string>(`session:draft:${sessionId}`);
-      if (!draftId) {
-        return NextResponse.json({ orders: [] });
-      }
+      if (!draftId) return json({ orders: [] });
       const draft = await redis.get<DraftData>(`contract:draft:${draftId}`);
       const ownerEmail = draftEmail(draft);
-      if (!draft?.paid || !ownerEmail || ownerEmail !== emailParam) {
-        return NextResponse.json({ orders: [] });
-      }
-
-      const packageConfig = getThematicPackageConfig(draft.packageKey);
-      const tier = normalizePricingTier(draft.tier);
-      const addOns = normalizeStoredCheckoutAddons(draft.addOns ?? draft.payload?.addOns);
-      const displayAddOns = packageIncludesDocx(draft.packageKey) && !addOns.includes('docx')
-        ? [...addOns, 'docx' as const]
-        : addOns;
-      return NextResponse.json({
-        orders: [
-          {
-            sessionId,
-            contractName: CONTRACT_NAMES[draft.contractType ?? ''] ?? 'Právní dokument',
-            packageLabel: packageConfig?.title ?? null,
-            paidAt: draft.paidAt ?? null,
-            tier,
-            lang: normalizeLocale(draft.lang ?? draft.payload?.lang),
-            downloadToken: draft.downloadToken ?? null,
-            archiveDays: getArchiveDaysWithAddons(tier, draft.packageKey, addOns),
-            addOns: displayAddOns,
-            includedItems: packageConfig
-              ? [...packageConfig.includedOutputs, ...getCheckoutAddonIncludedItems(addOns)]
-              : getCheckoutAddonIncludedItems(addOns),
-          },
-        ],
-      });
+      if (!draft?.paid || !ownerEmail || ownerEmail !== emailParam) return json({ orders: [] });
+      return json({ orders: [toOrder(sessionId, draft)] });
     } catch (err) {
       console.error('[orders API] session lookup error:', err);
-      return NextResponse.json({ error: 'Chyba serveru.' }, { status: 500 });
+      return json({ error: 'Chyba serveru.' }, { status: 500 });
     }
   }
 
-  // List all documents: requires signed portal token from purchase e-mail.
   const emailFromToken = await resolveEmailFromPortalToken(accessToken);
   if (!emailFromToken) {
-    return NextResponse.json(
-      {
-        error:
-          'Přístup k dokumentům vyžaduje bezpečný odkaz z potvrzovacího e-mailu po platbě. Stažení jednoho PDF je možné i přes odkaz „Stáhnout PDF“ v e-mailu.',
-      },
-      { status: 401 },
-    );
+    return json({ error: 'Přístup k dokumentům vyžaduje bezpečný odkaz z potvrzovacího e-mailu po platbě.' }, { status: 401 });
   }
 
   try {
-    const orders = await listOrdersForEmail(emailFromToken);
-    return NextResponse.json({ orders, email: emailFromToken });
+    return json({ orders: await listOrdersForEmail(emailFromToken), email: emailFromToken });
   } catch (err) {
     console.error('[orders API] Error:', err);
-    return NextResponse.json({ error: 'Chyba serveru.' }, { status: 500 });
+    return json({ error: 'Chyba serveru.' }, { status: 500 });
   }
 }
 
 export async function POST(req: NextRequest) {
-  const json = await readFirstPartyJson(req, 4 * 1024);
-  if (!json.ok) {
-    const status = json.error === 'invalid_origin' ? 403 : json.error === 'payload_too_large' ? 413 : 400;
-    return NextResponse.json({ error: 'Neplatný požadavek.' }, { status });
+  const parsed = await readFirstPartyJson(req, 4 * 1024);
+  if (!parsed.ok) {
+    const status = parsed.error === 'invalid_origin' ? 403 : parsed.error === 'payload_too_large' ? 413 : 400;
+    return json({ error: 'Neplatný požadavek.' }, { status });
   }
 
   const url = req.nextUrl.clone();
-  const access = typeof json.data.access === 'string' ? json.data.access.trim() : '';
-  const email = typeof json.data.email === 'string' ? json.data.email.trim() : '';
-  const sessionId = typeof json.data.sessionId === 'string' ? json.data.sessionId.trim() : '';
+  const access = typeof parsed.data.access === 'string' ? parsed.data.access.trim() : '';
+  const email = typeof parsed.data.email === 'string' ? parsed.data.email.trim() : '';
+  const sessionId = typeof parsed.data.sessionId === 'string' ? parsed.data.sessionId.trim() : '';
   if (access) url.searchParams.set('access', access);
   if (email) url.searchParams.set('email', email);
   if (sessionId) url.searchParams.set('session_id', sessionId);
-
   return GET(new NextRequest(url, { headers: req.headers }));
 }

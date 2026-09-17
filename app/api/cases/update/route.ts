@@ -20,24 +20,20 @@ export async function POST(req: Request) {
 
   try {
     const result = await applyCaseAction(auth.record, action);
-    if (!result.ok) {
-      return NextResponse.json({ error: result.message, field: result.field }, { status: 400 });
-    }
-    const analyticsBase = { source: 'case_page', surface: 'case_engine', case_kind: 'work_order' as const };
+    if (!result.ok) return NextResponse.json({ error: result.message, field: result.field }, { status: 400 });
+    const analyticsBase = { source: 'case_page', surface: 'case_engine', case_kind: auth.record.kind as never };
     if (action.type === 'delete') {
       await recordAnalyticsEvent('case_deleted', analyticsBase);
-      return NextResponse.json({ deleted: true });
+      return NextResponse.json({ deleted: true }, { headers: { 'Cache-Control': 'no-store' } });
     }
     if (action.type === 'set_reminders' && action.enabled) {
       await recordAnalyticsEvent('reminder_enabled', { ...analyticsBase, case_stage: result.record?.stage });
+    } else if (action.type === 'set_stage' && action.stage === 'closed') {
+      await recordAnalyticsEvent('case_saved', { ...analyticsBase, case_stage: 'closed', cta_type: 'case_completed' });
     } else if (action.type !== 'revoke_links') {
-      await recordAnalyticsEvent('case_saved', {
-        ...analyticsBase,
-        case_stage: result.record?.stage,
-        cta_type: action.type,
-      });
+      await recordAnalyticsEvent('case_saved', { ...analyticsBase, case_stage: result.record?.stage, cta_type: action.type });
     }
-    return NextResponse.json({ case: result.record ? toPublicCase(result.record) : null });
+    return NextResponse.json({ case: result.record ? toPublicCase(result.record) : null }, { headers: { 'Cache-Control': 'no-store, private' } });
   } catch (error) {
     console.error('[cases] update failed', error instanceof Error ? error.message : 'unknown');
     return NextResponse.json({ error: 'Změnu se nepodařilo uložit. Zkuste to prosím znovu.' }, { status: 500 });
