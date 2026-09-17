@@ -134,9 +134,9 @@ test('success page offers case continuation only after a paid work contract and 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Platba přijata');
   await expect(page.getByRole('link', { name: 'Stáhnout PDF', exact: true })).toBeVisible();
   await page.getByRole('button', { name: 'Pokračovat jako zakázka' }).click();
-  await expect(page.getByRole('link', { name: 'Otevřít zakázku →' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Otevřít případ →' })).toBeVisible();
   expect(created).toBe(1);
-  await page.getByRole('link', { name: 'Otevřít zakázku →' }).click();
+  await page.getByRole('link', { name: 'Otevřít případ →' }).click();
   await expect(page).toHaveURL(new RegExp(`/moje-zakazka\\?id=${CASE_ID}$`));
   expect(page.url()).not.toContain(TOKEN);
   await expect(page.locator('main h1')).toHaveText('Rekonstrukce koupelny');

@@ -1,6 +1,4 @@
 import type { Metadata } from 'next';
-import { Suspense } from 'react';
-import SuccessCaseFollowup from './SuccessCaseFollowup';
 
 export const metadata: Metadata = {
   title: 'Platba přijata — stažení dokumentu',
@@ -8,5 +6,5 @@ export const metadata: Metadata = {
 };
 
 export default function SuccessLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}<Suspense fallback={null}><SuccessCaseFollowup /></Suspense></>;
+  return children;
 }
