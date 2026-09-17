@@ -44,6 +44,12 @@ export class MemoryRedis {
     return [...this.store.keys()].filter((key) => this.live(key) && regex.test(key));
   }
 
+  async scan(cursor: number, options?: { match?: string; count?: number }): Promise<[number, string[]]> {
+    const keys = this.keys(options?.match ?? '*').sort();
+    const end = cursor + (options?.count ?? 10);
+    return [end >= keys.length ? 0 : end, keys.slice(cursor, end)];
+  }
+
   async ping(): Promise<string> {
     return 'PONG';
   }
@@ -206,8 +212,20 @@ export class MemoryRedis {
       // Compare-and-set případu (lib/cases/store.ts): revize v KEYS[2].
       const current = this.live(keys[1])?.value;
       if (String(current ?? '0') !== args[0]) return 0;
-      this.write(keys[0], JSON.parse(args[1]), Number(args[3]));
-      this.write(keys[1], args[2], Number(args[3]));
+      const entry = this.live(keys[0]);
+      let ttl = Number(args[3]);
+      if (args[4] === 'preserve') {
+        if (!entry?.expiresAt) return 0;
+        ttl = Math.min(ttl, Math.floor((entry.expiresAt - now()) / 1000));
+        if (ttl <= 0) return 0;
+      }
+      const previous = entry?.value as { documents?: { id: string }[] } | undefined;
+      const index = new Map(this.zset(keys[2]));
+      for (const doc of previous?.documents ?? []) index.delete(`${args[5]}:${doc.id}`);
+      for (const [member, score] of JSON.parse(args[6]) as [string, number][]) index.set(member, score);
+      this.write(keys[2], index);
+      this.write(keys[0], JSON.parse(args[1]), ttl);
+      this.write(keys[1], args[2], ttl);
       return 1;
     }
     throw new Error('MemoryRedis: unsupported script');

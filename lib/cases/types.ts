@@ -77,6 +77,11 @@ export type CaseDocument = {
   stripeSessionId?: string | null;
   /** Kolikrát byla pro dokument založena platební session (idempotence). */
   checkoutAttempts?: number;
+  /** Server-only: exact request retained before Stripe creation, for crash-safe retries. */
+  checkoutRequest?: {
+    attempt: number;
+    params: import('stripe').default.Checkout.SessionCreateParams;
+  } | null;
   /** Chybí jen u dokumentů vytvořených před 2026-09-17 (renderují se z aktuálního stavu). */
   snapshot?: CaseDocumentSnapshot;
   createdAt: string;

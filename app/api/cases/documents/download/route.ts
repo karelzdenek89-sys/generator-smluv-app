@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { recordAnalyticsEvent } from '@/lib/analytics-server';
 import { authorizeCaseRequest, isCaseRouteFailure } from '@/lib/cases/route-auth';
-import { findDocument } from '@/lib/cases/store';
+import { commitCase, findDocument } from '@/lib/cases/store';
 import { CASE_DOCUMENT_DEFINITIONS, CASE_DOCUMENT_SIGNATURE_TITLE, resolveCaseDocumentRender } from '@/lib/cases/documents';
 import { formatCzechDate } from '@/lib/cases/workflow';
 import { renderSimpleDocumentPdf } from '@/lib/pdf';
@@ -42,7 +42,12 @@ export async function POST(req: Request) {
     const definition = CASE_DOCUMENT_DEFINITIONS[document.kind];
     // Vydaný dokument je neměnný: sekce, název zakázky i termín pocházejí ze
     // snapshotu z doby vytvoření a datum z document.createdAt.
-    const render = resolveCaseDocumentRender(auth.record, document);
+    const frozenCase = document.snapshot ? auth.record : await commitCase(auth.record.id, (fresh) => fresh, new Date(), 4, { preserveRetention: true });
+    const frozenDocument = frozenCase && findDocument(frozenCase, document.id);
+    if (!frozenDocument || frozenDocument.status !== 'ready') {
+      return NextResponse.json({ error: 'Dokument již není dostupný.' }, { status: 404 });
+    }
+    const render = resolveCaseDocumentRender(frozenCase, frozenDocument);
     const pdf = await renderSimpleDocumentPdf({
       title: definition.title,
       subtitleLines: [

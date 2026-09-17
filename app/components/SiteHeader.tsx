@@ -19,7 +19,7 @@ export default function SiteHeader() {
             SH
           </span>
           <span className="min-w-0">
-            <span className="block font-serif text-sm font-semibold italic tracking-tight text-white">
+            <span className="block font-serif text-sm font-semibold tracking-tight text-white">
               SmlouvaHned
             </span>
             <span className="hidden text-[10px] uppercase tracking-[0.18em] text-slate-600 sm:block">

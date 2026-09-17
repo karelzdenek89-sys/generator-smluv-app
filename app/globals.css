@@ -12,7 +12,7 @@ body:has([data-localized-builder-shell]) [data-site-footer="global"] {
   /* Revize tohoto souboru. Při každé změně globals.css zvedněte hodnotu —
      scripts/build-integrity-check.mjs po buildu ověří, že zkompilované CSS
      nese aktuální revizi (ochrana proti zastaralé build cache). */
-  --sh-css-revision: sh20260917a;
+  --sh-css-revision: sh20260917b;
   --background: #060912;
   --foreground: #f2f4f8;
   --muted: #c9d1e1;
@@ -49,6 +49,25 @@ body {
 }
 
 .font-heading-serif {
+  font-family: var(--font-serif), ui-serif, Georgia, serif;
+}
+
+/* ─── Nadpisy napříč webem (2026-09-17) ──────────────────────────────────────
+   Jednotný typografický jazyk: vzpřímený serif (Newsreader), bez kurzívy,
+   polotučné řezy, mírně zúžené. Přepisuje utilitu `italic`, kterou nadpisy
+   historicky nesou v mnoha souborech; zvýraznění uvnitř nadpisu (<em>)
+   zůstává kurzívou. */
+h1, h2, h3, h4,
+.site-heading-xl, .site-heading-lg, .site-heading-md {
+  font-style: normal !important;
+  font-weight: 600 !important;
+  font-optical-sizing: auto;
+  letter-spacing: -0.015em;
+}
+/* Hlavní nadpisy stránek a sekcí sdílejí jeden řez na celém webu (portál,
+   blog, buildery); menší nadpisy karet zůstávají v bezpatkovém písmu. */
+h1, h2,
+.site-heading-xl, .site-heading-lg {
   font-family: var(--font-serif), ui-serif, Georgia, serif;
 }
 

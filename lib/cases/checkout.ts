@@ -107,14 +107,18 @@ async function createCaseDocumentCheckoutLocked(
   client: CaseCheckoutStripe,
 ): Promise<CaseDocumentCheckoutResult> {
   // 1) Čerstvý stav: mezitím mohl dorazit webhook nebo druhá karta.
-  const current = (await getCase(stale.id)) ?? stale;
-  const document = findDocument(current, staleDocument.id) ?? staleDocument;
+  const current = await getCase(stale.id);
+  if (!current) throw new Error('case_not_found');
+  const document = findDocument(current, staleDocument.id);
+  if (!document) throw new Error('document_not_found');
   if (document.status === 'ready') return { status: 'ready', record: current };
 
   // 2) Existující session: zaplacená → označit; otevřená → vrátit znovu.
   if (document.stripeSessionId) {
-    const existing = await client.checkout.sessions.retrieve(document.stripeSessionId).catch(() => null);
-    if (existing && caseDocumentSessionMatches(existing, current.id, document.id)) {
+    // Unknown Stripe state is never permission to charge again.
+    const existing = await client.checkout.sessions.retrieve(document.stripeSessionId);
+    if (!caseDocumentSessionMatches(existing, current.id, document.id)) throw new Error('session_mismatch');
+    {
       if (existing.payment_status === 'paid') {
         const paid = await markCaseDocumentPaid(current.id, document.id, existing.id);
         return { status: 'ready', record: paid ?? current };
@@ -124,7 +128,16 @@ async function createCaseDocumentCheckoutLocked(
         return { status: 'open', record: current, url: existing.url, reused: true };
       }
       if (existing.status === 'open') {
-        await client.checkout.sessions.expire(existing.id).catch(() => undefined);
+        await client.checkout.sessions.expire(existing.id);
+        const expired = await client.checkout.sessions.retrieve(existing.id);
+        if (expired.payment_status === 'paid') {
+          const paid = await markCaseDocumentPaid(current.id, document.id, existing.id);
+          return { status: 'ready', record: paid ?? current };
+        }
+        if (expired.status !== 'expired') throw new Error('session_not_expired');
+      } else if (existing.status !== 'expired') {
+        // Completed asynchronous payments must settle before another attempt.
+        throw new Error('payment_processing');
       }
     }
   }
@@ -133,11 +146,13 @@ async function createCaseDocumentCheckoutLocked(
   const attempt = (document.checkoutAttempts ?? 0) + 1;
   const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || SITE_URL).replace(/\/+$/, '');
   const caseQuery = `id=${encodeURIComponent(current.id)}&doc=${encodeURIComponent(document.id)}`;
-  const session = await client.checkout.sessions.create(
-    {
+  const params: Stripe.Checkout.SessionCreateParams = {
       mode: 'payment',
       customer_email: ownerEmail,
       locale: 'cs',
+      // A lost Stripe response must never become a fresh charge after the
+      // provider's idempotency retention window. These exact params persist.
+      expires_at: Math.floor(Date.now() / 1000) + 23 * 60 * 60,
       line_items: [
         {
           price_data: {
@@ -162,17 +177,42 @@ async function createCaseDocumentCheckoutLocked(
         consentTextVersion: CHECKOUT_CONSENT_TEXT_VERSION,
         consentTermsVersion: CHECKOUT_TERMS_VERSION,
       },
-    },
-    { idempotencyKey: `case-doc:${document.id}:${attempt}` },
-  );
-  if (!session.url) throw new Error('Stripe did not return a checkout URL.');
-
+    };
+  const intent = await commitCase(current.id, (fresh) => ({
+    ...fresh,
+    documents: fresh.documents.map((item) => {
+      if (item.id !== document.id) return item;
+      if (item.status === 'ready') throw new Error('document_already_paid');
+      // Reuse an unresolved request even if the previous process died or its lock expired.
+      if (item.checkoutRequest && item.checkoutRequest.attempt > (item.checkoutAttempts ?? 0)) return item;
+      return { ...item, checkoutRequest: { attempt, params } };
+    }),
+  }));
+  const request = intent && findDocument(intent, document.id)?.checkoutRequest;
+  if (!request) throw new Error('document_not_found');
+  const session = await client.checkout.sessions.create(request.params, {
+    idempotencyKey: `case-doc:${document.id}:${request.attempt}`,
+  });
+  if (!caseDocumentSessionMatches(session, current.id, document.id)) throw new Error('session_mismatch');
   await mapDocumentSession(session.id, current.id, document.id);
   const next = await commitCase(current.id, (fresh) => ({
     ...fresh,
     documents: fresh.documents.map((item) =>
-      item.id === document.id ? { ...item, stripeSessionId: session.id, checkoutAttempts: attempt } : item,
+      item.id === document.id ? { ...item, stripeSessionId: session.id, checkoutAttempts: request.attempt, checkoutRequest: null } : item,
     ),
   }));
-  return { status: 'open', record: next ?? current, url: session.url, reused: false };
+  if (!next || !findDocument(next, document.id)) {
+    await client.checkout.sessions.expire(session.id);
+    throw new Error('document_not_found');
+  }
+  if (findDocument(next, document.id)?.status === 'ready') return { status: 'ready', record: next };
+  // An idempotent retry can return a session already paid or expired in Stripe.
+  if (session.payment_status === 'paid') {
+    const paid = await markCaseDocumentPaid(current.id, document.id, session.id);
+    if (!paid) throw new Error('case_not_found');
+    return { status: 'ready', record: paid };
+  }
+  if (session.status !== 'open') throw new Error('session_not_open');
+  if (!session.url) throw new Error('Stripe did not return a checkout URL.');
+  return { status: 'open', record: next, url: session.url, reused: false };
 }

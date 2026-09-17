@@ -17,8 +17,9 @@ export async function POST(req: Request) {
   const { origin, ...record } = auth.record;
   const { orderSessionId: _legacy, ...publicOrigin } = origin as typeof origin & { orderSessionId?: unknown };
   void _legacy;
-  const documents = record.documents.map(({ stripeSessionId: _stripeSessionId, ...document }) => {
+  const documents = record.documents.map(({ stripeSessionId: _stripeSessionId, checkoutRequest: _checkoutRequest, ...document }) => {
     void _stripeSessionId;
+    void _checkoutRequest;
     return document;
   });
   const payload = {

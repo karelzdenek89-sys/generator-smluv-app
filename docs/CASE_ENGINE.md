@@ -44,10 +44,18 @@ Oddělení dat:
 ### Integrita a souběh (2026-09-17, po nezávislém review)
 
 - **Compare-and-set:** `saveCase` zapisuje jen při shodě revize (`case:rev:{id}`, Lua skript); `commitCase(caseId, mutate)` načte čerstvý záznam, aplikuje změnu a při konfliktu zopakuje. Všechny mutace (akce, dokumenty, webhook, cron) jdou přes něj — starý snapshot z klienta nikdy nepřepíše potvrzenou platbu. Otevření případu zapisuje pouze `case:seen:{id}`.
-- **Neměnný dokument:** `prepareCaseDocument` zmrazí sekce, název a termín zakázky a verzi šablony (`CASE_DOCUMENT_TEMPLATE_VERSION`) do `documents[].snapshot`; download renderuje ze snapshotu a datum bere z `createdAt`. Dokumenty bez snapshotu (před 2026-09-17) se renderují z aktuálního stavu a nesou označení `legacy`.
+- **Neměnný dokument:** `prepareCaseDocument` zmrazí sekce, název a termín zakázky a verzi šablony (`CASE_DOCUMENT_TEMPLATE_VERSION`) do `documents[].snapshot`; download renderuje ze snapshotu a datum bere z `createdAt`. Dokumenty bez snapshotu se zmrazí před první další mutací případu nebo stažením (`legacy-frozen-2026.2`). Historický obsah před touto opravou nelze zpětně rekonstruovat.
 - **Text se nekrátí:** jediný limit je validace (textarea 4 000 znaků) před platbou; PDF stránkuje.
 - **Checkout bez dvojí platby:** zámek na dokument, opětovné použití otevřené session, označení zaplacené session bez webhooku, expirace nahrazované session, idempotency key `case-doc:{documentId}:{attempt}`; návratová URL nese `session_id` a sync ověřuje právě tuto session (musí být zmapovaná na dokument). Přístupový token po návratu drží sessionStorage; bez něj vede stránka na `/moje-zakazka/obnovit`.
 - **Cena díla:** přebírá se jen v CZK a s haléři; cizí měna se do případu nepřenáší.
+
+### Lokální opravy po druhém review (zatím nenasazeno)
+
+- Revize pro CAS pochází ze stejného JSON záznamu jako data. Samostatné načtení revize mohlo při souběhu přiřadit starým datům novější revizi a ztratit potvrzenou platbu.
+- Zápis JSON, revize i indexu pending dokumentů nyní probíhá v jednom Lua skriptu. Údržba zachovává zbývající TTL obou klíčů i zveřejněné `expiresAt`.
+- Neúspěšné Stripe retrieve/expire zastaví nový checkout. Přesné parametry včetně pevné expirace 23 hodin a pořadí pokusu se ukládají před voláním Stripe do serverového `checkoutRequest`; opakování po ztracené odpovědi používá stejné parametry i idempotency key. Nejasný starý pokus po uplynutí této lhůty vyžaduje provozní ověření u Stripe, nevytváří automaticky další platbu.
+- Denní cron před úklidem doplňuje index starších dokumentů přes omezený, pokračovatelný SCAN. Chyba úklidu vrací 503; úklid funguje i bez konfigurace e-mailu. Souběžně zaplacený dokument si ponechá mapování session.
+- Regrese jsou součástí `test:case-engine` (`scripts/case-reliability-tests.ts`). Testy používají paměťový Redis a stub Stripe; před budoucím nasazením je třeba ověřit Lua a cron v izolovaném skutečném Redis a checkout ve Stripe test mode.
 
 Do případu se **nekopíruje** jméno, adresa, IČO ani kontakt protistrany.
 Jména stran do navazujícího dokumentu zadává uživatel ručně (a sdílejí se mezi

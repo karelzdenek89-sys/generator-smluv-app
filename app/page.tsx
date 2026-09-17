@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import Image from 'next/image';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import ContractGridPremium from '@/app/components/ContractGridPremium';
 import DifferentiationSection from '@/app/components/marketing/DifferentiationSection';
 import ProductScopeStrip from '@/app/components/marketing/ProductScopeStrip';
@@ -19,6 +19,13 @@ import { SITE_URL } from '@/lib/seo/site';
 import SituationGrid from '@/app/components/portal/SituationGrid';
 import { LEGAL_CHANGES, LEGAL_CHANGE_STATUS_LABELS } from '@/lib/legal/radar';
 import { PORTAL_TOOLS } from '@/lib/portal/tools';
+import { ANSWER_FIRST_ARTICLES, articleHref } from '@/lib/portal/articles';
+import { HOMEPAGE_SITUATIONS } from '@/lib/portal/situations';
+import CaseJourneyPreview from '@/app/components/marketing/CaseJourneyPreview';
+import ContentFinder, { type FinderItem } from '@/app/components/marketing/ContentFinder';
+import styles from '@/app/components/marketing/homepage.module.css';
+import { CASE_DOCUMENT_PRICE_LABEL } from '@/lib/cases/documents';
+import { isFeatureEnabled } from '@/lib/feature-flags';
 
 const HOMEPAGE_BASE_URL = SITE_URL;
 const HOMEPAGE_TOOLS = [
@@ -30,6 +37,24 @@ const HOMEPAGE_TOOLS = [
   .map((slug) => PORTAL_TOOLS.find((tool) => tool.slug === slug))
   .filter((tool): tool is NonNullable<typeof tool> => Boolean(tool));
 const HOMEPAGE_RADAR = LEGAL_CHANGES.slice(0, 4);
+/** Lokální hledání napříč dokumenty, nástroji a návody — bez odesílání dotazu na server. */
+const FINDER_ITEMS: FinderItem[] = [
+  ...Array.from(new Map(HOMEPAGE_SITUATIONS.flatMap(situation => situation.documents)
+    .map(document => [document.href, document])).values())
+    .map(document => ({ title: document.label, href: document.href, kind: 'Dokument' as const, keywords: '' })),
+  ...PORTAL_TOOLS.map(tool => ({ title: tool.title, href: `/nastroje/${tool.slug}`, kind: 'Nástroj zdarma' as const, keywords: tool.description })),
+  ...ANSWER_FIRST_ARTICLES.map(article => ({ title: article.title, href: articleHref(article), kind: 'Návod' as const, keywords: article.question })),
+];
+const FEATURED_ANSWERS = ['remeslnik-nedodrzel-termin', 'viceprace-bez-souhlasu', 'koupe-ojeteho-auta', 'dpp']
+  .map(slug => ANSWER_FIRST_ARTICLES.find(article => article.slug === slug))
+  .filter((article): article is NonNullable<typeof article> => Boolean(article));
+/** Čísla pod hero jsou odvozená z dat, ne opsaná: katalog, návody, nástroje, radar. */
+const HOMEPAGE_STATS = [
+  { value: '14', label: 'typů dokumentů' },
+  { value: String(ANSWER_FIRST_ARTICLES.length), label: 'návodů zdarma' },
+  { value: String(PORTAL_TOOLS.length), label: 'nástrojů zdarma' },
+  { value: String(LEGAL_CHANGES.length), label: 'sledovaných změn 2027' },
+] as const;
 const HOME_DPP_POLICY = getMonetizationPolicy('dpp', 'cs');
 const FREE_BASIC_DPP = isFreeBasicPolicy(HOME_DPP_POLICY);
 const HOME_BASIC_PRICE_LABEL = `od ${PRICING_TIER_CONFIG.basic.priceLabel}`;
@@ -201,7 +226,7 @@ const websiteSchema = {
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#040c1a] text-slate-200">
+    <main className={`${styles.home} relative min-h-screen overflow-hidden text-slate-200`}>
       <HomepageAnalyticsTracker />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c') }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema).replace(/</g, '\\u003c') }} />
@@ -209,23 +234,8 @@ export default function Home() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema).replace(/</g, '\\u003c') }} />
 
       {/* ─── HERO ─────────────────────────────────────────────────────────────── */}
-      <section className="relative flex min-h-[100svh] flex-col">
-
-        {/* Background photo */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/hero-bg.jpg"
-            alt="Podepisování právního dokumentu plnicím perem"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover object-[60%_50%]"
-          />
-          <div className="absolute inset-0 bg-[#040c1a]/38" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#040c1a]/20 via-transparent to-[#040c1a]/90" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#040c1a]/60 via-[#040c1a]/10 to-transparent" />
-        </div>
-
+      <section className={styles.hero}>
+        <div className={styles.aurora} aria-hidden="true" />
         {/* Navbar */}
         <nav className="relative z-30 mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-7 md:px-10">
           <Link href="/" className="flex items-center gap-3">
@@ -233,8 +243,8 @@ export default function Home() {
               SH
             </div>
             <div>
-              <div className="font-serif italic text-sm font-semibold tracking-tight text-white">SmlouvaHned</div>
-              <div className="text-[10px] uppercase tracking-[0.2em] text-slate-500">Smluvní dokumenty online</div>
+              <div className="font-serif text-sm font-semibold tracking-tight text-white">SmlouvaHned</div>
+              <div className="hidden text-[10px] uppercase tracking-[0.2em] text-slate-500 sm:block">Smluvní dokumenty online</div>
             </div>
           </Link>
 
@@ -279,72 +289,45 @@ export default function Home() {
           </div>
         </nav>
 
-        {/* Na mobilu až pod hlavní akcí, aby hero začínalo H1 a CTA. */}
-        <div className="relative z-10 order-2 mx-auto w-full max-w-7xl px-6 pb-8 md:order-none md:px-10 md:pb-0">
-          <div className="flex flex-col gap-3 rounded-2xl border border-[#c9a852]/25 bg-[#040c1a]/75 px-4 py-3 text-sm text-slate-300 shadow-[0_18px_60px_rgba(0,0,0,0.25)] backdrop-blur-sm md:flex-row md:items-center md:justify-between">
-            <div className="flex flex-col gap-1 leading-relaxed md:flex-row md:flex-wrap md:items-center md:gap-x-3 md:gap-y-1">
-              <span className="font-semibold text-white">Potřebujete smlouvu v cizím jazyce?</span>
-              <span className="text-slate-400">Потрібен договір іншою мовою?</span>
+        <div className={styles.heroGrid}>
+          <div>
+            <div className={styles.heroCapsules}>
+              <span className={`${styles.capsule} ${styles.pulse}`}>Legislativa 2026 · aktualizováno</span>
+              <span className={`${styles.capsule} ${styles.capsuleIce}`}>PDF ihned po platbě</span>
+              <span className={`${styles.capsule} ${styles.capsuleMint}`}>Návody a nástroje zdarma</span>
             </div>
-            <ExpatEntryLinks showBlogLink />
-          </div>
-        </div>
-
-        {/* Hero content */}
-        <div className="relative z-10 order-1 mx-auto flex w-full max-w-7xl flex-1 flex-col justify-center px-6 pb-10 pt-4 md:order-none md:px-10 md:pb-24 md:pt-6">
-          <div className="max-w-2xl">
-
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#c9a852]/25 bg-[#040c1a]/70 px-4 py-2 backdrop-blur-sm md:mb-7">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#c9a852]" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#c9a852]">
-                Aktualizováno · Česká legislativa 2026
-              </span>
-            </div>
-
-            <h1 className="font-serif italic text-4xl font-bold leading-[1.10] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-[4.5rem]">
+            <h1 className={styles.heroTitle}>
               Smlouvy online
-              <br />
-              pro důležité <span className="text-[#c9a852]">životní</span>
-              <br />
-              a podnikatelské situace.
+              <span>pro důležité <em>životní</em> a podnikatelské situace</span>
             </h1>
-
-            <p className="mt-4 text-lg font-semibold text-slate-200 md:mt-6 md:text-xl">Od první dohody až po poslední předání.</p>
-
-            <p className="mt-3 max-w-lg text-base leading-relaxed text-slate-300 md:mt-4 md:text-lg">
-              Vyberte, co právě řešíte. Nejdřív zjistíte postup a cenu, pak dokument. U smlouvy o dílo
-              můžete pokračovat v Moje zakázka: termín, připomínky a další dokumenty na jednom místě.
+            <p className={styles.heroLead}>Od první dohody až po poslední předání.</p>
+            <p className={styles.heroDescription}>
+              Pronajímáte byt, zadáváte práci nebo prodáváte auto? Nejdřív zjistíte postup a cenu,
+              pak si připravíte smlouvu. U smlouvy o dílo můžete pokračovat v Moje zakázka —
+              termín, připomínky a další dokumenty na jednom místě.
             </p>
-
-            <div className="mt-6 flex flex-wrap items-center gap-4 md:mt-9">
-              <Link
-                href="#situace"
-                className="inline-flex items-center gap-2 rounded-xl bg-[#c9a852] px-8 py-4 text-base font-bold text-[#040c1a] transition-all duration-200 hover:bg-[#d4b86a] hover:shadow-[0_0_32px_rgba(201,168,82,0.35)]"
-              >
-                Vybrat, co řeším <span>→</span>
-              </Link>
-              <Link href="#smlouvy" className="inline-flex items-center gap-1.5 text-base text-slate-300 transition-colors hover:text-white">
-                Vím, jaký dokument potřebuji <span className="text-xs">↓</span>
-              </Link>
+            <div className={styles.heroActions}>
+              <TrackedLink href="#situace" eventName="situation_started" eventParams={{ surface: 'homepage_hero', cta_type: 'choose_situation' }} className={styles.primaryAction}>
+                Vybrat, co řeším <ArrowRight size={18} aria-hidden="true" />
+              </TrackedLink>
+              <Link href="#smlouvy" className={styles.secondaryAction}>Vím, jaký dokument potřebuji <span aria-hidden="true">↓</span></Link>
             </div>
-
-            <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2 md:mt-9">
-              {[
-                '✓ Zákonná struktura OZ/ZP',
-                '✓ PDF ihned ke stažení',
-                FREE_BASIC_DPP ? '✓ Základní DPP bez platby' : '✓ Bezpečná platba Stripe',
-                FREE_BASIC_DPP ? '✓ Data základní DPP smazána po 24 hodinách' : '✓ Data dokumentu smazána po 7–30 dnech, s add-onem 90 dní',
-              ].map(t => (
-                <span key={t} className="text-sm text-slate-400">{t}</span>
-              ))}
-            </div>
+            <p className={styles.heroPrice}><strong>Dokumenty {HOME_BASIC_PRICE_LABEL}</strong><span>· Rozšířená varianta od {PRICING_TIER_CONFIG.complete.priceLabel} · Bez registrace a předplatného</span></p>
+            <p className={styles.heroFootnote}>{FREE_BASIC_DPP ? 'Základní DPP zdarma. ' : ''}Konkrétní doporučení podle zadané situace uvidíte před objednávkou.</p>
           </div>
+          <CaseJourneyPreview documentPrice={CASE_DOCUMENT_PRICE_LABEL} includesDocuments={isFeatureEnabled('zakazkaPlus')} />
         </div>
-
-        {/* Scroll hint */}
-        <div className="absolute bottom-8 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-1.5 opacity-40 md:flex">
-          <div className="h-8 w-px bg-gradient-to-b from-transparent to-[#c9a852]" />
-          <span className="text-[10px] uppercase tracking-[0.25em] text-[#c9a852]">Smlouvy</span>
+        <div className={styles.stats} aria-label="Rozsah obsahu">
+          {HOMEPAGE_STATS.map((item) => (
+            <div key={item.label} className={`${styles.glass} ${styles.stat}`}>
+              <strong>{item.value}</strong>
+              <span>{item.label}</span>
+            </div>
+          ))}
+        </div>
+        <div className={`${styles.glass} ${styles.expatBar}`}>
+          <p><strong>Bydlíte nebo pracujete v Česku?</strong> Nápověda také v angličtině a ukrajinštině.</p>
+          <ExpatEntryLinks showBlogLink />
         </div>
       </section>
 
@@ -353,15 +336,14 @@ export default function Home() {
 
         {/* ── SITUACE ──────────────────────────────────────────────────────────── */}
         <section id="situace" className="scroll-mt-24 pt-16 md:pt-20" aria-labelledby="situace-title">
-          <div className="mb-8 max-w-2xl">
-            <p className="site-kicker mb-2">Co právě řešíte?</p>
-            <h2 id="situace-title" className="font-serif italic text-4xl font-bold text-white md:text-5xl">Vyberte situaci, ne paragraf</h2>
-            <p className="mt-3 text-base leading-relaxed text-slate-400">
-              Každá situace má odpověď, správný dokument a přehled dalších kroků; u zakázky, zaměstnávání, auta a pronájmu také bezplatný checklist nebo průvodce.
-              {PRICE_TRANSPARENCY_LINE} Nástroje jsou zdarma.
-            </p>
+          <div className={`${styles.sectionIntro} ${styles.reveal}`}>
+            <div><span className={`${styles.capsule} ${styles.capsuleQuiet} ${styles.sectionKicker}`}>01 · Co právě řešíte?</span>
+              <h2 id="situace-title">Začněte svou situací, ne paragrafem</h2>
+            </div>
+            <p>Rovnou ke smlouvě, nebo nejdřív k návodu. U zakázky, zaměstnávání, auta a pronájmu také k bezplatnému checklistu či průvodci. {PRICE_TRANSPARENCY_LINE}</p>
           </div>
-          <SituationGrid surface="homepage_situations" />
+          <ContentFinder items={FINDER_ITEMS} />
+          <SituationGrid surface="homepage_situations" editorial />
           <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-slate-400">
             <Link href="/zmeny-2027" className="transition-colors hover:text-white">Sleduji změny zákonů → Legislativní radar 2027</Link>
             <Link href="/nastroje" className="transition-colors hover:text-white">Všechny nástroje zdarma →</Link>
@@ -370,20 +352,38 @@ export default function Home() {
 
         <div className="my-16 h-px bg-gradient-to-r from-transparent via-[#c9a852]/20 to-transparent md:my-20" />
 
+        {/* ── ODPOVĚDI ─────────────────────────────────────────────────────────── */}
+        <section id="odpovedi" aria-labelledby="odpovedi-title">
+          <div className={`${styles.sectionIntro} ${styles.reveal}`}>
+            <div><span className={`${styles.capsule} ${styles.capsuleQuiet} ${styles.sectionKicker}`}>02 · Nejdřív odpověď</span><h2 id="odpovedi-title">Když nevíte, jak dál</h2></div>
+            <p>Konkrétní otázky, srozumitelný postup a odkazy na oficiální zdroje. Návody si přečtete zdarma, bez registrace.</p>
+          </div>
+          <div className={`${styles.readingList} ${styles.reveal}`}>
+            {FEATURED_ANSWERS.map(article => (
+              <TrackedLink key={article.slug} href={articleHref(article)} eventName="situation_started" eventParams={{ surface: 'homepage_answers', portal_situation: article.situation, cta_type: 'read_guide' }} className={`${styles.glass} ${styles.tile}`}>
+                <span><small>{article.situation === 'zakazka' ? 'Zakázka' : article.situation === 'auto' ? 'Prodej a koupě auta' : 'Zaměstnávání'} · Návod zdarma</small>{article.question}</span>
+                <ArrowUpRight size={20} strokeWidth={1.3} aria-hidden="true" />
+              </TrackedLink>
+            ))}
+          </div>
+        </section>
+
+        <div className="my-16 h-px bg-gradient-to-r from-transparent via-[#c9a852]/20 to-transparent md:my-20" />
+
         {/* ── NÁSTROJE ZDARMA + RADAR ──────────────────────────────────────────── */}
         <section id="nastroje" className="scroll-mt-24" aria-labelledby="nastroje-title">
           <div className="grid gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
-            <div>
-              <p className="site-kicker mb-2">Nástroje zdarma</p>
-              <h2 id="nastroje-title" className="font-serif italic text-3xl font-bold text-white md:text-4xl">Rozhodněte se dřív, než něco zaplatíte</h2>
+            <div className={styles.reveal}>
+              <span className={`${styles.capsule} ${styles.capsuleMint} ${styles.sectionKicker}`}>03 · Nástroje zdarma</span>
+              <h2 id="nastroje-title" className="font-serif italic text-3xl font-bold text-[#f2e7c8] md:text-4xl">Rozhodněte se dřív, než něco zaplatíte</h2>
               <p className="mt-3 text-base leading-relaxed text-slate-400">
                 Checklisty a průvodci dají výsledek hned — bez e-mailu a bez registrace.
               </p>
               <div className="mt-6 grid gap-3 sm:grid-cols-2">
                 {HOMEPAGE_TOOLS.map((tool) => (
-                  <Link key={tool.slug} href={`/nastroje/${tool.slug}`} className="site-content-card group rounded-2xl p-4 transition hover:border-[#c9a852]/40">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">{tool.kind === 'wizard' ? 'Průvodce' : 'Checklist'}</span>
-                    <span className="mt-1 block text-sm font-semibold text-white group-hover:text-[#e2c77b]">{tool.title}</span>
+                  <Link key={tool.slug} href={`/nastroje/${tool.slug}`} className={`${styles.glass} ${styles.tile} ${styles.toolTile}`}>
+                    <small>{tool.kind === 'wizard' ? 'Průvodce' : 'Checklist'}</small>
+                    <strong>{tool.title}</strong>
                   </Link>
                 ))}
               </div>
@@ -391,9 +391,9 @@ export default function Home() {
                 Všechny nástroje →
               </Link>
             </div>
-            <div className="site-content-card rounded-[1.5rem] p-6">
-              <p className="site-kicker mb-2">Legislativní radar 2027</p>
-              <h3 className="font-serif italic text-2xl font-bold text-white">Co platí, co je schválené a co se teprve projednává</h3>
+            <div className={`${styles.glass} ${styles.reveal} p-6`}>
+              <span className={`${styles.capsule} ${styles.capsuleIce} ${styles.sectionKicker}`}>Legislativní radar 2027</span>
+              <h3 className="font-serif italic text-2xl font-bold text-[#f2e7c8]">Co platí, co je schválené a co se teprve projednává</h3>
               <ul className="mt-4 space-y-3">
                 {HOMEPAGE_RADAR.map((change) => (
                   <li key={change.key} className="flex items-start justify-between gap-3 text-sm">
@@ -421,7 +421,7 @@ export default function Home() {
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-center">
             <div>
               <p className="site-kicker mb-2">Výhoda propojených dokumentů</p>
-              <h2 id="propojene-title" className="font-serif italic text-3xl font-bold text-white md:text-4xl">
+              <h2 id="propojene-title" className="font-serif italic text-3xl font-bold text-[#f2e7c8] md:text-4xl">
                 Neprodáváme PDF. Pomáháme vyřídit celou situaci.
               </h2>
               <p className="mt-4 text-base leading-relaxed text-slate-400">
@@ -447,10 +447,10 @@ export default function Home() {
                 { step: 'Odpověď', text: 'Články a odpovědi s oficiálními zdroji a datem ověření.' },
                 { step: 'Rozhodnutí', text: 'Checklisty a průvodci, které dají výsledek bez e-mailu.' },
                 { step: 'Dokument', text: '14 typů smluv, transparentní cena, PDF po platbě.' },
-                { step: 'Případ', text: 'Termíny, připomínky a navazující dokumenty v jednom průběhu.' },
-              ].map((item) => (
-                <div key={item.step} className="site-content-card rounded-2xl p-5">
-                  <div className="text-[10px] font-black uppercase tracking-widest text-[#c9a852]">{item.step}</div>
+                { step: 'Případ', text: 'Termíny, připomínky a navazující dokumenty v jednom průběhu (u smlouvy o dílo).' },
+              ].map((item, index) => (
+                <div key={item.step} className={`${styles.glass} ${styles.tile} ${styles.reveal} p-5`}>
+                  <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#e8d092]"><span className="text-slate-500">0{index + 1}</span>{item.step}</div>
                   <p className="mt-2 text-sm leading-relaxed text-slate-400">{item.text}</p>
                 </div>
               ))}
@@ -465,7 +465,7 @@ export default function Home() {
         <section id="balicky" className="mt-14 scroll-mt-24" aria-labelledby="balicky-title">
           <div className="max-w-2xl">
             <p className="site-kicker mb-2">Více dokumentů v jednom toku</p>
-            <h2 id="balicky-title" className="font-serif italic text-3xl font-bold text-white md:text-4xl">
+            <h2 id="balicky-title" className="font-serif italic text-3xl font-bold text-[#f2e7c8] md:text-4xl">
               Balíčky pro celý praktický scénář
             </h2>
             <p className="mt-3 text-base leading-relaxed text-slate-400">
@@ -476,8 +476,8 @@ export default function Home() {
             {getAvailableThematicPackages().map((item) => (
               <article
                 key={item.key}
-                className={`site-content-card flex h-full flex-col rounded-[1.5rem] p-6 ${
-                  item.key === 'employer_start' ? 'border-[#c9a852]/45 bg-[#c9a852]/[0.07]' : ''
+                className={`${styles.glass} ${styles.tile} ${styles.reveal} flex h-full flex-col p-6 ${
+                  item.key === 'employer_start' ? '!border-[#c9a852]/45' : ''
                 }`}
               >
                 <div className="flex items-start justify-between gap-4">
@@ -512,7 +512,7 @@ export default function Home() {
         <section id="smlouvy" className="pt-0 md:pt-0">
           <div className="mb-10 max-w-xl">
             <p className="site-kicker mb-2">Katalog dokumentů</p>
-            <h2 className="font-serif italic text-4xl font-bold text-white md:text-5xl">Vyberte typ dokumentu</h2>
+            <h2 className="font-serif italic text-4xl font-bold text-[#f2e7c8] md:text-5xl">Vyberte typ dokumentu</h2>
             <p className="mt-3 text-base leading-relaxed text-slate-400">
               {FREE_BASIC_DPP
                 ? `14 typů smluv sestavených podle vašich údajů. Základní DPP vytvoříte zdarma, ostatní dokumenty ${HOME_BASIC_PRICE_LABEL}.`
@@ -548,7 +548,7 @@ export default function Home() {
         <section id="pruvodci" aria-labelledby="pruvodci-title">
           <div className="mb-10 max-w-2xl">
             <p className="site-kicker mb-2">Průvodci a vzory smluv</p>
-            <h2 id="pruvodci-title" className="font-serif italic text-4xl font-bold text-white md:text-5xl">
+            <h2 id="pruvodci-title" className="font-serif italic text-4xl font-bold text-[#f2e7c8] md:text-5xl">
               Vyberte si průvodce ke své smlouvě
             </h2>
             <p className="mt-3 text-base leading-relaxed text-slate-400">
@@ -595,7 +595,7 @@ export default function Home() {
         <section id="jak-to-funguje">
           <div className="mb-10 text-center">
             <p className="site-kicker mb-2">Postup</p>
-            <h2 className="font-serif italic text-4xl font-bold text-white md:text-5xl">Od situace k hotovému dokumentu</h2>
+            <h2 className="font-serif italic text-4xl font-bold text-[#f2e7c8] md:text-5xl">Od situace k hotovému dokumentu</h2>
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-4">
@@ -605,8 +605,8 @@ export default function Home() {
               { step: '03', title: 'Zkontrolujete a zaplatíte', desc: 'Před platbou vidíte souhrn a přesnou cenu. Zvolíte variantu — Základní, Rozšířený nebo tematický balíček.' },
               { step: '04', title: 'Stáhnete PDF a pokračujete', desc: 'PDF připravené k podpisu ihned. U zakázky můžete pokračovat s termíny, připomínkami a navazujícími dokumenty.' },
             ].map(s => (
-              <div key={s.step} className="site-content-card rounded-[1.5rem] p-6">
-                <div className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#c9a852]/30 text-sm font-bold text-[#c9a852]">
+              <div key={s.step} className={`${styles.glass} ${styles.tile} ${styles.reveal} p-6`}>
+                <div className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-xl border border-[#c9a852]/40 bg-[#c9a852]/10 text-sm font-bold text-[#e8d092] shadow-[0_0_16px_rgba(197,160,89,0.25)]">
                   {s.step}
                 </div>
                 <h3 className="mb-2 font-serif italic text-base font-semibold text-white">{s.title}</h3>
@@ -622,7 +622,7 @@ export default function Home() {
         <section>
           <div className="mb-10 text-center">
             <p className="site-kicker mb-2">Pro koho</p>
-            <h2 className="font-serif italic text-4xl font-bold text-white md:text-5xl">Komu SmlouvaHned pomůže</h2>
+            <h2 className="font-serif italic text-4xl font-bold text-[#f2e7c8] md:text-5xl">Komu SmlouvaHned pomůže</h2>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
@@ -631,8 +631,8 @@ export default function Home() {
               { title: 'Zaměstnavatelé', desc: 'Pracovní smlouvy a DPP se zákonnou strukturou dle zákoníku práce 2026 a navazující nástupní dokumentace.' },
               { title: 'Fyzické osoby', desc: 'Darovací smlouvy, kupní smlouvy, uznání dluhu, plné moci. Bezpečné transakce i mimo rodinu.' },
             ].map(c => (
-              <div key={c.title} className="site-content-card rounded-[1.5rem] p-6">
-                <h3 className="mb-2 font-serif italic text-base font-semibold text-[#c9a852]">{c.title}</h3>
+              <div key={c.title} className={`${styles.glass} ${styles.tile} ${styles.reveal} p-6`}>
+                <h3 className="mb-2 font-serif italic text-base font-semibold text-[#e8d092]">{c.title}</h3>
                 <p className="text-sm leading-relaxed text-slate-400">{c.desc}</p>
               </div>
             ))}
@@ -649,7 +649,7 @@ export default function Home() {
           <div className="mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="site-kicker mb-2">Průvodce</p>
-              <h2 className="font-serif italic text-4xl font-bold text-white md:text-5xl">Než smlouvu vytvoříte</h2>
+              <h2 className="font-serif italic text-4xl font-bold text-[#f2e7c8] md:text-5xl">Než smlouvu vytvoříte</h2>
             </div>
             <Link href="/blog" className="text-sm text-slate-400 transition-colors hover:text-white">
               Všechny průvodce →
@@ -661,7 +661,7 @@ export default function Home() {
               { tag: 'Prodej vozidla', title: 'Kupní smlouva na auto — VIN, STK, vady a bezpečné předání', href: '/blog/kupni-smlouva-na-auto-2026', ctaHref: '/auto', cta: 'Vytvořit kupní smlouvu' },
               { tag: 'OSVČ', title: 'Smlouva o dílo 2026 — pevná cena, sankce a akceptační postup', href: '/blog/smlouva-o-dilo-2026', ctaHref: '/smlouva-o-dilo', cta: 'Vytvořit smlouvu o dílo' },
             ].map(a => (
-              <div key={a.href} className="site-content-card flex flex-col rounded-[1.5rem] overflow-hidden">
+              <div key={a.href} className={`${styles.glass} ${styles.tile} ${styles.reveal} flex flex-col overflow-hidden`}>
                 <div className="flex-grow p-6">
                   <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-[#c9a852]">{a.tag}</p>
                   <h3 className="font-serif italic text-base font-semibold text-white leading-snug">
@@ -683,11 +683,11 @@ export default function Home() {
         <section id="faq">
           <div className="mb-8">
             <p className="site-kicker mb-2">FAQ</p>
-            <h2 className="font-serif italic text-4xl font-bold text-white md:text-5xl">Časté otázky</h2>
+            <h2 className="font-serif italic text-4xl font-bold text-[#f2e7c8] md:text-5xl">Časté otázky</h2>
           </div>
           <div className="space-y-3">
             {faqItems.map(item => (
-              <details key={item.question} className="site-content-card-soft group rounded-[1.5rem] p-5 open:border-[rgba(214,172,96,0.3)]">
+              <details key={item.question} className={`${styles.glass} group p-5 open:border-[rgba(214,172,96,0.35)]`}>
                 <summary className="cursor-pointer list-none">
                   <div className="flex items-center justify-between gap-4">
                     <span className="text-[15px] font-semibold text-white">{item.question}</span>
@@ -702,11 +702,11 @@ export default function Home() {
 
         {/* ── FINAL CTA ────────────────────────────────────────────────────────── */}
         <section className="mt-20 md:mt-24">
-          <div className="site-content-card relative overflow-hidden rounded-[1.75rem]">
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(201,168,82,0.05),transparent_60%)]" />
+          <div className={`${styles.glass} relative overflow-hidden`}>
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(201,168,82,0.08),transparent_60%)]" />
             <div className="relative px-8 py-12 text-center md:py-14">
               <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#c9a852]">Začít</p>
-              <h2 className="font-serif italic text-4xl font-bold text-white md:text-5xl">
+              <h2 className="font-serif italic text-4xl font-bold text-[#f2e7c8] md:text-5xl">
                 Co právě řešíte?
               </h2>
               <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-slate-400">

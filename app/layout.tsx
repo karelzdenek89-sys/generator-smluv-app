@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { LOCALE_BOOTSTRAP_SCRIPT } from '@/lib/locale-bootstrap';
-import { Inter, Playfair_Display } from 'next/font/google';
+import { Inter, Newsreader } from 'next/font/google';
 import './globals.css';
 import CookiesBanner from '@/app/components/CookiesBanner';
 import Footer from '@/app/components/Footer';
@@ -14,8 +14,11 @@ const inter = Inter({
   display: 'swap',
 });
 
-const playfair = Playfair_Display({
+// Nadpisy: vzpřímený editorský serif (Newsreader) místo kurzívového Playfair —
+// střízlivější, čitelnější a bližší charakteru smluvního portálu.
+const newsreader = Newsreader({
   subsets: ['latin', 'latin-ext'],
+  weight: ['400', '500', '600', '700'],
   variable: '--font-serif',
   display: 'swap',
 });
@@ -85,7 +88,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: LOCALE_BOOTSTRAP_SCRIPT }} />
       </head>
       <body
-        className={`${inter.variable} ${playfair.variable} antialiased bg-[#060912] text-[#d7dee8]`}
+        className={`${inter.variable} ${newsreader.variable} antialiased bg-[#060912] text-[#d7dee8]`}
         style={{ colorScheme: 'dark' }}
       >
         <RouteChrome />

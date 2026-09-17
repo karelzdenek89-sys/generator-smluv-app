@@ -38,6 +38,9 @@ const BUILDERS: Builder[] = [
  * its own value, so the native setter has to be used before dispatching input.
  */
 async function fillEveryField(page: import('@playwright/test').Page) {
+  // SSR markup is visible before React attaches input handlers in next dev.
+  // The draft effect signals that the builder has mounted and restored its state.
+  await page.waitForFunction(() => Object.keys(sessionStorage).some(key => key.startsWith(`sh_builder_draft:${location.pathname}:`)));
   await page.evaluate(() => {
     const setValue = (element: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, value: string) => {
       const prototype = element instanceof HTMLTextAreaElement

@@ -12,6 +12,7 @@ import {
   type PublicCase,
 } from './types';
 import { buildDefaultTasks, planReminders } from './workflow';
+import { buildCaseDocumentSnapshot } from './documents';
 
 /**
  * Redis datový model Case Engine (viz docs/DATA_MAP.md):
@@ -176,44 +177,58 @@ export class CaseConflictError extends Error {
 
 /**
  * Compare-and-set: zapíše případ jen tehdy, když je uložená revize stejná,
- * jakou nesl načtený záznam. Revize žije v samostatném klíči, aby skript
- * nemusel parsovat JSON (funguje stejně v Upstash i v paměťové náhradě).
+ * jakou nesl načtený záznam. Záznam, revize a index dokumentů se mění
+ * atomicky (stejný kontrakt v Upstash i v paměťové náhradě).
  */
 const SAVE_CASE_SCRIPT = `
 local current = redis.call('GET', KEYS[2])
 if current == false then current = '0' end
 if current ~= ARGV[1] then return 0 end
-redis.call('SET', KEYS[1], ARGV[2], 'EX', ARGV[4])
-redis.call('SET', KEYS[2], ARGV[3], 'EX', ARGV[4])
+local ttl = tonumber(ARGV[4])
+if ARGV[5] == 'preserve' then
+  local remaining = redis.call('TTL', KEYS[1])
+  if remaining <= 0 then return 0 end
+  ttl = math.min(ttl, remaining)
+end
+local previous = redis.call('GET', KEYS[1])
+if previous then
+  for _, doc in ipairs(cjson.decode(previous).documents or {}) do
+    redis.call('ZREM', KEYS[3], ARGV[6] .. ':' .. doc.id)
+  end
+end
+for _, pending in ipairs(cjson.decode(ARGV[7])) do
+  redis.call('ZADD', KEYS[3], pending[2], pending[1])
+end
+redis.call('SET', KEYS[1], ARGV[2], 'EX', ttl)
+redis.call('SET', KEYS[2], ARGV[3], 'EX', ttl)
 return 1
 `;
 
-export async function saveCase(record: CaseRecord, now: Date = new Date()): Promise<CaseRecord> {
+type SaveCaseOptions = { preserveRetention?: boolean };
+
+export async function saveCase(record: CaseRecord, now: Date = new Date(), options: SaveCaseOptions = {}): Promise<CaseRecord> {
   const scrubbed = scrubForStorage(record, now);
   const ttl = caseTtlSeconds(scrubbed, now);
   const expectedRevision = record.revision ?? 0;
   const next: CaseRecord = {
     ...scrubbed,
     revision: expectedRevision + 1,
-    updatedAt: now.toISOString(),
-    expiresAt: new Date(now.getTime() + ttl * 1000).toISOString(),
+    updatedAt: options.preserveRetention ? record.updatedAt : now.toISOString(),
+    expiresAt: options.preserveRetention ? record.expiresAt : new Date(now.getTime() + ttl * 1000).toISOString(),
     events: record.events.slice(-MAX_EVENTS),
   };
   const stored = await redis.eval(
     SAVE_CASE_SCRIPT,
-    [caseKey(next.id), revisionKey(next.id)],
-    [String(expectedRevision), JSON.stringify(next), String(next.revision), String(ttl)],
+    [caseKey(next.id), revisionKey(next.id), PENDING_DOCUMENTS_KEY],
+    [String(expectedRevision), JSON.stringify(next), String(next.revision), String(ttl),
+      options.preserveRetention ? 'preserve' : 'renew', next.id,
+      JSON.stringify(next.documents.filter((document) => document.status === 'pending_payment')
+        .map((document) => [`${next.id}:${document.id}`, pendingDocumentPurgeAt(document)]))],
   );
   if (Number(stored) !== 1) throw new CaseConflictError(next.id);
   await redis.sadd(ownerKey(next.ownerEmail), next.id);
   await redis.expire(ownerKey(next.ownerEmail), CASE_TTL_SECONDS);
-  // Index nezaplacených dokumentů pro denní úklid: přidat čekající, odebrat ostatní.
-  const pending = next.documents.filter((document) => document.status === 'pending_payment');
-  const settled = record.documents.filter((document) => !pending.some((item) => item.id === document.id));
-  await Promise.all([
-    ...pending.map((document) => redis.zadd(PENDING_DOCUMENTS_KEY, { score: pendingDocumentPurgeAt(document), member: `${next.id}:${document.id}` })),
-    ...settled.map((document) => redis.zrem(PENDING_DOCUMENTS_KEY, `${next.id}:${document.id}`)),
-  ]);
+  // Dokument a jeho úklidový index jsou součástí stejného atomického zápisu.
   return next;
 }
 
@@ -228,13 +243,23 @@ export async function commitCase(
   mutate: (fresh: CaseRecord) => CaseRecord | Promise<CaseRecord>,
   now: Date = new Date(),
   attempts = 4,
+  options: SaveCaseOptions = {},
 ): Promise<CaseRecord | null> {
   for (let attempt = 0; attempt < attempts; attempt += 1) {
     const fresh = await getCase(caseId);
     if (!fresh) return null;
-    const next = await mutate(fresh);
+    // Freeze legacy content before an action can change its source case.
+    // Historical contents cannot be reconstructed; this prevents further drift.
+    const stable = {
+      ...fresh,
+      documents: fresh.documents.map((document) => document.snapshot ? document : ({
+        ...document,
+        snapshot: { ...buildCaseDocumentSnapshot(document.kind, fresh, document.data), templateVersion: 'legacy-frozen-2026.2' },
+      })),
+    };
+    const next = await mutate(stable);
     try {
-      return await saveCase({ ...next, revision: fresh.revision ?? 0 }, now);
+      return await saveCase({ ...next, revision: fresh.revision ?? 0 }, now, options);
     } catch (error) {
       if (!(error instanceof CaseConflictError) || attempt === attempts - 1) throw error;
     }
@@ -244,9 +269,8 @@ export async function commitCase(
 
 export async function getCase(caseId: string): Promise<CaseRecord | null> {
   if (!isCaseIdFormat(caseId)) return null;
-  const [record, revision, seenAt] = await Promise.all([
+  const [record, seenAt] = await Promise.all([
     redis.get<CaseRecord>(caseKey(caseId)),
-    redis.get<string | number>(revisionKey(caseId)),
     redis.get<string>(seenKey(caseId)),
   ]);
   if (!record || record.kind !== 'work_order' || !Array.isArray(record.tasks)) return null;
@@ -255,7 +279,9 @@ export async function getCase(caseId: string): Promise<CaseRecord | null> {
     ...record,
     // Prošlý nezaplacený dokument se nevrací ani před fyzickým úklidem.
     documents: record.documents.filter((document) => !isExpiredPendingDocument(document, nowMs)),
-    revision: Number(revision ?? record.revision ?? 0),
+    // Revize musí pocházet ze stejného JSON snapshotu jako data. Samostatný
+    // GET revize by mohl starým datům přiřadit verzi novějšího zápisu.
+    revision: record.revision ?? 0,
     lastAccessAt: typeof seenAt === 'string' && seenAt > record.lastAccessAt ? seenAt : record.lastAccessAt,
   };
 }
@@ -265,7 +291,7 @@ export async function getCase(caseId: string): Promise<CaseRecord | null> {
  * kterých se nikdo nedotkl. Vrací počty pro log cronu.
  */
 export async function purgeExpiredPendingDocuments(nowMs: number = Date.now(), limit = 200): Promise<{ due: number; purged: number; missing: number }> {
-  const entries = (await redis.zrange(PENDING_DOCUMENTS_KEY, 0, nowMs, { byScore: true, withScores: true })) as (string | number)[];
+  const entries = (await redis.zrange(PENDING_DOCUMENTS_KEY, 0, nowMs, { byScore: true, withScores: true, offset: 0, count: limit })) as (string | number)[];
   const members: string[] = [];
   for (let i = 0; i + 1 < entries.length && members.length < limit; i += 2) members.push(String(entries[i]));
   const summary = { due: members.length, purged: 0, missing: 0 };
@@ -278,19 +304,48 @@ export async function purgeExpiredPendingDocuments(nowMs: number = Date.now(), l
       await redis.zrem(PENDING_DOCUMENTS_KEY, member);
       continue;
     }
-    if (document.status !== 'pending_payment') {
+    if (document.status !== 'pending_payment' || !isExpiredPendingDocument(document, nowMs)) {
       await redis.zrem(PENDING_DOCUMENTS_KEY, member);
       continue;
     }
-    const ttl = await redis.ttl(caseKey(caseId));
     // Zápis bez prodloužení retence: TTL zůstává, jen dokument zmizí.
-    const next = await commitCase(caseId, (fresh) => ({ ...fresh, documents: fresh.documents.filter((item) => item.id !== documentId) }), new Date(nowMs));
-    if (next && ttl > 0) await redis.expire(caseKey(caseId), ttl);
+    const cleaned = await commitCase(caseId, (fresh) => ({
+      ...fresh,
+      documents: fresh.documents.filter((item) => item.id !== documentId || !isExpiredPendingDocument(item, nowMs)),
+    }), new Date(nowMs), 4, { preserveRetention: true });
+    // A payment may have won the CAS race. Keep its session mapping intact.
+    if (cleaned?.documents.some((item) => item.id === documentId)) continue;
     if (document.stripeSessionId) await redis.del(`case:docsession:${document.stripeSessionId}`);
     await redis.zrem(PENDING_DOCUMENTS_KEY, member);
     summary.purged += 1;
   }
   return summary;
+}
+
+/** Bounded, resumable backfill for cases created before the pending index existed. */
+export async function indexLegacyPendingDocuments(maxPages = 10): Promise<{ scanned: number; complete: boolean }> {
+  const cursorKey = 'case:maintenance:pending-scan';
+  let cursor = Number(await redis.get<string | number>(cursorKey) ?? 0);
+  let scanned = 0;
+  for (let page = 0; page < maxPages; page += 1) {
+    const [nextCursor, keys] = await redis.scan(cursor, { match: 'case:*', count: 200 });
+    for (const key of keys) {
+      const id = key.slice('case:'.length);
+      if (!isCaseIdFormat(id)) continue;
+      const record = await redis.get<CaseRecord>(key);
+      if (!record || record.kind !== 'work_order' || !Array.isArray(record.documents)) continue;
+      scanned += 1;
+      for (const document of record.documents) {
+        if (document.status === 'pending_payment') {
+          await redis.zadd(PENDING_DOCUMENTS_KEY, { score: pendingDocumentPurgeAt(document), member: `${id}:${document.id}` });
+        }
+      }
+    }
+    cursor = Number(nextCursor);
+    await redis.set(cursorKey, cursor);
+    if (cursor === 0) return { scanned, complete: true };
+  }
+  return { scanned, complete: false };
 }
 
 export async function touchCaseAccess(record: Pick<CaseRecord, 'id'>): Promise<void> {
@@ -420,6 +475,7 @@ export function toPublicCase(record: CaseRecord): PublicCase {
     documents: record.documents.map((document) => ({
       ...document,
       stripeSessionId: null,
+      checkoutRequest: null,
     })),
   };
 }

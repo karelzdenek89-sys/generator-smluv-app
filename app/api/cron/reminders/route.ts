@@ -5,7 +5,7 @@ import { recordAnalyticsEvent } from '@/lib/analytics-server';
 import { issueCaseAccessToken } from '@/lib/cases/access';
 import { buildCaseUrl, sendReminderEmail } from '@/lib/cases/emails';
 import { isCaseEngineEnabled } from '@/lib/cases/service';
-import { commitCase, getCase, listDueReminders, newEvent, purgeExpiredPendingDocuments, removeDueReminder } from '@/lib/cases/store';
+import { commitCase, getCase, indexLegacyPendingDocuments, listDueReminders, newEvent, purgeExpiredPendingDocuments, removeDueReminder } from '@/lib/cases/store';
 import { isTransactionalEmailConfigured } from '@/lib/email/transactional';
 
 export const runtime = 'nodejs';
@@ -36,10 +36,6 @@ export async function GET(req: Request) {
   if (!isCaseEngineEnabled()) {
     return NextResponse.json({ ok: true, skipped: 'case_engine_disabled' });
   }
-  if (!isTransactionalEmailConfigured()) {
-    return NextResponse.json({ ok: false, skipped: 'email_not_configured' }, { status: 503 });
-  }
-
   const lock = await redis.set(LOCK_KEY, String(Date.now()), { ex: LOCK_TTL_SECONDS, nx: true });
   if (lock === null) {
     return NextResponse.json({ ok: true, skipped: 'locked' });
@@ -50,10 +46,15 @@ export async function GET(req: Request) {
     const now = Date.now();
     // Retence: fyzický výmaz nezaplacených dokumentů po 30 dnech (docs/DATA_MAP.md).
     try {
+      await indexLegacyPendingDocuments();
       const purge = await purgeExpiredPendingDocuments(now);
       summary.purgedDocuments = purge.purged;
     } catch (error) {
       console.error('[cron] pending document purge failed', error instanceof Error ? error.name : 'unknown');
+      return NextResponse.json({ ok: false, error: 'retention_cleanup_failed' }, { status: 503 });
+    }
+    if (!isTransactionalEmailConfigured()) {
+      return NextResponse.json({ ...summary, ok: false, skipped: 'email_not_configured' }, { status: 503 });
     }
     const due = await listDueReminders(now, BATCH_LIMIT);
     summary.due = due.length;

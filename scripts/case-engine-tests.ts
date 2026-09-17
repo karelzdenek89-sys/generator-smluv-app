@@ -2,6 +2,7 @@ process.env.SMLOUVAHNED_FAKE_REDIS = '1';
 process.env.NEXT_PUBLIC_BASE_URL = 'https://www.smlouvahned.cz';
 
 import assert from 'node:assert/strict';
+import { testCaseReliability } from './case-reliability-tests';
 import { memoryRedis } from '@/lib/redis-memory';
 import {
   hashCaseAccessToken,
@@ -543,6 +544,7 @@ async function main() {
   await testConcurrencyAndImmutability();
   await testCheckoutIdempotency();
   await testConsent();
+  await testCaseReliability();
   console.log(`Case engine tests passed (${checks} checks: workflow, store, tokens, actions, reminders, documents, PDF, retention, concurrency, immutability, checkout idempotency, consent).`);
 }
 

@@ -2,9 +2,21 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "Next.js Dev (local, fake Redis)",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev:local"
+      ],
+      "port": 3200
+    },
+    {
       "name": "Next.js Dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 3000
     }
   ]

@@ -82,7 +82,7 @@ export const GROWTH_ARTICLES: readonly AnswerFirstArticle[] = [
       'Zpravidla ne. Při pevné ceně nebo zaručeném rozpočtu nemůže zhotovitel žádat víc jen proto, že práce byla náročnější (§ 2620 OZ). U rozpočtu s výhradou neúplnosti či nezávaznosti může žádat zvýšení jen za nepředvídatelné práce, které včas oznámil (§ 2621–2622 OZ). Práce provedené bez souhlasu a bez oznámení smluvní nárok nezakládají; zhotovitel se může nanejvýš domáhat vydání bezdůvodného obohacení, což je pro obě strany nejistá cesta.',
     context: [
       'Rozhodující je, jak je ve smlouvě určena cena: pevně, podle rozpočtu, nebo odhadem. Odhad může zhotovitel podstatně překročit jen po včasném oznámení (§ 2612 OZ).',
-      'Změna rozsahu díla je změna smlouvy — u písemné smlouvy platí jen písemný dodatek nebo změnový list (§ 564 OZ).',
+      'Změnu rozsahu zachyťte písemně, aby bylo možné prokázat dohodu. Samotná písemná smlouva ale neznamená, že každá její změna musí být písemná: rozhoduje zákon a ujednání stran o formě změn (§ 564 OZ).',
     ],
     steps: [
       { title: 'Zjistěte cenový režim ve smlouvě', text: 'Pevná cena / rozpočet / odhad. U rozpočtu zkontrolujte, zda je označen jako závazný a úplný, nebo s výhradou.' },
@@ -126,7 +126,7 @@ export const GROWTH_ARTICLES: readonly AnswerFirstArticle[] = [
       'Před provedením: písemně popsat práce navíc, jejich cenu (a zda včetně DPH), důvod a dopad na termín — a nechat obě strany podepsat. Teprve potom práce provést a fakturovat samostatně nebo je doplnit do platebního harmonogramu. Potvrzení víceprací je pro objednatele jistota ceny, pro zhotovitele jistota zaplacení.',
     context: [
       'Zhotovitel, který zjistí potřebu prací nad rámec rozpočtu, ji musí oznámit bez zbytečného odkladu, jinak právo na zvýšení ceny ztrácí (§ 2622 OZ).',
-      'Písemné odsouhlasení je změna smlouvy (§ 564 OZ); u díla s pevnou cenou jde o jediný způsob, jak cenu legitimně navýšit (§ 2620 OZ).',
+      'Dohodu o změně ceny zachyťte písemně a ověřte formu změn sjednanou ve smlouvě (§ 564 OZ). Pevnou cenu zpravidla nelze jednostranně zvýšit kvůli vyšším nákladům; § 2620 odst. 2 OZ upravuje výjimečný zásah soudu při mimořádné nepředvídatelné okolnosti.',
     ],
     steps: [
       { title: 'Oznamte potřebu prací navíc hned', text: 'E-mailem nebo zápisem ve stavebním deníku: co, proč, odhad ceny a času. Datum oznámení je důkaz včasnosti.' },

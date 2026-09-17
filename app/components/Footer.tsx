@@ -115,7 +115,7 @@ function FooterContent({
             <div className="flex items-center gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#c9a852]/40 bg-[#07111e] text-xs font-bold text-[#c9a852]">SH</div>
               <div>
-                <div className="font-serif italic text-sm font-semibold text-white">SmlouvaHned</div>
+                <div className="font-serif text-sm font-semibold text-white">SmlouvaHned</div>
                 <div className="text-[10px] uppercase tracking-[0.18em] text-slate-600">{t.softwareTool}</div>
               </div>
             </div>

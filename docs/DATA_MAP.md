@@ -33,6 +33,7 @@ klíčové prostory s vlastním TTL. Nic ze stávajících klíčů se nemění 
 | `documents[].data` | vlastník vyplní do navazujícího dokumentu (jména stran, popis prací, vady) | může být (jména stran) | ano — vstup dokumentu | s případem; **nezaplacený** dokument 30 dní |
 | `documents[].snapshot` | sekce dokumentu, název a termín zakázky, verze šablony zmrazené při vytvoření | totéž co `data` | ano — vydaný dokument je neměnný; PDF se renderuje ze snapshotu, ne z aktuálního stavu | s dokumentem |
 | `documents[].checkoutAttempts` | počet založených Stripe session | ne | ano — idempotency key `case-doc:{documentId}:{attempt}` | s dokumentem |
+| `documents[].checkoutRequest` | přesné parametry nedokončeného Stripe požadavku včetně e-mailu vlastníka, názvu a pevné expirace | ano | ano — bezpečné opakování po výpadku; nevrací se veřejným API ani exportem | do potvrzeného uložení Stripe session, nejdéle s nezaplaceným dokumentem |
 | `closedAt` | systém při přechodu do fáze `closed` | ne | ano — pevný termín výmazu uzavřené zakázky | s případem |
 | `revision` (`case:rev:*`) | systém | ne | ano — compare-and-set proti souběhu (webhook vs. druhá karta) | s případem |
 | `case:seen:*` | systém při otevření | ne | ano — poslední přístup bez přepisu záznamu | s případem |
@@ -44,6 +45,7 @@ klíčové prostory s vlastním TTL. Nic ze stávajících klíčů se nemění 
 
 Obsah smlouvy (`contract:draft:*`) se do případu nekopíruje; adresa, IČO ani kontakt protistrany v případu nejsou.
 TTL nastavuje `saveCase` podle fáze: `closed` → zbytek do `closedAt + 180 dní` (další zápisy termín neprodlužují), jinak 365 dní od poslední změny; otevření případu retenci neprodlužuje (zapisuje jen `case:seen:*`). Nezaplacené dokumenty po 30 dnech: `getCase` je nevrací, `saveCase` je odstraní a `purgeExpiredPendingDocuments` (denní cron `/api/cron/reminders`) je fyzicky smaže i z netknutých případů.
+Údržba zachovává TTL atomicky; starší dokumenty bez indexu dohledává omezený SCAN s kurzorem `case:maintenance:pending-scan` (číselný kurzor bez osobních údajů). Nové zápisy mění index a záznam atomicky.
 - **C (analytika):** e-mail, název zakázky, obsah dokumentů, tokeny, session ID; pouze kategoriální klíče (`case_stage`, `document_kind`, `tool_key`, …).
 - **D/E (partner):** rodné číslo, číslo OP, plná adresa, obsah dokumentu, údaje protistrany. Kontakt jen v rozsahu polí, ke kterým byl udělen souhlas.
 

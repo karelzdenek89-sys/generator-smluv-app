@@ -223,7 +223,10 @@ test('invalid or missing case link explains recovery and stays noindex', async (
   await stubAnalytics(page);
   const response = await request.get(`/moje-zakazka?id=${CASE_ID}`);
   expect(response.headers()['x-robots-tag']).toContain('noindex');
-  expect(response.headers()['cache-control']).toContain('no-store');
+  // Next dev overrides this header in base-server; production must remain no-store.
+  expect(response.headers()['cache-control']).toContain(
+    process.env.PLAYWRIGHT_DEV_SERVER === 'true' ? 'no-cache' : 'no-store',
+  );
   await page.goto(`/moje-zakazka?id=${CASE_ID}`);
   await expect(page.locator('main h1')).toHaveText('Odkaz k zakázce je neplatný nebo vypršel');
   await page.getByRole('link', { name: 'Poslat návratový odkaz' }).click();

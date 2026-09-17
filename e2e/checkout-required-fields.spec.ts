@@ -112,6 +112,8 @@ const BUILDERS: Builder[] = [
 ];
 
 async function fillEveryField(page: Page) {
+  // Wait for draft restoration and React input handlers, not just SSR markup.
+  await page.waitForFunction(() => Object.keys(sessionStorage).some(key => key.startsWith(`sh_builder_draft:${location.pathname}:`)));
   await page.evaluate(() => {
     const setValue = (element: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, value: string) => {
       const prototype = element instanceof HTMLTextAreaElement

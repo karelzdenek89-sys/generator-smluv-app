@@ -134,12 +134,12 @@ function testLocalePropagation() {
   assert.match(landing, /item\.flag/);
 
   const homepage = read('app/page.tsx');
-  assert.match(homepage, /Potřebujete smlouvu v cizím jazyce/);
+  assert.match(homepage, /Nápověda také v angličtině a ukrajinštině/);
   assert.match(homepage, /LanguageSwitcher current="cs"/);
   assert.match(homepage, /ExpatEntryLinks/);
   assert.match(read('lib/i18n/locales.ts'), /nativeName/);
   assert.match(read('app/components/LanguageSwitcher.tsx'), /m\.flag/);
-  assert.match(homepage, /Потрібен договір іншою мовою/);
+  assert.match(read('app/components/ExpatEntryLinks.tsx'), /Огляд договорів українською/);
   assert.doesNotMatch(homepage, /\/vn/);
   assert.doesNotMatch(homepage, /Bạn cần|ngôn ngữ|label: 'VI'/);
 
