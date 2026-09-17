@@ -53,8 +53,6 @@ export const EXPAT_CONTRACT_ROUTES: Record<ContractType, string> = {
   cooperation: '/spoluprace',
 };
 
-const QUERY_LOCALIZED_ROUTES = new Set(['/zakaznicka-zona']);
-
 /**
  * Browser-only locale for the six builders that have complete EN/UA guidance.
  * The URL is the only authority: persisted preferences must not translate
@@ -92,9 +90,9 @@ export function isExpatContract(contractType: ContractType): contractType is Exp
 }
 
 /**
- * Preserves language through builders and the post-payment customer zone.
- * Private customer-zone pages stay on their canonical Czech path and carry the
- * UI language only in `?lang=`; no duplicate indexable locale URL is created.
+ * Carries locale only across builders that explicitly support the expat UI.
+ * Private customer pages localize themselves from their own `?lang=` input or
+ * from the stored order, so this shared helper keeps its established contract.
  */
 export function withLocale(href: string, locale: AppLocale): string {
   if (locale === 'cs') return href;
@@ -102,7 +100,7 @@ export function withLocale(href: string, locale: AppLocale): string {
   const [pathWithQuery, fragment] = href.split('#', 2);
   const path = pathWithQuery.split('?', 1)[0].replace(/\/$/, '') || '/';
   const contractType = getContractTypeByPath(path);
-  if ((!contractType || !isExpatContract(contractType)) && !QUERY_LOCALIZED_ROUTES.has(path)) return href;
+  if (!contractType || !isExpatContract(contractType)) return href;
   const separator = pathWithQuery.includes('?') ? '&' : '?';
   const localized = `${pathWithQuery}${separator}lang=${locale}`;
   return fragment ? `${localized}#${fragment}` : localized;
