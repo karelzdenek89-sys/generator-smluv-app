@@ -42,6 +42,8 @@ const BASE_SEO_LANDINGS: readonly InternalLink[] = [
   { href: '/prodej-vozidla', label: 'Kupní smlouva na auto', description: 'Vzor pro převod vozidla — VIN, tachometr, doklady.', cluster: 'auto' },
   { href: '/balicek-prodej-vozidla', label: 'Balíček pro prodej vozidla', description: 'Smlouva + předávací protokol + podklady k převodu.', cluster: 'auto' },
 
+  { href: '/zamestnavam', label: 'Zaměstnávám — co potřebuji vyřešit', description: 'Rozcestník: pracovní smlouva, DPP, OSVČ, mlčenlivost, ukončení.', cluster: 'prace' },
+  { href: '/zakazka', label: 'Řeším zakázku', description: 'Smlouva o dílo, vícepráce, předání a vady s termíny a připomínkami.', cluster: 'prace' },
   { href: '/pracovni', label: 'Pracovní smlouva online', description: 'Formulář pracovní smlouvy podle zákoníku práce.', cluster: 'prace' },
   { href: '/balicek-zamestnavatel', label: 'Zaměstnavatel Start 2026', description: 'Pracovní smlouva + informace podle § 37 ZP + nástupní podklady.', cluster: 'prace' },
   { href: '/dpp', label: 'Dohoda o provedení práce (DPP)', description: 'Online DPP do 300 hodin ročně.', cluster: 'prace' },

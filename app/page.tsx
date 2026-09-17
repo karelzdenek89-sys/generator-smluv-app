@@ -15,8 +15,20 @@ import { getFreeBasicPdfCopy } from '@/lib/monetization-copy';
 import { getMonetizationPolicy, isFreeBasicPolicy } from '@/lib/monetization-policy';
 import { PRICING_TIER_CONFIG } from '@/lib/pricing';
 import { SITE_URL } from '@/lib/seo/site';
+import SituationGrid from '@/app/components/portal/SituationGrid';
+import { LEGAL_CHANGES, LEGAL_CHANGE_STATUS_LABELS } from '@/lib/legal/radar';
+import { PORTAL_TOOLS } from '@/lib/portal/tools';
 
 const HOMEPAGE_BASE_URL = SITE_URL;
+const HOMEPAGE_TOOLS = [
+  'jaky-vztah-potrebuji',
+  'checklist-pred-smlouvou-o-dilo',
+  'checklist-prodeje-auta',
+  'checklist-uzavreni-najmu',
+]
+  .map((slug) => PORTAL_TOOLS.find((tool) => tool.slug === slug))
+  .filter((tool): tool is NonNullable<typeof tool> => Boolean(tool));
+const HOMEPAGE_RADAR = LEGAL_CHANGES.slice(0, 4);
 const HOME_DPP_POLICY = getMonetizationPolicy('dpp', 'cs');
 const FREE_BASIC_DPP = isFreeBasicPolicy(HOME_DPP_POLICY);
 const HOME_BASIC_PRICE_LABEL = `od ${PRICING_TIER_CONFIG.basic.priceLabel}`;
@@ -39,18 +51,18 @@ for (const l of FOREIGN_LOCALES) {
 }
 
 export const metadata: Metadata = {
-  title: { absolute: 'Generování smluv online 2026 — PDF ihned ke stažení | SmlouvaHned' },
+  title: { absolute: 'Smlouvy online pro životní a podnikatelské situace — PDF ihned | SmlouvaHned' },
   description:
     FREE_BASIC_DPP
-      ? '14 typů smluv online dle OZ 2026 — základní DPP zdarma, další dokumenty od 99 Kč. Vyplníte formulář a PDF s citacemi § stáhnete ihned.'
-      : '14 typů smluv online dle OZ 2026 — nájemní, kupní, pracovní, NDA a další. Vyplníte formulář, PDF s citacemi § stahujete ihned. Od 99 Kč.',
+      ? 'Smlouvy online podle situace: zakázka, zaměstnávání, pronájem, auto, půjčka. 14 typů smluv dle OZ 2026, základní DPP zdarma, další od 99 Kč. Bezplatné checklisty, radar změn 2027 a pokračování zakázky s připomínkami.'
+      : 'Smlouvy online podle situace: zakázka, zaměstnávání, pronájem, auto, půjčka. 14 typů smluv dle OZ 2026 od 99 Kč, PDF ihned. Bezplatné checklisty, radar změn 2027 a pokračování zakázky s termíny a připomínkami.',
   alternates: { canonical: HOMEPAGE_BASE_URL, languages: homepageLanguageAlternates },
   openGraph: {
-    title: 'Generování smluv online 2026 — PDF ihned ke stažení',
+    title: 'Smlouvy online pro životní a podnikatelské situace — PDF ihned',
     description:
       FREE_BASIC_DPP
-        ? '14 typů smluv online dle OZ 2026 — základní DPP zdarma, další dokumenty od 99 Kč. Formulář → PDF s citacemi § ihned.'
-        : '14 typů smluv online dle OZ 2026 — nájemní, kupní, pracovní, NDA a další. Formulář → PDF s citacemi § ihned. Od 99 Kč.',
+        ? 'Vyberte, co právě řešíte. 14 typů smluv dle OZ 2026, základní DPP zdarma, další od 99 Kč. Nástroje zdarma a pokračování zakázky.'
+        : 'Vyberte, co právě řešíte. 14 typů smluv dle OZ 2026 od 99 Kč, PDF ihned. Nástroje zdarma, radar změn 2027 a pokračování zakázky.',
     url: HOMEPAGE_BASE_URL,
     siteName: 'SmlouvaHned',
     type: 'website',
@@ -59,10 +71,10 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Generování smluv online 2026',
+    title: 'Smlouvy online pro životní a podnikatelské situace',
     description: FREE_BASIC_DPP
-      ? '14 typů smluv dle OZ 2026 — základní DPP zdarma, další dokumenty od 99 Kč.'
-      : '14 typů smluv dle OZ 2026 — formulář → PDF ihned. Od 99 Kč.',
+      ? '14 typů smluv dle OZ 2026 — základní DPP zdarma, další dokumenty od 99 Kč. Nástroje zdarma.'
+      : '14 typů smluv dle OZ 2026 — formulář → PDF ihned. Od 99 Kč. Nástroje zdarma.',
     images: ['/og-image.png'],
   },
 };
@@ -96,6 +108,14 @@ const faqItems = [
     question: 'Je to náhrada individuální právní služby?',
     answer: 'Ne. Dokumenty na tomto webu představují standardní smluvní vzory pro typické situace. Nejsou náhradou za individuální právní poradenství. V případě nestandardních nebo složitějších případů doporučujeme konzultaci s advokátem.',
   },
+  {
+    question: 'Co je „Moje zakázka“ a musím se registrovat?',
+    answer: 'Po zaplacení smlouvy o dílo můžete zakázku uložit jako případ: uvidíte termín, fázi, doporučené kroky a dostanete připomínky před termínem předání. Navazující dokumenty (změnový list, vícepráce, předávací protokol, vady) vytvoříte přímo v zakázce. Registrace není potřeba — vracíte se odkazem z e-mailu, zakázku můžete kdykoli smazat.',
+  },
+  {
+    question: 'Jsou nástroje a legislativní radar zdarma?',
+    answer: 'Ano. Checklisty, rozhodovací průvodci i radar změn 2027 jsou bezplatné a nevyžadují e-mail ani registraci. Platíte pouze za vygenerovaný dokument, jehož cenu vidíte předem.',
+  },
 ];
 
 const faqSchema = {
@@ -118,6 +138,10 @@ const softwareSchema = {
   inLanguage: 'cs',
   description: 'Online softwarový nástroj pro interaktivní tvorbu a stažení standardizovaných smluvních dokumentů — nájemní smlouva, kupní smlouva, NDA a další. Výstup ve formátu PDF. Není advokátní kanceláří.',
   featureList: [
+    'Rozcestník podle životní nebo podnikatelské situace',
+    'Bezplatné checklisty a rozhodovací průvodci',
+    'Legislativní radar 2027 s explicitním statusem změn a oficiálními zdroji',
+    'Pokračování zakázky: termíny, připomínky a navazující dokumenty (Moje zakázka)',
     'Interaktivní formulář pro tvorbu smluvních dokumentů',
     'Okamžitý export do PDF',
     '14 typů standardizovaných dokumentů',
@@ -214,9 +238,10 @@ export default function Home() {
           </Link>
 
           <div className="hidden items-center gap-7 text-[13px] text-slate-400 md:flex">
-            <Link href="#smlouvy" className="hover:text-white transition-colors duration-150">Smlouvy</Link>
-            <Link href="#balicky" className="hover:text-white transition-colors duration-150">Balíčky</Link>
-            <Link href="#jak-to-funguje" className="hover:text-white transition-colors duration-150">Postup</Link>
+            <Link href="#situace" className="hover:text-white transition-colors duration-150">Situace</Link>
+            <Link href="#smlouvy" className="hover:text-white transition-colors duration-150">Dokumenty</Link>
+            <Link href="/nastroje" className="hover:text-white transition-colors duration-150">Nástroje</Link>
+            <Link href="/zmeny-2027" className="hover:text-white transition-colors duration-150">Změny 2027</Link>
             <Link href="/blog" className="hover:text-white transition-colors duration-150">Blog</Link>
             <Link href="/zakaznicka-zona"
               className="rounded-lg border border-[#c9a852]/30 px-4 py-1.5 text-[#c9a852] transition-all duration-200 hover:border-[#c9a852]/60 hover:text-[#d4b86a]">
@@ -257,33 +282,30 @@ export default function Home() {
               </span>
             </div>
 
-            <h1 className="font-serif italic text-6xl font-bold leading-[1.10] tracking-tight text-white md:text-7xl lg:text-[5rem]">
+            <h1 className="font-serif italic text-5xl font-bold leading-[1.10] tracking-tight text-white md:text-6xl lg:text-[4.5rem]">
               Smlouvy online
               <br />
-              <span className="text-[#c9a852]">sestavené přesně</span>
+              pro důležité <span className="text-[#c9a852]">životní</span>
               <br />
-              podle vašich údajů.
+              a podnikatelské situace.
             </h1>
 
-            <p className="mt-7 max-w-lg text-lg leading-relaxed text-slate-300">
-              Vyplníte přehledný formulář — systém sestaví dokument podle vašich podmínek
-              a výsledkem je standardizované PDF připravené k podpisu, strukturované podle
-              příslušné české právní úpravy pro daný typ dokumentu.
-            </p>
+            <p className="mt-6 text-xl font-semibold text-slate-200">Od první dohody až po poslední předání.</p>
 
-            <div className="mt-5 flex flex-wrap items-center gap-x-2 gap-y-1 text-base text-slate-400">
-              <span>Hotový PDF dokument ihned ke stažení</span>
-            </div>
+            <p className="mt-4 max-w-lg text-lg leading-relaxed text-slate-300">
+              Vyberte, co právě řešíte. Připravíme potřebné dokumenty, vysvětlíme další kroky
+              a pomůžeme vám pohlídat důležité termíny.
+            </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-4">
               <Link
-                href="#smlouvy"
+                href="#situace"
                 className="inline-flex items-center gap-2 rounded-xl bg-[#c9a852] px-8 py-4 text-base font-bold text-[#040c1a] transition-all duration-200 hover:bg-[#d4b86a] hover:shadow-[0_0_32px_rgba(201,168,82,0.35)]"
               >
-                Vybrat typ smlouvy <span>→</span>
+                Vybrat, co řeším <span>→</span>
               </Link>
-              <Link href="#jak-to-funguje" className="inline-flex items-center gap-1.5 text-base text-slate-400 transition-colors hover:text-white">
-                Jak to funguje? <span className="text-xs">↓</span>
+              <Link href="#smlouvy" className="inline-flex items-center gap-1.5 text-base text-slate-300 transition-colors hover:text-white">
+                Vím, jaký dokument potřebuji <span className="text-xs">↓</span>
               </Link>
             </div>
 
@@ -309,6 +331,67 @@ export default function Home() {
 
       {/* ─── MAIN CONTENT ─────────────────────────────────────────────────────── */}
       <div className="relative z-10 mx-auto max-w-7xl px-6 pb-20 md:px-10">
+
+        {/* ── SITUACE ──────────────────────────────────────────────────────────── */}
+        <section id="situace" className="scroll-mt-24 pt-16 md:pt-20" aria-labelledby="situace-title">
+          <div className="mb-8 max-w-2xl">
+            <p className="site-kicker mb-2">Co právě řešíte?</p>
+            <h2 id="situace-title" className="font-serif italic text-4xl font-bold text-white md:text-5xl">Vyberte situaci, ne paragraf</h2>
+            <p className="mt-3 text-base leading-relaxed text-slate-400">
+              Každá situace má odpověď, bezplatný nástroj, správný dokument a přehled dalších kroků.
+              Cena je vždy vidět před vyplněním: dokumenty od {PRICING_TIER_CONFIG.basic.priceLabel}, nástroje zdarma.
+            </p>
+          </div>
+          <SituationGrid surface="homepage_situations" />
+          <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-slate-400">
+            <Link href="/zmeny-2027" className="transition-colors hover:text-white">Sleduji změny zákonů → Legislativní radar 2027</Link>
+            <Link href="/nastroje" className="transition-colors hover:text-white">Všechny nástroje zdarma →</Link>
+          </div>
+        </section>
+
+        <div className="my-16 h-px bg-gradient-to-r from-transparent via-[#c9a852]/20 to-transparent md:my-20" />
+
+        {/* ── PROPOJENÉ DOKUMENTY ──────────────────────────────────────────────── */}
+        <section id="propojene-dokumenty" className="scroll-mt-24" aria-labelledby="propojene-title">
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:items-center">
+            <div>
+              <p className="site-kicker mb-2">Výhoda propojených dokumentů</p>
+              <h2 id="propojene-title" className="font-serif italic text-3xl font-bold text-white md:text-4xl">
+                Neprodáváme PDF. Pomáháme vyřídit celou situaci.
+              </h2>
+              <p className="mt-4 text-base leading-relaxed text-slate-400">
+                Smlouva je jen začátek. U zakázky přijde změna rozsahu, vícepráce, předání a někdy vady.
+                U pronájmu předání bytu, kauce a ukončení. Dokumenty na sebe navazují a termíny pohlídáme za vás.
+              </p>
+              <ul className="mt-5 space-y-2 text-sm text-slate-300">
+                {[
+                  'Odpověď na otázku dřív, než cokoli vyplníte',
+                  'Bezplatný checklist nebo průvodce k rozhodnutí',
+                  'Dokument sestavený podle vašich údajů, PDF ihned',
+                  'U zakázky pokračování s termíny, připomínkami a navazujícími dokumenty',
+                ].map((item) => (
+                  <li key={item} className="flex gap-2"><span className="text-[#c9a852]">✓</span><span>{item}</span></li>
+                ))}
+              </ul>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link href="/zakazka" className="site-button-primary">Jak funguje Moje zakázka →</Link>
+              </div>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {[
+                { step: 'Odpověď', text: 'Články a odpovědi s oficiálními zdroji a datem ověření.' },
+                { step: 'Rozhodnutí', text: 'Checklisty a průvodci, které dají výsledek bez e-mailu.' },
+                { step: 'Dokument', text: '14 typů smluv, transparentní cena, PDF po platbě.' },
+                { step: 'Případ', text: 'Termíny, připomínky a navazující dokumenty v jednom průběhu.' },
+              ].map((item) => (
+                <div key={item.step} className="site-content-card rounded-2xl p-5">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-[#c9a852]">{item.step}</div>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-400">{item.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
 
         <DifferentiationSection />
 
@@ -396,6 +479,52 @@ export default function Home() {
 
         <div className="my-20 h-px bg-gradient-to-r from-transparent via-[#c9a852]/20 to-transparent md:my-24" />
 
+        {/* ── NÁSTROJE ZDARMA + RADAR ──────────────────────────────────────────── */}
+        <section id="nastroje" className="scroll-mt-24" aria-labelledby="nastroje-title">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
+            <div>
+              <p className="site-kicker mb-2">Nástroje zdarma</p>
+              <h2 id="nastroje-title" className="font-serif italic text-3xl font-bold text-white md:text-4xl">Rozhodněte se dřív, než něco zaplatíte</h2>
+              <p className="mt-3 text-base leading-relaxed text-slate-400">
+                Checklisty a průvodci dají výsledek hned — bez e-mailu a bez registrace.
+              </p>
+              <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                {HOMEPAGE_TOOLS.map((tool) => (
+                  <Link key={tool.slug} href={`/nastroje/${tool.slug}`} className="site-content-card group rounded-2xl p-4 transition hover:border-[#c9a852]/40">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">{tool.kind === 'wizard' ? 'Průvodce' : 'Checklist'}</span>
+                    <span className="mt-1 block text-sm font-semibold text-white group-hover:text-[#e2c77b]">{tool.title}</span>
+                  </Link>
+                ))}
+              </div>
+              <Link href="/nastroje" className="mt-5 inline-block text-sm font-semibold text-[#c9a852] transition-colors hover:text-[#f2d58a]">
+                Všechny nástroje →
+              </Link>
+            </div>
+            <div className="site-content-card rounded-[1.5rem] p-6">
+              <p className="site-kicker mb-2">Legislativní radar 2027</p>
+              <h3 className="font-serif italic text-2xl font-bold text-white">Co platí, co je schválené a co se teprve projednává</h3>
+              <ul className="mt-4 space-y-3">
+                {HOMEPAGE_RADAR.map((change) => (
+                  <li key={change.key} className="flex items-start justify-between gap-3 text-sm">
+                    <Link href={`/zmeny-2027#${change.key}`} className="text-slate-300 transition-colors hover:text-white">{change.title}</Link>
+                    <span className={`flex-shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-widest ${
+                      change.status === 'in_force' ? 'border-emerald-500/40 text-emerald-300' : change.status === 'approved_pending' ? 'border-sky-500/40 text-sky-300' : 'border-amber-500/40 text-amber-300'
+                    }`}>
+                      {LEGAL_CHANGE_STATUS_LABELS[change.status]}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-4 text-xs text-slate-500">Každá položka má datum účinnosti, oficiální zdroj a datum poslední kontroly.</p>
+              <Link href="/zmeny-2027" className="mt-4 inline-block text-sm font-semibold text-[#c9a852] transition-colors hover:text-[#f2d58a]">
+                Otevřít radar 2027 →
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <div className="my-20 h-px bg-gradient-to-r from-transparent via-[#c9a852]/20 to-transparent md:my-24" />
+
         {/* ── GUIDES INDEX (interní linkbuilding) ───────────────────────────── */}
         <section id="pruvodci" aria-labelledby="pruvodci-title">
           <div className="mb-10 max-w-2xl">
@@ -447,15 +576,15 @@ export default function Home() {
         <section id="jak-to-funguje">
           <div className="mb-10 text-center">
             <p className="site-kicker mb-2">Postup</p>
-            <h2 className="font-serif italic text-4xl font-bold text-white md:text-5xl">Čtyři kroky ke kompletnímu dokumentu</h2>
+            <h2 className="font-serif italic text-4xl font-bold text-white md:text-5xl">Od situace k hotovému dokumentu</h2>
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-4">
             {[
-              { step: '01', title: 'Vyplníte údaje', desc: 'Zadáte strany, podmínky a hodnoty dohody. Formulář vás provede každou důležitou částí bez právního žargonu.' },
-              { step: '02', title: 'Zkontrolujete souhrn', desc: 'Před dokončením vidíte přehled všech podmínek. Ověříte, co dokument bude obsahovat, ještě než ho vygenerujete nebo odemknete.' },
-              { step: '03', title: 'Vygenerujete dokument', desc: 'Zobrazí se náhled sestavený podle vašich dat. Zvolíte variantu — Základní nebo Rozšířený se smluvními pokutami.' },
-              { step: '04', title: 'Stáhnete PDF', desc: 'Po vygenerování nebo odemčení obdržíte kompletní PDF připravené k tisku a podpisu. Ihned, bez čekání.' },
+              { step: '01', title: 'Vyberete situaci', desc: 'Dostanete stručnou odpověď, postup a bezplatný checklist nebo průvodce. Teprve potom se rozhodnete, zda potřebujete dokument.' },
+              { step: '02', title: 'Vyplníte údaje', desc: 'Zadáte strany, podmínky a hodnoty dohody. Formulář vás provede každou důležitou částí bez právního žargonu; cenu znáte předem.' },
+              { step: '03', title: 'Zkontrolujete a zaplatíte', desc: 'Před platbou vidíte souhrn a přesnou cenu. Zvolíte variantu — Základní, Rozšířený nebo tematický balíček.' },
+              { step: '04', title: 'Stáhnete PDF a pokračujete', desc: 'PDF připravené k podpisu ihned. U zakázky můžete pokračovat s termíny, připomínkami a navazujícími dokumenty.' },
             ].map(s => (
               <div key={s.step} className="site-content-card rounded-[1.5rem] p-6">
                 <div className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#c9a852]/30 text-sm font-bold text-[#c9a852]">
@@ -559,18 +688,20 @@ export default function Home() {
             <div className="relative px-8 py-12 text-center md:py-14">
               <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#c9a852]">Začít</p>
               <h2 className="font-serif italic text-4xl font-bold text-white md:text-5xl">
-                Váš dokument je na pár kliknutí
+                Co právě řešíte?
               </h2>
               <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-slate-400">
-                Vyplníte přehledný formulář, systém sestaví dokument podle vašich podmínek. Výstupem je
-                standardizovaný smluvní dokument připravený k podpisu — strukturovaný dle platné české legislativy.
+                Vyberte situaci, získejte odpověď a postup, a když je čas na dokument, vyplníte přehledný formulář.
+                Výstupem je standardizovaný smluvní dokument připravený k podpisu — s možností pokračovat v celé situaci.
               </p>
-              <a
-                href="#smlouvy"
-                className="site-button-primary mt-8"
-              >
-                Vybrat typ smlouvy <span>→</span>
-              </a>
+              <div className="mt-8 flex flex-wrap justify-center gap-3">
+                <a href="#situace" className="site-button-primary">
+                  Vybrat, co řeším <span>→</span>
+                </a>
+                <a href="#smlouvy" className="site-button-secondary">
+                  Vybrat typ smlouvy
+                </a>
+              </div>
             </div>
           </div>
         </section>

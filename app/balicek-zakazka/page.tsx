@@ -49,6 +49,10 @@ const faq = [
     a: 'Přebírá celkovou cenu a způsob úhrady z formuláře. Jednotlivé splátky a data úhrad doplňujete průběžně podle skutečného postupu zakázky.',
   },
   {
+    q: 'Můžu po zaplacení pokračovat v celé zakázce?',
+    a: 'Ano. Po zaplacení nabídneme „Pokračovat jako zakázka“: uložíte si termín a fázi, dostanete připomínky před předáním a navazující dokumenty (předávací protokol, změnový list, vícepráce, evidence vad, výzva k odstranění vad) vytvoříte v zakázce vyplněné konkrétními údaji — u balíčku Zakázka Plus bez dalšího poplatku. Bez registrace, návrat odkazem z e-mailu.',
+  },
+  {
     q: 'Nahrazuje balíček individuální právní službu?',
     a: 'Ne. Jde o standardizovaný dokument pro běžnou zakázku mezi objednatelem a zhotovitelem. U velkých staveb, veřejných zakázek, sporů nebo netypického rozdělení rizik doporučujeme odbornou kontrolu.',
   },

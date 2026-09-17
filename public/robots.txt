@@ -8,6 +8,7 @@ Disallow: /newsletter/
 Disallow: /interni/
 Disallow: /navrh-redesignu
 Disallow: /zakaznicka-zona
+Disallow: /moje-zakazka
 
 Host: https://www.smlouvahned.cz
 Sitemap: https://www.smlouvahned.cz/sitemap.xml

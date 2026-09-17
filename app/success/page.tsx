@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { normalizeLocale, withLocale, type AppLocale } from '@/lib/locale';
 import PartnerNextSteps from '@/app/components/partners/PartnerNextSteps';
+import CaseOfferCard from '@/app/components/cases/CaseOfferCard';
 import type { PartnerContext, PublicPartnerOffer } from '@/lib/partners/types';
 import type { CheckoutAnalyticsAttribution } from '@/lib/analytics-attribution';
 
@@ -440,6 +441,16 @@ function SuccessContent() {
               </div>
             </div>
           )}
+
+          {/* Pokračování zakázky až po ověřené platbě; jednorázový funnel zůstává beze změny. */}
+          {dlState === 'ready' && sessionId && token && orderMeta?.contractType === 'work_contract' && lang === 'cs' ? (
+            <CaseOfferCard
+              sessionId={sessionId}
+              token={token}
+              packageKey={orderMeta.packageKey}
+              tier={orderMeta.tier}
+            />
+          ) : null}
 
           {/* Navazující nabídka až po ověřené platbě, nikdy v checkoutu. */}
           {dlState === 'ready' && orderMeta?.partnerContext && orderMeta.partnerOffers ? (

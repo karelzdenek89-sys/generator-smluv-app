@@ -32,6 +32,13 @@ const CZECH_ONLY_BUILDER_PATHS = new Set([
 
 const EXPAT_BLOG_PREFIX = '/blog/expat/';
 
+/** Soukromé routy Case Engine — nikdy indexovat, nikdy sdílet cache. */
+const PRIVATE_CASE_PREFIX = '/moje-zakazka';
+
+export function isPrivateCasePath(pathname: string): boolean {
+  return pathname === PRIVATE_CASE_PREFIX || pathname.startsWith(`${PRIVATE_CASE_PREFIX}/`);
+}
+
 /** Apex domain — canonical public host is www (matches sitemap, metadata, robots.txt). */
 const APEX_HOST = 'smlouvahned.cz';
 const CANONICAL_HOST = 'www.smlouvahned.cz';
@@ -114,6 +121,13 @@ export function proxy(request: NextRequest) {
   response.headers.set('Content-Language', resolveContentLanguage(pathname, builderLanguage));
   if (builderLanguage) {
     response.headers.set('X-Robots-Tag', 'noindex, follow');
+  }
+  // Soukromý případ nesmí být indexovatelný ani cachovaný sdílenou cache —
+  // hlavička platí i pro HTML, které Next vrátí ze statického shellu.
+  if (isPrivateCasePath(pathname)) {
+    response.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
+    response.headers.set('Cache-Control', 'private, no-store, max-age=0');
+    response.headers.set('Referrer-Policy', 'no-referrer');
   }
 
   return response;

@@ -140,6 +140,14 @@ function FooterContent({
                 {t.navHeading}
               </div>
               <div className="flex flex-col gap-2 text-slate-500">
+                {showCzechSeoColumns ? (
+                  <>
+                    <Link href="/#situace" className="hover:text-white transition-colors">Co právě řešíte?</Link>
+                    <Link href="/nastroje" className="hover:text-white transition-colors">Nástroje zdarma</Link>
+                    <Link href="/zmeny-2027" className="hover:text-white transition-colors">Změny 2027</Link>
+                    <Link href="/zakazka" className="hover:text-white transition-colors">Moje zakázka</Link>
+                  </>
+                ) : null}
                 <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
                 <Link href="/en" className="hover:text-white transition-colors">
                   English — for foreigners

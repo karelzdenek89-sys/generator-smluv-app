@@ -16,6 +16,9 @@ import {
 } from '@/lib/i18n/expat-hreflang';
 import { czechBlogSitemapEntries } from '@/lib/seo/sitemap-blog';
 import { OG_IMAGE_PATH, SITE_URL } from '@/lib/seo/site';
+import { LEGAL_AUDIENCE_LIST } from '@/lib/legal/radar';
+import { ANSWER_FIRST_ARTICLES, articleHref } from '@/lib/portal/articles';
+import { PORTAL_TOOLS } from '@/lib/portal/tools';
 
 const BASE_URL = SITE_URL;
 const DEFAULT_SITEMAP_IMAGE = `${BASE_URL}${OG_IMAGE_PATH}`;
@@ -87,6 +90,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // Zakázka Plus se do sitemapy dostane až se zapnutým flagem — do té doby
     // stránka vrací 404 a nesmí být nabízena k indexaci.
     ...(isFeatureEnabled('zakazkaPlus') ? [staticPage('/balicek-zakazka', 0.9)] : []),
+    // Portál 2.0 — situace, answer-first odpovědi, nástroje a legislativní radar.
+    // Soukromé routy (/moje-zakazka) v sitemapě záměrně nejsou.
+    staticPage('/zakazka', 0.92, 'weekly'),
+    staticPage('/zamestnavam', 0.92, 'weekly'),
+    ...ANSWER_FIRST_ARTICLES.map((article) =>
+      staticPage(articleHref(article), 0.85, 'monthly'),
+    ),
+    staticPage('/nastroje', 0.8, 'monthly'),
+    ...PORTAL_TOOLS.map((tool) => staticPage(`/nastroje/${tool.slug}`, 0.78, 'monthly')),
+    staticPage('/zmeny-2027', 0.9, 'weekly'),
+    ...LEGAL_AUDIENCE_LIST.map((hub) => staticPage(hub.href, 0.85, 'weekly')),
     staticPage('/o-projektu', 0.6, 'yearly'),
     staticPage('/faq', 0.7),
     staticPage('/slovnik', 0.6),
