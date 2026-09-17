@@ -183,8 +183,8 @@ export default function ContractLandingSection({
       <details id="obsah" className="group mx-auto max-w-7xl scroll-mt-24 px-4 pb-5 lg:px-8">
         <summary className="flex cursor-pointer list-none items-center justify-between gap-4 rounded-2xl border border-[rgba(166,134,91,0.18)] bg-[rgba(20,15,12,0.35)] px-5 py-4 text-left transition hover:border-[rgba(214,172,96,0.32)] [&::-webkit-details-marker]:hidden">
           <span>
-            <span className="block text-sm font-semibold text-[#f2e7c8]">Podrobnosti o dokumentu</span>
-            <span className="mt-1 block text-xs leading-5 text-[#9f9584]">Obsah, vhodné použití, rozdíl oproti běžnému vzoru a časté otázky.</span>
+            <span className="block text-sm font-semibold text-[#f2e7c8]">{chromeCopy.detailsTitle}</span>
+            <span className="mt-1 block text-xs leading-5 text-[#9f9584]">{chromeCopy.detailsDescription}</span>
           </span>
           <span className="shrink-0 text-lg text-[#d6ac60] transition-transform group-open:rotate-45">+</span>
         </summary>

@@ -56,11 +56,11 @@ test('/najem and /auto include SEO heading in prerendered HTML', async ({ reques
 });
 
 test('prices are visible before a customer opens checkout', async ({ page }) => {
-  // Homepage i builder říkají cenové pásmo dřív, než zákazník cokoli vyplní;
-  // katalogová karta nese jen „Placený dokument“, přesnou cenu ukáže souhrn.
+  // Homepage i builder říkají cenu dřív, než zákazník cokoli vyplní.
+  // Katalogová karta chrání nejsilnější invariant: konkrétní základní cenu.
   await page.goto('/');
-  await expect(page.locator('#situace')).toContainText('od 99 Kč');
-  await expect(page.locator('#smlouvy a[href="/najem"]')).toContainText('Placený dokument');
+  await expect(page.getByText('Dokumenty od 99 Kč')).toBeVisible();
+  await expect(page.locator('#smlouvy a[href="/najem"]')).toContainText('od 99 Kč');
   await page.goto('/najem');
   await expect(page.getByTestId('paid-document-notice')).toContainText('99 Kč');
 });

@@ -90,7 +90,7 @@ test('employer package is discoverable and usable on a mobile viewport', async (
   await page.goto('/');
   const packages = page.locator('#balicky');
   await expect(packages.getByText('Zaměstnavatel Start 2026')).toBeVisible();
-  await expect(packages.getByText('Placený balíček').first()).toBeVisible();
+  await expect(packages.getByText('599 Kč', { exact: true })).toBeVisible();
   expect(pageErrors, 'homepage must hydrate without errors').toEqual([]);
   pageErrors.length = 0;
 
