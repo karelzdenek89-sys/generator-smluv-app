@@ -35,7 +35,7 @@ assert.equal(getFulfilmentContractName('dpp', 'en'), 'Czech agreement to perform
 assert.equal(getFulfilmentContractName('dpp', 'ua'), 'Чеська угода про виконання роботи (DPP)');
 assert.equal(getAvailableCheckoutAddons('dpp', 'basic', null, 'en')[0]?.title, 'Editable DOCX version');
 assert.equal(getAvailableCheckoutAddons('dpp', 'basic', null, 'ua')[0]?.title, 'Редагована версія DOCX');
-assert.equal(getCheckoutAddonIncludedItems(['docx'], 'en')[0], 'Editable DOCX version of the document');
+assert.equal(getCheckoutAddonIncludedItems(['docx'], 'en')[0], 'Editable DOCX version of the main contract document');
 // Blogový článek nesmí založit cenový experiment: cena dokumentu neovlivní,
 // jak často lidé kliknou na článek ve výsledcích hledání.
 for (const snapshot of GSC_PAGE_SNAPSHOTS) {
