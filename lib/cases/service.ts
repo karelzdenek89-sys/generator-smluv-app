@@ -225,6 +225,8 @@ export async function sendCaseLinksForEmail(email: string): Promise<{ cases: num
     html: renderEmailShell({
       heading: 'Vaše případy',
       intro: `<ul style="padding-left:18px">${list}</ul>`,
+      ctaLabel: 'Otevřít první případ',
+      ctaUrl: links[0].url,
       footerNote: 'Odkazy jsou funkční přístupové klíče. Nikomu je nepřeposílejte.',
     }),
     text: links.map(({ record, url }) => `${record.title}: ${url}`).join('\n'),
