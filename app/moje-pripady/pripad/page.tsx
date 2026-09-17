@@ -4,7 +4,7 @@ import CaseWorkspace from './CaseWorkspace';
 
 export const metadata: Metadata = {
   title: 'Můj případ',
-  description: 'Soukromý přehled uložené situace: stav, termín, úkoly a připomínky. Přístup pouze bezpečným návratovým odkazem.',
+  description: 'Soukromý přehled konkrétního případu: aktuální stav, důležité termíny, praktické úkoly, připomínky a historie. Přístup je chráněn bezpečným odkazem.',
   robots: { index: false, follow: false, noarchive: true, googleBot: { index: false, follow: false, noarchive: true } },
 };
 
