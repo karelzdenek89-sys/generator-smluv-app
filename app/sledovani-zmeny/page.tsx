@@ -4,7 +4,7 @@ import LegislationWatchManager from './LegislationWatchManager';
 
 export const metadata: Metadata = {
   title: 'Správa legislativního upozornění',
-  description: 'Potvrzení nebo zrušení funkčního upozornění na změnu legislativního stavu.',
+  description: 'Potvrďte nebo zrušte funkční upozornění na změnu legislativního stavu či data účinnosti. Stránka slouží pouze ke správě vašeho bezpečného upozornění.',
   robots: { index: false, follow: false, noarchive: true },
 };
 
