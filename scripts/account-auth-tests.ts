@@ -79,7 +79,60 @@ async function main() {
   assert.equal(await findAccount('karel.test@example.cz'), null, 'account deletion removes email index');
 
   memoryRedis.reset();
-  console.log('Account auth tests passed (registration, password hashing, verification, sessions, profile, reset, deletion).');
+
+  // Route-level smoke without real e-mail delivery.
+  delete process.env.RESEND_API_KEY;
+  const { POST } = await import('@/app/api/account/route');
+  const makeRequest = (body: Record<string, unknown>, origin = 'http://localhost') => new Request('http://localhost/api/account', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      origin,
+      'x-real-ip': '127.0.0.1',
+    },
+    body: JSON.stringify(body),
+  });
+
+  const crossSite = await POST(makeRequest({
+    action: 'register',
+    username: 'cross-site-user',
+    email: 'cross-site@example.cz',
+    password: 'cross-site-password-2026',
+    acceptTerms: true,
+  }, 'https://attacker.example'));
+  assert.equal(crossSite.status, 403, 'cross-site account mutation rejected');
+
+  const registerResponse = await POST(makeRequest({
+    action: 'register',
+    username: 'api-test',
+    email: 'api-test@example.cz',
+    displayName: 'API Test',
+    password: 'api-test-password-2026',
+    acceptTerms: true,
+  }));
+  assert.equal(registerResponse.status, 200, 'account API registers');
+  const setCookie = registerResponse.headers.get('set-cookie') ?? '';
+  assert.match(setCookie, /sh_session=/, 'session cookie issued');
+  assert.match(setCookie, /HttpOnly/i, 'session cookie is HttpOnly');
+  assert.match(setCookie, /SameSite=Lax/i, 'session cookie has SameSite protection');
+  assert.match(setCookie, /sh_csrf=/, 'CSRF cookie issued');
+
+  const wrongLogin = await POST(makeRequest({
+    action: 'login',
+    login: 'api-test',
+    password: 'wrong-password-2026',
+  }));
+  assert.equal(wrongLogin.status, 401, 'wrong API password rejected');
+
+  const goodLogin = await POST(makeRequest({
+    action: 'login',
+    login: 'API-TEST@EXAMPLE.CZ',
+    password: 'api-test-password-2026',
+  }));
+  assert.equal(goodLogin.status, 200, 'API login accepts verified credential form without account enumeration');
+
+  memoryRedis.reset();
+  console.log('Account auth tests passed (registration, password hashing, verification, sessions, profile, reset, deletion, API security smoke).');
 }
 
 main().catch((error) => {
