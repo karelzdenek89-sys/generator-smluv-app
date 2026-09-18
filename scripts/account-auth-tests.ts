@@ -1,0 +1,88 @@
+process.env.SMLOUVAHNED_FAKE_REDIS = '1';
+
+import assert from 'node:assert/strict';
+import { memoryRedis } from '@/lib/redis-memory';
+import {
+  createAccount,
+  createAccountSession,
+  deleteAccount,
+  findAccount,
+  getAccountById,
+  issuePasswordResetToken,
+  issueVerificationToken,
+  resetPasswordWithToken,
+  resolveAccountSession,
+  sessionCsrfMatches,
+  updateAccountProfile,
+  verifyAccountEmail,
+  verifyPassword,
+} from '@/lib/account';
+
+async function main() {
+  memoryRedis.reset();
+
+  const created = await createAccount({
+    username: 'Karel.Test',
+    email: 'Karel.Test@example.cz',
+    displayName: 'Karel Test',
+    password: 'spravne-heslo-2026',
+  });
+  assert.equal(created.ok, true, 'account creates');
+  if (!created.ok) return;
+
+  assert.equal((await findAccount('karel.test'))?.id, created.user.id, 'username lookup is case-insensitive');
+  assert.equal((await findAccount('KAREL.TEST@EXAMPLE.CZ'))?.id, created.user.id, 'email lookup is case-insensitive');
+  assert.equal(await verifyPassword('spravne-heslo-2026', created.user.passwordHash), true, 'password verifies');
+  assert.equal(await verifyPassword('spatne-heslo-2026', created.user.passwordHash), false, 'wrong password rejected');
+
+  const duplicateUsername = await createAccount({
+    username: 'karel.test',
+    email: 'jiny@example.cz',
+    password: 'druhe-heslo-2026',
+  });
+  assert.equal(duplicateUsername.ok, false, 'duplicate username rejected');
+
+  const duplicateEmail = await createAccount({
+    username: 'jiny-uzivatel',
+    email: 'karel.test@example.cz',
+    password: 'druhe-heslo-2026',
+  });
+  assert.equal(duplicateEmail.ok, false, 'duplicate email rejected');
+
+  const verifyToken = await issueVerificationToken(created.user);
+  const verified = await verifyAccountEmail(verifyToken);
+  assert.ok(verified?.emailVerifiedAt, 'email verification activates account');
+  assert.equal(await verifyAccountEmail(verifyToken), null, 'verification token is one-time');
+
+  const session = await createAccountSession(verified!);
+  const resolved = await resolveAccountSession(session.token);
+  assert.equal(resolved?.user.id, verified!.id, 'session resolves to account');
+  assert.equal(sessionCsrfMatches(resolved!.session, session.csrf), true, 'session binds CSRF token');
+  assert.equal(sessionCsrfMatches(resolved!.session, 'wrong-csrf'), false, 'wrong CSRF rejected');
+
+  const changed = await updateAccountProfile(verified!, { username: 'Karel.Novy', displayName: 'Karel Nový' });
+  assert.equal(changed.ok, true, 'profile updates');
+  if (!changed.ok) return;
+  assert.equal((await findAccount('karel.novy'))?.id, verified!.id, 'new username index active');
+  assert.equal(await findAccount('karel.test'), null, 'old username index removed');
+
+  const resetToken = await issuePasswordResetToken(changed.user);
+  const reset = await resetPasswordWithToken(resetToken, 'nove-bezpecne-heslo-2026');
+  assert.ok(reset, 'password reset succeeds');
+  assert.equal(await verifyPassword('nove-bezpecne-heslo-2026', reset!.passwordHash), true, 'new password verifies');
+  assert.equal(await resolveAccountSession(session.token), null, 'password reset revokes previous sessions');
+  assert.equal(await resetPasswordWithToken(resetToken, 'treti-heslo-2026'), null, 'reset token is one-time');
+
+  await deleteAccount(reset!);
+  assert.equal(await getAccountById(reset!.id), null, 'account deletion removes profile');
+  assert.equal(await findAccount('karel.novy'), null, 'account deletion removes username index');
+  assert.equal(await findAccount('karel.test@example.cz'), null, 'account deletion removes email index');
+
+  memoryRedis.reset();
+  console.log('Account auth tests passed (registration, password hashing, verification, sessions, profile, reset, deletion).');
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});
