@@ -60,7 +60,7 @@ export default function TermsPage() {
           Obchodní <span className="text-amber-500">podmínky</span>
         </h1>
         <p className="text-slate-400 text-xs font-bold uppercase tracking-[0.25em] mb-12">
-          Verze 2026-09-17 • SmlouvaHned.cz
+          Verze 2026-09-18 • SmlouvaHned.cz
         </p>
 
         <div className="space-y-10 text-sm leading-relaxed">
@@ -103,6 +103,9 @@ export default function TermsPage() {
             </p>
             <p className="mt-3 text-slate-400 text-xs">
               PDF lze otevřít v běžné aktuální čtečce PDF a vytisknout na formát A4. Volitelný DOCX je určen pro aktuální Microsoft Word, LibreOffice nebo jiný editor podporující formát Office Open XML; vzhled se může mezi editory nepatrně lišit. Soubory nejsou chráněny DRM a k jejich použití není potřeba účet ani předplatné.
+            </p>
+            <p className="mt-3 text-slate-400 text-xs">
+              Zákaznický účet je dobrovolná doplňková funkce. Umožňuje přihlášení uživatelským jménem nebo e-mailem a heslem, správu profilu a po ověření e-mailu bezpečné propojení s dokumenty a případy vedenými pod stejnou adresou. Uživatel odpovídá za utajení přihlašovacích údajů a nesmí účet zpřístupnit třetí osobě. Účet lze kdykoli smazat; smazání účtu samo o sobě nemaže samostatné objednávky a případy, které se řídí vlastní dobou dostupnosti a retence. Původní přístup přes bezpečný e-mailový odkaz zůstává dostupný i bez účtu.
             </p>
           </section>
 
