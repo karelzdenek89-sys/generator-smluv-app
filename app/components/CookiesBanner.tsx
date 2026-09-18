@@ -19,21 +19,21 @@ const COPY: Record<AppLocale, {
 }> = {
   cs: {
     ariaLabel: 'Informace o cookies',
-    text: 'Technicky nezbytné prostředky a agregovaná Vercel Analytics fungují bez marketingových cookies. Jen s vaším souhlasem zapneme vlastní produktovou analytiku: zdroj držíme v prohlížeči nejvýše 30 minut; po vytvoření dokumentu se může uchovat s objednávkou po dobu její dostupnosti.',
-    more: 'Více informací',
+    text: 'Nezbytné prostředky zajišťují fungování webu. S vaším souhlasem zapneme vlastní produktovou analytiku pro měření používání služby a zdroje návštěvy.',
+    more: 'Podrobnosti',
     accept: 'Povolit měření',
     reject: 'Jen nezbytné',
   },
   en: {
     ariaLabel: 'Cookie information',
-    text: 'Strictly necessary features and aggregated Vercel Analytics work without marketing cookies. With your consent we enable first-party product analytics: the source stays in your browser for up to 30 minutes and, after document creation, may remain with the order while it is available.',
-    more: 'More information',
+    text: 'Necessary technologies keep the site working. With your consent, we enable first-party product analytics to measure use of the service and visit source.',
+    more: 'Details',
     accept: 'Allow analytics',
     reject: 'Necessary only',
   },
   ua: {
     ariaLabel: 'Інформація про cookies',
-    text: 'Технічно необхідні функції та агрегована Vercel Analytics працюють без маркетингових cookies. За вашою згодою джерело зберігається в браузері до 30 хвилин, а після створення документа може зберігатися із замовленням протягом строку його доступності.',
+    text: 'Необхідні технології забезпечують роботу сайту. За вашою згодою ми вмикаємо власну продуктову аналітику для вимірювання використання сервісу та джерела відвідування.',
     more: 'Докладніше',
     accept: 'Дозволити аналітику',
     reject: 'Лише необхідне',
@@ -67,25 +67,25 @@ export default function CookiesBanner() {
       role="dialog"
       aria-live="polite"
       aria-label={copy.ariaLabel}
-      className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-[#1a1a1a] px-4 py-4 shadow-[0_-8px_32px_rgba(0,0,0,0.4)]"
+      className="pointer-events-none fixed inset-x-0 bottom-0 z-50 px-3 py-3 sm:px-4"
     >
-      <div className="mx-auto flex max-w-5xl flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-xs leading-relaxed text-slate-300 sm:text-sm">
+      <div className="pointer-events-auto mx-auto flex max-w-4xl flex-col gap-3 rounded-2xl border border-white/12 bg-[#111723]/95 px-4 py-3 shadow-[0_-4px_24px_rgba(0,0,0,.35)] backdrop-blur-xl sm:flex-row sm:items-center sm:gap-5 sm:px-5">
+        <p className="flex-1 text-[11px] leading-5 text-slate-300 sm:text-xs">
           {copy.text}{' '}
-          <Link href="/gdpr" className="text-amber-400 underline underline-offset-2 transition hover:text-amber-300">
+          <Link href="/gdpr" className="font-semibold text-[#d8bd73] underline decoration-[#d8bd73]/35 underline-offset-2 transition hover:text-[#f0d992]">
             {copy.more}
           </Link>
         </p>
-        <div className="flex flex-shrink-0 flex-wrap gap-2">
+        <div className="grid w-full shrink-0 grid-cols-2 gap-2 sm:w-auto">
           <button
             onClick={() => choose(false)}
-            className="rounded-xl border border-white/15 bg-white/8 px-5 py-2 text-xs font-black uppercase tracking-widest text-white transition hover:border-white/35 hover:bg-white/12"
+            className="rounded-xl border border-white/18 bg-white/[0.045] px-4 py-2.5 text-[11px] font-bold text-slate-100 transition hover:border-white/30 hover:bg-white/[0.07]"
           >
             {copy.reject}
           </button>
           <button
             onClick={() => choose(true)}
-            className="rounded-xl border border-amber-500/60 bg-amber-500 px-5 py-2 text-xs font-black uppercase tracking-widest text-black transition hover:bg-amber-400"
+            className="rounded-xl border border-[#d8bd73]/35 bg-[#d8bd73]/[0.07] px-4 py-2.5 text-[11px] font-bold text-[#f2e7c8] transition hover:border-[#d8bd73]/55 hover:bg-[#d8bd73]/[0.11]"
           >
             {copy.accept}
           </button>

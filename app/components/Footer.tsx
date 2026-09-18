@@ -29,7 +29,7 @@ type FooterCopy = {
 const FOOTER_COPY: Record<AppLocale, FooterCopy> = {
   cs: {
     softwareTool: 'Softwarový nástroj',
-    tagline: 'Sestaví standardizovaný smluvní dokument z údajů, které vyplníte v průvodci.',
+    tagline: 'Standardizované smluvní dokumenty z údajů, které zadáte ve formuláři.',
     operator: 'Provozovatel',
     navHeading: 'Navigace',
     navGlossary: 'Slovník pojmů',
@@ -39,15 +39,15 @@ const FOOTER_COPY: Record<AppLocale, FooterCopy> = {
     navMyDocuments: 'Moje dokumenty',
     securePayment: 'Zabezpečená platba',
     paymentNote: 'Platební údaje zpracovává výhradně Stripe. My je nikdy nevidíme.',
-    disclaimerLabel: 'Upozornění:',
+    disclaimerLabel: 'Rozsah služby:',
     disclaimer:
-      'SmlouvaHned.cz je softwarový nástroj pro tvorbu standardizovaných dokumentů. Není advokátní kanceláří a neposkytuje právní poradenství ve smyslu zákona č. 85/1996 Sb. Obsah dokumentu určuje uživatel svými vstupy. Pro nestandardní případy, probíhající spory nebo transakce s vyšší hodnotou doporučujeme konzultaci s advokátem — seznam na',
+      'SmlouvaHned vytváří standardizované dokumenty z vašich vstupů; nejde o individuální právní poradenství. U sporné nebo nestandardní věci je vhodné obrátit se na advokáta — seznam na',
     lawyerDirectory: 'cak.cz',
     terms: 'Obchodní podmínky',
   },
   en: {
     softwareTool: 'Software tool',
-    tagline: 'Builds a standardized contract document from the details you fill in the guide.',
+    tagline: 'Standardized contract documents built from the details you enter in the form.',
     operator: 'Operator',
     navHeading: 'Navigation',
     navGlossary: 'Glossary',
@@ -57,15 +57,15 @@ const FOOTER_COPY: Record<AppLocale, FooterCopy> = {
     navMyDocuments: 'My documents',
     securePayment: 'Secure payment',
     paymentNote: 'Payment details are processed solely by Stripe. We never see them.',
-    disclaimerLabel: 'Disclaimer:',
+    disclaimerLabel: 'Service scope:',
     disclaimer:
-      'SmlouvaHned.cz is a software tool for creating standardized documents. It is not a law firm and does not provide legal advice within the meaning of Act No. 85/1996 Coll. The content of each document is determined by the user’s input. For non-standard cases, ongoing disputes or higher-value transactions we recommend consulting a lawyer — directory at',
+      'SmlouvaHned creates standardized documents from your inputs; it does not provide individual legal advice. For a dispute or a non-standard matter, consider consulting a lawyer — directory at',
     lawyerDirectory: 'cak.cz',
     terms: 'Terms & Conditions',
   },
   ua: {
     softwareTool: 'Програмний інструмент',
-    tagline: 'Формує стандартизований договірний документ із даних, які ви вводите в майстрі.',
+    tagline: 'Стандартизовані договірні документи з даних, які ви вводите у формі.',
     operator: 'Оператор',
     navHeading: 'Навігація',
     navGlossary: 'Словник термінів',
@@ -75,9 +75,9 @@ const FOOTER_COPY: Record<AppLocale, FooterCopy> = {
     navMyDocuments: 'Мої документи',
     securePayment: 'Безпечна оплата',
     paymentNote: 'Платіжні дані обробляє виключно Stripe. Ми їх ніколи не бачимо.',
-    disclaimerLabel: 'Застереження:',
+    disclaimerLabel: 'Обсяг послуги:',
     disclaimer:
-      'SmlouvaHned.cz — це програмний інструмент для створення стандартизованих документів. Він не є юридичною фірмою і не надає юридичних консультацій у розумінні Закону № 85/1996 Зб. Зміст документа визначає користувач своїми даними. Для нестандартних випадків, поточних спорів або угод із вищою вартістю рекомендуємо консультацію з адвокатом — каталог на',
+      'SmlouvaHned створює стандартизовані документи з ваших даних; це не індивідуальна юридична консультація. Для спору або нестандартної ситуації варто звернутися до адвоката — каталог на',
     lawyerDirectory: 'cak.cz',
     terms: 'Умови використання',
   },

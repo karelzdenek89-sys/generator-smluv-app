@@ -296,6 +296,9 @@ function main() {
   assert.match(homePage, /Moje případy/, 'Homepage must communicate the private case layer');
   assert.match(homePage, /U nájmu, převodu vozidla a smlouvy o dílo/, 'Homepage must name all supported post-purchase case scenarios');
   assert.match(homePage, /Otevřít Moje případy/, 'Homepage must provide a direct route to the case hub');
+  assert.doesNotMatch(homePage, /ve smyslu zákona č\. 85\/1996 Sb\./, 'Homepage should keep detailed legal citations in dedicated legal pages, not the primary sales surface');
+  assert.match(read('app/components/CookiesBanner.tsx'), /Jen nezbytné/, 'Cookie banner must offer refusal in the first layer');
+  assert.match(read('app/components/CookiesBanner.tsx'), /Povolit měření/, 'Cookie banner must offer analytics consent in the first layer');
   assert.doesNotMatch(homePage, /Ostatní typy dokumentů fungují samostatně/, 'Homepage must not describe rental/vehicle case support as unavailable');
   // Mobilní navigace musí existovat na obou plochách (<details> funguje i bez JS).
   assert.match(siteHeader, /<details[\s\S]*SITE_NAV_ITEMS/, 'Shared site header must offer a mobile menu');

@@ -25,7 +25,7 @@ export default function CaseJourneyPreview({ documentPrice, includesDocuments }:
         <span className={styles.liveDot} /> PŘÍKLAD: ZAKÁZKA <span>od smlouvy po předání</span>
       </div>
       <p className="mt-3 text-xs leading-5 text-slate-400">
-        Ukázka jedné situace. Ostatní dokumenty fungují samostatně bez nutnosti zakládat případ.
+        Ukázka zakázky. Pronájem a převod vozidla mají vlastní jednodušší průběh v Moje případy.
       </p>
       <div className={styles.journeyChoices} role="group" aria-label="Fáze ukázkové zakázky">
         {STAGES.map((item, index) => (
