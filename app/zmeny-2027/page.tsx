@@ -39,7 +39,7 @@ export default function LegalRadarPage() {
       crumbs={[{ label: 'SmlouvaHned', href: '/' }, { label: 'Změny 2027', href: '/zmeny-2027' }]}
       kicker="Legislativní radar"
       title="Změny 2027: co platí, co je schválené a co se teprve projednává"
-      lead="Každá položka má explicitní status, datum, dopad na vaše dokumenty a odkaz na oficiální zdroj. Návrh zákona nikdy neprezentujeme jako platné právo."
+      lead="Každá položka má explicitní status, datum, dopad na vaše dokumenty a odkaz na oficiální zdroj. U konkrétní změny si můžete zapnout bezplatné e-mailové upozornění na změnu statusu nebo data účinnosti. Návrh zákona nikdy neprezentujeme jako platné právo."
       updatedAt={verifiedAt}
       verifiedAt={verifiedAt}
     >
