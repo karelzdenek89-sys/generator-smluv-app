@@ -84,3 +84,10 @@ Serverové logy obsahují typ chyby, název routy, status a anonymní identifik�
 - `case:access-generation:{sha256(email)}`: náhodná revokační generace, TTL 400 dní, obnovená při vydání nového přístupu. Zneplatnění odkazů mění generaci všech případových i přehledových odkazů vlastníka. Tokeny nadále platí maximálně 30 dní; generace proto přežije všechny tokeny, které zneplatnila. Samotné nasazení neruší existující odkazy. Smazání jednoho případu nemění přístup k ostatním případům.
 - `legal:watch:cursor`: poslední zpracované ID odběru, TTL 730 dní. Dávky postupně procházejí celý index, včetně odběrů za prvních 500 položek. Neobsahuje e-mail ani text oznámení.
 - Uzavřením případu se vypínají neodeslané připomínky. Cron také přeskočí starší uzavřené případy, které ještě mají naplánované položky.
+
+
+## Zákaznický účet (2026-09-18)
+
+Dobrovolná autentizační vrstva nepřepisuje původní capability odkazy. Účet je indexovaný přes hash e-mailu a normalizované uživatelské jméno; heslo je salted scrypt hash. Relace, ověřovací i resetovací tokeny jsou na serveru uloženy pouze jako SHA-256 hashe. Po ověření e-mailu účet pouze vydá bezpečný přístup k existujícím vrstvám Moje dokumenty a Moje případy, nekopíruje jejich obsah.
+
+Klíče: `account:user:{uuid}`, `account:username:{normalized}`, `account:email:{sha256(email)}`, `account:session:{sha256(token)}`, `account:sessions:{uuid}`, `account:verify:{sha256(token)}`, `account:reset:{sha256(token)}`.
