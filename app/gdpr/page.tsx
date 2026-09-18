@@ -50,7 +50,7 @@ export default function GdprPage() {
           Ochrana osobních <span className="text-amber-500">údajů</span>
         </h1>
         <p className="text-slate-400 text-xs font-bold uppercase tracking-[0.25em] mb-12">
-          Verze 2026-09-17 • Dle nařízení EU 2016/679 (GDPR)
+          Verze 2026-09-18 • Dle nařízení EU 2016/679 (GDPR)
         </p>
 
         <div className="space-y-10 text-sm leading-relaxed">
@@ -92,6 +92,13 @@ export default function GdprPage() {
                 <div className="text-xs text-slate-400"><span className="text-amber-400 font-bold">Účel:</span> Zaslání odkazu ke stažení, potvrzení objednávky a zabezpečeného přístupu do zákaznické zóny.</div>
                 <div className="text-xs text-slate-400"><span className="text-amber-400 font-bold">Právní základ:</span> Plnění smlouvy + oprávněný zájem (čl. 6 odst. 1 písm. b) a f) GDPR).</div>
                 <div className="text-xs text-slate-400"><span className="text-amber-400 font-bold">Doba uchování:</span> 7–30 dní od objednávky podle zakoupeného dokumentu, případně 90 dní s doplňkem archivace, poté automaticky smazáno.</div>
+              </div>
+              <div className="border border-white/8 rounded-2xl p-5">
+                <div className="font-bold text-white mb-2">Dobrovolný zákaznický účet</div>
+                <p className="text-slate-400 text-xs mb-2">Pokud si účet vytvoříte, zpracováváme uživatelské jméno, e-mail, volitelné zobrazované jméno, jednosměrný salted hash hesla, stav ověření e-mailu a bezpečnostní údaje relace. Heslo v čitelné ani vratně šifrované podobě neukládáme.</p>
+                <div className="text-xs text-slate-400"><span className="text-amber-400 font-bold">Účel:</span> Přihlášení jménem/e-mailem a heslem, správa profilu a po ověření e-mailu propojení s dokumenty a případy vedenými pod stejnou adresou.</div>
+                <div className="text-xs text-slate-400"><span className="text-amber-400 font-bold">Právní základ:</span> Plnění služby účtu na žádost uživatele (čl. 6 odst. 1 písm. b) GDPR) a oprávněný zájem na zabezpečení služby (čl. 6 odst. 1 písm. f) GDPR).</div>
+                <div className="text-xs text-slate-400"><span className="text-amber-400 font-bold">Doba uchování:</span> Po dobu existence účtu. Relace platí nejvýše 14 dní, ověřovací token 24 hodin a token pro obnovu hesla 60 minut. Smazáním účtu se odstraní profil, přihlašovací indexy a relace; zakoupené dokumenty a případy jsou samostatné záznamy s vlastní retenční dobou a nemažou se automaticky spolu s účtem.</div>
               </div>
               <div className="border border-white/8 rounded-2xl p-5">
                 <div className="font-bold text-white mb-2">Kontaktní formulář</div>
@@ -152,6 +159,7 @@ export default function GdprPage() {
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Upstash (Redis)</strong> — dočasné uložení dat formuláře po dobu generování a stažení dokumentu (7–30 dní podle zakoupeného dokumentu, případně 90 dní s doplňkem archivace).</span></li>
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Resend</strong> — transakční e-maily, doručení odkazu k dokumentu, přenos zpráv z kontaktního formuláře a rozesílání newsletteru potvrzeným odběratelům.</span></li>
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Upstash (Redis)</strong> — dočasná evidence nepotvrzeného newsletteru po dobu 24 hodin a evidence potvrzeného souhlasu po dobu odběru.</span></li>
+              <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Upstash (Redis)</strong> — dobrovolný zákaznický účet: profil, jednosměrný hash hesla, stav ověření e-mailu a hashované bezpečnostní tokeny relací a obnovy hesla.</span></li>
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Upstash (Redis)</strong> — údaje zakázky (Moje zakázka) po dobu 12 měsíců od poslední změny (uzavřená zakázka 6 měsíců), hash návratových tokenů a plán připomínek; poptávky navazujících služeb po dobu 6 měsíců.</span></li>
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Stripe, Inc.</strong> — také platba za navazující dokument zakázky (99 Kč); Stripe obdrží váš e-mail a název dokumentu, nikoli jeho obsah.</span></li>
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Vercel</strong> — hosting platformy. Údaje jsou zpracovávány v rámci EHP nebo za odpovídajících záruk.</span></li>
@@ -244,7 +252,7 @@ export default function GdprPage() {
               7. Zabezpečení údajů
             </h2>
             <p>
-              Veškerá komunikace je šifrována protokolem TLS (HTTPS). Data formulářů jsou ukládána v šifrovaném dočasném úložišti s automatickým výmazem po 7–30 dnech podle zakoupeného dokumentu, případně po 90 dnech s doplňkem archivace. Přístup k datům je omezen na technicky nezbytné osoby. Platební údaje nikdy neprocházejí našimi servery.
+              Veškerá komunikace je šifrována protokolem TLS (HTTPS). Data formulářů jsou ukládána v šifrovaném dočasném úložišti s automatickým výmazem po 7–30 dnech podle zakoupeného dokumentu, případně po 90 dnech s doplňkem archivace. Hesla účtů jsou ukládána pouze jako salted scrypt hash; bezpečnostní tokeny relací, ověření e-mailu a obnovy hesla jsou na serveru uloženy pouze v hashované podobě. Přístup k datům je omezen na technicky nezbytné osoby. Platební údaje nikdy neprocházejí našimi servery.
             </p>
           </section>
 
