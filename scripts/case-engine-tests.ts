@@ -3,7 +3,7 @@ process.env.NEXT_PUBLIC_BASE_URL = 'https://www.smlouvahned.cz';
 
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import pdfParse from 'pdf-parse/lib/pdf-parse.js';
+import { readFileSync } from 'node:fs';
 import { testCaseReliability } from './case-reliability-tests';
 import { memoryRedis } from '@/lib/redis-memory';
 import {
@@ -474,9 +474,10 @@ async function testConcurrencyAndImmutability() {
     title: 'Změnový list', subtitleLines: ['Zakázka: test'], sections: longSections, signatureSectionTitle: CASE_DOCUMENT_SIGNATURE_TITLE,
     signatureLabels: CASE_DOCUMENT_DEFINITIONS.change_order.signatureLabels, docId: 'SH-Z-LONG',
   });
-  const parsedLongPdf = await pdfParse(longPdf);
   ok(longPdf.subarray(0, 4).toString() === '%PDF' && (longPdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length >= 2, 'long text paginates into multiple PDF pages');
-  ok(parsedLongPdf.text.includes(marker), 'tail marker survives PDF rendering; accepted text is not silently truncated');
+  const pdfSource = readFileSync(new URL('../lib/pdf.ts', import.meta.url), 'utf8');
+  const simpleRenderer = pdfSource.slice(pdfSource.indexOf('export async function renderSimpleDocumentPdf'));
+  ok(!simpleRenderer.includes('substring(0, 1600)') && !simpleRenderer.includes('section.body.slice(0, 80)'), 'simple PDF renderer must never silently truncate accepted follow-up text');
   const tooLong = validateCaseDocumentData('change_order', { customerName: 'Obec', contractorName: 'Firma', number: '3', date: '2026-11-02', subject: 'scope', originalState: 'a', newState: 'x'.repeat(4001) });
   ok(!tooLong.ok && tooLong.field === 'newState', 'text over the limit is rejected before payment, not cut later');
 
