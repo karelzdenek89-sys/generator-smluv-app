@@ -161,13 +161,17 @@ async function testStoreAndAccess() {
   eq(await revokeCaseHubAccessTokens(record.ownerEmail), 1, 'hub revocation removes indexed owner token');
   eq(await resolveCaseHubAccess(hubToken), null, 'revoked hub token no longer resolves');
 
-  // Backward compatibility: links issued before the reverse index existed must
-  // also be revoked, otherwise an old hub URL can mint a new direct case token.
+  // Backward compatibility: a hub link issued before the reverse index / epoch
+  // existed is valid until the owner revokes links, then becomes invalid without
+  // a global keyspace scan.
+  const legacyEmail = 'legacy-hub@example.cz';
   const legacyHubToken = 'ab'.repeat(32);
   const legacyHubHash = createHash('sha256').update(legacyHubToken).digest('hex');
-  await memoryRedis.set(`case:hub-access:${legacyHubHash}`, { email: record.ownerEmail, issuedAt: new Date().toISOString() }, { ex: 3600 });
-  eq(await revokeCaseHubAccessTokens(record.ownerEmail), 1, 'legacy unindexed hub token removed by compatibility scan');
-  eq(await resolveCaseHubAccess(legacyHubToken), null, 'legacy hub token cannot survive revocation');
+  await memoryRedis.set(`case:hub-access:${legacyHubHash}`, { email: legacyEmail, issuedAt: new Date().toISOString() }, { ex: 3600 });
+  ok(await resolveCaseHubAccess(legacyHubToken), 'legacy hub token resolves before owner revocation');
+  eq(await revokeCaseHubAccessTokens(legacyEmail), 0, 'legacy unindexed token needs no physical scan/delete');
+  eq(await resolveCaseHubAccess(legacyHubToken), null, 'owner epoch invalidates legacy hub token after revocation');
+  ok(await memoryRedis.get(`case:hub-access:${legacyHubHash}`), 'legacy token may remain physically stored but is cryptographically unusable via epoch mismatch');
 
   const pub = toPublicCase(record);
   ok(!('ownerEmail' in pub), 'public projection hides e-mail');

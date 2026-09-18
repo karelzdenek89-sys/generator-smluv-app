@@ -14,6 +14,8 @@ const HUB_PATH = '/moje-pripady';
 type HubAccessRecord = {
   email: string;
   issuedAt: string;
+  /** Owner-scoped revocation generation. Legacy records have epoch 0. */
+  epoch?: number;
 };
 
 function hashToken(token: string): string {
@@ -28,6 +30,15 @@ function ownerHubTokensKey(email: string): string {
   return `case:hub-tokens:${hashOwnerEmail(email)}`;
 }
 
+function ownerHubEpochKey(email: string): string {
+  return `case:hub-epoch:${hashOwnerEmail(email)}`;
+}
+
+async function currentOwnerHubEpoch(email: string): Promise<number> {
+  const value = Number(await redis.get<string | number>(ownerHubEpochKey(email)) ?? 0);
+  return Number.isInteger(value) && value >= 0 ? value : 0;
+}
+
 function baseUrl(): string {
   return (process.env.NEXT_PUBLIC_BASE_URL || SITE_URL).replace(/\/+$/, '');
 }
@@ -40,8 +51,9 @@ export async function issueCaseHubAccessToken(email: string): Promise<string> {
   const normalized = email.trim().toLowerCase();
   const token = randomBytes(32).toString('hex');
   const hashed = hashToken(token);
+  const epoch = await currentOwnerHubEpoch(normalized);
   await Promise.all([
-    redis.set(`case:hub-access:${hashed}`, { email: normalized, issuedAt: new Date().toISOString() } satisfies HubAccessRecord, { ex: HUB_TTL_SECONDS }),
+    redis.set(`case:hub-access:${hashed}`, { email: normalized, issuedAt: new Date().toISOString(), epoch } satisfies HubAccessRecord, { ex: HUB_TTL_SECONDS }),
     redis.sadd(ownerHubTokensKey(normalized), hashed),
   ]);
   await redis.expire(ownerHubTokensKey(normalized), HUB_TTL_SECONDS);
@@ -49,36 +61,26 @@ export async function issueCaseHubAccessToken(email: string): Promise<string> {
 }
 
 /**
- * Zneplatní hub odkazy pro e-mail vlastníka. Nové tokeny mají reverzní index;
- * SCAN navíc odstraní i odkazy vydané před zavedením indexu, aby starý hub
- * odkaz nemohl po revokaci znovu vydat čerstvý přístup k případu.
+ * Zneplatní všechny hub odkazy pro e-mail vlastníka bez globálního SCANu.
+ *
+ * Autoritativní je owner-scoped epoch: staré tokeny (včetně tokenů vydaných
+ * před zavedením reverzního indexu) mají epoch 0 a po prvním revoke přestanou
+ * platit. Reverzní index pouze fyzicky uklidí novější tokeny; bezpečnost na něm
+ * nezávisí. Epoch má stejnou TTL jako hub tokeny, takže může zaniknout až ve
+ * chvíli, kdy už žádný dříve vydaný hub token nemůže být platný.
  */
 export async function revokeCaseHubAccessTokens(email: string): Promise<number> {
   const normalized = email.trim().toLowerCase();
   const indexKey = ownerHubTokensKey(normalized);
+  const epochKey = ownerHubEpochKey(normalized);
   const indexed = (await redis.smembers(indexKey)) as string[];
-  let revoked = 0;
 
+  await redis.incr(epochKey);
+  await redis.expire(epochKey, HUB_TTL_SECONDS);
+
+  let revoked = 0;
   for (const hash of indexed ?? []) revoked += await redis.del(`case:hub-access:${hash}`);
   await redis.del(indexKey);
-
-  // Collect legacy keys before deleting them. Offset-based in-memory SCAN and
-  // cursor-based Redis SCAN both remain safe when the keyspace is not mutated
-  // during traversal; deleting while iterating could otherwise skip a page.
-  const legacyKeys: string[] = [];
-  let cursor = 0;
-  do {
-    const [nextCursor, keys] = await redis.scan(cursor, { match: 'case:hub-access:*', count: 200 });
-    legacyKeys.push(...keys);
-    cursor = Number(nextCursor);
-  } while (cursor !== 0);
-
-  for (const key of legacyKeys) {
-    const record = await redis.get<HubAccessRecord>(key);
-    if (record?.email?.trim().toLowerCase() !== normalized) continue;
-    revoked += await redis.del(key);
-  }
-
   return revoked;
 }
 
@@ -86,6 +88,9 @@ export async function resolveCaseHubAccess(token: string): Promise<HubAccessReco
   if (!HUB_TOKEN_RE.test(token)) return null;
   const record = await redis.get<HubAccessRecord>(hubKey(token));
   if (!record || typeof record.email !== 'string' || !record.email.includes('@')) return null;
+  const currentEpoch = await currentOwnerHubEpoch(record.email);
+  const tokenEpoch = Number.isInteger(record.epoch) && (record.epoch as number) >= 0 ? (record.epoch as number) : 0;
+  if (tokenEpoch !== currentEpoch) return null;
   return record;
 }
 

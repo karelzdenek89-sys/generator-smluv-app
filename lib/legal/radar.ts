@@ -24,7 +24,7 @@ export const LEGAL_CHANGE_STATUS_LABELS: Record<LegalChangeStatus, string> = {
 
 export const LEGAL_CHANGE_STATUS_DESCRIPTIONS: Record<LegalChangeStatus, string> = {
   in_force: 'Předpis je účinný. Uvedená pravidla dnes platí.',
-  approved_pending: 'Předpis byl schválen a vyhlášen, účinnost teprve nastane.',
+  approved_pending: 'Změna byla schválena nebo oficiálně potvrzena; účinnost teprve nastane.',
   in_progress: 'Návrh je v legislativním procesu. Obsah i termíny se mohou změnit.',
   proposal: 'Zatím jen záměr nebo návrh. Nejde o platné právo.',
 };
