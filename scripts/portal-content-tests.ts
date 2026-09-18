@@ -126,7 +126,11 @@ function testLegalRadar() {
     ok(hub.metaDescription.length <= 200, `${audience}: meta description length`);
   }
   const employers = getLegalChangesForAudience('employers');
-  ok(employers.findIndex((c) => c.status === 'in_force') < employers.findIndex((c) => c.status === 'in_progress'), 'in-force entries sort before in-progress');
+  const radarOrder: Record<(typeof LEGAL_CHANGE_STATUSES)[number], number> = { in_force: 0, approved_pending: 1, in_progress: 2, proposal: 3 };
+  ok(
+    employers.every((change, index) => index === 0 || radarOrder[employers[index - 1].status] <= radarOrder[change.status]),
+    'audience entries sort by legal status priority even when a status bucket is empty',
+  );
   eq(getLegalChangesNeedingReview(new Date('2026-09-18T00:00:00Z')).length, 0, 'nothing needs review on verification day');
   ok(getLegalChangesNeedingReview(new Date('2027-01-01T00:00:00Z')).length === LEGAL_CHANGES.length, 'everything needs review after 90 days');
   ok(/^\d{4}-\d{2}-\d{2}$/.test(getRadarVerifiedAt()), 'radar verified date');
