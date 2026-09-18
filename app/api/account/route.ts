@@ -180,6 +180,9 @@ export async function POST(req: Request) {
         await burnPasswordCheck(password);
         return NextResponse.json({ error: 'Neplatné přihlašovací údaje.' }, { status: 401 });
       }
+      if (!await rateLimit(`ratelimit:account-login-user:${user.id}`, 30, 3600)) {
+        return NextResponse.json({ error: 'Příliš mnoho pokusů. Zkuste to později.' }, { status: 429 });
+      }
       const passwordOk = await verifyPassword(password, user.passwordHash);
       if (!passwordOk) return NextResponse.json({ error: 'Neplatné přihlašovací údaje.' }, { status: 401 });
       const logged = await markLogin(user);
@@ -193,7 +196,9 @@ export async function POST(req: Request) {
       const login = typeof parsed.data.login === 'string' ? parsed.data.login.trim() : '';
       if (!await rateLimit(`ratelimit:account-forgot:${ip}`, 8, 3600)) return NextResponse.json({ error: 'Příliš mnoho požadavků. Zkuste to později.' }, { status: 429 });
       const user = login ? await findAccount(login) : null;
-      if (user) await sendReset(user).catch(() => false);
+      if (user && await rateLimit(`ratelimit:account-forgot-user:${user.id}`, 3, 3600)) {
+        await sendReset(user).catch(() => false);
+      }
       return NextResponse.json({ ok: true, message: 'Pokud účet existuje, odeslali jsme odkaz pro nastavení nového hesla.' });
     }
 
