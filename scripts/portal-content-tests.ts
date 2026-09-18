@@ -15,6 +15,7 @@ import {
   getRadarVerifiedAt,
 } from '@/lib/legal/radar';
 import { getAllDocumentLegalVersions } from '@/lib/legal/document-versions';
+import { processLegislationWatches, type LegislationWatch } from '@/lib/legal/watch';
 import { ANSWER_FIRST_ARTICLES, articleHref } from '@/lib/portal/articles';
 import { HOMEPAGE_SITUATIONS, PORTAL_SITUATIONS, getPortalSituation } from '@/lib/portal/situations';
 import { PORTAL_TOOLS } from '@/lib/portal/tools';
@@ -125,16 +126,61 @@ function testLegalRadar() {
     ok(hub.metaDescription.length <= 200, `${audience}: meta description length`);
   }
   const employers = getLegalChangesForAudience('employers');
-  ok(employers.findIndex((c) => c.status === 'in_force') < employers.findIndex((c) => c.status === 'in_progress'), 'in-force entries sort before in-progress');
-  eq(getLegalChangesNeedingReview(new Date('2026-09-17T00:00:00Z')).length, 0, 'nothing needs review on verification day');
+  const radarOrder: Record<(typeof LEGAL_CHANGE_STATUSES)[number], number> = { in_force: 0, approved_pending: 1, in_progress: 2, proposal: 3 };
+  ok(
+    employers.every((change, index) => index === 0 || radarOrder[employers[index - 1].status] <= radarOrder[change.status]),
+    'audience entries sort by legal status priority even when a status bucket is empty',
+  );
+  eq(getLegalChangesNeedingReview(new Date('2026-09-18T00:00:00Z')).length, 0, 'nothing needs review on verification day');
   ok(getLegalChangesNeedingReview(new Date('2027-01-01T00:00:00Z')).length === LEGAL_CHANGES.length, 'everything needs review after 90 days');
   ok(/^\d{4}-\d{2}-\d{2}$/.test(getRadarVerifiedAt()), 'radar verified date');
+
+  const minimumWage2027 = LEGAL_CHANGES.find((change) => change.key === 'minimalni-mzda-2027');
+  ok(minimumWage2027, '2027 minimum wage radar entry exists');
+  eq(minimumWage2027?.status, 'approved_pending', '2027 minimum wage is approved and waiting for effectiveness');
+  eq(minimumWage2027?.effectiveFrom, '2027-01-01', '2027 minimum wage has the known effective date');
+  ok(Boolean(minimumWage2027?.summary.includes('24 900 Kč') && minimumWage2027.summary.includes('148,30 Kč')), '2027 minimum wage entry contains the MPSV-announced monthly and hourly amounts');
+  ok(Boolean(minimumWage2027?.sources.some((source) => source.href.includes('minimalni-mzda-v-roce-2027-vzroste-na-24-900-korun'))), '2027 minimum wage links the specific MPSV announcement');
 
   const versions = getAllDocumentLegalVersions(new Date('2026-09-17T00:00:00Z'));
   eq(versions.length, 14, 'every contract type has a legal version');
   ok(versions.every((version) => version.version && version.validFrom && version.verifiedAt), 'versions carry version/valid_from/verified_at');
   ok(versions.every((version) => version.status === 'published'), 'templates published as of release');
   ok(versions.find((version) => version.contractType === 'employment')!.relatedChanges.length >= 2, 'employment template links radar changes');
+}
+
+async function testLegislationWatchPagination() {
+  memoryRedis.reset();
+  process.env.CRON_SECRET = 'portal-watch-test-secret-1234567890';
+  delete process.env.NEXT_PUBLIC_FEATURE_LEGISLATION_WATCH;
+
+  const change = LEGAL_CHANGES[0];
+  const ids = Array.from({ length: 600 }, (_, index) => `watch-${String(index).padStart(4, '0')}`);
+  for (const id of ids) {
+    const watch: LegislationWatch = {
+      id,
+      email: `${id}@example.cz`,
+      emailHash: `hash-${id}`,
+      changeKey: change.key,
+      status: 'active',
+      statusSnapshot: change.status,
+      effectiveFromSnapshot: change.effectiveFrom,
+      createdAt: '2026-09-18T00:00:00.000Z',
+      confirmedAt: '2026-09-18T00:00:00.000Z',
+      lastNotifiedAt: null,
+    };
+    await memoryRedis.set(`legal:watch:${id}`, watch, { ex: 86400 });
+    await memoryRedis.sadd('legal:watch:index', id);
+  }
+
+  const first = await processLegislationWatches(500);
+  const second = await processLegislationWatches(500);
+  eq(first.checked, 500, 'legal watch processes the first configured batch');
+  eq(second.checked, 100, 'legal watch cursor reaches subscribers after the first 500 instead of repeating the same prefix');
+  eq(await memoryRedis.get('legal:watch:cursor'), 0, 'legal watch cursor wraps after reaching the end');
+
+  delete process.env.CRON_SECRET;
+  memoryRedis.reset();
 }
 
 function testSituationsAndTools() {
@@ -347,6 +393,7 @@ function testGrowthClusters() {
 
 async function main() {
   testLegalRadar();
+  await testLegislationWatchPagination();
   testSituationsAndTools();
   testArticles();
   testGrowthClusters();

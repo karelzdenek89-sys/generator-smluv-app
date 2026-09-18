@@ -3,9 +3,10 @@ import { redis } from '@/lib/redis';
 import { stripe } from '@/lib/stripe';
 import { normalizePricingTier } from '@/lib/pricing';
 import { isFeatureEnabled } from '@/lib/feature-flags';
-import { escapeHtml, renderEmailShell, sendTransactionalEmail } from '@/lib/email/transactional';
+import { renderEmailShell, sendTransactionalEmail } from '@/lib/email/transactional';
 import { issueCaseAccessToken, revokeCaseAccessTokens } from './access';
 import { buildCaseUrl, sendCaseAccessEmail } from './emails';
+import { revokeCaseHubAccessTokens } from './hub-access';
 import {
   buildCaseRecord,
   commitCase,
@@ -122,6 +123,35 @@ function packageForCase(kind: CaseKind, packageKey: unknown): CaseRecord['origin
   return null;
 }
 
+const CASE_CREATE_LOCK_TTL_SECONDS = 15;
+const CASE_CREATE_WAIT_ATTEMPTS = 80;
+const CASE_CREATE_WAIT_MS = 50;
+const RELEASE_CASE_CREATE_LOCK_SCRIPT = `
+if redis.call('GET', KEYS[1]) == ARGV[1] then
+  return redis.call('DEL', KEYS[1])
+end
+return 0
+`;
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function caseFromDraft(draft: DraftRecord): Promise<CaseRecord | null> {
+  return typeof draft.caseId === 'string' ? getCase(draft.caseId) : null;
+}
+
+async function waitForCreatedCase(draftKey: string): Promise<{ draft: DraftRecord; record: CaseRecord } | null> {
+  for (let attempt = 0; attempt < CASE_CREATE_WAIT_ATTEMPTS; attempt += 1) {
+    if (attempt > 0) await delay(CASE_CREATE_WAIT_MS);
+    const draft = await redis.get<DraftRecord>(draftKey);
+    if (!draft) return null;
+    const record = await caseFromDraft(draft);
+    if (record) return { draft, record };
+  }
+  return null;
+}
+
 export async function createCaseFromPaidOrder(input: { sessionId: string; token: string }): Promise<CreateCaseFromOrderResult> {
   if (!isCaseEngineEnabled()) return { ok: false, reason: 'disabled' };
 
@@ -143,50 +173,83 @@ export async function createCaseFromPaidOrder(input: { sessionId: string; token:
   const ownerEmail = String(draft.deliveryEmail || draft.customerEmail || session.customer_details?.email || '').trim().toLowerCase();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ownerEmail)) return { ok: false, reason: 'not_found' };
 
-  let record = typeof draft.caseId === 'string' ? await getCase(draft.caseId) : null;
+  let record = await caseFromDraft(draft);
   let created = false;
   if (!record) {
-    const payload = draft.payload && typeof draft.payload === 'object' ? draft.payload : {};
-    const ownerRole = parseOwnerRole(payload.partnerUserRole, kind);
-    const tier = normalizePricingTier(String(session.metadata?.tier || draft.tier || 'basic'));
-    const packageKey = packageForCase(kind, draft.packageKey);
-    const dates = caseDates(kind, payload);
+    const lockKey = `case:create-lock:${draftId}`;
+    const lockOwner = randomUUID();
+    let acquired = await redis.set(lockKey, lockOwner, { nx: true, ex: CASE_CREATE_LOCK_TTL_SECONDS });
 
-    record = buildCaseRecord({
-      kind,
-      ownerEmail,
-      ownerRole,
-      title: buildTitle(kind, payload, ownerRole),
-      startDate: dates.startDate,
-      deadline: dates.deadline,
-      priceAmountCzk: kind === 'work_order' ? parseAmountCzk(payload.priceAmount, payload.currency) : null,
-      priceMode: kind === 'work_order' ? parsePriceMode(payload.paymentType) : 'unknown',
-      origin: {
-        source: 'success_page',
-        contractType: contractType as CaseRecord['origin']['contractType'],
-        tier: packageKey ? 'complete' : tier,
-        packageKey,
-      },
-    });
-
-    if (kind === 'rental') {
-      record.stage = 'rental_contract';
-      record.tasks = record.tasks.map((task) => task.key === 'rental_contract_ready'
-        ? { ...task, done: true, doneAt: new Date().toISOString() }
-        : task);
-    }
-    if (kind === 'vehicle_transfer') {
-      record.stage = 'vehicle_contract';
-      record.tasks = record.tasks.map((task) => task.key === 'vehicle_contract_ready'
-        ? { ...task, done: true, doneAt: new Date().toISOString() }
-        : task);
+    if (acquired === null) {
+      const existing = await waitForCreatedCase(draftKey);
+      if (existing) record = existing.record;
+      else acquired = await redis.set(lockKey, lockOwner, { nx: true, ex: CASE_CREATE_LOCK_TTL_SECONDS });
     }
 
-    record = await saveCase(record);
-    created = true;
-    const ttl = await redis.ttl(draftKey);
-    await redis.set(draftKey, { ...draft, caseId: record.id }, ttl > 0 ? { ex: ttl } : undefined);
+    if (!record && acquired === null) {
+      const existing = await waitForCreatedCase(draftKey);
+      if (existing) record = existing.record;
+      else throw new Error('case_creation_busy');
+    }
+
+    if (!record && acquired !== null) {
+      try {
+        // Re-read under the distributed lock. Another request may have
+        // completed creation between the initial draft read and lock acquire.
+        const lockedDraft = await redis.get<DraftRecord>(draftKey);
+        if (!lockedDraft) return { ok: false, reason: 'not_found' };
+        const existing = await caseFromDraft(lockedDraft);
+        if (existing) {
+          record = existing;
+        } else {
+          const payload = lockedDraft.payload && typeof lockedDraft.payload === 'object' ? lockedDraft.payload : {};
+          const ownerRole = parseOwnerRole(payload.partnerUserRole, kind);
+          const tier = normalizePricingTier(String(session.metadata?.tier || lockedDraft.tier || 'basic'));
+          const packageKey = packageForCase(kind, lockedDraft.packageKey);
+          const dates = caseDates(kind, payload);
+
+          record = buildCaseRecord({
+            kind,
+            ownerEmail,
+            ownerRole,
+            title: buildTitle(kind, payload, ownerRole),
+            startDate: dates.startDate,
+            deadline: dates.deadline,
+            priceAmountCzk: kind === 'work_order' ? parseAmountCzk(payload.priceAmount, payload.currency) : null,
+            priceMode: kind === 'work_order' ? parsePriceMode(payload.paymentType) : 'unknown',
+            origin: {
+              source: 'success_page',
+              contractType: contractType as CaseRecord['origin']['contractType'],
+              tier: packageKey ? 'complete' : tier,
+              packageKey,
+            },
+          });
+
+          if (kind === 'rental') {
+            record.stage = 'rental_contract';
+            record.tasks = record.tasks.map((task) => task.key === 'rental_contract_ready'
+              ? { ...task, done: true, doneAt: new Date().toISOString() }
+              : task);
+          }
+          if (kind === 'vehicle_transfer') {
+            record.stage = 'vehicle_contract';
+            record.tasks = record.tasks.map((task) => task.key === 'vehicle_contract_ready'
+              ? { ...task, done: true, doneAt: new Date().toISOString() }
+              : task);
+          }
+
+          record = await saveCase(record);
+          created = true;
+          const ttl = await redis.ttl(draftKey);
+          await redis.set(draftKey, { ...lockedDraft, caseId: record.id }, ttl > 0 ? { ex: ttl } : undefined);
+        }
+      } finally {
+        await redis.eval(RELEASE_CASE_CREATE_LOCK_SCRIPT, [lockKey], [lockOwner]).catch(() => undefined);
+      }
+    }
   }
+
+  if (!record) throw new Error('case_creation_failed');
 
   const token = await issueCaseAccessToken(record.id, ownerEmail);
   const url = buildCaseUrl(record.id, token, undefined, record.kind);
@@ -214,17 +277,18 @@ export async function sendCaseLinksForEmail(email: string): Promise<{ cases: num
     record,
     url: buildCaseUrl(record.id, await issueCaseAccessToken(record.id, email), undefined, record.kind),
   })));
-  const list = links.map(({ record, url }) => {
-    const stage = getStageDefinition(record.kind, record.stage);
-    return `<li style="margin:0 0 12px"><a href="${escapeHtml(url)}">${escapeHtml(record.title)}</a> — ${escapeHtml(stage?.label ?? 'Aktivní')}</li>`;
-  }).join('');
   const result = await sendTransactionalEmail({
     to: email,
     subject: `Návratové odkazy k vašim případům (${records.length})`,
     idempotencyKey: `case-links-${randomUUID()}`,
     html: renderEmailShell({
       heading: 'Vaše případy',
-      intro: `<ul style="padding-left:18px">${list}</ul>`,
+      intro: `Našli jsme ${records.length} ${records.length === 1 ? 'uložený případ' : records.length < 5 ? 'uložené případy' : 'uložených případů'}. Odkazy níže otevřou jednotlivé případy.`,
+      linkItems: links.map(({ record, url }) => ({
+        label: record.title,
+        url,
+        detail: getStageDefinition(record.kind, record.stage)?.label ?? 'Aktivní',
+      })),
       ctaLabel: 'Otevřít první případ',
       ctaUrl: links[0].url,
       footerNote: 'Odkazy jsou funkční přístupové klíče. Nikomu je nepřeposílejte.',
@@ -325,8 +389,11 @@ export async function applyCaseAction(record: CaseRecord, action: CaseAction): P
   }
 
   if (action.type === 'revoke_links') {
-    await revokeCaseAccessTokens(record.id);
-    const next = await save((fresh) => ({ ...fresh, events: [...fresh.events, newEvent('links_revoked', 'Všechny návratové odkazy zneplatněny')] }));
+    await Promise.all([
+      revokeCaseAccessTokens(record.id),
+      revokeCaseHubAccessTokens(record.ownerEmail),
+    ]);
+    const next = await save((fresh) => ({ ...fresh, events: [...fresh.events, newEvent('links_revoked', 'Návratové odkazy k případu a přehledu Moje případy zneplatněny')] }));
     return next ? { ok: true, record: next, eventType: 'links_revoked' } : gone;
   }
 

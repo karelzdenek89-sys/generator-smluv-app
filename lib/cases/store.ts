@@ -336,10 +336,32 @@ export async function listCaseIdsForEmail(email: string): Promise<string[]> {
   return Array.isArray(ids) ? ids.filter(isCaseIdFormat) : [];
 }
 
-export async function listCasesForEmail(email: string, limit = 50): Promise<CaseRecord[]> {
-  const ids = (await listCaseIdsForEmail(email)).slice(0, Math.max(1, Math.min(limit, 100)));
-  const records = await Promise.all(ids.map((id) => getCase(id)));
-  return records.filter((record): record is CaseRecord => Boolean(record)).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+export async function listCasesForEmail(email: string, limit = 50, offset = 0): Promise<CaseRecord[]> {
+  const ids = await listCaseIdsForEmail(email);
+  const records: CaseRecord[] = [];
+  const staleIds: string[] = [];
+
+  // Do not slice the owner index before resolving records. Expired case IDs can
+  // remain in the SET until it is next touched and must not hide a newer,
+  // still-valid case from the hub or recovery e-mail.
+  for (let index = 0; index < ids.length; index += 50) {
+    const batchIds = ids.slice(index, index + 50);
+    const batch = await Promise.all(batchIds.map((id) => getCase(id)));
+    batch.forEach((record, position) => {
+      if (record) records.push(record);
+      else staleIds.push(batchIds[position]);
+    });
+  }
+
+  for (let index = 0; index < staleIds.length; index += 100) {
+    await redis.srem(ownerKey(email), ...staleIds.slice(index, index + 100));
+  }
+
+  const safeLimit = Math.max(1, Math.min(limit, 100));
+  const safeOffset = Math.max(0, Math.floor(offset));
+  return records
+    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+    .slice(safeOffset, safeOffset + safeLimit);
 }
 
 export async function deleteCase(record: CaseRecord): Promise<void> {

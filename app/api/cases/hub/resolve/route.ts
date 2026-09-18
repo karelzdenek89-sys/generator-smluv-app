@@ -14,6 +14,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Neplatný požadavek.' }, { status });
   }
   const token = typeof json.data.token === 'string' ? json.data.token.trim() : '';
+  const offsetRaw = typeof json.data.offset === 'number' ? json.data.offset : 0;
+  const offset = Number.isInteger(offsetRaw) && offsetRaw >= 0 && offsetRaw <= 10_000 ? offsetRaw : 0;
   if (!token || token.length > 200) return NextResponse.json({ error: 'Neplatný přístup.' }, { status: 400 });
   try {
     const limit = await takeRateLimit(`ratelimit:case-hub-resolve:${getClientIp(req)}`, 60, 600);
@@ -23,6 +25,6 @@ export async function POST(req: Request) {
   }
   const access = await resolveCaseHubAccess(token);
   if (!access) return NextResponse.json({ error: 'Odkaz je neplatný nebo vypršel.' }, { status: 403 });
-  const cases = await buildCaseHubPayload(access.email);
-  return NextResponse.json({ cases }, { headers: { 'Cache-Control': 'no-store, private' } });
+  const payload = await buildCaseHubPayload(access.email, offset, 50);
+  return NextResponse.json(payload, { headers: { 'Cache-Control': 'no-store, private' } });
 }

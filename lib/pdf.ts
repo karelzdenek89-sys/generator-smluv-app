@@ -2608,21 +2608,40 @@ export async function renderSimpleDocumentPdf(input: SimpleDocumentInput): Promi
     y += 4;
     y = drawSectionTitle(doc, section.title, y, contentWidth, false);
 
-    for (const rawLine of section.body.slice(0, 80)) {
-      const raw = rawLine != null ? String(rawLine) : '';
-      const safe = raw.length > 1600 ? `${raw.substring(0, 1600)}…` : raw.trim() || ' ';
-      const split = doc.splitTextToSize(safe, contentWidth);
-      const lh = split.length * BODY_LEAD + 2;
-      if (y + lh + 8 > 272) {
-        doc.addPage();
-        drawHeader(doc, input.title, false, input.docId);
-        y = 22;
-        doc.setFont('Roboto', 'normal');
-        doc.setFontSize(10);
-        doc.setTextColor(BODY_R, BODY_G, BODY_B);
+    // Follow-up documents accept textarea values up to 4,000 characters.
+    // Never truncate accepted text here: paginate wrapped lines across as many
+    // pages as necessary so the paid PDF contains the complete user input.
+    for (const rawLine of section.body) {
+      const raw = rawLine != null ? String(rawLine).trim() : '';
+      const split = doc.splitTextToSize(raw || ' ', contentWidth) as string[];
+      let offset = 0;
+
+      while (offset < split.length) {
+        const availableLines = Math.max(0, Math.floor((272 - y - 2) / BODY_LEAD));
+        if (availableLines === 0) {
+          doc.addPage();
+          drawHeader(doc, input.title, false, input.docId);
+          y = 22;
+          doc.setFont('Roboto', 'normal');
+          doc.setFontSize(10);
+          doc.setTextColor(BODY_R, BODY_G, BODY_B);
+          continue;
+        }
+
+        const chunk = split.slice(offset, offset + availableLines);
+        doc.text(chunk, MARGIN, y, { align: 'justify', maxWidth: contentWidth });
+        y += chunk.length * BODY_LEAD + 2;
+        offset += chunk.length;
+
+        if (offset < split.length) {
+          doc.addPage();
+          drawHeader(doc, input.title, false, input.docId);
+          y = 22;
+          doc.setFont('Roboto', 'normal');
+          doc.setFontSize(10);
+          doc.setTextColor(BODY_R, BODY_G, BODY_B);
+        }
       }
-      doc.text(split, MARGIN, y, { align: 'justify', maxWidth: contentWidth });
-      y += lh;
     }
     y += SECTION_GAP;
   }

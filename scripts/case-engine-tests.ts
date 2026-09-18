@@ -2,6 +2,8 @@ process.env.SMLOUVAHNED_FAKE_REDIS = '1';
 process.env.NEXT_PUBLIC_BASE_URL = 'https://www.smlouvahned.cz';
 
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
 import { testCaseReliability } from './case-reliability-tests';
 import { memoryRedis } from '@/lib/redis-memory';
 import {
@@ -11,6 +13,12 @@ import {
   resolveCaseAccess,
   revokeCaseAccessTokens,
 } from '@/lib/cases/access';
+import {
+  issueCaseHubAccessToken,
+  resolveCaseHubAccess,
+  revokeCaseHubAccessTokens,
+} from '@/lib/cases/hub-access';
+import { renderEmailShell } from '@/lib/email/transactional';
 import { buildCaseUrl, reminderCopy } from '@/lib/cases/emails';
 import {
   CASE_DOCUMENT_DEFINITIONS,
@@ -33,7 +41,9 @@ import {
   commitCase,
   deleteCase,
   getCase,
+  hashOwnerEmail,
   listCaseIdsForEmail,
+  listCasesForEmail,
   listDueReminders,
   maskEmail,
   PENDING_DOCUMENT_RETENTION_DAYS,
@@ -146,6 +156,23 @@ async function testStoreAndAccess() {
   eq(await resolveCaseAccess(record.id, token), null, 'revoked token no longer resolves');
   eq(await resolveCaseAccess(record.id, second), null, 'second revoked token no longer resolves');
 
+  const hubToken = await issueCaseHubAccessToken(record.ownerEmail);
+  ok(await resolveCaseHubAccess(hubToken), 'hub token resolves before revocation');
+  eq(await revokeCaseHubAccessTokens(record.ownerEmail), 1, 'hub revocation removes indexed owner token');
+  eq(await resolveCaseHubAccess(hubToken), null, 'revoked hub token no longer resolves');
+
+  // Backward compatibility: a hub link issued before the reverse index / epoch
+  // existed is valid until the owner revokes links, then becomes invalid without
+  // a global keyspace scan.
+  const legacyEmail = 'legacy-hub@example.cz';
+  const legacyHubToken = 'ab'.repeat(32);
+  const legacyHubHash = createHash('sha256').update(legacyHubToken).digest('hex');
+  await memoryRedis.set(`case:hub-access:${legacyHubHash}`, { email: legacyEmail, issuedAt: new Date().toISOString() }, { ex: 3600 });
+  ok(await resolveCaseHubAccess(legacyHubToken), 'legacy hub token resolves before owner revocation');
+  eq(await revokeCaseHubAccessTokens(legacyEmail), 0, 'legacy unindexed token needs no physical scan/delete');
+  eq(await resolveCaseHubAccess(legacyHubToken), null, 'owner epoch invalidates legacy hub token after revocation');
+  ok(await memoryRedis.get(`case:hub-access:${legacyHubHash}`), 'legacy token may remain physically stored but is cryptographically unusable via epoch mismatch');
+
   const pub = toPublicCase(record);
   ok(!('ownerEmail' in pub), 'public projection hides e-mail');
   ok(!('orderSessionId' in pub.origin), 'public projection has no Stripe session');
@@ -153,6 +180,19 @@ async function testStoreAndAccess() {
   ok(!('orderSessionId' in legacy.origin), 'legacy Stripe session never reaches the client');
   eq(pub.ownerEmailMasked, maskEmail('jan.novak@example.cz'), 'masked e-mail exposed');
   ok(!pub.ownerEmailMasked.includes('jan.novak'), 'mask hides local part');
+
+  // Resolve the whole owner index before applying the page limit. Stale IDs
+  // must be cleaned and must never hide a valid case that was added later.
+  memoryRedis.reset();
+  const staleEmail = 'stale-index@example.cz';
+  const staleIds = Array.from({ length: 55 }, (_, index) =>
+    `00000000-0000-4000-8000-${String(index + 1).padStart(12, '0')}`,
+  );
+  await memoryRedis.sadd(`case:owner:${hashOwnerEmail(staleEmail)}`, ...staleIds);
+  const validAfterStale = await saveCase(sampleCase({ ownerEmail: staleEmail, title: 'Platný případ za starými ID' }));
+  const visible = await listCasesForEmail(staleEmail, 1);
+  eq(visible.map((item) => item.id), [validAfterStale.id], 'stale owner IDs cannot hide a valid case');
+  eq((await listCaseIdsForEmail(staleEmail)).length, 1, 'stale owner IDs are removed while listing');
 }
 
 async function testActions() {
@@ -283,6 +323,21 @@ async function testDocuments() {
     docId: 'SH-Z-TEST',
   });
   ok(pdf.length > 5000 && pdf.subarray(0, 4).toString() === '%PDF', 'case document renders as PDF');
+
+  const emailHtml = renderEmailShell({
+    heading: 'Vaše případy',
+    intro: 'Vyberte uložený případ.',
+    linkItems: [
+      { label: 'Zakázka <test>', url: 'https://www.smlouvahned.cz/moje-zakazka?id=1#access=abc', detail: 'V realizaci' },
+      { label: 'Pronájem', url: 'https://www.smlouvahned.cz/moje-pripady/pripad?id=2#access=def', detail: 'Předání' },
+    ],
+    ctaLabel: 'Otevřít první případ',
+    ctaUrl: 'https://www.smlouvahned.cz/moje-zakazka?id=1#access=abc',
+    footerNote: 'Test',
+  });
+  ok(emailHtml.includes('<a href="https://www.smlouvahned.cz/moje-zakazka?id=1#access=abc"'), 'recovery e-mail renders case links as clickable HTML');
+  ok(emailHtml.includes('Zakázka &lt;test&gt;'), 'recovery e-mail escapes case labels');
+  ok(!emailHtml.includes('&lt;a href='), 'recovery e-mail does not escape its structured links');
 
   for (const kind of CASE_DOCUMENT_KINDS) {
     const definition = CASE_DOCUMENT_DEFINITIONS[kind];
@@ -424,6 +479,9 @@ async function testConcurrencyAndImmutability() {
     signatureLabels: CASE_DOCUMENT_DEFINITIONS.change_order.signatureLabels, docId: 'SH-Z-LONG',
   });
   ok(longPdf.subarray(0, 4).toString() === '%PDF' && (longPdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length >= 2, 'long text paginates into multiple PDF pages');
+  const pdfSource = readFileSync(new URL('../lib/pdf.ts', import.meta.url), 'utf8');
+  const simpleRenderer = pdfSource.slice(pdfSource.indexOf('export async function renderSimpleDocumentPdf'));
+  ok(!simpleRenderer.includes('substring(0, 1600)') && !simpleRenderer.includes('section.body.slice(0, 80)'), 'simple PDF renderer must never silently truncate accepted follow-up text');
   const tooLong = validateCaseDocumentData('change_order', { customerName: 'Obec', contractorName: 'Firma', number: '3', date: '2026-11-02', subject: 'scope', originalState: 'a', newState: 'x'.repeat(4001) });
   ok(!tooLong.ok && tooLong.field === 'newState', 'text over the limit is rejected before payment, not cut later');
 
