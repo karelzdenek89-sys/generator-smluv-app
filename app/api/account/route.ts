@@ -243,6 +243,13 @@ export async function POST(req: Request) {
       return response;
     }
 
+    if (action === 'logout_all') {
+      await revokeAllAccountSessions(user.id);
+      const response = NextResponse.json({ ok: true });
+      clearSessionCookies(response);
+      return response;
+    }
+
     if (action === 'resend_verification') {
       if (user.emailVerifiedAt) return NextResponse.json({ ok: true, alreadyVerified: true });
       if (!await rateLimit(`ratelimit:account-verify:${user.id}`, 3, 3600)) return NextResponse.json({ error: 'Další ověřovací e-mail lze odeslat později.' }, { status: 429 });
