@@ -338,7 +338,17 @@ export async function resetPasswordWithToken(token: string, password: string): P
   const user = await getAccountById(record.userId);
   await Promise.all([redis.del(resetKey(hashed)), redis.del(currentResetKey(record.userId))]);
   if (!user) return null;
-  const next = await setAccountPassword(user, password);
+
+  // Přístup k resetovacímu odkazu prokazuje kontrolu nad e-mailem účtu.
+  // Případný starší ověřovací odkaz proto zároveň zneplatníme.
+  const verificationHash = await redis.get<string>(currentVerifyKey(user.id));
+  if (verificationHash) {
+    await Promise.all([redis.del(verifyKey(verificationHash)), redis.del(currentVerifyKey(user.id))]);
+  }
+  const next = await setAccountPassword({
+    ...user,
+    emailVerifiedAt: user.emailVerifiedAt ?? new Date().toISOString(),
+  }, password);
   await revokeAllAccountSessions(user.id);
   return next;
 }
