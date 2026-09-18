@@ -203,6 +203,16 @@ export default function AccountHub() {
     finally { end(); }
   };
 
+  const logoutEverywhere = async () => {
+    start('logout-all');
+    try {
+      await api('logout_all');
+      setUser(null); setCsrf(''); setMode('login');
+      setMessage('Všechna přihlášená zařízení byla odhlášena.');
+    } catch (reason) { setError(reason instanceof Error ? reason.message : 'Relace se nepodařilo ukončit.'); }
+    finally { end(); }
+  };
+
   const removeAccount = async (event: FormEvent) => {
     event.preventDefault();
     if (!window.confirm('Opravdu chcete smazat účet? Zakoupené dokumenty a uložené případy mají vlastní retenční režim a nesmažou se automaticky spolu s účtem.')) return;
@@ -303,7 +313,9 @@ export default function AccountHub() {
               </form>
               <form onSubmit={changePassword} className="site-content-card rounded-3xl p-6">
                 <p className="site-kicker mb-2">Zabezpečení</p><h2 className="site-heading-md">Změnit heslo</h2><p className="mt-2 text-xs leading-6 text-slate-500">Po změně hesla ukončíme všechny ostatní relace a vytvoříme novou relaci pro tento prohlížeč.</p>
-                <div className="mt-5 space-y-4"><div><label htmlFor="current-password" className="site-form-label">Aktuální heslo</label><input id="current-password" type="password" className="site-input" autoComplete="current-password" value={passwords.currentPassword} onChange={(e) => setPasswords((c) => ({...c,currentPassword:e.target.value}))} required /></div><div><label htmlFor="new-password" className="site-form-label">Nové heslo</label><input id="new-password" type="password" className="site-input" autoComplete="new-password" value={passwords.newPassword} onChange={(e) => setPasswords((c) => ({...c,newPassword:e.target.value}))} required minLength={10} maxLength={128} /></div><button type="submit" disabled={busy === 'password'} className="site-button-secondary w-full justify-center">{busy === 'password' ? 'Měním…' : 'Změnit heslo'}</button></div>
+                <div className="mt-5 space-y-4"><div><label htmlFor="current-password" className="site-form-label">Aktuální heslo</label><input id="current-password" type="password" className="site-input" autoComplete="current-password" value={passwords.currentPassword} onChange={(e) => setPasswords((c) => ({...c,currentPassword:e.target.value}))} required /></div><div><label htmlFor="new-password" className="site-form-label">Nové heslo</label><input id="new-password" type="password" className="site-input" autoComplete="new-password" value={passwords.newPassword} onChange={(e) => setPasswords((c) => ({...c,newPassword:e.target.value}))} required minLength={10} maxLength={128} /></div><button type="submit" disabled={busy === 'password'} className="site-button-secondary w-full justify-center">{busy === 'password' ? 'Měním…' : 'Změnit heslo'}</button>
+                  <button type="button" disabled={busy === 'logout-all'} onClick={() => void logoutEverywhere()} className="w-full rounded-xl border border-white/10 px-4 py-3 text-sm font-semibold text-slate-300 transition hover:border-white/20 hover:text-white">{busy === 'logout-all' ? 'Ukončuji relace…' : 'Odhlásit všechna zařízení'}</button>
+                </div>
               </form>
             </section>
 
