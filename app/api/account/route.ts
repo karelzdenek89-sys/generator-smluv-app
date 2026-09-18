@@ -67,6 +67,16 @@ function requestErrorStatus(error: string): number {
   return error === 'invalid_origin' ? 403 : error === 'payload_too_large' ? 413 : 400;
 }
 
+function accountJson(data: unknown, init?: ResponseInit): NextResponse {
+  return NextResponse.json(data, {
+    ...init,
+    headers: {
+      'Cache-Control': 'no-store, private',
+      ...(init?.headers ?? {}),
+    },
+  });
+}
+
 async function currentSession(): Promise<{ resolved: ResolvedAccountSession; csrf: string | null } | null> {
   const jar = await cookies();
   const token = jar.get(accountSessionCookieName())?.value;
@@ -128,13 +138,13 @@ async function rateLimit(key: string, limit: number, seconds: number): Promise<b
 export async function GET() {
   try {
     const current = await currentSession();
-    if (!current) return NextResponse.json({ authenticated: false }, { headers: { 'Cache-Control': 'no-store' } });
+    if (!current) return accountJson({ authenticated: false }, { headers: { 'Cache-Control': 'no-store' } });
 
     let csrf = current.csrf;
     if (!sessionCsrfMatches(current.resolved.session, csrf)) {
       csrf = await refreshSessionCsrf(current.resolved.tokenHash, current.resolved.session);
     }
-    const response = NextResponse.json({
+    const response = accountJson({
       authenticated: true,
       user: toPublicAccount(current.resolved.user),
       csrf,
@@ -142,30 +152,30 @@ export async function GET() {
     if (csrf && csrf !== current.csrf) response.cookies.set(accountCsrfCookieName(), csrf, cookieOptions(false));
     return response;
   } catch {
-    return NextResponse.json({ authenticated: false }, { headers: { 'Cache-Control': 'no-store' } });
+    return accountJson({ authenticated: false }, { headers: { 'Cache-Control': 'no-store' } });
   }
 }
 
 export async function POST(req: Request) {
   const parsed = await readFirstPartyJson(req, 12 * 1024);
-  if (!parsed.ok) return NextResponse.json({ error: 'Neplatný požadavek.' }, { status: requestErrorStatus(parsed.error) });
+  if (!parsed.ok) return accountJson({ error: 'Neplatný požadavek.' }, { status: requestErrorStatus(parsed.error) });
   const action = typeof parsed.data.action === 'string' ? parsed.data.action : '';
   const ip = getClientIp(req);
 
   try {
     if (action === 'register') {
-      if (!await rateLimit(`ratelimit:account-register:${ip}`, 8, 3600)) return NextResponse.json({ error: 'Příliš mnoho pokusů. Zkuste to později.' }, { status: 429 });
-      if (parsed.data.acceptTerms !== true) return NextResponse.json({ error: 'Pro vytvoření účtu potvrďte seznámení s podmínkami a zásadami ochrany osobních údajů.' }, { status: 400 });
+      if (!await rateLimit(`ratelimit:account-register:${ip}`, 8, 3600)) return accountJson({ error: 'Příliš mnoho pokusů. Zkuste to později.' }, { status: 429 });
+      if (parsed.data.acceptTerms !== true) return accountJson({ error: 'Pro vytvoření účtu potvrďte seznámení s podmínkami a zásadami ochrany osobních údajů.' }, { status: 400 });
       const created = await createAccount({
         username: typeof parsed.data.username === 'string' ? parsed.data.username : '',
         email: typeof parsed.data.email === 'string' ? parsed.data.email : '',
         displayName: typeof parsed.data.displayName === 'string' ? parsed.data.displayName : '',
         password: typeof parsed.data.password === 'string' ? parsed.data.password : '',
       });
-      if (!created.ok) return NextResponse.json({ error: created.message, field: created.field }, { status: 409 });
+      if (!created.ok) return accountJson({ error: created.message, field: created.field }, { status: 409 });
       const emailSent = await sendVerification(created.user).catch(() => false);
       const session = await createAccountSession(created.user);
-      const response = NextResponse.json({ ok: true, user: toPublicAccount(created.user), csrf: session.csrf, emailSent });
+      const response = accountJson({ ok: true, user: toPublicAccount(created.user), csrf: session.csrf, emailSent });
       setSessionCookies(response, session.token, session.csrf);
       return response;
     }
@@ -173,41 +183,41 @@ export async function POST(req: Request) {
     if (action === 'login') {
       const login = typeof parsed.data.login === 'string' ? parsed.data.login.trim() : '';
       const password = typeof parsed.data.password === 'string' ? parsed.data.password : '';
-      if (!login || !password || login.length > 200 || password.length > 128) return NextResponse.json({ error: 'Neplatné přihlašovací údaje.' }, { status: 401 });
-      if (!await rateLimit(`ratelimit:account-login:${ip}`, 20, 3600)) return NextResponse.json({ error: 'Příliš mnoho pokusů. Zkuste to později.' }, { status: 429 });
+      if (!login || !password || login.length > 200 || password.length > 128) return accountJson({ error: 'Neplatné přihlašovací údaje.' }, { status: 401 });
+      if (!await rateLimit(`ratelimit:account-login:${ip}`, 20, 3600)) return accountJson({ error: 'Příliš mnoho pokusů. Zkuste to později.' }, { status: 429 });
       const user = await findAccount(login);
       if (!user) {
         await burnPasswordCheck(password);
-        return NextResponse.json({ error: 'Neplatné přihlašovací údaje.' }, { status: 401 });
+        return accountJson({ error: 'Neplatné přihlašovací údaje.' }, { status: 401 });
       }
       if (!await rateLimit(`ratelimit:account-login-user:${user.id}`, 30, 3600)) {
-        return NextResponse.json({ error: 'Příliš mnoho pokusů. Zkuste to později.' }, { status: 429 });
+        return accountJson({ error: 'Příliš mnoho pokusů. Zkuste to později.' }, { status: 429 });
       }
       const passwordOk = await verifyPassword(password, user.passwordHash);
-      if (!passwordOk) return NextResponse.json({ error: 'Neplatné přihlašovací údaje.' }, { status: 401 });
+      if (!passwordOk) return accountJson({ error: 'Neplatné přihlašovací údaje.' }, { status: 401 });
       const logged = await markLogin(user);
       const session = await createAccountSession(logged);
-      const response = NextResponse.json({ ok: true, user: toPublicAccount(logged), csrf: session.csrf });
+      const response = accountJson({ ok: true, user: toPublicAccount(logged), csrf: session.csrf });
       setSessionCookies(response, session.token, session.csrf);
       return response;
     }
 
     if (action === 'forgot_password') {
       const login = typeof parsed.data.login === 'string' ? parsed.data.login.trim() : '';
-      if (!await rateLimit(`ratelimit:account-forgot:${ip}`, 8, 3600)) return NextResponse.json({ error: 'Příliš mnoho požadavků. Zkuste to později.' }, { status: 429 });
+      if (!await rateLimit(`ratelimit:account-forgot:${ip}`, 8, 3600)) return accountJson({ error: 'Příliš mnoho požadavků. Zkuste to později.' }, { status: 429 });
       const user = login ? await findAccount(login) : null;
       if (user && await rateLimit(`ratelimit:account-forgot-user:${user.id}`, 3, 3600)) {
         await sendReset(user).catch(() => false);
       }
-      return NextResponse.json({ ok: true, message: 'Pokud účet existuje, odeslali jsme odkaz pro nastavení nového hesla.' });
+      return accountJson({ ok: true, message: 'Pokud účet existuje, odeslali jsme odkaz pro nastavení nového hesla.' });
     }
 
     if (action === 'verify_email') {
       const token = typeof parsed.data.token === 'string' ? parsed.data.token.trim() : '';
       const user = await verifyAccountEmail(token);
-      if (!user) return NextResponse.json({ error: 'Ověřovací odkaz je neplatný nebo vypršel.' }, { status: 400 });
+      if (!user) return accountJson({ error: 'Ověřovací odkaz je neplatný nebo vypršel.' }, { status: 400 });
       const session = await createAccountSession(user);
-      const response = NextResponse.json({ ok: true, user: toPublicAccount(user), csrf: session.csrf });
+      const response = accountJson({ ok: true, user: toPublicAccount(user), csrf: session.csrf });
       setSessionCookies(response, session.token, session.csrf);
       return response;
     }
@@ -216,45 +226,45 @@ export async function POST(req: Request) {
       const token = typeof parsed.data.token === 'string' ? parsed.data.token.trim() : '';
       const password = typeof parsed.data.password === 'string' ? parsed.data.password : '';
       const passwordError = validatePassword(password);
-      if (passwordError) return NextResponse.json({ error: passwordError }, { status: 400 });
-      if (!await rateLimit(`ratelimit:account-reset:${ip}`, 10, 3600)) return NextResponse.json({ error: 'Příliš mnoho pokusů. Zkuste to později.' }, { status: 429 });
+      if (passwordError) return accountJson({ error: passwordError }, { status: 400 });
+      if (!await rateLimit(`ratelimit:account-reset:${ip}`, 10, 3600)) return accountJson({ error: 'Příliš mnoho pokusů. Zkuste to později.' }, { status: 429 });
       const user = await resetPasswordWithToken(token, password);
-      if (!user) return NextResponse.json({ error: 'Odkaz pro změnu hesla je neplatný nebo vypršel.' }, { status: 400 });
+      if (!user) return accountJson({ error: 'Odkaz pro změnu hesla je neplatný nebo vypršel.' }, { status: 400 });
       const session = await createAccountSession(user);
-      const response = NextResponse.json({ ok: true, user: toPublicAccount(user), csrf: session.csrf });
+      const response = accountJson({ ok: true, user: toPublicAccount(user), csrf: session.csrf });
       setSessionCookies(response, session.token, session.csrf);
       return response;
     }
 
     const current = await currentSession();
     if (!current) {
-      const response = NextResponse.json({ error: 'Nejste přihlášeni.' }, { status: 401 });
+      const response = accountJson({ error: 'Nejste přihlášeni.' }, { status: 401 });
       clearSessionCookies(response);
       return response;
     }
-    if (!csrfAllowed(req, current.resolved, current.csrf)) return NextResponse.json({ error: 'Bezpečnostní relace vypršela. Obnovte stránku a zkuste to znovu.' }, { status: 403 });
+    if (!csrfAllowed(req, current.resolved, current.csrf)) return accountJson({ error: 'Bezpečnostní relace vypršela. Obnovte stránku a zkuste to znovu.' }, { status: 403 });
     const user = current.resolved.user;
 
     if (action === 'logout') {
       const jar = await cookies();
       await revokeAccountSession(jar.get(accountSessionCookieName())?.value);
-      const response = NextResponse.json({ ok: true });
+      const response = accountJson({ ok: true });
       clearSessionCookies(response);
       return response;
     }
 
     if (action === 'logout_all') {
       await revokeAllAccountSessions(user.id);
-      const response = NextResponse.json({ ok: true });
+      const response = accountJson({ ok: true });
       clearSessionCookies(response);
       return response;
     }
 
     if (action === 'resend_verification') {
-      if (user.emailVerifiedAt) return NextResponse.json({ ok: true, alreadyVerified: true });
-      if (!await rateLimit(`ratelimit:account-verify:${user.id}`, 3, 3600)) return NextResponse.json({ error: 'Další ověřovací e-mail lze odeslat později.' }, { status: 429 });
+      if (user.emailVerifiedAt) return accountJson({ ok: true, alreadyVerified: true });
+      if (!await rateLimit(`ratelimit:account-verify:${user.id}`, 3, 3600)) return accountJson({ error: 'Další ověřovací e-mail lze odeslat později.' }, { status: 429 });
       const emailSent = await sendVerification(user).catch(() => false);
-      return NextResponse.json({ ok: true, emailSent });
+      return accountJson({ ok: true, emailSent });
     }
 
     if (action === 'profile') {
@@ -262,57 +272,57 @@ export async function POST(req: Request) {
       const displayName = typeof parsed.data.displayName === 'string' ? parsed.data.displayName : user.displayName;
       if (username.trim().toLowerCase() !== user.username.trim().toLowerCase()) {
         const currentPassword = typeof parsed.data.currentPassword === 'string' ? parsed.data.currentPassword : '';
-        if (!await verifyPassword(currentPassword, user.passwordHash)) return NextResponse.json({ error: 'Pro změnu uživatelského jména zadejte aktuální heslo.' }, { status: 403 });
+        if (!await verifyPassword(currentPassword, user.passwordHash)) return accountJson({ error: 'Pro změnu uživatelského jména zadejte aktuální heslo.' }, { status: 403 });
       }
       const updated = await updateAccountProfile(user, { username, displayName });
-      if (!updated.ok) return NextResponse.json({ error: updated.message, field: updated.field }, { status: 409 });
-      return NextResponse.json({ ok: true, user: toPublicAccount(updated.user) });
+      if (!updated.ok) return accountJson({ error: updated.message, field: updated.field }, { status: 409 });
+      return accountJson({ ok: true, user: toPublicAccount(updated.user) });
     }
 
     if (action === 'change_password') {
       const currentPassword = typeof parsed.data.currentPassword === 'string' ? parsed.data.currentPassword : '';
       const newPassword = typeof parsed.data.newPassword === 'string' ? parsed.data.newPassword : '';
-      if (!await verifyPassword(currentPassword, user.passwordHash)) return NextResponse.json({ error: 'Aktuální heslo není správné.' }, { status: 403 });
+      if (!await verifyPassword(currentPassword, user.passwordHash)) return accountJson({ error: 'Aktuální heslo není správné.' }, { status: 403 });
       const passwordError = validatePassword(newPassword);
-      if (passwordError) return NextResponse.json({ error: passwordError }, { status: 400 });
+      if (passwordError) return accountJson({ error: passwordError }, { status: 400 });
       const updated = await setAccountPassword(user, newPassword);
       await revokeAllAccountSessions(user.id);
       const session = await createAccountSession(updated);
-      const response = NextResponse.json({ ok: true, user: toPublicAccount(updated), csrf: session.csrf });
+      const response = accountJson({ ok: true, user: toPublicAccount(updated), csrf: session.csrf });
       setSessionCookies(response, session.token, session.csrf);
       return response;
     }
 
     if (action === 'delete_account') {
       const password = typeof parsed.data.password === 'string' ? parsed.data.password : '';
-      if (!await verifyPassword(password, user.passwordHash)) return NextResponse.json({ error: 'Heslo není správné.' }, { status: 403 });
+      if (!await verifyPassword(password, user.passwordHash)) return accountJson({ error: 'Heslo není správné.' }, { status: 403 });
       await deleteAccount(user);
-      const response = NextResponse.json({ ok: true });
+      const response = accountJson({ ok: true });
       clearSessionCookies(response);
       return response;
     }
 
     if (action === 'portal_link') {
-      if (!user.emailVerifiedAt) return NextResponse.json({ error: 'Nejprve ověřte e-mail účtu.' }, { status: 403 });
+      if (!user.emailVerifiedAt) return accountJson({ error: 'Nejprve ověřte e-mail účtu.' }, { status: 403 });
       const target = parsed.data.target;
       if (target === 'documents') {
         const ttl = await getActivePaidOrderTtl(user.email);
-        if (ttl <= 0) return NextResponse.json({ ok: true, available: false, fallback: '/zakaznicka-zona' });
+        if (ttl <= 0) return accountJson({ ok: true, available: false, fallback: '/zakaznicka-zona' });
         const token = await ensurePortalAccessToken(user.email, ttl);
-        return NextResponse.json({ ok: true, available: true, url: `/zakaznicka-zona#access=${encodeURIComponent(token)}` });
+        return accountJson({ ok: true, available: true, url: `/zakaznicka-zona#access=${encodeURIComponent(token)}` });
       }
       if (target === 'cases') {
         const cases = await listCasesForEmail(user.email, 1);
-        if (cases.length === 0) return NextResponse.json({ ok: true, available: false, fallback: '/moje-pripady' });
+        if (cases.length === 0) return accountJson({ ok: true, available: false, fallback: '/moje-pripady' });
         const token = await issueCaseHubAccessToken(user.email);
-        return NextResponse.json({ ok: true, available: true, url: `/moje-pripady#access=${encodeURIComponent(token)}` });
+        return accountJson({ ok: true, available: true, url: `/moje-pripady#access=${encodeURIComponent(token)}` });
       }
-      return NextResponse.json({ error: 'Neplatný cíl.' }, { status: 400 });
+      return accountJson({ error: 'Neplatný cíl.' }, { status: 400 });
     }
 
-    return NextResponse.json({ error: 'Neznámá akce.' }, { status: 400 });
+    return accountJson({ error: 'Neznámá akce.' }, { status: 400 });
   } catch (error) {
     console.error('[account] request failed', error instanceof Error ? error.name : 'unknown');
-    return NextResponse.json({ error: 'Požadavek se nepodařilo bezpečně dokončit. Zkuste to znovu.' }, { status: 503 });
+    return accountJson({ error: 'Požadavek se nepodařilo bezpečně dokončit. Zkuste to znovu.' }, { status: 503 });
   }
 }
