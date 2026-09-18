@@ -5,7 +5,7 @@ import { normalizePricingTier } from '@/lib/pricing';
 import { isFeatureEnabled } from '@/lib/feature-flags';
 import { renderEmailShell, sendTransactionalEmail } from '@/lib/email/transactional';
 import { issueCaseAccessToken, revokeCaseAccessTokens } from './access';
-import { revokeOwnerAccess } from './access-generation';
+import { revokeCaseHubAccessTokens } from './hub-access';
 import { buildCaseUrl, sendCaseAccessEmail } from './emails';
 import {
   buildCaseRecord,
@@ -216,7 +216,7 @@ export async function sendCaseLinksForEmail(email: string): Promise<{ cases: num
     url: buildCaseUrl(record.id, await issueCaseAccessToken(record.id, email), undefined, record.kind),
   })));
   const list = links.map(({ record, url }) => ({
-    label: record.title, url, description: getStageDefinition(record.kind, record.stage)?.label ?? 'Aktivní',
+    label: record.title, url, detail: getStageDefinition(record.kind, record.stage)?.label ?? 'Aktivní',
   }));
   const result = await sendTransactionalEmail({
     to: email,
@@ -225,7 +225,7 @@ export async function sendCaseLinksForEmail(email: string): Promise<{ cases: num
     html: renderEmailShell({
       heading: 'Vaše případy',
       intro: 'Návratové odkazy k vašim posledním případům:',
-      links: list,
+      linkItems: list,
       ctaLabel: 'Otevřít první případ',
       ctaUrl: links[0].url,
       footerNote: 'Odkazy jsou funkční přístupové klíče. Nikomu je nepřeposílejte.',
@@ -330,7 +330,7 @@ export async function applyCaseAction(record: CaseRecord, action: CaseAction): P
   }
 
   if (action.type === 'revoke_links') {
-    await revokeOwnerAccess(record.ownerEmail);
+    await revokeCaseHubAccessTokens(record.ownerEmail);
     await revokeCaseAccessTokens(record.id);
     const next = await save((fresh) => ({ ...fresh, events: [...fresh.events, newEvent('links_revoked', 'Všechny návratové odkazy zneplatněny')] }));
     return next ? { ok: true, record: next, eventType: 'links_revoked' } : gone;

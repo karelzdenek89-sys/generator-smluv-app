@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import { memoryRedis } from '@/lib/redis-memory';
-import { buildCaseRecord, commitCase, getCase, indexLegacyPendingDocuments, purgeExpiredPendingDocuments, saveCase, toPublicCase } from '@/lib/cases/store';
+import { buildCaseRecord, commitCase, getCase, indexLegacyPendingDocuments, listCaseIdsForEmail, purgeExpiredPendingDocuments, saveCase, toPublicCase } from '@/lib/cases/store';
 import { createCaseDocumentCheckout, type CaseCheckoutStripe } from '@/lib/cases/checkout';
-import { applyCaseAction, prepareCaseDocument } from '@/lib/cases/service';
+import { applyCaseAction, createCaseFromPaidOrder, prepareCaseDocument } from '@/lib/cases/service';
+import { stripe } from '@/lib/stripe';
 import type { CaseRecord } from '@/lib/cases/types';
 
 async function fixture() {
@@ -11,6 +12,58 @@ async function fixture() {
   const result = await prepareCaseDocument(record, 'change_order', { customerName: 'A', contractorName: 'B', number: '1', date: '2026-09-17', subject: 'scope', originalState: 'a', newState: 'b' });
   if (!result.ok) throw new Error(result.message);
   return result;
+}
+
+async function testConcurrentCaseCreation() {
+  memoryRedis.reset();
+  process.env.STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || 'sk_test_case_reliability';
+
+  const draftId = 'race-draft-20260918';
+  const draftKey = `contract:draft:${draftId}`;
+  const downloadToken = 'download-token-race';
+  await memoryRedis.set(draftKey, {
+    contractType: 'work_contract',
+    tier: 'basic',
+    packageKey: null,
+    downloadToken,
+    deliveryEmail: 'race@example.cz',
+    paid: true,
+    payload: {
+      partnerUserRole: 'customer',
+      workTitle: 'Současně založená zakázka',
+      startDate: '2026-09-18',
+      endDate: '2026-12-01',
+      priceAmount: '100000',
+      currency: 'Kč',
+      paymentType: 'after_completion',
+    },
+  }, { ex: 3600 });
+
+  const sessions = stripe.checkout.sessions as unknown as {
+    retrieve: (id: string) => Promise<unknown>;
+  };
+  const originalRetrieve = sessions.retrieve;
+  sessions.retrieve = async (id: string) => ({
+    id,
+    payment_status: 'paid',
+    client_reference_id: draftId,
+    metadata: { draftId, contractType: 'work_contract', tier: 'basic' },
+    customer_details: { email: 'race@example.cz' },
+  });
+
+  try {
+    const results = await Promise.all(
+      Array.from({ length: 20 }, () => createCaseFromPaidOrder({ sessionId: 'cs_test_race_123456789', token: downloadToken })),
+    );
+    assert.ok(results.every((result) => result.ok), 'all concurrent callers should resolve successfully');
+    const successes = results.filter((result) => result.ok);
+    assert.equal(new Set(successes.map((result) => result.record.id)).size, 1, 'all concurrent callers must receive the same case');
+    assert.equal(successes.filter((result) => result.created).length, 1, 'exactly one concurrent caller creates the case');
+    assert.equal((await listCaseIdsForEmail('race@example.cz')).length, 1, 'owner index contains exactly one case');
+    assert.equal(memoryRedis.keys('case:create-lock:*').length, 0, 'creation lock is released after success');
+  } finally {
+    sessions.retrieve = originalRetrieve;
+  }
 }
 
 export async function testCaseReliability() {
@@ -103,5 +156,6 @@ export async function testCaseReliability() {
     assert.ok(await memoryRedis.ttl(`case:${before.id}`) <= ttl);
     assert.ok(await memoryRedis.ttl(`case:rev:${before.id}`) <= ttl, 'revision and record expire together');
   } finally { Date.now = originalNow; }
-  console.log('Case reliability regressions passed: interleaved payment, Stripe failures, lost response recovery, legacy snapshot and purge.');
+  await testConcurrentCaseCreation();
+  console.log('Case reliability regressions passed: interleaved payment, Stripe failures, lost response recovery, legacy snapshot/purge and concurrent case creation.');
 }

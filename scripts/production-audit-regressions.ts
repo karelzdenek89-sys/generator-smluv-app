@@ -34,13 +34,13 @@ async function accessAndReminders() {
   assert.equal(await resolveCaseHubAccess(hubToken), null);
   // A hub request authenticated before revocation may finish afterwards. Its
   // minted credentials must stay bound to the revoked generation.
-  const stalePayload = await buildCaseHubPayload(email, priorAccess.generation!);
-  assert.equal(await resolveCaseAccess(record.id, stalePayload[0].token), null);
+  const stalePayload = await buildCaseHubPayload(email, 0, 50, priorAccess.generation!);
+  assert.equal(await resolveCaseAccess(record.id, stalePayload.cases[0].token), null);
   assert.ok(await resolveCaseAccess(other.id, otherToken), 'another owner is unaffected');
   const freshAccess = await resolveCaseHubAccess(await issueCaseHubAccessToken(email));
   assert.ok(freshAccess);
-  const recovered = await buildCaseHubPayload(email, freshAccess.generation!);
-  assert.ok(await resolveCaseAccess(record.id, recovered[0].token), 'fresh recovery works');
+  const recovered = await buildCaseHubPayload(email, 0, 50, freshAccess.generation!);
+  assert.ok(await resolveCaseAccess(record.id, recovered.cases[0].token), 'fresh recovery works');
   const enabled = await applyCaseAction((await getCase(record.id))!, { type: 'set_reminders', enabled: true });
   assert.ok(enabled.ok && enabled.record);
   assert.ok((await listDueReminders(Date.parse('2099-10-01'))).length);
@@ -157,8 +157,8 @@ async function documentsAndEmail() {
   let html = '';
   globalThis.fetch = async (_url, init) => { html = JSON.parse(String(init?.body)).html; return new Response('{"id":"fake-only"}', { status: 200 }); };
   assert.ok((await sendCaseLinksForEmail(email)).emailSent);
-  assert.ok(html.includes('<ul') && !html.includes('&lt;ul'));
-  assert.equal((html.match(/<li style=/g) ?? []).length, 2);
+  assert.ok(!html.includes('&lt;a href='));
+  assert.equal((html.match(/<strong style=/g) ?? []).length, 2);
   assert.ok(html.includes('Audit &lt;script&gt; &amp; test') && !html.includes('<script>'));
   console.log('PASS: full 4000-character Czech PDF field, multi-page margins, 95 body lines, clickable escaped email links');
 }

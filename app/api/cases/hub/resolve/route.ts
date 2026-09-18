@@ -24,7 +24,7 @@ export async function POST(req: Request) {
   const access = await resolveCaseHubAccess(token);
   if (!access) return NextResponse.json({ error: 'Odkaz je neplatný nebo vypršel.' }, { status: 403 });
   const offset = typeof json.data.offset === 'number' && Number.isSafeInteger(json.data.offset) && json.data.offset >= 0 ? json.data.offset : 0;
-  const page = await buildCaseHubPayload(access.email, access.generation ?? 'legacy', offset);
+  const page = await buildCaseHubPayload(access.email, offset, 50, access.generation ?? 'legacy');
   if (!await resolveCaseHubAccess(token)) return NextResponse.json({ error: 'Odkaz byl zneplatněn.' }, { status: 403 });
-  return NextResponse.json({ cases: page.slice(0, 50), nextOffset: page.length > 50 ? offset + 50 : null }, { headers: { 'Cache-Control': 'no-store, private' } });
+  return NextResponse.json({ ...page, nextOffset: page.hasMore ? page.nextOffset : null }, { headers: { 'Cache-Control': 'no-store, private' } });
 }

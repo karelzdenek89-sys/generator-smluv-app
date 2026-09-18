@@ -136,7 +136,8 @@ export async function processLegislationWatches(limit = 500): Promise<{ checked:
   if (!isLegislationWatchOperational()) return summary;
   const cursorKey = 'legal:watch:cursor';
   const all = ((await redis.smembers(INDEX_KEY)) as string[]).sort();
-  const cursor = await redis.get<string>(cursorKey);
+  const savedCursor = await redis.get<string | number>(cursorKey);
+  const cursor = typeof savedCursor === 'string' ? savedCursor : null;
   const after = cursor ? all.findIndex((id) => id > cursor) : 0;
   const start = after < 0 ? 0 : after;
   const ids = all.slice(start, start + Math.max(1, Math.min(limit, 1000)));

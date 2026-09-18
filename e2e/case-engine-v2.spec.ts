@@ -53,7 +53,7 @@ test('case hub loads subsequent pages and keeps loaded cases after transient err
   await page.goto(`/moje-pripady#access=${token}`);
   await expect(page.locator('article')).toHaveCount(50);
   await page.getByRole('button', { name: 'Načíst další případy' }).click();
-  await expect(page.getByRole('alert')).toContainText('Dočasná chyba');
+  await expect(page.locator('main').getByRole('alert')).toContainText('Dočasná chyba');
   await expect(page.locator('article')).toHaveCount(50);
   await page.getByRole('button', { name: 'Načíst další případy' }).click();
   await expect(page.locator('article')).toHaveCount(51);
