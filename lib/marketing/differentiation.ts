@@ -16,23 +16,23 @@ export type ComparisonColumn = {
 export const DIFFERENTIATION_PILLARS: readonly DifferentiationPillar[] = [
   {
     icon: '§',
-    title: 'Paragraf u klauzule',
-    desc: 'U důležitých ustanovení v PDF uvidíte, na který § OZ nebo zákoníku práce text navazuje. Ne jen obecnou formulaci bez kontextu.',
+    title: 'Právní opora u důležitých ustanovení',
+    desc: 'U vybraných klauzulí v PDF uvádíme, na které ustanovení občanského zákoníku nebo zákoníku práce navazují.',
   },
   {
     icon: '⚠',
-    title: 'Upozornění ve formuláři',
-    desc: 'Při vyplňování vás systém upozorní na volby, které bývají sporné — vysoká pokuta, chybějící souhlas pronajímatele, neobvyklá sazba. Nejde o posouzení vaší konkrétní věci.',
+    title: 'Kontrola při vyplňování',
+    desc: 'U některých voleb upozorníme, že jsou neobvyklé, mohou zvýšit riziko sporu nebo vyžadují souhlas druhé strany.',
   },
   {
     icon: '✓',
-    title: 'Klauzule, na které se zapomíná',
-    desc: 'Kauce u nájmu, záruky u díla, sankce mezi podnikateli. V rozšířené variantě dokumentu — ne až jako placený doplněk jinde.',
+    title: 'Širší varianta, když ji potřebujete',
+    desc: 'Rozšířená varianta přidává podle typu dokumentu další ustanovení a praktické podklady pro citlivější situace.',
   },
   {
     icon: '→',
-    title: 'Nejdřív formulář, pak stažení',
-    desc: 'Projdete celý formulář, zkontrolujete náhled a teprve pak rozhodnete, jestli PDF stáhnete. Víte předem, co v souboru bude.',
+    title: 'Náhled před objednávkou',
+    desc: 'Před platbou vidíte vznikající dokument, zvolenou variantu i její cenu. Údaje můžete ještě upravit.',
   },
 ];
 
@@ -63,22 +63,22 @@ export const DIFFERENTIATION_COMPARISON: {
   ours: ComparisonColumn;
 } = {
   generic: {
-    label: 'Obecný vzor z internetu',
+    label: 'Statický vzor',
     lines: [
-      'Prázdná šablona bez vašich údajů',
-      'Text bez odkazu na zákon',
-      'Žádná nápověda při vyplnění',
-      'Obvykle jen jeden typ smlouvy',
+      'Údaje doplňujete ručně',
+      'Bez průběžného náhledu',
+      'Bez kontroly voleb ve formuláři',
+      'Jeden soubor bez navazujících kroků',
     ],
   },
   ours: {
     label: 'SmlouvaHned',
     positive: true,
     lines: [
-      'PDF sestavené z vašeho formuláře',
-      'Citace § OZ a ZP u klauzulí',
-      'Upozornění u rizikových voleb',
-      '14 typů + nápověda EN/UA k českému PDF',
+      'Dokument sestavený z vašeho formuláře',
+      'Právní opora u vybraných klauzulí',
+      'Upozornění u některých voleb',
+      'Náhled, cena a další kroky na jednom místě',
     ],
   },
 };
