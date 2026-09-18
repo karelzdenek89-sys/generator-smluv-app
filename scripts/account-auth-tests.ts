@@ -73,6 +73,10 @@ async function main() {
   assert.equal(await resolveAccountSession(session.token), null, 'password reset revokes previous sessions');
   assert.equal(await resetPasswordWithToken(resetToken, 'treti-heslo-2026'), null, 'reset token is one-time');
 
+  for (let i = 0; i < 25; i += 1) await createAccountSession(reset!);
+  const activeSessionHashes = await memoryRedis.smembers(`account:sessions:${reset!.id}`);
+  assert.ok(activeSessionHashes.length <= 20, 'active sessions are bounded');
+
   await deleteAccount(reset!);
   assert.equal(await getAccountById(reset!.id), null, 'account deletion removes profile');
   assert.equal(await findAccount('karel.novy'), null, 'account deletion removes username index');
@@ -115,6 +119,7 @@ async function main() {
   assert.match(setCookie, /sh_session=/, 'session cookie issued');
   assert.match(setCookie, /HttpOnly/i, 'session cookie is HttpOnly');
   assert.match(setCookie, /SameSite=Lax/i, 'session cookie has SameSite protection');
+  assert.match(registerResponse.headers.get('cache-control') ?? '', /no-store/i, 'auth responses are not cached');
   assert.match(setCookie, /sh_csrf=/, 'CSRF cookie issued');
 
   const wrongLogin = await POST(makeRequest({
