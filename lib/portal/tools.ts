@@ -563,7 +563,7 @@ export const PORTAL_TOOLS: readonly PortalTool[] = [
         title: 'OSVČ a podnikatel',
         items: [
           { key: 'osvc', label: 'Zálohy na pojistné od července 2026 odpovídají novému minimu (35 % průměrné mzdy).', link: { href: '/zmeny-2027/osvc-a-podnikatele#osvc-minimalni-zalohy-35-procent', label: 'Zálohy OSVČ' } },
-          { key: 'pausal', label: 'Do 10. 1. 2027 rozhodnu o vstupu do paušálního režimu nebo změně pásma.', link: { href: '/zmeny-2027/osvc-a-podnikatele#pausalni-dan-2027', label: 'Paušální daň' } },
+          { key: 'pausal', label: 'Do 11. 1. 2027 rozhodnu o vstupu do paušálního režimu nebo změně pásma.', link: { href: '/zmeny-2027/osvc-a-podnikatele#pausalni-dan-2027', label: 'Paušální daň' } },
           { key: 'accounting', label: 'Sleduji projednávání nového zákona o účetnictví (zatím beze změny povinností).', link: { href: '/zmeny-2027/osvc-a-podnikatele#novy-zakon-o-ucetnictvi', label: 'Zákon o účetnictví' } },
         ],
       },

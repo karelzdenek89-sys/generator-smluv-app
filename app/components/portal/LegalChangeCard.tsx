@@ -24,45 +24,9 @@ export function LegalStatusBadge({ status }: { status: LegalChangeStatus }) {
   );
 }
 
-/**
- * Two corrections verified 17. 9. 2026 against Finanční správa / ČSSZ.
- * Kept at the display boundary so the underlying manually reviewed radar data
- * remains immutable during this product release; the next legal-content review
- * can fold them back into the canonical dataset in one dedicated change.
- */
-function legalDisplay(change: LegalChange): LegalChange {
-  if (change.key === 'pausalni-dan-2027') {
-    return {
-      ...change,
-      dateLabel: 'Pro rok 2026 platí; obecná lhůta je 10. den období, v roce 2027 připadá 10. 1. na neděli → nejpozději 11. 1. 2027',
-      whatChanges: change.whatChanges.map((item) =>
-        item.includes('do 10. ledna 2027')
-          ? 'Obecná zákonná lhůta pro vstup do paušálního režimu nebo změnu pásma je do 10. dne rozhodného zdaňovacího období. Protože 10. 1. 2027 připadá na neděli, posledním dnem lhůty je nejbližší následující pracovní den, pondělí 11. 1. 2027 (§ 33 odst. 4 daňového řádu).'
-          : item,
-      ),
-    };
-  }
-  if (change.key === 'osvc-minimalni-zalohy-35-procent') {
-    return {
-      ...change,
-      whatChanges: change.whatChanges.map((item) =>
-        item.startsWith('Změna se neuplatní zpětně')
-          ? 'Snížení minima od července mění měsíční předpis záloh do budoucna. Zaplacené zálohy se následně zohledňují při ročním Přehledu o příjmech a výdajích; případný doplatek nebo přeplatek závisí na skutečném ročním vyměřovacím základu a evidovaných platbách.'
-          : item,
-      ),
-      whatToDo: change.whatToDo.map((item) =>
-        item.startsWith('Pokud jste platili 5 720 Kč')
-          ? 'Pokud jste po změně platili vyšší částku, nejdříve zkontrolujte předpis a evidované platby v ePortálu ČSSZ. Konečné roční vypořádání vychází z podaného Přehledu o příjmech a výdajích OSVČ; samotné snížení minimální zálohy proto automaticky neznamená stejnou částku vratitelného přeplatku.'
-          : item,
-      ),
-    };
-  }
-  return change;
-}
-
 export default function LegalChangeCard({ change, compact = false }: { change: LegalChange; compact?: boolean }) {
   const watchEnabled = isFeatureEnabled('legislationWatch');
-  const display = legalDisplay(change);
+  const display = change;
   return (
     <article id={display.key} className="site-content-card scroll-mt-24 rounded-2xl p-6" aria-labelledby={`${display.key}-title`}>
       <div className="flex flex-wrap items-center gap-3">

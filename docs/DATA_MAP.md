@@ -77,3 +77,10 @@ Serverové logy obsahují typ chyby, název routy, status a anonymní identifik�
 - Admin: `/interni/analytics` chráněno `INTERNAL_REPORTING_SECRET` (HMAC cookie);
   zobrazuje pouze agregace a stavy, žádné kontakty.
 - Cron: `CRON_SECRET` (Bearer), fail-closed.
+
+### Opravy přístupu a souběhu (2026-09-18)
+
+- `case:order:{draftId}`: pouze UUID případu, nejvýše 365 dní. Vzniká atomicky s případem, aby souběžné otevření zaplacené objednávky nevytvořilo duplicity. Původní draft a jeho doručovací stav se nepřepisují. Starší `draft.caseId` zůstává podporován.
+- `case:access-generation:{sha256(email)}`: náhodná revokační generace, TTL 400 dní, obnovená při vydání nového přístupu. Zneplatnění odkazů mění generaci všech případových i přehledových odkazů vlastníka. Tokeny nadále platí maximálně 30 dní; generace proto přežije všechny tokeny, které zneplatnila. Samotné nasazení neruší existující odkazy. Smazání jednoho případu nemění přístup k ostatním případům.
+- `legal:watch:cursor`: poslední zpracované ID odběru, TTL 730 dní. Dávky postupně procházejí celý index, včetně odběrů za prvních 500 položek. Neobsahuje e-mail ani text oznámení.
+- Uzavřením případu se vypínají neodeslané připomínky. Cron také přeskočí starší uzavřené případy, které ještě mají naplánované položky.

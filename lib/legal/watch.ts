@@ -7,7 +7,6 @@ import { SITE_URL } from '@/lib/seo/site';
 
 const WATCH_TTL_SECONDS = 60 * 60 * 24 * 730;
 const INDEX_KEY = 'legal:watch:index';
-const CURSOR_KEY = 'legal:watch:cursor';
 
 export type LegislationWatch = {
   id: string;
@@ -135,20 +134,13 @@ export async function manageLegislationWatch(id: string, token: string, action: 
 export async function processLegislationWatches(limit = 500): Promise<{ checked: number; changed: number; sent: number; failed: number }> {
   const summary = { checked: 0, changed: 0, sent: 0, failed: 0 };
   if (!isLegislationWatchOperational()) return summary;
-
-  const allIds = ((await redis.smembers(INDEX_KEY)) as string[]).sort();
-  if (!allIds.length) {
-    await redis.del(CURSOR_KEY);
-    return summary;
-  }
-
-  const batchSize = Math.max(1, Math.min(limit, 1000));
-  let offset = Number(await redis.get<string | number>(CURSOR_KEY) ?? 0);
-  if (!Number.isInteger(offset) || offset < 0 || offset >= allIds.length) offset = 0;
-
-  const ids = allIds.slice(offset, offset + batchSize);
-  const nextOffset = offset + ids.length >= allIds.length ? 0 : offset + ids.length;
-
+  const cursorKey = 'legal:watch:cursor';
+  const all = ((await redis.smembers(INDEX_KEY)) as string[]).sort();
+  const savedCursor = await redis.get<string | number>(cursorKey);
+  const cursor = typeof savedCursor === 'string' ? savedCursor : null;
+  const after = cursor ? all.findIndex((id) => id > cursor) : 0;
+  const start = after < 0 ? 0 : after;
+  const ids = all.slice(start, start + Math.max(1, Math.min(limit, 1000)));
   for (const id of ids) {
     const watch = await redis.get<LegislationWatch>(watchKey(id));
     if (!watch) {
@@ -186,10 +178,6 @@ export async function processLegislationWatches(limit = 500): Promise<{ checked:
       lastNotifiedAt: new Date().toISOString(),
     } satisfies LegislationWatch, { ex: WATCH_TTL_SECONDS });
   }
-
-  // Move the cursor only after the selected batch has been processed. If Redis
-  // or the provider fails catastrophically and throws, the batch is retried
-  // rather than silently skipped on the next cron run.
-  await redis.set(CURSOR_KEY, nextOffset, { ex: WATCH_TTL_SECONDS });
+  if (ids.length) await redis.set(cursorKey, ids[ids.length - 1], { ex: WATCH_TTL_SECONDS });
   return summary;
 }

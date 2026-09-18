@@ -198,6 +198,21 @@ export class MemoryRedis {
   }
 
   async eval(script: string, keys: string[], args: string[]): Promise<unknown> {
+    if (script.includes('-- create-order-case-v1')) {
+      // No await within this transaction: match Redis Lua atomicity.
+      const draft = this.live(keys[0])?.value as { downloadToken?: string; caseId?: string } | undefined;
+      if (!draft) return ['not_found', ''];
+      if (draft.downloadToken !== args[0]) return ['forbidden', ''];
+      const existing = this.live(keys[1])?.value ?? draft.caseId;
+      if (typeof existing === 'string' && this.live(`case:${existing}`)) return ['existing', existing];
+      const ttl = Number(args[3]);
+      this.write(keys[2], JSON.parse(args[1]), ttl);
+      this.write(keys[3], '1', ttl);
+      const owner = this.live(keys[4])?.value;
+      this.write(keys[4], [...new Set([...(Array.isArray(owner) ? owner : []), args[2]])], ttl);
+      this.write(keys[1], args[2], ttl);
+      return ['created', args[2]];
+    }
     if (script.includes("redis.call('INCR'")) {
       const count = await this.incr(keys[0]);
       if (count === 1) await this.expire(keys[0], Number(args[0]));

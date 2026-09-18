@@ -24,7 +24,7 @@ export const LEGAL_CHANGE_STATUS_LABELS: Record<LegalChangeStatus, string> = {
 
 export const LEGAL_CHANGE_STATUS_DESCRIPTIONS: Record<LegalChangeStatus, string> = {
   in_force: 'Předpis je účinný. Uvedená pravidla dnes platí.',
-  approved_pending: 'Změna byla schválena nebo oficiálně potvrzena; účinnost teprve nastane.',
+  approved_pending: 'Změna byla schválena, účinnost teprve nastane. Stav vyhlášení a podrobnosti uvádí konkrétní položka.',
   in_progress: 'Návrh je v legislativním procesu. Obsah i termíny se mohou změnit.',
   proposal: 'Zatím jen záměr nebo návrh. Nejde o platné právo.',
 };
@@ -165,37 +165,36 @@ export type LegalChange = {
   escalation?: string;
 };
 
-const VERIFIED = '2026-09-18';
+const VERIFIED = '2026-09-17';
 
 export const LEGAL_CHANGES: readonly LegalChange[] = [
   {
     key: 'minimalni-mzda-2027',
-    title: 'Minimální mzda 2027: 24 900 Kč měsíčně',
+    title: 'Minimální mzda 2027: vláda schválila 24 900 Kč měsíčně',
     audiences: ['employers', 'self_employed'],
     status: 'approved_pending',
     effectiveFrom: '2027-01-01',
-    dateLabel: 'Od 1. 1. 2027; MPSV zveřejnilo částku 7. 9. 2026',
+    dateLabel: 'Schváleno vládou 7. 9. 2026 pro období od 1. 1. 2027',
     summary:
-      'MPSV 7. 9. 2026 zveřejnilo, že vláda schválila zvýšení minimální mzdy od 1. 1. 2027 na 24 900 Kč měsíčně. Při stanovené týdenní pracovní době 40 hodin odpovídá hodinová sazba 148,30 Kč.',
+      'MPSV oznámilo pro rok 2027 minimální mzdu 24 900 Kč měsíčně a 148,30 Kč za hodinu při stanovené týdenní pracovní době 40 hodin. Nejde již o neznámou částku; v roce 2026 nadále platí 22 400 Kč měsíčně.',
     whatChanges: [
-      'Minimální mzda se určuje valorizačním mechanismem podle § 111 zákoníku práce: predikce průměrné mzdy × koeficient stanovený vládou.',
-      'Pro rok 2027 vláda schválila koeficient 0,446; výsledná minimální mzda činí 24 900 Kč měsíčně a 148,30 Kč za hodinu při 40hodinové týdenní pracovní době.',
-      'Pro rok 2028 vláda schválila koeficient 0,458; konkrétní částka pro rok 2028 se určí z příslušné predikce průměrné mzdy.',
+      'Vláda schválila koeficient 0,446 pro rok 2027 a 0,458 pro rok 2028.',
+      'Částku pro rok 2027 uvádí oficiální oznámení MPSV ze 7. 9. 2026. Tato položka nepotvrzuje číslo ani vyhlášení navazujícího sdělení ve Sbírce; finální znění ověřte v oficiálním zdroji.',
     ],
     whatToDo: [
-      'U pracovních smluv a DPP s hodinovou odměnou zkontrolujte, že od 1. 1. 2027 sazba neklesne pod odpovídající hodinovou minimální mzdu.',
-      'Promítněte částku 24 900 Kč do mzdových nastavení a rozpočtů pro rok 2027; u jiného rozsahu týdenní pracovní doby pracujte s příslušně přepočtenou hodinovou sazbou.',
-      'Zaručená mzda podle skupin prací v podnikatelské sféře od 1. 1. 2025 neplatí (novela č. 230/2024 Sb.); zaměstnavatelé odměňující platem sledují nejnižší úrovně zaručeného platu.',
+      'Připravte přepočet mzdových nákladů na rok 2027 a zkontrolujte odměny v pracovních smlouvách i dohodách.',
+      'Před použitím nových sazeb ověřte sdělení MPSV pro rok 2027; sazby pro rok 2026 se tímto oznámením nemění.',
     ],
     affectedDocuments: [
       { contractType: 'employment', href: '/pracovni', label: 'Pracovní smlouva' },
       { contractType: 'dpp', href: '/dpp', label: 'Dohoda o provedení práce' },
     ],
     sources: [
-      { label: 'MPSV — Minimální mzda v roce 2027 vzroste na 24 900 korun (7. 9. 2026)', href: 'https://mpsv.gov.cz/minimalni-mzda-v-roce-2027-vzroste-na-24-900-korun', publisher: 'MPSV' },
+      { label: 'MPSV — oznámení minimální mzdy 2027 (7. 9. 2026)', href: 'https://mpsv.gov.cz/minimalni-mzda-v-roce-2027-vzroste-na-24-900-korun', publisher: 'MPSV' },
+      { label: 'MPSV — Minimální mzda a vyhlášené předpisy', href: 'https://mpsv.gov.cz/minimalni-mzda', publisher: 'MPSV' },
       { label: 'Zákoník práce, § 111 (e-Sbírka)', href: 'https://www.e-sbirka.cz/sb/2006/262', publisher: 'e-Sbírka' },
     ],
-    verifiedAt: VERIFIED,
+    verifiedAt: '2026-09-18',
   },
   {
     key: 'jmhz-jednotne-mesicni-hlaseni',
@@ -293,12 +292,12 @@ export const LEGAL_CHANGES: readonly LegalChange[] = [
       'Novela zákona č. 589/1992 Sb. snižuje minimální měsíční vyměřovací základ OSVČ s hlavní činností ze 40 % na 35 % průměrné mzdy. Minimální záloha na důchodové pojištění klesá z 5 720 Kč na 5 005 Kč.',
     whatChanges: [
       'Minimální záloha na pojistné pro hlavní činnost: do června 2026 5 720 Kč, od července 2026 5 005 Kč.',
-      'Změna se neuplatní zpětně; OSVČ, které v lednu až červnu platily minimum, mohou do konce roku 2026 požádat o vrácení části záloh.',
+      'Snížení minima od července mění měsíční předpis záloh do budoucna. Zaplacené zálohy se následně zohledňují při ročním Přehledu o příjmech a výdajích; případný doplatek nebo přeplatek závisí na skutečném ročním vyměřovacím základu a evidovaných platbách.',
       'Vedlejší činnost má vlastní (nižší) minimum.',
     ],
     whatToDo: [
       'Zkontrolujte předpis záloh od července 2026 v ePortálu ČSSZ.',
-      'Pokud jste platili 5 720 Kč a máte nárok na nižší minimum, podejte žádost o vrácení přeplatku.',
+      'Pokud jste po změně platili vyšší částku, nejdříve zkontrolujte předpis a evidované platby v ePortálu ČSSZ. Konečné roční vypořádání vychází z podaného Přehledu o příjmech a výdajích OSVČ; samotné snížení minimální zálohy proto automaticky neznamená stejnou částku vratitelného přeplatku.',
     ],
     affectedDocuments: [
       { contractType: 'work_contract', href: '/smlouva-o-dilo', label: 'Smlouva o dílo (OSVČ jako zhotovitel)' },
@@ -316,12 +315,12 @@ export const LEGAL_CHANGES: readonly LegalChange[] = [
     audiences: ['self_employed'],
     status: 'in_force',
     effectiveFrom: '2026-01-01',
-    dateLabel: 'Pro rok 2026 platí; přihlášení nebo změna pásma pro 2027 do 10. 1. 2027',
+    dateLabel: 'Vstup nebo změna pásma pro rok 2027: nejpozději 11. 1. 2027 (10. 1. je neděle)',
     summary:
       'Paušální režim zůstává třípásmový. Záloha v prvním pásmu se odvozuje od minimálního pojistného a zdravotního pojištění, proto se mění každý rok. Konkrétní částka pro rok 2027 bude známa po vyhlášení průměrné mzdy pro rok 2027.',
     whatChanges: [
       'Pro rok 2026 se změnila výše zálohy v prvním pásmu; druhé a třetí pásmo zůstaly.',
-      'Vstup do režimu nebo změna pásma pro rok 2027 se oznamuje do 10. ledna 2027.',
+      'Obecná zákonná lhůta pro vstup do paušálního režimu nebo změnu pásma je do 10. dne rozhodného zdaňovacího období. Protože 10. 1. 2027 připadá na neděli, posledním dnem lhůty je nejbližší následující pracovní den, pondělí 11. 1. 2027 (§ 33 odst. 4 daňového řádu).',
     ],
     whatToDo: [
       'Před koncem roku 2026 zkontrolujte, zda vám paušální režim a zvolené pásmo stále vyhovují (příjmy, DPH, zaměstnání).',

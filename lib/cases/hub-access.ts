@@ -3,6 +3,7 @@ import { redis } from '@/lib/redis';
 import { renderEmailShell, sendTransactionalEmail, type TransactionalEmailResult } from '@/lib/email/transactional';
 import { SITE_URL } from '@/lib/seo/site';
 import { issueCaseAccessToken } from './access';
+import { getAccessGeneration, issueAccessGeneration, revokeOwnerAccess } from './access-generation';
 import { casePagePath } from './emails';
 import { hashOwnerEmail, listCasesForEmail } from './store';
 import { getStageDefinition } from './workflow';
@@ -16,6 +17,7 @@ type HubAccessRecord = {
   issuedAt: string;
   /** Owner-scoped revocation generation. Legacy records have epoch 0. */
   epoch?: number;
+  generation?: string;
 };
 
 function hashToken(token: string): string {
@@ -52,8 +54,10 @@ export async function issueCaseHubAccessToken(email: string): Promise<string> {
   const token = randomBytes(32).toString('hex');
   const hashed = hashToken(token);
   const epoch = await currentOwnerHubEpoch(normalized);
+  const generation = await issueAccessGeneration(normalized);
+  await redis.expire(ownerHubEpochKey(normalized), 60 * 60 * 24 * 400);
   await Promise.all([
-    redis.set(`case:hub-access:${hashed}`, { email: normalized, issuedAt: new Date().toISOString(), epoch } satisfies HubAccessRecord, { ex: HUB_TTL_SECONDS }),
+    redis.set(`case:hub-access:${hashed}`, { email: normalized, issuedAt: new Date().toISOString(), epoch, generation } satisfies HubAccessRecord, { ex: HUB_TTL_SECONDS }),
     redis.sadd(ownerHubTokensKey(normalized), hashed),
   ]);
   await redis.expire(ownerHubTokensKey(normalized), HUB_TTL_SECONDS);
@@ -66,7 +70,7 @@ export async function issueCaseHubAccessToken(email: string): Promise<string> {
  * Autoritativní je owner-scoped epoch: staré tokeny (včetně tokenů vydaných
  * před zavedením reverzního indexu) mají epoch 0 a po prvním revoke přestanou
  * platit. Reverzní index pouze fyzicky uklidí novější tokeny; bezpečnost na něm
- * nezávisí. Epoch má stejnou TTL jako hub tokeny, takže může zaniknout až ve
+ * nezávisí. Epoch má delší TTL než hub tokeny a při vydání se obnovuje, takže zanikne až ve
  * chvíli, kdy už žádný dříve vydaný hub token nemůže být platný.
  */
 export async function revokeCaseHubAccessTokens(email: string): Promise<number> {
@@ -75,8 +79,9 @@ export async function revokeCaseHubAccessTokens(email: string): Promise<number> 
   const epochKey = ownerHubEpochKey(normalized);
   const indexed = (await redis.smembers(indexKey)) as string[];
 
+  await revokeOwnerAccess(normalized);
   await redis.incr(epochKey);
-  await redis.expire(epochKey, HUB_TTL_SECONDS);
+  await redis.expire(epochKey, 60 * 60 * 24 * 400);
 
   let revoked = 0;
   for (const hash of indexed ?? []) revoked += await redis.del(`case:hub-access:${hash}`);
@@ -91,7 +96,8 @@ export async function resolveCaseHubAccess(token: string): Promise<HubAccessReco
   const currentEpoch = await currentOwnerHubEpoch(record.email);
   const tokenEpoch = Number.isInteger(record.epoch) && (record.epoch as number) >= 0 ? (record.epoch as number) : 0;
   if (tokenEpoch !== currentEpoch) return null;
-  return record;
+  if ((record.generation ?? 'legacy') !== await getAccessGeneration(record.email)) return null;
+  return { ...record, generation: record.generation ?? 'legacy' };
 }
 
 export async function sendCaseHubAccessEmail(email: string): Promise<{ cases: number; result: TransactionalEmailResult | null }> {
@@ -104,7 +110,7 @@ export async function sendCaseHubAccessEmail(email: string): Promise<{ cases: nu
     idempotencyKey: `case-hub-${hashToken(token).slice(0, 24)}`,
     html: renderEmailShell({
       heading: 'Vaše případy na jednom místě',
-      intro: `Máte ${records.length} ${records.length === 1 ? 'uložený případ' : records.length < 5 ? 'uložené případy' : 'uložených případů'}. Bezpečným odkazem otevřete přehled aktivních situací, termínů a dalších kroků.`,
+      intro: 'Bezpečným odkazem otevřete přehled uložených případů, termínů a dalších kroků.',
       ctaLabel: 'Otevřít Moje případy',
       ctaUrl: buildCaseHubUrl(token),
       secondary: 'Odkaz je platný 30 dní. Nikomu jej nepřeposílejte — funguje jako přístupový klíč k přehledu vašich případů.',
@@ -115,14 +121,15 @@ export async function sendCaseHubAccessEmail(email: string): Promise<{ cases: nu
   return { cases: records.length, result };
 }
 
-export async function buildCaseHubPayload(email: string, offset = 0, limit = 50) {
+export async function buildCaseHubPayload(email: string, offset = 0, limit = 50, generation?: string) {
+  const boundGeneration = generation ?? await issueAccessGeneration(email);
   const safeLimit = Math.max(1, Math.min(limit, 50));
   const safeOffset = Math.max(0, Math.floor(offset));
   const records = await listCasesForEmail(email, safeLimit + 1, safeOffset);
   const hasMore = records.length > safeLimit;
   const page = records.slice(0, safeLimit);
   const cases = await Promise.all(page.map(async (record) => {
-    const token = await issueCaseAccessToken(record.id, email);
+    const token = await issueCaseAccessToken(record.id, email, undefined, boundGeneration);
     const stage = getStageDefinition(record.kind, record.stage);
     const nextTask = record.tasks.find((task) => !task.done);
     return {

@@ -177,7 +177,7 @@ async function testLegislationWatchPagination() {
   const second = await processLegislationWatches(500);
   eq(first.checked, 500, 'legal watch processes the first configured batch');
   eq(second.checked, 100, 'legal watch cursor reaches subscribers after the first 500 instead of repeating the same prefix');
-  eq(await memoryRedis.get('legal:watch:cursor'), 0, 'legal watch cursor wraps after reaching the end');
+  eq((await processLegislationWatches(500)).checked, 500, 'legal watch cursor starts the next cycle after reaching the end');
 
   delete process.env.CRON_SECRET;
   memoryRedis.reset();

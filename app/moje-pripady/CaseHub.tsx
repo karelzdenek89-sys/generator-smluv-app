@@ -36,10 +36,10 @@ export default function CaseHub() {
   const [access, setAccess] = useState('');
   const [state, setState] = useState<State>('idle');
   const [cases, setCases] = useState<CaseSummary[]>([]);
-  const [hasMore, setHasMore] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [nextOffset, setNextOffset] = useState<number | null>(null);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
     const token = resolveCaseHubAccessFromLocation(new URL(window.location.href));
@@ -58,7 +58,7 @@ export default function CaseHub() {
         const response = await fetch('/api/cases/hub/resolve', {
           method: 'POST', headers: { 'Content-Type': 'application/json' }, cache: 'no-store', body: JSON.stringify({ token: access }),
         });
-        const body = (await response.json().catch(() => ({}))) as { cases?: CaseSummary[]; hasMore?: boolean; error?: string };
+        const body = (await response.json().catch(() => ({}))) as { cases?: CaseSummary[]; nextOffset?: number | null; error?: string };
         if (cancelled) return;
         if (!response.ok) {
           forgetCaseHubAccess();
@@ -68,7 +68,7 @@ export default function CaseHub() {
           return;
         }
         setCases(body.cases ?? []);
-        setHasMore(Boolean(body.hasMore));
+        setNextOffset(body.nextOffset ?? null);
         setState('ready');
       } catch {
         if (!cancelled) {
@@ -82,31 +82,24 @@ export default function CaseHub() {
   }, [state, access]);
 
   const loadMore = async () => {
-    if (!access || !hasMore || loadingMore) return;
+    if (nextOffset === null || loadingMore) return;
     setLoadingMore(true);
     setMessage('');
     try {
       const response = await fetch('/api/cases/hub/resolve', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        cache: 'no-store',
-        body: JSON.stringify({ token: access, offset: cases.length }),
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, cache: 'no-store',
+        body: JSON.stringify({ token: access, offset: nextOffset }),
       });
-      const body = (await response.json().catch(() => ({}))) as { cases?: CaseSummary[]; hasMore?: boolean; error?: string };
+      const body = await response.json() as { cases?: CaseSummary[]; nextOffset?: number | null; error?: string };
       if (!response.ok) {
-        setMessage(body.error ?? 'Další případy se nepodařilo načíst.');
-        return;
+        if (response.status === 403) { forgetCaseHubAccess(); setAccess(''); setCases([]); setState('error'); }
+        throw new Error(body.error ?? 'Další případy se nepodařilo načíst.');
       }
-      setCases((current) => {
-        const known = new Set(current.map((item) => item.id));
-        return [...current, ...(body.cases ?? []).filter((item) => !known.has(item.id))];
-      });
-      setHasMore(Boolean(body.hasMore));
-    } catch {
-      setMessage('Další případy se nepodařilo načíst. Zkuste to prosím znovu.');
-    } finally {
-      setLoadingMore(false);
-    }
+      setCases((current) => [...new Map([...current, ...(body.cases ?? [])].map((item) => [item.id, item])).values()]);
+      setNextOffset(body.nextOffset ?? null);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Další případy se nepodařilo načíst. Zkuste to znovu.');
+    } finally { setLoadingMore(false); }
   };
 
   const requestLink = async (event: FormEvent<HTMLFormElement>) => {
@@ -145,7 +138,7 @@ export default function CaseHub() {
           <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">Aktivní situace, důležité termíny a další kroky. Bez povinného účtu — přístup získáte bezpečným odkazem na e-mail, který jste použili u objednávky.</p>
           <div className="mt-5 flex flex-wrap gap-3">
             <Link href="/zakaznicka-zona" className="site-button-secondary">Moje dokumenty</Link>
-            {state === 'ready' ? <button type="button" onClick={() => { forgetCaseHubAccess(); setAccess(''); setCases([]); setHasMore(false); setState('idle'); }} className="site-button-secondary">Zavřít přístup v této kartě</button> : null}
+            {state === 'ready' ? <button type="button" onClick={() => { forgetCaseHubAccess(); setAccess(''); setCases([]); setState('idle'); }} className="site-button-secondary">Zavřít přístup v této kartě</button> : null}
           </div>
         </header>
 
@@ -168,14 +161,8 @@ export default function CaseHub() {
                 ))}
               </div>
             )}
-            {hasMore ? (
-              <div className="mt-5 flex justify-center">
-                <button type="button" onClick={() => void loadMore()} disabled={loadingMore} className="site-button-secondary">
-                  {loadingMore ? 'Načítám…' : 'Načíst další případy'}
-                </button>
-              </div>
-            ) : null}
-            {message && state === 'ready' ? <p role="alert" className="mt-4 text-sm text-red-300">{message}</p> : null}
+            {nextOffset !== null ? <button type="button" disabled={loadingMore} onClick={() => void loadMore()} className="site-button-secondary mt-6">{loadingMore ? 'Načítám…' : 'Načíst další případy'}</button> : null}
+            {message ? <p role="alert" className="mt-3 text-sm text-red-300">{message}</p> : null}
           </section>
         ) : null}
 
