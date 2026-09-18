@@ -33,6 +33,7 @@ import {
 import { PARTNER_LEAD_CONSENT_VERSION } from '@/lib/partners/lead-consent';
 import { SUBSCRIPTION_PLANS, isSubscriptionPlanPurchasable } from '@/lib/subscriptions/plans';
 import { isFeatureEnabled } from '@/lib/feature-flags';
+import { SITE_NAV_CUSTOMER_ITEMS } from '@/lib/site-nav';
 
 let checks = 0;
 function ok(condition: unknown, message: string) {
@@ -181,6 +182,12 @@ async function testLegislationWatchPagination() {
 
   delete process.env.CRON_SECRET;
   memoryRedis.reset();
+}
+
+function testCustomerNavigation() {
+  const labels = SITE_NAV_CUSTOMER_ITEMS.map((item) => item.label);
+  eq(labels, ['Můj účet', 'Moje případy', 'Moje dokumenty'], 'customer navigation keeps account, cases and documents together');
+  for (const item of SITE_NAV_CUSTOMER_ITEMS) assertInternalLink(item.href, `customer nav ${item.label}`);
 }
 
 function testSituationsAndTools() {
@@ -394,6 +401,7 @@ function testGrowthClusters() {
 async function main() {
   testLegalRadar();
   await testLegislationWatchPagination();
+  testCustomerNavigation();
   testSituationsAndTools();
   testArticles();
   testGrowthClusters();
