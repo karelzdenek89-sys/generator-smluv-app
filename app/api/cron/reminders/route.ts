@@ -56,7 +56,7 @@ export async function GET(req: Request) {
         try {
           const record = await getCase(ref.caseId);
           const reminder = record?.reminders.find((item) => item.id === ref.reminderId);
-          if (!record || !reminder || reminder.status !== 'scheduled' || !record.remindersEnabled) {
+          if (!record || !reminder || reminder.status !== 'scheduled' || !record.remindersEnabled || record.stage === 'closed') {
             await removeDueReminder(ref.member);
             summary.skipped += 1;
             continue;

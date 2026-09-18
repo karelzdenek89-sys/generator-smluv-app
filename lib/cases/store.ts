@@ -199,6 +199,42 @@ redis.call('SET', KEYS[2], ARGV[3], 'EX', ttl)
 return 1
 `;
 
+// Atomically initialize both the case and its order mapping. Keep the original
+// draft JSON untouched: fulfillment may write it concurrently, and decoding /
+// encoding a draft in Redis Lua changes nested empty arrays into objects.
+const CREATE_ORDER_CASE_SCRIPT = `
+-- create-order-case-v1
+local raw = redis.call('GET', KEYS[1])
+if not raw then return {'not_found', ''} end
+local draft = cjson.decode(raw)
+if draft.downloadToken ~= ARGV[1] then return {'forbidden', ''} end
+local existing = redis.call('GET', KEYS[2])
+if not existing and type(draft.caseId) == 'string' then existing = draft.caseId end
+if existing and redis.call('EXISTS', 'case:' .. existing) == 1 then
+  return {'existing', existing}
+end
+redis.call('SET', KEYS[3], ARGV[2], 'EX', ARGV[4])
+redis.call('SET', KEYS[4], '1', 'EX', ARGV[4])
+redis.call('SADD', KEYS[5], ARGV[3])
+redis.call('EXPIRE', KEYS[5], ARGV[4])
+redis.call('SET', KEYS[2], ARGV[3], 'EX', ARGV[4])
+return {'created', ARGV[3]}
+`;
+
+export async function createOrderCase(draftId: string, downloadToken: string, candidate: CaseRecord): Promise<
+  { ok: true; record: CaseRecord; created: boolean } | { ok: false; reason: 'not_found' | 'forbidden' }
+> {
+  const next = { ...candidate, revision: 1 };
+  const [status, id] = await redis.eval<string[], [string, string]>(CREATE_ORDER_CASE_SCRIPT,
+    [`contract:draft:${draftId}`, `case:order:${draftId}`, caseKey(next.id), revisionKey(next.id), ownerKey(next.ownerEmail)],
+    [downloadToken, JSON.stringify(next), next.id, String(caseTtlSeconds(next))]);
+  if (status === 'not_found' || status === 'forbidden') return { ok: false, reason: status };
+  const record = status === 'created' ? next : await getCase(id);
+  if (!record) return { ok: false, reason: 'not_found' };
+  if (record.ownerEmail !== next.ownerEmail) return { ok: false, reason: 'forbidden' };
+  return { ok: true, record, created: status === 'created' };
+}
+
 type SaveCaseOptions = { preserveRetention?: boolean };
 
 export async function saveCase(record: CaseRecord, now: Date = new Date(), options: SaveCaseOptions = {}): Promise<CaseRecord> {
@@ -336,10 +372,21 @@ export async function listCaseIdsForEmail(email: string): Promise<string[]> {
   return Array.isArray(ids) ? ids.filter(isCaseIdFormat) : [];
 }
 
-export async function listCasesForEmail(email: string, limit = 50): Promise<CaseRecord[]> {
-  const ids = (await listCaseIdsForEmail(email)).slice(0, Math.max(1, Math.min(limit, 100)));
-  const records = await Promise.all(ids.map((id) => getCase(id)));
-  return records.filter((record): record is CaseRecord => Boolean(record)).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+export async function listCasesForEmail(email: string, limit = 50, offset = 0): Promise<CaseRecord[]> {
+  const ids = await listCaseIdsForEmail(email);
+  const owner = email.trim().toLowerCase();
+  const records: CaseRecord[] = [];
+  // Filter expired entries before applying the page limit. Bound Redis fan-out.
+  for (let i = 0; i < ids.length; i += 50) {
+    const batch = ids.slice(i, i + 50);
+    const found = await Promise.all(batch.map((id) => getCase(id)));
+    const stale = batch.filter((_, index) => !found[index] || found[index]!.ownerEmail !== owner);
+    if (stale.length) await redis.srem(ownerKey(email), ...stale);
+    records.push(...found.filter((record): record is CaseRecord => Boolean(record && record.ownerEmail === owner)));
+  }
+  records.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt) || a.id.localeCompare(b.id));
+  const start = Math.max(0, Math.floor(offset));
+  return records.slice(start, start + Math.max(1, Math.min(limit, 100)));
 }
 
 export async function deleteCase(record: CaseRecord): Promise<void> {
@@ -366,6 +413,7 @@ export async function rescheduleReminders(record: CaseRecord, enabled: boolean, 
   const kept = record.reminders.filter((reminder) => reminder.status === 'sent');
   await Promise.all(record.reminders.filter((reminder) => reminder.status === 'scheduled').map((reminder) => unindexReminder(record.id, reminder.id)));
   const scheduled: CaseReminder[] = [];
+  enabled = enabled && record.stage !== 'closed';
   if (enabled && record.deadline) {
     for (const entry of planReminders(record.deadline, now)) {
       const reminder: CaseReminder = {

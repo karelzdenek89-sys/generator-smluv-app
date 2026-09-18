@@ -134,7 +134,12 @@ export async function manageLegislationWatch(id: string, token: string, action: 
 export async function processLegislationWatches(limit = 500): Promise<{ checked: number; changed: number; sent: number; failed: number }> {
   const summary = { checked: 0, changed: 0, sent: 0, failed: 0 };
   if (!isLegislationWatchOperational()) return summary;
-  const ids = ((await redis.smembers(INDEX_KEY)) as string[]).slice(0, Math.max(1, Math.min(limit, 1000)));
+  const cursorKey = 'legal:watch:cursor';
+  const all = ((await redis.smembers(INDEX_KEY)) as string[]).sort();
+  const cursor = await redis.get<string>(cursorKey);
+  const after = cursor ? all.findIndex((id) => id > cursor) : 0;
+  const start = after < 0 ? 0 : after;
+  const ids = all.slice(start, start + Math.max(1, Math.min(limit, 1000)));
   for (const id of ids) {
     const watch = await redis.get<LegislationWatch>(watchKey(id));
     if (!watch) {
@@ -172,5 +177,6 @@ export async function processLegislationWatches(limit = 500): Promise<{ checked:
       lastNotifiedAt: new Date().toISOString(),
     } satisfies LegislationWatch, { ex: WATCH_TTL_SECONDS });
   }
+  if (ids.length) await redis.set(cursorKey, ids[ids.length - 1], { ex: WATCH_TTL_SECONDS });
   return summary;
 }

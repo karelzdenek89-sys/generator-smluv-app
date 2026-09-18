@@ -125,7 +125,10 @@ function testLegalRadar() {
     ok(hub.metaDescription.length <= 200, `${audience}: meta description length`);
   }
   const employers = getLegalChangesForAudience('employers');
-  ok(employers.findIndex((c) => c.status === 'in_force') < employers.findIndex((c) => c.status === 'in_progress'), 'in-force entries sort before in-progress');
+  const approvedIndex = employers.findIndex((c) => c.key === 'minimalni-mzda-2027');
+  ok(approvedIndex > 0 && employers.slice(0, approvedIndex).every(c => c.status === 'in_force'), 'current rules precede the approved future minimum wage');
+  eq(employers[approvedIndex].status, 'approved_pending', 'MPSV announcement is approved, not yet in force');
+  eq(employers[approvedIndex].effectiveFrom, '2027-01-01', 'minimum wage applies from January 2027');
   eq(getLegalChangesNeedingReview(new Date('2026-09-17T00:00:00Z')).length, 0, 'nothing needs review on verification day');
   ok(getLegalChangesNeedingReview(new Date('2027-01-01T00:00:00Z')).length === LEGAL_CHANGES.length, 'everything needs review after 90 days');
   ok(/^\d{4}-\d{2}-\d{2}$/.test(getRadarVerifiedAt()), 'radar verified date');

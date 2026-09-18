@@ -3,18 +3,19 @@ import { redis } from '@/lib/redis';
 import { stripe } from '@/lib/stripe';
 import { normalizePricingTier } from '@/lib/pricing';
 import { isFeatureEnabled } from '@/lib/feature-flags';
-import { escapeHtml, renderEmailShell, sendTransactionalEmail } from '@/lib/email/transactional';
+import { renderEmailShell, sendTransactionalEmail } from '@/lib/email/transactional';
 import { issueCaseAccessToken, revokeCaseAccessTokens } from './access';
+import { revokeOwnerAccess } from './access-generation';
 import { buildCaseUrl, sendCaseAccessEmail } from './emails';
 import {
   buildCaseRecord,
   commitCase,
   deleteCase,
   getCase,
-  listCaseIdsForEmail,
+  listCasesForEmail,
   newEvent,
   rescheduleReminders,
-  saveCase,
+  createOrderCase,
 } from './store';
 import {
   CASE_DOCUMENT_DEFINITIONS,
@@ -182,12 +183,13 @@ export async function createCaseFromPaidOrder(input: { sessionId: string; token:
         : task);
     }
 
-    record = await saveCase(record);
-    created = true;
-    const ttl = await redis.ttl(draftKey);
-    await redis.set(draftKey, { ...draft, caseId: record.id }, ttl > 0 ? { ex: ttl } : undefined);
+    const initialized = await createOrderCase(draftId, input.token, record);
+    if (!initialized.ok) return initialized;
+    record = initialized.record;
+    created = initialized.created;
   }
 
+  if (record.ownerEmail !== ownerEmail) return { ok: false, reason: 'forbidden' };
   const token = await issueCaseAccessToken(record.id, ownerEmail);
   const url = buildCaseUrl(record.id, token, undefined, record.kind);
   let emailSent = false;
@@ -206,25 +208,24 @@ export async function createCaseFromPaidOrder(input: { sessionId: string; token:
 }
 
 export async function sendCaseLinksForEmail(email: string): Promise<{ cases: number; emailSent: boolean }> {
-  const ids = await listCaseIdsForEmail(email);
-  const records = (await Promise.all(ids.map((id) => getCase(id)))).filter((item): item is CaseRecord => Boolean(item));
+  const records = await listCasesForEmail(email, 10);
   if (!records.length) return { cases: 0, emailSent: false };
 
   const links = await Promise.all(records.slice(0, 10).map(async (record) => ({
     record,
     url: buildCaseUrl(record.id, await issueCaseAccessToken(record.id, email), undefined, record.kind),
   })));
-  const list = links.map(({ record, url }) => {
-    const stage = getStageDefinition(record.kind, record.stage);
-    return `<li style="margin:0 0 12px"><a href="${escapeHtml(url)}">${escapeHtml(record.title)}</a> — ${escapeHtml(stage?.label ?? 'Aktivní')}</li>`;
-  }).join('');
+  const list = links.map(({ record, url }) => ({
+    label: record.title, url, description: getStageDefinition(record.kind, record.stage)?.label ?? 'Aktivní',
+  }));
   const result = await sendTransactionalEmail({
     to: email,
     subject: `Návratové odkazy k vašim případům (${records.length})`,
     idempotencyKey: `case-links-${randomUUID()}`,
     html: renderEmailShell({
       heading: 'Vaše případy',
-      intro: `<ul style="padding-left:18px">${list}</ul>`,
+      intro: 'Návratové odkazy k vašim posledním případům:',
+      links: list,
       ctaLabel: 'Otevřít první případ',
       ctaUrl: links[0].url,
       footerNote: 'Odkazy jsou funkční přístupové klíče. Nikomu je nepřeposílejte.',
@@ -272,7 +273,10 @@ export async function applyCaseAction(record: CaseRecord, action: CaseAction): P
     if (action.stage === record.stage) return { ok: true, record, eventType: 'noop' };
     const stage = action.stage;
     const label = getStageDefinition(record.kind, stage)?.label ?? stage;
-    const next = await save((fresh) => ({ ...fresh, stage, closedAt: stage === 'closed' ? fresh.closedAt ?? now.toISOString() : null, events: [...fresh.events, newEvent('stage_changed', `Fáze změněna na „${label}“`)] }));
+    const next = await save(async (fresh) => {
+      const changed = { ...fresh, stage, closedAt: stage === 'closed' ? fresh.closedAt ?? now.toISOString() : null, events: [...fresh.events, newEvent('stage_changed', `Fáze změněna na „${label}“`)] };
+      return stage === 'closed' ? rescheduleReminders(changed, false, now) : changed;
+    });
     return next ? { ok: true, record: next, eventType: stage === 'closed' ? 'case_completed' : 'stage_changed' } : gone;
   }
 
@@ -309,6 +313,7 @@ export async function applyCaseAction(record: CaseRecord, action: CaseAction): P
   }
 
   if (action.type === 'set_reminders') {
+    if (action.enabled && record.stage === 'closed') return { ok: false, message: 'Uzavřený případ nemůže mít aktivní připomínky.' };
     if (action.enabled && !record.deadline) return { ok: false, message: 'Nejdřív nastavte důležitý termín.', field: 'deadline' };
     const next = await save(async (fresh) => {
       const rescheduled = await rescheduleReminders(fresh, action.enabled && Boolean(fresh.deadline), now);
@@ -325,6 +330,7 @@ export async function applyCaseAction(record: CaseRecord, action: CaseAction): P
   }
 
   if (action.type === 'revoke_links') {
+    await revokeOwnerAccess(record.ownerEmail);
     await revokeCaseAccessTokens(record.id);
     const next = await save((fresh) => ({ ...fresh, events: [...fresh.events, newEvent('links_revoked', 'Všechny návratové odkazy zneplatněny')] }));
     return next ? { ok: true, record: next, eventType: 'links_revoked' } : gone;

@@ -3,6 +3,7 @@ import { redis } from '@/lib/redis';
 import { renderEmailShell, sendTransactionalEmail, type TransactionalEmailResult } from '@/lib/email/transactional';
 import { SITE_URL } from '@/lib/seo/site';
 import { issueCaseAccessToken } from './access';
+import { getAccessGeneration, issueAccessGeneration } from './access-generation';
 import { casePagePath } from './emails';
 import { listCasesForEmail } from './store';
 import { getStageDefinition } from './workflow';
@@ -14,6 +15,7 @@ const HUB_PATH = '/moje-pripady';
 type HubAccessRecord = {
   email: string;
   issuedAt: string;
+  generation?: string;
 };
 
 function hashToken(token: string): string {
@@ -34,7 +36,7 @@ export function buildCaseHubUrl(token: string): string {
 
 export async function issueCaseHubAccessToken(email: string): Promise<string> {
   const token = randomBytes(32).toString('hex');
-  await redis.set(hubKey(token), { email: email.trim().toLowerCase(), issuedAt: new Date().toISOString() } satisfies HubAccessRecord, { ex: HUB_TTL_SECONDS });
+  await redis.set(hubKey(token), { email: email.trim().toLowerCase(), issuedAt: new Date().toISOString(), generation: await issueAccessGeneration(email) } satisfies HubAccessRecord, { ex: HUB_TTL_SECONDS });
   return token;
 }
 
@@ -42,7 +44,8 @@ export async function resolveCaseHubAccess(token: string): Promise<HubAccessReco
   if (!HUB_TOKEN_RE.test(token)) return null;
   const record = await redis.get<HubAccessRecord>(hubKey(token));
   if (!record || typeof record.email !== 'string' || !record.email.includes('@')) return null;
-  return record;
+  if ((record.generation ?? 'legacy') !== await getAccessGeneration(record.email)) return null;
+  return { ...record, generation: record.generation ?? 'legacy' };
 }
 
 export async function sendCaseHubAccessEmail(email: string): Promise<{ cases: number; result: TransactionalEmailResult | null }> {
@@ -55,7 +58,7 @@ export async function sendCaseHubAccessEmail(email: string): Promise<{ cases: nu
     idempotencyKey: `case-hub-${hashToken(token).slice(0, 24)}`,
     html: renderEmailShell({
       heading: 'Vaše případy na jednom místě',
-      intro: `Máte ${records.length} ${records.length === 1 ? 'uložený případ' : records.length < 5 ? 'uložené případy' : 'uložených případů'}. Bezpečným odkazem otevřete přehled aktivních situací, termínů a dalších kroků.`,
+      intro: 'Bezpečným odkazem otevřete přehled uložených případů, termínů a dalších kroků.',
       ctaLabel: 'Otevřít Moje případy',
       ctaUrl: buildCaseHubUrl(token),
       secondary: 'Odkaz je platný 30 dní. Nikomu jej nepřeposílejte — funguje jako přístupový klíč k přehledu vašich případů.',
@@ -66,10 +69,10 @@ export async function sendCaseHubAccessEmail(email: string): Promise<{ cases: nu
   return { cases: records.length, result };
 }
 
-export async function buildCaseHubPayload(email: string) {
-  const records = await listCasesForEmail(email, 50);
+export async function buildCaseHubPayload(email: string, generation: string, offset = 0) {
+  const records = await listCasesForEmail(email, 51, offset);
   return Promise.all(records.map(async (record) => {
-    const token = await issueCaseAccessToken(record.id, email);
+    const token = await issueCaseAccessToken(record.id, email, undefined, generation);
     const stage = getStageDefinition(record.kind, record.stage);
     const nextTask = record.tasks.find((task) => !task.done);
     return {

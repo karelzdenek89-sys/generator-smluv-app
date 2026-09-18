@@ -1,5 +1,6 @@
 import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
 import { redis } from '@/lib/redis';
+import { getAccessGeneration, issueAccessGeneration } from './access-generation';
 
 /**
  * Návratový odkaz k případu („Case Lite“ bez registrace).
@@ -19,6 +20,7 @@ export type CaseAccessRecord = {
   caseId: string;
   email: string;
   issuedAt: string;
+  generation?: string;
 };
 
 export function hashCaseAccessToken(token: string): string {
@@ -41,6 +43,7 @@ export async function issueCaseAccessToken(
   caseId: string,
   email: string,
   ttlSeconds: number = CASE_ACCESS_TTL_SECONDS,
+  sourceGeneration?: string,
 ): Promise<string> {
   const token = randomBytes(32).toString('hex');
   const hashed = hashCaseAccessToken(token);
@@ -48,6 +51,7 @@ export async function issueCaseAccessToken(
     caseId,
     email: email.trim().toLowerCase(),
     issuedAt: new Date().toISOString(),
+    generation: sourceGeneration ?? await issueAccessGeneration(email),
   };
   const ttl = Math.max(60, Math.min(ttlSeconds, CASE_ACCESS_TTL_SECONDS));
   await redis.set(`case:access:${hashed}`, record, { ex: ttl });
@@ -70,6 +74,7 @@ export async function resolveCaseAccess(
   const expected = Buffer.from(record.caseId);
   const provided = Buffer.from(caseId);
   if (expected.length !== provided.length || !timingSafeEqual(expected, provided)) return null;
+  if ((record.generation ?? 'legacy') !== await getAccessGeneration(record.email)) return null;
   return record;
 }
 

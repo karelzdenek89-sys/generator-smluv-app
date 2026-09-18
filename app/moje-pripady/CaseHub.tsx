@@ -38,6 +38,8 @@ export default function CaseHub() {
   const [cases, setCases] = useState<CaseSummary[]>([]);
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [nextOffset, setNextOffset] = useState<number | null>(null);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => {
     const token = resolveCaseHubAccessFromLocation(new URL(window.location.href));
@@ -56,7 +58,7 @@ export default function CaseHub() {
         const response = await fetch('/api/cases/hub/resolve', {
           method: 'POST', headers: { 'Content-Type': 'application/json' }, cache: 'no-store', body: JSON.stringify({ token: access }),
         });
-        const body = (await response.json().catch(() => ({}))) as { cases?: CaseSummary[]; error?: string };
+        const body = (await response.json().catch(() => ({}))) as { cases?: CaseSummary[]; nextOffset?: number | null; error?: string };
         if (cancelled) return;
         if (!response.ok) {
           forgetCaseHubAccess();
@@ -66,6 +68,7 @@ export default function CaseHub() {
           return;
         }
         setCases(body.cases ?? []);
+        setNextOffset(body.nextOffset ?? null);
         setState('ready');
       } catch {
         if (!cancelled) {
@@ -77,6 +80,27 @@ export default function CaseHub() {
     void run();
     return () => { cancelled = true; };
   }, [state, access]);
+
+  const loadMore = async () => {
+    if (nextOffset === null || loadingMore) return;
+    setLoadingMore(true);
+    setMessage('');
+    try {
+      const response = await fetch('/api/cases/hub/resolve', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, cache: 'no-store',
+        body: JSON.stringify({ token: access, offset: nextOffset }),
+      });
+      const body = await response.json() as { cases?: CaseSummary[]; nextOffset?: number | null; error?: string };
+      if (!response.ok) {
+        if (response.status === 403) { forgetCaseHubAccess(); setAccess(''); setCases([]); setState('error'); }
+        throw new Error(body.error ?? 'Další případy se nepodařilo načíst.');
+      }
+      setCases((current) => [...new Map([...current, ...(body.cases ?? [])].map((item) => [item.id, item])).values()]);
+      setNextOffset(body.nextOffset ?? null);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Další případy se nepodařilo načíst. Zkuste to znovu.');
+    } finally { setLoadingMore(false); }
+  };
 
   const requestLink = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -137,6 +161,8 @@ export default function CaseHub() {
                 ))}
               </div>
             )}
+            {nextOffset !== null ? <button type="button" disabled={loadingMore} onClick={() => void loadMore()} className="site-button-secondary mt-6">{loadingMore ? 'Načítám…' : 'Načíst další případy'}</button> : null}
+            {message ? <p role="alert" className="mt-3 text-sm text-red-300">{message}</p> : null}
           </section>
         ) : null}
 

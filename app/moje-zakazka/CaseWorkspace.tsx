@@ -6,6 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { trackEvent } from '@/lib/analytics';
 import { createCheckoutAuthorization } from '@/lib/checkout-authorization';
 import { forgetCaseAccess, resolveCaseAccessFromLocation } from '@/lib/cases/client-access';
+import { forgetCaseHubAccess } from '@/lib/cases/hub-client-access';
 import {
   CASE_DOCUMENT_DEFINITIONS,
   CASE_DOCUMENT_LIST,
@@ -497,7 +498,7 @@ export default function CaseWorkspace() {
                 <input
                   type="checkbox"
                   checked={record.remindersEnabled}
-                  disabled={busy || !record.deadline}
+                  disabled={busy || !record.deadline || record.stage === 'closed'}
                   onChange={(event) => applyAction({ type: 'set_reminders', enabled: event.target.checked }, event.target.checked ? 'Připomínky zapnuty.' : 'Připomínky vypnuty.')}
                   className="mt-1 h-4 w-4 accent-[#c9a852]"
                 />
@@ -548,13 +549,15 @@ export default function CaseWorkspace() {
                   type="button"
                   disabled={busy}
                   onClick={() => {
-                    if (window.confirm('Zneplatnit všechny návratové odkazy? Nový odkaz si pak vyžádáte e-mailem.')) {
-                      void applyAction({ type: 'revoke_links' }, 'Všechny odkazy byly zneplatněny. Tato karta zůstává otevřená do zavření.');
+                    if (window.confirm('Zneplatnit všechny odkazy ke všem vašim případům včetně přehledu Moje případy? Přístup se uzavře. Nový odkaz si vyžádáte e-mailem.')) {
+                      void applyAction({ type: 'revoke_links' }).then((ok) => {
+                        if (ok) { forgetCaseAccess(caseId); forgetCaseHubAccess(); setState('unauthorized'); }
+                      });
                     }
                   }}
                   className="site-button-secondary justify-center text-xs"
                 >
-                  Zneplatnit návratové odkazy
+                  Zneplatnit všechny moje odkazy
                 </button>
                 <button
                   type="button"

@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } fro
 import { useSearchParams } from 'next/navigation';
 import { trackEvent } from '@/lib/analytics';
 import { forgetCaseAccess, resolveCaseAccessFromLocation } from '@/lib/cases/client-access';
+import { forgetCaseHubAccess } from '@/lib/cases/hub-client-access';
 import type { CaseKind, PublicCase } from '@/lib/cases/types';
 import { daysUntil, formatCzechDate, getStageDefinition, stagesForKind } from '@/lib/cases/workflow';
 
@@ -324,7 +325,7 @@ export default function CaseWorkspace() {
                 <button type="submit" disabled={busy} className="site-button-secondary mt-3 w-full">Uložit termín</button>
               </form>
               <label className="mt-5 flex cursor-pointer items-start gap-3">
-                <input type="checkbox" checked={record.remindersEnabled} disabled={busy || !record.deadline} onChange={(event) => void applyAction({ type: 'set_reminders', enabled: event.target.checked }, event.target.checked ? 'Připomínky zapnuty.' : 'Připomínky vypnuty.')} className="mt-1 h-4 w-4 accent-[#c9a852]" />
+                <input type="checkbox" checked={record.remindersEnabled} disabled={busy || !record.deadline || record.stage === 'closed'} onChange={(event) => void applyAction({ type: 'set_reminders', enabled: event.target.checked }, event.target.checked ? 'Připomínky zapnuty.' : 'Připomínky vypnuty.')} className="mt-1 h-4 w-4 accent-[#c9a852]" />
                 <span><span className="block text-sm font-semibold text-white">E-mailové připomínky</span><span className="mt-1 block text-xs leading-5 text-slate-400">Funkční upozornění před nastaveným termínem, nikoli newsletter.</span></span>
               </label>
             </section>
@@ -341,12 +342,13 @@ export default function CaseWorkspace() {
               <div className="mt-4 grid gap-2">
                 <button type="button" disabled={busy} onClick={() => void exportCase()} className="site-button-secondary">Exportovat případ</button>
                 <button type="button" disabled={busy} onClick={async () => {
-                  if (!window.confirm('Zneplatnit všechny dosud vydané odkazy? Potom budete potřebovat nový odkaz z e-mailu.')) return;
+                  if (!window.confirm('Zneplatnit všechny odkazy ke všem vašim případům včetně přehledu Moje případy? Přístup se uzavře. Nový odkaz si vyžádáte e-mailem.')) return;
                   if (await applyAction({ type: 'revoke_links' }, 'Odkazy byly zneplatněny.')) {
                     forgetCaseAccess(caseId);
+                    forgetCaseHubAccess();
                     setState('unauthorized');
                   }
-                }} className="site-button-secondary">Zneplatnit návratové odkazy</button>
+                }} className="site-button-secondary">Zneplatnit všechny moje odkazy</button>
                 <button type="button" disabled={busy} onClick={() => {
                   if (window.confirm('Opravdu chcete tento případ smazat? Tuto akci nelze vrátit.')) void applyAction({ type: 'delete' });
                 }} className="rounded-xl border border-red-500/30 px-4 py-3 text-sm font-semibold text-red-200 transition hover:bg-red-500/10">Smazat případ</button>
