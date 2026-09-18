@@ -299,7 +299,7 @@ export async function issueVerificationToken(user: AccountRecord): Promise<strin
   const token = randomBytes(32).toString('base64url');
   const hashed = hashToken(token);
   await Promise.all([
-    redis.set(verifyKey(hashed), { userId: user.id, email: user.email }, { ex: VERIFY_TTL_SECONDS }),
+    redis.set(verifyKey(hashed), { userId: user.id }, { ex: VERIFY_TTL_SECONDS }),
     redis.set(currentVerifyKey(user.id), hashed, { ex: VERIFY_TTL_SECONDS }),
   ]);
   return token;
@@ -308,11 +308,11 @@ export async function issueVerificationToken(user: AccountRecord): Promise<strin
 export async function verifyAccountEmail(token: string): Promise<AccountRecord | null> {
   if (token.length < 32 || token.length > 200) return null;
   const hashed = hashToken(token);
-  const record = await redis.get<{ userId: string; email: string }>(verifyKey(hashed));
+  const record = await redis.get<{ userId: string }>(verifyKey(hashed));
   if (!record) return null;
   const user = await getAccountById(record.userId);
   await Promise.all([redis.del(verifyKey(hashed)), redis.del(currentVerifyKey(record.userId))]);
-  if (!user || user.email !== normalizeEmail(record.email)) return null;
+  if (!user) return null;
   if (user.emailVerifiedAt) return user;
   return saveAccount({ ...user, emailVerifiedAt: new Date().toISOString() });
 }
