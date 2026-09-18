@@ -45,6 +45,13 @@ export default function LegalRadarPage() {
     >
       <TrackView eventName="situation_viewed" eventParams={{ portal_situation: 'zmeny-2027', surface: 'legal_radar' }} />
 
+      <section className="mb-10 rounded-2xl border border-[#c9a852]/20 bg-[#c9a852]/[0.05] p-6" aria-labelledby="watch-intro-title">
+        <p className="site-kicker mb-2">Funkční upozornění zdarma</p>
+        <h2 id="watch-intro-title" className="font-serif text-2xl font-semibold text-white">Nemusíte změny kontrolovat ručně</h2>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-400">U konkrétní legislativní změny si můžete zapnout e-mailové upozornění. Zprávu odešleme pouze při změně legislativního statusu nebo data účinnosti. Nejde o newsletter.</p>
+        <a href="#vsechny-zmeny" className="site-button-secondary mt-5">Vybrat změnu, kterou chci sledovat</a>
+      </section>
+
       <div className="space-y-14">
         <section aria-labelledby="statuses-title">
           <h2 id="statuses-title" className="sr-only">Jak číst statusy</h2>
