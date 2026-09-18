@@ -341,7 +341,7 @@ export default function CaseWorkspace() {
               <div className="mt-4 grid gap-2">
                 <button type="button" disabled={busy} onClick={() => void exportCase()} className="site-button-secondary">Exportovat případ</button>
                 <button type="button" disabled={busy} onClick={async () => {
-                  if (!window.confirm('Zneplatnit všechny dosud vydané odkazy? Potom budete potřebovat nový odkaz z e-mailu.')) return;
+                  if (!window.confirm('Zneplatnit všechny odkazy k tomuto případu a dosud vydané odkazy do přehledu Moje případy pro tento e-mail? Ostatní případy zůstanou uložené; pro další přístup bude potřeba nový odkaz z e-mailu.')) return;
                   if (await applyAction({ type: 'revoke_links' }, 'Odkazy byly zneplatněny.')) {
                     forgetCaseAccess(caseId);
                     setState('unauthorized');

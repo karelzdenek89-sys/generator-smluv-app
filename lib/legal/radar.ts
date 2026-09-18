@@ -165,34 +165,34 @@ export type LegalChange = {
   escalation?: string;
 };
 
-const VERIFIED = '2026-09-17';
+const VERIFIED = '2026-09-18';
 
 export const LEGAL_CHANGES: readonly LegalChange[] = [
   {
     key: 'minimalni-mzda-2027',
-    title: 'Minimální mzda 2027: nová hodnota vzejde z valorizačního mechanismu',
+    title: 'Minimální mzda 2027: 24 900 Kč měsíčně',
     audiences: ['employers', 'self_employed'],
-    status: 'in_progress',
-    effectiveFrom: null,
-    dateLabel: 'Hodnota pro rok 2027 se vyhlašuje na podzim 2026; účinnost od 1. 1. 2027',
+    status: 'approved_pending',
+    effectiveFrom: '2027-01-01',
+    dateLabel: 'Od 1. 1. 2027; MPSV zveřejnilo částku 7. 9. 2026',
     summary:
-      'Pro rok 2026 činí minimální mzda 22 400 Kč měsíčně (134,40 Kč za hodinu). Pro rok 2027 vláda v roce 2026 nařízením stanoví nové koeficienty a MPSV vyhlásí částku sdělením — dokud se tak nestane, konkrétní částka pro rok 2027 není známa.',
+      'MPSV 7. 9. 2026 zveřejnilo, že vláda schválila zvýšení minimální mzdy od 1. 1. 2027 na 24 900 Kč měsíčně. Při stanovené týdenní pracovní době 40 hodin odpovídá hodinová sazba 148,30 Kč.',
     whatChanges: [
-      'Minimální mzda se od roku 2025 určuje valorizačním mechanismem podle § 111 zákoníku práce: predikce průměrné mzdy × koeficient stanovený nařízením vlády.',
-      'Koeficient pro rok 2026 je 0,434 (nařízení vlády č. 285/2024 Sb.); částka 22 400 Kč je vyhlášena sdělením MPSV č. 356/2025 Sb. (spolu s nejnižšími úrovněmi zaručeného platu pro platovou sféru).',
-      'Pro roky 2027 a 2028 vláda stanoví koeficienty novým nařízením v roce 2026.',
+      'Minimální mzda se určuje valorizačním mechanismem podle § 111 zákoníku práce: predikce průměrné mzdy × koeficient stanovený vládou.',
+      'Pro rok 2027 vláda schválila koeficient 0,446; výsledná minimální mzda činí 24 900 Kč měsíčně a 148,30 Kč za hodinu při 40hodinové týdenní pracovní době.',
+      'Pro rok 2028 vláda schválila koeficient 0,458; konkrétní částka pro rok 2028 se určí z příslušné predikce průměrné mzdy.',
     ],
     whatToDo: [
-      'V pracovních smlouvách a DPP s hodinovou odměnou zkontrolujte, že sazba nespadne pod novou hodinovou minimální mzdu od 1. 1. 2027.',
-      'Připravte si přepočet mzdových nákladů, jakmile MPSV částku vyhlásí; do té doby počítejte s růstem.',
-      'Zaručená mzda podle skupin prací v podnikatelské sféře od 1. 1. 2025 neplatí (novela č. 230/2024 Sb.); zaměstnavatelé odměňující platem hlídají nejnižší úrovně zaručeného platu vyhlášené sdělením MPSV.',
+      'U pracovních smluv a DPP s hodinovou odměnou zkontrolujte, že od 1. 1. 2027 sazba neklesne pod odpovídající hodinovou minimální mzdu.',
+      'Promítněte částku 24 900 Kč do mzdových nastavení a rozpočtů pro rok 2027; u jiného rozsahu týdenní pracovní doby pracujte s příslušně přepočtenou hodinovou sazbou.',
+      'Zaručená mzda podle skupin prací v podnikatelské sféře od 1. 1. 2025 neplatí (novela č. 230/2024 Sb.); zaměstnavatelé odměňující platem sledují nejnižší úrovně zaručeného platu.',
     ],
     affectedDocuments: [
       { contractType: 'employment', href: '/pracovni', label: 'Pracovní smlouva' },
       { contractType: 'dpp', href: '/dpp', label: 'Dohoda o provedení práce' },
     ],
     sources: [
-      { label: 'MPSV — Minimální mzda (mechanismus a hodnoty 2026)', href: 'https://mpsv.gov.cz/minimalni-mzda', publisher: 'MPSV' },
+      { label: 'MPSV — Minimální mzda v roce 2027 vzroste na 24 900 korun (7. 9. 2026)', href: 'https://mpsv.gov.cz/minimalni-mzda-v-roce-2027-vzroste-na-24-900-korun', publisher: 'MPSV' },
       { label: 'Zákoník práce, § 111 (e-Sbírka)', href: 'https://www.e-sbirka.cz/sb/2006/262', publisher: 'e-Sbírka' },
     ],
     verifiedAt: VERIFIED,

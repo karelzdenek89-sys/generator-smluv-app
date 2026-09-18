@@ -547,9 +547,11 @@ export default function CaseWorkspace() {
                 <button
                   type="button"
                   disabled={busy}
-                  onClick={() => {
-                    if (window.confirm('Zneplatnit všechny návratové odkazy? Nový odkaz si pak vyžádáte e-mailem.')) {
-                      void applyAction({ type: 'revoke_links' }, 'Všechny odkazy byly zneplatněny. Tato karta zůstává otevřená do zavření.');
+                  onClick={async () => {
+                    if (!window.confirm('Zneplatnit všechny odkazy k této zakázce a dosud vydané odkazy do přehledu Moje případy pro tento e-mail? Ostatní případy zůstanou uložené; pro další přístup bude potřeba nový odkaz z e-mailu.')) return;
+                    if (await applyAction({ type: 'revoke_links' }, 'Odkazy byly zneplatněny.')) {
+                      forgetCaseAccess(caseId);
+                      setState('unauthorized');
                     }
                   }}
                   className="site-button-secondary justify-center text-xs"

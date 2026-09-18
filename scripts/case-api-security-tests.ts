@@ -7,12 +7,14 @@ import assert from 'node:assert/strict';
 import { NextRequest } from 'next/server';
 import { memoryRedis } from '@/lib/redis-memory';
 import { issueCaseAccessToken } from '@/lib/cases/access';
+import { issueCaseHubAccessToken } from '@/lib/cases/hub-access';
 import { buildCaseRecord, saveCase } from '@/lib/cases/store';
 import { POST as resolveRoute } from '@/app/api/cases/resolve/route';
 import { POST as updateRoute } from '@/app/api/cases/update/route';
 import { POST as exportRoute } from '@/app/api/cases/export/route';
 import { POST as fromOrderRoute } from '@/app/api/cases/from-order/route';
 import { POST as requestLinkRoute } from '@/app/api/cases/request-link/route';
+import { POST as hubResolveRoute } from '@/app/api/cases/hub/resolve/route';
 import { POST as downloadRoute } from '@/app/api/cases/documents/download/route';
 import { POST as createDocumentRoute } from '@/app/api/cases/documents/create/route';
 import { GET as cronRoute } from '@/app/api/cron/reminders/route';
@@ -114,9 +116,12 @@ async function testAuthorization() {
 
   memoryRedis.reset();
   const fresh = await seedCase();
+  const hubToken = await issueCaseHubAccessToken(fresh.record.ownerEmail);
+  eq((await hubResolveRoute(post({ token: hubToken }))).status, 200, 'owner hub token resolves before revocation');
   const revoke = await updateRoute(post({ caseId: fresh.record.id, token: fresh.token, action: { type: 'revoke_links' } }));
   eq(revoke.status, 200, 'revocation succeeds');
   eq((await resolveRoute(post({ caseId: fresh.record.id, token: fresh.token }))).status, 403, 'revoked token no longer works');
+  eq((await hubResolveRoute(post({ token: hubToken }))).status, 403, 'revoked hub token cannot mint a fresh case token');
 }
 
 async function testRateLimits() {

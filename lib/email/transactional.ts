@@ -74,6 +74,7 @@ export function renderEmailShell(options: {
   ctaUrl: string;
   footerNote: string;
   secondary?: string;
+  linkItems?: readonly { label: string; url: string; detail?: string }[];
 }): string {
   const heading = escapeHtml(options.heading);
   const intro = escapeHtml(options.intro);
@@ -81,6 +82,9 @@ export function renderEmailShell(options: {
   const ctaUrl = escapeHtml(options.ctaUrl);
   const footerNote = escapeHtml(options.footerNote);
   const secondary = options.secondary ? `<p style="color:#94a3b8;font-size:14px;line-height:1.6;margin:0 0 24px;">${escapeHtml(options.secondary)}</p>` : '';
+  const linkItems = options.linkItems?.length
+    ? `<div style="margin:0 0 24px;">${options.linkItems.map((item) => `<a href="${escapeHtml(item.url)}" style="display:block;color:#e8d092;text-decoration:none;border:1px solid #1e2940;border-radius:12px;padding:12px 14px;margin:0 0 8px;"><strong style="color:#fff;">${escapeHtml(item.label)}</strong>${item.detail ? `<span style="display:block;color:#94a3b8;font-size:12px;margin-top:3px;">${escapeHtml(item.detail)}</span>` : ''}</a>`).join('')}</div>`
+    : '';
   return `<!DOCTYPE html>
 <html lang="cs">
 <head><meta charset="UTF-8"><title>${heading}</title></head>
@@ -92,6 +96,7 @@ export function renderEmailShell(options: {
     <h1 style="color:#fff;font-size:24px;font-weight:800;margin:0 0 12px;text-align:center;">${heading}</h1>
     <p style="color:#94a3b8;font-size:15px;line-height:1.6;text-align:center;margin:0 0 28px;">${intro}</p>
     ${secondary}
+    ${linkItems}
     <a href="${ctaUrl}" style="display:block;text-align:center;background:#c9a852;color:#07111e;font-weight:800;font-size:16px;padding:16px 28px;border-radius:14px;text-decoration:none;margin-bottom:20px;">${ctaLabel}</a>
     <p style="color:#64748b;font-size:12px;line-height:1.6;text-align:center;margin:0;">${footerNote}</p>
   </div>
