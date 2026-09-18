@@ -34,7 +34,7 @@ export default function SiteHeader() {
 
         <div className="flex flex-shrink-0 items-center gap-2">
           <LanguageSwitcher current="cs" variant="desktop" />
-          <details className="group relative hidden xl:block">
+          <details className="group relative hidden lg:block">
             <summary className="cursor-pointer list-none rounded-lg border border-[#c9a852]/25 px-3 py-2 text-xs font-semibold text-[#c9a852] transition hover:border-[#c9a852]/55 hover:text-[#f2d58a] [&::-webkit-details-marker]:hidden">
               Moje <span aria-hidden="true" className="ml-1 text-[10px] transition-transform group-open:rotate-180">▾</span>
             </summary>
