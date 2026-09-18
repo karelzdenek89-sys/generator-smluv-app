@@ -158,6 +158,7 @@ const softwareSchema = {
     'Bezplatné checklisty a rozhodovací průvodci',
     'Legislativní radar 2027 s oficiálními zdroji',
     'Moje případy pro pronájem, převod vozidla a zakázku: termíny, checklisty a připomínky',
+    'Dobrovolný zákaznický účet s přihlášením a ověřeným propojením dokumentů a případů',
   ],
   provider: { '@type': 'Organization', name: 'SmlouvaHned', url: HOMEPAGE_BASE_URL },
   offers: {
@@ -254,7 +255,7 @@ export default function Home() {
         <div className={styles.heroGrid}>
           <div>
             <div className={styles.heroCapsules}>
-              <span className={`${styles.capsule} ${styles.pulse}`}>Legislativa 2026 · aktualizováno</span>
+              <span className={`${styles.capsule} ${styles.pulse}`}>Právní obsah průběžně aktualizován</span>
               <span className={`${styles.capsule} ${styles.capsuleIce}`}>PDF po dokončení objednávky</span>
               <span className={`${styles.capsule} ${styles.capsuleMint}`}>Nástroje zdarma</span>
             </div>
@@ -266,7 +267,7 @@ export default function Home() {
             <p className={styles.heroDescription}>
               Vyberete dokument, doplníte údaje a před objednávkou zkontrolujete náhled i cenu.
               Po zaplacení stáhnete PDF; podle typu dokumentu lze přidat DOCX nebo další podklady.
-              U nájmu, převodu vozidla a smlouvy o dílo můžete pokračovat v Moje případy.
+              U nájmu, převodu vozidla a smlouvy o dílo můžete pokračovat v Moje případy — soukromém přehledu s termíny, checklistem a připomínkami.
             </p>
             <div className={styles.heroActions}>
               <TrackedLink href="#situace" eventName="situation_started" eventParams={{ surface: 'homepage_hero', cta_type: 'choose_situation' }} className={styles.primaryAction}>
