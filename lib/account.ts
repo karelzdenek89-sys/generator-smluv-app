@@ -13,6 +13,7 @@ export const ACCOUNT_SESSION_TTL_SECONDS = 60 * 60 * 24 * 14;
 const VERIFY_TTL_SECONDS = 60 * 60 * 24;
 const RESET_TTL_SECONDS = 60 * 60;
 const RESERVATION_TTL_SECONDS = 300;
+const MAX_ACTIVE_SESSIONS = 20;
 
 const USERNAME_RE = /^[a-zA-Z0-9._-]{3,32}$/;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -366,6 +367,15 @@ export function accountCookieSecure(): boolean {
 }
 
 export async function createAccountSession(user: AccountRecord): Promise<{ token: string; csrf: string; user: AccountRecord }> {
+  const existingSessions = (await redis.smembers(userSessionsKey(user.id))) as string[];
+  if (existingSessions.length >= MAX_ACTIVE_SESSIONS) {
+    const remove = existingSessions.slice(0, existingSessions.length - MAX_ACTIVE_SESSIONS + 1);
+    if (remove.length) {
+      await redis.del(...remove.map((hash) => sessionKeyFromHash(hash)));
+      await redis.srem(userSessionsKey(user.id), ...remove);
+    }
+  }
+
   const token = randomBytes(32).toString('base64url');
   const csrf = randomBytes(32).toString('base64url');
   const tokenHash = hashToken(token);
