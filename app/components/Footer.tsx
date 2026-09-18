@@ -166,6 +166,8 @@ function FooterContent({
                 <Link href="/faq" className="hover:text-white transition-colors">{t.navFaq}</Link>
                 <Link href="/o-projektu" className="hover:text-white transition-colors">{t.navAbout}</Link>
                 <Link href="/kontakt" className="hover:text-white transition-colors">{t.navContact}</Link>
+                {locale === 'cs' ? <Link href="/moje" className="hover:text-white transition-colors">Můj účet</Link> : null}
+                {locale === 'cs' ? <Link href="/moje-pripady" className="hover:text-white transition-colors">Moje případy</Link> : null}
                 <Link href="/zakaznicka-zona" className="hover:text-white transition-colors">{t.navMyDocuments}</Link>
               </div>
             </div>
