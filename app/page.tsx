@@ -25,7 +25,7 @@ import ContentFinder, { type FinderItem } from '@/app/components/marketing/Conte
 import styles from '@/app/components/marketing/homepage.module.css';
 import { CASE_DOCUMENT_PRICE_LABEL } from '@/lib/cases/documents';
 import { isFeatureEnabled } from '@/lib/feature-flags';
-import { SITE_NAV_ITEMS, SITE_NAV_MY_DOCUMENTS, siteNavHref } from '@/lib/site-nav';
+import { SITE_NAV_CUSTOMER_ITEMS, SITE_NAV_ITEMS, siteNavHref } from '@/lib/site-nav';
 
 const HOMEPAGE_BASE_URL = SITE_URL;
 const HOMEPAGE_TOOLS = [
@@ -158,6 +158,7 @@ const softwareSchema = {
     'Bezplatné checklisty a rozhodovací průvodci',
     'Legislativní radar 2027 s oficiálními zdroji',
     'Moje případy pro pronájem, převod vozidla a zakázku: termíny, checklisty a připomínky',
+    'Dobrovolný zákaznický účet s přihlášením a ověřeným propojením dokumentů a případů',
   ],
   provider: { '@type': 'Organization', name: 'SmlouvaHned', url: HOMEPAGE_BASE_URL },
   offers: {
@@ -227,7 +228,12 @@ export default function Home() {
                 {item.label}
               </Link>
             ))}
-            <Link href={SITE_NAV_MY_DOCUMENTS.href} className="rounded-lg border border-[#c9a852]/30 px-4 py-1.5 text-[#c9a852] transition hover:border-[#c9a852]/60 hover:text-[#d4b86a]">{SITE_NAV_MY_DOCUMENTS.label}</Link>
+            <details className="group relative">
+              <summary aria-label="Moje" className="cursor-pointer list-none rounded-lg border border-[#c9a852]/30 px-4 py-1.5 text-[#c9a852] transition hover:border-[#c9a852]/60 hover:text-[#d4b86a] [&::-webkit-details-marker]:hidden">Moje <span aria-hidden="true" className="ml-1 text-[10px] transition-transform group-open:rotate-180">▾</span></summary>
+              <div className="absolute right-0 z-50 mt-2 w-48 rounded-xl border border-[#c9a852]/25 bg-[#040c1a]/95 p-2 text-sm shadow-[0_18px_60px_rgba(0,0,0,0.45)] backdrop-blur-md">
+                {SITE_NAV_CUSTOMER_ITEMS.map((item) => <Link key={item.href} href={item.href} className="block rounded-lg px-3 py-2 text-slate-200 hover:bg-white/5 hover:text-white">{item.label}</Link>)}
+              </div>
+            </details>
             <LanguageSwitcher current="cs" variant="desktop" />
           </div>
 
@@ -238,7 +244,7 @@ export default function Home() {
                 Menu <span aria-hidden="true" className="text-[10px] transition-transform group-open:rotate-180">▾</span>
               </summary>
               <div className="absolute right-0 z-40 mt-2 w-56 rounded-xl border border-[#c9a852]/25 bg-[#040c1a]/95 p-2 text-sm shadow-[0_18px_60px_rgba(0,0,0,0.45)] backdrop-blur-md">
-                {[...SITE_NAV_ITEMS, SITE_NAV_MY_DOCUMENTS].map((item) => (
+                {[...SITE_NAV_ITEMS, ...SITE_NAV_CUSTOMER_ITEMS].map((item) => (
                   <Link key={item.href} href={siteNavHref(item, true)} className="block rounded-lg px-3 py-2 text-slate-200 hover:bg-white/5 hover:text-white">{item.label}</Link>
                 ))}
               </div>
@@ -249,7 +255,7 @@ export default function Home() {
         <div className={styles.heroGrid}>
           <div>
             <div className={styles.heroCapsules}>
-              <span className={`${styles.capsule} ${styles.pulse}`}>Legislativa 2026 · aktualizováno</span>
+              <span className={`${styles.capsule} ${styles.pulse}`}>Právní obsah průběžně aktualizován</span>
               <span className={`${styles.capsule} ${styles.capsuleIce}`}>PDF po dokončení objednávky</span>
               <span className={`${styles.capsule} ${styles.capsuleMint}`}>Nástroje zdarma</span>
             </div>
@@ -261,7 +267,7 @@ export default function Home() {
             <p className={styles.heroDescription}>
               Vyberete dokument, doplníte údaje a před objednávkou zkontrolujete náhled i cenu.
               Po zaplacení stáhnete PDF; podle typu dokumentu lze přidat DOCX nebo další podklady.
-              U nájmu, převodu vozidla a smlouvy o dílo můžete pokračovat v Moje případy.
+              U nájmu, převodu vozidla a smlouvy o dílo můžete pokračovat v Moje případy — soukromém přehledu s termíny, checklistem a připomínkami.
             </p>
             <div className={styles.heroActions}>
               <TrackedLink href="#situace" eventName="situation_started" eventParams={{ surface: 'homepage_hero', cta_type: 'choose_situation' }} className={styles.primaryAction}>
@@ -490,7 +496,7 @@ export default function Home() {
             <div className={`${styles.glass} ${styles.reveal} h-fit p-6`}>
               <span className={`${styles.capsule} ${styles.capsuleIce} ${styles.sectionKicker}`}>Legislativní radar 2027</span>
               <h3 className="font-serif italic text-2xl font-bold text-[#f2e7c8]">Co dnes platí a co se mění</h3>
-              <p className="mt-3 text-sm leading-6 text-slate-400">U jednotlivých změn rozlišujeme účinná pravidla, schválené změny a návrhy. Každá položka uvádí oficiální zdroj a datum kontroly.</p>
+              <p className="mt-3 text-sm leading-6 text-slate-400">U jednotlivých změn rozlišujeme účinná pravidla, schválené změny a návrhy. Každá položka uvádí oficiální zdroj a datum kontroly. U konkrétní změny si můžete zdarma zapnout e-mailové upozornění na změnu jejího statusu nebo data účinnosti.</p>
               <ul className="mt-5 space-y-4">
                 {HOMEPAGE_RADAR.map((change) => (
                   <li key={change.key} className="border-b border-white/6 pb-4 last:border-0 last:pb-0">

@@ -362,7 +362,12 @@ export default function CustomerZone() {
       <div className="relative z-10 mx-auto max-w-2xl">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
           <Link href={withLocale('/', locale)} className="text-xs font-bold uppercase tracking-widest text-slate-400 transition hover:text-[#e2c77b]">← {copy.home}</Link>
-          {locale === 'cs' ? <Link href="/moje-pripady" className="text-xs font-semibold text-[#e2c77b] transition hover:text-white">{copy.myCases} →</Link> : null}
+          {locale === 'cs' ? (
+            <div className="flex flex-wrap items-center gap-4">
+              <Link href="/moje" className="text-xs font-semibold text-[#e2c77b] transition hover:text-white">Můj účet →</Link>
+              <Link href="/moje-pripady" className="text-xs font-semibold text-[#e2c77b] transition hover:text-white">{copy.myCases} →</Link>
+            </div>
+          ) : null}
         </div>
 
         <header className="mb-8">

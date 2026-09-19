@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import LanguageSwitcher from '@/app/components/LanguageSwitcher';
 import {
+  SITE_NAV_CUSTOMER_ITEMS,
   SITE_NAV_ITEMS,
-  SITE_NAV_MY_DOCUMENTS,
   SITE_NAV_PRIMARY_CTA,
 } from '@/lib/site-nav';
 
@@ -34,12 +34,18 @@ export default function SiteHeader() {
 
         <div className="flex flex-shrink-0 items-center gap-2">
           <LanguageSwitcher current="cs" variant="desktop" />
-          <Link
-            href={SITE_NAV_MY_DOCUMENTS.href}
-            className="hidden rounded-lg border border-[#c9a852]/25 px-3 py-2 text-xs font-semibold text-[#c9a852] transition hover:border-[#c9a852]/55 hover:text-[#f2d58a] xl:inline-flex"
-          >
-            {SITE_NAV_MY_DOCUMENTS.label}
-          </Link>
+          <details className="group relative hidden lg:block">
+            <summary aria-label="Moje" className="cursor-pointer list-none rounded-lg border border-[#c9a852]/25 px-3 py-2 text-xs font-semibold text-[#c9a852] transition hover:border-[#c9a852]/55 hover:text-[#f2d58a] [&::-webkit-details-marker]:hidden">
+              Moje <span aria-hidden="true" className="ml-1 text-[10px] transition-transform group-open:rotate-180">▾</span>
+            </summary>
+            <div className="absolute right-0 z-50 mt-2 w-48 rounded-xl border border-[#c9a852]/25 bg-[#050a16] p-2 text-sm shadow-[0_18px_60px_rgba(0,0,0,0.55)]">
+              {SITE_NAV_CUSTOMER_ITEMS.map((item) => (
+                <Link key={item.href} href={item.href} className="block rounded-lg px-3 py-2 text-slate-200 hover:bg-white/5 hover:text-white">
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </details>
           <Link
             href={SITE_NAV_PRIMARY_CTA.href}
             className="hidden rounded-lg bg-[#c9a852] px-4 py-2 text-xs font-black uppercase tracking-tight text-[#07111e] transition hover:bg-[#e4c878] sm:inline-flex"
@@ -61,7 +67,7 @@ export default function SiteHeader() {
               aria-label="Hlavní navigace"
               className="absolute right-0 z-50 mt-2 w-56 rounded-xl border border-[#c9a852]/25 bg-[#050a16] p-2 text-sm shadow-[0_18px_60px_rgba(0,0,0,0.55)]"
             >
-              {[...SITE_NAV_ITEMS, SITE_NAV_MY_DOCUMENTS, SITE_NAV_PRIMARY_CTA].map((item) => (
+              {[...SITE_NAV_ITEMS, ...SITE_NAV_CUSTOMER_ITEMS, SITE_NAV_PRIMARY_CTA].map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}

@@ -137,6 +137,7 @@ export default function CaseHub() {
           <h1 className="font-serif text-4xl font-bold italic text-white">Moje případy</h1>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">Aktivní situace, důležité termíny a další kroky. Bez povinného účtu — přístup získáte bezpečným odkazem na e-mail, který jste použili u objednávky.</p>
           <div className="mt-5 flex flex-wrap gap-3">
+            <Link href="/moje" className="site-button-secondary">Můj účet</Link>
             <Link href="/zakaznicka-zona" className="site-button-secondary">Moje dokumenty</Link>
             {state === 'ready' ? <button type="button" onClick={() => { forgetCaseHubAccess(); setAccess(''); setCases([]); setState('idle'); }} className="site-button-secondary">Zavřít přístup v této kartě</button> : null}
           </div>

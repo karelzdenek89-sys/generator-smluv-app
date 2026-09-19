@@ -22,10 +22,26 @@ export const SITE_NAV_ITEMS: readonly SiteNavItem[] = [
   { href: '/faq', label: 'FAQ' },
 ];
 
+export const SITE_NAV_ACCOUNT: SiteNavItem = {
+  href: '/moje',
+  label: 'Můj účet',
+};
+
+export const SITE_NAV_MY_CASES: SiteNavItem = {
+  href: '/moje-pripady',
+  label: 'Moje případy',
+};
+
 export const SITE_NAV_MY_DOCUMENTS: SiteNavItem = {
   href: '/zakaznicka-zona',
   label: 'Moje dokumenty',
 };
+
+export const SITE_NAV_CUSTOMER_ITEMS: readonly SiteNavItem[] = [
+  SITE_NAV_ACCOUNT,
+  SITE_NAV_MY_CASES,
+  SITE_NAV_MY_DOCUMENTS,
+];
 
 /** Hlavní CTA v hlavičce. */
 export const SITE_NAV_PRIMARY_CTA = { href: '/#smlouvy', label: 'Vybrat' };

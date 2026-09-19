@@ -39,11 +39,18 @@ export default function LegalRadarPage() {
       crumbs={[{ label: 'SmlouvaHned', href: '/' }, { label: 'Změny 2027', href: '/zmeny-2027' }]}
       kicker="Legislativní radar"
       title="Změny 2027: co platí, co je schválené a co se teprve projednává"
-      lead="Každá položka má explicitní status, datum, dopad na vaše dokumenty a odkaz na oficiální zdroj. Návrh zákona nikdy neprezentujeme jako platné právo."
+      lead="Každá položka má explicitní status, datum, dopad na vaše dokumenty a odkaz na oficiální zdroj. U konkrétní změny si můžete zapnout bezplatné e-mailové upozornění na změnu statusu nebo data účinnosti. Návrh zákona nikdy neprezentujeme jako platné právo."
       updatedAt={verifiedAt}
       verifiedAt={verifiedAt}
     >
       <TrackView eventName="situation_viewed" eventParams={{ portal_situation: 'zmeny-2027', surface: 'legal_radar' }} />
+
+      <section className="mb-10 rounded-2xl border border-[#c9a852]/20 bg-[#c9a852]/[0.05] p-6" aria-labelledby="watch-intro-title">
+        <p className="site-kicker mb-2">Funkční upozornění zdarma</p>
+        <h2 id="watch-intro-title" className="font-serif text-2xl font-semibold text-white">Nemusíte změny kontrolovat ručně</h2>
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-400">U konkrétní legislativní změny si můžete zapnout e-mailové upozornění. Zprávu odešleme pouze při změně legislativního statusu nebo data účinnosti. Nejde o newsletter.</p>
+        <a href="#vsechny-zmeny" className="site-button-secondary mt-5">Vybrat změnu, kterou chci sledovat</a>
+      </section>
 
       <div className="space-y-14">
         <section aria-labelledby="statuses-title">

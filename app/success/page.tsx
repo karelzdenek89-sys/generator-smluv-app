@@ -505,13 +505,21 @@ function SuccessContent() {
           </div>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className={`grid gap-3 ${lang === 'cs' ? 'sm:grid-cols-3' : 'sm:grid-cols-2'}`}>
           <Link
             href={withLocale('/zakaznicka-zona', lang)}
             className="rounded-2xl border border-white/8 bg-white/3 px-6 py-4 text-center text-sm font-semibold text-white transition hover:bg-white/6"
           >
             {copy.myDocuments}
           </Link>
+          {lang === 'cs' ? (
+            <Link
+              href="/moje"
+              className="rounded-2xl border border-white/8 bg-white/3 px-6 py-4 text-center text-sm font-semibold text-white transition hover:bg-white/6"
+            >
+              Můj účet
+            </Link>
+          ) : null}
           <Link
             href={withLocale('/', lang)}
             className="rounded-2xl border border-white/8 bg-white/3 px-6 py-4 text-center text-sm font-semibold text-white transition hover:bg-white/6"
