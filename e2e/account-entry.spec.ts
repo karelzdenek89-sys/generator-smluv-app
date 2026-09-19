@@ -20,7 +20,7 @@ test('account entry exposes username/password registration and recovery', async 
 
   await page.getByRole('button', { name: 'Zapomenuté heslo' }).click();
   await expect(page.getByRole('button', { name: 'Poslat odkaz pro nové heslo' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Moje případy' })).toBeVisible();
+  await expect(page.getByRole('complementary').getByRole('link', { name: 'Moje případy' })).toBeVisible();
 });
 
 test('authenticated account connects profile, documents and cases', async ({ page }) => {
