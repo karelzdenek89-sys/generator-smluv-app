@@ -270,6 +270,12 @@ export async function POST(req: Request) {
           completed: true,
         });
 
+        // Reuse the delivery link on retries. Resend requires the same body
+        // for the same idempotency key, including after a lost HTTP response.
+        const portalToken = typeof existing.fulfilmentPortalToken === 'string'
+          ? existing.fulfilmentPortalToken
+          : await ensurePortalAccessToken(customerEmail, remainingTtl);
+
         await redis.set(
           key,
           {
@@ -283,6 +289,7 @@ export async function POST(req: Request) {
             paymentStatus: session.payment_status,
             customerEmail,
             deliveryEmail: customerEmail,
+            fulfilmentPortalToken: portalToken,
             partnerContext,
             ...(downloadToken ? { downloadToken } : {}),
           },
@@ -294,7 +301,6 @@ export async function POST(req: Request) {
         await redis.sadd(emailKey, session.id);
         const emailIndexTtl = await redis.ttl(emailKey);
         if (emailIndexTtl < remainingTtl) await redis.expire(emailKey, remainingTtl);
-        const portalToken = await ensurePortalAccessToken(customerEmail, remainingTtl);
 
         const resendKey = process.env.RESEND_API_KEY;
         if (!resendKey) throw new Error('RESEND_API_KEY is missing; fulfilment email cannot be sent.');

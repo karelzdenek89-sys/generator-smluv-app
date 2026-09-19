@@ -1,5 +1,31 @@
 import { expect, test } from '@playwright/test';
 
+test('password reset survives refresh and remains usable with an existing session', async ({ page }) => {
+  const user = { id: 'reset-user', username: 'reset-user', email: 'reset@example.com', displayName: 'Reset User', emailVerified: true, createdAt: '2026-09-18T00:00:00.000Z', lastLoginAt: null };
+  await page.route('**/api/account', async (route) => {
+    if (route.request().method() === 'GET') return route.fulfill({ json: { authenticated: true, user, csrf: 'old-csrf' } });
+    expect(route.request().postDataJSON()).toEqual({ action: 'reset_password', token: 'reset-test-token', password: 'new-password-2026' });
+    return route.fulfill({ json: { ok: true, user, csrf: 'new-csrf' } });
+  });
+  await page.goto('/moje#reset=reset-test-token');
+  await expect(page.getByLabel('Nové heslo', { exact: true })).toBeVisible();
+  await page.reload();
+  await page.getByLabel('Nové heslo', { exact: true }).fill('new-password-2026');
+  await page.getByRole('button', { name: 'Nastavit nové heslo', exact: true }).click();
+  await expect(page.getByRole('status')).toHaveText('Heslo bylo změněno a jste přihlášeni.');
+  await expect(page.getByRole('heading', { name: 'Údaje účtu' })).toBeVisible();
+  expect(page.url()).not.toContain('reset=');
+});
+
+test('missing password reset token explains how to recover', async ({ page }) => {
+  await page.route('**/api/account', (route) => route.fulfill({ json: { authenticated: false } }));
+  await page.goto('/moje?mode=reset');
+  await expect(page.getByText('Odkaz pro změnu hesla chybí nebo byl z adresy odstraněn. Vyžádejte si nový.')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Nastavit nové heslo', exact: true })).toBeDisabled();
+  await page.getByRole('button', { name: 'Zapomenuté heslo' }).click();
+  await expect(page.getByRole('button', { name: 'Poslat odkaz pro nové heslo' })).toBeVisible();
+});
+
 test('account entry exposes username/password registration and recovery', async ({ page }) => {
   await page.route('**/api/account', async (route) => {
     if (route.request().method() === 'GET') return route.fulfill({ json: { authenticated: false } });

@@ -309,7 +309,7 @@ export async function issueVerificationToken(user: AccountRecord): Promise<strin
 export async function verifyAccountEmail(token: string): Promise<AccountRecord | null> {
   if (token.length < 32 || token.length > 200) return null;
   const hashed = hashToken(token);
-  const record = await redis.get<{ userId: string }>(verifyKey(hashed));
+  const record = await redis.getdel<{ userId: string }>(verifyKey(hashed));
   if (!record) return null;
   const user = await getAccountById(record.userId);
   await Promise.all([redis.del(verifyKey(hashed)), redis.del(currentVerifyKey(record.userId))]);
@@ -334,7 +334,7 @@ export async function resetPasswordWithToken(token: string, password: string): P
   const validation = validatePassword(password);
   if (validation || token.length < 32 || token.length > 200) return null;
   const hashed = hashToken(token);
-  const record = await redis.get<{ userId: string }>(resetKey(hashed));
+  const record = await redis.getdel<{ userId: string }>(resetKey(hashed));
   if (!record) return null;
   const user = await getAccountById(record.userId);
   await Promise.all([redis.del(resetKey(hashed)), redis.del(currentResetKey(record.userId))]);
