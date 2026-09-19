@@ -1,5 +1,23 @@
 import { expect, test } from '@playwright/test';
 
+test('mobile navigation closes after route and homepage anchor selection', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/moje');
+  const menu = page.locator('summary[aria-label="Otevřít menu"]');
+  await menu.click();
+  await page.locator('details[open]').getByRole('link', { name: 'Moje případy', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Moje případy', level: 1 })).toBeVisible();
+  await expect(page.locator('details[open]')).toHaveCount(0);
+  await page.goto('/');
+  await menu.click();
+  await page.locator('details[open]').getByRole('link', { name: 'Situace', exact: true }).click();
+  await expect(page.locator('details[open]')).toHaveCount(0);
+  await menu.click();
+  await menu.press('Escape');
+  await expect(page.locator('details[open]')).toHaveCount(0);
+  await expect(menu).toBeFocused();
+});
+
 test('password reset survives refresh and remains usable with an existing session', async ({ page }) => {
   const user = { id: 'reset-user', username: 'reset-user', email: 'reset@example.com', displayName: 'Reset User', emailVerified: true, createdAt: '2026-09-18T00:00:00.000Z', lastLoginAt: null };
   await page.route('**/api/account', async (route) => {
