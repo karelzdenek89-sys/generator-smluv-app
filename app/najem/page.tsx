@@ -935,7 +935,17 @@ function LeaseBuilderContent() {
                   <span className="builder-mobile-disclosure-title">{ui.form.sections.handover.title}</span>
                 </span>
                 <span className="builder-mobile-disclosure-action">
-                  {builderLocale === 'cs' ? 'Rozbalit doplňující údaje' : builderLocale === 'en' ? 'Show additional details' : 'Показати додаткові дані'}
+                  {builderLocale === 'cs'
+                    ? handoverOpen
+                      ? 'Sbalit doplňující údaje'
+                      : 'Rozbalit doplňující údaje'
+                    : builderLocale === 'en'
+                      ? handoverOpen
+                        ? 'Hide additional details'
+                        : 'Show additional details'
+                      : handoverOpen
+                        ? 'Згорнути додаткові дані'
+                        : 'Показати додаткові дані'}
                 </span>
               </summary>
               <div className="builder-mobile-disclosure-content">
@@ -1056,7 +1066,17 @@ function LeaseBuilderContent() {
                   <span className="builder-mobile-disclosure-title">{ui.form.sections.rules.title}</span>
                 </span>
                 <span className="builder-mobile-disclosure-action">
-                  {builderLocale === 'cs' ? 'Rozbalit nastavení' : builderLocale === 'en' ? 'Show settings' : 'Показати налаштування'}
+                  {builderLocale === 'cs'
+                    ? rulesOpen
+                      ? 'Sbalit nastavení'
+                      : 'Rozbalit nastavení'
+                    : builderLocale === 'en'
+                      ? rulesOpen
+                        ? 'Hide settings'
+                        : 'Show settings'
+                      : rulesOpen
+                        ? 'Згорнути налаштування'
+                        : 'Показати налаштування'}
                 </span>
               </summary>
               <div className="builder-mobile-disclosure-content">
@@ -1274,11 +1294,9 @@ function LeaseBuilderContent() {
                       {ui.sidebar.riskTitle}
                     </h3>
                     <p className="text-sm text-slate-400 mt-1">{riskAnalysis.label}</p>
-                    {builderLocale === 'cs' ? (
-                      <p className="mt-2 max-w-sm text-xs leading-5 text-slate-500">
-                        Orientační kontrola vyplněných údajů a voleb. Nejde o individuální právní posouzení dokumentu.
-                      </p>
-                    ) : null}
+                    <p className="mt-2 max-w-sm text-xs leading-5 text-slate-500">
+                      {ui.sidebar.riskDisclaimer}
+                    </p>
                   </div>
                   <div
                     className={`text-3xl font-black ${

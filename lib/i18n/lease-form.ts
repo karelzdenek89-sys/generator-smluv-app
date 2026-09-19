@@ -134,6 +134,7 @@ export type LeaseFormUi = {
     badgeGood: string;
     badgeFill: string;
     riskTitle: string;
+    riskDisclaimer: string;
     riskOk: string;
     riskLabels: { good: string; average: string; improve: string };
     previewTitle: string;
@@ -397,6 +398,7 @@ const LEASE_FORM_CS: LeaseFormUi = {
     badgeGood: 'Dobré',
     badgeFill: 'Doplň údaje',
     riskTitle: 'Kontrola nastavení',
+    riskDisclaimer: 'Orientační kontrola vyplněných údajů a voleb. Nejde o individuální právní posouzení dokumentu.',
     riskOk: 'Smlouva je zatím nastavena velmi dobře. Rizikové prvky nejsou detekovány.',
     riskLabels: { good: 'Dobré nastavení', average: 'Průměrná ochrana', improve: 'Doporučená doplnění' },
     previewTitle: 'Náhled výstupu',
@@ -676,11 +678,12 @@ export const LEASE_FORM_EN: LeaseFormUi = {
   },
   sidebar: {
     completionTitle: 'Completion',
-    completionHint: 'The more complete your data, the stronger the resulting contract.',
+    completionHint: 'The more complete the information you provide, the more specific the resulting document will be.',
     badgeReady: 'Almost done',
     badgeGood: 'Good',
     badgeFill: 'Add details',
     riskTitle: 'Completeness check',
+    riskDisclaimer: 'This is an indicative check of the information and options you entered. It is not an individual legal assessment of the document.',
     riskOk: 'The lease is set up well so far. No major risks detected.',
     riskLabels: { good: 'Good setup', average: 'Average protection', improve: 'Suggested improvements' },
     previewTitle: 'Output preview',
