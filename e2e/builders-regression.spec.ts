@@ -133,3 +133,35 @@ test('secure download exchanges the fragment token through POST', async ({ page 
   await expect.poll(() => requestData).toEqual({ method: 'POST', token });
   await expect(page.getByText('Stahování bylo zahájeno.')).toBeVisible();
 });
+
+
+test('trust and mobile disclosure wording stays accurate', async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto('/najem');
+
+  await expect(page.getByText('Stav vyplnění')).toBeVisible();
+  await expect(page.getByText('Čím úplnější údaje zadáte, tím konkrétnější bude výsledný dokument.')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Kontrola nastavení' })).toBeVisible();
+  await expect(page.getByText('Orientační kontrola vyplněných údajů a voleb. Nejde o individuální právní posouzení dokumentu.')).toBeVisible();
+
+  const handover = page.locator('[data-mobile-disclosure="handover"]');
+  const rules = page.locator('[data-mobile-disclosure="rules"]');
+  await expect(handover).not.toHaveAttribute('open', '');
+  await expect(rules).not.toHaveAttribute('open', '');
+  await handover.locator('summary').click();
+  await expect(handover).toHaveAttribute('open', '');
+
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.reload();
+  await expect(page.locator('input[name="keysCount"]')).toBeVisible();
+  await expect(page.locator('input[name="maxOccupants"]')).toBeVisible();
+
+  await page.goto('/faq');
+  await expect(page.locator('main')).toContainText('Platnost a právní účinky konkrétní smlouvy');
+
+  await page.goto('/');
+  await expect(page).toHaveTitle('Generování smluv online podle situace | SmlouvaHned');
+
+  await page.goto('/blog/pracovni-smlouva-2026');
+  await expect(page.getByText('Potřebujete tento dokument připravit?').first()).toBeVisible();
+});

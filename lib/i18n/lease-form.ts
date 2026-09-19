@@ -392,11 +392,11 @@ const LEASE_FORM_CS: LeaseFormUi = {
   },
   sidebar: {
     completionTitle: 'Stav vyplnění',
-    completionHint: 'Čím kompletnější údaje, tím silnější výsledná smlouva.',
+    completionHint: 'Čím úplnější údaje zadáte, tím konkrétnější bude výsledný dokument.',
     badgeReady: 'Skoro hotovo',
     badgeGood: 'Dobré',
     badgeFill: 'Doplň údaje',
-    riskTitle: 'Analýza smlouvy',
+    riskTitle: 'Kontrola nastavení',
     riskOk: 'Smlouva je zatím nastavena velmi dobře. Rizikové prvky nejsou detekovány.',
     riskLabels: { good: 'Dobré nastavení', average: 'Průměrná ochrana', improve: 'Doporučená doplnění' },
     previewTitle: 'Náhled výstupu',

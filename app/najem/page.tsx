@@ -910,12 +910,24 @@ function LeaseBuilderContent() {
               </div>
             </section>
 
-            <section className={cardClass}>
-              <SectionTitle
-                index={ui.form.sections.handover.index}
-                title={ui.form.sections.handover.title}
-                subtitle={ui.form.sections.handover.subtitle}
-              />
+            <details className={`${cardClass} builder-mobile-disclosure`} data-mobile-disclosure="handover">
+              <summary className="builder-mobile-disclosure-summary">
+                <span>
+                  <span className="builder-mobile-disclosure-index">{ui.form.sections.handover.index}</span>
+                  <span className="builder-mobile-disclosure-title">{ui.form.sections.handover.title}</span>
+                </span>
+                <span className="builder-mobile-disclosure-action">
+                  {builderLocale === 'cs' ? 'Rozbalit doplňující údaje' : builderLocale === 'en' ? 'Show additional details' : 'Показати додаткові дані'}
+                </span>
+              </summary>
+              <div className="builder-mobile-disclosure-content">
+                <div className="hidden sm:block">
+                  <SectionTitle
+                    index={ui.form.sections.handover.index}
+                    title={ui.form.sections.handover.title}
+                    subtitle={ui.form.sections.handover.subtitle}
+                  />
+                </div>
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <input
                   value={formData.keysCount}
@@ -1009,14 +1021,27 @@ function LeaseBuilderContent() {
                 placeholder={ui.form.placeholders.defects}
                 className={textareaClass} aria-label={ui.form.placeholders.defects}
               />
-            </section>
+              </div>
+            </details>
 
-            <section className={cardClass}>
-              <SectionTitle
-                index={ui.form.sections.rules.index}
-                title={ui.form.sections.rules.title}
-                subtitle={ui.form.sections.rules.subtitle}
-              />
+            <details className={`${cardClass} builder-mobile-disclosure`} data-mobile-disclosure="rules">
+              <summary className="builder-mobile-disclosure-summary">
+                <span>
+                  <span className="builder-mobile-disclosure-index">{ui.form.sections.rules.index}</span>
+                  <span className="builder-mobile-disclosure-title">{ui.form.sections.rules.title}</span>
+                </span>
+                <span className="builder-mobile-disclosure-action">
+                  {builderLocale === 'cs' ? 'Rozbalit nastavení' : builderLocale === 'en' ? 'Show settings' : 'Показати налаштування'}
+                </span>
+              </summary>
+              <div className="builder-mobile-disclosure-content">
+                <div className="hidden sm:block">
+                  <SectionTitle
+                    index={ui.form.sections.rules.index}
+                    title={ui.form.sections.rules.title}
+                    subtitle={ui.form.sections.rules.subtitle}
+                  />
+                </div>
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <ToggleCard
                   name="allowPets"
@@ -1087,7 +1112,8 @@ function LeaseBuilderContent() {
                   className={inputClass} aria-label={ui.form.placeholders.lateVacatePenalty}
                 />
               </div>
-            </section>
+              </div>
+            </details>
 
             {/* Řešení sporů */}
             <section className={cardClass}>
@@ -1223,6 +1249,11 @@ function LeaseBuilderContent() {
                       {ui.sidebar.riskTitle}
                     </h3>
                     <p className="text-sm text-slate-400 mt-1">{riskAnalysis.label}</p>
+                    {builderLocale === 'cs' ? (
+                      <p className="mt-2 max-w-sm text-xs leading-5 text-slate-500">
+                        Orientační kontrola vyplněných údajů a voleb. Nejde o individuální právní posouzení dokumentu.
+                      </p>
+                    ) : null}
                   </div>
                   <div
                     className={`text-3xl font-black ${
