@@ -13,7 +13,7 @@ test('account entry exposes username/password registration and recovery', async 
 
   await page.getByRole('button', { name: 'Registrace' }).click();
   await expect(page.getByLabel('Uživatelské jméno', { exact: true })).toBeVisible();
-  await expect(page.getByLabel('E-mail', { exact: true })).toBeVisible();
+  await expect(page.locator('#register-email')).toBeVisible();
   await expect(page.getByLabel('Heslo', { exact: true })).toBeVisible();
   await expect(page.getByRole('link', { name: 'obchodními podmínkami' })).toHaveAttribute('href', '/obchodni-podminky');
   await expect(page.getByRole('link', { name: 'zásadami ochrany osobních údajů' })).toHaveAttribute('href', '/gdpr');
@@ -55,7 +55,7 @@ test('authenticated account connects profile, documents and cases', async ({ pag
 
 test('homepage customer menu contains account, cases and documents', async ({ page }) => {
   await page.goto('/');
-  const customerMenu = page.getByText('Moje', { exact: true }).first();
+  const customerMenu = page.locator('summary[aria-label="Moje"]');
   await customerMenu.click();
   await expect(page.getByRole('link', { name: 'Můj účet' }).first()).toBeVisible();
   await expect(page.getByRole('link', { name: 'Moje případy' }).first()).toBeVisible();
