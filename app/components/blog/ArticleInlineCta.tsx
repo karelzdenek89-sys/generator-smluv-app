@@ -24,7 +24,7 @@ export default function ArticleInlineCta({
   return (
     <div className="blog-callout my-10 rounded-[1.5rem] p-6">
       <div className="site-kicker">
-        {eyebrow ?? (primary ? 'Související dokument' : 'Další krok')}
+        {eyebrow ?? (primary ? 'Potřebujete tento dokument připravit?' : 'Další krok')}
       </div>
       <h3 className="mt-4 text-2xl font-semibold tracking-[-0.03em] text-[#f2e7c8]">
         {title}
