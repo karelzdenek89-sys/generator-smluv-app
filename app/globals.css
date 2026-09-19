@@ -385,3 +385,52 @@ h1, h2,
   border-radius: 1.5rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 }
+
+
+/* Mobile progressive disclosure for long contract forms. On desktop the
+   content stays fully visible; on small screens users can expand advanced
+   sections only when they need them. */
+.builder-mobile-disclosure > .builder-mobile-disclosure-summary {
+  display: flex;
+  cursor: pointer;
+  list-style: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: #f8fafc;
+}
+.builder-mobile-disclosure > .builder-mobile-disclosure-summary::-webkit-details-marker {
+  display: none;
+}
+.builder-mobile-disclosure-index {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: #fbbf24;
+  font-size: 0.6875rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.builder-mobile-disclosure-title {
+  display: block;
+  font-size: 1rem;
+  font-weight: 800;
+}
+.builder-mobile-disclosure-action {
+  max-width: 8rem;
+  text-align: right;
+  color: #94a3b8;
+  font-size: 0.75rem;
+  line-height: 1.35;
+}
+.builder-mobile-disclosure[open] > .builder-mobile-disclosure-summary {
+  margin-bottom: 1.25rem;
+}
+@media (min-width: 640px) {
+  .builder-mobile-disclosure > .builder-mobile-disclosure-summary {
+    display: none;
+  }
+  .builder-mobile-disclosure:not([open]) > .builder-mobile-disclosure-content {
+    display: block;
+  }
+}

@@ -77,7 +77,7 @@ const DEFAULT_LABELS: ArticlePageLabels = {
   toc: 'Obsah článku',
   tocAria: 'Obsah článku',
   relatedPages: 'Související stránky',
-  primaryCtaEyebrow: 'Související dokument',
+  primaryCtaEyebrow: 'Potřebujete tento dokument připravit?',
   secondaryCtaEyebrow: 'Další krok',
   trustEyebrow: 'Kdy služba dává smysl',
   trustGeneratorTitle: 'Vhodné pro standardní situaci',
@@ -228,7 +228,7 @@ export default function ArticlePageLayout({
         <div className="my-10">
           <ArticleInlineCta
             title={primaryAction.title}
-            body="Pokračujte rovnou do generátoru — údaje vyplníte za pár minut a dokument si stáhnete jako PDF."
+            body="Pokračujte do online průvodce. Vyplníte potřebné údaje a před dokončením si zkontrolujete náhled výsledného dokumentu."
             buttonLabel={primaryAction.buttonLabel}
             href={primaryAction.href}
             variant="subtle"

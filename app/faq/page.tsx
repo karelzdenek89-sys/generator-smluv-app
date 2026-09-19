@@ -65,7 +65,7 @@ const FAQ_GROUPS: FaqGroup[] = [
       {
         question: 'Jsou dokumenty právně platné?',
         answer:
-          'Výstupem je strukturovaný PDF dokument odpovídající příslušným ustanovením občanského zákoníku č. 89/2012 Sb. a dalších předpisů (zákoník práce, autorský zákon). Po podpisu oběma stranami je platný smluvní dokument. Doporučujeme před podpisem všechna data zkontrolovat.',
+          'Výstup je připravený k závěrečné kontrole a podpisu na základě údajů, které zadáte, a používá ustanovení určená pro zvolený typ dokumentu. Platnost a právní účinky konkrétní smlouvy vždy závisejí také na jejím obsahu, okolnostech uzavření, oprávnění stran a splnění požadavků právních předpisů. U nestandardní nebo sporné situace doporučujeme individuální právní posouzení.',
       },
       {
         question: 'Jsou tu šablony aktualizované?',

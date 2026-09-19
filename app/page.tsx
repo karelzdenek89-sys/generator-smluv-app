@@ -74,10 +74,10 @@ for (const locale of FOREIGN_LOCALES) {
 }
 
 export const metadata: Metadata = {
-  title: { absolute: 'Smlouvy online pro životní a podnikatelské situace — PDF ihned | SmlouvaHned' },
+  title: { absolute: 'Generování smluv online podle situace | SmlouvaHned' },
   description: FREE_BASIC_DPP
-    ? 'Smlouvy online podle situace: zakázka, zaměstnávání, pronájem, auto, půjčka. 14 typů smluv dle OZ 2026, základní DPP zdarma, další od 99 Kč. Nástroje zdarma.'
-    : 'Smlouvy online podle situace: zakázka, zaměstnávání, pronájem, auto, půjčka. 14 typů smluv dle OZ 2026 od 99 Kč, PDF ihned. Nástroje zdarma a radar změn 2027.',
+    ? 'Generování smluv online podle situace: pronájem, práce, zakázka, auto i půjčka. 14 typů dokumentů, náhled před dokončením a základní DPP zdarma.'
+    : 'Generování smluv online podle situace: pronájem, práce, zakázka, auto i půjčka. 14 typů dokumentů, náhled před dokončením a ceny od 99 Kč.',
   alternates: { canonical: HOMEPAGE_BASE_URL, languages: homepageLanguageAlternates },
   openGraph: {
     title: 'Smlouvy online pro životní a podnikatelské situace — PDF ihned',
