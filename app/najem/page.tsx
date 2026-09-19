@@ -190,6 +190,17 @@ function LeaseBuilderContent() {
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [wideDisclosureLayout, setWideDisclosureLayout] = useState(false);
+  const [handoverOpen, setHandoverOpen] = useState(false);
+  const [rulesOpen, setRulesOpen] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia('(min-width: 640px)');
+    const syncLayout = () => setWideDisclosureLayout(media.matches);
+    syncLayout();
+    media.addEventListener('change', syncLayout);
+    return () => media.removeEventListener('change', syncLayout);
+  }, []);
 
   useEffect(() => {
     if (!isLandlordPackage) return;
@@ -910,7 +921,14 @@ function LeaseBuilderContent() {
               </div>
             </section>
 
-            <details className={`${cardClass} builder-mobile-disclosure`} data-mobile-disclosure="handover">
+            <details
+              className={`${cardClass} builder-mobile-disclosure`}
+              data-mobile-disclosure="handover"
+              open={wideDisclosureLayout || handoverOpen}
+              onToggle={(event) => {
+                if (!wideDisclosureLayout) setHandoverOpen(event.currentTarget.open);
+              }}
+            >
               <summary className="builder-mobile-disclosure-summary">
                 <span>
                   <span className="builder-mobile-disclosure-index">{ui.form.sections.handover.index}</span>
@@ -1024,7 +1042,14 @@ function LeaseBuilderContent() {
               </div>
             </details>
 
-            <details className={`${cardClass} builder-mobile-disclosure`} data-mobile-disclosure="rules">
+            <details
+              className={`${cardClass} builder-mobile-disclosure`}
+              data-mobile-disclosure="rules"
+              open={wideDisclosureLayout || rulesOpen}
+              onToggle={(event) => {
+                if (!wideDisclosureLayout) setRulesOpen(event.currentTarget.open);
+              }}
+            >
               <summary className="builder-mobile-disclosure-summary">
                 <span>
                   <span className="builder-mobile-disclosure-index">{ui.form.sections.rules.index}</span>
