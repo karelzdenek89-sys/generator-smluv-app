@@ -6,6 +6,7 @@ import DifferentiationSection from '@/app/components/marketing/DifferentiationSe
 import ProductScopeStrip from '@/app/components/marketing/ProductScopeStrip';
 import ExpatEntryLinks from '@/app/components/ExpatEntryLinks';
 import LanguageSwitcher from '@/app/components/LanguageSwitcher';
+import NavigationMenu from '@/app/components/NavigationMenu';
 import TrackedLink from '@/app/components/analytics/TrackedLink';
 import HomepageAnalyticsTracker from '@/app/components/analytics/HomepageAnalyticsTracker';
 import { FOREIGN_LOCALES, LOCALE_META } from '@/lib/i18n/locales';
@@ -222,24 +223,24 @@ export default function Home() {
             </div>
           </Link>
 
-          <div className="hidden items-center gap-7 text-[13px] text-slate-300 md:flex">
+          <div className="hidden items-center gap-7 text-[13px] text-slate-300 lg:flex">
             {SITE_NAV_ITEMS.map((item) => (
               <Link key={item.href} href={siteNavHref(item, true)} className="transition-colors hover:text-white">
                 {item.label}
               </Link>
             ))}
-            <details className="group relative">
+            <NavigationMenu className="group relative">
               <summary aria-label="Moje" className="cursor-pointer list-none rounded-lg border border-[#c9a852]/30 px-4 py-1.5 text-[#c9a852] transition hover:border-[#c9a852]/60 hover:text-[#d4b86a] [&::-webkit-details-marker]:hidden">Moje <span aria-hidden="true" className="ml-1 text-[10px] transition-transform group-open:rotate-180">▾</span></summary>
               <div className="absolute right-0 z-50 mt-2 w-48 rounded-xl border border-[#c9a852]/25 bg-[#040c1a]/95 p-2 text-sm shadow-[0_18px_60px_rgba(0,0,0,0.45)] backdrop-blur-md">
                 {SITE_NAV_CUSTOMER_ITEMS.map((item) => <Link key={item.href} href={item.href} className="block rounded-lg px-3 py-2 text-slate-200 hover:bg-white/5 hover:text-white">{item.label}</Link>)}
               </div>
-            </details>
+            </NavigationMenu>
             <LanguageSwitcher current="cs" variant="desktop" />
           </div>
 
-          <div className="flex items-center gap-2 md:hidden">
+          <div className="flex items-center gap-2 lg:hidden">
             <LanguageSwitcher current="cs" variant="desktop" />
-            <details className="group relative">
+            <NavigationMenu className="group relative">
               <summary className="flex cursor-pointer select-none list-none items-center gap-1.5 rounded-lg border border-[#c9a852]/30 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-[#c9a852] [&::-webkit-details-marker]:hidden" aria-label="Otevřít menu">
                 Menu <span aria-hidden="true" className="text-[10px] transition-transform group-open:rotate-180">▾</span>
               </summary>
@@ -248,7 +249,7 @@ export default function Home() {
                   <Link key={item.href} href={siteNavHref(item, true)} className="block rounded-lg px-3 py-2 text-slate-200 hover:bg-white/5 hover:text-white">{item.label}</Link>
                 ))}
               </div>
-            </details>
+            </NavigationMenu>
           </div>
         </nav>
 

@@ -73,6 +73,19 @@ async function main() {
   assert.equal(await resolveAccountSession(session.token), null, 'password reset revokes previous sessions');
   assert.equal(await resetPasswordWithToken(resetToken, 'treti-heslo-2026'), null, 'reset token is one-time');
 
+  const concurrentVerifyToken = await issueVerificationToken(reset!);
+  const verificationAttempts = await Promise.all([
+    verifyAccountEmail(concurrentVerifyToken),
+    verifyAccountEmail(concurrentVerifyToken),
+  ]);
+  assert.equal(verificationAttempts.filter(Boolean).length, 1, 'only one concurrent verification consumes the token');
+  const concurrentResetToken = await issuePasswordResetToken(reset!);
+  const resetAttempts = await Promise.all([
+    resetPasswordWithToken(concurrentResetToken, 'concurrent-password-one'),
+    resetPasswordWithToken(concurrentResetToken, 'concurrent-password-two'),
+  ]);
+  assert.equal(resetAttempts.filter(Boolean).length, 1, 'only one concurrent reset changes the password');
+
   for (let i = 0; i < 25; i += 1) await createAccountSession(reset!);
   const activeSessionHashes = await memoryRedis.smembers(`account:sessions:${reset!.id}`);
   assert.ok(activeSessionHashes.length <= 20, 'active sessions are bounded');
@@ -135,6 +148,35 @@ async function main() {
     password: 'api-test-password-2026',
   }));
   assert.equal(goodLogin.status, 200, 'API login accepts verified credential form without account enumeration');
+
+  // Resend rejects a reused idempotency key with a different email body.
+  // Two resets in the same minute must each deliver their new token.
+  const originalFetch = globalThis.fetch;
+  const originalNow = Date.now;
+  const emailBodies: { key: string; text: string }[] = [];
+  process.env.RESEND_API_KEY = 're_test_local_mock';
+  Date.now = () => 1_789_800_000_000;
+  globalThis.fetch = (async (input, init) => {
+    assert.equal(String(input), 'https://api.resend.com/emails');
+    const body = JSON.parse(String(init?.body)) as { text: string };
+    emailBodies.push({ key: new Headers(init?.headers).get('Idempotency-Key') ?? '', text: body.text });
+    return Response.json({ id: 'mock-email' });
+  }) as typeof fetch;
+  try {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const response = await POST(makeRequest({ action: 'forgot_password', login: 'api-test' }));
+      assert.equal(response.status, 200);
+    }
+    assert.equal(emailBodies.length, 2);
+    assert.notEqual(emailBodies[0].key, emailBodies[1].key, 'different reset links use different delivery keys');
+    const tokens = emailBodies.map((email) => new URL(email.text.match(/https?:\/\/\S+/)![0]).hash.slice('#reset='.length));
+    assert.equal(await resetPasswordWithToken(tokens[0], 'reset-before-resend'), null, 'previous reset link is revoked');
+    assert.ok(await resetPasswordWithToken(tokens[1], 'reset-after-resend'), 'latest delivered reset link works');
+  } finally {
+    globalThis.fetch = originalFetch;
+    Date.now = originalNow;
+    delete process.env.RESEND_API_KEY;
+  }
 
   memoryRedis.reset();
   console.log('Account auth tests passed (registration, password hashing, verification, sessions, profile, reset, deletion, API security smoke).');

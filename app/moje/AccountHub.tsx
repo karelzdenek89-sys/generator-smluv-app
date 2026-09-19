@@ -88,7 +88,7 @@ export default function AccountHub() {
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
     const requestedMode = query.get('mode');
-    if (requestedMode === 'register' || requestedMode === 'forgot' || requestedMode === 'login') setMode(requestedMode);
+    if (requestedMode === 'register' || requestedMode === 'forgot' || requestedMode === 'login' || requestedMode === 'reset') setMode(requestedMode);
 
     const hash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
     const verify = hash.get('verify');
@@ -96,7 +96,8 @@ export default function AccountHub() {
     if (reset) {
       setResetToken(reset);
       setMode('reset');
-      window.history.replaceState(window.history.state, '', '/moje?mode=reset');
+      // Keep the token in the fragment until it is consumed, so refresh works.
+      // Fragments are never included in HTTP requests or referrer headers.
     }
     if (verify) {
       setBusy('verify');
@@ -149,7 +150,7 @@ export default function AccountHub() {
     event.preventDefault(); start('reset');
     try {
       const body = await api('reset_password', { token: resetToken, password: newPassword }, '');
-      applySession(body); setNewPassword(''); setMessage('Heslo bylo změněno a jste přihlášeni.');
+      applySession(body); setNewPassword(''); setResetToken(''); setMode('login'); setMessage('Heslo bylo změněno a jste přihlášeni.');
       window.history.replaceState(window.history.state, '', '/moje');
     } catch (reason) { setError(reason instanceof Error ? reason.message : 'Heslo se nepodařilo změnit.'); }
     finally { end(); }
@@ -240,10 +241,10 @@ export default function AccountHub() {
         {message ? <div role="status" className="mb-5 rounded-xl border border-emerald-500/25 bg-emerald-500/[0.06] p-4 text-sm leading-6 text-emerald-100">{message}</div> : null}
         {error ? <div role="alert" className="mb-5 rounded-xl border border-red-500/25 bg-red-500/[0.06] p-4 text-sm leading-6 text-red-200">{error}</div> : null}
 
-        {!user ? (
+        {!user || mode === 'reset' ? (
           <div className="grid gap-6 lg:grid-cols-[minmax(0,.95fr)_minmax(300px,.65fr)]">
             <section className="site-content-card rounded-3xl p-6 md:p-8">
-              <div className="mb-6 flex flex-wrap gap-2" role="tablist" aria-label="Přístup k účtu">
+              <div className="mb-6 flex flex-wrap gap-2" role="group" aria-label="Přístup k účtu">
                 {([['login','Přihlášení'],['register','Registrace'],['forgot','Zapomenuté heslo']] as const).map(([key,label]) => (
                   <button key={key} type="button" onClick={() => { setMode(key); setError(''); setMessage(''); }} className={`rounded-xl border px-4 py-2 text-sm font-semibold transition ${mode === key ? 'border-[#c9a852]/55 bg-[#c9a852]/10 text-[#e8d092]' : 'border-white/10 text-slate-400 hover:text-white'}`}>{label}</button>
                 ))}
@@ -259,7 +260,7 @@ export default function AccountHub() {
                 <div><label htmlFor="register-username" className="site-form-label">Uživatelské jméno</label><input id="register-username" className="site-input" autoComplete="username" value={register.username} onChange={(e) => setRegister((c) => ({...c, username:e.target.value}))} required minLength={3} maxLength={32} /><p className="mt-1 text-xs text-slate-500">3–32 znaků; písmena, čísla, tečka, pomlčka nebo podtržítko.</p></div>
                 <div><label htmlFor="register-email" className="site-form-label">E-mail</label><input id="register-email" type="email" className="site-input" autoComplete="email" value={register.email} onChange={(e) => setRegister((c) => ({...c, email:e.target.value}))} required /></div>
                 <div><label htmlFor="register-name" className="site-form-label">Zobrazované jméno <span className="normal-case tracking-normal text-slate-500">(volitelné)</span></label><input id="register-name" className="site-input" autoComplete="name" value={register.displayName} onChange={(e) => setRegister((c) => ({...c, displayName:e.target.value}))} maxLength={80} /></div>
-                <div><label htmlFor="register-password" className="site-form-label">Heslo</label><input id="register-password" type="password" className="site-input" autoComplete="new-password" value={register.password} onChange={(e) => setRegister((c) => ({...c, password:e.target.value}))} required minLength={10} maxLength={128} /><p className="mt-1 text-xs text-slate-500">Alespoň 10 znaků. Heslo ukládáme pouze jako jednosměrný salted hash.</p></div>
+                <div><label htmlFor="register-password" className="site-form-label">Heslo</label><input id="register-password" type="password" className="site-input" autoComplete="new-password" value={register.password} onChange={(e) => setRegister((c) => ({...c, password:e.target.value}))} required minLength={10} maxLength={128} /><p className="mt-1 text-xs text-slate-500">Alespoň 10 znaků. Použijte heslo, které nepoužíváte u jiné služby.</p></div>
                 <label className="flex items-start gap-3 text-xs leading-6 text-slate-400"><input type="checkbox" checked={register.acceptTerms} onChange={(e) => setRegister((c) => ({...c, acceptTerms:e.target.checked}))} className="mt-1 h-4 w-4 accent-[#c9a852]" required /><span>Potvrzuji, že jsem se seznámil(a) s <Link href="/obchodni-podminky" className="text-[#e8d092] underline">obchodními podmínkami</Link> a <Link href="/gdpr" className="text-[#e8d092] underline">zásadami ochrany osobních údajů</Link>. Nejde o souhlas s marketingem.</span></label>
                 <button type="submit" disabled={busy === 'register'} className="site-button-primary w-full">{busy === 'register' ? 'Vytvářím účet…' : 'Vytvořit účet'}</button>
               </form> : null}
@@ -281,7 +282,7 @@ export default function AccountHub() {
             <aside className="site-content-card rounded-3xl p-6">
               <p className="site-kicker mb-2">Bez účtu to dál funguje</p>
               <h2 className="site-heading-md">Stávající bezpečné odkazy zůstávají</h2>
-              <p className="mt-3 text-sm leading-7 text-slate-400">Nechcete účet? Zakoupené dokumenty a případy můžete dál otevírat přes jednorázové odkazy zasílané na e-mail z objednávky.</p>
+              <p className="mt-3 text-sm leading-7 text-slate-400">Nechcete účet? Zakoupené dokumenty a případy můžete dál otevírat přes bezpečné odkazy zasílané na e-mail z objednávky. Odkazy fungují po dobu své platnosti; nikomu je nepřeposílejte.</p>
               <div className="mt-5 grid gap-3"><Link href="/zakaznicka-zona" className="site-button-secondary justify-center">Moje dokumenty</Link><Link href="/moje-pripady" className="site-button-secondary justify-center">Moje případy</Link></div>
             </aside>
           </div>

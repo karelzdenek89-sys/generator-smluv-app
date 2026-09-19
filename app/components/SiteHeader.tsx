@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import LanguageSwitcher from '@/app/components/LanguageSwitcher';
+import NavigationMenu from '@/app/components/NavigationMenu';
 import {
   SITE_NAV_CUSTOMER_ITEMS,
   SITE_NAV_ITEMS,
@@ -34,7 +35,7 @@ export default function SiteHeader() {
 
         <div className="flex flex-shrink-0 items-center gap-2">
           <LanguageSwitcher current="cs" variant="desktop" />
-          <details className="group relative hidden lg:block">
+          <NavigationMenu className="group relative hidden lg:block">
             <summary aria-label="Moje" className="cursor-pointer list-none rounded-lg border border-[#c9a852]/25 px-3 py-2 text-xs font-semibold text-[#c9a852] transition hover:border-[#c9a852]/55 hover:text-[#f2d58a] [&::-webkit-details-marker]:hidden">
               Moje <span aria-hidden="true" className="ml-1 text-[10px] transition-transform group-open:rotate-180">▾</span>
             </summary>
@@ -45,7 +46,7 @@ export default function SiteHeader() {
                 </Link>
               ))}
             </div>
-          </details>
+          </NavigationMenu>
           <Link
             href={SITE_NAV_PRIMARY_CTA.href}
             className="hidden rounded-lg bg-[#c9a852] px-4 py-2 text-xs font-black uppercase tracking-tight text-[#07111e] transition hover:bg-[#e4c878] sm:inline-flex"
@@ -55,7 +56,7 @@ export default function SiteHeader() {
 
           {/* Kompaktní menu zůstává aktivní i na tabletu. Plná navigace se
               zobrazí až od lg, kde se logo, jazyk a odkazy bezpečně vejdou. */}
-          <details className="group relative lg:hidden">
+          <NavigationMenu className="group relative lg:hidden">
             <summary
               className="flex cursor-pointer select-none list-none items-center gap-1.5 rounded-lg border border-white/15 px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-slate-200 [&::-webkit-details-marker]:hidden"
               aria-label="Otevřít menu"
@@ -77,7 +78,7 @@ export default function SiteHeader() {
                 </Link>
               ))}
             </nav>
-          </details>
+          </NavigationMenu>
         </div>
       </div>
     </header>

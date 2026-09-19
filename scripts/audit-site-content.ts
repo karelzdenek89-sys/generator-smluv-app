@@ -301,8 +301,9 @@ function main() {
   assert.match(read('app/components/CookiesBanner.tsx'), /Povolit měření/, 'Cookie banner must offer analytics consent in the first layer');
   assert.doesNotMatch(homePage, /Ostatní typy dokumentů fungují samostatně/, 'Homepage must not describe rental/vehicle case support as unavailable');
   // Mobilní navigace musí existovat na obou plochách (<details> funguje i bez JS).
-  assert.match(siteHeader, /<details[\s\S]*SITE_NAV_ITEMS/, 'Shared site header must offer a mobile menu');
-  assert.match(homePage, /<details[\s\S]*SITE_NAV_ITEMS/, 'Homepage must offer a mobile menu');
+  assert.match(siteHeader, /<NavigationMenu[\s\S]*SITE_NAV_ITEMS/, 'Shared site header must offer a mobile menu');
+  assert.match(homePage, /<NavigationMenu[\s\S]*SITE_NAV_ITEMS/, 'Homepage must offer a mobile menu');
+  assert.match(read('app/components/NavigationMenu.tsx'), /<details/, 'Navigation must retain native disclosure semantics without JavaScript');
 
   assert.ok(existsSync(join(ROOT, 'app/slovnik/page.tsx')), '/slovnik page must exist');
 

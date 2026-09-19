@@ -163,6 +163,51 @@ async function documentsAndEmail() {
   console.log('PASS: full 4000-character Czech PDF field, multi-page margins, 95 body lines, clickable escaped email links');
 }
 
+async function paymentFulfilmentRetry() {
+  db.reset();
+  const { POST } = await import('@/app/api/stripe/webhook/route');
+  const secret = 'whsec_local_funnel_regression';
+  process.env.STRIPE_WEBHOOK_SECRET = secret;
+  await db.set('contract:draft:funnel', {
+    contractType: 'lease', tier: 'basic', paid: false, deliveryEmail: email,
+    downloadToken: 'local-download-token', payload: {}, analyticsConsentGranted: false,
+  }, { ex: 604800 });
+  const event = {
+    id: 'evt_local_funnel', type: 'checkout.session.completed',
+    data: { object: { id: 'cs_test_funnel', payment_status: 'unpaid', amount_total: 9900, currency: 'czk', metadata: { draftId: 'funnel', contractType: 'lease', tier: 'basic' } } },
+  };
+  const request = () => {
+    const payload = JSON.stringify(event);
+    return new Request('https://www.smlouvahned.cz/api/stripe/webhook', { method: 'POST', body: payload, headers: { 'stripe-signature': stripe.webhooks.generateTestHeaderString({ payload, secret }) } });
+  };
+  let sends = 0;
+  let acceptedBody = '';
+  globalThis.fetch = async (url, init) => {
+    assert.equal(String(url), 'https://api.resend.com/emails');
+    assert.equal(new Headers(init?.headers).get('Idempotency-Key'), 'checkout-fulfilled-cs_test_funnel');
+    sends++;
+    if (sends === 1) {
+      acceptedBody = String(init?.body);
+      throw new Error('Simulated lost provider response after delivery');
+    }
+    assert.equal(String(init?.body), acceptedBody, 'fulfilment retry must send the identical email, including access links');
+    return Response.json({ id: 'local-delivery' });
+  };
+  assert.equal((await POST(request())).status, 200);
+  assert.equal((await db.get<{ paid: boolean }>('contract:draft:funnel'))?.paid, false, 'unpaid checkout never unlocks content');
+  assert.equal(sends, 0);
+  event.data.object.payment_status = 'paid';
+  assert.equal((await POST(request())).status, 500, 'lost response asks Stripe to retry');
+  assert.equal(await db.get('webhook:fulfilled:cs_test_funnel'), null);
+  assert.equal((await POST(request())).status, 200, 'retry completes delivery');
+  assert.equal((await db.get<{ paid: boolean }>('contract:draft:funnel'))?.paid, true);
+  assert.equal(await db.get('session:draft:cs_test_funnel'), 'funnel');
+  assert.ok((await db.smembers(`orders:email:${email}`)).includes('cs_test_funnel'));
+  assert.equal((await POST(request())).status, 200, 'duplicate webhook is harmless');
+  assert.equal(sends, 2, 'completed delivery is not resent');
+  console.log('PASS: signed unpaid/paid webhook, lost email response, identical retry payload, order index and deduplication');
+}
+
 async function main() {
   process.env.SMLOUVAHNED_FAKE_REDIS = '1';
   process.env.STRIPE_SECRET_KEY = 'sk_test_local_placeholder';
@@ -172,7 +217,7 @@ async function main() {
   globalThis.fetch = async () => { throw new Error('Regression tests block all external network'); };
   await accessAndReminders(); await orderConcurrency(); await hubPagination();
   process.env.RESEND_API_KEY = 'local-placeholder';
-  await watches(); await documentsAndEmail();
+  await watches(); await documentsAndEmail(); await paymentFulfilmentRetry();
   console.log('Production audit regressions passed. No real payments, emails, or customer data used.');
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

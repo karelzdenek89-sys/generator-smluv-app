@@ -59,6 +59,12 @@ export class MemoryRedis {
     return entry ? (structuredClone(entry.value) as T) : null;
   }
 
+  async getdel<T = unknown>(key: string): Promise<T | null> {
+    const entry = this.live(key);
+    this.store.delete(key);
+    return entry ? (structuredClone(entry.value) as T) : null;
+  }
+
   async set(key: string, value: unknown, options?: { ex?: number; nx?: boolean }): Promise<'OK' | null> {
     if (options?.nx && this.live(key)) return null;
     this.write(key, structuredClone(value), options?.ex);

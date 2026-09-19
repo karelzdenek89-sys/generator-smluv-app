@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { getClientIp, readFirstPartyJson } from '@/lib/api-security';
@@ -96,7 +97,7 @@ async function sendVerification(user: AccountRecord): Promise<boolean> {
   const result = await sendTransactionalEmail({
     to: user.email,
     subject: 'Ověřte e-mail pro účet SmlouvaHned',
-    idempotencyKey: `account-verify-${user.id}-${Math.floor(Date.now() / 60000)}`,
+    idempotencyKey: `account-verify-${createHash('sha256').update(token).digest('hex')}`,
     html: renderEmailShell({
       heading: 'Ověřte svůj e-mail',
       intro: 'Ověřením e-mailu propojíte účet s vašimi dokumenty a případy vedenými pod stejnou e-mailovou adresou.',
@@ -116,7 +117,7 @@ async function sendReset(user: AccountRecord): Promise<boolean> {
   const result = await sendTransactionalEmail({
     to: user.email,
     subject: 'Obnovení hesla účtu SmlouvaHned',
-    idempotencyKey: `account-reset-${user.id}-${Math.floor(Date.now() / 60000)}`,
+    idempotencyKey: `account-reset-${createHash('sha256').update(token).digest('hex')}`,
     html: renderEmailShell({
       heading: 'Nastavení nového hesla',
       intro: 'Pro účet SmlouvaHned byl vyžádán odkaz k nastavení nového hesla.',
