@@ -229,7 +229,7 @@ export default function Home() {
               </Link>
             ))}
             <details className="group relative">
-              <summary className="cursor-pointer list-none rounded-lg border border-[#c9a852]/30 px-4 py-1.5 text-[#c9a852] transition hover:border-[#c9a852]/60 hover:text-[#d4b86a] [&::-webkit-details-marker]:hidden">Moje <span aria-hidden="true" className="ml-1 text-[10px] transition-transform group-open:rotate-180">▾</span></summary>
+              <summary aria-label="Moje" className="cursor-pointer list-none rounded-lg border border-[#c9a852]/30 px-4 py-1.5 text-[#c9a852] transition hover:border-[#c9a852]/60 hover:text-[#d4b86a] [&::-webkit-details-marker]:hidden">Moje <span aria-hidden="true" className="ml-1 text-[10px] transition-transform group-open:rotate-180">▾</span></summary>
               <div className="absolute right-0 z-50 mt-2 w-48 rounded-xl border border-[#c9a852]/25 bg-[#040c1a]/95 p-2 text-sm shadow-[0_18px_60px_rgba(0,0,0,0.45)] backdrop-blur-md">
                 {SITE_NAV_CUSTOMER_ITEMS.map((item) => <Link key={item.href} href={item.href} className="block rounded-lg px-3 py-2 text-slate-200 hover:bg-white/5 hover:text-white">{item.label}</Link>)}
               </div>
