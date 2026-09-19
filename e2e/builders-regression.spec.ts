@@ -148,10 +148,28 @@ test('trust and mobile disclosure wording stays accurate', async ({ page }) => {
   const rules = page.locator('[data-mobile-disclosure="rules"]');
   await expect(handover).not.toHaveAttribute('open', '');
   await expect(rules).not.toHaveAttribute('open', '');
+  await expect(handover).toContainText('Rozbalit doplňující údaje');
   await handover.locator('summary').click();
   await expect(handover).toHaveAttribute('open', '');
+  await expect(handover).toContainText('Sbalit doplňující údaje');
+  await handover.locator('summary').click();
+  await expect(handover).not.toHaveAttribute('open', '');
+  await expect(handover).toContainText('Rozbalit doplňující údaje');
+
+  await page.goto('/najem?lang=en');
+  await expect(page.getByText('The more complete the information you provide, the more specific the resulting document will be.')).toBeVisible();
+  await expect(page.getByText('This is an indicative check of the information and options you entered. It is not an individual legal assessment of the document.')).toBeVisible();
+  const englishHandover = page.locator('[data-mobile-disclosure="handover"]');
+  await expect(englishHandover).toContainText('Show additional details');
+  await englishHandover.locator('summary').click();
+  await expect(englishHandover).toContainText('Hide additional details');
+
+  await page.goto('/najem?lang=ua');
+  await expect(page.getByText('Чим повніші дані ви надасте, тим конкретнішим буде підсумковий документ.')).toBeVisible();
+  await expect(page.getByText('Це орієнтовна перевірка введених даних і обраних параметрів. Вона не є індивідуальною юридичною оцінкою документа.')).toBeVisible();
 
   await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto('/najem');
   await page.reload();
   await expect(page.locator('input[name="keysCount"]')).toBeVisible();
   await expect(page.locator('input[name="maxOccupants"]')).toBeVisible();
