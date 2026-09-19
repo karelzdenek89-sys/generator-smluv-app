@@ -223,7 +223,7 @@ export default function Home() {
             </div>
           </Link>
 
-          <div className="hidden items-center gap-7 text-[13px] text-slate-300 md:flex">
+          <div className="hidden items-center gap-7 text-[13px] text-slate-300 lg:flex">
             {SITE_NAV_ITEMS.map((item) => (
               <Link key={item.href} href={siteNavHref(item, true)} className="transition-colors hover:text-white">
                 {item.label}
@@ -238,7 +238,7 @@ export default function Home() {
             <LanguageSwitcher current="cs" variant="desktop" />
           </div>
 
-          <div className="flex items-center gap-2 md:hidden">
+          <div className="flex items-center gap-2 lg:hidden">
             <LanguageSwitcher current="cs" variant="desktop" />
             <NavigationMenu className="group relative">
               <summary className="flex cursor-pointer select-none list-none items-center gap-1.5 rounded-lg border border-[#c9a852]/30 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-[#c9a852] [&::-webkit-details-marker]:hidden" aria-label="Otevřít menu">

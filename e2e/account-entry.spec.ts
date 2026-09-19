@@ -1,7 +1,8 @@
 import { expect, test } from '@playwright/test';
 
-test('mobile navigation closes after route and homepage anchor selection', async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
+for (const width of [390, 768, 900]) {
+test(`compact navigation at ${width}px closes after route and homepage anchor selection`, async ({ page }) => {
+  await page.setViewportSize({ width, height: 844 });
   await page.goto('/moje');
   const menu = page.locator('summary[aria-label="Otevřít menu"]');
   await menu.click();
@@ -17,6 +18,7 @@ test('mobile navigation closes after route and homepage anchor selection', async
   await expect(page.locator('details[open]')).toHaveCount(0);
   await expect(menu).toBeFocused();
 });
+}
 
 test('password reset survives refresh and remains usable with an existing session', async ({ page }) => {
   const user = { id: 'reset-user', username: 'reset-user', email: 'reset@example.com', displayName: 'Reset User', emailVerified: true, createdAt: '2026-09-18T00:00:00.000Z', lastLoginAt: null };
@@ -104,4 +106,6 @@ test('homepage customer menu contains account, cases and documents', async ({ pa
   await expect(page.getByRole('link', { name: 'Můj účet' }).first()).toBeVisible();
   await expect(page.getByRole('link', { name: 'Moje případy' }).first()).toBeVisible();
   await expect(page.getByRole('link', { name: 'Moje dokumenty' }).first()).toBeVisible();
+  await page.locator('details[open]').getByRole('link', { name: 'Můj účet', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Můj účet', level: 1 })).toBeVisible();
 });
