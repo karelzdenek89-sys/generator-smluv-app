@@ -21,7 +21,7 @@ test('tablet header uses compact navigation until desktop width', async ({ page 
   await page.setViewportSize({ width: 1120, height: 900 });
   await page.reload();
   await expect(page.locator('[data-site-header="global"] > div > nav')).toBeVisible();
-  await expect(page.locator('[data-site-header="global"] summary')).toBeHidden();
+  await expect(page.locator('[data-site-header="global"] summary[aria-label="Otevřít menu"]')).toBeHidden();
 });
 
 test('case hub and legislation watch surfaces are discoverable and private', async ({ page, request }) => {
