@@ -149,7 +149,13 @@ async function fillEveryField(page: Page) {
       if (['hidden', 'submit', 'button', 'file', 'range', 'color', 'checkbox', 'radio'].includes(type)) continue;
       if (el.value.trim()) continue;
       const name = (el.getAttribute('name') || el.id || '').toLowerCase();
+      // Labour builders block pay below the 2026 minimum wage and above the
+      // 300 h DPP cap, so their amounts must be lawful or the pay click is refused
+      // before /api/checkout is ever called.
       if (type === 'date') setValue(el, '2026-09-01');
+      else if (/estimatedhours/.test(name)) setValue(el, '80');
+      else if (/hourlyrate/.test(name)) setValue(el, '200');
+      else if (/salary|mzda/.test(name)) setValue(el, '30000');
       else if (type === 'number') setValue(el, '15000');
       else if (type === 'email') setValue(el, 'checkout-audit@example.com');
       else if (/vin/.test(name)) setValue(el, 'TMBJJ7NE8G0123456');
