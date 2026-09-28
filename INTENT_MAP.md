@@ -86,3 +86,11 @@ pracovní smlouva`, `zkušební doba`, `výpovědní doba`, `NDA zaměstnanec`,
 `švarcsystém`, `přepis auta`, `co potřebuji k přepisu`, `předávací protokol
 vozidla`), nedostaly duplicitní answer-first stránku — měří se v GSC jako
 stávající URL (docs/GROWTH_MEASUREMENT.md).
+
+## AI vyhledávače a agenti (od 2026-09-28)
+
+`/llms.txt` (formát llmstxt.org) popisuje službu, 14 dokumentů, ceny, balíčky,
+EN/UA landingy, nástroje a rozsah služby. Generuje se z `lib/document-catalog.ts`,
+`lib/pricing.ts`, `lib/packages.ts`, `lib/i18n/expat-seo-landings.ts` a
+`lib/portal/tools.ts`, takže nemůže zastarat odděleně od webu. `test:seo` hlídá,
+že každý odkaz v něm je kanonická URL ze sitemap.
