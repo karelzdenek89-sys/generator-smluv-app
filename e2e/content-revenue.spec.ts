@@ -104,13 +104,40 @@ test('granting consent above an unseen offer does not count a view', async ({ pa
   await expect.poll(() => events.filter(e => e.event === 'content_offer_view').length).toBe(1);
 });
 
-test('trial-period search title, H1, canonical and JSON-LD agree without changing publication date', async ({ page }) => {
+test('trial-period search title, H1, canonical and JSON-LD agree with the updated answer', async ({ page }) => {
   await page.goto('/blog/zkusebni-doba-2026');
-  await expect(page).toHaveTitle('Jak dlouhá je zkušební doba v roce 2026? | SmlouvaHned');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Jak dlouhá je zkušební doba v roce 2026?');
+  await expect(page).toHaveTitle('Zkušební doba 2026: 4 nebo 8 měsíců a pravidla | SmlouvaHned');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Zkušební doba 2026: 4 nebo 8 měsíců a pravidla');
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'https://www.smlouvahned.cz/blog/zkusebni-doba-2026');
   const schemas = await page.locator('script[type="application/ld+json"]').allTextContents();
   const article = schemas.map(text => JSON.parse(text)).find(schema => schema['@type'] === 'Article');
-  expect(article).toMatchObject({ headline: 'Jak dlouhá je zkušební doba v roce 2026?' });
+  expect(article).toMatchObject({ headline: 'Zkušební doba 2026: 4 nebo 8 měsíců a pravidla' });
   expect(article.datePublished).toContain('2026-07-09');
+  expect(article.dateModified).toContain('2026-09-28');
+});
+
+test('DPP holiday article shows the current paid price and leads to DPP builder', async ({ page }) => {
+  await page.goto('/blog/dovolena-dpp-2026');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Dovolená u DPP 2026: 28 dní, 80 hodin a výpočet');
+  await expect(page.getByText('Náhled je zdarma; stažení základní DPP stojí 99 Kč.')).toBeVisible();
+  await expect(page.locator('[data-content-offer="dpp_document"]')).toContainText('99–199 Kč');
+  await page.locator('article header').getByRole('link', { name: 'Vytvořit DPP od 99 Kč' }).click();
+  await expect(page).toHaveURL(/\/dpp(?:#formular)?$/);
+});
+
+test('Google organic entry keeps its channel through the article CTA and builder', async ({ page }) => {
+  const events = await captureAnalytics(page, 'granted');
+  await page.goto('/blog/zkusebni-doba-2026', { referer: 'https://www.google.cz/search?q=zkusebni+doba' });
+  await expect.poll(() => events.some((event) => event.event === 'blog_article_view')).toBe(true);
+  expect(events.find((event) => event.event === 'blog_article_view')?.params).toMatchObject({
+    acquisition_channel: 'google_organic',
+    acquisition_page: '/blog/zkusebni-doba-2026',
+  });
+  await page.locator('article header').getByRole('link', { name: 'Vytvořit pracovní smlouvu' }).click();
+  await expect(page).toHaveURL(/\/pracovni$/);
+  await expect.poll(() => events.some((event) => event.event === 'builder_view')).toBe(true);
+  expect(events.find((event) => event.event === 'builder_view')?.params).toMatchObject({
+    acquisition_channel: 'google_organic',
+    acquisition_page: '/blog/zkusebni-doba-2026',
+  });
 });

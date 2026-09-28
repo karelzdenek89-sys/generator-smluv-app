@@ -1,12 +1,17 @@
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
+import ContextualProductOffer from '@/app/components/marketing/ContextualProductOffer';
+import { getContextualOffer } from '@/lib/marketing/contextual-offers';
+import { PRICING_TIER_CONFIG } from '@/lib/pricing';
 import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 
 export const metadata = blogArticlePageMetadata('zkusebni-doba-2026', {
-  title: 'Jak dlouhá je zkušební doba v roce 2026?',
+  title: 'Zkušební doba 2026: 4 nebo 8 měsíců a pravidla',
   description:
-    'Zkušební doba je nejvýše 4 měsíce, u vedoucích 8. Na příkladu smlouvy na dobu určitou zjistíte kratší limit i pravidla prodloužení při absenci.',
+    'V roce 2026 trvá zkušební doba nejvýše 4 měsíce, u vedoucích 8. U smlouvy na dobu určitou smí činit nejvýše polovinu její délky. Kdy ji sjednat a prodloužit?',
 });
+
+const employerOffer = getContextualOffer('employment');
 
 export default function ZkusebniDoba2026Page() {
   return (
@@ -15,10 +20,12 @@ export default function ZkusebniDoba2026Page() {
       readTime="7 min"
       dateTime="2026-07-09"
       dateLabel="9. července 2026"
+      dateModified="2026-09-28"
+      dateModifiedLabel="28. září 2026"
       breadcrumbLabel="Zkušební doba 2026"
       slug="zkusebni-doba-2026"
-      title="Jak dlouhá je zkušební doba v roce 2026?"
-      intro="Zkušební doba nevzniká automaticky. Musí být mezi zaměstnancem a zaměstnavatelem písemně sjednána včas a v zákonném rozsahu. Od účinnosti flexinovely jsou limity delší než dříve, ale u pracovního poměru na dobu určitou stále platí další strop."
+      title="Zkušební doba 2026: 4 nebo 8 měsíců a pravidla"
+      intro="V roce 2026 může zkušební doba trvat nejvýše 4 měsíce, u vedoucího zaměstnance 8 měsíců. U pracovního poměru na dobu určitou navíc nesmí přesáhnout polovinu sjednané doby. Musí být písemně sjednána nejpozději v den nástupu; automaticky nevzniká."
       toc={[
         { href: '#kdy-ji-sjednat', label: 'Kdy lze zkušební dobu sjednat' },
         { href: '#maximalni-delka', label: 'Maximální délka v roce 2026' },
@@ -28,7 +35,7 @@ export default function ZkusebniDoba2026Page() {
       ]}
       primaryAction={{
         title: 'Připravujete pracovní smlouvu?',
-        body: 'Ve formuláři nastavíte druh práce, místo výkonu, mzdu, dobu trvání i zkušební dobu v přehledné podobě.',
+        body: `Ve formuláři nastavíte druh práce, místo výkonu, mzdu, dobu trvání i zkušební dobu. Základní pracovní smlouva stojí ${PRICING_TIER_CONFIG.basic.priceLabel}; před platbou uvidíte náhled.`,
         buttonLabel: 'Vytvořit pracovní smlouvu',
         href: '/pracovni',
       }}
@@ -45,7 +52,8 @@ export default function ZkusebniDoba2026Page() {
         href: '/pracovni',
       }}
       relatedLinks={[
-        { href: '/pracovni', label: 'Pracovní smlouva - formulář online' },
+        { href: '/pracovni', label: `Pracovní smlouva online od ${PRICING_TIER_CONFIG.basic.priceLabel}` },
+        { href: '/balicek-zamestnavatel', label: 'Dokumenty k nástupu zaměstnance' },
         { href: '/blog/pracovni-smlouva-2026', label: 'Co musí obsahovat pracovní smlouva' },
         { href: '/blog/flexinovela-zakoniku-prace-2026', label: 'Flexinovela zákoníku práce 2026' },
         { href: '/blog/dpp-dpc-porovnani-2026', label: 'DPP nebo DPČ' },
@@ -125,6 +133,11 @@ export default function ZkusebniDoba2026Page() {
           Zdroj: <a className="text-amber-400 hover:text-amber-300" href="https://ppropo.mpsv.cz/IV14Sjednanizkusebnidoby" target="_blank" rel="noreferrer">MPSV - sjednání zkušební doby (§ 35 zákoníku práce)</a>.
         </p>
       </section>
+
+      <ContextualProductOffer
+        {...employerOffer}
+        articleSlug="zkusebni-doba-2026"
+      />
     </ArticlePageLayout>
   );
 }

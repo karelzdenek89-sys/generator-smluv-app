@@ -43,6 +43,30 @@ export type GscPageSnapshot = {
  */
 export const GSC_PAGE_SNAPSHOTS: readonly GscPageSnapshot[] = [
   {
+    page: '/blog/zkusebni-doba-2026',
+    impressions: 1437,
+    clicks: 3,
+    ctrPercent: 0.21,
+    averagePosition: 7.83,
+    source: 'GSC export dodaný uživatelem, 2026-07-27 až 2026-09-27',
+    observedAt: '2026-09-27',
+    observedDays: 63,
+    pageKind: 'blog',
+    urlVariant: 'www',
+  },
+  {
+    page: '/blog/dovolena-dpp-2026',
+    impressions: 567,
+    clicks: 7,
+    ctrPercent: 1.23,
+    averagePosition: 7.53,
+    source: 'GSC export dodaný uživatelem, 2026-07-27 až 2026-09-27',
+    observedAt: '2026-09-27',
+    observedDays: 63,
+    pageKind: 'blog',
+    urlVariant: 'www',
+  },
+  {
     page: '/blog/dpp-dohoda-provedeni-prace',
     impressions: 2497,
     clicks: 5,

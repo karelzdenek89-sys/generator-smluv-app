@@ -9,6 +9,7 @@ import assert from 'node:assert/strict';
 import {
   attributionViewMatchesSource,
   analyticsAttributionEventParams,
+  classifyAcquisitionChannel,
   normalizeCheckoutAnalyticsAttribution,
   normalizeConsentedCheckoutAnalyticsAttribution,
   normalizeStoredCheckoutAnalyticsAttribution,
@@ -639,6 +640,7 @@ function testPrivacySafeRevenueAttribution() {
   const now = Date.parse('2026-08-26T12:00:00.000Z');
   const validInput = {
     trafficSource: 'blog_article',
+    acquisitionChannel: 'google_organic',
     articleSlug: 'kupni-smlouva-na-auto-2026',
     landingPage: '/blog/kupni-smlouva-na-auto-2026',
     capturedAt: '2026-08-26T11:45:00.000Z',
@@ -657,9 +659,19 @@ function testPrivacySafeRevenueAttribution() {
   );
   assert.deepEqual(analyticsAttributionEventParams(valid), {
     traffic_source: 'blog_article',
+    acquisition_channel: 'google_organic',
     article_slug: 'kupni-smlouva-na-auto-2026',
     acquisition_page: '/blog/kupni-smlouva-na-auto-2026',
   });
+  assert.equal(classifyAcquisitionChannel('https://www.google.cz/search?q=dpp', 'www.smlouvahned.cz', ''), 'google_organic');
+  assert.equal(classifyAcquisitionChannel('https://google.co.uk/search?q=dpp', 'www.smlouvahned.cz', ''), 'google_organic');
+  assert.equal(classifyAcquisitionChannel('https://google.cz.evil.example/', 'www.smlouvahned.cz', ''), 'referral');
+  assert.equal(classifyAcquisitionChannel('https://search.seznam.cz/', 'www.smlouvahned.cz', ''), 'other_organic');
+  assert.equal(classifyAcquisitionChannel('https://www.bing.com/search?q=dpp', 'www.smlouvahned.cz', ''), 'other_organic');
+  assert.equal(classifyAcquisitionChannel('https://www.google.cz/', 'www.smlouvahned.cz', '?gclid=abc'), 'paid');
+  assert.equal(classifyAcquisitionChannel('https://www.smlouvahned.cz/blog', 'www.smlouvahned.cz', ''), 'direct_or_unknown');
+  assert.equal(classifyAcquisitionChannel('', 'www.smlouvahned.cz', ''), 'direct_or_unknown');
+  assert.equal(normalizeCheckoutAnalyticsAttribution({ ...validInput, acquisitionChannel: 'injected' }, now)?.acquisitionChannel, 'unknown');
   assert.equal(attributionViewMatchesSource('blog_article_view', 'blog_article'), true);
   assert.equal(attributionViewMatchesSource('package_page_view', 'package_page'), true);
   assert.equal(attributionViewMatchesSource('situation_page_view', 'situation_page'), true);
@@ -724,6 +736,7 @@ function testPrivacySafeRevenueAttribution() {
     capturedAt: validInput.capturedAt,
   }, now), {
     trafficSource: 'blog_article',
+    acquisitionChannel: 'unknown',
     articleSlug: 'expat/minimum-wage-dpp-czech-republic-2026-en',
     landingPage: '/blog/expat/minimum-wage-dpp-czech-republic-2026-en',
     capturedAt: validInput.capturedAt,

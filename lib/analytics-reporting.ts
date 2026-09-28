@@ -124,6 +124,7 @@ export type AnalyticsDashboardData = {
   revenueAttribution: Array<{
     landingPage: string;
     trafficSource: string;
+    acquisitionChannel: string;
     articleSlug?: string;
     landingViews: number;
     productCtaClicks: number;
@@ -200,6 +201,7 @@ type PartnerAccumulator = {
 type RevenueAttributionAccumulator = {
   landingPage: string;
   trafficSource: string;
+  acquisitionChannel: string;
   articleSlug?: string;
   landingViews: number;
   productCtaClicks: number;
@@ -526,10 +528,12 @@ export async function getAnalyticsDashboardData(
       || landingPage.length > 256
     ) return null;
     const trafficSource = params.traffic_source ?? 'unknown';
-    const key = `${trafficSource}::${landingPage}`;
+    const acquisitionChannel = params.acquisition_channel ?? 'unknown';
+    const key = `${acquisitionChannel}::${trafficSource}::${landingPage}`;
     const current = revenueAttributionStats.get(key) ?? {
       landingPage,
       trafficSource,
+      acquisitionChannel,
       ...(params.article_slug ? { articleSlug: params.article_slug } : {}),
       landingViews: 0,
       productCtaClicks: 0,
@@ -578,6 +582,7 @@ export async function getAnalyticsDashboardData(
           }
           break;
         case 'blog_cta_click':
+        case 'content_offer_click':
         case 'seo_landing_cta_click':
         case 'situation_cta_click':
         case 'package_cta_click':
@@ -1121,6 +1126,7 @@ export async function getAnalyticsDashboardData(
     .map((stat) => ({
       landingPage: stat.landingPage,
       trafficSource: stat.trafficSource,
+      acquisitionChannel: stat.acquisitionChannel,
       articleSlug: stat.articleSlug,
       landingViews: stat.landingViews,
       productCtaClicks: stat.productCtaClicks,
@@ -1141,21 +1147,30 @@ export async function getAnalyticsDashboardData(
       || right.purchases - left.purchases
       || right.builderStarts - left.builderStarts
       || right.landingViews - left.landingViews,
-    )
-    .slice(0, 30);
+    );
 
-  const portalAttribution = [...revenueAttributionStats.values()]
-    .filter((stat) => stat.trafficSource === 'portal_page')
-    .map((stat) => ({
+  const portalByPage = new Map<string, AnalyticsDashboardData['portalAttribution'][number]>();
+  for (const stat of revenueAttributionStats.values()) {
+    if (stat.trafficSource !== 'portal_page') continue;
+    const row = portalByPage.get(stat.landingPage) ?? {
       landingPage: stat.landingPage,
       trafficSource: stat.trafficSource,
-      landingViews: stat.landingViews,
-      productCtaClicks: stat.productCtaClicks,
-      toolStarts: stat.toolStarts,
-      builderStarts: stat.builderStarts,
-      purchases: stat.purchases,
-      purchaseRevenueCzk: stat.purchaseRevenueCzk,
-    }));
+      landingViews: 0,
+      productCtaClicks: 0,
+      toolStarts: 0,
+      builderStarts: 0,
+      purchases: 0,
+      purchaseRevenueCzk: 0,
+    };
+    row.landingViews += stat.landingViews;
+    row.productCtaClicks += stat.productCtaClicks;
+    row.toolStarts += stat.toolStarts;
+    row.builderStarts += stat.builderStarts;
+    row.purchases += stat.purchases;
+    row.purchaseRevenueCzk += stat.purchaseRevenueCzk;
+    portalByPage.set(stat.landingPage, row);
+  }
+  const portalAttribution = [...portalByPage.values()];
 
   const gscCandidates = GSC_PAGE_SNAPSHOTS.map((snapshot) => ({
     ...snapshot,

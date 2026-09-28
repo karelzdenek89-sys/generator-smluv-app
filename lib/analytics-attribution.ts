@@ -3,11 +3,21 @@ export type TrafficAttribution = {
   label: string;
   article_slug?: string;
   pathname?: string;
+  acquisition_channel: AcquisitionChannel;
   captured_at: string;
 };
 
+export type AcquisitionChannel =
+  | 'google_organic'
+  | 'other_organic'
+  | 'paid'
+  | 'referral'
+  | 'direct_or_unknown'
+  | 'unknown';
+
 export type CheckoutAnalyticsAttribution = {
   trafficSource: string;
+  acquisitionChannel: AcquisitionChannel;
   articleSlug?: string;
   landingPage: string;
   capturedAt: string;
@@ -19,6 +29,34 @@ const PRODUCT_ANALYTICS_CONSENT_EVENT = 'sh:product-analytics-consent';
 const MAX_AGE_MS = 30 * 60 * 1000;
 const SAFE_SOURCE = /^(?:blog_article|seo_landing|situation_page|package_page|homepage|builder_landing|portal_page)$/;
 const SAFE_ARTICLE_SLUG = /^(?:expat\/)?[a-z0-9-]{1,160}$/;
+const SAFE_ACQUISITION_CHANNEL = /^(?:google_organic|other_organic|paid|referral|direct_or_unknown|unknown)$/;
+
+/** Classify the entry without persisting a referrer URL or campaign parameters. */
+export function classifyAcquisitionChannel(
+  referrer: string,
+  currentHostname: string,
+  search: string,
+): AcquisitionChannel {
+  const params = new URLSearchParams(search);
+  const medium = params.get('utm_medium')?.toLowerCase();
+  if (
+    ['cpc', 'ppc', 'paid', 'paid_search', 'display', 'paid_social'].includes(medium ?? '')
+    || ['gclid', 'msclkid'].some((key) => params.has(key))
+  ) return 'paid';
+  if (!referrer) return 'direct_or_unknown';
+  try {
+    const hostname = new URL(referrer).hostname.toLowerCase().replace(/^www\./, '');
+    const ownHostname = currentHostname.toLowerCase().replace(/^www\./, '');
+    if (hostname === ownHostname) return 'direct_or_unknown';
+    if (/^google\.(?:[a-z]{2,3}|co\.[a-z]{2}|com\.[a-z]{2})$/.test(hostname)) return 'google_organic';
+    if (/^(?:bing\.com|(?:search\.)?seznam\.cz|duckduckgo\.com|search\.yahoo\.com|ecosia\.org)$/.test(hostname)) {
+      return 'other_organic';
+    }
+    return 'referral';
+  } catch {
+    return 'direct_or_unknown';
+  }
+}
 
 const BUILDER_LANDING_PATHS = new Set([
   '/najem',
@@ -165,6 +203,10 @@ function normalizeAttribution(
     ? candidate.trafficSource.trim().toLowerCase()
     : '';
   const capturedAt = typeof candidate.capturedAt === 'string' ? candidate.capturedAt : '';
+  const acquisitionChannel = typeof candidate.acquisitionChannel === 'string'
+    && SAFE_ACQUISITION_CHANNEL.test(candidate.acquisitionChannel)
+    ? candidate.acquisitionChannel as AcquisitionChannel
+    : 'unknown';
   const capturedAtMs = Date.parse(capturedAt);
   if (
     !SAFE_SOURCE.test(trafficSource)
@@ -189,6 +231,7 @@ function normalizeAttribution(
 
   return {
     trafficSource,
+    acquisitionChannel,
     ...(articleSlug ? { articleSlug } : {}),
     landingPage,
     capturedAt: new Date(capturedAtMs).toISOString(),
@@ -223,6 +266,7 @@ export function analyticsAttributionEventParams(
   return attribution
     ? {
         traffic_source: attribution.trafficSource,
+        acquisition_channel: attribution.acquisitionChannel,
         article_slug: attribution.articleSlug,
         acquisition_page: attribution.landingPage,
       }
@@ -230,13 +274,18 @@ export function analyticsAttributionEventParams(
 }
 
 export function rememberTrafficAttribution(
-  attribution: Omit<TrafficAttribution, 'captured_at'>,
+  attribution: Omit<TrafficAttribution, 'captured_at' | 'acquisition_channel'>,
 ) {
   if (typeof window === 'undefined' || !isProductAnalyticsConsentGranted()) return;
 
   try {
     const payload: TrafficAttribution = {
       ...attribution,
+      acquisition_channel: classifyAcquisitionChannel(
+        document.referrer,
+        window.location.hostname,
+        window.location.search,
+      ),
       captured_at: new Date().toISOString(),
     };
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
@@ -247,7 +296,7 @@ export function rememberTrafficAttribution(
 }
 
 export function rememberTrafficAttributionIfEmpty(
-  attribution: Omit<TrafficAttribution, 'captured_at'>,
+  attribution: Omit<TrafficAttribution, 'captured_at' | 'acquisition_channel'>,
 ) {
   if (!readTrafficAttribution()) rememberTrafficAttribution(attribution);
 }
@@ -281,7 +330,7 @@ export function readTrafficAttribution(): TrafficAttribution | null {
 
 export function trafficAttributionParams(): Pick<
   TrafficAttribution,
-  'source' | 'label' | 'article_slug'
+  'source' | 'label' | 'article_slug' | 'acquisition_channel'
 > & { acquisition_page?: string } | null {
   const attribution = readTrafficAttribution();
   if (!attribution) return null;
@@ -290,6 +339,7 @@ export function trafficAttributionParams(): Pick<
     source: attribution.source,
     label: attribution.label,
     article_slug: attribution.article_slug,
+    acquisition_channel: attribution.acquisition_channel ?? 'unknown',
     acquisition_page: attribution.pathname,
   };
 }
@@ -300,6 +350,7 @@ export function getCheckoutAnalyticsAttribution(): CheckoutAnalyticsAttribution 
     attribution
       ? {
           trafficSource: attribution.source,
+          acquisitionChannel: attribution.acquisition_channel,
           articleSlug: attribution.article_slug,
           landingPage: attribution.pathname,
           capturedAt: attribution.captured_at,
