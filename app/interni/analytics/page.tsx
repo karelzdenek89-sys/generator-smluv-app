@@ -266,17 +266,17 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
 
       <Section
         title={'Landing page → výnos'}
-        description={'První first-party akviziční vstup v 30minutové relaci po kanonické URL. Vlastní měření se spustí jen po opt-in; načítá nejvýše 5 000 posledních událostí a počty nejsou unikátní uživatelé. Kompletní tržby ověřte ve Stripe.'}
+        description={'První akviziční vstup v 30minutové relaci po kanonické URL a hrubém kanálu návštěvy. Vlastní měření se spustí jen po opt-in; načítá nejvýše 5 000 posledních událostí a počty nejsou unikátní uživatelé. Kompletní tržby ověřte ve Stripe.'}
       >
         <Table
           headers={[
-            'Landing / zdroj', 'Views', 'CTA', 'Nástroj', 'Start', 'Dokončeno', 'Stripe',
+            'Landing / zdroj / kanál', 'Views', 'CTA', 'Nástroj', 'Start', 'Dokončeno', 'Stripe',
             'Platby', 'Tržba', 'Stažení', 'Partner view', 'Partner klik', 'Partner konverze', 'Partner revenue',
           ]}
-          rows={data.revenueAttribution.map((item) => [
-            <div key={`${item.trafficSource}:${item.landingPage}`}>
+          rows={data.revenueAttribution.slice(0, 30).map((item) => [
+            <div key={`${item.acquisitionChannel}:${item.trafficSource}:${item.landingPage}`}>
               <div className="font-medium text-[#f7f0de]">{item.landingPage}</div>
-              <div className="text-xs text-slate-400">{item.trafficSource}</div>
+              <div className="text-xs text-slate-400">{item.trafficSource} · {item.acquisitionChannel}</div>
             </div>,
             formatNumber(item.landingViews),
             formatNumber(item.productCtaClicks),
@@ -296,8 +296,34 @@ function DashboardContent({ data }: { data: AnalyticsDashboardData }) {
       </Section>
 
       <Section
-        title={'GSC kandidáti pro monetizační experiment'}
-        description={'Auditovatelný snapshot, nikoli živé Search Console. Bez stránkových dat se žádná další smlouva automaticky nepřepíná zdarma.'}
+        title={'Google organické vyhledávání → platba'}
+        description={'Jen návštěvy s rozpoznaným referrerem Google a souhlasem s měřením. Tržba na 100 zobrazení je orientační: zobrazení nejsou unikátní lidé a okno uchovává nejvýše 5 000 událostí.'}
+      >
+        <Table
+          headers={['Vstupní stránka', 'Views', 'CTA', 'Start', 'Dokončeno', 'Stripe', 'Platby', 'Tržba', 'Tržba / 100 views']}
+          rows={data.revenueAttribution
+            .filter((item) => item.acquisitionChannel === 'google_organic')
+            .sort((left, right) => right.landingViews - left.landingViews)
+            .slice(0, 30)
+            .map((item) => [
+              item.landingPage,
+              formatNumber(item.landingViews),
+              formatNumber(item.productCtaClicks),
+              formatNumber(item.builderStarts),
+              formatNumber(item.builderCompletions),
+              formatNumber(item.checkoutStarts),
+              formatNumber(item.purchases),
+              formatCurrency(item.purchaseRevenueCzk),
+              item.landingViews > 0
+                ? formatCurrency((item.purchaseRevenueCzk / item.landingViews) * 100)
+                : 'N/A',
+            ])}
+        />
+      </Section>
+
+      <Section
+        title={'GSC příležitosti pro obsah a monetizaci'}
+        description={'Auditovatelný historický snapshot včetně exportu 27. 7.–27. 9. 2026, nikoli živé Search Console. Blogové CTR řeší titulek a relevance; nízký počet prokliků nestačí k cenovému experimentu.'}
       >
         <Table
           headers={['Stránka', 'Imprese', 'Kliky', 'CTR', 'Pozice', 'Klasifikace', 'Zdroj / datum']}

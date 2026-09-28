@@ -32,6 +32,9 @@ const eventSchema = z.object({
         'builder_landing',
         'portal_page',
       ]).optional(),
+      acquisition_channel: z.enum([
+        'google_organic', 'other_organic', 'paid', 'referral', 'direct_or_unknown', 'unknown',
+      ]).optional(),
       traffic_label: boundedString.optional(),
       article_slug: boundedString.optional(),
       situation_key: z.enum(['landlord', 'vehicle_sale']).optional(),

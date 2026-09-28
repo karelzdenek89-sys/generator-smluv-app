@@ -1,14 +1,18 @@
-import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 import OfficialSources from '@/app/components/blog/OfficialSources';
+import ContextualProductOffer from '@/app/components/marketing/ContextualProductOffer';
+import { getContextualOffer } from '@/lib/marketing/contextual-offers';
+import { PRICING_TIER_CONFIG } from '@/lib/pricing';
 import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 import { getBlogHreflangAlternates } from '@/lib/seo/blog-hreflang-clusters';
 import { canonicalUrl } from '@/lib/seo/site';
 
 const SLUG = 'dovolena-dpp-2026';
+const dppOffer = getContextualOffer('dpp');
 
 export const metadata = {
   ...blogArticlePageMetadata(SLUG, {
+    description: 'Nárok na dovolenou u DPP v roce 2026 vzniká po 28 dnech trvání dohody a 80 započtených hodinách. Výpočet, čerpání a povinnosti zaměstnavatele přehledně.',
     keywords: ['dovolená DPP 2026', 'nárok na dovolenou DPP', '80 hodin DPP', 'výpočet dovolené DPP'],
   }),
   alternates: {
@@ -24,9 +28,11 @@ export default function DovolenaDppPage() {
       readTime="8 min"
       dateTime="2026-08-13"
       dateLabel="13. srpna 2026"
+      dateModified="2026-09-28"
+      dateModifiedLabel="28. září 2026"
       breadcrumbLabel="Dovolená u DPP 2026"
       slug={SLUG}
-      title="Dovolená u DPP 2026: nárok, 80 hodin a výpočet"
+      title="Dovolená u DPP 2026: 28 dní, 80 hodin a výpočet"
       intro="Také práce na dohodu o provedení práce může založit právo na placenou dovolenou. V roce 2026 rozhodují dvě současně splněné podmínky: nepřetržité trvání dohody alespoň 28 kalendářních dní a nejméně 80 hodin započtených pro účely dovolené. Přehled vychází z aktuálních informací MPSV a zákoníku práce; neřeší individuální mzdový nebo pojistný případ."
       toc={[
         { href: '#podminky', label: 'Podmínky 28 dní a 80 hodin' },
@@ -36,8 +42,8 @@ export default function DovolenaDppPage() {
       ]}
       primaryAction={{
         title: 'Potřebujete připravit DPP?',
-        body: 'V základním českém režimu vytvoříte DPP zdarma. Ve formuláři nastavíte práci, dobu, rozsah hodin i odměnu.',
-        buttonLabel: 'Vytvořit DPP zdarma',
+        body: `Ve formuláři nastavíte práci, dobu, rozsah hodin i odměnu. Náhled je zdarma; stažení základní DPP stojí ${PRICING_TIER_CONFIG.basic.priceLabel}.`,
+        buttonLabel: `Vytvořit DPP od ${PRICING_TIER_CONFIG.basic.priceLabel}`,
         href: '/dpp',
       }}
       trustBox={{
@@ -48,12 +54,12 @@ export default function DovolenaDppPage() {
       }}
       finalAction={{
         title: 'Sepište základ DPP konzistentně',
-        body: 'Začněte písemnou dohodou s konkrétní prací, dobou trvání, rozsahem a odměnou; dovolenou a pracovní dobu pak průběžně evidujte.',
+        body: `Začněte písemnou dohodou s konkrétní prací, dobou trvání, rozsahem a odměnou. Základní PDF stojí ${PRICING_TIER_CONFIG.basic.priceLabel}; dovolenou a pracovní dobu pak průběžně evidujte.`,
         buttonLabel: 'Otevřít formulář DPP',
         href: '/dpp',
       }}
       relatedLinks={[
-        { href: '/dpp', label: 'DPP online zdarma' },
+        { href: '/dpp', label: `DPP online od ${PRICING_TIER_CONFIG.basic.priceLabel}` },
         { href: '/blog/dpp-dohoda-provedeni-prace', label: 'DPP 2026: pravidla a limity' },
         { href: '/blog/dpp-dpc-porovnani-2026', label: 'DPP nebo DPČ' },
         { href: '/blog/minimalni-mzda-dpp-pracovni-smlouva-2026', label: 'Minimální mzda a DPP' },
@@ -106,14 +112,7 @@ export default function DovolenaDppPage() {
         </p>
       </section>
 
-      <ArticleInlineCta
-        title="Začněte správně sepsanou DPP"
-        body="Základní českou DPP vytvoříte zdarma; evidenci směn, dovolené a zákonné povinnosti zaměstnavatele je potřeba vést průběžně mimo samotný dokument."
-        buttonLabel="Přejít do formuláře DPP"
-        href="/dpp"
-        variant="subtle"
-        articleSlug={SLUG}
-      />
+      <ContextualProductOffer {...dppOffer} articleSlug={SLUG} />
 
       <section id="cerpani" className="mb-12 scroll-mt-6">
         <h2 className="mb-4 text-2xl font-black tracking-tight text-white">

@@ -29,7 +29,7 @@ export type BlogClusterMeta = {
 export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   {
     slug: 'dovolena-dpp-2026',
-    title: 'Dovolená u DPP 2026: nárok, 80 hodin a výpočet',
+    title: 'Dovolená u DPP 2026: 28 dní, 80 hodin a výpočet',
     excerpt:
       'Kdy u dohody o provedení práce vzniká dovolená, proč rozhoduje 28 dní a 80 hodin a jak se nárok počítá z fiktivní 20hodinové týdenní pracovní doby.',
     category: 'Práce a zaměstnání',
@@ -95,9 +95,9 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   },
   {
     slug: 'zkusebni-doba-2026',
-    title: 'Jak dlouhá je zkušební doba v roce 2026?',
+    title: 'Zkušební doba 2026: 4 nebo 8 měsíců a pravidla',
     excerpt:
-      'Aktuální pravidla pro zkušební dobu po flexinovele zákoníku práce: kdy ji sjednat, jaké platí limity pro dobu určitou a kdy ji lze písemně prodloužit.',
+      'V roce 2026 trvá zkušební doba nejvýše 4 měsíce, u vedoucích 8. U doby určité platí také limit poloviny sjednané doby. Kdy ji písemně sjednat a prodloužit?',
     category: 'Práce a zaměstnání',
     readTime: '7 min',
     date: '9. července 2026',

@@ -173,6 +173,7 @@ export type AnalyticsEventParams = {
   /** One-based position of an item within its merchandising surface. */
   position?: number;
   traffic_source?: string;
+  acquisition_channel?: 'google_organic' | 'other_organic' | 'paid' | 'referral' | 'direct_or_unknown' | 'unknown';
   traffic_label?: string;
   article_slug?: string;
   situation_key?: 'landlord' | 'vehicle_sale';
@@ -400,6 +401,7 @@ export function trackEvent(
       ...(attribution
         ? {
             traffic_source: attribution.source,
+            acquisition_channel: attribution.acquisition_channel,
             traffic_label: attribution.label,
             article_slug: params?.article_slug ?? attribution.article_slug,
             acquisition_page: params?.acquisition_page ?? attribution.acquisition_page,
