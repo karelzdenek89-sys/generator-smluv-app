@@ -140,7 +140,7 @@ test('trust and mobile disclosure wording stays accurate', async ({ page }) => {
   await page.goto('/najem');
 
   await expect(page.getByText('Stav vyplnění')).toBeVisible();
-  await expect(page.getByText('Čím úplnější údaje zadáte, tím konkrétnější bude výsledný dokument.')).toBeVisible();
+  await expect(page.getByText('Počítají se jen povinné údaje. Nepovinná pole postup nesnižují.')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Kontrola nastavení' })).toBeVisible();
   await expect(page.getByText('Orientační kontrola vyplněných údajů a voleb. Nejde o individuální právní posouzení dokumentu.')).toBeVisible();
 
@@ -157,7 +157,7 @@ test('trust and mobile disclosure wording stays accurate', async ({ page }) => {
   await expect(handover).toContainText('Rozbalit doplňující údaje');
 
   await page.goto('/najem?lang=en');
-  await expect(page.getByText('The more complete the information you provide, the more specific the resulting document will be.')).toBeVisible();
+  await expect(page.getByText('Required details only; optional details do not affect progress.')).toBeVisible();
   await expect(page.getByText('This is an indicative check of the information and options you entered. It is not an individual legal assessment of the document.')).toBeVisible();
   const englishHandover = page.locator('[data-mobile-disclosure="handover"]');
   await expect(englishHandover).toContainText('Show additional details');
@@ -165,7 +165,7 @@ test('trust and mobile disclosure wording stays accurate', async ({ page }) => {
   await expect(englishHandover).toContainText('Hide additional details');
 
   await page.goto('/najem?lang=ua');
-  await expect(page.getByText('Чим повніші дані ви надасте, тим конкретнішим буде підсумковий документ.')).toBeVisible();
+  await expect(page.getByText('Лише обов’язкові дані; додаткові поля не впливають на прогрес.')).toBeVisible();
   await expect(page.getByText('Це орієнтовна перевірка введених даних і обраних параметрів. Вона не є індивідуальною юридичною оцінкою документа.')).toBeVisible();
 
   await page.setViewportSize({ width: 1280, height: 900 });
