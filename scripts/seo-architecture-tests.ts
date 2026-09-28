@@ -19,6 +19,9 @@ import { SITE_URL } from '../lib/seo/site';
 import { LEGAL_AUDIENCE_LIST } from '../lib/legal/radar';
 import { ANSWER_FIRST_ARTICLES, articleHref } from '../lib/portal/articles';
 import { PORTAL_TOOLS } from '../lib/portal/tools';
+import { buildLlmsTxt } from '../lib/seo/llms-txt';
+import { DOCUMENT_CATALOG } from '../lib/document-catalog';
+import { PRICING_TIER_CONFIG } from '../lib/pricing';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CANONICAL_ORIGIN = 'https://www.smlouvahned.cz';
@@ -256,6 +259,25 @@ function assertPortalArchitecture() {
   assert.equal(hub.headers.get('content-language'), 'cs', 'portal pages are Czech');
 }
 
+function assertLlmsTxt() {
+  const text = buildLlmsTxt();
+  assert.match(text, /^# SmlouvaHned\n\n> /, 'llms.txt must open with the H1 name and a blockquote summary');
+  assert.ok(DOCUMENT_CATALOG.length === 14, 'catalog must list all 14 documents');
+  for (const doc of DOCUMENT_CATALOG) {
+    assert.ok(text.includes(`](${CANONICAL_ORIGIN}${doc.href})`), `llms.txt must link the ${doc.href} builder`);
+  }
+  assert.ok(text.includes(PRICING_TIER_CONFIG.basic.priceLabel), 'llms.txt must state the basic price');
+  assert.ok(text.includes(PRICING_TIER_CONFIG.complete.priceLabel), 'llms.txt must state the extended price');
+  assert.ok(text.includes('neposkytuje individuální právní poradenství'), 'llms.txt must state the service scope');
+  const sitemapUrls = new Set(sitemap().map((entry) => entry.url.replace(/\/$/, '')));
+  for (const [, url] of text.matchAll(/\]\((https?:[^)]+)\)/g)) {
+    assertCanonicalUrl(url, 'llms.txt link');
+    const path = url.slice(CANONICAL_ORIGIN.length);
+    if (['/sitemap.xml', '/obchodni-podminky', '/gdpr'].includes(path)) continue;
+    assert.ok(sitemapUrls.has(url.replace(/\/$/, '')), `llms.txt links ${url}, which is not an indexable sitemap URL`);
+  }
+}
+
 assertSitemapArchitecture();
 assertRedirectArchitecture();
 assertContentLanguageArchitecture();
@@ -263,5 +285,6 @@ assertNoInternalRedirectHops();
 assertCanonicalHostSources();
 assertPriorityCtrCopy();
 assertPortalArchitecture();
+assertLlmsTxt();
 
-console.log('SEO architecture tests passed (redirects, sitemap, www host, hreflang, links, CTR copy and portal routes).');
+console.log('SEO architecture tests passed (redirects, sitemap, www host, hreflang, links, CTR copy, portal routes and llms.txt).');
