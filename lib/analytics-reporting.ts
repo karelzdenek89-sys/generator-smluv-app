@@ -389,6 +389,8 @@ export async function getAnalyticsDashboardData(
   let situationToPackageClicks = 0;
   let packageViews = 0;
   let builderViews = 0;
+  let builderFormStarts = 0;
+  let builderRequiredReady = 0;
   let packageFlowEntries = 0;
   let packageFlow299Entries = 0;
   let packageFlow399Entries = 0;
@@ -797,6 +799,14 @@ export async function getAnalyticsDashboardData(
           current.toBuilder += 1;
           articleStats.set(articleSlug, current);
         }
+        break;
+
+      case 'builder_form_started':
+        builderFormStarts += 1;
+        break;
+
+      case 'builder_required_ready':
+        builderRequiredReady += 1;
         break;
 
       case 'package_flow_entered':
@@ -1241,6 +1251,8 @@ export async function getAnalyticsDashboardData(
       { key: 'situation_views', label: 'Zobrazen\u00ed situa\u010dn\u00edch str\u00e1nek', value: situationViews },
       { key: 'package_views', label: 'Zobrazen\u00ed bal\u00ed\u010dk\u016f', value: packageViews },
       { key: 'builder_views', label: 'Vstupy do builderu', value: builderViews },
+      { key: 'builder_form_starts', label: 'Zahájené formuláře', value: builderFormStarts },
+      { key: 'builder_required_ready', label: 'Nájem/auto: povinné údaje vyplněny', value: builderRequiredReady },
       { key: 'package_entries', label: 'Vstupy do package flow', value: packageFlowEntries },
       { key: 'checkout_modal_opens', label: 'Payment modal open', value: checkoutModalOpens },
       { key: 'checkout_modal_closed', label: 'Modal zavřen bez Stripe', value: checkoutModalCloses },

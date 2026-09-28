@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import { use, useEffect, useMemo, useState } from 'react';
+import { use, useEffect, useMemo, useRef, useState } from 'react';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import { useBuilderDraft } from '@/lib/use-builder-draft';
 import Link from 'next/link';
@@ -30,6 +30,7 @@ import { isValidMoney } from '@/lib/money';
 import BuilderUserRoleField from '@/app/components/partners/BuilderUserRoleField';
 import type { PartnerUserRole } from '@/lib/partners/types';
 import BuilderHeader from '@/app/components/BuilderHeader';
+import { trackEvent } from '@/lib/analytics';
 
 type LeaseFormData = {
   partnerUserRole: PartnerUserRole;
@@ -123,7 +124,7 @@ function LeaseBuilderContent() {
     ua: 'Договір оренди — онлайн-форма | SmlouvaHned',
   });
 
-  const [formData, setFormData] = useBuilderDraft<LeaseFormData>({
+  const [formData, setFormData, draftReady] = useBuilderDraft<LeaseFormData>({
     partnerUserRole: 'unknown',
     landlordName: '',
     landlordId: '',
@@ -190,6 +191,7 @@ function LeaseBuilderContent() {
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const requiredReadyTracked = useRef(false);
   const [wideDisclosureLayout, setWideDisclosureLayout] = useState(false);
   const [handoverOpen, setHandoverOpen] = useState(false);
   const [rulesOpen, setRulesOpen] = useState(false);
@@ -237,36 +239,15 @@ function LeaseBuilderContent() {
   }, [formData.rentAmount, formData.utilityAmount, formData.depositAmount]);
 
   const completion = useMemo(() => {
-    const importantFields = [
-      formData.landlordName,
-      formData.landlordId,
-      formData.landlordAddress,
-      formData.landlordOP,
-      formData.tenantName,
-      formData.tenantId,
-      formData.tenantAddress,
-      formData.tenantOP,
-      formData.flatAddress,
-      formData.flatLayout,
-      formData.flatUnitNumber,
-      formData.cadastralArea,
-      formData.startDate,
-      formData.handoverDate,
-      formData.rentAmount,
-      formData.utilityAmount,
-      formData.depositAmount,
-      formData.bankAccount,
+    const required = [
+      Boolean(formData.landlordName.trim()),
+      Boolean(formData.tenantName.trim()),
+      Boolean(formData.flatAddress.trim()),
+      isValidMoney(formData.rentAmount),
+      Boolean(formData.startDate),
+      ...(formData.duration === 'fixed' ? [Boolean(formData.endDate)] : []),
     ];
-
-    const conditionalTotal = formData.duration === 'fixed' ? 1 : 0;
-    const conditionalFilled = formData.duration === 'fixed' && formData.endDate ? 1 : 0;
-
-    const filled =
-      importantFields.filter((item) => String(item).trim() !== '').length + conditionalFilled;
-
-    const total = importantFields.length + conditionalTotal;
-
-    return Math.round((filled / total) * 100);
+    return Math.round((required.filter(Boolean).length / required.length) * 100);
   }, [formData]);
 
   const requiredFieldsMissing = useMemo(() => {
@@ -282,18 +263,28 @@ function LeaseBuilderContent() {
 
   const canOpenCheckout = requiredFieldsMissing.length === 0;
 
+  useEffect(() => {
+    if (!draftReady || !canOpenCheckout || requiredReadyTracked.current) return;
+    requiredReadyTracked.current = trackEvent('builder_required_ready', {
+      pathname: '/najem',
+      contract_type: 'lease',
+      source: 'builder',
+      surface: 'builder_form',
+    });
+  }, [draftReady, canOpenCheckout]);
+
   const riskAnalysis = useMemo(() => {
     let score = 100;
     const warnings: { text: string; level: RiskLevel }[] = [];
 
     if (!formData.landlordId || !formData.tenantId || !formData.landlordOP || !formData.tenantOP) {
       score -= 16;
-      warnings.push({ text: ui.risk.partyId, level: 'high' });
+      warnings.push({ text: ui.risk.partyId, level: 'low' });
     }
 
     if (!formData.flatUnitNumber || !formData.cadastralArea) {
       score -= 10;
-      warnings.push({ text: ui.risk.unitId, level: 'high' });
+      warnings.push({ text: ui.risk.unitId, level: 'medium' });
     }
 
     if (formData.duration === 'fixed' && !formData.endDate) {
@@ -598,7 +589,7 @@ function LeaseBuilderContent() {
                 title={ui.form.sections.landlord.title}
                 subtitle={ui.form.sections.landlord.subtitle}
               />
-              <div className="grid sm:grid-cols-2 gap-4 mb-4">
+              <div className="mb-4">
                 <input
                   value={formData.landlordName}
                   onChange={handleChange}
@@ -607,6 +598,12 @@ function LeaseBuilderContent() {
                   placeholder={ui.form.placeholders.fullName}
                   className={inputClass} aria-label={ui.form.placeholders.fullName} required
                 />
+              </div>
+              <details className="rounded-2xl border border-slate-700/60 bg-slate-800/20 p-4">
+                <summary className="cursor-pointer text-sm font-semibold text-slate-200">
+                  {builderLocale === 'en' ? 'More landlord details (optional)' : builderLocale === 'ua' ? 'Додаткові дані орендодавця (необов’язково)' : 'Další údaje pronajímatele (nepovinné)'}
+                </summary>
+                <div className="mt-4 grid sm:grid-cols-2 gap-4 mb-4">
                 <input
                   value={formData.landlordId}
                   onChange={handleChange}
@@ -614,7 +611,7 @@ function LeaseBuilderContent() {
                   placeholder={ui.form.placeholders.birthId}
                   className={inputClass} aria-label={ui.form.placeholders.birthId}
                 />
-              </div>
+                </div>
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <input
                   value={formData.landlordAddress}
@@ -648,6 +645,7 @@ function LeaseBuilderContent() {
                   className={inputClass} aria-label={ui.form.placeholders.phoneOptional}
                 />
               </div>
+              </details>
             </section>
 
             <section className={cardClass}>
@@ -656,7 +654,7 @@ function LeaseBuilderContent() {
                 title={ui.form.sections.tenant.title}
                 subtitle={ui.form.sections.tenant.subtitle}
               />
-              <div className="grid sm:grid-cols-2 gap-4 mb-4">
+              <div className="mb-4">
                 <input
                   value={formData.tenantName}
                   onChange={handleChange}
@@ -665,6 +663,12 @@ function LeaseBuilderContent() {
                   placeholder={ui.form.placeholders.fullName}
                   className={inputClass} aria-label={ui.form.placeholders.fullName} required
                 />
+              </div>
+              <details className="rounded-2xl border border-slate-700/60 bg-slate-800/20 p-4">
+                <summary className="cursor-pointer text-sm font-semibold text-slate-200">
+                  {builderLocale === 'en' ? 'More tenant details (optional)' : builderLocale === 'ua' ? 'Додаткові дані орендаря (необов’язково)' : 'Další údaje nájemce (nepovinné)'}
+                </summary>
+                <div className="mt-4 grid sm:grid-cols-2 gap-4 mb-4">
                 <input
                   value={formData.tenantId}
                   onChange={handleChange}
@@ -672,7 +676,7 @@ function LeaseBuilderContent() {
                   placeholder={ui.form.placeholders.birthId}
                   className={inputClass} aria-label={ui.form.placeholders.birthId}
                 />
-              </div>
+                </div>
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <input
                   value={formData.tenantAddress}
@@ -706,6 +710,7 @@ function LeaseBuilderContent() {
                   className={inputClass} aria-label={ui.form.placeholders.phoneOptional}
                 />
               </div>
+              </details>
             </section>
 
             <section className={cardClass}>
@@ -1261,26 +1266,28 @@ function LeaseBuilderContent() {
                     </div>
                     <div className="mt-2 text-3xl font-black text-white">{completion}%</div>
                     <div className="mt-1 text-sm text-slate-400">
-                      {ui.sidebar.completionHint}
+                      {builderLocale === 'en' ? 'Required details only; optional details do not affect progress.' : builderLocale === 'ua' ? 'Лише обов’язкові дані; додаткові поля не впливають на прогрес.' : 'Počítají se jen povinné údaje. Nepovinná pole postup nesnižují.'}
                     </div>
                   </div>
                   <div
                     className={`shrink-0 rounded-2xl px-3 py-2 text-xs font-bold ${
-                      completion >= 85
+                      completion === 0
+                        ? 'bg-slate-700/40 text-slate-300 border border-slate-600/40'
+                        : completion >= 85
                         ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20'
                         : completion >= 60
                           ? 'bg-amber-500/10 text-amber-300 border border-amber-500/20'
                           : 'bg-red-500/10 text-red-300 border border-red-500/20'
                     }`}
                   >
-                    {completion >= 85 ? ui.sidebar.badgeReady : completion >= 60 ? ui.sidebar.badgeGood : ui.sidebar.badgeFill}
+                    {completion === 100 ? (builderLocale === 'en' ? 'Ready to continue' : builderLocale === 'ua' ? 'Можна продовжити' : 'Připraveno k pokračování') : completion === 0 ? (builderLocale === 'en' ? 'Start filling in' : builderLocale === 'ua' ? 'Почніть заповнення' : 'Začněte vyplňovat') : completion >= 60 ? ui.sidebar.badgeGood : ui.sidebar.badgeFill}
                   </div>
                 </div>
 
                 <div className="mt-4 h-3 rounded-full bg-slate-800 overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all ${
-                      completion >= 85 ? 'bg-emerald-400' : completion >= 60 ? 'bg-amber-400' : 'bg-red-400'
+                      completion >= 85 ? 'bg-emerald-400' : completion >= 60 ? 'bg-amber-400' : 'bg-slate-400'
                     }`}
                     style={{ width: `${completion}%` }}
                   />
@@ -1293,25 +1300,18 @@ function LeaseBuilderContent() {
                     <h3 className="font-black text-white text-sm uppercase tracking-[0.18em]">
                       {ui.sidebar.riskTitle}
                     </h3>
-                    <p className="text-sm text-slate-400 mt-1">{riskAnalysis.label}</p>
+                    <p className="text-sm text-slate-400 mt-1">
+                      {canOpenCheckout
+                        ? (builderLocale === 'en' ? 'Optional suggestions for a more precise document.' : builderLocale === 'ua' ? 'Необов’язкові рекомендації для точнішого документа.' : 'Nepovinná doporučení pro přesnější dokument.')
+                        : (builderLocale === 'en' ? 'Complete the required details first.' : builderLocale === 'ua' ? 'Спочатку заповніть обов’язкові дані.' : 'Nejdříve vyplňte povinné údaje.')}
+                    </p>
                     <p className="mt-2 max-w-sm text-xs leading-5 text-slate-500">
                       {ui.sidebar.riskDisclaimer}
                     </p>
                   </div>
-                  <div
-                    className={`text-3xl font-black ${
-                      riskAnalysis.score >= 85
-                        ? 'text-emerald-400'
-                        : riskAnalysis.score >= 70
-                          ? 'text-amber-400'
-                          : 'text-red-400'
-                    }`}
-                  >
-                    {riskAnalysis.score}/100
-                  </div>
                 </div>
 
-                <div className="space-y-2">
+                {canOpenCheckout ? <div className="space-y-2">
                   {riskAnalysis.warnings.length > 0 ? (
                     riskAnalysis.warnings.map((warning, i) => (
                       <div
@@ -1332,7 +1332,7 @@ function LeaseBuilderContent() {
                       {ui.sidebar.riskOk}
                     </div>
                   )}
-                </div>
+                </div> : null}
               </div>
 
               <div className="bg-white rounded-3xl p-6 shadow-[0_20px_60px_rgba(0,0,0,0.28)] border border-slate-300 relative overflow-hidden">

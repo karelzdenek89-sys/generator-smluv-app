@@ -134,6 +134,27 @@ export default function ContractLandingSection({
     return subscribeToProductAnalyticsConsent(recordView);
   }, [experimentId, experimentVariant, monetizationMode, pathname]);
 
+  useEffect(() => {
+    const form = document.getElementById(formId);
+    if (!form) return;
+    let sent = false;
+    const recordStart = (event: Event) => {
+      if (sent || !(event.target instanceof HTMLInputElement || event.target instanceof HTMLSelectElement || event.target instanceof HTMLTextAreaElement)) return;
+      const defaults = getAnalyticsDefaultsForPathname(pathname ?? '/');
+      sent = trackEvent('builder_form_started', {
+        ...defaults,
+        source: 'builder',
+        surface: 'builder_form',
+      });
+    };
+    form.addEventListener('input', recordStart);
+    form.addEventListener('change', recordStart);
+    return () => {
+      form.removeEventListener('input', recordStart);
+      form.removeEventListener('change', recordStart);
+    };
+  }, [formId, pathname]);
+
   return (
     <>
       {contractType ? <BuilderLocaleNotice contractType={contractType} /> : null}

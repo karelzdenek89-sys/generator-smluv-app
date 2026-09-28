@@ -389,7 +389,7 @@ export function carRiskWarnings(
   const warnings: RiskWarning[] = [];
   if (!form.carVIN || form.carVIN.trim().length !== 17) warnings.push({ text: m.vin, level: 'high' });
   if (!form.sellerOP || !form.buyerOP || !form.sellerAddress || !form.buyerAddress) {
-    warnings.push({ text: m.id, level: 'high' });
+    warnings.push({ text: m.id, level: 'low' });
   }
   if (!form.handoverDate || !form.handoverPlace) warnings.push({ text: m.handover, level: 'medium' });
   if (!form.knownDefects.trim()) warnings.push({ text: m.defects, level: 'high' });

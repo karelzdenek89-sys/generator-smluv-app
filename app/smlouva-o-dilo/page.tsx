@@ -355,7 +355,7 @@ export default function WorkContractPage() {
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/4 px-5 py-4">
                 <div className="text-xs uppercase tracking-[0.18em] text-slate-400">Cena balíčku</div>
-                <div className="mt-2 text-lg font-semibold text-white">Cena v dalším kroku</div>
+                <div className="mt-2 text-lg font-semibold text-white">{packageConfig.priceLabel}</div>
                 <Link href="/smlouva-o-dilo" className="mt-3 inline-block text-xs leading-relaxed text-[#cbbba0] transition hover:text-white">
                   Potřebujete jen smlouvu o dílo? Zvolte samostatný dokument.
                 </Link>

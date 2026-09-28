@@ -380,8 +380,12 @@ export default function PracovniSmlouvaVzor2026Page() {
           <div className="rounded-xl border border-white/8 bg-[#0c1426] p-5">
             <div className="mb-2 text-sm font-black text-white">Výpověď ze strany zaměstnance</div>
             <p className="text-sm text-slate-400 leading-relaxed">
-              Zaměstnanec může dát výpověď kdykoliv bez udání důvodu. Výpovědní lhůta: minimálně 2 měsíce
-              (nebo delší, pokud je tak sjednáno). Lhůta začíná prvním dnem měsíce následujícího po doručení výpovědi.
+              Zaměstnanec může dát výpověď bez udání důvodu. Výpovědní doba je zpravidla nejméně 2 měsíce.
+              U výpovědí doručených od 1. června 2025 začíná běžet už dnem doručení; odlišný běh může
+              vyplývat z individuální písemné dohody. Podrobnosti včetně starších ujednání popisuje{' '}
+              <Link href="/blog/vypovedni-doba-pracovni-pomer-2026" className="text-amber-400 hover:text-amber-300 transition">
+                průvodce výpovědní dobou
+              </Link>.
             </p>
           </div>
           <div className="rounded-xl border border-white/8 bg-[#0c1426] p-5">

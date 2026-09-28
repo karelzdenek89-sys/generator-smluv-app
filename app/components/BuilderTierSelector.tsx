@@ -1,10 +1,10 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { getPriceRevealCopy } from '@/lib/price-reveal-copy';
 import {
   BUILDER_COMPLETE_PERKS,
   BUILDER_PRICING_OPTIONS,
+  PRICING_TIER_CONFIG,
   PRICING_SECTION_COPY,
   type PricingTier,
 } from '@/lib/pricing';
@@ -147,7 +147,7 @@ export default function BuilderTierSelector({
                   {localizedLabel}
                 </span>
                 <span className="max-w-28 text-right text-xs font-semibold text-white">
-                  {opt.value === 'basic' && freeBasic ? freeCopy.priceLabel : getPriceRevealCopy(locale).short}
+                  {opt.value === 'basic' && freeBasic ? freeCopy.priceLabel : PRICING_TIER_CONFIG[opt.value].priceLabel}
                 </span>
               </div>
               <div className="mt-1 text-xs leading-relaxed text-slate-400">

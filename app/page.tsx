@@ -491,6 +491,11 @@ export default function Home() {
                     </TrackedLink>
                   ))}
                 </div>
+                <nav aria-label="Průvodci nejčastějšími smlouvami" className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm">
+                  <Link href="/pujcka-smlouva" className="text-[#c9a852] hover:text-[#f2d58a]">Smlouva o zápůjčce</Link>
+                  <Link href="/nda-smlouva" className="text-[#c9a852] hover:text-[#f2d58a]">NDA smlouva</Link>
+                  <Link href="/smlouva-o-dilo-online" className="text-[#c9a852] hover:text-[#f2d58a]">Smlouva o dílo</Link>
+                </nav>
               </div>
             </div>
 

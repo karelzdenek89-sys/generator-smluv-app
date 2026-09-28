@@ -66,11 +66,11 @@ const builders = {
 for (const [path, field] of Object.entries(builders)) {
   test(`${path} preserves a draft through checkout return`, async ({ page }) => {
     await page.goto(`/${path}`);
-    // Cenové pásmo je vidět před vyplněním (transparentnost); přesná cena a
-    // doporučená varianta až v souhrnu před platbou.
+    // Ceny obou variant jsou vidět před vyplněním.
     await expect(page.getByTestId('paid-document-notice')).toContainText('99 Kč');
     await expect(page.getByTestId('paid-document-notice')).toContainText('199 Kč');
-    await expect(page.getByText('Cena v dalším kroku').first()).toBeVisible();
+    await expect(page.getByText('99 Kč', { exact: true }).first()).toBeVisible();
+    await expect(page.getByText('199 Kč', { exact: true }).first()).toBeVisible();
     const input = page.locator(`input[name="${field}"]`);
     await input.fill('TEST recovery');
     await page.locator('input[name="tier"][value="complete"]').check();
@@ -81,7 +81,7 @@ for (const [path, field] of Object.entries(builders)) {
   });
 }
 
-test('price is revealed after completion; checkout details recover but consent does not', async ({ page }) => {
+test('price stays visible; checkout details recover but consent does not', async ({ page }) => {
   await page.goto('/najem');
   for (const [name, value] of Object.entries({ landlordName: 'Test Landlord', tenantName: 'Test Tenant', flatAddress: 'Test 1, Praha', rentAmount: '15000', startDate: '2026-10-01', endDate: '2027-10-01' })) {
     await page.locator(`[name="${name}"]`).fill(value);
@@ -89,6 +89,9 @@ test('price is revealed after completion; checkout details recover but consent d
   await expect(page.getByTestId('paid-document-notice')).toContainText('99 Kč');
   await page.getByTestId('lease-open-checkout').click();
   await expect(page.getByTestId('lease-checkout-pay')).toContainText('99 Kč');
+  const addOns = page.getByTestId('lease-checkout-modal').locator('details').filter({ hasText: 'Doplňky k hotovému dokumentu' });
+  await addOns.locator('summary').click();
+  await expect(addOns).toHaveAttribute('open', '');
   await page.getByTestId('lease-checkout-modal').getByRole('button', { name: /Editovatelná DOCX verze/ }).click();
   await expect(page.getByTestId('lease-checkout-pay')).toContainText('148 Kč');
   await page.getByTestId('checkout-delivery-email').fill('recovery@example.invalid');
