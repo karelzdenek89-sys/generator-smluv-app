@@ -10,6 +10,7 @@ import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
 import BuilderTierSelector from '@/app/components/BuilderTierSelector';
 import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/LazyPaymentModal';
+import BuilderBlockingNotice from '@/app/components/BuilderBlockingNotice';
 import { useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
 import LocalizedBuilderShell from '@/app/components/LocalizedBuilderShell';
 import {
@@ -126,6 +127,7 @@ function PracovniPageContent() {
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [generateAttempted, setGenerateAttempted] = useState(false);
 
   useEffect(() => {
     setPackageKeyFromUrl(new URLSearchParams(window.location.search).get('package'));
@@ -225,6 +227,13 @@ function PracovniPageContent() {
       alert(ui.form.paymentError);
       setIsProcessing(false);
     }
+  };
+
+  const blockingMessages = risk.warnings.filter((warning) => warning.blocking).map((warning) => warning.text);
+  const openPreview = () => {
+    setGenerateAttempted(true);
+    if (blockingMessages.length > 0) return;
+    setShowPreviewModal(true);
   };
 
   const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-red-400';
@@ -560,9 +569,12 @@ function PracovniPageContent() {
                 </div>
               )}
                               {/* Tlačítko generování */}
+                {generateAttempted && (
+                  <BuilderBlockingNotice locale={builderLocale} messages={blockingMessages} />
+                )}
                 <button
                   data-builder-generate=""
-                  onClick={() => setShowPreviewModal(true)}
+                  onClick={openPreview}
                   className="w-full py-5 bg-gradient-to-r from-amber-500 to-amber-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >
                   {ui.form.generate}

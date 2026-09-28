@@ -14,6 +14,7 @@ import {
 } from '@/lib/i18n/expat-contract-preview';
 import type { StoredContractData } from '@/lib/contracts';
 import PaymentModal from '@/app/components/LazyPaymentModal';
+import BuilderBlockingNotice from '@/app/components/BuilderBlockingNotice';
 import { useBuilderLocale, useBuilderDocumentTitle } from '@/app/components/BuilderLocaleNotice';
 import LocalizedBuilderShell from '@/app/components/LocalizedBuilderShell';
 import {
@@ -85,6 +86,7 @@ function DppPageContent() {
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [generateAttempted, setGenerateAttempted] = useState(false);
 
   const set = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -207,6 +209,13 @@ function DppPageContent() {
           : item,
       )
     : ui.landing.faq;
+
+  const blockingMessages = risk.warnings.filter((warning) => warning.blocking).map((warning) => warning.text);
+  const openPreview = () => {
+    setGenerateAttempted(true);
+    if (blockingMessages.length > 0) return;
+    setShowPreviewModal(true);
+  };
 
   const scoreColor = risk.score >= 85 ? 'text-emerald-400' : risk.score >= 65 ? 'text-amber-400' : 'text-red-400';
 
@@ -387,9 +396,12 @@ function DppPageContent() {
                 </div>
               )}
                               {/* Tlačítko generování */}
+                {generateAttempted && (
+                  <BuilderBlockingNotice locale={builderLocale} messages={blockingMessages} />
+                )}
                 <button
                   data-builder-generate=""
-                  onClick={() => setShowPreviewModal(true)}
+                  onClick={openPreview}
                   className="w-full py-5 bg-gradient-to-r from-amber-500 to-amber-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >
                   {isFreeBasic ? freeCopy.dpp.builderCta : ui.form.generate}
