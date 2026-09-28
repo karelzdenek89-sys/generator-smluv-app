@@ -1,9 +1,8 @@
 ﻿'use client';
 
-import { use, useEffect, useMemo, useState } from 'react';
+import { use, useEffect, useMemo, useRef, useState } from 'react';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import { useBuilderDraft } from '@/lib/use-builder-draft';
-import { getPriceRevealCopy } from '@/lib/price-reveal-copy';
 import Link from 'next/link';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
@@ -29,6 +28,7 @@ import { isValidMoney } from '@/lib/money';
 import BuilderUserRoleField from '@/app/components/partners/BuilderUserRoleField';
 import type { PartnerUserRole } from '@/lib/partners/types';
 import BuilderHeader from '@/app/components/BuilderHeader';
+import { trackEvent } from '@/lib/analytics';
 
 type PaymentMethod = 'cash' | 'transfer';
 
@@ -137,7 +137,7 @@ function CarSaleBuilderContent() {
     setPackageKeyFromUrl(new URLSearchParams(window.location.search).get('package'));
   }, []);
 
-  const [formData, setFormData] = useBuilderDraft<CarSaleFormData>({
+  const [formData, setFormData, draftReady] = useBuilderDraft<CarSaleFormData>({
     partnerUserRole: 'unknown',
     sellerName: '',
     sellerId: '',
@@ -209,6 +209,7 @@ function CarSaleBuilderContent() {
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const requiredReadyTracked = useRef(false);
 
   useEffect(() => {
     if (!isVehiclePackage) return;
@@ -234,21 +235,40 @@ function CarSaleBuilderContent() {
   const priceNumber = useMemo(() => Number(formData.priceAmount) || 0, [formData.priceAmount]);
 
   const completion = useMemo(() => {
-    const fields = [
-      formData.sellerName,
-      formData.buyerName,
-      formData.carVIN,
-      formData.carMake,
-      formData.priceAmount,
+    const required = [
+      Boolean(formData.sellerName.trim()),
+      Boolean(formData.buyerName.trim()),
+      Boolean(formData.carVIN.trim()),
+      Boolean(formData.carMake.trim()),
+      isValidMoney(formData.priceAmount),
     ];
-    const filled = fields.filter((f) => f.trim() !== '').length;
-    return Math.round((filled / fields.length) * 100);
+    return Math.round((required.filter(Boolean).length / required.length) * 100);
   }, [formData]);
 
   const validationFields = useMemo(
     () => carValidationFields(builderLocale),
     [builderLocale],
   );
+
+  const requiredFieldsMissing = useMemo(() => {
+    const missing: string[] = [];
+    if (!formData.sellerName.trim()) missing.push(validationFields.sellerName);
+    if (!formData.buyerName.trim()) missing.push(validationFields.buyerName);
+    if (!formData.carMake.trim()) missing.push(validationFields.carMake);
+    if (!formData.carVIN.trim()) missing.push(validationFields.carVIN);
+    if (!isValidMoney(formData.priceAmount)) missing.push(validationFields.priceAmount);
+    return missing;
+  }, [formData, validationFields]);
+
+  useEffect(() => {
+    if (!draftReady || requiredFieldsMissing.length > 0 || requiredReadyTracked.current) return;
+    requiredReadyTracked.current = trackEvent('builder_required_ready', {
+      pathname: '/auto',
+      contract_type: 'car_sale',
+      source: 'builder',
+      surface: 'builder_form',
+    });
+  }, [draftReady, requiredFieldsMissing]);
 
   const riskAnalysis = useMemo(() => {
     const { warnings, checkoutBlocked } = carRiskWarnings(builderLocale, formData, priceNumber);
@@ -339,15 +359,8 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
       return;
     }
 
-    const missingFields: string[] = [];
-    if (!formData.sellerName.trim()) missingFields.push(validationFields.sellerName);
-    if (!formData.buyerName.trim()) missingFields.push(validationFields.buyerName);
-    if (!formData.carMake.trim()) missingFields.push(validationFields.carMake);
-    if (!formData.carVIN.trim()) missingFields.push(validationFields.carVIN);
-    if (!isValidMoney(formData.priceAmount)) missingFields.push(validationFields.priceAmount);
-
-    if (missingFields.length > 0) {
-      alert(`${ui.form.validationPrefix} ${missingFields.join(', ')}.`);
+    if (requiredFieldsMissing.length > 0) {
+      alert(`${ui.form.validationPrefix} ${requiredFieldsMissing.join(', ')}.`);
       return;
     }
 
@@ -496,7 +509,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   {packageFlowCopy?.priceHeading}
                 </div>
                 <div className="mt-2 text-3xl font-black tracking-tight text-white">
-                  {getPriceRevealCopy(builderLocale).short}
+                  {packageConfig.priceLabel}
                 </div>
                 <Link
                   href="/auto"
@@ -567,7 +580,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 title={sec('s01', 'Smluvní strany').title}
                 subtitle={sec('s01', 'Smluvní strany', 'Doplň co nejpřesnější identifikaci obou stran. To je základ vymahatelnosti.').subtitle}
               />
-              <div className="grid sm:grid-cols-2 gap-4 mb-4">
+              <div className="mb-4">
                 <input
                   name="sellerName"
                   value={formData.sellerName}
@@ -575,6 +588,12 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   placeholder={fl('sellerName', 'Prodávající – celé jméno')}
                   className={inputClass} aria-label={fl('sellerName', 'Prodávající – celé jméno')} required
                 />
+              </div>
+              <details className="rounded-2xl border border-slate-700/60 bg-slate-800/20 p-4">
+                <summary className="cursor-pointer text-sm font-semibold text-slate-200">
+                  {builderLocale === 'en' ? 'More seller details (optional)' : builderLocale === 'ua' ? 'Додаткові дані продавця (необов’язково)' : 'Další údaje prodávajícího (nepovinné)'}
+                </summary>
+                <div className="mt-4 grid sm:grid-cols-2 gap-4 mb-4">
                 <input
                   name="sellerId"
                   value={formData.sellerId}
@@ -582,7 +601,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   placeholder={fl('sellerId', 'Prodávající – RČ / datum narození')}
                   className={inputClass} aria-label={fl('sellerId', 'Prodávající – RČ / datum narození')}
                 />
-              </div>
+                </div>
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <input
                   name="sellerAddress"
@@ -616,9 +635,10 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   className={inputClass} aria-label={fl('sellerPhone', 'Prodávající – telefon (volitelné)')}
                 />
               </div>
+              </details>
 
               <div className="border-t border-white/5 pt-6">
-                <div className="grid sm:grid-cols-2 gap-4 mb-4">
+                <div className="mb-4">
                   <input
                     name="buyerName"
                     value={formData.buyerName}
@@ -626,6 +646,12 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     placeholder={fl('buyerName', 'Kupující – celé jméno')}
                     className={inputClass} aria-label={fl('buyerName', 'Kupující – celé jméno')} required
                   />
+                </div>
+                <details className="rounded-2xl border border-slate-700/60 bg-slate-800/20 p-4">
+                  <summary className="cursor-pointer text-sm font-semibold text-slate-200">
+                    {builderLocale === 'en' ? 'More buyer details (optional)' : builderLocale === 'ua' ? 'Додаткові дані покупця (необов’язково)' : 'Další údaje kupujícího (nepovinné)'}
+                  </summary>
+                  <div className="mt-4 grid sm:grid-cols-2 gap-4 mb-4">
                   <input
                     name="buyerId"
                     value={formData.buyerId}
@@ -633,7 +659,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     placeholder={fl('buyerId', 'Kupující – RČ / datum narození')}
                     className={inputClass} aria-label={fl('buyerId', 'Kupující – RČ / datum narození')}
                   />
-                </div>
+                  </div>
                 <div className="grid sm:grid-cols-2 gap-4 mb-4">
                   <input
                     name="buyerAddress"
@@ -667,6 +693,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     className={inputClass} aria-label={fl('buyerPhone', 'Kupující – telefon (volitelné)')}
                   />
                 </div>
+                </details>
               </div>
             </section>
 
@@ -1086,26 +1113,28 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                     </div>
                     <div className="mt-2 text-3xl font-black text-white">{completion}%</div>
                     <div className="mt-1 text-sm text-slate-400">
-                      Každý vyplněný údaj se okamžitě promítá do systému.
+                      {builderLocale === 'en' ? 'Only required details count toward progress.' : builderLocale === 'ua' ? 'У прогресі враховуються лише обов’язкові дані.' : 'Počítají se jen povinné údaje.'}
                     </div>
                   </div>
                   <div
                     className={`shrink-0 rounded-2xl px-3 py-2 text-xs font-bold ${
-                      completion >= 85
+                      completion === 0
+                        ? 'bg-slate-700/40 text-slate-300 border border-slate-600/40'
+                        : completion >= 85
                         ? 'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20'
                         : completion >= 60
                           ? 'bg-amber-500/10 text-amber-300 border border-amber-500/20'
                           : 'bg-red-500/10 text-red-300 border border-red-500/20'
                     }`}
                   >
-                    {completion >= 85 ? 'Skoro hotovo' : completion >= 60 ? 'Dobré' : 'Doplň údaje'}
+                    {completion === 100 ? (builderLocale === 'en' ? 'Ready to continue' : builderLocale === 'ua' ? 'Можна продовжити' : 'Připraveno k pokračování') : completion === 0 ? (builderLocale === 'en' ? 'Start filling in' : builderLocale === 'ua' ? 'Почніть заповнення' : 'Začněte vyplňovat') : completion >= 60 ? 'Dobré' : 'Doplň údaje'}
                   </div>
                 </div>
 
                 <div className="mt-4 h-3 rounded-full bg-slate-800 overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all ${
-                      completion >= 85 ? 'bg-emerald-400' : completion >= 60 ? 'bg-amber-400' : 'bg-red-400'
+                      completion >= 85 ? 'bg-emerald-400' : completion >= 60 ? 'bg-amber-400' : 'bg-slate-400'
                     }`}
                     style={{ width: `${completion}%` }}
                   />
@@ -1116,24 +1145,17 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 <div className="flex justify-between items-start gap-4 mb-4">
                   <div>
                     <h3 className="font-black text-white text-sm uppercase tracking-[0.18em]">
-                      Analýza smlouvy
+                      {builderLocale === 'en' ? 'Suggested checks' : builderLocale === 'ua' ? 'Рекомендовані перевірки' : 'Doporučené kontroly'}
                     </h3>
-                    <p className="text-sm text-slate-400 mt-1">{riskAnalysis.label}</p>
-                  </div>
-                  <div
-                    className={`text-3xl font-black ${
-                      riskAnalysis.score >= 85
-                        ? 'text-emerald-400'
-                        : riskAnalysis.score >= 70
-                          ? 'text-amber-400'
-                          : 'text-red-400'
-                    }`}
-                  >
-                    {riskAnalysis.score}/100
+                    <p className="text-sm text-slate-400 mt-1">
+                      {requiredFieldsMissing.length === 0
+                        ? (builderLocale === 'en' ? 'Optional suggestions for a more precise document.' : builderLocale === 'ua' ? 'Необов’язкові рекомендації для точнішого документа.' : 'Nepovinná doporučení pro přesnější dokument.')
+                        : (builderLocale === 'en' ? 'Complete the required details first.' : builderLocale === 'ua' ? 'Спочатку заповніть обов’язкові дані.' : 'Nejdříve vyplňte povinné údaje.')}
+                    </p>
                   </div>
                 </div>
 
-                <div className="space-y-2">
+                {requiredFieldsMissing.length === 0 ? <div className="space-y-2">
                   {riskAnalysis.warnings.length > 0 ? (
                     riskAnalysis.warnings.map((w, i) => (
                       <div
@@ -1154,7 +1176,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                       Smlouva je nastavena velmi dobře a obsahuje silná právní prohlášení.
                     </div>
                   )}
-                </div>
+                </div> : null}
               </div>
 
               <div className="bg-white rounded-3xl p-6 shadow-[0_20px_60px_rgba(0,0,0,0.28)] border border-slate-300 relative overflow-hidden">
@@ -1256,10 +1278,22 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 <button
                   data-builder-generate=""
                   onClick={() => setShowPreviewModal(true)}
-                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-amber-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
+                  disabled={requiredFieldsMissing.length > 0 || riskAnalysis.checkoutBlocked}
+                  aria-disabled={requiredFieldsMissing.length > 0 || riskAnalysis.checkoutBlocked}
+                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-amber-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:brightness-100 disabled:active:scale-100"
                 >
                   {ui.form.generate}
                 </button>
+
+                {requiredFieldsMissing.length > 0 ? (
+                  <p className="mt-3 text-xs leading-relaxed text-amber-200/80">
+                    {ui.form.validationPrefix} {requiredFieldsMissing.join(', ')}.
+                  </p>
+                ) : riskAnalysis.checkoutBlocked ? (
+                  <p className="mt-3 text-xs leading-relaxed text-red-200">
+                    {builderLocale === 'en' ? 'Cash payment over CZK 270,000 is not allowed. Select bank transfer.' : builderLocale === 'ua' ? 'Готівка понад 270 000 Kč заборонена. Оберіть банківський переказ.' : 'Hotovost nad 270 000 Kč není možná. Zvolte bankovní převod.'}
+                  </p>
+                ) : null}
 
                 <p className="mt-3 text-center text-[11px] text-slate-400">
                   {ui.form.previewHint}

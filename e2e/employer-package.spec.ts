@@ -18,7 +18,7 @@ test('employer package keeps the 599 Kč product, included DOCX and annex langua
   await page.goto('/pracovni?package=employer_start');
   await expect(page.getByText('Zaměstnavatel Start 2026').first()).toBeVisible();
   await expect(page.getByTestId('paid-document-notice')).toBeVisible();
-  await expect(page.getByText('599 Kč', { exact: true })).toHaveCount(0);
+  await expect(page.getByText('599 Kč', { exact: true }).first()).toBeVisible();
 
   const fill = async (name: string, value: string) => page.locator(`[name="${name}"]`).fill(value);
   await fill('employerName', 'Testovací zaměstnavatel s.r.o.');
@@ -47,6 +47,7 @@ test('employer package keeps the 599 Kč product, included DOCX and annex langua
   await expect(modal.getByText('PDF a editovatelná DOCX verze')).toBeVisible();
   await expect(modal.getByRole('button', { name: /Editovatelná DOCX verze/ })).toHaveCount(0);
 
+  await modal.locator('summary').filter({ hasText: 'Doplňky k hotovému dokumentu' }).click();
   await modal.getByRole('button', { name: /Dvojjazyčná příloha/ }).click();
   await page.getByTestId('checkout-annex-language').selectOption('ua');
   await page.screenshot({ path: 'tmp/browser-verify/employer-checkout-desktop.png' });

@@ -1,9 +1,9 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { getPriceRevealCopy } from '@/lib/price-reveal-copy';
 import {
   PRICING_UPSELL_COPY,
+  PRICING_TIER_CONFIG,
   type PricingTier,
 } from '@/lib/pricing';
 import { getAnalyticsDefaultsForPathname, trackEvent } from '@/lib/analytics';
@@ -92,7 +92,7 @@ export default function BuilderCheckoutSummary({
     : getEffectiveIncludedItems(contractType, tier, packageKey, locale);
   const priceLabel = isFreeBasic
     ? freeCopy.priceLabel
-    : getPriceRevealCopy(locale).short;
+    : packageConfig?.priceLabel ?? PRICING_TIER_CONFIG[tier].priceLabel;
   const leaseOutputSummary =
     contractType === 'lease'
       ? locale === 'en'

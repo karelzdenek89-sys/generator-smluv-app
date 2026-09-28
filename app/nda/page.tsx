@@ -188,7 +188,7 @@ export default function NdaBuilderPage() {
     <main className="min-h-screen bg-[#05080f] text-slate-200 pb-20">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(245,158,11,0.07),transparent_30%)] pointer-events-none" />
 
-      <BuilderHeader docType="NDA — § 1746 odst. 2 OZ" note="Platba zabezpečena přes Stripe" badge="Cena v dalším kroku" />
+      <BuilderHeader docType="NDA — § 1746 odst. 2 OZ" note="Platba zabezpečena přes Stripe" badge="od 99 Kč" />
 
       <ContractLandingSection
         badge="§ 1746 odst. 2 občanského zákoníku"

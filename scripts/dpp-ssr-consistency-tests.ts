@@ -240,7 +240,7 @@ if (freeExperiment) {
 } else {
   assert.match(dppHtml, /<title>DPP online 2026/);
   assert.match(dppHtml, /"lowPrice":"99"/);
-  assert.match(dppText, /Základní dokument Cena v dalším kroku/);
+  assert.match(dppText, /Základní dokument 99 Kč/);
   assert.match(dppText, /Okamžité PDF ke stažení po zaplacení/);
   assert.match(dppText, /Dostanu dokument ihned po zaplacení\?/);
   assert.match(dppText, /Co získáte/);

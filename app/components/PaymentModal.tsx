@@ -646,10 +646,18 @@ export default function PaymentModal({
             </div>
 
             {availableAddOns.length > 0 && (
-              <div className="mb-5 space-y-2">
-                <div className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-                  {genericCopy.addonsHeading}
-                </div>
+              <details className="group mb-5 rounded-2xl border border-slate-700/60 bg-white/2 p-4">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-semibold text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/60">
+                  <span>{genericCopy.addonsHeading} ({availableAddOns.length})</span>
+                  <span className="text-xs text-slate-400 group-open:hidden" aria-hidden="true">+</span>
+                  <span className="hidden text-xs text-slate-400 group-open:inline" aria-hidden="true">−</span>
+                </summary>
+                {validSelectedAddOns.length > 0 ? (
+                  <p className="mt-2 text-xs text-amber-200">
+                    {genericCopy.selectedAddons}: {validSelectedAddOns.length} · +{addonsTotalCzk.toLocaleString('cs-CZ')} Kč
+                  </p>
+                ) : null}
+                <div className="mt-4 space-y-2">
                 {availableAddOns.map((addon) => {
                   const isSelected = selectedAddOns.includes(addon.key);
                   return (
@@ -708,7 +716,8 @@ export default function PaymentModal({
                     </span>
                   </label>
                 ) : null}
-              </div>
+                </div>
+              </details>
             )}
 
             <div className="mb-5 rounded-xl border border-white/8 bg-white/3 px-4 py-3">

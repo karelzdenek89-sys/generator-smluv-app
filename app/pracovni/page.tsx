@@ -4,7 +4,6 @@ import { use, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import { useBuilderDraft } from '@/lib/use-builder-draft';
-import { getPriceRevealCopy } from '@/lib/price-reveal-copy';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
@@ -268,7 +267,7 @@ function PracovniPageContent() {
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/4 px-5 py-4">
                 <div className="text-xs uppercase tracking-[0.18em] text-slate-400">{packageFlowCopy?.priceHeading}</div>
-                <div className="mt-2 text-lg font-semibold text-white">{getPriceRevealCopy(builderLocale).short}</div>
+                <div className="mt-2 text-lg font-semibold text-white">{packageConfig.priceLabel}</div>
                 <Link href="/pracovni" className="mt-3 inline-block text-xs leading-relaxed text-[#cbbba0] transition hover:text-white">
                   {packageFlowCopy?.backToStandalone}
                 </Link>
