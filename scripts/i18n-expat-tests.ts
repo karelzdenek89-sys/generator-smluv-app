@@ -26,6 +26,7 @@ import {
 } from '../lib/i18n/lease-form';
 import { getLocalizedIncludedItems } from '../lib/i18n/pricing-locale';
 import { buildExpatTranslationSections, hasExpatTranslationAnnex } from '../lib/i18n/expat-translation-registry';
+import { getAvailableCheckoutAddons, includesTranslationAnnex, normalizeCheckoutAddons } from '../lib/checkout-addons';
 import { LEASE_USE_NOTICE_EN } from '../lib/i18n/safety-copy';
 import { renderContractPdf } from '../lib/pdf';
 import { extractPdfText } from '../lib/pdf-text';
@@ -1034,6 +1035,33 @@ function testE2eFlowStaticPaths() {
   assert.match(read('lib/packages.ts'), /getLocalizedIncludedItems/);
 }
 
+async function testTranslationIncludedForExpatBuyers() {
+  // EN/UA buyers get the complete translation in the price; the paid add-on is not offered to them.
+  for (const locale of ['en', 'ua'] as const) {
+    const offered = getAvailableCheckoutAddons('lease', 'basic', null, locale).map((addon) => addon.key);
+    assert.ok(!offered.includes('bilingual_annex'), `${locale}: translation must not be sold as an add-on`);
+    assert.deepEqual(normalizeCheckoutAddons(['bilingual_annex'], 'lease', 'basic', null, locale), [], `${locale}: server must not charge for the included translation`);
+    assert.match(getLocalizedIncludedItems('lease', 'basic', null, locale)[0], locale === 'en' ? /complete english translation/i : /повний переклад/i);
+  }
+  // Czech-language buyers keep the optional paid add-on.
+  assert.ok(getAvailableCheckoutAddons('lease', 'basic', null, 'cs').some((addon) => addon.key === 'bilingual_annex'));
+  assert.equal(includesTranslationAnnex({ contractType: 'lease', lang: 'cs' }), false);
+  assert.equal(includesTranslationAnnex({ contractType: 'lease', lang: 'cs', addOns: ['bilingual_annex'] }), true);
+  assert.equal(includesTranslationAnnex({ contractType: 'gift', lang: 'en' }), false, 'no translation exists for gift contracts');
+
+  const text = (await extractPdfText(await renderContractPdf({
+    contractType: 'car_sale',
+    tier: 'basic',
+    lang: 'ua',
+    sellerName: 'Seller Test',
+    buyerName: 'Buyer Test',
+    carMake: 'Škoda',
+    carModel: 'Octavia',
+    priceAmount: '150000',
+  } as StoredContractData))).toLowerCase();
+  assert.match(text, /пояснювальний\s+додаток\s+українською/i, 'UA buyer without add-on must still receive the translation annex');
+}
+
 async function testLeaseEnPdfTextContent() {
   const minimalLease: StoredContractData = {
     contractType: 'lease',
@@ -1159,16 +1187,19 @@ async function testPdfFallback() {
   const enPdf = await renderContractPdf(minimalLease);
   const enText = (await extractPdfText(enPdf)).toLowerCase();
   assert.ok(enPdf.length > 1000, 'Expected generated English-aware lease PDF');
-  assert.match(enText, /english-guided czech contract/i);
-  assert.doesNotMatch(enText, /explanatory\s+english\s+translation\s+annex/i);
-
-  const enPdfWithAnnex = await renderContractPdf({ ...minimalLease, addOns: ['bilingual_annex'] });
-  const enAnnexText = (await extractPdfText(enPdfWithAnnex)).toLowerCase();
-  assert.match(enAnnexText, /explanatory\s+english\s+translation\s+annex/i);
+  // EN buyers get the complete translation in the price — no add-on needed.
+  assert.match(enText, /czech\s+contract\s+with\s+a\s+complete\s+explanatory\s+english\s+translation/i);
+  assert.match(enText, /explanatory\s+english\s+translation\s+annex/i);
   assert.ok(
-    enPdfWithAnnex.length > csPdf.length + 4000,
+    enPdf.length > csPdf.length + 4000,
     'EN lease PDF should be substantially larger than CS-only (Czech body + English translation annex)',
   );
+  const csText = (await extractPdfText(csPdf)).toLowerCase();
+  assert.doesNotMatch(csText, /explanatory\s+english\s+translation\s+annex/i, 'Czech buyers get the annex only as a paid add-on');
+
+  const csPdfWithAnnex = await renderContractPdf({ ...minimalLease, lang: 'cs', addOns: ['bilingual_annex'], annexLanguage: 'en' });
+  const csAnnexText = (await extractPdfText(csPdfWithAnnex)).toLowerCase();
+  assert.match(csAnnexText, /explanatory\s+english\s+translation\s+annex/i);
 
   const garbageLang: StoredContractData = {
     ...minimalLease,
@@ -1207,6 +1238,7 @@ async function main() {
   testLocalizedBlogArticles();
   testE2eFlowStaticPaths();
   testLeasePreviewHelpers();
+  await testTranslationIncludedForExpatBuyers();
   await testLeaseEnPdfTextContent();
   await testLeaseUkPdfTextContent();
   await testEmploymentEnPdfTextContent();

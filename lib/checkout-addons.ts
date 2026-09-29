@@ -2,6 +2,7 @@ import type { ContractType } from './contracts';
 import { getEffectiveArchiveDays, packageIncludesDocx } from './packages';
 import type { PricingTier } from './pricing';
 import { normalizeLocale, type AppLocale } from './locale';
+import { isTranslationIncluded, TRANSLATED_CONTRACTS } from './translation-offer';
 
 export type CheckoutAddonKey =
   | 'docx'
@@ -24,14 +25,7 @@ export type CheckoutAddonConfig = {
 };
 
 const HANDOVER_CONTRACTS: readonly ContractType[] = ['lease', 'car_sale'];
-const BILINGUAL_ANNEX_CONTRACTS: readonly ContractType[] = [
-  'lease',
-  'car_sale',
-  'employment',
-  'dpp',
-  'sublease',
-  'power_of_attorney',
-];
+const BILINGUAL_ANNEX_CONTRACTS: readonly ContractType[] = TRANSLATED_CONTRACTS;
 
 export const CHECKOUT_ADDON_CONFIG: Record<CheckoutAddonKey, CheckoutAddonConfig> = {
   docx: {
@@ -121,6 +115,11 @@ export function normalizeStoredCheckoutAddons(value: unknown): CheckoutAddonKey[
   return selected;
 }
 
+/** Whether the PDF carries the translation annex: bought as an add-on, or included for EN/UA buyers. */
+export function includesTranslationAnnex(data: Record<string, unknown>): boolean {
+  return hasCheckoutAddon(data, 'bilingual_annex') || isTranslationIncluded(data.contractType, data.lang);
+}
+
 export function hasCheckoutAddon(
   data: Record<string, unknown>,
   key: CheckoutAddonKey,
@@ -146,6 +145,8 @@ export function getAvailableCheckoutAddons(
     if (addon.unavailableWhenComplete && (tier === 'complete' || isPackage)) return false;
     if (addon.key === 'handover_protocol' && isPackage) return false;
     if (addon.key === 'extended_archive' && archiveDays >= 90) return false;
+    // EN/UA buyers already get the complete translation in the price.
+    if (addon.key === 'bilingual_annex' && isTranslationIncluded(normalizedContract, locale)) return false;
     return true;
   }).map((addon) => localizeAddon(addon, locale));
 }

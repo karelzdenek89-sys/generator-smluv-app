@@ -14,7 +14,7 @@ import {
 } from './i18n/expat-translation-registry';
 import { getCompleteAnnexExpatIntro } from './i18n/lease-complete-annex-i18n';
 import type { AppLocale } from './locale';
-import { hasCheckoutAddon } from './checkout-addons';
+import { includesTranslationAnnex } from './checkout-addons';
 
 // ─────────────────────────────────────────────
 //  FONT LOADER & CACHE
@@ -2503,7 +2503,7 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
   }
 
   const annexLocale = normalizeLocale(data.annexLanguage ?? data.lang);
-  if (hasCheckoutAddon(data, 'bilingual_annex') && hasExpatTranslationAnnex(data.contractType, annexLocale)) {
+  if (includesTranslationAnnex(data) && hasExpatTranslationAnnex(data.contractType, annexLocale)) {
     renderExpatTranslationAnnex(
       doc,
       data,

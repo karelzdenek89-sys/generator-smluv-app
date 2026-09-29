@@ -6,7 +6,7 @@ import {
   EMPLOYMENT_WORK_ELIGIBILITY_NOTICE_UK,
 } from '@/lib/i18n/safety-copy';
 import { hasExpatTranslationAnnex } from '@/lib/i18n/expat-translation-registry';
-import { hasCheckoutAddon } from '@/lib/checkout-addons';
+import { includesTranslationAnnex } from '@/lib/checkout-addons';
 
 export type ExpatAnnexLocale = 'en' | 'ua';
 
@@ -34,7 +34,7 @@ export function getPage1ExpatNoticeLines(data: StoredContractData): string[] {
   if (!isExpatContractType(data.contractType)) return [];
 
   const translationAnnex =
-    hasCheckoutAddon(data, 'bilingual_annex') &&
+    includesTranslationAnnex(data) &&
     hasExpatTranslationAnnex(data.contractType, annexLocale);
 
   if (documentLocale === 'cs' && !translationAnnex) return [];
