@@ -196,8 +196,8 @@ export function organizationSchemaLocalized(locale: ExpatLocaleSchemaLocale) {
     url: BASE_URL,
     logo: `${BASE_URL}/og-image.png`,
     description: isEn
-      ? 'Online tool for Czech contracts with English-guided forms for foreigners. Czech PDF output; selected contracts include an explanatory English annex (not certified or official).'
-      : 'Онлайн-інструмент для чеських договорів з формою українською для іноземців. PDF чеською; для оренди — пояснювальний український додаток (не офіційний переклад).',
+      ? 'Online tool for Czech contracts with English forms for foreigners. Six core contracts come as the binding Czech text plus a complete English translation of every article in the same PDF, included in the price (explanatory, not certified).'
+      : 'Онлайн-інструмент для чеських договорів з формою українською для іноземців. Шість основних договорів — обов’язковий чеський текст і повний український переклад кожної статті в тому ж PDF, включено в ціну (пояснювальний, не офіційний переклад).',
     inLanguage: isEn ? 'en' : 'uk',
     areaServed: { '@type': 'Country', name: 'Czech Republic' },
     availableLanguage: isEn ? ['English', 'Czech'] : ['Ukrainian', 'Czech'],
