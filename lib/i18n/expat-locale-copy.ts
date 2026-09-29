@@ -37,7 +37,7 @@ export const EXPAT_CONTRACT_CAPABILITY: Record<
   ua: {
     lease: CAPABILITY_FULL_UA,
     employment: CAPABILITY_FULL_UA,
-    dpp: 'Форма українською · чеський PDF + пояснювальний огляд основних умов (DPP, не повний переклад).',
+    dpp: CAPABILITY_FULL_UA,
     sublease: CAPABILITY_FULL_UA,
     power_of_attorney: CAPABILITY_FULL_UA,
     car_sale: CAPABILITY_FULL_UA,

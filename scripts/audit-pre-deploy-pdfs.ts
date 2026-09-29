@@ -30,21 +30,20 @@ const SAMPLE_SNIPPETS: Record<ExpatContractType, string[]> = {
 };
 
 const EN_ANNEX = [
-  /explanatory english translation annex/i,
-  /not a certified or official translation/i,
-  /czech wording prevails|the czech wording prevails/i,
+  /explanatory\s+english\s+translation\s+annex/i,
+  /not\s+a\s+certified\s+or\s+official\s+translation/i,
+  /czech\s+wording\s+prevails|the czech\s+wording\s+prevails/i,
 ];
 
 const UA_ANNEX_DEFAULT = [
-  /пояснювальний додаток українською|огляд основних умов/i,
-  /переваг[ау] має чеське формулювання/i,
-  /засвідченим чи офіційним|не повний переклад/i,
+  /пояснювальний\s+додаток\s+українською|огляд основних умов/i,
+  /переваг[ау]\s+має\s+чеське\s+формулювання/i,
+  /засвідченим\s+чи\s+офіційним|не повний переклад/i,
 ];
 
 const UA_DPP_EXTRA = [
-  /огляд основних умов/i,
-  /не повний переклад/i,
-  /не перевіряє, чи має іноземець право працювати/i,
+  /повний\s+пояснювальний\s+український\s+переклад/i,
+  /не\s+перевіряє,\s+чи\s+має\s+іноземець\s+право\s+працювати/i,
 ];
 
 const EN_ANNEX_SECTIONS: Record<ExpatContractType, RegExp> = {
@@ -61,7 +60,7 @@ const UA_ANNEX_SECTIONS: Record<ExpatContractType, RegExp> = {
   employment: /i\. сторони|преамбула/i,
   dpp: /i\. сторони|преамбула/i,
   sublease: /i\. сторони|преамбула/i,
-  power_of_attorney: /i\. сторони|преамбула/i,
+  power_of_attorney: /i\. довіритель|довіреність/i,
   car_sale: /i\. сторони|преамбула/i,
 };
 
@@ -132,7 +131,7 @@ async function main() {
     }
 
     if (lang === 'cs') {
-      if (/explanatory english translation annex/i.test(lower)) {
+      if (/explanatory\s+english\s+translation\s+annex/i.test(lower)) {
         issues.push({ file: fname, level: 'error', msg: 'CS PDF should not contain EN annex title' });
       }
       if (/пояснювальний|огляд основних умов/i.test(lower)) {

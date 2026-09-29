@@ -5,7 +5,7 @@ import { jsPDF } from 'jspdf';
 import { getContractMeta, buildContractSections, resolveTierFeatures, type StoredContractData, type ContractType, type ContractSection } from './contracts';
 import { LEGAL_STATE_DISCLAIMER } from './legal-constants-2026';
 import { isExpatContract, normalizeLocale } from './locale';
-import { getExpatAnnexMeta, getPage1ExpatNoticeLines } from './i18n/expat-pdf-annex';
+import { getAnnexSignatureCopy, getExpatAnnexMeta, getPage1ExpatNoticeLines, type AnnexSignatureCopy } from './i18n/expat-pdf-annex';
 import {
   buildExpatTranslationSections,
   hasExpatTranslationAnnex,
@@ -132,7 +132,7 @@ function getSignatureLabels(contractType: ContractType, data?: StoredContractDat
 
 function isSignatureSection(title: string): boolean {
   const upper = title.toUpperCase();
-  return upper.includes('PODPISY') || upper.includes('SIGNATURES');
+  return upper.includes('PODPISY') || upper.includes('SIGNATURES') || upper.includes('ПІДПИСИ');
 }
 
 /**
@@ -606,7 +606,8 @@ function renderExpatTranslationAnnex(
         y = drawEndOfTextMarker(doc, y, metaTitle);
         endOfTextDrawn = true;
       }
-      y = drawSignatureSection(doc, section.title, labelLeft, labelRight, y, metaTitle, extraSigLabel, extraSigName);
+      const signatureCopy = getAnnexSignatureCopy(data.contractType, annexLocale);
+      y = drawSignatureSection(doc, section.title, signatureCopy.left, signatureCopy.right, y, metaTitle, extraSigLabel, extraSigName, signatureCopy);
       continue;
     }
 
@@ -1771,8 +1772,13 @@ function drawSignatureSection(
   contractTitle = '',
   extraLabel?: string,
   extraName?: string,
+  copy?: AnnexSignatureCopy,
 ): number {
   const pageWidth = doc.internal.pageSize.getWidth();
+  const placeLabel = copy?.place ?? 'V';
+  const dateLabel = copy?.date ?? 'dne';
+  const nameLabel = copy?.name ?? 'Jméno a příjmení (hůlkovým písmem):';
+  const signatureLabel = copy?.signature ?? '(vlastnoruční podpis)';
 
   // Needs ~70 mm (90 mm s extra blokem) — break early if not enough space
   const neededTop = extraLabel ? 190 : 210;
@@ -1803,16 +1809,16 @@ function drawSignatureSection(
   doc.setFontSize(9);
   doc.setTextColor(BODY_R, BODY_G, BODY_B);
 
-  doc.text('V', leftX, y);
+  doc.text(placeLabel, leftX, y);
   doc.setDrawColor(SIGN_R, SIGN_G, SIGN_B);
   doc.setLineWidth(0.25);
   doc.line(leftX + 5, y, leftX + colW * 0.52, y);
-  doc.text('dne', leftX + colW * 0.55, y);
+  doc.text(dateLabel, leftX + colW * 0.55, y);
   doc.line(leftX + colW * 0.64, y, leftX + colW, y);
 
-  doc.text('V', rightX, y);
+  doc.text(placeLabel, rightX, y);
   doc.line(rightX + 5, y, rightX + colW * 0.52, y);
-  doc.text('dne', rightX + colW * 0.55, y);
+  doc.text(dateLabel, rightX + colW * 0.55, y);
   doc.line(rightX + colW * 0.64, y, rightX + colW, y);
   doc.setLineWidth(0.2);
   doc.setDrawColor(RULE_R, RULE_G, RULE_B);
@@ -1822,8 +1828,8 @@ function drawSignatureSection(
   doc.setFont('Roboto', 'normal');
   doc.setFontSize(7.5);
   doc.setTextColor(META_R, META_G, META_B);
-  doc.text('Jméno a příjmení (hůlkovým písmem):', leftX, y);
-  doc.text('Jméno a příjmení (hůlkovým písmem):', rightX, y);
+  doc.text(nameLabel, leftX, y);
+  doc.text(nameLabel, rightX, y);
   y += 4.5;
 
   doc.setDrawColor(SIGN_R, SIGN_G, SIGN_B);
@@ -1845,8 +1851,8 @@ function drawSignatureSection(
   doc.setFont('Roboto', 'normal');
   doc.setFontSize(7.5);
   doc.setTextColor(META_R, META_G, META_B);
-  doc.text('(vlastnoruční podpis)', leftX + colW / 2, y, { align: 'center' });
-  doc.text('(vlastnoruční podpis)', rightX + colW / 2, y, { align: 'center' });
+  doc.text(signatureLabel, leftX + colW / 2, y, { align: 'center' });
+  doc.text(signatureLabel, rightX + colW / 2, y, { align: 'center' });
   y += 9;
 
   // Role labels
@@ -1920,7 +1926,7 @@ function drawSignatureSection(
   doc.setFont('Roboto', 'normal');
   doc.setFontSize(7.5);
   doc.setTextColor(META_R, META_G, META_B);
-  const note = `Smlouva nabývá platnosti podpisem ${roleGenitive(labelLeft)} a ${roleGenitive(labelRight)}.${
+  const note = copy ? copy.note : `Smlouva nabývá platnosti podpisem ${roleGenitive(labelLeft)} a ${roleGenitive(labelRight)}.${
     extraLabel ? ` Ručitelský závazek vzniká podpisem ${roleGenitive(extraLabel)}.` : ''
   } Je-li podepisována elektronicky, platí přiměřeně nařízení EU č. 910/2014 (eIDAS).`;
   const noteLines = doc.splitTextToSize(note, pageWidth - MARGIN * 2);

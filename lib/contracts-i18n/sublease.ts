@@ -1,65 +1,310 @@
 /**
- * Sublease (podnájemní smlouva) — translations EN/UK/RU/VN/DE.
- * Mirrors buildSubleaseContractSections paragraph-by-paragraph.
+ * Sublease agreement (podnájemní smlouva) — full EN and UA translations.
+ *
+ * Mirrors buildSubleaseContractSections in lib/contracts.ts section by section
+ * and paragraph by paragraph. scripts/translation-parity-tests.ts enforces the
+ * alignment and completeness. The Czech text remains the legally binding version.
  */
 import type { ContractSection, StoredContractData } from '../contracts';
-import { buildBilingualTranslations, fmtAmount, fmtDate, pad, type ParaPair } from './helpers';
+import { amt, buildBilingualTranslations, dateIn, disputeClauseIn, todayIn, txt, type ParaPair } from './helpers';
+
+const monthlyTotal = (d: StoredContractData) => (Number(d.rentAmount) || 0) + (Number(d.utilityAmount) || 0);
+const dailyVacateRate = (d: StoredContractData) =>
+  !isNaN(Number(d.rentAmount)) && Number(d.rentAmount) > 0 ? Math.round(Number(d.rentAmount) / 30) : null;
 
 // ── EN ─────────────────────────────────────────────────────────────────────
 function en(d: StoredContractData, hasPremium: boolean): ParaPair[] {
   const consentNote = d.landlordConsent === 'yes'
-    ? `The landlord's written consent to subletting was granted on ${fmtDate(d.consentDate) || 'unspecified'}.`
-    : "Notice: Where the situation requires the landlord's consent to a sublease, the tenant must obtain it before signing. Subletting part of a flat is governed in particular by § 2274 and § 2275 Civil Code.";
+    ? `The landlord's consent to the sublease was granted in writing on ${txt(d.consentDate, 'not specified')}.`
+    : 'Notice: if the specific situation requires the landlord’s consent to the sublease, the Tenant shall obtain it before concluding this Agreement. For a sublease of part of a flat, the procedure is governed in particular by § 2274 and § 2275 of the Civil Code, depending on whether the Tenant permanently lives in the flat.';
+  const vacateRate = dailyVacateRate(d);
 
-  const sections: ParaPair[] = [
-    { title: 'PREAMBLE', body: ['This sublease agreement (the "Agreement") is concluded under § 2274 et seq. of Act No. 89/2012 Coll., the Czech Civil Code, as amended (the "Civil Code").', consentNote, `Date of conclusion: ${d.contractDate ? fmtDate(d.contractDate) : new Date().toLocaleDateString('en-GB')}`] },
-    { title: 'I. PARTIES', body: [`Tenant (sub-lessor): ${pad(d.landlordName)}, date of birth / Company ID: ${pad(d.landlordId) || '—'}, residence / registered office: ${pad(d.landlordAddress)}`, d.landlordEmail ? `Sub-lessor e-mail: ${pad(d.landlordEmail)}` : '', `Sub-tenant: ${pad(d.tenantName)}, date of birth / Company ID: ${pad(d.tenantId) || '—'}, residence / registered office: ${pad(d.tenantAddress)}`, d.tenantEmail ? `Sub-tenant e-mail: ${pad(d.tenantEmail)}` : ''] },
-    { title: 'II. SUBJECT OF THE SUBLEASE', body: [`The sub-lessor lets to the sub-tenant: the flat / premises at ${pad(d.flatAddress) || 'unspecified'}, ${pad(d.flatLayout)}, ${d.flatUnitNumber ? `unit no. ${pad(d.flatUnitNumber)}, ` : ''}${d.floor ? `floor ${pad(d.floor)}, ` : ''}cadastral area ${pad(d.cadastralArea) || 'unspecified'}.`, d.subleaseArea ? `Floor area of sub-let space: ${pad(d.subleaseArea)} m²` : ''] },
-    { title: 'III. SUBLEASE TERM', body: [d.duration === 'fixed' ? `The sublease is concluded for a fixed term from ${fmtDate(d.startDate) || 'unspecified'} to ${fmtDate(d.endDate) || 'unspecified'}.` : `The sublease is concluded for an indefinite term starting on ${fmtDate(d.startDate) || 'unspecified'}.`, d.duration === 'indefinite' ? `Notice period: ${pad(d.noticePeriod) || '3'} months; the notice period starts on the first day of the month following delivery of the notice.` : '', 'The sublease shall in any case end no later than the end of the head lease.'] },
-    { title: 'IV. SUBLEASE RENT AND PAYMENTS', body: [`Monthly sublease rent: CZK ${fmtAmount(d.rentAmount)}.`, d.utilityAmount ? `Service / utility advance: CZK ${fmtAmount(d.utilityAmount)} per month.` : '', `Total monthly payment: CZK ${fmtAmount((Number(d.rentAmount) || 0) + (Number(d.utilityAmount) || 0))}.`, d.depositAmount ? `Deposit: CZK ${fmtAmount(d.depositAmount)}. The sub-lessor shall return the deposit within 30 days of the end of the sublease and the handover of the premises, after deducting duly specified and proven claims.` : '', `The sublease rent is payable by the ${pad(d.paymentDay) || '15'}th day of the relevant month ${d.bankAccount ? `to the sub-lessor's bank account no. ${pad(d.bankAccount)}` : 'in cash or by bank transfer'}.`, "In case of delay in payment, the sub-lessor is entitled to statutory default interest from the due date."] },
-    { title: 'V. RULES OF THE SUBLEASE', body: ['The sub-tenant shall: use the premises only for the agreed purpose, keep order, make no alterations without the sub-lessor\'s consent, not damage the property, and comply with the house rules.', `Maximum number of occupants: ${pad(d.maxOccupants) || '2'}`, `Pets: ${d.allowPets ? 'expressly acknowledged between the parties; the sub-tenant is liable for any damage and additional costs they cause' : 'the sub-tenant may keep an animal only where this does not cause disturbance beyond what is reasonable in the building'}`, `Smoking: ${d.allowSmoking ? 'permitted' : 'prohibited'}`, `Airbnb / short-term sub-letting: ${d.allowAirbnb ? 'permitted' : 'prohibited'}`, 'The sub-tenant acknowledges the terms of the head lease and undertakes to comply with them.'] },
-    { title: 'VI. HANDOVER OF THE PREMISES', body: [`Handover date: ${fmtDate(d.handoverDate) || 'unspecified'}.`, `Number of keys handed over: ${pad(d.keysCount) || '1'}`, d.equipmentList ? `Equipment handed over: ${pad(d.equipmentList)}` : '', d.knownDefects ? `Known defects: ${pad(d.knownDefects)}` : 'The premises are handed over without apparent defects.', 'A handover protocol signed by both parties shall be drawn up.'] },
-    { title: 'VII. TERMINATION OF THE SUBLEASE', body: ['Upon termination of the sublease the sub-tenant shall vacate the premises, restore them to their initial condition (ordinary wear and tear excepted) and return the keys.', !isNaN(Number(d.rentAmount)) && Number(d.rentAmount) > 0 ? `For each day of delay in vacating, the sub-tenant shall pay compensation of CZK ${Math.round(Number(d.rentAmount) / 30)} per day (i.e. 1/30 of the agreed monthly sublease rent).` : 'For each day of delay in vacating, the sub-tenant shall pay compensation equal to 1/30 of the agreed monthly sublease rent.', 'The deposit shall be returned within 30 days of handover, after deduction of any claims of the sub-lessor.'] },
-    { title: 'VIII. REPAIRS, EMERGENCIES AND MAINTENANCE', body: ['Minor repairs and ordinary maintenance costs of the sub-let premises are borne by the sub-tenant (to an extent proportionate to the nature of the sublease).', 'Minor repairs are borne by the sub-tenant within the scope of Government Decree No. 308/2015 Coll., as amended. Larger repairs are borne by the sub-lessor, unless caused by the sub-tenant.', 'The sub-tenant shall report to the sub-lessor, without undue delay and within 24 hours at the latest, any emergency, fault or damage. In case of immediate danger, the sub-tenant may take necessary protective measures without prior consent.', "The sub-tenant must not carry out any structural alterations without the sub-lessor's and (where required) the landlord's prior written consent. Unauthorised alterations must be restored at the sub-tenant's own cost."] },
+  const premium: ParaPair[] = hasPremium ? [
+    {
+      title: 'IX. SPECIAL CONTRACTUAL PROVISIONS AND RELATIONSHIP TO THE MAIN LEASE',
+      body: [
+        `The Subtenant acknowledges that the Tenant (the Subtenant's contractual counterparty) is bound towards the owner of the property by a lease agreement dated ${txt(d.mainLeaseDate, 'not specified')}. If the main lease ends, the sublease also ends (§ 2277 of the Civil Code).`,
+        'The Subtenant undertakes not to breach the terms of the main lease agreement, with which the Subtenant was duly acquainted before signing this Agreement and whose relevant parts were handed over to the Subtenant.',
+        'The Tenant shall inform the Subtenant without delay of any change to the main lease agreement that could affect the rights and obligations of the Subtenant.',
+        'The Subtenant is not entitled to sublet the subleased premises further to a third party without the prior written consent of both the Tenant and the landlord.',
+        d.breachPenalty && Number(d.breachPenalty) > 0
+          ? `Contractual penalty for unauthorised further subletting or any other breach of the terms of the main lease agreement: CZK ${amt(d.breachPenalty)}.`
+          : 'In the event of unauthorised further subletting or any other breach of the terms of the main lease agreement, the Subtenant shall compensate the Tenant for all demonstrably incurred damage, including damage claimed by the landlord against the Tenant.',
+      ],
+    },
+    {
+      title: 'X. CONTRACTUAL PENALTIES AND SANCTIONS',
+      body: [
+        `Subtenant's delay in paying the sublease rent: a contractual penalty of 0.05 % of the amount due for each day of delay, but not exceeding 15 % of the amount due in total${d.minLatePenalty && Number(d.minLatePenalty) > 0 ? `; the agreed minimum of CZK ${amt(d.minLatePenalty)} per day applies only within this overall cap` : ''}.`,
+        d.damagePenalty && Number(d.damagePenalty) > 0
+          ? `Unauthorised alteration of or damage to the premises without the Tenant's consent: a contractual penalty of CZK ${amt(d.damagePenalty)} plus compensation for the actual damage.`
+          : 'Unauthorised alteration of or damage to the premises without the Tenant’s consent: the Subtenant is liable for the damage in full and shall restore the premises to their original condition at the Subtenant’s own expense.',
+        'Payment of a contractual penalty does not affect the right to compensation for the damage incurred in full.',
+        'The Tenant is entitled to declare the contractual penalty immediately payable and also to withdraw from the Agreement with immediate effect if the Subtenant is more than 30 days late with payment or seriously breaches the terms of the main lease agreement.',
+      ],
+    },
+    {
+      title: 'XI. DELIVERY OF DOCUMENTS',
+      body: [
+        'All documents (notices of termination, notifications, reminders, invoices) shall be delivered to the addresses of the contracting parties stated in this Agreement, or to their e-mail addresses if a party has provided them.',
+        'A document sent by registered letter is deemed delivered on the third working day after dispatch, even if the addressee did not accept it.',
+        'A party shall notify the other party in writing of a change of its delivery address without undue delay; until the notice is delivered, the original address applies.',
+      ],
+    },
+  ] : [];
+
+  return [
+    {
+      title: 'PREAMBLE',
+      body: [
+        'This sublease agreement (the "Agreement") is concluded under § 2274 et seq. of Act No. 89/2012 Coll., the Civil Code, as amended (the "Civil Code").',
+        consentNote,
+        `Date of conclusion of the Agreement: ${d.contractDate ? dateIn('en', d.contractDate) : todayIn('en')}`,
+      ],
+    },
+    {
+      title: 'I. CONTRACTING PARTIES',
+      body: [
+        `Tenant (sublessor): ${txt(d.landlordName)}, date of birth / Company ID: ${txt(d.landlordId)}, residence / registered office: ${txt(d.landlordAddress)}`,
+        d.landlordEmail ? `Tenant's e-mail: ${txt(d.landlordEmail)}` : '',
+        `Subtenant: ${txt(d.tenantName)}, date of birth / Company ID: ${txt(d.tenantId)}, residence / registered office: ${txt(d.tenantAddress)}`,
+        d.tenantEmail ? `Subtenant's e-mail: ${txt(d.tenantEmail)}` : '',
+      ],
+    },
+    {
+      title: 'II. SUBJECT OF THE SUBLEASE',
+      body: [
+        `The Tenant sublets to the Subtenant: the flat/premises at ${txt(d.flatAddress, 'not specified')}, ${txt(d.flatLayout, '')}, ${d.flatUnitNumber ? `unit number ${txt(d.flatUnitNumber)}, ` : ''}${d.floor ? `floor ${txt(d.floor)}, ` : ''}cadastral area ${txt(d.cadastralArea, 'not specified')}.`,
+        d.subleaseArea ? `Floor area of the subleased premises: ${txt(d.subleaseArea)} m²` : '',
+      ],
+    },
+    {
+      title: 'III. TERM OF THE SUBLEASE',
+      body: [
+        d.duration === 'fixed'
+          ? `The sublease is agreed for a fixed term from ${dateIn('en', d.startDate, 'not specified')} to ${dateIn('en', d.endDate, 'not specified')}.`
+          : `The sublease is agreed for an indefinite term from ${dateIn('en', d.startDate, 'not specified')}.`,
+        d.duration === 'indefinite'
+          ? `Notice period: ${txt(d.noticePeriod, '3')} months; the notice period begins on the first day of the month following delivery of the notice.`
+          : '',
+        'In any case, the sublease ends no later than on the day the main lease ends.',
+      ],
+    },
+    {
+      title: 'IV. SUBLEASE RENT AND PAYMENTS',
+      body: [
+        `The monthly sublease rent is agreed at CZK ${amt(d.rentAmount)}.`,
+        d.utilityAmount ? `Advance payment for services/energy: CZK ${amt(d.utilityAmount)} per month.` : '',
+        `Total monthly payment: CZK ${amt(monthlyTotal(d))}.`,
+        d.depositAmount ? `Security deposit: CZK ${amt(d.depositAmount)}. The Tenant shall return the deposit within 30 days of the end of the sublease and the handover of the premises, after deducting duly specified and proven claims.` : '',
+        `The sublease rent is payable always by day ${txt(d.paymentDay, '15')} of the relevant month ${d.bankAccount ? `to the Tenant's bank account no. ${txt(d.bankAccount)}` : 'in cash or by bank transfer'}.`,
+        'If the Subtenant is late in paying the sublease rent or the advance payment for services, the Tenant is entitled to claim statutory default interest from the due date.',
+      ],
+    },
+    {
+      title: 'V. RULES OF THE SUBLEASE',
+      body: [
+        'The Subtenant shall: use the premises only for the agreed purpose, keep them in order, make no alterations without the Tenant’s consent, not damage property and follow the house rules.',
+        `Maximum number of persons in the flat: ${txt(d.maxOccupants, '2')}`,
+        `Pets: ${d.allowPets ? 'keeping them is acknowledged by the parties; the Subtenant is liable for damage and increased costs caused by them' : 'the Subtenant may keep an animal only if it does not cause the Tenant, the landlord or other residents of the building unreasonable difficulties; the Subtenant shall inform the Tenant in advance about keeping an animal'}`,
+        `Smoking: ${d.allowSmoking ? 'permitted' : 'prohibited'}`,
+        `Airbnb / short-term re-subletting: ${d.allowAirbnb ? 'permitted' : 'prohibited'}`,
+        'The Subtenant acknowledges the terms of the main lease agreement and undertakes to respect them.',
+      ],
+    },
+    {
+      title: 'VI. HANDOVER OF THE PREMISES',
+      body: [
+        `The premises will be handed over on ${dateIn('en', d.handoverDate, 'not specified')}.`,
+        `Number of keys handed over: ${txt(d.keysCount, '1')}`,
+        d.equipmentList ? `Equipment handed over: ${txt(d.equipmentList)}` : '',
+        d.knownDefects ? `Known defects: ${txt(d.knownDefects)}` : 'The premises are handed over without apparent defects.',
+        'A handover protocol signed by both parties will be drawn up for the handover.',
+      ],
+    },
+    {
+      title: 'VII. TERMINATION OF THE SUBLEASE',
+      body: [
+        'On termination of the sublease, the Subtenant shall vacate the premises, restore them to their original condition (taking into account ordinary wear and tear) and hand over the keys.',
+        vacateRate !== null
+          ? `For each day of delay in vacating, the Subtenant shall pay compensation of CZK ${vacateRate} per day (i.e. 1/30 of the agreed monthly sublease rent).`
+          : 'For each day of delay in vacating, the Subtenant shall pay compensation of 1/30 of the agreed monthly sublease rent for each day of delay.',
+        'The deposit will be returned within 30 days of the handover of the premises, after deducting any claims of the Tenant.',
+      ],
+    },
+    {
+      title: 'VIII. REPAIRS, EMERGENCIES AND MAINTENANCE',
+      body: [
+        'Minor repairs and the costs of ordinary maintenance of the subleased premises are paid by the Subtenant (to an extent appropriate to the nature of the sublease). The Subtenant is fully liable for repairs caused by wear and tear exceeding ordinary use.',
+        'The Subtenant pays for minor repairs and ordinary maintenance connected with the use of the premises to the extent laid down by Government Decree No. 308/2015 Coll., as amended. Major repairs and renovations are paid by the Tenant unless the damage was caused by the Subtenant or by persons to whom the Subtenant allowed access to the premises.',
+        'The Subtenant shall report to the Tenant without delay — at the latest within 24 hours — all emergencies, faults or damage (water leaks, power cuts, heating failures, etc.). In the event of imminent danger, the Subtenant is entitled to take the necessary protective measures even without the Tenant’s consent.',
+        'The Subtenant may not carry out any structural alterations, conversions or other interventions in the premises without the prior written consent of the Tenant and, in the case of structural alterations, also of the landlord. The Subtenant shall restore any unauthorised alterations to the original condition at the Subtenant’s own expense.',
+      ],
+    },
+    ...premium,
+    {
+      title: `${hasPremium ? 'XII' : 'IX'}. FINAL PROVISIONS`,
+      body: [
+        'The Agreement is governed by the law of the Czech Republic, in particular Act No. 89/2012 Coll., the Civil Code, as amended.',
+        disputeClauseIn('en', d),
+        'The Agreement is executed in two counterparts; the sublessor and the Subtenant each receive one counterpart.',
+        'All amendments are valid only in the form of written, numbered and signed addenda.',
+        'The invalidity of any individual provision of the Agreement does not affect the validity of the other provisions.',
+        'Neither contracting party is liable for failure to perform non-monetary obligations caused by force majeure (vis maior), i.e. an extraordinary, unforeseeable and insurmountable event (§ 2913(2) of the Civil Code). Force majeure does not apply to the obligation to pay a sum of money. A party affected by force majeure shall inform the other party in writing without delay and resume performance without delay once the obstacle has ceased.',
+      ],
+    },
+    { title: `${hasPremium ? 'XIII' : 'X'}. SIGNATURES`, body: [] },
   ];
-  if (hasPremium) {
-    sections.push({ title: 'IX. SPECIAL TERMS AND RELATIONSHIP TO THE HEAD LEASE', body: [`The sub-tenant acknowledges that the sub-lessor is bound to the property owner by a head lease dated ${fmtDate(d.mainLeaseDate) || 'unspecified'}. Termination of the head lease also terminates the sublease (§ 2277 Civil Code).`, 'The sub-tenant undertakes not to breach the terms of the head lease.', 'The sub-lessor shall promptly inform the sub-tenant of any change to the head lease that could affect the sub-tenant\'s rights and obligations.', "The sub-tenant may not further sublet the premises to a third party without prior written consent of both the sub-lessor and the landlord.", d.breachPenalty && Number(d.breachPenalty) > 0 ? `Contractual penalty for unauthorised further subletting or other breach of the head lease: CZK ${fmtAmount(d.breachPenalty)}.` : 'In case of unauthorised further subletting or other breach of the head lease, the sub-tenant shall compensate the sub-lessor for all demonstrable damage.'] });
-    sections.push({ title: 'X. CONTRACTUAL PENALTIES AND SANCTIONS', body: [`Delay in payment of sublease rent: contractual penalty of 0.05% of the amount due per day, capped in aggregate at 15% of the amount due${d.minLatePenalty && Number(d.minLatePenalty) > 0 ? `; the agreed minimum of CZK ${fmtAmount(d.minLatePenalty)}/day applies only within that aggregate cap` : ''}.`, d.damagePenalty && Number(d.damagePenalty) > 0 ? `Unauthorised alteration or damage: contractual penalty of CZK ${fmtAmount(d.damagePenalty)} plus compensation for actual damage.` : 'Unauthorised alteration or damage: the sub-tenant is fully liable and shall restore the premises at their own cost.', 'Payment of a contractual penalty is without prejudice to the right to compensation for damage in full.', 'The sub-lessor may declare a contractual penalty immediately payable and rescind the Agreement if the sub-tenant is more than 30 days in arrears or seriously breaches the terms of the head lease.'] });
-    sections.push({ title: 'XI. SERVICE OF NOTICES', body: ['All written communications shall be delivered to the addresses of the parties set out herein, or to the e-mail addresses where provided.', 'A document sent by registered post is deemed delivered on the third working day after dispatch, even if the addressee did not collect it.', 'Each party shall notify the other of any change of address in writing without undue delay; until such notice is delivered, the previous address remains effective.'] });
-  }
-  sections.push({ title: `${hasPremium ? 'XII' : 'IX'}. FINAL PROVISIONS`, body: ['This Agreement is governed by the laws of the Czech Republic, in particular Act No. 89/2012 Coll., the Civil Code, as amended.', 'Any disputes shall be resolved primarily amicably; failing agreement, by the competent court of the Czech Republic.', 'This Agreement is executed in two counterparts; each party receives one.', 'Amendments are valid only as written, numbered and signed addenda.', 'The invalidity of any individual provision does not affect the validity of the remaining provisions.', 'Neither party is liable for non-performance of non-monetary obligations caused by force majeure (§ 2913(2) Civil Code).'] });
-  sections.push({ title: `${hasPremium ? 'XIII' : 'X'}. SIGNATURES`, body: [] });
-  return sections;
 }
 
-// ── UK ─────────────────────────────────────────────────────────────────────
-function uk(d: StoredContractData, hasPremium: boolean): ParaPair[] {
-  const consentNote = d.landlordConsent === 'yes' ? `Письмова згода орендодавця на суборенду надана ${fmtDate(d.consentDate, 'uk-UA') || 'не вказано'}.` : 'Увага: якщо ситуація потребує згоди орендодавця на суборенду, орендар повинен її отримати перед підписанням. Суборенда частини квартири регулюється зокрема § 2274 та § 2275 ЦК.';
-  const sections: ParaPair[] = [
-    { title: 'ПРЕАМБУЛА', body: ['Цей договір суборенди («Договір») укладається відповідно до § 2274 та наступних Закону № 89/2012 Sb., Цивільний кодекс Чехії, з наступними змінами («ЦК»).', consentNote, `Дата укладення: ${d.contractDate ? fmtDate(d.contractDate, 'uk-UA') : new Date().toLocaleDateString('uk-UA')}`] },
-    { title: 'I. СТОРОНИ', body: [`Орендар (субдавець): ${pad(d.landlordName)}, дата народження / IČO: ${pad(d.landlordId) || '—'}, місце проживання / місцезнаходження: ${pad(d.landlordAddress)}`, d.landlordEmail ? `E-mail субдавця: ${pad(d.landlordEmail)}` : '', `Суборендар: ${pad(d.tenantName)}, дата народження / IČO: ${pad(d.tenantId) || '—'}, місце проживання / місцезнаходження: ${pad(d.tenantAddress)}`, d.tenantEmail ? `E-mail суборендаря: ${pad(d.tenantEmail)}` : ''] },
-    { title: 'II. ПРЕДМЕТ СУБОРЕНДИ', body: [`Субдавець передає суборендарю в суборенду: квартиру / приміщення за адресою ${pad(d.flatAddress) || 'не вказано'}, ${pad(d.flatLayout)}, ${d.flatUnitNumber ? `номер квартири ${pad(d.flatUnitNumber)}, ` : ''}${d.floor ? `поверх ${pad(d.floor)}, ` : ''}кадастровий округ ${pad(d.cadastralArea) || 'не вказано'}.`, d.subleaseArea ? `Площа суборендованого приміщення: ${pad(d.subleaseArea)} м²` : ''] },
-    { title: 'III. СТРОК СУБОРЕНДИ', body: [d.duration === 'fixed' ? `Суборенда укладається на визначений строк з ${fmtDate(d.startDate, 'uk-UA') || 'не вказано'} до ${fmtDate(d.endDate, 'uk-UA') || 'не вказано'}.` : `Суборенда укладається на невизначений строк з ${fmtDate(d.startDate, 'uk-UA') || 'не вказано'}.`, d.duration === 'indefinite' ? `Строк попередження: ${pad(d.noticePeriod) || '3'} місяці; строк попередження починається з першого дня місяця, наступного після вручення повідомлення.` : '', 'Суборенда у будь-якому випадку припиняється не пізніше припинення основної оренди.'] },
-    { title: 'IV. ПЛАТА ЗА СУБОРЕНДУ ТА ПЛАТЕЖІ', body: [`Щомісячна плата за суборенду: ${fmtAmount(d.rentAmount)} крон.`, d.utilityAmount ? `Авансовий платіж за послуги: ${fmtAmount(d.utilityAmount)} крон/місяць.` : '', `Загальний щомісячний платіж: ${fmtAmount((Number(d.rentAmount) || 0) + (Number(d.utilityAmount) || 0))} крон.`, d.depositAmount ? `Завдаток: ${fmtAmount(d.depositAmount)} крон. Субдавець повертає завдаток протягом 30 днів від припинення суборенди та передачі приміщення, після вирахування належно специфікованих та доведених вимог.` : '', `Плата за суборенду сплачується до ${pad(d.paymentDay) || '15'}. дня відповідного місяця ${d.bankAccount ? `на банківський рахунок субдавця № ${pad(d.bankAccount)}` : 'готівкою або банківським переказом'}.`, 'У разі прострочення сплати субдавець має право вимагати законні відсотки за прострочення з дня сплати.'] },
-    { title: 'V. ПРАВИЛА СУБОРЕНДИ', body: ['Суборендар зобов\'язаний: використовувати приміщення лише за погодженою метою, дотримуватися порядку, не вносити змін без згоди субдавця, не пошкоджувати майно та дотримуватися правил будинку.', `Максимальна кількість осіб у квартирі: ${pad(d.maxOccupants) || '2'}`, `Домашні тварини: ${d.allowPets ? 'утримання прийнято до відома сторонами; суборендар відповідає за шкоду та підвищені витрати, спричинені ними' : 'суборендар має право тримати тварину лише якщо це не спричиняє непропорційних незручностей'}`, `Куріння: ${d.allowSmoking ? 'дозволено' : 'заборонено'}`, `Airbnb / короткострокова суборенда: ${d.allowAirbnb ? 'дозволено' : 'заборонено'}`, 'Суборендар бере до уваги умови основної оренди та зобов\'язується їх дотримуватися.'] },
-    { title: 'VI. ПЕРЕДАЧА ПРИМІЩЕННЯ', body: [`Дата передачі: ${fmtDate(d.handoverDate, 'uk-UA') || 'не вказано'}.`, `Кількість переданих ключів: ${pad(d.keysCount) || '1'}`, d.equipmentList ? `Передане устаткування: ${pad(d.equipmentList)}` : '', d.knownDefects ? `Відомі дефекти: ${pad(d.knownDefects)}` : 'Приміщення передається без явних дефектів.', 'Буде складено акт прийому-передачі, підписаний обома сторонами.'] },
-    { title: 'VII. ПРИПИНЕННЯ СУБОРЕНДИ', body: ['При припиненні суборенди суборендар зобов\'язаний звільнити приміщення, привести його у первісний стан (з урахуванням звичайного зношування) та повернути ключі.', !isNaN(Number(d.rentAmount)) && Number(d.rentAmount) > 0 ? `За кожен день прострочення зі звільненням суборендар зобов\'язаний сплачувати компенсацію ${Math.round(Number(d.rentAmount) / 30)} крон/день (тобто 1/30 погодженої щомісячної плати).` : 'За кожен день прострочення зі звільненням суборендар зобов\'язаний сплачувати компенсацію 1/30 погодженої щомісячної плати.', 'Завдаток повертається протягом 30 днів від передачі приміщення, після вирахування можливих вимог субдавця.'] },
-    { title: 'VIII. РЕМОНТ, АВАРІЇ ТА ОБСЛУГОВУВАННЯ', body: ['Дрібний ремонт і витрати на звичайне обслуговування суборендованого приміщення несе суборендар (в межах, пропорційних характеру суборенди).', 'Дрібний ремонт несе суборендар у межах, встановлених Постановою уряду № 308/2015 Sb., зі змінами. Більший ремонт несе субдавець, якщо тільки шкода не була заподіяна суборендарем.', 'Суборендар зобов\'язаний негайно — не пізніше 24 годин — повідомити субдавцю про будь-яку аварію, поломку або пошкодження. У разі безпосередньої загрози має право вжити необхідних захисних заходів і без попередньої згоди.', 'Суборендар не може здійснювати будь-яких будівельних змін без попередньої письмової згоди субдавця та (за необхідності) орендодавця. Неавторизовані зміни суборендар зобов\'язаний за власні кошти повернути до первісного стану.'] },
+// ── UA ─────────────────────────────────────────────────────────────────────
+function ua(d: StoredContractData, hasPremium: boolean): ParaPair[] {
+  const consentNote = d.landlordConsent === 'yes'
+    ? `Згоду орендодавця на піднайм надано в письмовій формі ${txt(d.consentDate, 'дата не зазначена')}.`
+    : 'Увага: якщо конкретна ситуація вимагає згоди орендодавця на піднайм, наймач зобов’язаний отримати її до укладення цього Договору. Щодо піднайму частини квартири порядок регулюється, зокрема, § 2274 і § 2275 ЦК залежно від того, чи наймач сам постійно проживає в квартирі.';
+  const vacateRate = dailyVacateRate(d);
+
+  const premium: ParaPair[] = hasPremium ? [
+    {
+      title: 'IX. ОСОБЛИВІ ДОГОВІРНІ ПОЛОЖЕННЯ ТА ЗВ’ЯЗОК З ОСНОВНОЮ ОРЕНДОЮ',
+      body: [
+        `Піднаймач бере до відома, що наймач (його договірний контрагент) пов’язаний з власником нерухомості договором оренди від ${txt(d.mainLeaseDate, 'дата не зазначена')}. У разі припинення основної оренди припиняється і піднайм (§ 2277 ЦК).`,
+        'Піднаймач зобов’язується не порушувати умов основного договору оренди, з яким він належним чином ознайомився до підписання цього Договору і відповідні частини якого йому було передано.',
+        'Наймач зобов’язаний негайно повідомляти піднаймача про будь-яку зміну основного договору оренди, яка могла б вплинути на права та обов’язки піднаймача.',
+        'Піднаймач не має права передавати орендоване приміщення в подальший піднайм третій особі без попередньої письмової згоди наймача та орендодавця.',
+        d.breachPenalty && Number(d.breachPenalty) > 0
+          ? `Договірний штраф за неправомірний подальший піднайм або інше порушення умов основного договору оренди: ${amt(d.breachPenalty)} крон.`
+          : 'У разі неправомірного подальшого піднайму або іншого порушення умов основного договору оренди піднаймач зобов’язаний відшкодувати наймачу всю доведено завдану шкоду, включно зі шкодою, яку орендодавець заявив до наймача.',
+      ],
+    },
+    {
+      title: 'X. ДОГОВІРНІ ШТРАФИ ТА САНКЦІЇ',
+      body: [
+        `Прострочення піднаймачем сплати плати за піднайм: договірний штраф у розмірі 0,05 % від заборгованої суми за кожен день прострочення, але в сукупності не більше 15 % від заборгованої суми${d.minLatePenalty && Number(d.minLatePenalty) > 0 ? `; погоджений мінімум ${amt(d.minLatePenalty)} крон на день застосовується лише в межах цієї загальної граничної суми` : ''}.`,
+        d.damagePenalty && Number(d.damagePenalty) > 0
+          ? `Неправомірна зміна або пошкодження приміщення без згоди наймача: договірний штраф ${amt(d.damagePenalty)} крон і відшкодування фактичної шкоди.`
+          : 'Неправомірна зміна або пошкодження приміщення без згоди наймача: піднаймач відповідає за шкоду в повному обсязі та зобов’язаний за власний рахунок привести приміщення до початкового стану.',
+        'Сплата договірного штрафу не зачіпає права на відшкодування завданої шкоди в повному обсязі.',
+        'Наймач має право оголосити договірний штраф таким, що підлягає негайній сплаті, а також негайно відмовитися від договору, якщо піднаймач прострочить оплату понад 30 днів або суттєво порушить умови основного договору оренди.',
+      ],
+    },
+    {
+      title: 'XI. ДОСТАВКА ДОКУМЕНТІВ',
+      body: [
+        'Усі документи (повідомлення про розірвання, повідомлення, нагадування, рахунки) доставляються на адреси сторін договору, зазначені в цьому Договорі, або на адреси електронної пошти, якщо сторона їх повідомила.',
+        'Документ, надісланий рекомендованим листом, вважається доставленим на третій робочий день після відправлення, навіть якщо адресат його не отримав.',
+        'Про зміну адреси для доставки сторона зобов’язана без зайвої затримки письмово повідомити іншу сторону; до доставки повідомлення діє попередня адреса.',
+      ],
+    },
+  ] : [];
+
+  return [
+    {
+      title: 'ПРЕАМБУЛА',
+      body: [
+        'Цей договір піднайму (далі — «Договір») укладається відповідно до § 2274 і наступних Закону № 89/2012 Sb., Цивільний кодекс, з наступними змінами (далі — «ЦК»).',
+        consentNote,
+        `Дата укладення Договору: ${d.contractDate ? dateIn('ua', d.contractDate) : todayIn('ua')}`,
+      ],
+    },
+    {
+      title: 'I. СТОРОНИ ДОГОВОРУ',
+      body: [
+        `Наймач (особа, що передає в піднайм): ${txt(d.landlordName)}, дата народження / IČO: ${txt(d.landlordId)}, місце проживання / місцезнаходження: ${txt(d.landlordAddress)}`,
+        d.landlordEmail ? `E-mail наймача: ${txt(d.landlordEmail)}` : '',
+        `Піднаймач: ${txt(d.tenantName)}, дата народження / IČO: ${txt(d.tenantId)}, місце проживання / місцезнаходження: ${txt(d.tenantAddress)}`,
+        d.tenantEmail ? `E-mail піднаймача: ${txt(d.tenantEmail)}` : '',
+      ],
+    },
+    {
+      title: 'II. ПРЕДМЕТ ПІДНАЙМУ',
+      body: [
+        `Наймач передає піднаймачу в піднайм: квартиру/приміщення за адресою ${txt(d.flatAddress, 'не зазначено')}, ${txt(d.flatLayout, '')}, ${d.flatUnitNumber ? `номер житлової одиниці ${txt(d.flatUnitNumber)}, ` : ''}${d.floor ? `${txt(d.floor)}-й поверх, ` : ''}кадастрова територія ${txt(d.cadastralArea, 'не зазначено')}.`,
+        d.subleaseArea ? `Підлогова площа приміщення, що передається в піднайм: ${txt(d.subleaseArea)} м²` : '',
+      ],
+    },
+    {
+      title: 'III. СТРОК ПІДНАЙМУ',
+      body: [
+        d.duration === 'fixed'
+          ? `Піднайм укладається на визначений строк з ${dateIn('ua', d.startDate, 'не зазначено')} до ${dateIn('ua', d.endDate, 'не зазначено')}.`
+          : `Піднайм укладається на невизначений строк з ${dateIn('ua', d.startDate, 'не зазначено')}.`,
+        d.duration === 'indefinite'
+          ? `Строк попередження: ${txt(d.noticePeriod, '3')} місяці; строк попередження починається з першого дня місяця, що настає після доставки повідомлення про розірвання.`
+          : '',
+        'У будь-якому разі піднайм припиняється не пізніше дня припинення основної оренди.',
+      ],
+    },
+    {
+      title: 'IV. ПЛАТА ЗА ПІДНАЙМ ТА ПЛАТЕЖІ',
+      body: [
+        `Щомісячну плату за піднайм погоджено в розмірі ${amt(d.rentAmount)} крон.`,
+        d.utilityAmount ? `Авансовий платіж за послуги/енергію: ${amt(d.utilityAmount)} крон на місяць.` : '',
+        `Загальний щомісячний платіж: ${amt(monthlyTotal(d))} крон.`,
+        d.depositAmount ? `Грошова застава (кауція): ${amt(d.depositAmount)} крон. Наймач зобов’язаний повернути заставу протягом 30 днів після припинення піднайму та передачі приміщення, після вирахування належним чином конкретизованих і доведених вимог.` : '',
+        `Плата за піднайм сплачується щоразу до ${txt(d.paymentDay, '15')}-го числа відповідного місяця ${d.bankAccount ? `на банківський рахунок наймача № ${txt(d.bankAccount)}` : 'готівкою або банківським переказом'}.`,
+        'У разі прострочення піднаймачем сплати плати за піднайм або авансового платежу за послуги наймач має право вимагати встановлених законом процентів за прострочення з дня настання строку платежу.',
+      ],
+    },
+    {
+      title: 'V. ПРАВИЛА ПІДНАЙМУ',
+      body: [
+        'Піднаймач зобов’язаний: використовувати приміщення лише за погодженим призначенням, підтримувати порядок, не здійснювати змін без згоди наймача, не пошкоджувати майно та дотримуватися правил будинку.',
+        `Максимальна кількість осіб у квартирі: ${txt(d.maxOccupants, '2')}`,
+        `Домашні тварини: ${d.allowPets ? 'їх утримання сторони взяли до відома; піднаймач відповідає за шкоду та підвищені витрати, спричинені ними' : 'піднаймач має право утримувати тварину лише тоді, якщо цим не завдає наймачу, орендодавцю чи іншим мешканцям будинку непропорційних незручностей; про утримання тварини він зобов’язаний заздалегідь повідомити наймача'}`,
+        `Куріння: ${d.allowSmoking ? 'дозволено' : 'заборонено'}`,
+        `Airbnb / короткострокова повторна передача в піднайм: ${d.allowAirbnb ? 'дозволено' : 'заборонено'}`,
+        'Піднаймач бере до відома умови основного договору оренди та зобов’язується їх дотримуватися.',
+      ],
+    },
+    {
+      title: 'VI. ПЕРЕДАЧА ПРИМІЩЕННЯ',
+      body: [
+        `Передача приміщення відбудеться ${dateIn('ua', d.handoverDate, 'дата не зазначена')}.`,
+        `Кількість переданих ключів: ${txt(d.keysCount, '1')}`,
+        d.equipmentList ? `Обладнання, що передається: ${txt(d.equipmentList)}` : '',
+        d.knownDefects ? `Відомі дефекти: ${txt(d.knownDefects)}` : 'Приміщення передається без очевидних дефектів.',
+        'Про передачу буде складено акт приймання-передачі, підписаний обома сторонами.',
+      ],
+    },
+    {
+      title: 'VII. ПРИПИНЕННЯ ПІДНАЙМУ',
+      body: [
+        'Після припинення піднайму піднаймач зобов’язаний звільнити приміщення, привести його до початкового стану (з урахуванням звичайного зношення) та передати ключі.',
+        vacateRate !== null
+          ? `За кожен день прострочення звільнення приміщення піднаймач зобов’язаний сплачувати компенсацію в розмірі ${vacateRate} крон на день (тобто 1/30 погодженої щомісячної плати за піднайм).`
+          : 'За кожен день прострочення звільнення приміщення піднаймач зобов’язаний сплачувати компенсацію в розмірі 1/30 погодженої щомісячної плати за піднайм за кожен день прострочення.',
+        'Заставу буде повернуто протягом 30 днів після передачі приміщення, після вирахування можливих вимог наймача.',
+      ],
+    },
+    {
+      title: 'VIII. РЕМОНТ, АВАРІЇ ТА УТРИМАННЯ',
+      body: [
+        'Дрібний ремонт і витрати на звичайне утримання приміщення, що перебуває в піднаймі, оплачує піднаймач (в обсязі, що відповідає характеру піднайму). За ремонт, спричинений зношенням понад звичайне користування, піднаймач відповідає в повному обсязі.',
+        'Дрібний ремонт і звичайне утримання, пов’язані з користуванням приміщенням, оплачує піднаймач в обсязі, встановленому Постановою уряду № 308/2015 Sb., з наступними змінами. Більший ремонт і реконструкцію оплачує наймач, якщо пошкодження не заподіяно піднаймачем або особами, яким піднаймач надав доступ до приміщення.',
+        'Піднаймач зобов’язаний негайно — не пізніше ніж протягом 24 годин — повідомляти наймача про всі аварії, несправності чи пошкодження (витоки води, відключення електроенергії, несправності опалення тощо). У разі безпосередньої загрози він має право вжити необхідних захисних заходів навіть без згоди наймача.',
+        'Піднаймач не може здійснювати жодних будівельних змін, перебудов чи інших втручань у приміщення без попередньої письмової згоди наймача, а в разі будівельних змін — також орендодавця. Здійснені недозволені зміни піднаймач зобов’язаний за власний рахунок привести до початкового стану.',
+      ],
+    },
+    ...premium,
+    {
+      title: `${hasPremium ? 'XII' : 'IX'}. ПРИКІНЦЕВІ ПОЛОЖЕННЯ`,
+      body: [
+        'Договір регулюється правом Чеської Республіки, зокрема Законом № 89/2012 Sb., Цивільний кодекс, з наступними змінами.',
+        disputeClauseIn('ua', d),
+        'Договір складено у двох однакових примірниках; особа, що передає в піднайм, і піднаймач отримують по одному примірнику.',
+        'Усі зміни дійсні лише у формі письмових, пронумерованих і підписаних додаткових угод.',
+        'Недійсність окремого положення Договору не впливає на дійсність інших положень.',
+        'Жодна зі сторін не відповідає за невиконання негрошових обов’язків, спричинене непереборною силою (vis maior), тобто надзвичайною, непередбачуваною та непереборною подією (§ 2913 ч. 2 ЦК). Непереборна сила не поширюється на обов’язок сплатити грошову суму. Сторона, яка зазнала дії непереборної сили, зобов’язана негайно письмово повідомити іншу сторону та після усунення перешкоди негайно продовжити виконання.',
+      ],
+    },
+    { title: `${hasPremium ? 'XIII' : 'X'}. ПІДПИСИ`, body: [] },
   ];
-  if (hasPremium) {
-    sections.push({ title: 'IX. ОСОБЛИВІ УМОВИ ТА ВІДНОШЕННЯ ДО ОСНОВНОЇ ОРЕНДИ', body: [`Суборендар бере до уваги, що субдавець перед власником нерухомості зв\'язаний договором оренди від ${fmtDate(d.mainLeaseDate, 'uk-UA') || 'не вказано'}. Припинення основної оренди припиняє і суборенду (§ 2277 ЦК).`, 'Суборендар зобов\'язується не порушувати умови основної оренди.', 'Субдавець зобов\'язаний негайно інформувати суборендаря про будь-яку зміну основної оренди, яка може вплинути на права та обов\'язки суборендаря.', 'Суборендар не має права передавати суборендоване приміщення в подальшу суборенду третій особі без попередньої письмової згоди субдавця та орендодавця.', d.breachPenalty && Number(d.breachPenalty) > 0 ? `Штраф за неавторизовану подальшу суборенду або інше порушення основної оренди: ${fmtAmount(d.breachPenalty)} крон.` : 'При неавторизованій подальшій суборенді або іншому порушенні основної оренди суборендар зобов\'язаний відшкодувати субдавцю всю доведену шкоду.'] });
-    sections.push({ title: 'X. ШТРАФИ І САНКЦІЇ', body: [`Прострочення сплати плати за суборенду: штраф 0,05% від заборгованості за кожен день, загалом не більше 15% заборгованості${d.minLatePenalty && Number(d.minLatePenalty) > 0 ? `; погоджений мінімум ${fmtAmount(d.minLatePenalty)} крон/день діє лише в межах цього загального ліміту` : ''}.`, d.damagePenalty && Number(d.damagePenalty) > 0 ? `Неавторизована зміна або пошкодження: штраф ${fmtAmount(d.damagePenalty)} крон і відшкодування фактичної шкоди.` : 'Неавторизована зміна або пошкодження: суборендар несе повну відповідальність і зобов\'язаний за власні кошти повернути приміщення до первісного стану.', 'Сплата штрафу не позбавляє права на повне відшкодування шкоди.', 'Субдавець має право оголосити штраф негайно сплатним і відразу відмовитися від договору, якщо суборендар прострочує сплату більше 30 днів або серйозно порушує умови основної оренди.'] });
-    sections.push({ title: 'XI. ВРУЧЕННЯ ПИСЕМ', body: ['Усі писемні документи доставляються на адреси сторін, зазначені у цьому Договорі, або на електронні адреси, якщо сторона їх повідомила.', 'Письмо, надіслане рекомендованим листом, вважається врученим на третій робочий день після відправлення, навіть якщо адресат його не отримав.', 'Зміну адреси сторона зобов\'язана негайно письмово повідомити іншій стороні; до моменту вручення повідомлення діє первісна адреса.'] });
-  }
-  sections.push({ title: `${hasPremium ? 'XII' : 'IX'}. ЗАКЛЮЧНІ ПОЛОЖЕННЯ`, body: ['Договір регулюється правом Чеської Республіки, зокрема Законом № 89/2012 Sb., Цивільним кодексом, з наступними змінами.', 'Будь-які спори вирішуються насамперед мирним шляхом; за відсутності згоди — компетентним судом Чеської Республіки.', 'Договір укладений у двох примірниках; кожна сторона отримує по одному.', 'Зміни дійсні лише у формі писемних, нумерованих і підписаних доповнень.', 'Недійсність окремого положення не впливає на дійсність решти положень.', 'Жодна сторона не відповідає за невиконання немайнових зобов\'язань, спричинене форс-мажором (§ 2913(2) ЦК).'] });
-  sections.push({ title: `${hasPremium ? 'XIII' : 'X'}. ПІДПИСИ`, body: [] });
-  return sections;
 }
 
-// ── RU ─────────────────────────────────────────────────────────────────────
 export function buildSubleaseTranslationsBySection(d: StoredContractData, hasPremium: boolean): Array<NonNullable<ContractSection['translations']>> {
   return buildBilingualTranslations({
     en: () => en(d, hasPremium),
-    ua: () => uk(d, hasPremium),
+    ua: () => ua(d, hasPremium),
   });
 }

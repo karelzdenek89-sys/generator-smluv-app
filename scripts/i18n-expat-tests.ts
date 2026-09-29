@@ -25,10 +25,6 @@ import {
   LEASE_FORM_PRIMARY_EN_MARKERS,
 } from '../lib/i18n/lease-form';
 import { getLocalizedIncludedItems } from '../lib/i18n/pricing-locale';
-import { buildLeaseContractSectionsEn } from '../lib/i18n/lease-contract-en';
-import { buildLeaseContractSectionsUk } from '../lib/i18n/lease-contract-uk';
-import { buildEmploymentContractSectionsEn } from '../lib/i18n/employment-contract-en';
-import { buildDppContractSectionsEn } from '../lib/i18n/dpp-contract-en';
 import { buildExpatTranslationSections, hasExpatTranslationAnnex } from '../lib/i18n/expat-translation-registry';
 import { LEASE_USE_NOTICE_EN } from '../lib/i18n/safety-copy';
 import { renderContractPdf } from '../lib/pdf';
@@ -463,16 +459,16 @@ function testLeaseEnglishContractSections() {
     endDate: '2027-05-31',
     depositAmount: '20000',
   };
-  const sections = buildLeaseContractSectionsEn(data);
+  const sections = buildExpatTranslationSections('lease', 'en', data);
   assert.ok(sections.some((s) => s.title.includes('PARTIES')));
   assert.ok(sections.some((s) => s.body.some((line) => line.includes('Landlord:'))));
   assert.match(read('lib/pdf.ts'), /buildExpatTranslationSections/);
   assert.match(read('lib/pdf.ts'), /renderExpatTranslationAnnex/);
-  const ukSections = buildLeaseContractSectionsUk(data);
+  const ukSections = buildExpatTranslationSections('lease', 'ua', data);
   assert.ok(ukSections.some((s) => s.title.includes('СТОРОНИ')));
   const enText = sections.flatMap((section) => section.body).join(' ');
   const ukText = ukSections.flatMap((section) => section.body).join(' ');
-  assert.match(enText, /Section 2285/);
+  assert.match(enText, /§ 2285 of the Civil Code/);
   assert.match(ukText, /§ 2285/);
   assert.doesNotMatch(`${enText}\n${ukText}`, /Section 2230|§ 2230|within one month|протягом місяця/);
   assert.doesNotMatch(read('lib/contracts-i18n/lease.ts'), /§ 2230/);
@@ -486,7 +482,7 @@ function testExpatCapabilityDifferentiation() {
   assert.match(EXPAT_CONTRACT_CAPABILITY.en.lease, /explanatory English annex/i);
   assert.match(EXPAT_CONTRACT_CAPABILITY.ua.lease, /українськ/i);
   assert.match(EXPAT_CONTRACT_CAPABILITY.en.employment, /English-guided form/i);
-  assert.match(EXPAT_CONTRACT_CAPABILITY.ua.dpp, /огляд основних умов/i);
+  assert.match(EXPAT_CONTRACT_CAPABILITY.ua.dpp, /пояснювальний український додаток/i);
   assert.match(EXPAT_CONTRACT_CAPABILITY.en.sublease, /English-guided form/i);
   assert.match(EXPAT_CONTRACT_CAPABILITY.en.power_of_attorney, /English-guided form/i);
   assert.match(EXPAT_CONTRACT_CAPABILITY.en.car_sale, /English-guided form/i);
@@ -568,10 +564,10 @@ function testExpatContractTranslationBuilders() {
     salary: '50000',
     salaryType: 'monthly',
   };
-  const enSections = buildEmploymentContractSectionsEn(employment);
-  assert.ok(enSections.some((s) => s.title === 'I. PARTIES'));
+  const enSections = buildExpatTranslationSections('employment', 'en', employment);
+  assert.ok(enSections.some((s) => s.title === 'I. CONTRACTING PARTIES'));
   assert.ok(buildExpatTranslationSections('dpp', 'en', { ...employment, contractType: 'dpp', taskDescription: 'IT support', workPlace: 'Prague', estimatedHours: '40' }).length > 3);
-  assert.ok(buildDppContractSectionsEn({ ...employment, contractType: 'dpp', taskDescription: 'Task', workPlace: 'Brno', estimatedHours: '20' }).some((s) => s.title.includes('TASK')));
+  assert.ok(buildExpatTranslationSections('dpp', 'en', { ...employment, contractType: 'dpp', taskDescription: 'Task', workPlace: 'Brno', estimatedHours: '20' }).some((s) => s.title.includes('TASK')));
 }
 
 function testLeaseUkBuilderUi() {
@@ -639,7 +635,7 @@ async function testLeaseUkPdfTextContent() {
   const text = await extractPdfText(pdf);
   const lower = text.toLowerCase();
   assert.match(lower, /чеський договір з пояснювальним|чеський договір/i);
-  assert.match(lower, /пояснювальний додаток українською/);
+  assert.match(lower, /пояснювальний\s+додаток\s+українською/);
   assert.match(lower, /i\. сторони|сторони/);
   assert.match(lower, /орендодавець тест/);
 }
@@ -1056,11 +1052,13 @@ async function testLeaseEnPdfTextContent() {
   const lower = text.toLowerCase();
 
   assert.match(lower, /nájemní|najemni|smluvn/i, 'Czech lease body expected');
-  assert.match(lower, /explanatory english translation annex/i);
-  assert.match(lower, /not a certified or official translation/i);
-  assert.match(lower, /czech wording prevails/i);
+  assert.match(lower, /explanatory\s+english\s+translation\s+annex/i);
+  assert.match(lower, /not\s+a\s+certified\s+or\s+official\s+translation/i);
+  assert.match(lower, /czech\s+wording\s+prevails/i);
   assert.match(lower, /i\. parties|landlord test/i);
-  assert.match(lower, /explanatory handover protocol summary/i);
+  assert.match(lower, /vii\.\s+handover\s+of\s+the\s+flat\s+and\s+handover\s+protocol/i);
+  // Without the handover-protocol add-on the Czech lease has no Annex No. 1, so the translation must not invent one.
+  assert.ok(!/annex\s+no\.\s+1/i.test(lower), 'translation must not add an annex the Czech contract does not have');
 
   const forbidden = [
     'visa-ready',
@@ -1096,7 +1094,7 @@ async function testEmploymentEnPdfTextContent() {
   const pdf = await renderContractPdf(data);
   const lower = (await extractPdfText(pdf)).toLowerCase();
   assert.match(lower, /pracovní|zaměstnavatel|zákoník práce/i);
-  assert.match(lower, /explanatory english translation annex/i);
+  assert.match(lower, /explanatory\s+english\s+translation\s+annex/i);
   assert.match(lower, /i\. parties|preamble/i);
   assert.match(lower, /employer: acme/i);
 }
@@ -1127,19 +1125,21 @@ async function testDppUaPdfTextContent() {
   const lower = text.toLowerCase();
 
   assert.match(lower, /dohoda|provedení práce/i);
-  assert.match(text, /огляд основних умов/i);
-  assert.match(text, /переваг[ау] має чеське формулювання/i);
-  assert.match(text, /не перевіряє, чи має іноземець право працювати в чеській республіці/i);
+  assert.match(text, /повний\s+пояснювальний\s+український\s+переклад/i);
+  assert.match(text, /ПРЕАМБУЛА/);
+  assert.match(text, /IV\. ВИНАГОРОДА ТА СПОСІБ ВИПЛАТИ/);
+  assert.match(text, /переваг[ау]\s+має\s+чеське\s+формулювання/i);
+  assert.match(text, /не\s+перевіряє,\s+чи\s+має\s+іноземець\s+право\s+працювати в чеській республіці/i);
   assert.match(lower, /neověřuje, zda má cizinec oprávnění pracovat/i);
 
   assert.ok(!/юридично обов.?язков/i.test(text), 'must not claim legally binding UA version');
   assert.ok(!/legally binding version/i.test(lower));
-  assert.match(lower, /не повний переклад/);
-  assert.ok(!/є повний переклад|kompletní překlad smlouvy|complete translation of the contract/i.test(lower));
+  assert.match(lower, /не офіційний і не засвідчений|не є засвідченим\s+чи\s+офіційним/);
+  assert.ok(!/не повний переклад|огляд основних умов/i.test(lower), 'the DPP annex is a full translation, not an overview');
 
   assert.match(text, /40\s000/);
   assert.ok(!/40,000/.test(text), 'amounts must use Czech spacing, not comma thousands');
-  assert.match(text, /1\.\s*6\.\s*2026/);
+  assert.match(text, /0?1\.\s*0?6\.\s*2026/);
   assert.ok(!/\b1\/6\/2026\b/.test(text), 'dates must not use slash format in UA annex');
   assert.match(text, /робочого часу|відпочинку|розкладу змін/i);
 }
@@ -1160,11 +1160,11 @@ async function testPdfFallback() {
   const enText = (await extractPdfText(enPdf)).toLowerCase();
   assert.ok(enPdf.length > 1000, 'Expected generated English-aware lease PDF');
   assert.match(enText, /english-guided czech contract/i);
-  assert.doesNotMatch(enText, /explanatory english translation annex/i);
+  assert.doesNotMatch(enText, /explanatory\s+english\s+translation\s+annex/i);
 
   const enPdfWithAnnex = await renderContractPdf({ ...minimalLease, addOns: ['bilingual_annex'] });
   const enAnnexText = (await extractPdfText(enPdfWithAnnex)).toLowerCase();
-  assert.match(enAnnexText, /explanatory english translation annex/i);
+  assert.match(enAnnexText, /explanatory\s+english\s+translation\s+annex/i);
   assert.ok(
     enPdfWithAnnex.length > csPdf.length + 4000,
     'EN lease PDF should be substantially larger than CS-only (Czech body + English translation annex)',

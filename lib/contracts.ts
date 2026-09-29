@@ -37,7 +37,7 @@ export type StoredContractData = {
   [key: string]: unknown;
 };
 
-import { buildLeaseTranslationsBySection } from './contracts-i18n/lease';
+import { buildLeaseDepositReceiptTranslations, buildLeaseTranslationsBySection } from './contracts-i18n/lease';
 import { buildSubleaseTranslationsBySection } from './contracts-i18n/sublease';
 import { buildDppTranslationsBySection } from './contracts-i18n/dpp';
 import { buildEmploymentTranslationsBySection } from './contracts-i18n/employment';
@@ -1068,7 +1068,7 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
           : '',
         'Změna vlastníka pronajaté věci sama o sobě nájemní vztah neruší; nabyvatel vstupuje do práv a povinností pronajímatele ode dne nabytí vlastnictví (§ 2221 OZ).',
         'Žádná ze smluvních stran neodpovídá za nesplnění nepeněžitých povinností způsobené vyšší mocí (vis maior), tj. událostí mimořádnou, nepředvídatelnou a nepřekonatelnou (§ 2913 odst. 2 OZ). Vyšší moc se nevztahuje na povinnost zaplatit peněžitou částku. Strana postižená vyšší mocí je povinna neprodleně písemně informovat druhou stranu a po odpadnutí překážky neprodleně pokračovat v plnění.',
-      ],
+      ].filter(Boolean) as string[],
     },
   ];
 
@@ -1098,6 +1098,7 @@ function buildLeaseContractSections(d: StoredContractData): ContractSection[] {
   // Samotné potvrzení pouze dokládá převzetí částky; nemění obsah smlouvy.
   if (d.packageKey === 'landlord') {
     sections.push({
+      translations: buildLeaseDepositReceiptTranslations(d),
       title: 'PŘÍLOHA Č. 2 – POTVRZENÍ O PŘEVZETÍ PENĚŽITÉ JISTOTY (KAUCE)',
       body: hasDeposit
         ? [
