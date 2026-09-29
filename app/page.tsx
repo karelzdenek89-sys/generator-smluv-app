@@ -14,6 +14,7 @@ import { getAvailableThematicPackages, getEffectivePriceBand } from '@/lib/packa
 import { getFreeBasicPdfCopy } from '@/lib/monetization-copy';
 import { getMonetizationPolicy, isFreeBasicPolicy } from '@/lib/monetization-policy';
 import { PRICING_TIER_CONFIG } from '@/lib/pricing';
+import { CHECKOUT_ADDON_CONFIG } from '@/lib/checkout-addons';
 import { PRICE_TRANSPARENCY_LINE } from '@/lib/price-reveal-copy';
 import { SITE_URL } from '@/lib/seo/site';
 import SituationGrid from '@/app/components/portal/SituationGrid';
@@ -22,6 +23,7 @@ import { PORTAL_TOOLS } from '@/lib/portal/tools';
 import { ANSWER_FIRST_ARTICLES, articleHref } from '@/lib/portal/articles';
 import { HOMEPAGE_SITUATIONS } from '@/lib/portal/situations';
 import CaseJourneyPreview from '@/app/components/marketing/CaseJourneyPreview';
+import BilingualAdvantageSection from '@/app/components/marketing/BilingualAdvantageSection';
 import ContentFinder, { type FinderItem } from '@/app/components/marketing/ContentFinder';
 import styles from '@/app/components/marketing/homepage.module.css';
 import { CASE_DOCUMENT_PRICE_LABEL } from '@/lib/cases/documents';
@@ -113,7 +115,11 @@ const faqItems = [
   },
   {
     question: 'Dostanu jen PDF?',
-    answer: 'PDF je základní výstup. V checkoutu lze podle typu dokumentu přidat editovatelný DOCX, checklist před podpisem, předávací protokol, delší archiv nebo u vybraných dokumentů dvojjazyčnou vysvětlující přílohu. Některé z těchto výstupů jsou už zahrnuté v tematických balíčcích.',
+    answer: 'PDF je základní výstup. V checkoutu lze podle typu dokumentu přidat editovatelný DOCX, checklist před podpisem, předávací protokol, delší archiv nebo u šesti smluv úplný anglický či ukrajinský překlad. Některé z těchto výstupů jsou už zahrnuté v tematických balíčcích.',
+  },
+  {
+    question: 'Umíte smlouvu v angličtině nebo ukrajinštině?',
+    answer: `Ano, u nájemní a podnájemní smlouvy, pracovní smlouvy, DPP, plné moci a kupní smlouvy na auto. Vedle závazného českého znění dostanete v PDF úplný vysvětlující překlad každého článku a odstavce se stejným číslováním a s vašimi údaji. Kdo vyplní formulář anglicky nebo ukrajinsky, má překlad v ceně; k české verzi formuláře ho lze přidat za ${CHECKOUT_ADDON_CONFIG.bilingual_annex.priceCzk} Kč. Nejde o úřední překlad a při rozporu má přednost české znění.`,
   },
   {
     question: 'Musím se registrovat nebo platit předplatné?',
@@ -155,7 +161,8 @@ const softwareSchema = {
     'PDF po dokončení objednávky',
     'Volitelná editovatelná DOCX verze',
     'Checklisty, předávací protokoly a delší archiv podle typu dokumentu',
-    'Anglická a ukrajinská nápověda u vybraných formulářů',
+    'Úplný anglický nebo ukrajinský překlad šesti smluv článek po článku vedle českého znění',
+    'Formuláře a náhled v angličtině a ukrajinštině',
     'Bezplatné checklisty a rozhodovací průvodci',
     'Legislativní radar 2027 s oficiálními zdroji',
     'Moje případy pro pronájem, převod vozidla a zakázku: termíny, checklisty a připomínky',
@@ -285,7 +292,10 @@ export default function Home() {
         </div>
 
         <div className={`${styles.glass} ${styles.expatBar}`}>
-          <p><strong>Bydlíte nebo pracujete v Česku?</strong> Nápověda také v angličtině a ukrajinštině.</p>
+          <p>
+            <strong>Pronajímáte nebo zaměstnáváte cizince?</strong> Celá smlouva česky i v úplném překladu do angličtiny nebo ukrajinštiny.{' '}
+            <a href="#smlouvy-pro-cizince" className="whitespace-nowrap font-semibold text-[#e8d092] underline-offset-4 hover:underline">Ukázka překladu ↓</a>
+          </p>
           <ExpatEntryLinks showBlogLink />
         </div>
         <p className={styles.scopeNote} aria-label="Rozsah služby">
@@ -311,6 +321,10 @@ export default function Home() {
             <Link href="/zmeny-2027" className="transition-colors hover:text-white">Legislativní radar 2027 →</Link>
           </div>
         </section>
+
+        <Divider />
+
+        <BilingualAdvantageSection locale="cs" />
 
         <Divider />
 

@@ -71,9 +71,9 @@ function withContracts(c: Array<Omit<LandingContract, 'href'>>): LandingContract
 
 // ─── ENGLISH ───────────────────────────────────────────────────────────────
 const EN: LandingContent = {
-  htmlTitle: 'Czech contracts online — rental, employment, NDA in 5 minutes | SmlouvaHned',
+  htmlTitle: 'Czech contracts online with full English translation | SmlouvaHned',
   metaDescription:
-    'Generate Czech legal contracts online without a lawyer. Rental agreement, DPP work agreement, employment contract, NDA, power of attorney and more — fill the form, get a Czech PDF ready to sign. Made for foreigners living in the Czech Republic.',
+    'Rental, sublease, employment, DPP, power of attorney and car sale contracts for the Czech Republic. Fill in the form in English and get the binding Czech PDF plus a complete English translation of every article — included in the price.',
   keywords: [
     'rental agreement Czech Republic',
     'lease contract Prague',
@@ -84,9 +84,9 @@ const EN: LandingContent = {
     'sublease agreement Prague',
     'power of attorney Czech Republic',
   ],
-  ogTitle: 'Czech contracts online — rental, employment, NDA in 5 minutes',
+  ogTitle: 'Czech contracts with a full English translation, article by article',
   ogDescription:
-    'Generate Czech legal contracts online. Rental, DPP, employment, NDA. Built for foreigners living in the Czech Republic.',
+    'Binding Czech contract + complete English translation in one PDF. Rental, employment, DPP, power of attorney, car sale. Built for foreigners in the Czech Republic.',
   kicker: 'For foreigners living in the Czech Republic',
   h1Line1: 'Czech contracts online —',
   h1Line2: 'rental, employment, NDA in 5 minutes',
@@ -152,9 +152,9 @@ const EN: LandingContent = {
 
 // ─── UKRAINIAN ─────────────────────────────────────────────────────────────
 const UA: LandingContent = {
-  htmlTitle: 'Чеські договори онлайн — оренда, працевлаштування, NDA за 5 хвилин | SmlouvaHned',
+  htmlTitle: 'Чеські договори онлайн з повним українським перекладом | SmlouvaHned',
   metaDescription:
-    'Створюйте чеські юридичні договори онлайн без адвоката. Договір оренди, ДПП, трудовий договір, NDA, довіреність та інші — заповнюєте форму, отримуєте чеський PDF, готовий до підпису. Для іноземців, які живуть у Чехії.',
+    'Оренда, піднайм, трудовий договір, DPP, довіреність і продаж авто в Чехії. Заповніть форму українською й отримайте обов’язковий чеський PDF разом із повним українським перекладом кожної статті — включено в ціну.',
   keywords: [
     'договір оренди Чехія',
     'оренда квартири Прага',
@@ -163,9 +163,9 @@ const UA: LandingContent = {
     'NDA Чехія',
     'довіреність Чехія',
   ],
-  ogTitle: 'Чеські договори онлайн — оренда, праця, NDA за 5 хвилин',
+  ogTitle: 'Чеські договори з повним українським перекладом, стаття за статтею',
   ogDescription:
-    'Генератор чеських юридичних договорів онлайн. Оренда, ДПП, праця, NDA. Для іноземців у Чехії.',
+    'Обов’язковий чеський договір + повний український переклад в одному PDF. Оренда, праця, DPP, довіреність, продаж авто. Для іноземців у Чехії.',
   kicker: 'Для іноземців, які живуть у Чехії',
   h1Line1: 'Чеські договори онлайн —',
   h1Line2: 'оренда, праця, NDA за 5 хвилин',

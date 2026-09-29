@@ -64,6 +64,7 @@ import {
   getExpatSeoLandingBySlug,
 } from '../lib/i18n/expat-seo-landings';
 import { getExpatBuilderLanding } from '../lib/i18n/expat-builder-landing';
+import { getBilingualShowcaseSamples } from '../lib/marketing/bilingual-showcase';
 
 const root = process.cwd();
 const read = (path: string) => readFileSync(`${root}/${path}`, 'utf8');
@@ -73,6 +74,8 @@ const MARKETING_SURFACE_FILES = [
   'app/components/BuilderLocaleNotice.tsx',
   'lib/locale.ts',
   'lib/pdf.ts',
+  'app/components/marketing/BilingualAdvantageSection.tsx',
+  'app/components/marketing/BilingualShowcase.tsx',
 ] as const;
 
 const FORBIDDEN_MARKETING = [
@@ -118,7 +121,7 @@ function testLocalePropagation() {
 
   const landing = read('app/[locale]/page.tsx');
   assert.match(landing, /Most used contracts for foreigners in the Czech Republic/);
-  assert.match(landing, /English-guided form|English-guided forms are available for rental/i);
+  assert.match(landing, /English form · Czech contract \+ full English translation/);
   assert.match(landing, /Available in Czech/);
   assert.match(landing, /redirect\('\/en'\)/);
   assert.match(landing, /іноземців у Чехії/);
@@ -131,7 +134,9 @@ function testLocalePropagation() {
   assert.match(landing, /item\.flag/);
 
   const homepage = read('app/page.tsx');
-  assert.match(homepage, /Nápověda také v angličtině a ukrajinštině/);
+  assert.match(homepage, /úplném překladu do angličtiny nebo ukrajinštiny/);
+  assert.match(homepage, /<BilingualAdvantageSection locale="cs" \/>/);
+  assert.match(landing, /<BilingualAdvantageSection locale=\{locale === 'ua' \? 'ua' : 'en'\}/);
   assert.match(homepage, /LanguageSwitcher current="cs"/);
   assert.match(homepage, /ExpatEntryLinks/);
   assert.match(read('lib/i18n/locales.ts'), /nativeName/);
@@ -1035,6 +1040,26 @@ function testE2eFlowStaticPaths() {
   assert.match(read('lib/packages.ts'), /getLocalizedIncludedItems/);
 }
 
+/** The homepage showcase must be real generator output, fully translated. */
+function testBilingualShowcaseSamples() {
+  const samples = getBilingualShowcaseSamples();
+  assert.deepEqual(samples.map((sample) => sample.key), ['lease', 'employment', 'car_sale']);
+  for (const sample of samples) {
+    assert.ok(sample.cs.paragraphs.length >= 2, `${sample.key}: showcase needs at least two paragraphs`);
+    for (const language of ['en', 'ua'] as const) {
+      const translation = sample.translations[language];
+      assert.equal(translation.paragraphs.length, sample.cs.paragraphs.length, `${sample.key}/${language}: paragraph count`);
+      assert.equal(translation.title.split(' ')[0], sample.cs.title.split(' ')[0], `${sample.key}/${language}: article number`);
+      translation.paragraphs.forEach((paragraph, index) => {
+        assert.notEqual(paragraph, sample.cs.paragraphs[index], `${sample.key}/${language}: paragraph ${index + 1} left in Czech`);
+        assert.doesNotMatch(paragraph, /[ěščřžůĚŠČŘŽŮ]/, `${sample.key}/${language}: paragraph ${index + 1} contains Czech`);
+      });
+    }
+  }
+  assert.match(samples[0].cs.paragraphs[0], /18\s500 Kč/);
+  assert.match(samples[0].translations.en.paragraphs[0], /CZK 18\s500/);
+}
+
 async function testTranslationIncludedForExpatBuyers() {
   // EN/UA buyers get the complete translation in the price; the paid add-on is not offered to them.
   for (const locale of ['en', 'ua'] as const) {
@@ -1238,6 +1263,7 @@ async function main() {
   testLocalizedBlogArticles();
   testE2eFlowStaticPaths();
   testLeasePreviewHelpers();
+  testBilingualShowcaseSamples();
   await testTranslationIncludedForExpatBuyers();
   await testLeaseEnPdfTextContent();
   await testLeaseUkPdfTextContent();

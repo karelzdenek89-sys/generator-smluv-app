@@ -20,6 +20,7 @@ import { getExpatSeoHref } from '@/lib/i18n/expat-seo-landings';
 import { LANDINGS } from '@/lib/i18n/landings';
 import { SITE_URL } from '@/lib/seo/site';
 import { FOREIGN_LOCALES, LOCALE_META } from '@/lib/i18n/locales';
+import BilingualAdvantageSection from '@/app/components/marketing/BilingualAdvantageSection';
 
 type LocalePageProps = {
   params: Promise<{ locale: string }>;
@@ -43,11 +44,11 @@ const pageCopy: Record<Exclude<AppLocale, 'cs'>, {
     eyebrow: 'Contracts for foreigners in the Czech Republic',
     title: 'SmlouvaHned for expats',
     subtitle:
-      'Create core Czech contracts with English form guidance. The Czech wording remains primary; selected core contracts may include an explanatory English translation in the PDF (not certified or official).',
+      'Fill in the form in English and get the binding Czech contract together with a complete English translation of every article, in one PDF. The translation is included in the price (explanatory, not certified).',
     coreHeading: 'Most used contracts for foreigners in the Czech Republic',
     coreSub: 'Housing, work, representation and buying a car are covered first. Other documents stay available in Czech.',
     otherHeading: 'Other Czech documents available',
-    supportedBadge: 'English-guided form · Czech contract PDF',
+    supportedBadge: 'English form · Czech contract + full English translation',
     czechBadge: 'Available in Czech',
     cta: 'Open form',
   },
@@ -55,11 +56,11 @@ const pageCopy: Record<Exclude<AppLocale, 'cs'>, {
     eyebrow: 'Документи для іноземців у Чехії',
     title: 'SmlouvaHned для іноземців',
     subtitle:
-      'Основні чеські договори з підказками українською. Чеське формулювання залишається основним; для оренди — пояснювальний український додаток у PDF (не офіційний).',
+      'Заповніть форму українською й отримайте обов’язковий чеський договір разом із повним українським перекладом кожної статті в одному PDF. Переклад включено в ціну (пояснювальний, не офіційний).',
     coreHeading: 'Найпотрібніші договори для іноземців у Чехії',
     coreSub: 'Житло, робота, довіреність і купівля авто — на першому місці.',
     otherHeading: 'Інші документи лише чеською',
-    supportedBadge: 'Форма українською · PDF чеською',
+    supportedBadge: 'Форма українською · чеський договір + повний переклад',
     czechBadge: 'Доступно чеською',
     cta: 'Відкрити форму',
     learnMore: 'Детальніше',
@@ -222,6 +223,10 @@ export default async function LocaleLandingPage({ params }: LocalePageProps) {
           </p>
         </div>
       </section>
+
+      <div className="mx-auto max-w-7xl px-6 pb-16 md:px-10">
+        <BilingualAdvantageSection locale={locale === 'ua' ? 'ua' : 'en'} id="translation" />
+      </div>
 
       <section className="mx-auto max-w-7xl px-6 pb-12 md:px-10">
         <div className="mb-8">

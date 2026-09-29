@@ -25,7 +25,7 @@ const FACTS = [
   {
     value: 'EN / UA',
     eyebrow: 'Jazyky',
-    label: 'nápověda a vybrané dvojjazyčné přílohy',
+    label: 'úplný překlad šesti smluv a formuláře v obou jazycích',
     icon: Languages,
     accent: 'border-violet-300/20 bg-violet-300/6 text-violet-200',
   },
