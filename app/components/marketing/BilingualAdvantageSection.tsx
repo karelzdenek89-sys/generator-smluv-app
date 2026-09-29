@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Check, Minus } from 'lucide-react';
 import BilingualShowcase from '@/app/components/marketing/BilingualShowcase';
+import ForeignReaderStrip from '@/app/components/marketing/ForeignReaderStrip';
 import { getBilingualShowcaseSamples } from '@/lib/marketing/bilingual-showcase';
 import { CHECKOUT_ADDON_CONFIG } from '@/lib/checkout-addons';
 import { EXPAT_CONTRACT_ROUTES, withLocale } from '@/lib/locale';
@@ -125,6 +126,7 @@ export default function BilingualAdvantageSection({
 
   return (
     <section id={id} className={`scroll-mt-24 ${className}`} aria-labelledby={headingId}>
+      {locale === 'cs' ? <ForeignReaderStrip className="mb-8" /> : null}
       <div className="grid gap-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-x-10 lg:gap-y-7">
         <div className="lg:col-start-1 lg:row-start-1 lg:self-end">
           <p className="site-kicker mb-3">{copy.kicker}</p>

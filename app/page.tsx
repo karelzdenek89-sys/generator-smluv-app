@@ -24,6 +24,7 @@ import { ANSWER_FIRST_ARTICLES, articleHref } from '@/lib/portal/articles';
 import { HOMEPAGE_SITUATIONS } from '@/lib/portal/situations';
 import CaseJourneyPreview from '@/app/components/marketing/CaseJourneyPreview';
 import BilingualAdvantageSection from '@/app/components/marketing/BilingualAdvantageSection';
+import LanguageSuggestion from '@/app/components/marketing/LanguageSuggestion';
 import ContentFinder, { type FinderItem } from '@/app/components/marketing/ContentFinder';
 import styles from '@/app/components/marketing/homepage.module.css';
 import { CASE_DOCUMENT_PRICE_LABEL } from '@/lib/cases/documents';
@@ -214,6 +215,7 @@ export default function Home() {
   return (
     <main className={`${styles.home} relative min-h-screen overflow-hidden text-slate-200`}>
       <HomepageAnalyticsTracker />
+      <LanguageSuggestion />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c') }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareSchema).replace(/</g, '\\u003c') }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema).replace(/</g, '\\u003c') }} />
@@ -292,10 +294,18 @@ export default function Home() {
         </div>
 
         <div className={`${styles.glass} ${styles.expatBar}`}>
-          <p>
-            <strong>Pronajímáte nebo zaměstnáváte cizince?</strong> Celá smlouva česky i v úplném překladu do angličtiny nebo ukrajinštiny.{' '}
-            <a href="#smlouvy-pro-cizince" className="whitespace-nowrap font-semibold text-[#e8d092] underline-offset-4 hover:underline">Ukázka překladu ↓</a>
-          </p>
+          <div className={styles.expatBarText}>
+            <p>
+              <strong>Pronajímáte nebo zaměstnáváte cizince?</strong> Celá smlouva česky i v úplném překladu do angličtiny nebo ukrajinštiny.{' '}
+              <a href="#smlouvy-pro-cizince" className="whitespace-nowrap font-semibold text-[#e8d092] underline-offset-4 hover:underline">Ukázka překladu ↓</a>
+            </p>
+            <p lang="en" className={styles.expatBarForeign}>
+              <span aria-hidden="true">🇬🇧</span> Don’t speak Czech? Czech contract + complete English translation, included in the price.
+            </p>
+            <p lang="uk" className={styles.expatBarForeign}>
+              <span aria-hidden="true">🇺🇦</span> Не говорите чеською? Чеський договір + повний український переклад, включено в ціну.
+            </p>
+          </div>
           <ExpatEntryLinks showBlogLink />
         </div>
         <p className={styles.scopeNote} aria-label="Rozsah služby">
