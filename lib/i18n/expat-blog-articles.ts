@@ -139,10 +139,10 @@ function contractArticleEn(
             ...opts.sections,
             {
               id: 'translation-annex',
-              title: 'Czech contract + English translation annex',
+              title: 'Czech contract + complete English translation',
               paragraphs: [
-                'For rental agreements, the PDF contains the primary Czech lease wording first, then an explanatory English translation annex.',
-                'The translation helps you understand clauses before signing; it is not a certified translation for authorities.',
+                'For rental agreements, the PDF contains the Czech lease first, then a complete English translation of every article with the same numbering.',
+                'The translation helps you understand every clause before signing; it is not a certified translation for authorities.',
               ],
               bullets: SAFETY_EN,
             },
@@ -173,7 +173,7 @@ function contractArticleEn(
     primaryCta: opts.primaryCta,
     finalCta: {
       title: opts.primaryCta.title,
-      body: 'Open the English-guided form, fill in your details, and download the PDF after payment.',
+      body: 'Open the English form, fill in your details, and download the Czech PDF with its complete English translation after payment.',
       buttonLabel: opts.primaryCta.buttonLabel,
     },
     trustBox: opts.trust,
@@ -204,10 +204,10 @@ function contractArticleUa(
           ...opts.sections,
           {
             id: 'translation-annex',
-            title: 'Чеський договір + український пояснювальний додаток',
+            title: 'Чеський договір + повний український переклад',
             paragraphs: [
-              'У PDF спочатку основний чеський договір оренди, потім пояснювальний український додаток.',
-              'Додаток допомагає зрозуміти умови перед підписом; це не офіційний переклад для органів.',
+              'У PDF спочатку чеський договір оренди, потім повний український переклад кожної статті з тією самою нумерацією.',
+              'Переклад допомагає зрозуміти кожну умову перед підписом; це не офіційний переклад для органів.',
             ],
             bullets: SAFETY_UA,
           },
@@ -258,7 +258,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
     dateTime: '2026-05-17',
     title: 'Czech contracts for foreigners: which document to use in 2026',
     excerpt:
-      'Housing, work, car purchase and power of attorney in the Czech Republic — overview of core contracts with English-guided forms and Czech PDF output.',
+      'Housing, work, car purchase and power of attorney in the Czech Republic — overview of core contracts with English forms, Czech PDF and a complete English translation.',
     intro:
       'If you live or work in Czechia, you still sign Czech contracts in most cases. SmlouvaHned helps foreigners fill forms in English (or Ukrainian on separate guides) while the generated document stays primarily in Czech.',
     keywords: [
@@ -277,16 +277,16 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
         id: 'how-it-works',
         title: 'How it works',
         paragraphs: [
-          'Choose a contract type below. The online form can be filled in English where supported.',
-          'After payment you receive a PDF assembled from your inputs. For the rental agreement, an explanatory English translation annex is included — in case of discrepancy, the Czech wording prevails.',
+          'Choose a contract type below. The online form can be filled in English for all six contracts listed here.',
+          'After payment you receive a PDF assembled from your inputs: the Czech contract plus a complete English translation of every article, included in the price — in case of discrepancy, the Czech wording prevails.',
         ],
       },
       {
         id: 'contracts',
-        title: 'Core contracts with English guidance',
+        title: 'Core contracts with an English form and translation',
         paragraphs: ['Open the guide for your situation, then start the form:'],
         bullets: [
-          'Rental agreement — lease + handover protocol (+ translation annex)',
+          'Rental agreement — lease + handover protocol + complete English translation',
           'Employment contract — Czech employment relationship',
           'DPP agreement — short-term work up to statutory limits',
           'Sublease — room or apartment with landlord consent',
@@ -355,7 +355,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
         title: 'Як це працює',
         paragraphs: [
           'Оберіть тип договору нижче. Форму можна заповнити українською.',
-          'Після оплати — PDF з ваших даних. Для оренди додається пояснювальний український додаток; основним є чеське формулювання.',
+          'Після оплати — PDF з ваших даних: чеський договір і повний український переклад кожної статті, включено в ціну; основним є чеське формулювання.',
         ],
       },
       {
@@ -404,9 +404,9 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
     slug: 'rental-agreement-czech-republic-guide-en',
     title: 'Rental agreement in the Czech Republic for foreigners (2026)',
     excerpt:
-      'How Czech leases work, what to check before signing, and how to generate a Czech rental PDF with an English-guided form and translation annex.',
+      'How Czech leases work, what to check before signing, and how to generate a Czech rental PDF with an English form and a complete English translation.',
     intro:
-      'Whether you rent in Prague, Brno or elsewhere, the lease is almost always in Czech. You can still prepare it using an English form and receive an explanatory translation annex alongside the primary Czech wording.',
+      'Whether you rent in Prague, Brno or elsewhere, the lease is almost always in Czech. You can still prepare it using an English form and receive a complete English translation of every article alongside the primary Czech wording.',
     keywords: [
       'rental agreement Czech Republic',
       'lease contract Prague foreigners',
@@ -438,7 +438,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Create your Czech rental agreement',
-      body: 'English-guided form → Czech PDF + explanatory English translation annex + handover protocol.',
+      body: 'English form → Czech PDF + complete English translation + handover protocol.',
       buttonLabel: 'Open rental form (EN) →',
     },
     trust: {
@@ -452,9 +452,9 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
     slug: 'rental-agreement-czech-republic-guide-ua',
     title: 'Договір оренди в Чехії для іноземців (2026)',
     excerpt:
-      'Як працює чеська оренда, на що звернути увагу перед підписом і як отримати PDF з формою українською та пояснювальним додатком.',
+      'Як працює чеська оренда, на що звернути увагу перед підписом і як отримати PDF з формою українською та повним українським перекладом.',
     intro:
-      'Оренда квартири в Празі чи іншому місті майже завжди оформлюється чеською. Форму можна заповнити українською, а в PDF буде основний чеський договір і пояснювальний український додаток.',
+      'Оренда квартири в Празі чи іншому місті майже завжди оформлюється чеською. Форму можна заповнити українською, а в PDF буде чеський договір і повний український переклад кожної статті.',
     keywords: ['договір оренди Чехія', 'оренда квартири Прага іноземці', 'чеський договір оренди'],
     readTime: '8 хв',
     sections: [
@@ -481,7 +481,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Створити договір оренди',
-      body: 'Форма українською → чеський PDF + пояснювальний український додаток + протокол передачі.',
+      body: 'Форма українською → чеський PDF + повний український переклад + протокол передачі.',
       buttonLabel: 'Відкрити форму оренди (UA) →',
     },
     trust: {
@@ -495,7 +495,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
     slug: 'employment-contract-czech-republic-guide-en',
     title: 'Employment contract in the Czech Republic for foreign workers (2026)',
     excerpt:
-      'Mandatory elements under the Labour Code, probation and working time — plus an English-guided form for a Czech employment PDF.',
+      'Mandatory elements under the Labour Code, probation and working time — plus an English form for a Czech employment PDF with a complete English translation.',
     intro:
       'A Czech employer must document the employment relationship in writing. Foreign employees need to understand the Czech text even if the form is filled in English.',
     keywords: ['employment contract Czech Republic', 'work contract foreigners Czechia'],
@@ -521,7 +521,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Generate a Czech employment contract',
-      body: 'English form guidance; PDF generated in Czech.',
+      body: 'English form → Czech PDF + complete English translation.',
       buttonLabel: 'Open employment form (EN) →',
     },
     trust: {
@@ -574,7 +574,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
     slug: 'dpp-agreement-czech-republic-guide-en',
     title: 'DPP agreement in Czechia: short-term work for foreigners (2026)',
     excerpt:
-      'When to use a “agreement to perform work” (DPP), hourly limits, and the English-guided Czech form.',
+      'When to use a “agreement to perform work” (DPP), hourly limits, and the English form with a complete English translation.',
     intro:
       'DPP suits occasional work but has an annual hours cap per employer. The document is in Czech; the form can guide you in English.',
     keywords: ['DPP Czech Republic', 'agreement to perform work foreigners'],
@@ -597,7 +597,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Create a Czech DPP agreement',
-      body: 'English-guided form → Czech PDF.',
+      body: 'English form → Czech PDF + complete English translation.',
       buttonLabel: 'Open DPP form (EN) →',
     },
     trust: {
@@ -666,7 +666,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Create a Czech sublease agreement',
-      body: 'English-guided form → Czech PDF.',
+      body: 'English form → Czech PDF + complete English translation.',
       buttonLabel: 'Open sublease form (EN) →',
     },
     trust: {
@@ -712,7 +712,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
     slug: 'power-of-attorney-czech-republic-guide-en',
     title: 'Power of attorney in the Czech Republic for foreigners (2026)',
     excerpt:
-      'General vs special power of attorney, when a certified signature is needed, and the English-guided Czech form.',
+      'General vs special power of attorney, when a certified signature is needed, and the English form with a complete English translation.',
     intro:
       'A power of attorney lets someone act on your behalf before offices, banks or in a specific transaction. Wording must match the intended scope.',
     keywords: ['power of attorney Czech Republic', 'plna moc foreigners'],
@@ -735,7 +735,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Create a Czech power of attorney',
-      body: 'English-guided form → Czech PDF.',
+      body: 'English form → Czech PDF + complete English translation.',
       buttonLabel: 'Open power of attorney form (EN) →',
     },
     trust: {
@@ -784,7 +784,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
     slug: 'car-sale-agreement-czech-republic-guide-en',
     title: 'Car purchase agreement in the Czech Republic for foreigners (2026)',
     excerpt:
-      'VIN, mileage, defects, handover and documents when buying a used car — with an English-guided Czech contract.',
+      'VIN, mileage, defects, handover and documents when buying a used car — with an English form and a complete English translation.',
     intro:
       'Private car sales use a purchase agreement under the Civil Code. The registration transfer is a separate step at the vehicle registry.',
     keywords: ['car purchase agreement Czech Republic', 'buy car Czechia contract'],
@@ -810,7 +810,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Create a Czech car sale agreement',
-      body: 'English-guided form → Czech PDF.',
+      body: 'English form → Czech PDF + complete English translation.',
       buttonLabel: 'Open car sale form (EN) →',
     },
     trust: {
@@ -881,13 +881,13 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
         title: 'Language requirements and dual-language guidance',
         paragraphs: [
           'By law, Czech public authorities and registries conduct business in the Czech language. Therefore, any Power of Attorney submitted to them must be written in Czech.',
-          'Using SmlouvaHned, you can fill in the details using an English-guided interface. The resulting document is generated in proper Czech legal terminology to ensure it is accepted by Czech authorities, while you receive English tooltips and explanations to understand every clause.'
+          'Using SmlouvaHned, you can fill in the details in English. The document itself is generated in Czech legal terminology, and the PDF also contains a complete English translation so you understand every clause.'
         ]
       }
     ],
     primaryCta: {
       title: 'Create a Czech Power of Attorney',
-      body: 'Generate a legally sound Czech power of attorney with English form guidance in minutes.',
+      body: 'Generate a Czech power of attorney with an English form and a complete English translation in minutes.',
       buttonLabel: 'Open Power of Attorney form (EN) →'
     },
     trust: {
@@ -932,7 +932,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Створити довіреність',
-      body: 'Створіть довіреність чеською мовою з підказками українською всього за кілька хвилин.',
+      body: 'Створіть довіреність чеською мовою з формою та повним перекладом українською всього за кілька хвилин.',
       buttonLabel: 'Відкрити форму довіреності (UA) →'
     },
     trust: {
@@ -977,7 +977,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Create a Car Purchase Agreement',
-      body: 'Generate a professional Czech vehicle purchase contract with English-guided forms and handover protocol.',
+      body: 'Generate a Czech vehicle purchase contract with an English form, a complete English translation and a handover protocol.',
       buttonLabel: 'Open Car Sale form (EN) →'
     },
     trust: {
@@ -1022,7 +1022,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Створити договір купівлі-продажу авто',
-      body: 'Створіть професійний договір чеською мовою з підказками українською та протоколом передачі.',
+      body: 'Створіть договір чеською мовою з формою українською, повним українським перекладом і протоколом передачі.',
       buttonLabel: 'Форма купівлі авто (UA) →'
     },
     trust: {
@@ -1067,7 +1067,7 @@ const EXPAT_BLOG_ARTICLES: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Create your Czech Housing Agreement',
-      body: 'English-guided form → Czech PDF. Generate a lease or sublease that meets all OAMP requirements.',
+      body: 'English form → Czech PDF + complete English translation. Generate a lease or sublease that meets all OAMP requirements.',
       buttonLabel: 'Open Rental/Sublease Forms (EN) →'
     },
     trust: {

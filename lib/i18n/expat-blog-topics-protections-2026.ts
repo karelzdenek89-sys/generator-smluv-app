@@ -54,7 +54,7 @@ function topicEn(
         body:
           opts.builderHref === '/spoluprace' || opts.builderHref === '/smlouva-o-dilo'
             ? 'The linked form interface is available only in Czech. Fill it in to generate a Czech PDF after payment.'
-            : 'Open the English-guided form, fill in your details, and download the Czech PDF after payment.',
+            : 'Open the English form, fill in your details, and download the Czech PDF with its complete English translation after payment.',
         buttonLabel: opts.primaryCta.buttonLabel,
       },
     trustBox: opts.trust,
@@ -203,7 +203,7 @@ export const EXPAT_BLOG_TOPICS_PROTECTIONS_2026: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Create a Czech rental agreement with clear deposit terms',
-      body: 'English-guided form → Czech PDF; set the deposit amount, interest and return conditions.',
+      body: 'English form → Czech PDF + complete English translation; set the deposit amount, interest and return conditions.',
       buttonLabel: 'Open rental form (EN) →',
     },
     trust: {

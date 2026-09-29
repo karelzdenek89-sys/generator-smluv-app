@@ -44,7 +44,7 @@ const pageCopy: Record<Exclude<AppLocale, 'cs'>, {
     eyebrow: 'Contracts for foreigners in the Czech Republic',
     title: 'SmlouvaHned for expats',
     subtitle:
-      'Fill in the form in English and get the binding Czech contract together with a complete English translation of every article, in one PDF. The translation is included in the price (explanatory, not certified).',
+      'Fill in the form in English and get the Czech contract together with a complete English translation of every article, in one PDF. The translation is included in the price (explanatory, not certified).',
     coreHeading: 'Most used contracts for foreigners in the Czech Republic',
     coreSub: 'Housing, work, representation and buying a car are covered first. Other documents stay available in Czech.',
     otherHeading: 'Other Czech documents available',
@@ -56,7 +56,7 @@ const pageCopy: Record<Exclude<AppLocale, 'cs'>, {
     eyebrow: 'Документи для іноземців у Чехії',
     title: 'SmlouvaHned для іноземців',
     subtitle:
-      'Заповніть форму українською й отримайте обов’язковий чеський договір разом із повним українським перекладом кожної статті в одному PDF. Переклад включено в ціну (пояснювальний, не офіційний).',
+      'Заповніть форму українською й отримайте чеський договір разом із повним українським перекладом кожної статті в одному PDF. Переклад включено в ціну (пояснювальний, не офіційний).',
     coreHeading: 'Найпотрібніші договори для іноземців у Чехії',
     coreSub: 'Житло, робота, довіреність і купівля авто — на першому місці.',
     otherHeading: 'Інші документи лише чеською',
@@ -279,7 +279,7 @@ export default async function LocaleLandingPage({ params }: LocalePageProps) {
           </h2>
           <p className="mt-2 text-sm leading-7 text-slate-400">
             {locale === 'en'
-              ? 'Step-by-step articles linking to each English-guided contract form.'
+              ? 'Step-by-step articles linking to each English contract form.'
               : 'Покрокові статті з посиланнями на форми українською.'}
           </p>
           <Link

@@ -64,7 +64,7 @@ function topicEn(contractKey: ExpatBlogContractKey, opts: TopicOptions): ExpatBl
     finalCta:
       opts.finalCta ?? {
         title: opts.primaryCta.title,
-        body: 'Open the English-guided form, fill in your details and download the Czech PDF after payment.',
+        body: 'Open the English form, fill in your details and download the Czech PDF with its complete English translation after payment.',
         buttonLabel: opts.primaryCta.buttonLabel,
       },
     trustBox: opts.trust,
@@ -268,7 +268,7 @@ export const EXPAT_BLOG_TOPICS_AUGUST_2026: ExpatBlogArticle[] = [
       },
     ],
     primaryCta: {
-      title: 'Підготуйте чеську DPP із підказками українською',
+      title: 'Підготуйте чеську DPP з формою українською',
       body: 'Заповніть роботу, строк, години й винагороду українською; згенерована угода буде переважно чеською.',
       buttonLabel: 'Відкрити форму DPP (UA) →',
     },
@@ -420,7 +420,7 @@ export const EXPAT_BLOG_TOPICS_AUGUST_2026: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Підготуйте зрозумілий чеський трудовий договір',
-      body: 'За підказками українською визначте посаду, місце роботи, дату початку, оплату та строк у чеському документі.',
+      body: 'У формі українською визначте посаду, місце роботи, дату початку, оплату та строк; PDF містить чеський договір і повний український переклад.',
       buttonLabel: 'Відкрити трудовий договір (UA) →',
     },
     trust: {
@@ -495,7 +495,7 @@ export const EXPAT_BLOG_TOPICS_AUGUST_2026: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Create a clear Czech rental agreement',
-      body: 'English-guided form → Czech lease PDF with the parties, flat, duration, rent and handover terms.',
+      body: 'English form → Czech lease PDF + complete English translation, with the parties, flat, duration, rent and handover terms.',
       buttonLabel: 'Open rental form (EN) →',
     },
     trust: {

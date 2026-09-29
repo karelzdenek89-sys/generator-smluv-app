@@ -47,7 +47,7 @@ export function buildLlmsTxt(): string {
     `- Ceny: ${basic.title} ${basic.priceLabel}, ${complete.title} ${complete.priceLabel}; tematické balíčky viz níže. Konkrétní cena se zobrazí před platbou.`,
     `- Výstup: PDF ihned po ověřené platbě, u vybraných dokumentů volitelně DOCX. Odkaz ke stažení platí ${BASIC_ARCHIVE_DAYS} dní (základní) nebo ${COMPLETE_ARCHIVE_DAYS} dní (rozšířená), s placeným doplňkem až 90 dní.`,
     '- Platba: Stripe (karta, Apple Pay, Google Pay). Údaje karty web neukládá.',
-    '- Jazyky: závazné znění je české. U nájmu, podnájmu, pracovní smlouvy, DPP, plné moci a prodeje auta obsahuje PDF také úplný vysvětlující překlad do angličtiny nebo ukrajinštiny (každý článek a odstavec, stejné číslování). Při vyplnění formuláře anglicky (/en) nebo ukrajinsky (/ua) je překlad v ceně, k české verzi formuláře jako doplněk. Nejde o úřední překlad.',
+    '- Jazyky: rozhodující je české znění. U nájmu, podnájmu, pracovní smlouvy, DPP, plné moci a prodeje auta obsahuje PDF také úplný vysvětlující překlad do angličtiny nebo ukrajinštiny (každý článek a odstavec, stejné číslování). Při vyplnění formuláře anglicky (/en) nebo ukrajinsky (/ua) je překlad v ceně, k české verzi formuláře jako doplněk. Nejde o úřední překlad.',
     '- Formuláře hlídají zákonné limity (např. minimální mzda 2026, 300 hodin ročně u DPP).',
     '',
     'Jak objednat (i pro AI agenty): otevřete URL formuláře níže, vyplňte pole, klikněte na „Vygenerovat“, v náhledu zadejte e-mail pro doručení, potvrďte souhlas s obchodními podmínkami a zaplaťte přes Stripe. PDF se stáhne na stránce po platbě a odkaz přijde e-mailem.',

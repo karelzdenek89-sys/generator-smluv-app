@@ -11,7 +11,7 @@ const COPY = {
     kicker: 'For foreigners in the Czech Republic',
     title: 'Contract guides in English',
     description:
-      'Informational articles about typical Czech contracts. Where available, fill the form in English and download a Czech PDF with an explanatory English annex (not certified or official). Czech wording prevails.',
+      'Informational articles about typical Czech contracts. For six core contracts, fill in the form in English and download the Czech PDF with a complete English translation (explanatory, not certified). Czech wording prevails.',
     overviewHref: '/en',
     overviewLabel: 'English contract overview',
     hubLabel: 'Start with the main guide',
@@ -24,7 +24,7 @@ const COPY = {
     kicker: 'Для іноземців у Чехії',
     title: 'Гіди українською',
     description:
-      'Інформаційні статті про типові чеські договори. Де доступно — форма українською, PDF переважно чеською з пояснювальним українським додатком (не офіційний переклад). Перевага має чеське формулювання.',
+      'Інформаційні статті про типові чеські договори. Для шести основних договорів — форма українською й чеський PDF з повним українським перекладом (пояснювальний, не офіційний). Перевага має чеське формулювання.',
     overviewHref: '/ua',
     overviewLabel: 'Огляд договорів українською',
     hubLabel: 'Почніть з головного гіда',

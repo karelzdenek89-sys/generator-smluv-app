@@ -157,8 +157,8 @@ export function getLocalizedBuilderCopy(
 }
 
 export const UNSUPPORTED_FORM_NOTICE_BY_LOCALE: Record<ExpatUiLocale, string> = {
-  en: 'This form is currently available in Czech only. Selected core contracts offer English form guidance; the generated document remains primarily in Czech.',
-  ua: 'Ця форма наразі доступна лише чеською. Для обраних основних договорів є українські підказки у формі; документ генерується переважно чеською.',
+  en: 'This form is currently available in Czech only. Six core contracts (lease, sublease, employment, DPP, power of attorney, car sale) come with an English form and a complete English translation; this document is generated in Czech.',
+  ua: 'Ця форма наразі доступна лише чеською. Шість основних договорів (оренда, піднайм, трудовий договір, DPP, довіреність, продаж авто) мають форму українською та повний український переклад; цей документ генерується чеською.',
 };
 
 export const BUILDER_NOTICE_LABELS: Record<
@@ -170,14 +170,14 @@ export const BUILDER_NOTICE_LABELS: Record<
     keyFields: 'Key fields',
     safetyStrip:
       'Safety terms: not legal advice; not immigration advice; not certified or official translation; Czech wording prevails.',
-    guidedTitleFallback: 'English-guided Czech contract',
+    guidedTitleFallback: 'Czech contract with English translation',
   },
   ua: {
     steps: 'Кроки',
     keyFields: 'Ключові поля',
     safetyStrip:
       'Безпека: не юридична консультація; не імміграційна консультація; переклад не офіційний; перевага має чеське формулювання.',
-    guidedTitleFallback: 'Чеський договір з підказками українською',
+    guidedTitleFallback: 'Чеський договір з українським перекладом',
   },
 };
 
