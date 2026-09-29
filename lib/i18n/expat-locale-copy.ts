@@ -18,9 +18,9 @@ export type BuilderCopy = {
 };
 
 const CAPABILITY_FULL_EN =
-  'English-guided form · Czech PDF + complete explanatory English annex included in the price (not certified or official).';
+  'English form · Czech PDF + complete English translation of every article, included in the price (not certified or official).';
 const CAPABILITY_FULL_UA =
-  'Форма українською · чеський PDF + повний пояснювальний український додаток у ціні (не офіційний переклад).';
+  'Форма українською · чеський PDF + повний український переклад кожної статті, включено в ціну (не офіційний переклад).';
 
 export const EXPAT_CONTRACT_CAPABILITY: Record<
   ExpatUiLocale,

@@ -136,6 +136,16 @@ function testLocalePropagation() {
   const homepage = read('app/page.tsx');
   assert.match(homepage, /úplném překladu do angličtiny nebo ukrajinštiny/);
   assert.match(homepage, /<BilingualAdvantageSection locale="cs" \/>/);
+  assert.match(homepage, /<LanguageSuggestion \/>/);
+  assert.match(homepage, /lang="en"[\s\S]*Don’t speak Czech\?/);
+  assert.match(homepage, /lang="uk"[\s\S]*Не говорите чеською\?/);
+  const foreignStrip = read('app/components/marketing/ForeignReaderStrip.tsx');
+  assert.match(foreignStrip, /href: '\/en#translation'/);
+  assert.match(foreignStrip, /href: '\/ua#translation'/);
+  assert.match(read('app/components/marketing/BilingualAdvantageSection.tsx'), /locale === 'cs' \? <ForeignReaderStrip/);
+  const suggestion = read('app/components/marketing/LanguageSuggestion.tsx');
+  assert.match(suggestion, /startsWith\('cs'\) \|\| primary\.startsWith\('sk'\)/);
+  assert.match(suggestion, /localStorage/);
   assert.match(landing, /<BilingualAdvantageSection locale=\{locale === 'ua' \? 'ua' : 'en'\}/);
   assert.match(homepage, /LanguageSwitcher current="cs"/);
   assert.match(homepage, /ExpatEntryLinks/);
@@ -484,14 +494,11 @@ function testLeaseEnglishContractSections() {
 }
 
 function testExpatCapabilityDifferentiation() {
-  assert.match(EXPAT_CONTRACT_CAPABILITY.en.lease, /English-guided form/i);
-  assert.match(EXPAT_CONTRACT_CAPABILITY.en.lease, /explanatory English annex/i);
-  assert.match(EXPAT_CONTRACT_CAPABILITY.ua.lease, /українськ/i);
-  assert.match(EXPAT_CONTRACT_CAPABILITY.en.employment, /English-guided form/i);
-  assert.match(EXPAT_CONTRACT_CAPABILITY.ua.dpp, /пояснювальний український додаток/i);
-  assert.match(EXPAT_CONTRACT_CAPABILITY.en.sublease, /English-guided form/i);
-  assert.match(EXPAT_CONTRACT_CAPABILITY.en.power_of_attorney, /English-guided form/i);
-  assert.match(EXPAT_CONTRACT_CAPABILITY.en.car_sale, /English-guided form/i);
+  for (const key of ['lease', 'employment', 'dpp', 'sublease', 'power_of_attorney', 'car_sale'] as const) {
+    assert.match(EXPAT_CONTRACT_CAPABILITY.en[key], /English form · Czech PDF \+ complete English translation/i);
+    assert.match(EXPAT_CONTRACT_CAPABILITY.en[key], /not certified or official/i);
+    assert.match(EXPAT_CONTRACT_CAPABILITY.ua[key], /повний український переклад/i);
+  }
 }
 
 function testExpatBuilderFormsLocalized() {
@@ -973,7 +980,7 @@ function testCzechOnlyExpatBlogCtasAreDirectAndDisclosed() {
     );
     assert.doesNotMatch(
       `${link.label} ${link.body ?? ''}`,
-      link.audience === 'en' ? /English-guided|\(EN\)/i : /українською|\(UA\)/i,
+      link.audience === 'en' ? /English-guided|English form|\(EN\)/i : /українською|\(UA\)/i,
       `${link.slug} must not promise an EN/UA interface for ${pathname}`,
     );
     if (link.body) {

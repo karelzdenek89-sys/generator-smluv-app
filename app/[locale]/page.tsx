@@ -230,7 +230,7 @@ export default async function LocaleLandingPage({ params }: LocalePageProps) {
 
       <section className="mx-auto max-w-7xl px-6 pb-12 md:px-10">
         <div className="mb-8">
-          <p className="site-kicker mb-2">Foreigner / Expat Pack</p>
+          <p className="site-kicker mb-2">{locale === 'ua' ? 'Для іноземців' : 'Foreigner / Expat Pack'}</p>
           <h2 className="font-serif italic text-4xl font-bold text-white">{copy.coreHeading}</h2>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-400">{copy.coreSub}</p>
         </div>

@@ -174,6 +174,8 @@
 }
 .expatBar p { font-size: 13px; color: #a9b6cb; }
 .expatBar p strong { color: #e6ebf5; font-weight: 600; }
+.expatBarText { display: grid; gap: 4px; }
+.expatBar p.expatBarForeign { font-size: 12px; color: #8fa0bb; }
 .scopeNote { position: relative; max-width: 1200px; margin: 14px auto 0; padding: 0 20px 34px; font-size: 12.5px; line-height: 1.7; color: #8fa0bb; }
 .scopeNote strong { color: #c9d1e1; font-weight: 600; }
 .scopeNote a { color: var(--gold-light); text-decoration: underline; text-underline-offset: 3px; }
