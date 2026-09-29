@@ -99,7 +99,7 @@ test.describe('EN lease expat smoke', () => {
     expect(page.url()).toMatch(/lang=en/);
 
     await expect(page.getByRole('heading', { name: 'Rental Agreement' }).first()).toBeVisible();
-    await expect(page.getByText('Your contract will be generated primarily in Czech').first()).toBeVisible();
+    await expect(page.getByText('Your contract is generated in Czech').first()).toBeVisible();
     await expect(page.getByText('not certified or official').first()).toBeVisible();
     await expect(page.getByText('Czech wording prevails').first()).toBeVisible();
     await expect(page.getByText('Fill in the document details')).toBeVisible();
@@ -152,7 +152,7 @@ test.describe('EN lease expat smoke', () => {
     await page.goto('/najem?lang=en');
     await expect(page.getByTestId('lease-landlord-name')).toBeVisible();
     await expect(page.getByText('Fill in the document details')).toBeVisible();
-    await expect(page.getByText('Your contract will be generated primarily in Czech').first()).toBeVisible();
+    await expect(page.getByText('Your contract is generated in Czech').first()).toBeVisible();
   });
 
   test('retired locale routes redirect to active hubs', async ({ page, context }) => {

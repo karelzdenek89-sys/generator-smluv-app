@@ -71,18 +71,18 @@ export default function LanguageSuggestion() {
       lang={copy.lang}
       role="region"
       aria-label={copy.title}
-      className={`${styles.toast} fixed inset-x-3 top-[76px] z-[60] mx-auto max-w-md rounded-2xl border border-sky-300/30 bg-[#07111e]/95 p-4 text-slate-200 shadow-[0_20px_60px_rgba(0,0,0,.5)] backdrop-blur-md sm:left-auto sm:right-5 sm:top-[88px]`}
+      className={`${styles.toast} fixed inset-x-3 top-[76px] z-[60] mx-auto max-w-md rounded-2xl border border-sky-300/30 bg-[#07111e]/95 px-4 py-3 text-slate-200 sm:p-4 shadow-[0_20px_60px_rgba(0,0,0,.5)] backdrop-blur-md sm:left-auto sm:right-5 sm:top-[88px]`}
     >
       <div className="flex items-start gap-3">
         <span aria-hidden="true" className="text-xl leading-none">{copy.flag}</span>
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold text-white">{copy.title}</p>
-          <p className="mt-1 text-xs leading-5 text-slate-400">{copy.text}</p>
+          <p className="pr-8 text-sm font-semibold text-white">{copy.title}</p>
+          <p className="mt-1 hidden text-xs leading-5 text-slate-400 sm:block">{copy.text}</p>
           <Link
             href={copy.href}
             hrefLang={copy.lang}
             onClick={dismiss}
-            className="mt-3 inline-flex items-center gap-1.5 rounded-xl bg-sky-300 px-3.5 py-2 text-xs font-bold text-[#07111e] transition hover:bg-sky-200"
+            className="mt-2.5 inline-flex min-h-10 items-center gap-1.5 whitespace-nowrap rounded-xl bg-sky-300 px-4 text-sm font-bold text-[#07111e] transition hover:bg-sky-200 sm:mt-3 sm:min-h-9 sm:text-xs"
           >
             {copy.cta} <ArrowRight size={14} aria-hidden="true" />
           </Link>
@@ -92,9 +92,9 @@ export default function LanguageSuggestion() {
           onClick={dismiss}
           aria-label={copy.close}
           title={copy.close}
-          className="-mr-1 -mt-1 rounded-lg p-1.5 text-slate-500 transition hover:bg-white/5 hover:text-white"
+          className="absolute right-1.5 top-1.5 flex h-10 w-10 items-center justify-center rounded-lg text-slate-400 transition hover:bg-white/5 hover:text-white"
         >
-          <X size={16} aria-hidden="true" />
+          <X size={18} aria-hidden="true" />
         </button>
       </div>
     </div>
