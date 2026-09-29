@@ -73,7 +73,7 @@ function withContracts(c: Array<Omit<LandingContract, 'href'>>): LandingContract
 const EN: LandingContent = {
   htmlTitle: 'Czech contracts online with full English translation | SmlouvaHned',
   metaDescription:
-    'Rental, sublease, employment, DPP, power of attorney and car sale contracts for the Czech Republic. Fill in the form in English and get the binding Czech PDF plus a complete English translation of every article — included in the price.',
+    'Rental, sublease, employment, DPP, power of attorney and car sale contracts for the Czech Republic. Fill in the form in English and get the Czech PDF plus a complete English translation of every article — included in the price.',
   keywords: [
     'rental agreement Czech Republic',
     'lease contract Prague',
@@ -86,16 +86,16 @@ const EN: LandingContent = {
   ],
   ogTitle: 'Czech contracts with a full English translation, article by article',
   ogDescription:
-    'Binding Czech contract + complete English translation in one PDF. Rental, employment, DPP, power of attorney, car sale. Built for foreigners in the Czech Republic.',
+    'Czech contract + complete English translation in one PDF. Rental, employment, DPP, power of attorney, car sale. Built for foreigners in the Czech Republic.',
   kicker: 'For foreigners living in the Czech Republic',
   h1Line1: 'Czech contracts online —',
   h1Line2: 'rental, employment, NDA in 5 minutes',
   intro:
-    'SmlouvaHned helps foreigners in the Czech Republic create standard Czech contract templates from a structured form. The PDF is generated primarily in Czech; selected core contracts may include an explanatory English annex (not certified or official). Requirements of authorities or third parties may differ.',
+    'SmlouvaHned helps foreigners in the Czech Republic create standard Czech contracts from a structured form. Six core contracts come as the primary Czech text plus a complete English translation of every article in the same PDF, included in the price (explanatory, not certified or official). Requirements of authorities or third parties may differ.',
   ctaPrimary: 'Start a rental agreement →',
   ctaSecondary: 'Start a DPP agreement',
   warningBanner:
-    '⚠ English-guided forms are available for rental, employment, DPP, sublease, power of attorney and car sale. The PDF is primarily Czech; supported contracts include an explanatory English annex — not certified or official. Czech wording prevails.',
+    '⚠ English forms are available for rental, employment, DPP, sublease, power of attorney and car sale. The primary contract text is in Czech; the PDF also contains a complete English translation — explanatory, not certified or official. Czech wording prevails.',
   contractsHeading: 'Available contracts',
   openCzechForm: 'Open Czech form →',
   contracts: withContracts([
@@ -117,13 +117,13 @@ const EN: LandingContent = {
   howItWorksHeading: 'How it works',
   howItWorks: [
     { title: '1. Pick a contract.', description: 'Choose from 14 standard document types above.' },
-    { title: '2. Fill the form.', description: 'Enter the parties, amounts, dates, and optional clauses. Rental, employment, DPP, sublease, power of attorney and car sale use an English-guided form; other document types on this site are Czech-only for now.' },
-    { title: '3. Pay and download.', description: 'Pay by card via Stripe (CZK). Download your Czech PDF immediately; supported contracts may include an explanatory English annex. The link stays valid for 7–30 days.' },
+    { title: '2. Fill the form.', description: 'Enter the parties, amounts, dates, and optional clauses. Rental, employment, DPP, sublease, power of attorney and car sale use an English form; other document types on this site are Czech-only for now.' },
+    { title: '3. Pay and download.', description: 'Pay by card via Stripe (CZK). Download your PDF immediately — for the six supported contracts it contains the Czech contract and its complete English translation. The link stays valid for 7–30 days.' },
     { title: '4. Sign on paper.', description: 'Print, both parties sign, keep one copy each. Czech contracts generally do not require notarisation unless they concern real estate transfer or specific corporate acts.' },
   ],
   whyHeading: 'Why foreigners use SmlouvaHned',
   whyBullets: [
-    '✓ Czech contract PDF with optional explanatory translation for supported document types (Czech wording prevails).',
+    '✓ Czech contract plus a complete English translation of every article for the six supported contracts, included in the price (Czech wording prevails).',
     '✓ Templates reference the Czech Civil Code and Labour Code where relevant.',
     '✓ Templates built around the Czech Civil Code (§ 89/2012 Sb.) and the Labour Code — paragraph references are included.',
     '✓ Encrypted, temporary data storage — deleted automatically after 7–30 days.',
@@ -132,7 +132,7 @@ const EN: LandingContent = {
   ],
   faqHeading: 'Frequently asked questions',
   faq: [
-    { q: 'I do not speak Czech. Can I still use SmlouvaHned?', a: 'Yes for the six supported expat contracts: English-guided forms with a primarily Czech PDF and explanatory English annex. Other document types on this site are Czech-only for now. The annex is not certified or official; Czech wording prevails.' },
+    { q: 'I do not speak Czech. Can I still use SmlouvaHned?', a: 'Yes for the six supported expat contracts: an English form, the Czech contract and a complete English translation of every article in one PDF. Other document types on this site are Czech-only for now. The translation is not certified or official; Czech wording prevails.' },
     { q: 'Is the contract legally valid in the Czech Republic?', a: 'Yes. Each template is built around the relevant provisions of the Czech Civil Code (Občanský zákoník, Act No. 89/2012 Coll.) or the Labour Code. Section references appear in the document.' },
     { q: 'Is SmlouvaHned a law firm?', a: 'No. SmlouvaHned is a software tool that generates standard template contracts. It is not legal advice and does not replace consultation with a Czech attorney (advokát).' },
     { q: 'How do payments work?', a: 'After you fill the form you can choose a tier and pay by card via Stripe. Payments are processed in Czech crowns (CZK).' },
@@ -154,7 +154,7 @@ const EN: LandingContent = {
 const UA: LandingContent = {
   htmlTitle: 'Чеські договори онлайн з повним українським перекладом | SmlouvaHned',
   metaDescription:
-    'Оренда, піднайм, трудовий договір, DPP, довіреність і продаж авто в Чехії. Заповніть форму українською й отримайте обов’язковий чеський PDF разом із повним українським перекладом кожної статті — включено в ціну.',
+    'Оренда, піднайм, трудовий договір, DPP, довіреність і продаж авто в Чехії. Заповніть форму українською й отримайте чеський PDF разом із повним українським перекладом кожної статті — включено в ціну.',
   keywords: [
     'договір оренди Чехія',
     'оренда квартири Прага',
@@ -165,16 +165,16 @@ const UA: LandingContent = {
   ],
   ogTitle: 'Чеські договори з повним українським перекладом, стаття за статтею',
   ogDescription:
-    'Обов’язковий чеський договір + повний український переклад в одному PDF. Оренда, праця, DPP, довіреність, продаж авто. Для іноземців у Чехії.',
+    'Чеський договір + повний український переклад в одному PDF. Оренда, праця, DPP, довіреність, продаж авто. Для іноземців у Чехії.',
   kicker: 'Для іноземців, які живуть у Чехії',
   h1Line1: 'Чеські договори онлайн —',
   h1Line2: 'оренда, праця, NDA за 5 хвилин',
   intro:
-    'SmlouvaHned допомагає іноземцям у Чехії створювати стандартні чеські шаблони договорів із структурованої форми. PDF переважно чеською; для обраних договорів може бути пояснювальний український додаток (не офіційний переклад). Вимоги установ або третіх осіб можуть відрізнятися.',
+    'SmlouvaHned допомагає іноземцям у Чехії створювати стандартні чеські договори із структурованої форми. Шість основних договорів — основний чеський текст і повний український переклад кожної статті в тому ж PDF, включено в ціну (пояснювальний, не офіційний переклад). Вимоги установ або третіх осіб можуть відрізнятися.',
   ctaPrimary: 'Створити договір оренди →',
   ctaSecondary: 'Створити ДПП',
   warningBanner:
-    '⚠ Форми українською доступні для оренди, праці, DPP, піднайму, довіреності та купівлі авто. PDF переважно чеською; для цих договорів — пояснювальний український додаток, не офіційний переклад. Перевага має чеська версія.',
+    '⚠ Форми українською доступні для оренди, праці, DPP, піднайму, довіреності та купівлі авто. Основний текст договору — чеською; PDF містить також повний український переклад — пояснювальний, не офіційний. Перевага має чеська версія.',
   contractsHeading: 'Доступні договори',
   openCzechForm: 'Відкрити чеську форму →',
   contracts: withContracts([
@@ -197,12 +197,12 @@ const UA: LandingContent = {
   howItWorks: [
     { title: '1. Оберіть договір.', description: 'Виберіть один із 14 стандартних типів документів.' },
     { title: '2. Заповніть форму.', description: 'Введіть сторони, суми, дати та опційні пункти. Шість expat-договорів (оренда, праця, DPP, піднайм, довіреність, авто) — форма українською; інші типи документів на сайті поки лише чеською.' },
-    { title: '3. Оплатіть і завантажте.', description: 'Оплата карткою через Stripe (CZK). Завантажте чеський PDF одразу; для підтримуваних договорів можливий пояснювальний український додаток. Посилання чинне 7–30 днів.' },
+    { title: '3. Оплатіть і завантажте.', description: 'Оплата карткою через Stripe (CZK). Завантажте PDF одразу — для шести підтримуваних договорів він містить чеський договір і його повний український переклад. Посилання чинне 7–30 днів.' },
     { title: '4. Підпишіть на папері.', description: 'Роздрукуйте, обидві сторони підписують, кожен залишає собі примірник. Нотаріальне засвідчення зазвичай не потрібне (виняток — нерухомість, корпоративні акти).' },
   ],
   whyHeading: 'Чому іноземці обирають SmlouvaHned',
   whyBullets: [
-    '✓ Чеський PDF із пояснювальним перекладом для підтримуваних типів договорів (переважає чеська версія).',
+    '✓ Чеський договір і повний український переклад кожної статті для шести підтримуваних договорів, включено в ціну (переважає чеська версія).',
     '✓ Шаблони посилаються на Цивільний та Трудовий кодекси Чехії, де це доречно.',
     '✓ У документі є посилання на відповідні параграфи законів.',
     '✓ Шифроване тимчасове сховище даних — автоматичне видалення через 7–30 днів.',
@@ -211,7 +211,7 @@ const UA: LandingContent = {
   ],
   faqHeading: 'Часті питання',
   faq: [
-    { q: 'Я не розмовляю чеською. Чи можу я користуватися SmlouvaHned?', a: 'Так для підтримуваних договорів: PDF переважно чеською, можливий пояснювальний український додаток. Інші форми поки лише чеською — скористайтеся перекладачем браузера. Переклад не є офіційним; переважає чеська версія.' },
+    { q: 'Я не розмовляю чеською. Чи можу я користуватися SmlouvaHned?', a: 'Так для шести підтримуваних договорів: форма українською, чеський договір і повний український переклад кожної статті в одному PDF. Інші форми поки лише чеською — скористайтеся перекладачем браузера. Переклад не є офіційним; переважає чеська версія.' },
     { q: 'Чи дійсний договір у Чехії?', a: 'Так. Кожен шаблон побудований на відповідних положеннях Цивільного кодексу Чехії (закон № 89/2012 Sb.) або Трудового кодексу. Посилання на параграфи містяться в документі.' },
     { q: 'SmlouvaHned — це адвокатська контора?', a: 'Ні. SmlouvaHned — програмний інструмент, який генерує стандартні шаблонні договори. Це не юридична консультація і не замінює адвоката.' },
     { q: 'Як працює оплата?', a: 'Після заповнення форми оберіть тариф і оплатіть карткою через Stripe. Платіж у чеських кронах (CZK).' },

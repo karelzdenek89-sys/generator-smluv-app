@@ -721,17 +721,17 @@ function testSeoRentalLandingPage() {
   const pageFlat = page.replace(/\s+/g, ' ');
   assert.match(
     pageFlat,
-    /Fill in the rental form in English and generate a Czech rental agreement with an explanatory English translation annex/,
+    /Fill in the rental form in English and get the Czech rental agreement together with a complete English translation of every article/,
   );
   assert.match(page, /Create rental agreement/);
   assert.match(page, /builderHref: `\$\{builderPath\}\?lang=\$\{locale\}`/);
   assert.match(page, /not a law firm/i);
   assert.match(page, /not certified or official/i);
   assert.match(page, /does not guarantee acceptance by any authority/i);
-  assert.match(page, /explanatory English translation annex/i);
+  assert.match(page, /complete English translation of every article/i);
   assert.match(page, /EXPAT_CONTRACT_ROUTES\[contractKey\]/);
   assert.match(page, /Договір оренди в Чехії/);
-  assert.match(page, /пояснювальним українським додатком/);
+  assert.match(page, /повний український переклад кожної статті/);
 
   const forbidden = [
     'visa-ready',

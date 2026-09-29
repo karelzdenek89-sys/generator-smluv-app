@@ -23,7 +23,7 @@ const UI: Record<UiLocale, {
   cs: {
     docsLabel: 'Ukázková smlouva',
     langsLabel: 'Jazyk překladu',
-    csHead: 'Česky · závazné znění',
+    csHead: 'Česky · rozhodující znění',
     trHead: { en: 'English · vysvětlující překlad', ua: 'Українська · vysvětlující překlad' },
     langName: { en: 'English', ua: 'Українська' },
     foot: ['Stejné číslování článků', 'Vaše údaje v obou jazycích', 'Celý text, ne shrnutí'],
@@ -34,7 +34,7 @@ const UI: Record<UiLocale, {
   en: {
     docsLabel: 'Sample contract',
     langsLabel: 'Translation language',
-    csHead: 'Czech · binding text',
+    csHead: 'Czech · prevailing text',
     trHead: { en: 'English · explanatory translation', ua: 'Ukrainian · explanatory translation' },
     langName: { en: 'English', ua: 'Українська' },
     foot: ['Same article numbering', 'Your details in both languages', 'Full text, not a summary'],
@@ -45,7 +45,7 @@ const UI: Record<UiLocale, {
   ua: {
     docsLabel: 'Зразок договору',
     langsLabel: 'Мова перекладу',
-    csHead: 'Чеською · обов’язковий текст',
+    csHead: 'Чеською · основний текст',
     trHead: { en: 'English · пояснювальний переклад', ua: 'Українською · пояснювальний переклад' },
     langName: { en: 'English', ua: 'Українська' },
     foot: ['Та сама нумерація статей', 'Ваші дані обома мовами', 'Повний текст, а не резюме'],

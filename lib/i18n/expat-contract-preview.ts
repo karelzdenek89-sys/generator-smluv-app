@@ -10,16 +10,16 @@ const PREVIEW_LABELS: Record<'en' | 'ua', ContractPreviewLabels> = {
   en: {
     kicker: 'Guided preview',
     intro:
-      'This shows the explanatory translation structure from your inputs. The primary Czech contract wording is generated in Czech in the PDF, followed by this explanatory annex.',
+      'This is the English translation of your contract, built from your inputs. In the PDF the primary Czech wording comes first, followed by this complete translation with the same numbering.',
     footer:
-      'Orientational preview only. After payment you receive the full Czech PDF plus the explanatory English translation annex.',
+      'Preview only. After payment you receive the Czech PDF with the complete English translation of every article.',
   },
   ua: {
     kicker: 'Попередній перегляд',
     intro:
-      'Структура пояснювального перекладу з ваших даних. Обов’язковий чеський договір у PDF — чеською; далі — цей пояснювальний додаток.',
+      'Це український переклад вашого договору з ваших даних. У PDF спочатку основний чеський текст, далі — цей повний переклад із тією самою нумерацією.',
     footer:
-      'Орієнтовний перегляд. Після оплати — повний чеський PDF і пояснювальний український додаток.',
+      'Лише перегляд. Після оплати — чеський PDF з повним українським перекладом кожної статті.',
   },
 };
 

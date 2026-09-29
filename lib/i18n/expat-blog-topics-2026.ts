@@ -32,10 +32,10 @@ function topicEn(
           ...opts.sections,
           {
             id: 'translation-annex',
-            title: 'Czech contract + English translation annex',
+            title: 'Czech contract + complete English translation',
             paragraphs: [
-              'For rental agreements, the PDF contains the primary Czech lease first, then an explanatory English annex.',
-              'The annex helps you understand clauses before signing; it is not a certified translation for authorities.',
+              'For rental agreements, the PDF contains the Czech lease first, then a complete English translation of every article.',
+              'The translation helps you understand every clause before signing; it is not a certified translation for authorities.',
             ],
           },
         ]
@@ -64,7 +64,7 @@ function topicEn(
         body:
           opts.builderHref === '/spoluprace' || opts.builderHref === '/smlouva-o-dilo'
             ? 'The linked form interface is available only in Czech. Fill it in to generate a Czech PDF after payment.'
-            : 'Open the English-guided form, fill in your details, and download the Czech PDF after payment.',
+            : 'Open the English form, fill in your details, and download the Czech PDF with its complete English translation after payment.',
         buttonLabel: opts.primaryCta.buttonLabel,
       },
     trustBox: opts.trust,
@@ -111,10 +111,10 @@ function topicUa(
           ...opts.sections,
           {
             id: 'translation-annex',
-            title: 'Чеський договір + український пояснювальний додаток',
+            title: 'Чеський договір + повний український переклад',
             paragraphs: [
-              'У PDF спочатку основний чеський договір оренди, потім пояснювальний український додаток.',
-              'Додаток допомагає зрозуміти умови перед підписом; це не офіційний переклад для органів.',
+              'У PDF спочатку чеський договір оренди, потім повний український переклад кожної статті.',
+              'Переклад допомагає зрозуміти кожну умову перед підписом; це не офіційний переклад для органів.',
             ],
           },
         ]
@@ -216,7 +216,7 @@ export const EXPAT_BLOG_TOPICS_2026: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Create a DPP agreement (agreement to perform work)',
-      body: 'English-guided DPP form — Czech PDF with schedule, limits and 2026 Labour Code elements.',
+      body: 'English DPP form — Czech PDF + complete English translation, with schedule, limits and 2026 Labour Code elements.',
       buttonLabel: 'Open DPP form (EN) →',
     },
     finalCta: {
@@ -332,7 +332,7 @@ export const EXPAT_BLOG_TOPICS_2026: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Create a Czech rental agreement',
-      body: 'English-guided lease form with space for energy class and utility rules — Czech PDF for signing.',
+      body: 'English lease form with space for energy class and utility rules — Czech PDF for signing + complete English translation.',
       buttonLabel: 'Open rental form (EN) →',
     },
     trust: {
@@ -701,7 +701,7 @@ export const EXPAT_BLOG_TOPICS_2026: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Lease with Airbnb clause',
-      body: 'Toggle allow/prohibit short-term subletting in the English-guided rental form — Czech PDF output.',
+      body: 'Toggle allow/prohibit short-term subletting in the English rental form — Czech PDF + complete English translation.',
       buttonLabel: 'Open rental form (EN) →',
     },
     trust: {

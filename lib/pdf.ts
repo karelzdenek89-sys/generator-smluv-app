@@ -485,7 +485,7 @@ function drawLanguageNotice(doc: jsPDF, data: StoredContractData, startY: number
     ? getPage1ExpatNoticeLines(data)
     : [
         'CZECH-ONLY FORM NOTICE',
-        'This form is currently available in Czech only. Selected core contracts may include English form guidance and explanatory notices where available.',
+        'This form is currently available in Czech only. Six core contracts come with an English form and a complete English translation; this document is in Czech.',
       ];
 
   if (lines.length === 0) return startY;

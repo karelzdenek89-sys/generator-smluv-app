@@ -34,7 +34,7 @@ const COPY: Record<SectionLocale, {
     kicker: 'Smlouvy pro cizince · English · Українська',
     title: 'Celá smlouva česky —',
     titleAccent: 'a vedle ní celá anglicky nebo ukrajinsky.',
-    lead: 'Pronajímáte byt cizinci, zaměstnáváte pracovníky z Ukrajiny nebo prodáváte auto kupujícímu, který nemluví česky? U šesti nejčastějších smluv dostanete k závaznému českému znění úplný překlad. Obsahuje každý článek a každý odstavec, se stejným číslováním a s vašimi údaji.',
+    lead: 'Pronajímáte byt cizinci, zaměstnáváte pracovníky z Ukrajiny nebo prodáváte auto kupujícímu, který nemluví česky? U šesti nejčastějších smluv dostanete k českému znění úplný překlad. Obsahuje každý článek a každý odstavec, se stejným číslováním a s vašimi údaji.',
     facts: [
       { value: '6', label: 'smluv', text: 'Nájem, podnájem, pracovní smlouva, DPP, plná moc a prodej auta.' },
       { value: '100 %', label: 'odstavců', text: 'Žádné shrnutí. Úplnost překladu hlídá automatická kontrola napříč stovkami variant formuláře.' },
@@ -54,13 +54,13 @@ const COPY: Record<SectionLocale, {
       'PDF s oběma verzemi ihned po zaplacení.',
     ],
     contractsLabel: 'Vytvořit smlouvu s překladem',
-    disclaimer: 'Překlad je vysvětlující, nikoli úřední. Při rozporu má přednost závazné české znění.',
+    disclaimer: 'Překlad je vysvětlující, nikoli úřední. Při rozporu má přednost české znění.',
   },
   en: {
     kicker: 'Czech contract + full English translation',
     title: 'The whole contract in Czech —',
     titleAccent: 'and the whole contract in English, article by article.',
-    lead: 'Fill in the form in English. You get the binding Czech contract and, in the same PDF, a complete English translation of every article and paragraph, with the same numbering and your details. The translation is included in the price.',
+    lead: 'Fill in the form in English. You get the Czech contract and, in the same PDF, a complete English translation of every article and paragraph, with the same numbering and your details. The translation is included in the price.',
     facts: [
       { value: '6', label: 'contracts', text: 'Lease, sublease, employment contract, DPP, power of attorney and car sale.' },
       { value: '100 %', label: 'of paragraphs', text: 'No summaries. An automated check verifies completeness across hundreds of form variants.' },
@@ -80,13 +80,13 @@ const COPY: Record<SectionLocale, {
       'One PDF with both versions, immediately after payment.',
     ],
     contractsLabel: 'Create a contract with the translation',
-    disclaimer: 'Explanatory translation, not a certified one. The binding Czech wording prevails.',
+    disclaimer: 'Explanatory translation, not a certified one. The Czech wording prevails.',
   },
   ua: {
     kicker: 'Чеський договір + повний український переклад',
     title: 'Весь договір чеською —',
     titleAccent: 'і весь договір українською, стаття за статтею.',
-    lead: 'Заповніть форму українською. Ви отримаєте обов’язковий чеський договір і в тому ж PDF повний український переклад кожної статті та кожного пункту, з тією самою нумерацією та вашими даними. Переклад включено в ціну.',
+    lead: 'Заповніть форму українською. Ви отримаєте чеський договір і в тому ж PDF повний український переклад кожної статті та кожного пункту, з тією самою нумерацією та вашими даними. Переклад включено в ціну.',
     facts: [
       { value: '6', label: 'договорів', text: 'Оренда, піднайм, трудовий договір, DPP, довіреність і продаж авто.' },
       { value: '100 %', label: 'пунктів', text: 'Без скорочень. Повноту перекладу перевіряє автоматичний тест на сотнях варіантів форми.' },
@@ -106,7 +106,7 @@ const COPY: Record<SectionLocale, {
       'Один PDF з обома версіями одразу після оплати.',
     ],
     contractsLabel: 'Створити договір з перекладом',
-    disclaimer: 'Пояснювальний, не офіційний переклад. Переважає обов’язковий чеський текст.',
+    disclaimer: 'Пояснювальний, не офіційний переклад. Переважає основний чеський текст.',
   },
 };
 

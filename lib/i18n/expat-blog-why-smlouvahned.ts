@@ -50,7 +50,7 @@ const SECTIONS_EN: ExpatBlogSection[] = [
       '§ references next to key clauses in the PDF (Civil Code / Labour Code context)',
       'Form hints for choices that are often disputed — high penalties, missing consent, unusual terms',
       'Extended document tiers include clauses people often forget (deposit, handover, warranties)',
-      'English or Ukrainian form guidance where offered; primary contract wording remains Czech',
+      'Six core contracts with an English or Ukrainian form and a complete translation of every article; the primary wording remains Czech',
       'Fourteen contract types in one tool — rental, employment, DPP, car sale, NDA, and more',
     ],
   },
@@ -155,7 +155,7 @@ export const EXPAT_BLOG_WHY_SMOLOUVAHNED: ExpatBlogArticle[] = [
     dateTime: DATE_TIME,
     title: 'Why Choose SmlouvaHned Over a Downloaded Czech Contract Template (2026)',
     excerpt:
-      'Compare static templates, generic one-click generators and SmlouvaHned — § citations in PDF, in-form notices, preview before download, and English-guided forms with Czech output.',
+      'Compare static templates, generic one-click generators and SmlouvaHned — § citations in PDF, in-form notices, preview before download, and English forms with a Czech contract plus a complete English translation.',
     intro:
       'If you live or work in Czechia, you still sign Czech contracts in most cases. Before you print a random template, here is how structured document automation differs — and where an attorney still belongs.',
     keywords: [

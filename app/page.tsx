@@ -119,7 +119,7 @@ const faqItems = [
   },
   {
     question: 'Umíte smlouvu v angličtině nebo ukrajinštině?',
-    answer: `Ano, u nájemní a podnájemní smlouvy, pracovní smlouvy, DPP, plné moci a kupní smlouvy na auto. Vedle závazného českého znění dostanete v PDF úplný vysvětlující překlad každého článku a odstavce se stejným číslováním a s vašimi údaji. Kdo vyplní formulář anglicky nebo ukrajinsky, má překlad v ceně; k české verzi formuláře ho lze přidat za ${CHECKOUT_ADDON_CONFIG.bilingual_annex.priceCzk} Kč. Nejde o úřední překlad a při rozporu má přednost české znění.`,
+    answer: `Ano, u nájemní a podnájemní smlouvy, pracovní smlouvy, DPP, plné moci a kupní smlouvy na auto. Vedle českého znění smlouvy dostanete v PDF úplný vysvětlující překlad každého článku a odstavce se stejným číslováním a s vašimi údaji. Kdo vyplní formulář anglicky nebo ukrajinsky, má překlad v ceně; k české verzi formuláře ho lze přidat za ${CHECKOUT_ADDON_CONFIG.bilingual_annex.priceCzk} Kč. Nejde o úřední překlad a při rozporu má přednost české znění.`,
   },
   {
     question: 'Musím se registrovat nebo platit předplatné?',

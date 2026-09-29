@@ -60,7 +60,7 @@ function topicEn(
         body:
           opts.builderHref === '/spoluprace' || opts.builderHref === '/smlouva-o-dilo'
             ? 'The linked form interface is available only in Czech. Fill it in to generate a Czech PDF after payment.'
-            : 'Open the English-guided form, fill in your details, and download the Czech PDF after payment.',
+            : 'Open the English form, fill in your details, and download the Czech PDF with its complete English translation after payment.',
         buttonLabel: opts.primaryCta.buttonLabel,
       },
     trustBox: opts.trust,
@@ -204,7 +204,7 @@ export const EXPAT_BLOG_TOPICS_JULY_2026: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Create a DPP agreement with 2026 Labour Code elements',
-      body: 'English-guided form — Czech PDF with schedule, limits and mandatory clauses.',
+      body: 'English form — Czech PDF + complete English translation, with schedule, limits and mandatory clauses.',
       buttonLabel: 'Open DPP form (EN) →',
     },
     trust: {
@@ -213,7 +213,7 @@ export const EXPAT_BLOG_TOPICS_JULY_2026: ExpatBlogArticle[] = [
     },
     finalCta: {
       title: 'Need a full employment contract instead?',
-      body: 'English-guided employment form — Czech PDF with mandatory Labour Code elements for 2026.',
+      body: 'English employment form — Czech PDF + complete English translation, with mandatory Labour Code elements for 2026.',
       buttonLabel: 'Open employment contract form (EN) →',
       href: withLocale('/pracovni', 'en'),
     },
@@ -322,7 +322,7 @@ export const EXPAT_BLOG_TOPICS_JULY_2026: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Create a Czech car purchase contract',
-      body: 'English-guided form — VIN, mileage, known defects, Czech PDF output.',
+      body: 'English form — VIN, mileage, known defects; Czech PDF + complete English translation.',
       buttonLabel: 'Open car sale form (EN) →',
     },
     finalCta: {
@@ -440,7 +440,7 @@ export const EXPAT_BLOG_TOPICS_JULY_2026: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Create a Czech power of attorney',
-      body: 'English-guided form — scope, vehicle or authority, Czech PDF for printing or signing.',
+      body: 'English form — scope, vehicle or authority; Czech PDF + complete English translation for printing or signing.',
       buttonLabel: 'Open POA form (EN) →',
     },
     trust: {
@@ -449,7 +449,7 @@ export const EXPAT_BLOG_TOPICS_JULY_2026: ExpatBlogArticle[] = [
     },
     finalCta: {
       title: 'Signing a lease or car contract?',
-      body: 'English-guided rental or car sale form — Czech PDF ready to print and sign.',
+      body: 'English rental or car sale form — Czech PDF + complete English translation, ready to print and sign.',
       buttonLabel: 'Open car sale form (EN) →',
       href: withLocale('/auto', 'en'),
     },
@@ -558,7 +558,7 @@ export const EXPAT_BLOG_TOPICS_JULY_2026: ExpatBlogArticle[] = [
     ],
     primaryCta: {
       title: 'Create a Czech rental agreement with handover support',
-      body: 'English-guided lease — Czech PDF; extended tiers include handover elements.',
+      body: 'English lease form — Czech PDF + complete English translation; extended tiers include handover elements.',
       buttonLabel: 'Open rental form (EN) →',
     },
     finalCta: {

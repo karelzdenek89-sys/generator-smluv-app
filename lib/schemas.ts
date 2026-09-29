@@ -196,8 +196,8 @@ export function organizationSchemaLocalized(locale: ExpatLocaleSchemaLocale) {
     url: BASE_URL,
     logo: `${BASE_URL}/og-image.png`,
     description: isEn
-      ? 'Online tool for Czech contracts with English forms for foreigners. Six core contracts come as the binding Czech text plus a complete English translation of every article in the same PDF, included in the price (explanatory, not certified).'
-      : 'Онлайн-інструмент для чеських договорів з формою українською для іноземців. Шість основних договорів — обов’язковий чеський текст і повний український переклад кожної статті в тому ж PDF, включено в ціну (пояснювальний, не офіційний переклад).',
+      ? 'Online tool for Czech contracts with English forms for foreigners. Six core contracts come as the primary Czech text plus a complete English translation of every article in the same PDF, included in the price (explanatory, not certified).'
+      : 'Онлайн-інструмент для чеських договорів з формою українською для іноземців. Шість основних договорів — основний чеський текст і повний український переклад кожної статті в тому ж PDF, включено в ціну (пояснювальний, не офіційний переклад).',
     inLanguage: isEn ? 'en' : 'uk',
     areaServed: { '@type': 'Country', name: 'Czech Republic' },
     availableLanguage: isEn ? ['English', 'Czech'] : ['Ukrainian', 'Czech'],
@@ -234,8 +234,8 @@ export function websiteSchemaLocalized(locale: ExpatLocaleSchemaLocale) {
     url: localeUrl,
     inLanguage: isEn ? 'en' : 'uk',
     description: isEn
-      ? 'English-guided Czech rental, employment, DPP, sublease, power of attorney and car sale contracts for expats in Czechia.'
-      : 'Чеські договори оренди, праці, DPP, піднайму, довіреності та купівлі авто з формою українською для іноземців у Чехії.',
+      ? 'Czech rental, employment, DPP, sublease, power of attorney and car sale contracts for expats in Czechia — English form and a complete English translation.'
+      : 'Чеські договори оренди, праці, DPP, піднайму, довіреності та купівлі авто для іноземців у Чехії — форма українською та повний український переклад.',
     publisher: { '@id': `${BASE_URL}/#organization` },
   };
 }
