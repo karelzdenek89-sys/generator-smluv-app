@@ -110,23 +110,23 @@ const SAMPLES: Record<ExpatContractType, StoredContractData> = {
 
 const ANNEX_MARKERS: Record<'en' | 'ua', RegExp[]> = {
   en: [
-    /explanatory english translation annex/i,
-    /not a certified or official translation/i,
-    /czech wording prevails/i,
-    /i\. parties|preamble/i,
+    /explanatory\s+english\s+translation\s+annex/i,
+    /not\s+a\s+certified\s+or\s+official\s+translation/i,
+    /czech\s+wording\s+prevails/i,
+    /i\. (contracting )?parties|preamble|i\. principal/i,
   ],
   ua: [
-    /пояснювальний додаток українською/i,
-    /засвідченим чи офіційним/i,
-    /i\. сторони|преамбула/i,
+    /пояснювальний\s+додаток\s+українською/i,
+    /засвідченим\s+чи\s+офіційним/i,
+    /i\. сторони|преамбула|i\. довіритель/i,
   ],
 };
 
 const DPP_UA_ANNEX_MARKERS: RegExp[] = [
-  /огляд основних умов/i,
-  /не повний переклад/i,
-  /переваг[ау] має чеське формулювання/i,
-  /не перевіряє, чи має іноземець право працювати/i,
+  /повний\s+пояснювальний\s+український\s+переклад/i,
+  /засвідченим\s+чи\s+офіційним/i,
+  /переваг[ау]\s+має\s+чеське\s+формулювання/i,
+  /не\s+перевіряє,\s+чи\s+має\s+іноземець\s+право\s+працювати/i,
   /i\. сторони|преамбула/i,
 ];
 
@@ -167,7 +167,7 @@ async function checkPdf(
   if (lang === 'cs') {
     for (const re of ANNEX_MARKERS.en) {
       if (re.source.includes('explanatory english')) {
-        assert.ok(!lower.includes('explanatory english translation annex'), `${contract}/cs: unexpected EN annex`);
+        assert.ok(!lower.includes('explanatory\s+english\s+translation\s+annex'), `${contract}/cs: unexpected EN annex`);
       }
     }
     assert.ok(!lower.includes('пояснювальний додаток'), `${contract}/cs: unexpected UA annex title`);

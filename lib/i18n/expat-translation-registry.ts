@@ -1,48 +1,16 @@
-import type { ContractSection, StoredContractData } from '@/lib/contracts';
+import { buildContractSections, type ContractSection, type StoredContractData } from '@/lib/contracts';
 import type { AppLocale, ExpatContractType } from '@/lib/locale';
 import { isExpatContract } from '@/lib/locale';
-import { buildCarContractSectionsEn } from '@/lib/i18n/car-contract-en';
-import { buildCarContractSectionsUa } from '@/lib/i18n/car-contract-ua';
-import { buildDppContractSectionsEn } from '@/lib/i18n/dpp-contract-en';
-import { buildDppContractSectionsUa } from '@/lib/i18n/dpp-contract-ua';
-import { buildEmploymentContractSectionsEn } from '@/lib/i18n/employment-contract-en';
-import { buildEmploymentContractSectionsUa } from '@/lib/i18n/employment-contract-ua';
-import { buildLeaseContractSectionsEn } from '@/lib/i18n/lease-contract-en';
-import { buildLeaseContractSectionsUk } from '@/lib/i18n/lease-contract-uk';
-import { buildPowerOfAttorneyContractSectionsEn } from '@/lib/i18n/poa-contract-en';
-import { buildPowerOfAttorneyContractSectionsUa } from '@/lib/i18n/poa-contract-ua';
-import { buildSubleaseContractSectionsEn } from '@/lib/i18n/sublease-contract-en';
-import { buildSubleaseContractSectionsUa } from '@/lib/i18n/sublease-contract-ua';
 
 export type ExpatAnnexLocale = 'en' | 'ua';
 
-type SectionBuilder = (data: StoredContractData) => ContractSection[];
-
-const BUILDERS: Record<ExpatContractType, Record<ExpatAnnexLocale, SectionBuilder>> = {
-  lease: {
-    en: buildLeaseContractSectionsEn,
-    ua: buildLeaseContractSectionsUk,
-  },
-  employment: {
-    en: buildEmploymentContractSectionsEn,
-    ua: buildEmploymentContractSectionsUa,
-  },
-  dpp: {
-    en: buildDppContractSectionsEn,
-    ua: buildDppContractSectionsUa,
-  },
-  sublease: {
-    en: buildSubleaseContractSectionsEn,
-    ua: buildSubleaseContractSectionsUa,
-  },
-  power_of_attorney: {
-    en: buildPowerOfAttorneyContractSectionsEn,
-    ua: buildPowerOfAttorneyContractSectionsUa,
-  },
-  car_sale: {
-    en: buildCarContractSectionsEn,
-    ua: buildCarContractSectionsUa,
-  },
+/**
+ * Note printed under an annex title whose Czech counterpart is a form drawn by
+ * the PDF renderer (e.g. the handover protocol) rather than prose to translate.
+ */
+const FORM_ANNEX_NOTE: Record<ExpatAnnexLocale, string> = {
+  en: 'This annex is a form in the Czech part of this document; it is completed and signed there.',
+  ua: 'Цей додаток є формою в чеській частині цього документа; заповнюється та підписується там.',
 };
 
 export function isExpatAnnexLocale(locale: AppLocale): locale is ExpatAnnexLocale {
@@ -56,10 +24,35 @@ export function hasExpatTranslationAnnex(
   return isExpatAnnexLocale(locale) && isExpatContract(contractType as ExpatContractType);
 }
 
+export function isTranslatedSignatureTitle(title: string): boolean {
+  const upper = title.toUpperCase();
+  return upper.includes('SIGNATURES') || upper.includes('ПІДПИСИ');
+}
+
+/**
+ * The complete foreign-language rendering of the Czech contract.
+ *
+ * It is read from the translations that lib/contracts-i18n attaches to every
+ * Czech section, paragraph by paragraph — so the annex and the preview always
+ * carry the same articles, numbering and clauses as the Czech text, for every
+ * tier, package and option. scripts/translation-parity-tests.ts guarantees
+ * each Czech paragraph has its translation; a missing one falls back to the
+ * Czech wording rather than silently disappearing.
+ */
 export function buildExpatTranslationSections(
   contractType: ExpatContractType,
   locale: ExpatAnnexLocale,
   data: StoredContractData,
 ): ContractSection[] {
-  return BUILDERS[contractType][locale](data);
+  return buildContractSections({ ...data, contractType }).map((section) => {
+    const translation = section.translations?.[locale];
+    const title = translation?.title?.trim() || section.title;
+    const body = translation?.body && translation.body.length === section.body.length
+      ? translation.body
+      : section.body;
+    if (body.length === 0 && !isTranslatedSignatureTitle(title)) {
+      return { title, body: [FORM_ANNEX_NOTE[locale]] };
+    }
+    return { title, body };
+  });
 }

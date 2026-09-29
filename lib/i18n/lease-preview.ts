@@ -1,7 +1,6 @@
 import type { AppLocale } from '@/lib/locale';
 import type { StoredContractData } from '@/lib/contracts';
-import { buildLeaseContractSectionsEn } from '@/lib/i18n/lease-contract-en';
-import { buildLeaseContractSectionsUk } from '@/lib/i18n/lease-contract-uk';
+import { buildExpatTranslationSections } from '@/lib/i18n/expat-translation-registry';
 import { buildContractSections } from '@/lib/contracts';
 
 type LeasePreviewForm = {
@@ -129,8 +128,7 @@ export function buildLeasePreviewSections(
     tier: 'basic',
   } as StoredContractData;
 
-  if (locale === 'en') return buildLeaseContractSectionsEn(payload);
-  if (locale === 'ua') return buildLeaseContractSectionsUk(payload);
+  if (locale === 'en' || locale === 'ua') return buildExpatTranslationSections('lease', locale, payload);
   return buildContractSections(payload);
 }
 

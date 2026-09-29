@@ -32,6 +32,7 @@ import {
   normalizeCheckoutAddons,
 } from '@/lib/checkout-addons';
 import { recordAnalyticsEvent } from '@/lib/analytics-server';
+import { includedTranslationLanguage } from '@/lib/translation-offer';
 import type { CheckoutRejectReason } from '@/lib/analytics';
 import { takeRateLimit } from '@/lib/rate-limit';
 import {
@@ -324,9 +325,11 @@ export async function POST(req: Request) {
       packageKey,
       lang,
     );
-    const annexLanguage = addOns.includes('bilingual_annex')
+    // EN/UA buyers get the complete translation in the price, in their own language.
+    const includedAnnexLanguage = includedTranslationLanguage(contractType, lang);
+    const annexLanguage = includedAnnexLanguage ?? (addOns.includes('bilingual_annex')
       ? normalizeAnnexLanguage(body.annexLanguage ?? payload.annexLanguage)
-      : null;
+      : null);
     if (addOns.includes('bilingual_annex') && !annexLanguage) {
       return reject(
         'payload_invalid',

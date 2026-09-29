@@ -18,9 +18,9 @@ export type BuilderCopy = {
 };
 
 const CAPABILITY_FULL_EN =
-  'English-guided form · Czech PDF + explanatory English annex (not certified or official).';
+  'English-guided form · Czech PDF + complete explanatory English annex included in the price (not certified or official).';
 const CAPABILITY_FULL_UA =
-  'Форма українською · чеський PDF + пояснювальний український додаток (не офіційний переклад).';
+  'Форма українською · чеський PDF + повний пояснювальний український додаток у ціні (не офіційний переклад).';
 
 export const EXPAT_CONTRACT_CAPABILITY: Record<
   ExpatUiLocale,
@@ -37,7 +37,7 @@ export const EXPAT_CONTRACT_CAPABILITY: Record<
   ua: {
     lease: CAPABILITY_FULL_UA,
     employment: CAPABILITY_FULL_UA,
-    dpp: 'Форма українською · чеський PDF + пояснювальний огляд основних умов (DPP, не повний переклад).',
+    dpp: CAPABILITY_FULL_UA,
     sublease: CAPABILITY_FULL_UA,
     power_of_attorney: CAPABILITY_FULL_UA,
     car_sale: CAPABILITY_FULL_UA,

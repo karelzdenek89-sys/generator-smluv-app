@@ -7,6 +7,7 @@ import {
 } from '@/lib/pricing';
 import type { ThematicPackageKey } from '@/lib/packages';
 import { getTierIncludedItems } from '@/lib/tier-copy';
+import { INCLUDED_TRANSLATION_ITEM, includedTranslationLanguage } from '@/lib/translation-offer';
 
 export type LocalizedPricingTier = {
   title: string;
@@ -226,6 +227,17 @@ export function getLocalizedCheckoutCopy(locale?: string | null): LocalizedCheck
 }
 
 export function getLocalizedIncludedItems(
+  contractType: string | null | undefined,
+  tier: PricingTier,
+  packageKey?: string | null,
+  locale?: string | null,
+): readonly string[] {
+  const items = localizedIncludedItems(contractType, tier, packageKey, locale);
+  const translation = includedTranslationLanguage(contractType, locale);
+  return translation ? [INCLUDED_TRANSLATION_ITEM[translation], ...items] : items;
+}
+
+function localizedIncludedItems(
   contractType: string | null | undefined,
   tier: PricingTier,
   packageKey?: string | null,

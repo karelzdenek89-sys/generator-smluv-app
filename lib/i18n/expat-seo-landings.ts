@@ -234,7 +234,7 @@ const DPP_EN: LocalePack = {
   kicker: 'Occasional work in Czechia',
   h1: 'DPP Agreement (Dohoda o provedení práce)',
   subtitle:
-    'Create a Czech DPP for short-term or occasional work. English form guidance; Czech PDF with explanatory annex (DPP overview, not full legal translation).',
+    'Create a Czech DPP for short-term or occasional work. English form guidance; Czech PDF with a complete explanatory English translation annex. Czech wording prevails.',
   cta: 'Create DPP agreement',
   backToExpats: 'All expat contracts',
   faq: [
@@ -250,7 +250,7 @@ const DPP_UA: LocalePack = {
   metadata: {
     title: 'ДПП Чехія | Договір про виконання роботи | SmlouvaHned',
     description:
-      'Чеська ДПП (dohoda o provedení práce) з формою українською. До 300 годин на рік у одного роботодавця. PDF + пояснювальний огляд умов.',
+      'Чеська ДПП (dohoda o provedení práce) з формою українською. До 300 годин на рік у одного роботодавця. PDF + повний пояснювальний переклад.',
     keywords: ['ДПП Чехія', 'dohoda o provedení práce', 'підробіток Чехія', '300 годин ДПП'],
     openGraphTitle: 'ДПП Чехія | SmlouvaHned',
     openGraphDescription: 'ДПП з формою українською для іноземців.',
@@ -259,13 +259,13 @@ const DPP_UA: LocalePack = {
   breadcrumbLabel: 'ДПП',
   kicker: 'Підробіток у Чехії',
   h1: 'Договір ДПП (dohoda o provedení práce)',
-  subtitle: 'Чеська ДПП з підказками українською. PDF чеською + пояснювальний огляд (не повний переклад).',
+  subtitle: 'Чеська ДПП з підказками українською. PDF чеською + повний пояснювальний український переклад. Перевага має чеське формулювання.',
   cta: 'Створити ДПП',
   backToExpats: 'Усі договори для іноземців',
   faq: [
     { q: 'Що таке ДПП?', a: 'Угода про виконання роботи за чеським трудовим кодексом.' },
     { q: 'Ліміт 300 годин?', a: 'Форма нагадує про законний ліміт на одного роботодавця.' },
-    { q: 'Український додаток?', a: 'Пояснювальний огляд; чеський текст договору має перевагу.' },
+    { q: 'Український додаток?', a: 'Повний пояснювальний переклад усіх статей, не засвідчений; чеський текст договору має перевагу.' },
     { q: 'Для ФОП?', a: 'ДПП — трудовий формат; для послуг B2B інший договір.' },
   ],
   legalBullets: ['Не податкова консультація.', 'Перевага чеської версії.'],

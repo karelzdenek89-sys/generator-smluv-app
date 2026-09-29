@@ -190,7 +190,7 @@ function testAddonMatrix() {
   assert.ok(packageLease.includes('extended_archive'), '90d archive upsell stays available on 30d packages');
 
   const enLease = getAvailableCheckoutAddons('lease', 'basic', null, 'en').map((a) => a.key);
-  assert.ok(enLease.includes('bilingual_annex'));
+  assert.ok(!enLease.includes('bilingual_annex'), 'EN buyers get the translation included, not as a paid add-on');
   assert.ok(basicLease.includes('bilingual_annex'));
 
   const employerPackage = getAvailableCheckoutAddons(
