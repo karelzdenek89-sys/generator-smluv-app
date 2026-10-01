@@ -14,7 +14,6 @@ export type ExpatAnnexMeta = {
   title: string;
   header: string;
   intro: string;
-  nextPageHint: string;
 };
 
 const CONTRACT_LABELS: Record<ExpatContractType, { en: string; ua: string }> = {
@@ -97,7 +96,6 @@ export function getExpatAnnexMeta(
       title: 'Пояснювальний додаток українською',
       header: 'Пояснювальний додаток українською',
       intro: laborIntro,
-      nextPageHint: 'Переклад починається на наступній сторінці.',
     };
   }
 
@@ -109,7 +107,6 @@ export function getExpatAnnexMeta(
     title: 'Explanatory English Translation Annex',
     header: 'Explanatory English Translation Annex',
     intro: enLaborIntro,
-    nextPageHint: 'The translation below starts on the next page.',
   };
 }
 

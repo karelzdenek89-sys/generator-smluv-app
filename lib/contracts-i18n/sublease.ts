@@ -15,7 +15,7 @@ const dailyVacateRate = (d: StoredContractData) =>
 // ── EN ─────────────────────────────────────────────────────────────────────
 function en(d: StoredContractData, hasPremium: boolean): ParaPair[] {
   const consentNote = d.landlordConsent === 'yes'
-    ? `The landlord's consent to the sublease was granted in writing on ${txt(d.consentDate, 'not specified')}.`
+    ? `The landlord's consent to the sublease was granted in writing${d.consentDate ? ` on ${dateIn('en', d.consentDate)}` : ''}.`
     : 'Notice: if the specific situation requires the landlord’s consent to the sublease, the Tenant shall obtain it before concluding this Agreement. For a sublease of part of a flat, the procedure is governed in particular by § 2274 and § 2275 of the Civil Code, depending on whether the Tenant permanently lives in the flat.';
   const vacateRate = dailyVacateRate(d);
 
@@ -23,7 +23,7 @@ function en(d: StoredContractData, hasPremium: boolean): ParaPair[] {
     {
       title: 'IX. SPECIAL CONTRACTUAL PROVISIONS AND RELATIONSHIP TO THE MAIN LEASE',
       body: [
-        `The Subtenant acknowledges that the Tenant (the Subtenant's contractual counterparty) is bound towards the owner of the property by a lease agreement dated ${txt(d.mainLeaseDate, 'not specified')}. If the main lease ends, the sublease also ends (§ 2277 of the Civil Code).`,
+        `The Subtenant acknowledges that the Tenant (the Subtenant's contractual counterparty) is bound towards the owner of the property by a lease agreement${d.mainLeaseDate ? ` dated ${dateIn('en', d.mainLeaseDate)}` : ''}. If the main lease ends, the sublease also ends (§ 2277 of the Civil Code).`,
         'The Subtenant undertakes not to breach the terms of the main lease agreement, with which the Subtenant was duly acquainted before signing this Agreement and whose relevant parts were handed over to the Subtenant.',
         'The Tenant shall inform the Subtenant without delay of any change to the main lease agreement that could affect the rights and obligations of the Subtenant.',
         'The Subtenant is not entitled to sublet the subleased premises further to a third party without the prior written consent of both the Tenant and the landlord.',
@@ -160,7 +160,7 @@ function en(d: StoredContractData, hasPremium: boolean): ParaPair[] {
 // ── UA ─────────────────────────────────────────────────────────────────────
 function ua(d: StoredContractData, hasPremium: boolean): ParaPair[] {
   const consentNote = d.landlordConsent === 'yes'
-    ? `Згоду орендодавця на піднайм надано в письмовій формі ${txt(d.consentDate, 'дата не зазначена')}.`
+    ? `Згоду орендодавця на піднайм надано в письмовій формі${d.consentDate ? ` ${dateIn('ua', d.consentDate)}` : ''}.`
     : 'Увага: якщо конкретна ситуація вимагає згоди орендодавця на піднайм, наймач зобов’язаний отримати її до укладення цього Договору. Щодо піднайму частини квартири порядок регулюється, зокрема, § 2274 і § 2275 ЦК залежно від того, чи наймач сам постійно проживає в квартирі.';
   const vacateRate = dailyVacateRate(d);
 
@@ -168,7 +168,7 @@ function ua(d: StoredContractData, hasPremium: boolean): ParaPair[] {
     {
       title: 'IX. ОСОБЛИВІ ДОГОВІРНІ ПОЛОЖЕННЯ ТА ЗВ’ЯЗОК З ОСНОВНОЮ ОРЕНДОЮ',
       body: [
-        `Піднаймач бере до відома, що наймач (його договірний контрагент) пов’язаний з власником нерухомості договором оренди від ${txt(d.mainLeaseDate, 'дата не зазначена')}. У разі припинення основної оренди припиняється і піднайм (§ 2277 ЦК).`,
+        `Піднаймач бере до відома, що наймач (його договірний контрагент) пов’язаний з власником нерухомості договором оренди${d.mainLeaseDate ? ` від ${dateIn('ua', d.mainLeaseDate)}` : ''}. У разі припинення основної оренди припиняється і піднайм (§ 2277 ЦК).`,
         'Піднаймач зобов’язується не порушувати умов основного договору оренди, з яким він належним чином ознайомився до підписання цього Договору і відповідні частини якого йому було передано.',
         'Наймач зобов’язаний негайно повідомляти піднаймача про будь-яку зміну основного договору оренди, яка могла б вплинути на права та обов’язки піднаймача.',
         'Піднаймач не має права передавати орендоване приміщення в подальший піднайм третій особі без попередньої письмової згоди наймача та орендодавця.',

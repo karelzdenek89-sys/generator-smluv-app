@@ -16,19 +16,27 @@ import {
 import {
   buildContractSections,
   getContractMeta,
+  resolveTierFeatures,
   type ContractSection,
   type ContractType,
   type StoredContractData,
 } from './contracts';
+import { includesTranslationAnnex } from './checkout-addons';
+import { isExpatContract, normalizeLocale } from './locale';
+import { PRICING_TIER_CONFIG } from './pricing';
+import { buildExpatTranslationSections, hasExpatTranslationAnnex, isTranslatedSignatureTitle } from './i18n/expat-translation-registry';
+import { getAnnexSignatureCopy, getExpatAnnexMeta } from './i18n/expat-pdf-annex';
 
 const PAGE_MARGIN_TWIPS = 1440;
 const BODY_SIZE = 22;
+// Calibri ships with every Word version since 2007 (Aptos only with recent Microsoft 365).
+const FONT = 'Calibri';
 const MUTED = '666666';
 const INK = '1F2937';
 
 function textRun(text: string, options: Record<string, unknown> = {}): TextRun {
   return new TextRun({
-    font: 'Aptos',
+    font: FONT,
     color: INK,
     size: BODY_SIZE,
     ...options,
@@ -87,7 +95,7 @@ function normalizeLine(value: unknown): string {
 }
 
 function isSignatureSection(title: string): boolean {
-  return title.toUpperCase().includes('PODPISY') || title.toUpperCase().includes('SIGNATURES');
+  return title.toUpperCase().includes('PODPISY') || isTranslatedSignatureTitle(title);
 }
 
 function isAppendixSection(title: string): boolean {
@@ -128,16 +136,24 @@ function cell(children: Paragraph[], widthPercent: number): TableCell {
   });
 }
 
-function signatureBlock(data: StoredContractData): Table {
+type SignatureCopy = { left: string; right: string; place: string; date: string };
+
+function czechSignatureCopy(data: StoredContractData): SignatureCopy {
   const [left, right] = signatureLabels(data.contractType);
+  return { left, right, place: 'V', date: 'dne' };
+}
+
+function signatureBlock({ left, right, place, date }: SignatureCopy): Table {
   const line = '________________________________';
+  // Short enough to stay on one line in a half-width cell.
+  const placeDate = `${place} ______________ ${date} ___________`;
   return new Table({
     width: { size: 100, type: WidthType.PERCENTAGE },
     rows: [
       new TableRow({
         children: [
-          cell([paragraph('V __________________ dne ________________')], 50),
-          cell([paragraph('V __________________ dne ________________')], 50),
+          cell([paragraph(placeDate)], 50),
+          cell([paragraph(placeDate)], 50),
         ],
       }),
       new TableRow({
@@ -166,11 +182,17 @@ function appendixPlaceholder(section: ContractSection): Paragraph[] {
   ];
 }
 
-function buildSummaryTable(data: StoredContractData, title: string): Table {
+const TRANSLATION_ROW: Record<'en' | 'ua', string> = {
+  en: 'Complete English translation after the Czech text (explanatory, not certified)',
+  ua: 'Повний український переклад після чеського тексту (пояснювальний, не засвідчений)',
+};
+
+function buildSummaryTable(data: StoredContractData, title: string, translationLocale: 'en' | 'ua' | null): Table {
+  const tier = resolveTierFeatures(data).hasPremiumClauses ? PRICING_TIER_CONFIG.complete.title : PRICING_TIER_CONFIG.basic.title;
   const rows = [
     ['Dokument', title],
-    ['Typ', String(data.contractType)],
-    ['Varianta', String(data.tier ?? 'basic')],
+    ['Varianta', tier],
+    ...(translationLocale ? [['Překlad', TRANSLATION_ROW[translationLocale]]] : []),
     ['Vygenerováno', new Date().toLocaleDateString('cs-CZ')],
   ];
 
@@ -202,14 +224,26 @@ function buildSummaryTable(data: StoredContractData, title: string): Table {
   });
 }
 
+const FOREIGN_INTRO: Record<'en' | 'ua', string> = {
+  en: 'Editable version of the document generated on SmlouvaHned.cz. The primary text is the Czech contract; a complete explanatory English translation of every article follows it. Before signing, check the details and fill in any blank fields.',
+  ua: 'Редагована версія документа, створеного на SmlouvaHned.cz. Основним є текст чеського договору; після нього йде повний пояснювальний український переклад кожної статті. Перед підписанням перевірте дані та заповніть порожні поля.',
+};
+
 export async function renderContractDocx(data: StoredContractData): Promise<Buffer> {
   const meta = getContractMeta(data.contractType);
   const sections = buildContractSections(data);
+  const annexLocale = normalizeLocale(data.annexLanguage ?? data.lang);
+  const translationLocale = includesTranslationAnnex(data)
+    && isExpatContract(data.contractType)
+    && hasExpatTranslationAnnex(data.contractType, annexLocale)
+    ? annexLocale
+    : null;
 
   const children: Array<Paragraph | Table> = [
     titleParagraph(meta.title),
     mutedParagraph('Editovatelná verze dokumentu vygenerovaného na SmlouvaHned.cz. Před podpisem zkontrolujte věcné údaje a případně doplňte prázdná místa.'),
-    buildSummaryTable(data, meta.title),
+    ...(translationLocale ? [mutedParagraph(FOREIGN_INTRO[translationLocale])] : []),
+    buildSummaryTable(data, meta.title, translationLocale),
   ];
 
   sections.forEach((section, index) => {
@@ -217,7 +251,7 @@ export async function renderContractDocx(data: StoredContractData): Promise<Buff
     children.push(sectionHeading(section.title, forcePageBreak));
 
     if (isSignatureSection(section.title)) {
-      children.push(signatureBlock(data));
+      children.push(signatureBlock(czechSignatureCopy(data)));
       return;
     }
 
@@ -236,6 +270,26 @@ export async function renderContractDocx(data: StoredContractData): Promise<Buff
     }
   });
 
+  if (translationLocale && isExpatContract(data.contractType)) {
+    // Same aligned translation as the PDF annex: every article, same numbering.
+    const annexMeta = getExpatAnnexMeta(data.contractType, translationLocale);
+    const signatureCopy = getAnnexSignatureCopy(data.contractType, translationLocale);
+    children.push(sectionHeading(annexMeta.title, true));
+    children.push(mutedParagraph(annexMeta.intro));
+    for (const section of buildExpatTranslationSections(data.contractType, translationLocale, data)) {
+      const signature = isSignatureSection(section.title);
+      children.push(sectionHeading(section.title, signature));
+      if (signature) {
+        children.push(signatureBlock(signatureCopy));
+        continue;
+      }
+      for (const line of section.body) {
+        const text = normalizeLine(line);
+        if (text) children.push(paragraph(text));
+      }
+    }
+  }
+
   const doc = new Document({
     creator: 'SmlouvaHned.cz',
     title: meta.title,
@@ -243,7 +297,7 @@ export async function renderContractDocx(data: StoredContractData): Promise<Buff
     styles: {
       default: {
         document: {
-          run: { font: 'Aptos', size: BODY_SIZE, color: INK },
+          run: { font: FONT, size: BODY_SIZE, color: INK },
           paragraph: { spacing: { line: 300, after: 120 } },
         },
       },

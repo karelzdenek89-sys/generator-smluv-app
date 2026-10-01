@@ -1146,7 +1146,7 @@ function buildLoanContractSections(d: StoredContractData): ContractSection[] {
 
   const repaymentDesc =
     d.repaymentType === 'installments'
-      ? `Vydlužitel se zavazuje vrátit zápůjčku v ${asText(d.installmentCount, 'neuvedeno')} pravidelných měsíčních ${Number(d.installmentCount) === 1 ? 'splátce' : 'splátkách'} po ${formatAmount(d.installmentAmount)} Kč, ${Number(d.installmentCount) === 1 ? 'splatné' : 'splatných vždy'} ${asText(d.paymentDay, '15')}. dne ${Number(d.installmentCount) === 1 ? 'příslušného' : 'každého'} měsíce, počínaje ${formatDate(d.firstPaymentDate, 'neuvedeno')}.`
+      ? `Vydlužitel se zavazuje vrátit zápůjčku v ${asText(d.installmentCount, 'neuvedeno')} pravidelných měsíčních ${Number(d.installmentCount) === 1 ? 'splátce' : 'splátkách'} po ${formatAmount(d.installmentAmount)} Kč, ${Number(d.installmentCount) === 1 ? 'splatné' : 'splatných vždy'} ${asText(d.paymentDay, '15')}. dne ${Number(d.installmentCount) === 1 ? 'příslušného' : 'každého'} měsíce, počínaje ${d.firstPaymentDate ? formatDate(d.firstPaymentDate) : 'kalendářním měsícem následujícím po předání peněžních prostředků'}.`
       : `Vydlužitel se zavazuje vrátit celou zápůjčku jednorázově nejpozději dne ${formatDate(d.repaymentDate, 'neuvedeno')}.`;
 
   const hasSecurity = d.securityType && d.securityType !== 'none' && d.securityType !== '';
@@ -2084,14 +2084,14 @@ function buildServiceContractSections(d: StoredContractData): ContractSection[] 
 function buildSubleaseContractSections(d: StoredContractData): ContractSection[] {
   const { hasPremiumClauses } = resolveTierFeatures(d);
   const consentNote = d.landlordConsent === 'yes'
-    ? `Souhlas pronajímatele s podnájmem byl udělen písemně dne ${asText(d.consentDate, 'neuvedeno')}.`
+    ? `Souhlas pronajímatele s podnájmem byl udělen písemně${d.consentDate ? ` dne ${formatDate(d.consentDate)}` : ''}.`
     : 'Upozornění: Vyžaduje-li konkrétní situace souhlas pronajímatele s podnájmem, je nájemce povinen si jej zajistit před uzavřením této smlouvy. U podnájmu části bytu se postup řídí zejména § 2274 a § 2275 OZ podle toho, zda nájemce v bytě sám trvale bydlí.';
 
   const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
       title: 'IX. ZVLÁŠTNÍ SMLUVNÍ UJEDNÁNÍ A VZTAH K HLAVNÍMU NÁJMU',
       body: [
-        `Podnájemce bere na vědomí, že nájemce (jeho smluvní protistrana) je vůči vlastníkovi nemovitosti vázán nájemní smlouvou ze dne ${asText(d.mainLeaseDate, 'neuvedeno')}. V případě zániku hlavního nájmu zaniká i podnájem (§ 2277 OZ).`,
+        `Podnájemce bere na vědomí, že nájemce (jeho smluvní protistrana) je vůči vlastníkovi nemovitosti vázán nájemní smlouvou${d.mainLeaseDate ? ` ze dne ${formatDate(d.mainLeaseDate)}` : ''}. V případě zániku hlavního nájmu zaniká i podnájem (§ 2277 OZ).`,
         'Podnájemce se zavazuje neporušovat podmínky hlavní nájemní smlouvy, se kterou byl před podpisem této smlouvy řádně seznámen a jejíž relevantní části mu byly předány.',
         'Nájemce je povinen neprodleně informovat podnájemce o jakékoli změně hlavní nájemní smlouvy, která by mohla mít vliv na práva a povinnosti podnájemce.',
         'Podnájemce není oprávněn dát podnajatý prostor do dalšího podnájmu třetí osobě bez předchozího písemného souhlasu nájemce i pronajímatele.',
@@ -2357,20 +2357,21 @@ function buildPowerOfAttorneyContractSections(d: StoredContractData): ContractSe
 // ─────────────────────────────────────────────
 function buildDebtAcknowledgmentSections(d: StoredContractData): ContractSection[] {
   const { hasPremiumClauses } = resolveTierFeatures(d);
+  const debtDateSuffix = d.debtDate ? ` ze dne ${formatDate(d.debtDate)}` : '';
   const debtOrigin = d.debtOrigin === 'loan'
-    ? `Dluh vznikl na základě smlouvy o zápůjčce / půjčky ze dne ${formatDate(d.debtDate, 'neuvedeno')}.`
+    ? `Dluh vznikl na základě smlouvy o zápůjčce / půjčky${debtDateSuffix}.`
     : d.debtOrigin === 'invoice'
-    ? `Dluh vznikl nezaplacením faktury č. ${asText(d.invoiceNumber, 'neuvedeno')} ze dne ${formatDate(d.debtDate, 'neuvedeno')}.`
+    ? `Dluh vznikl nezaplacením faktury${d.invoiceNumber ? ` č. ${asText(d.invoiceNumber)}` : ''}${debtDateSuffix}.`
     : d.debtOrigin === 'damage'
-    ? `Dluh vznikl jako náhrada škody způsobené dne ${formatDate(d.debtDate, 'neuvedeno')}.`
-    : `Dluh vznikl z titulu: ${asText(d.debtOriginCustom, 'neuvedeno')} (dne ${formatDate(d.debtDate, 'neuvedeno')}).`;
+    ? `Dluh vznikl jako náhrada škody${d.debtDate ? ` způsobené dne ${formatDate(d.debtDate)}` : ''}.`
+    : `Dluh vznikl z titulu: ${asText(d.debtOriginCustom, 'neuvedeno')}${d.debtDate ? ` (dne ${formatDate(d.debtDate)})` : ''}.`;
 
   const repaymentDesc = d.repaymentType === 'installments'
-    ? `Dlužník se zavazuje splácet dluh v ${asText(d.installmentCount, 'neuvedeno')} pravidelných měsíčních ${Number(d.installmentCount) === 1 ? 'splátce' : 'splátkách'} po ${formatAmount(d.installmentAmount)} Kč, ${Number(d.installmentCount) === 1 ? 'splatné' : 'splatných vždy'} k ${asText(d.paymentDay, '15')}. dni ${Number(d.installmentCount) === 1 ? 'příslušného' : 'každého'} měsíce, počínaje ${formatDate(d.firstPaymentDate, 'neuvedeno')}.`
+    ? `Dlužník se zavazuje splácet dluh v ${asText(d.installmentCount, 'neuvedeno')} pravidelných měsíčních ${Number(d.installmentCount) === 1 ? 'splátce' : 'splátkách'} po ${formatAmount(d.installmentAmount)} Kč, ${Number(d.installmentCount) === 1 ? 'splatné' : 'splatných vždy'} k ${asText(d.paymentDay, '15')}. dni ${Number(d.installmentCount) === 1 ? 'příslušného' : 'každého'} měsíce, počínaje ${d.firstPaymentDate ? formatDate(d.firstPaymentDate) : 'kalendářním měsícem následujícím po podpisu tohoto uznání dluhu'}.`
     : `Dlužník se zavazuje uhradit celou dlužnou částku nejpozději dne ${formatDate(d.repaymentDate, 'neuvedeno')} jednorázově.`;
 
   const interestClause = d.interestRate && Number(d.interestRate) > 0
-    ? `Na dlužnou jistinu se sjednává úrok z prodlení ve výši ${asText(d.interestRate)} % p.a. ode dne ${formatDate(d.debtDate, 'neuvedeno')}.`
+    ? `Na dlužnou jistinu se sjednává úrok z prodlení ve výši ${asText(d.interestRate)} % p.a. ${d.debtDate ? `ode dne ${formatDate(d.debtDate)}` : 'ode dne prodlení'}.`
     : 'Na dlužnou jistinu se neúčtuje úrok (pokud není zákonem stanoveno jinak).';
 
   const premiumContent: ContractSection[] = hasPremiumClauses ? [

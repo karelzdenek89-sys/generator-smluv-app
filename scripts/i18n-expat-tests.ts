@@ -30,6 +30,9 @@ import { getAvailableCheckoutAddons, includesTranslationAnnex, normalizeCheckout
 import { LEASE_USE_NOTICE_EN } from '../lib/i18n/safety-copy';
 import { renderContractPdf } from '../lib/pdf';
 import { extractPdfText } from '../lib/pdf-text';
+import { renderContractDocx } from '../lib/docx';
+import { buildContractSections } from '../lib/contracts';
+import { strFromU8, unzipSync } from 'fflate';
 import type { StoredContractData } from '../lib/contracts';
 import { EXPAT_CONTRACT_CAPABILITY } from '../lib/locale';
 import {
@@ -1204,6 +1207,65 @@ async function testDppUaPdfTextContent() {
   assert.match(text, /робочого часу|відпочинку|розкладу змін/i);
 }
 
+/** Output-quality regressions found in the document audit (PDF + DOCX). */
+async function testDocumentOutputQuality() {
+  const lease: StoredContractData = {
+    contractType: 'lease',
+    tier: 'complete',
+    landlordName: 'Jan Novák',
+    tenantName: 'John Doe',
+    propertyAddress: 'Veselá 8, Praha 2',
+    rentAmount: '18000',
+    paymentDay: '5',
+    duration: 'fixed',
+    endDate: '2027-05-31',
+  };
+  const docxText = async (data: StoredContractData) => {
+    const files = unzipSync(new Uint8Array(await renderContractDocx(data)));
+    return strFromU8(files['word/document.xml']).replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+  };
+
+  // DOCX: EN/UA buyers get the same complete translation as in the PDF.
+  const docxEn = await docxText({ ...lease, lang: 'en' });
+  assert.match(docxEn, /Explanatory English Translation Annex/);
+  assert.match(docxEn, /I\. CONTRACTING PARTIES/);
+  assert.match(docxEn, /XIV\. SIGNATURES/);
+  const docxUa = await docxText({ ...lease, lang: 'ua' });
+  assert.match(docxUa, /Пояснювальний додаток українською/);
+  // DOCX summary shows readable values, never internal keys.
+  const docxCs = await docxText({ ...lease, lang: 'cs' });
+  assert.match(docxCs, /Rozšířený dokument/);
+  assert.doesNotMatch(docxCs, / lease | complete | basic /);
+  assert.doesNotMatch(docxCs, /Explanatory English/);
+
+  // PDF: helper pages in the buyer's language, real checkboxes (no missing ☐ glyph).
+  const pdfEn = await extractPdfText(await renderContractPdf({ ...lease, lang: 'en' }));
+  assert.match(pdfEn, /SIGNING AND ARCHIVING GUIDE/);
+  assert.match(pdfEn, /PRE-SIGNING CHECKLIST/);
+  assert.doesNotMatch(pdfEn, /PRŮVODNÍ POKYNY K PODPISU|GUIDE TO THE CZECH APPENDIX PAGES/);
+  assert.doesNotMatch(pdfEn, /starts on the next page/);
+  const pdfUa = await extractPdfText(await renderContractPdf({ ...lease, lang: 'ua' }));
+  assert.match(pdfUa, /КОНТРОЛЬНИЙ СПИСОК ПЕРЕД ПІДПИСАННЯМ/);
+  const pdfCs = await extractPdfText(await renderContractPdf({ ...lease, lang: 'cs' }));
+  assert.match(pdfCs, /KONTROLNÍ SEZNAM PŘED PODPISEM/);
+  assert.ok(!pdfCs.includes('☐') && !pdfEn.includes('☐'), 'checklist must not rely on the ☐ glyph');
+
+  // Optional dates never leave "dne neuvedeno" or a raw ISO date in a sentence.
+  const sectionText = (data: StoredContractData) => buildContractSections(data).flatMap((section) => section.body).join('\n');
+  const loan = sectionText({ contractType: 'loan', tier: 'basic', repaymentType: 'installments', installmentCount: '12', installmentAmount: '5000' });
+  assert.match(loan, /počínaje kalendářním měsícem následujícím po předání peněžních prostředků/);
+  assert.doesNotMatch(loan, /počínaje neuvedeno/);
+  const debt = sectionText({ contractType: 'debt_acknowledgment', tier: 'basic', debtOrigin: 'invoice', repaymentType: 'installments', installmentCount: '3', installmentAmount: '1000', interestRate: '8' });
+  assert.doesNotMatch(debt, /dne neuvedeno|č\. neuvedeno|počínaje neuvedeno/);
+  const sublease = buildContractSections({ contractType: 'sublease', tier: 'complete', landlordConsent: 'yes', consentDate: '2026-03-01', mainLeaseDate: '2025-09-15' });
+  const subleaseCs = sublease.flatMap((section) => section.body).join('\n');
+  const subleaseEn = sublease.flatMap((section) => section.translations?.en?.body ?? []).join('\n');
+  assert.match(subleaseCs, /udělen písemně dne 1\. 3\. 2026/);
+  assert.doesNotMatch(subleaseCs, /2026-03-01|2025-09-15/);
+  assert.match(subleaseEn, /granted in writing on 1 March 2026/);
+  assert.match(subleaseEn, /lease agreement dated 15 September 2025/);
+}
+
 async function testPdfFallback() {
   const minimalLease: StoredContractData = {
     contractType: 'lease',
@@ -1277,6 +1339,7 @@ async function main() {
   await testEmploymentEnPdfTextContent();
   await testDppUaPdfTextContent();
   await testPdfFallback();
+  await testDocumentOutputQuality();
   testCzechBlogSitemapCoverage();
   console.log('i18n expat tests passed');
 }
