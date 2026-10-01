@@ -13,7 +13,8 @@ import {
   type ExpatAnnexLocale,
 } from './i18n/expat-translation-registry';
 import { getCompleteAnnexExpatIntro } from './i18n/lease-complete-annex-i18n';
-import type { AppLocale } from './locale';
+import { COMPLETE_ANNEX_LABELS, getLocalizedPreSignChecklist, getLocalizedSigningInstructions } from './i18n/complete-annex-pages';
+import type { AppLocale, ExpatContractType } from './locale';
 import { includesTranslationAnnex } from './checkout-addons';
 
 // ─────────────────────────────────────────────
@@ -529,8 +530,9 @@ function drawExpatTranslationAnnexDivider(
   contentWidth: number,
 ): number {
   doc.addPage();
-  drawHeader(doc, metaTitle, false, docId);
-  let y = 36;
+  drawHeader(doc, meta.header, false, docId);
+  const startY = 26;
+  let y = startY;
 
   doc.setFont('Roboto', 'bold');
   doc.setFontSize(12);
@@ -542,12 +544,11 @@ function drawExpatTranslationAnnexDivider(
   doc.setTextColor(55, 65, 82);
   const intro = doc.splitTextToSize(meta.intro, contentWidth - 8) as string[];
 
-  const padTop = 10;
-  const padBottom = 12;
-  const titleBlockH = titleSplit.length * 5 + 6;
-  const introBlockH = intro.length * 3.8 + 4;
-  const hintBlockH = 14;
-  const boxH = padTop + titleBlockH + introBlockH + hintBlockH + padBottom;
+  const padTop = 9;
+  const padBottom = 5;
+  const titleBlockH = titleSplit.length * 5 + 3;
+  const introBlockH = intro.length * 3.8;
+  const boxH = padTop + titleBlockH + introBlockH + padBottom;
 
   doc.setDrawColor(160, 170, 185);
   doc.setFillColor(245, 248, 252);
@@ -564,15 +565,10 @@ function drawExpatTranslationAnnexDivider(
   doc.setFontSize(8.2);
   doc.setTextColor(55, 65, 82);
   doc.text(intro, MARGIN + 4, y);
-  y += introBlockH + 6;
-
-  doc.setFont('Roboto', 'bold');
-  doc.setFontSize(9);
-  doc.setTextColor(100, 70, 20);
-  doc.text(meta.nextPageHint, MARGIN + 4, y);
 
   doc.setTextColor(0);
-  return y + padBottom;
+  // The translation continues right below the box on the same page.
+  return startY + boxH + 4;
 }
 
 function renderExpatTranslationAnnex(
@@ -592,11 +588,7 @@ function renderExpatTranslationAnnex(
   const meta = getExpatAnnexMeta(data.contractType, annexLocale);
   const sections = buildExpatTranslationSections(data.contractType, annexLocale, data);
 
-  drawExpatTranslationAnnexDivider(doc, meta, metaTitle, docId, contentWidth);
-
-  doc.addPage();
-  drawHeader(doc, meta.header, false, docId);
-  let y = 22;
+  let y = drawExpatTranslationAnnexDivider(doc, meta, metaTitle, docId, contentWidth);
   let endOfTextDrawn = false;
 
   for (const section of sections) {
@@ -612,7 +604,7 @@ function renderExpatTranslationAnnex(
     }
 
     const orphanBuffer = section.body.length > 0 ? 32 : 20;
-    if (y + orphanBuffer > 272) {
+    if (y + Math.max(orphanBuffer, sectionLeadHeight(doc, section, contentWidth)) > 268) {
       doc.addPage();
       drawHeader(doc, meta.header, false, docId);
       y = 22;
@@ -749,6 +741,24 @@ function drawTableOfContents(
  * Full-width neutral thin rule beneath heading — replaces the short gold underline.
  * Returns new Y after heading.
  */
+/**
+ * Height of a section title together with its first paragraph (plus the room
+ * the body loop keeps for a following paragraph), so a heading is never left
+ * alone at the bottom of a page with its text starting on the next one.
+ */
+function sectionLeadHeight(doc: jsPDF, section: ContractSection, contentWidth: number, isProtocol = false): number {
+  doc.setFont('Roboto', 'bold');
+  doc.setFontSize(isProtocol ? 10.5 : 11);
+  const titleH = (doc.splitTextToSize(section.title, contentWidth) as string[]).length * 6 + 4;
+  if (section.body.length === 0) return 4 + titleH;
+  doc.setFont('Roboto', 'normal');
+  doc.setFontSize(10);
+  const raw = String(section.body[0] ?? '').trim() || ' ';
+  const safe = raw.length > 800 ? `${raw.substring(0, 800)}…` : raw;
+  const paraH = (doc.splitTextToSize(safe, contentWidth) as string[]).length * BODY_LEAD + 2;
+  return 4 + titleH + paraH + (section.body.length > 1 ? 8 : 0);
+}
+
 function drawSectionTitle(
   doc: jsPDF,
   title: string,
@@ -2243,7 +2253,11 @@ function drawCompleteTierPages(
   locale: AppLocale,
 ): void {
   const pageWidth = doc.internal.pageSize.getWidth();
-  const expatIntro = getCompleteAnnexExpatIntro(locale);
+  // Foreign buyers of the six expat contract types get these helper pages in
+  // their own language; everyone else keeps the Czech pages (with a short
+  // EN/UA explanation if the form was used in another language).
+  const helperLocale = (locale === 'en' || locale === 'ua') && isExpatContract(contractType) ? locale : null;
+  const expatIntro = helperLocale ? null : getCompleteAnnexExpatIntro(locale);
 
   // --- Průvodní pokyny ---
   doc.addPage();
@@ -2258,7 +2272,7 @@ function drawCompleteTierPages(
   doc.setFont('Roboto', 'bold');
   doc.setFontSize(8.5);
   doc.setTextColor(META_R, META_G, META_B);
-  doc.text('PŘÍLOHA K DOKUMENTU — PRŮVODNÍ POKYNY', MARGIN, y);
+  doc.text(helperLocale ? COMPLETE_ANNEX_LABELS[helperLocale].guideKicker : 'PŘÍLOHA K DOKUMENTU — PRŮVODNÍ POKYNY', MARGIN, y);
   y += 8;
 
   if (expatIntro?.length) {
@@ -2268,14 +2282,18 @@ function drawCompleteTierPages(
         continue;
       }
       const isHeading = line === line.toUpperCase() && line.length > 8;
-      doc.setFont('Roboto', isHeading ? 'bold' : 'normal');
-      doc.setFontSize(isHeading ? 9 : 8.5);
-      doc.setTextColor(isHeading ? INK_R : BODY_R, isHeading ? INK_G : BODY_G, isHeading ? INK_B : BODY_B);
+      const applyStyle = () => {
+        doc.setFont('Roboto', isHeading ? 'bold' : 'normal');
+        doc.setFontSize(isHeading ? 9 : 8.5);
+        doc.setTextColor(isHeading ? INK_R : BODY_R, isHeading ? INK_G : BODY_G, isHeading ? INK_B : BODY_B);
+      };
+      applyStyle();
       const split = doc.splitTextToSize(line, contentWidth);
       if (y + split.length * 5 > 272) {
         doc.addPage();
         drawHeader(doc, title, false, docId);
         y = 22;
+        applyStyle();
       }
       doc.text(split, MARGIN, y);
       y += split.length * 5 + 1;
@@ -2286,24 +2304,30 @@ function drawCompleteTierPages(
     y += 6;
   }
 
-  const instructions = getSigningInstructions(contractType);
+  const instructions = helperLocale
+    ? getLocalizedSigningInstructions(contractType as ExpatContractType, helperLocale)
+    : getSigningInstructions(contractType);
   for (const line of instructions) {
     if (!line) { y += 3; continue; }
     const isHeading = /^\d+\.\s/.test(line) || (line === line.toUpperCase() && line.length > 4);
-    if (isHeading) {
-      doc.setFont('Roboto', 'bold');
-      doc.setFontSize(9.5);
-      doc.setTextColor(INK_R, INK_G, INK_B);
-    } else {
-      doc.setFont('Roboto', 'normal');
-      doc.setFontSize(9);
-      doc.setTextColor(BODY_R, BODY_G, BODY_B);
-    }
+    const applyStyle = () => {
+      if (isHeading) {
+        doc.setFont('Roboto', 'bold');
+        doc.setFontSize(9.5);
+        doc.setTextColor(INK_R, INK_G, INK_B);
+      } else {
+        doc.setFont('Roboto', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(BODY_R, BODY_G, BODY_B);
+      }
+    };
+    applyStyle();
     const split = doc.splitTextToSize(line, contentWidth);
     if (y + split.length * 5 > 272) {
       doc.addPage();
       drawHeader(doc, title, false, docId);
       y = 22;
+      applyStyle();
     }
     doc.text(split, MARGIN, y);
     y += split.length * 5 + 1;
@@ -2322,29 +2346,44 @@ function drawCompleteTierPages(
   doc.setFont('Roboto', 'bold');
   doc.setFontSize(8.5);
   doc.setTextColor(META_R, META_G, META_B);
-  doc.text('PŘÍLOHA K DOKUMENTU — KONTROLNÍ SEZNAM', MARGIN, y);
+  doc.text(helperLocale ? COMPLETE_ANNEX_LABELS[helperLocale].checklistKicker : 'PŘÍLOHA K DOKUMENTU — KONTROLNÍ SEZNAM', MARGIN, y);
   y += 8;
 
-  const checklist = getPreSignChecklist(contractType);
-  for (const line of checklist) {
-    if (!line) { y += 3; continue; }
-    const isHeading = !line.startsWith('☐') && (line === line.toUpperCase() || line.includes('SPECIFICKY'));
-    if (isHeading) {
-      doc.setFont('Roboto', 'bold');
-      doc.setFontSize(9.5);
-      doc.setTextColor(INK_R, INK_G, INK_B);
-    } else {
-      doc.setFont('Roboto', 'normal');
-      doc.setFontSize(9);
-      doc.setTextColor(BODY_R, BODY_G, BODY_B);
-    }
-    const split = doc.splitTextToSize(line, contentWidth);
+  const checklist = helperLocale
+    ? getLocalizedPreSignChecklist(contractType as ExpatContractType, helperLocale)
+    : getPreSignChecklist(contractType);
+  for (const rawLine of checklist) {
+    if (!rawLine) { y += 3; continue; }
+    // The embedded font has no ☐ glyph — draw a real checkbox instead.
+    const isItem = rawLine.startsWith('☐');
+    const line = isItem ? rawLine.replace(/^☐\s*/, '') : rawLine;
+    const isHeading = !isItem && (line === line.toUpperCase() || line.includes('SPECIFICKY'));
+    const applyStyle = () => {
+      if (isHeading) {
+        doc.setFont('Roboto', 'bold');
+        doc.setFontSize(9.5);
+        doc.setTextColor(INK_R, INK_G, INK_B);
+      } else {
+        doc.setFont('Roboto', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(BODY_R, BODY_G, BODY_B);
+      }
+    };
+    applyStyle();
+    const indent = isItem ? 6.5 : 0;
+    const split = doc.splitTextToSize(line, contentWidth - indent);
     if (y + split.length * 5 > 272) {
       doc.addPage();
       drawHeader(doc, title, false, docId);
       y = 22;
+      applyStyle();
     }
-    doc.text(split, MARGIN, y);
+    if (isItem) {
+      doc.setDrawColor(INK_R, INK_G, INK_B);
+      doc.setLineWidth(0.25);
+      doc.rect(MARGIN + 0.5, y - 3, 3.2, 3.2);
+    }
+    doc.text(split, MARGIN + indent, y);
     y += split.length * 5 + 1.5;
   }
 }
@@ -2461,9 +2500,9 @@ export async function renderContractPdf(data: StoredContractData): Promise<Buffe
       continue;
     }
 
-    // Orphan guard
+    // Orphan guard: the heading always shares its page with its first paragraph.
     const orphanBuffer = section.body.length > 0 ? 32 : 20;
-    if (y + orphanBuffer > 272) {
+    if (y + Math.max(orphanBuffer, sectionLeadHeight(doc, section, contentWidth, inProtocol)) > 272) {
       doc.addPage();
       drawHeader(doc, meta.title, false, docId);
       y = 22;
