@@ -132,8 +132,8 @@ export function getContractTypeByPath(pathname: string | null | undefined): Cont
 
 export const LEGAL_NOTICE: Record<AppLocale, string> = {
   cs: 'Smlouva bude vygenerována primárně v češtině. Překlad slouží pouze pro lepší porozumění, není úřední ani ověřený. V případě rozporu má přednost české znění. SmlouvaHned není advokátní kancelář a neposkytuje právní ani imigrační poradenství.',
-  en: 'Your contract will be generated primarily in Czech. An explanatory translation may be included for easier understanding. The translation is not certified or official. In case of discrepancy, the Czech wording prevails. SmlouvaHned is not a law firm and does not provide legal or immigration advice.',
-  ua: 'Договір буде сформовано насамперед чеською мовою. Пояснювальний переклад може бути додано для зручності. Переклад не є засвідченим чи офіційним. У разі розбіжностей перевага має чеське формулювання. SmlouvaHned не є юридичною фірмою і не надає юридичних чи імміграційних консультацій.',
+  en: 'Your contract is generated in Czech. For the six supported contracts, the PDF also contains a complete English translation of every article, included in the price. The translation is explanatory, not certified or official. In case of discrepancy, the Czech wording prevails. SmlouvaHned is not a law firm and does not provide legal or immigration advice.',
+  ua: 'Договір формується чеською мовою. Для шести підтримуваних договорів PDF містить також повний український переклад кожної статті, включено в ціну. Переклад пояснювальний і не є засвідченим чи офіційним. У разі розбіжностей перевага має чеське формулювання. SmlouvaHned не є юридичною фірмою і не надає юридичних чи імміграційних консультацій.',
 };
 
 export const EN_LEGAL_KEY_TERMS = [

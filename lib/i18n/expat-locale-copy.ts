@@ -220,6 +220,6 @@ export function getBuilderNoticeLabels(locale: ExpatUiLocale) {
 }
 
 export const FALLBACK_UI_NOTICE_BY_LOCALE: Record<ExpatUiLocale, string> = {
-  en: 'This form is displayed in English for guidance. The contract is generated primarily in Czech. Where available, an explanatory English translation may be included in the PDF. It is not certified or official.',
-  ua: 'Форма показана українською для зручності. Договір генерується переважно чеською. За наявності до PDF може бути додано пояснювальний український переклад. Він не є засвідченим чи офіційним.',
+  en: 'This form is in English. The contract is generated in Czech and the PDF also contains a complete English translation of every article. It is not certified or official.',
+  ua: 'Форма українською. Договір формується чеською, а PDF містить також повний український переклад кожної статті. Переклад не є засвідченим чи офіційним.',
 };

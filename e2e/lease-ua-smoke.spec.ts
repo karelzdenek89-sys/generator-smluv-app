@@ -98,7 +98,7 @@ test.describe('UA lease expat smoke', () => {
 
     await expect(page.getByRole('heading', { name: /Договір оренди/i }).first()).toBeVisible();
     await expect(
-      page.getByText('Договір буде сформовано насамперед чеською мовою').first(),
+      page.getByText('Договір формується чеською мовою').first(),
     ).toBeVisible();
     await expect(page.getByText('не є засвідченим чи офіційним').first()).toBeVisible();
     await expect(page.getByText('Заповніть дані документа')).toBeVisible();
@@ -150,7 +150,7 @@ test.describe('UA lease expat smoke', () => {
     await expect(page.getByTestId('lease-landlord-name')).toBeVisible();
     await expect(page.getByText('Заповніть дані документа')).toBeVisible();
     await expect(
-      page.getByText('Договір буде сформовано насамперед чеською мовою').first(),
+      page.getByText('Договір формується чеською мовою').first(),
     ).toBeVisible();
   });
 

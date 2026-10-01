@@ -41,6 +41,7 @@
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, .1);
   background: rgba(255, 255, 255, .03);
+  min-height: 36px;
   padding: 6px 12px;
   font-size: 12px;
   font-weight: 600;
@@ -69,7 +70,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 30px; height: 30px;
+  width: 36px; height: 36px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, .1);
   background: rgba(255, 255, 255, .03);
@@ -199,6 +200,8 @@
   .titleTr { margin-top: 6px; padding-left: 10px; border-left: 2px solid var(--tr); }
   .row { padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, .05); }
   .row:nth-child(n + 4) { display: none; }
+  .chip { min-height: 40px; padding: 8px 14px; }
+  .pause { width: 40px; height: 40px; }
   .paraTr { margin-top: 6px; padding-left: 10px; border-left: 2px solid var(--tr); }
 }
 

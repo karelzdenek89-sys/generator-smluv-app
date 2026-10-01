@@ -146,7 +146,7 @@ test.describe('builder locale isolation', () => {
     await expect(page.getByText('What is included')).toHaveCount(0);
     await expect(page.getByText('Document contents')).toHaveCount(0);
     await expect(page.getByText('Common questions')).toHaveCount(0);
-    await expect(page.getByText('Договір буде сформовано насамперед чеською мовою')).toHaveCount(1);
+    await expect(page.getByText('Договір формується чеською мовою')).toHaveCount(1);
   });
 
   test('explicit EN wins over a stale UA preference', async ({ page, context }, testInfo) => {
