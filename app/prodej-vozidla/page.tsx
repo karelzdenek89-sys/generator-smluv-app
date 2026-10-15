@@ -88,12 +88,10 @@ export default function ProdejVozidlaPage() {
         bottomLinks={[...situation.bottomLinks]}
         relatedCluster="auto"
         currentHref="/prodej-vozidla"
+        partnerSlot={cebiaOffer
+          ? <PartnerEditorialOffer offer={cebiaOffer} sourcePage="/prodej-vozidla" />
+          : undefined}
       />
-      {cebiaOffer ? (
-        <div className="mx-auto max-w-4xl px-6 pb-12">
-          <PartnerEditorialOffer offer={cebiaOffer} sourcePage="/prodej-vozidla" />
-        </div>
-      ) : null}
     </>
   );
 }

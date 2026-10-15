@@ -26,6 +26,8 @@ import {
 } from '@/lib/locale';
 import { isValidMoney } from '@/lib/money';
 import BuilderUserRoleField from '@/app/components/partners/BuilderUserRoleField';
+import PartnerEditorialOffer from '@/app/components/partners/PartnerEditorialOffer';
+import { useCebiaOffer } from '@/app/components/partners/CebiaOfferProvider';
 import type { PartnerUserRole } from '@/lib/partners/types';
 import BuilderHeader from '@/app/components/BuilderHeader';
 import { trackEvent } from '@/lib/analytics';
@@ -108,6 +110,7 @@ const textareaClass = 'site-textarea';
 const cardClass = 'builder-card p-6';
 
 function CarSaleBuilderContent() {
+  const cebiaOffer = useCebiaOffer();
   const [packageKeyFromUrl, setPackageKeyFromUrl] = useState<string | null>(null);
   const builderLocale = useBuilderLocale();
   const ui = useMemo(() => getCarFormUi(builderLocale), [builderLocale]);
@@ -574,6 +577,9 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
               value={formData.partnerUserRole}
               onChange={(partnerUserRole) => setFormData((current) => ({ ...current, partnerUserRole }))}
             />
+            {builderLocale === 'cs' && formData.partnerUserRole === 'buyer' && cebiaOffer ? (
+              <PartnerEditorialOffer offer={cebiaOffer} sourcePage="/auto" />
+            ) : null}
             <section className={cardClass}>
               <SectionTitle
                 index="01"

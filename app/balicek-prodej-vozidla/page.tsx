@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import TrackView from '@/app/components/analytics/TrackView';
 import GuideLandingPage from '@/app/components/GuideLandingPage';
+import PartnerEditorialOffer from '@/app/components/partners/PartnerEditorialOffer';
+import { getEditorialPartnerOffer } from '@/lib/partners/catalog';
 import { isFeatureEnabled } from '@/lib/feature-flags';
 
 export const metadata: Metadata = {
@@ -43,6 +45,7 @@ const faq = [
 ];
 
 export default function BalicekProdejVozidlaPage() {
+  const cebiaOffer = getEditorialPartnerOffer('cebia_vehicle_history', 'cs');
   return (
     <>
       <TrackView
@@ -178,6 +181,9 @@ export default function BalicekProdejVozidlaPage() {
         ]}
         relatedCluster="auto"
         currentHref="/balicek-prodej-vozidla"
+        partnerSlot={cebiaOffer
+          ? <PartnerEditorialOffer offer={cebiaOffer} sourcePage="/balicek-prodej-vozidla" />
+          : undefined}
       />
     </>
   );

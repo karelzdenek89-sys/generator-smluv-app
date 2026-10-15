@@ -195,7 +195,7 @@ export type AnalyticsEventParams = {
     | 'landlord' | 'tenant' | 'seller' | 'buyer' | 'employer'
     | 'employee' | 'customer' | 'client' | 'contractor'
     | 'supplier' | 'freelancer' | 'company' | 'unknown';
-  placement?: 'success' | 'download' | 'article';
+  placement?: 'success' | 'download' | 'article' | 'builder' | 'landing';
   revenue_czk?: number;
   partner_click_id?: string;
   partner_transaction_id?: string;

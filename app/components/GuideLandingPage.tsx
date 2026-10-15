@@ -69,6 +69,8 @@ type GuideLandingPageProps = {
   finalCtaBody?: string;
   relatedCluster?: ClusterKey;
   currentHref?: string;
+  /** Optional contextual partner placement, rendered after the main product CTA. */
+  partnerSlot?: React.ReactNode;
   /** Např. „u nájemní smlouvy“ — pro blok odlišení od běžného vzoru */
   differentiationHint?: string;
   showDifferentiation?: boolean;
@@ -100,6 +102,7 @@ export default function GuideLandingPage({
   finalCtaBody = 'Ve formuláři doplníte hlavní údaje a po dokončení objednávky získáte standardizovaný výstup připravený k závěrečné kontrole a podpisu.',
   relatedCluster,
   currentHref,
+  partnerSlot,
   differentiationHint,
   showDifferentiation = true,
 }: GuideLandingPageProps) {
@@ -251,6 +254,8 @@ export default function GuideLandingPage({
         </section>
 
         <WhyUsArticleCallout className="mt-8" compact />
+
+        {partnerSlot ? <div className="mt-8">{partnerSlot}</div> : null}
 
         {decisionGuide ? (
           <ProductPathGuide

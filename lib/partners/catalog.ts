@@ -66,7 +66,16 @@ function safePartnerUrl(value: string | undefined, definition: PartnerOfferDefin
     for (const key of url.searchParams.keys()) {
       if (!allowedQueryKeys.has(key)) return undefined;
     }
-    if (definition.partnerId === 'cebia' && !/^[A-Za-z0-9_-]{6,64}$/.test(url.searchParams.get('a_box') ?? '')) return undefined;
+    if (definition.partnerId === 'cebia') {
+      if (url.hostname !== 'cz.cebia.com' || url.pathname !== '/'
+        || url.searchParams.getAll('a_box').length !== 1
+        || !/^[A-Za-z0-9_-]{6,64}$/.test(url.searchParams.get('a_box') ?? '')) return undefined;
+      // The affiliate provider specifies exactly these three tracking parameters.
+      url.searchParams.set('utm_source', 'affilbox');
+      url.searchParams.set('utm_medium', 'affiliate');
+      url.searchParams.delete('utm_campaign');
+      return url.toString();
+    }
     url.searchParams.set('utm_source', definition.utmSource ?? 'smlouvahned');
     url.searchParams.set('utm_medium', definition.utmMedium ?? 'partner_offer');
     url.searchParams.set('utm_campaign', definition.utmCampaign ?? definition.id);

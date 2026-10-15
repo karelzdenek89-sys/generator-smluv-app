@@ -113,6 +113,7 @@ function testUrlAndConfigFailClosed() {
   assert.equal(new URL(offers[0].href).searchParams.get('a_box'), 'ay9jggbd');
   assert.equal(new URL(offers[0].href).searchParams.get('utm_source'), 'affilbox');
   assert.equal(new URL(offers[0].href).searchParams.get('utm_medium'), 'affiliate');
+  assert.equal(new URL(offers[0].href).searchParams.has('utm_campaign'), false);
   assert.equal(offers[0].href.includes('420000'), false);
   const editorialOffer = getEditorialPartnerOffer('cebia_vehicle_history', 'cs');
   assert.ok(editorialOffer);
@@ -122,6 +123,8 @@ function testUrlAndConfigFailClosed() {
   assert.match(editorialOffer.disclosure, /provizi/);
   assert.equal(editorialOffer.href.includes('420000'), false);
   assert.equal(getEditorialPartnerOffer('cebia_vehicle_history', 'en'), null);
+  process.env.PARTNER_CEBIA_URL = 'https://cz.cebia.com/?a_box=ay9jggbd&a_box=another';
+  assert.deepEqual(getEligiblePartnerOffers(baseContext()), [], 'duplicate affiliate ID must be rejected');
   process.env.PARTNER_CEBIA_URL = 'https://cz.cebia.com/?a_box=short';
   assert.deepEqual(getEligiblePartnerOffers(baseContext()), [], 'invalid affiliate ID must be rejected');
   process.env.PARTNER_CEBIA_URL = 'https://cz.cebia.com/?a_box=ay9jggbd&vin=TMBEXAMPLEVIN1234';
