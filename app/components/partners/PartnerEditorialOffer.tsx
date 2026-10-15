@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { trackEvent } from '@/lib/analytics';
 import { createPartnerClickId } from '@/lib/partners/attribution';
+import CebiaBanner from './CebiaBanner';
 import type { PublicPartnerOffer } from '@/lib/partners/types';
 import {
   isProductAnalyticsConsentGranted,
@@ -15,9 +16,10 @@ type PartnerEditorialOfferProps = {
 };
 
 function analyticsParams(offer: PublicPartnerOffer, sourcePage: string) {
+  const placement = sourcePage === '/auto' ? 'builder' : sourcePage.startsWith('/blog/') ? 'article' : 'landing';
   return {
     source: sourcePage,
-    surface: 'seo_article_after_product_cta',
+    surface: placement === 'builder' ? 'vehicle_builder_role' : placement === 'article' ? 'seo_article_after_product_cta' : 'vehicle_landing',
     source_page: sourcePage,
     offer_type: 'partner' as const,
     product_id: offer.id,
@@ -26,12 +28,13 @@ function analyticsParams(offer: PublicPartnerOffer, sourcePage: string) {
     offer_category: offer.category,
     contract_type: 'car_sale' as const,
     locale: 'cs',
-    placement: 'article' as const,
+    placement: placement as 'article' | 'builder' | 'landing',
   };
 }
 
 export default function PartnerEditorialOffer({ offer, sourcePage }: PartnerEditorialOfferProps) {
   const cardRef = useRef<HTMLElement>(null);
+  const isCebia = offer.id === 'cebia_vehicle_history';
   const eligibleSent = useRef(false);
   const viewedSent = useRef(false);
 
@@ -96,11 +99,18 @@ export default function PartnerEditorialOffer({ offer, sourcePage }: PartnerEdit
           ...analyticsParams(offer, sourcePage),
           partner_click_id: createPartnerClickId(),
         })}
-        className="mt-5 inline-flex w-full items-center justify-center rounded-xl border border-sky-400/30 px-5 py-3 text-center text-sm font-semibold text-sky-100 transition hover:border-sky-300 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300 sm:w-auto"
+        aria-label={isCebia ? offer.cta + ' (otevře se v nové kartě)' : undefined}
+        className={isCebia
+          ? 'mt-5 block w-full max-w-[728px] rounded-lg transition hover:brightness-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300'
+          : 'mt-5 inline-flex w-full items-center justify-center rounded-xl border border-sky-400/30 px-5 py-3 text-center text-sm font-semibold text-sky-100 transition hover:border-sky-300 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300 sm:w-auto'}
       >
-        {offer.cta}
-        <span aria-hidden="true" className="ml-2">↗</span>
-        <span className="sr-only"> (otevře se v nové kartě)</span>
+        {isCebia ? <CebiaBanner /> : (
+          <>
+            {offer.cta}
+            <span aria-hidden="true" className="ml-2">↗</span>
+            <span className="sr-only"> (otevře se v nové kartě)</span>
+          </>
+        )}
       </a>
     </aside>
   );

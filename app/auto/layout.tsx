@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import ProductSchemas from '@/app/components/seo/ProductSchemas';
+import { CebiaOfferProvider } from '@/app/components/partners/CebiaOfferProvider';
+import { getEditorialPartnerOffer } from '@/lib/partners/catalog';
 import { getExpatContractHreflangAlternates } from '@/lib/i18n/expat-hreflang';
 import { SITE_URL } from '@/lib/seo/site';
 
@@ -34,6 +36,7 @@ export const metadata: Metadata = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const cebiaOffer = getEditorialPartnerOffer('cebia_vehicle_history', 'cs');
   return (
     <>
       <ProductSchemas
@@ -42,7 +45,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         description="Online generátor kupní smlouvy na vozidlo. VIN, STK, emise, prohlášení o vadách, tematický balíček pro prodej vozidla."
         breadcrumbLabel="Kupní smlouva na auto"
       />
-      {children}
+      <CebiaOfferProvider offer={cebiaOffer}>{children}</CebiaOfferProvider>
     </>
   );
 }

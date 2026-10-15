@@ -1,5 +1,7 @@
 import TrackView from '@/app/components/analytics/TrackView';
 import GuideLandingPage from '@/app/components/GuideLandingPage';
+import PartnerEditorialOffer from '@/app/components/partners/PartnerEditorialOffer';
+import { getEditorialPartnerOffer } from '@/lib/partners/catalog';
 import { getExpatSeoLandingHreflangAlternates } from '@/lib/i18n/expat-hreflang';
 import { getSituationLandingConfig } from '@/lib/situations';
 import { DEFAULT_OG_IMAGE } from '@/lib/seo/site';
@@ -41,6 +43,7 @@ const faqSchema = {
 };
 
 export default function ProdejVozidlaPage() {
+  const cebiaOffer = getEditorialPartnerOffer('cebia_vehicle_history', 'cs');
   return (
     <>
       <script
@@ -85,6 +88,9 @@ export default function ProdejVozidlaPage() {
         bottomLinks={[...situation.bottomLinks]}
         relatedCluster="auto"
         currentHref="/prodej-vozidla"
+        partnerSlot={cebiaOffer
+          ? <PartnerEditorialOffer offer={cebiaOffer} sourcePage="/prodej-vozidla" />
+          : undefined}
       />
     </>
   );
