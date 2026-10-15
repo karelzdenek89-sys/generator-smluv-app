@@ -102,7 +102,7 @@ function testOfferTargeting() {
   process.env.PARTNER_SIGNI_ENABLED = 'true';
   process.env.PARTNER_SIGNI_URL = 'https://signi.com/produkt/';
   process.env.PARTNER_CEBIA_ENABLED = 'true';
-  process.env.PARTNER_CEBIA_URL = 'https://www.cebia.cz/';
+  process.env.PARTNER_CEBIA_URL = 'https://cz.cebia.com/?utm_source=affilbox&utm_medium=affiliate&a_box=ay9jggbd';
   process.env.PARTNER_CEBIA_IS_AFFILIATE = 'true';
 
   const forLease = getEligiblePartnerOffers(partnerContext()).map((offer) => offer.id);
@@ -216,7 +216,7 @@ function testRequiredRoleEligibilityMatrix() {
   resetFlags();
   process.env.PARTNER_ENGINE_ENABLED = 'true';
   process.env.PARTNER_CEBIA_ENABLED = 'true';
-  process.env.PARTNER_CEBIA_URL = 'https://www.cebia.cz/';
+  process.env.PARTNER_CEBIA_URL = 'https://cz.cebia.com/?utm_source=affilbox&utm_medium=affiliate&a_box=ay9jggbd';
   process.env.PARTNER_CEBIA_IS_AFFILIATE = 'true';
   process.env.PARTNER_USETRENO_TENANT_INSURANCE_ENABLED = 'true';
   process.env.PARTNER_USETRENO_TENANT_INSURANCE_URL = 'https://www.usetreno.cz/';
