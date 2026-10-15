@@ -13,6 +13,13 @@ const ignore = (reason) => {
   process.exit(0);
 };
 
+// Manual acceptance previews are explicitly opted in per preview environment.
+// Git-triggered routine branches remain disabled by vercel.json.
+if (ref && ref !== 'main' && process.env.VERCEL_ENV === 'preview'
+  && process.env.VERCEL_MANUAL_ACCEPTANCE_PREVIEW === '1') {
+  build('explicit manual acceptance preview');
+}
+
 if (!ref) build('missing branch ref');
 if (ref !== 'main' && !ref.startsWith('preview-')) ignore(`routine branch ${ref}`);
 if (ref.startsWith('preview-')) build('explicit preview lane');
