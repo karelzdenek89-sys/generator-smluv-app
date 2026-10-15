@@ -18,7 +18,8 @@ type PartnerOfferDefinition = {
   supportedCountries: readonly ['CZ'];
   allowedHosts: readonly string[];
   allowedQueryKeys: readonly string[];
-  utmMedium?: 'partner_offer' | 'cross_sell';
+  utmSource?: 'smlouvahned' | 'affilbox';
+  utmMedium?: 'partner_offer' | 'cross_sell' | 'affiliate';
   utmCampaign?: string;
   copy: Record<PartnerLocale, OfferCopy>;
   isEligible: (context: PartnerContext) => boolean;
@@ -65,7 +66,8 @@ function safePartnerUrl(value: string | undefined, definition: PartnerOfferDefin
     for (const key of url.searchParams.keys()) {
       if (!allowedQueryKeys.has(key)) return undefined;
     }
-    url.searchParams.set('utm_source', 'smlouvahned');
+    if (definition.partnerId === 'cebia' && !/^[A-Za-z0-9_-]{6,64}$/.test(url.searchParams.get('a_box') ?? '')) return undefined;
+    url.searchParams.set('utm_source', definition.utmSource ?? 'smlouvahned');
     url.searchParams.set('utm_medium', definition.utmMedium ?? 'partner_offer');
     url.searchParams.set('utm_campaign', definition.utmCampaign ?? definition.id);
     return url.toString();
@@ -105,14 +107,15 @@ const DEFINITIONS: readonly PartnerOfferDefinition[] = [
     id: 'cebia_vehicle_history', partnerId: 'cebia', provider: 'Cebia AUTOTRACER',
     category: 'vehicle_history', priority: 20, manualQualityScore: 80,
     destination: 'partner', supportedLocales: ['cs'], supportedCountries: ['CZ'],
-    allowedHosts: ['cebia.cz'], allowedQueryKeys: [],
+    allowedHosts: ['cebia.cz', 'cz.cebia.com'], allowedQueryKeys: ['a_box'],
+    utmSource: 'affilbox', utmMedium: 'affiliate',
     isEligible: (c) => c.completed && c.contractType === 'car_sale' && c.userRole === 'buyer',
     resolveConfig: () => {
       const config = configured('PARTNER_CEBIA');
       return { ...config, enabled: config.enabled && config.isAffiliate };
     },
     copy: {
-      cs: { title: 'Před koupí vozidla můžete prověřit jeho historii', description: 'Kupní smlouva upravuje právní stránku převodu. Dostupné informace o historii konkrétního vozidla lze samostatně ověřit prostřednictvím služby Cebia AUTOTRACER.', cta: 'Prověřit historii vozidla', disclosure: 'Rozsah prověření závisí na dostupných záznamech. VIN ani údaje ze smlouvy se automaticky nepřenášejí.' },
+      cs: { title: 'Před koupí vozidla můžete prověřit jeho historii', description: 'Kupní smlouva upravuje právní stránku převodu. Dostupné informace o historii konkrétního vozidla lze samostatně ověřit prostřednictvím služby Cebia AUTOTRACER.', cta: 'Prověřit historii vozidla', disclosure: 'Jde o externí partnerskou službu. Za nákup přes odkaz můžeme získat provizi. Rozsah prověření závisí na dostupných záznamech; VIN ani údaje ze smlouvy se automaticky nepřenášejí.' },
       en: CS_ONLY_FALLBACK.en, ua: CS_ONLY_FALLBACK.ua,
     },
   },
