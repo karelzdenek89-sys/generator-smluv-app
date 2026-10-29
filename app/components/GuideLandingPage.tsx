@@ -32,6 +32,7 @@ type GuideLandingTrackingContext =
   | { pageType: 'package'; pageKey: ThematicPackageKey };
 
 type GuideLandingPageProps = {
+  afterIntro?: React.ReactNode;
   breadcrumbLabel: string;
   kicker: string;
   title: string;
@@ -75,6 +76,7 @@ type GuideLandingPageProps = {
 };
 
 export default function GuideLandingPage({
+  afterIntro,
   breadcrumbLabel,
   kicker,
   title,
@@ -250,6 +252,7 @@ export default function GuideLandingPage({
           </p>
         </section>
 
+        {afterIntro}
         <WhyUsArticleCallout className="mt-8" compact />
 
         {decisionGuide ? (

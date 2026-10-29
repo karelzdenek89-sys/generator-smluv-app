@@ -365,7 +365,7 @@ async function testRetention() {
   eq(caseTtlSeconds({ stage: 'closed', closedAt: '2026-10-01T10:00:00Z' }, new Date('2026-12-01T10:00:00Z')), 119 * 86400, 'closed TTL counts down from closedAt (fixed deadline)');
   eq(caseTtlSeconds({ stage: 'closed', closedAt: '2026-01-01T10:00:00Z' }, new Date('2026-12-01T10:00:00Z')), 60, 'closed TTL never below the floor once the deadline passed');
 
-  const now = new Date('2026-10-01T10:00:00Z');
+  const now = new Date();
   const stored = await saveCase(sampleCase(), now);
   ok(!('orderSessionId' in stored.origin), 'Stripe session is not stored on the case');
   const raw = await memoryRedis.get<Record<string, unknown>>(`case:${stored.id}`);

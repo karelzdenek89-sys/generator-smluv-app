@@ -26,6 +26,7 @@ import {
 } from '@/lib/locale';
 import { isValidMoney } from '@/lib/money';
 import BuilderUserRoleField from '@/app/components/partners/BuilderUserRoleField';
+import CebiaBanner from '@/app/components/partners/CebiaBanner';
 import type { PartnerUserRole } from '@/lib/partners/types';
 import BuilderHeader from '@/app/components/BuilderHeader';
 import { trackEvent } from '@/lib/analytics';
@@ -488,6 +489,12 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
         guideHref={ui.landing.guideHref}
         guideLabel={ui.landing.guideLabel}
       />
+
+      {builderLocale === 'cs' && (
+        <div className="mx-auto max-w-7xl px-4 lg:px-8">
+          <CebiaBanner sourcePage="auto" />
+        </div>
+      )}
 
       {packageConfig ? (
         <div className="max-w-7xl mx-auto px-4 pt-8 lg:px-8">

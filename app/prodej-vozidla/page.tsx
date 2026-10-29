@@ -1,5 +1,6 @@
 import TrackView from '@/app/components/analytics/TrackView';
 import GuideLandingPage from '@/app/components/GuideLandingPage';
+import CebiaBanner from '@/app/components/partners/CebiaBanner';
 import { getExpatSeoLandingHreflangAlternates } from '@/lib/i18n/expat-hreflang';
 import { getSituationLandingConfig } from '@/lib/situations';
 import { DEFAULT_OG_IMAGE } from '@/lib/seo/site';
@@ -56,6 +57,7 @@ export default function ProdejVozidlaPage() {
         }}
       />
       <GuideLandingPage
+        afterIntro={<CebiaBanner sourcePage="prodej-vozidla" />}
         breadcrumbLabel={situation.breadcrumbLabel}
         kicker={situation.kicker}
         title={situation.title}
