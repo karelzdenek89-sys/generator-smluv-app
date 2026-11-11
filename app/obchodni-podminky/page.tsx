@@ -126,7 +126,7 @@ export default function TermsPage() {
             </p>
           </section>
 
-          <section>
+          <section id="ceny" className="scroll-mt-24">
             <h2 className="text-amber-500 font-black uppercase text-xs tracking-widest mb-4">
               04. Ceny a platební podmínky
             </h2>
@@ -162,7 +162,7 @@ export default function TermsPage() {
             <p className="mb-3">
               Platba probíhá prostřednictvím zabezpečené platební brány <strong className="text-white">Stripe</strong> (kartou). Ihned po potvrzení platby je Zákazníkovi zpřístupněn odkaz ke stažení dokumentu na stránce a zaslán na povinně uvedený doručovací e-mail.
             </p>
-            <div className="bg-[#0c1426]/60 border border-white/8 rounded-xl p-4 text-slate-300 text-xs leading-relaxed">
+            <div id="odstoupeni" className="scroll-mt-24 bg-[#0c1426]/60 border border-white/8 rounded-xl p-4 text-slate-300 text-xs leading-relaxed">
               <strong className="text-white">Digitální obsah a právo na odstoupení:</strong> Předmětem plnění je digitální obsah (vygenerovaný PDF, případně DOCX dokument) doručovaný ihned po potvrzení platby. V souladu s § 1837 písm. l) OZ zákazník před dokončením objednávky výslovně potvrzuje, že souhlasí s okamžitým zahájením plnění, a bere na vědomí, že úplným dodáním digitálního obsahu ztrácí právo na odstoupení od smlouvy ve lhůtě 14 dnů dle § 1829 OZ. Čas a verze tohoto potvrzení se evidují u objednávky a zákazník je obdrží v potvrzovacím e-mailu na trvalém nosiči.
             </div>
           </section>
@@ -196,7 +196,7 @@ export default function TermsPage() {
             </p>
           </section>
 
-          <section>
+          <section id="reklamace" className="scroll-mt-24">
             <h2 className="text-amber-500 font-black uppercase text-xs tracking-widest mb-4">
               07. Reklamace a stížnosti
             </h2>

@@ -560,7 +560,7 @@ export const GROWTH_ARTICLES: readonly AnswerFirstArticle[] = [
       { href: '/nastroje/prepis-vozidla-co-potrebuji', label: 'Přepis vozidla — co potřebuji' },
     ],
     related: [
-      { href: '/blog/prodej-auta-prodavjici-2026', label: 'Prodej auta z pohledu prodávajícího — podrobně' },
+      { href: '/blog/prodej-auta-prodavajici-2026', label: 'Prodej auta z pohledu prodávajícího — podrobně' },
       { href: '/blog/doklady-pri-prodeji-auta-2026', label: 'Doklady při prodeji auta' },
       { href: '/prodej-vozidla/odpovednost-prodavajiciho-za-vady', label: 'Odpovědnost prodávajícího za vady' },
     ],
@@ -646,7 +646,7 @@ export const GROWTH_ARTICLES: readonly AnswerFirstArticle[] = [
     related: [
       { href: '/prodej-vozidla/vady-ojeteho-auta', label: 'Vady ojetého auta z pohledu kupujícího' },
       { href: '/prodej-vozidla/skryta-vada-auta', label: 'Skrytá vada auta' },
-      { href: '/blog/prodej-auta-prodavjici-2026', label: 'Prodej auta z pohledu prodávajícího' },
+      { href: '/blog/prodej-auta-prodavajici-2026', label: 'Prodej auta z pohledu prodávajícího' },
     ],
     sources: [OZ],
     updatedAt: UPDATED,

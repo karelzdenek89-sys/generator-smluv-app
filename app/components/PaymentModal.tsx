@@ -14,6 +14,7 @@ import { getLocalizedPackagePresentation, getLocalizedPricingTier } from '@/lib/
 import { getPackageAppendixNotice } from '@/lib/i18n/package-upsell';
 import { LEGAL_NOTICE, normalizeLocale, type AppLocale } from '@/lib/locale';
 import { privacyHref, termsHref } from '@/lib/legal/links';
+import { SELLER_IDENTIFICATION } from '@/lib/legal/seller';
 import type { LeaseFormUi } from '@/lib/i18n/lease-form';
 import { getAnalyticsDefaultsForPathname, trackEvent } from '@/lib/analytics';
 import {
@@ -67,6 +68,9 @@ const GENERIC_PAYMENT_COPY: Record<AppLocale, {
   processing: string;
   payCta: string;
   footerSecure: string;
+  priceFinal: string;
+  seller: string;
+  companyHint: string;
 }> = {
   cs: {
     close: 'Zavřít',
@@ -97,8 +101,12 @@ const GENERIC_PAYMENT_COPY: Record<AppLocale, {
     emailInvalid: 'Zadejte platný e-mail pro doručení dokumentu.',
     consentRequired: 'Potvrďte prosím souhlas se zpracováním osobních údajů.',
     processing: 'Přesměrování na platbu…',
-    payCta: 'Zaplatit a stáhnout',
+    // § 1826a odst. 2 OZ: tlačítko musí jednoznačně říkat, že objednávka zavazuje k platbě.
+    payCta: 'Objednávka zavazující k platbě',
     footerSecure: '🔒 Zabezpečená platba přes Stripe · PDF ke stažení ihned',
+    priceFinal: 'Cena je konečná. Prodávající není plátcem DPH.',
+    seller: 'Prodávající',
+    companyHint: 'Nakupujete na firmu? IČO a název firmy vyplníte na platební stránce Stripe.',
   },
   en: {
     close: 'Close',
@@ -129,8 +137,11 @@ const GENERIC_PAYMENT_COPY: Record<AppLocale, {
     emailInvalid: 'Enter a valid delivery email.',
     consentRequired: 'Please confirm your consent to the processing of personal data.',
     processing: 'Redirecting to payment…',
-    payCta: 'Pay and download',
+    payCta: 'Order with obligation to pay',
     footerSecure: '🔒 Secure payment via Stripe · PDF available immediately',
+    priceFinal: 'The price is final. The seller is not registered for VAT.',
+    seller: 'Seller',
+    companyHint: 'Buying for a company? Enter the company ID (IČO) and name on the Stripe payment page.',
   },
   ua: {
     close: 'Закрити',
@@ -161,8 +172,11 @@ const GENERIC_PAYMENT_COPY: Record<AppLocale, {
     emailInvalid: 'Введіть дійсну email-адресу для доставки.',
     consentRequired: 'Підтвердьте згоду на обробку персональних даних.',
     processing: 'Перенаправляємо до оплати…',
-    payCta: 'Оплатити й завантажити',
+    payCta: 'Замовлення з обов’язком оплати',
     footerSecure: '🔒 Безпечна оплата через Stripe · PDF доступний одразу',
+    priceFinal: 'Ціна остаточна. Продавець не є платником ПДВ.',
+    seller: 'Продавець',
+    companyHint: 'Купуєте для компанії? IČO та назву компанії введете на платіжній сторінці Stripe.',
   },
 };
 
@@ -735,6 +749,14 @@ export default function PaymentModal({
                 <span className="text-xs font-black uppercase tracking-widest text-slate-400">{genericCopy.total}</span>
                 <span className="text-xl font-black text-amber-400">{checkoutPrice}</span>
               </div>
+              {!isFreeBasic ? (
+                <p data-testid="checkout-price-final" className="mt-2 text-[11px] leading-5 text-slate-400">
+                  {genericCopy.priceFinal}
+                </p>
+              ) : null}
+              <p data-testid="checkout-seller" className="mt-1 text-[11px] leading-5 text-slate-400">
+                {genericCopy.seller}: {SELLER_IDENTIFICATION}
+              </p>
             </div>
 
             {locale !== 'cs' && (
@@ -902,6 +924,11 @@ export default function PaymentModal({
                   ? freeCopy.footerSecure
                   : (copy?.footerSecure ?? genericCopy.footerSecure)}
               </p>
+              {!isFreeBasic ? (
+                <p className="text-center text-[11px] leading-5 text-slate-400">
+                  {genericCopy.companyHint}
+                </p>
+              ) : null}
             </div>
           </div>
         </div>

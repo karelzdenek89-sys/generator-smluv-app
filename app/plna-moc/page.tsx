@@ -295,7 +295,7 @@ function PlnaMocPageContent() {
               <ContractPreview sections={previewSections} title={ui.form.documentLabel} labels={previewLabels} />
             )}
             <div className={cardClass}>
-              <div className="builder-kicker mb-4">Analýza smlouvy</div>
+              <div className="builder-kicker mb-4">{ui.form.analysisTitle}</div>
               <div className="flex items-center gap-4 mb-4">
                 <div className={`text-5xl font-black ${scoreColor}`}>{risk.score}</div>
                 <div><div className={`font-bold ${scoreColor}`}>{risk.label}</div><div className="text-xs text-slate-400">ze 100 bodů</div></div>

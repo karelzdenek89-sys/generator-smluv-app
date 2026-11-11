@@ -102,6 +102,14 @@ const nextConfig: NextConfig = {
       { source: '/de/:path*', destination: '/en/:path*', permanent: true },
       { source: '/blog/pracovni-smlouva-2024', destination: '/blog/pracovni-smlouva-2026', permanent: true },
       { source: '/blog/podnajemni-smlouva-2024', destination: '/blog/podnajemni-smlouva-2026', permanent: true },
+      // Překlep v původní adrese (2026-11); stará URL je zaindexovaná, proto 301.
+      { source: '/blog/prodej-auta-prodavjici-2026', destination: '/blog/prodej-auta-prodavajici-2026', permanent: true },
+      // Běžně zkoušené adresy právních informací vedou na příslušné části OP a GDPR.
+      // Dočasné (307), aby šlo později zřídit samostatné stránky bez cache v prohlížečích.
+      { source: '/cookies', destination: '/gdpr#cookies', permanent: false },
+      { source: '/reklamace', destination: '/obchodni-podminky#reklamace', permanent: false },
+      { source: '/odstoupeni', destination: '/obchodni-podminky#odstoupeni', permanent: false },
+      { source: '/odstoupeni-od-smlouvy', destination: '/obchodni-podminky#odstoupeni', permanent: false },
       {
         source: '/blog/power-of-attorney-czech-republic',
         destination: '/blog/expat/power-of-attorney-czech-republic-guide-en',

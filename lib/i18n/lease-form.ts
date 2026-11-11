@@ -455,8 +455,8 @@ const LEASE_FORM_CS: LeaseFormUi = {
     includedHeading: 'Součástí je',
     consentLabel:
       'Přijímám obchodní podmínky a beru na vědomí zásady ochrany osobních údajů. Výslovně souhlasím s okamžitým dodáním digitálního obsahu před uplynutím lhůty pro odstoupení a beru na vědomí, že jeho úplným dodáním ztrácím právo odstoupit dle § 1837 písm. l) OZ.',
-    payCta: 'Zaplatit a stáhnout PDF',
-    payCtaWithPrice: 'Zaplatit a stáhnout',
+    payCta: 'Objednávka zavazující k platbě',
+    payCtaWithPrice: 'Objednávka zavazující k platbě',
     processing: 'Přesměrování na platbu…',
     secureNote: 'Platba probíhá bezpečně přes Stripe. Údaje karty se na naše servery nedostávají.',
     footerSecure: 'Zabezpečená platba přes Stripe · PDF ihned · bez registrace',
@@ -748,8 +748,8 @@ export const LEASE_FORM_EN: LeaseFormUi = {
     includedHeading: 'Included',
     consentLabel:
       'I accept the Terms and acknowledge the Privacy Policy. I expressly consent to immediate delivery of the digital content before the withdrawal period ends and acknowledge that, once fully delivered, I lose the right of withdrawal under § 1837(l) of the Czech Civil Code.',
-    payCta: 'Pay and download PDF',
-    payCtaWithPrice: 'Pay and download',
+    payCta: 'Order with obligation to pay',
+    payCtaWithPrice: 'Order with obligation to pay',
     processing: 'Redirecting to payment…',
     secureNote: 'Payment is processed securely by Stripe. Card details are not stored on our servers.',
     footerSecure: 'Secure payment via Stripe · PDF available immediately',

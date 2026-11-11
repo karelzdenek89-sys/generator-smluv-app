@@ -207,7 +207,7 @@ export default function GdprPage() {
             </p>
           </section>
 
-          <section>
+          <section id="cookies" className="scroll-mt-24">
             <h2 className="text-amber-500 font-black uppercase text-xs tracking-widest mb-4">
               6. Cookies a analytika
             </h2>

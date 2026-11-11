@@ -256,7 +256,7 @@ export default function UznanidluhuPage() {
               <ContractPreview sections={previewSections} title="Uznání dluhu" />
             )}
             <div className={cardClass}>
-              <div className="builder-kicker mb-4">Analýza smlouvy</div>
+              <div className="builder-kicker mb-4">Analýza dokumentu</div>
               <div className="flex items-center gap-4 mb-4">
                 <div className={`text-5xl font-black ${scoreColor}`}>{risk.score}</div>
                 <div><div className={`font-bold ${scoreColor}`}>{risk.label}</div><div className="text-xs text-slate-400">ze 100 bodů</div></div>
@@ -285,7 +285,7 @@ export default function UznanidluhuPage() {
                   onClick={() => setShowPreviewModal(true)}
                   className="w-full py-5 bg-gradient-to-r from-amber-500 to-amber-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
                 >
-                  Vygenerovat smlouvu →
+                  Vygenerovat uznání dluhu →
                 </button>
 
                 <p className="mt-3 text-center text-[11px] text-slate-400">

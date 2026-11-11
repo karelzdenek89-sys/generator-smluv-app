@@ -200,7 +200,7 @@ test('case workspace: stage, reminders, follow-up document checkout and access h
   await page.getByRole('button', { name: /Předávací protokol k dílu/ }).first().click();
   await expect(page.getByRole('heading', { name: 'Předávací protokol k dílu' })).toBeVisible();
   await expect(page.getByText('§ 2604 OZ')).toBeVisible();
-  const payButton = page.getByRole('button', { name: /Připravit a zaplatit 99 Kč/ });
+  const payButton = page.getByRole('button', { name: /Objednávka zavazující k platbě — 99 Kč/ });
   await expect(payButton).toBeDisabled();
   await page.getByLabel('Objednatel (jméno / název) *').fill('Jan Novák');
   await page.getByLabel('Zhotovitel (jméno / název) *').fill('Petr Dvořák');

@@ -72,6 +72,7 @@ export function buildLlmsTxt(): string {
     ...tools,
     `- [Blog](${url('/blog')}): průvodci k českým smlouvám a pracovnímu právu 2026.`,
     `- [Změny 2027](${url('/zmeny-2027')}): přehled legislativních změn se stavem a zdrojem.`,
+    `- [Ceník](${url('/cenik')}): všechny ceny dokumentů, balíčků a doplňků na jednom místě.`,
     `- [FAQ](${url('/faq')}): časté otázky ke službě, platbě a stažení.`,
     `- [Slovník](${url('/slovnik')}): vysvětlení právních pojmů.`,
     '',

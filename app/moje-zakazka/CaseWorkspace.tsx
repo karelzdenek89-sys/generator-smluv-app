@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } fro
 import { useSearchParams } from 'next/navigation';
 import { trackEvent } from '@/lib/analytics';
 import { createCheckoutAuthorization } from '@/lib/checkout-authorization';
+import { SELLER_IDENTIFICATION } from '@/lib/legal/seller';
 import { forgetCaseAccess, resolveCaseAccessFromLocation } from '@/lib/cases/client-access';
 import { forgetCaseHubAccess } from '@/lib/cases/hub-client-access';
 import {
@@ -726,7 +727,7 @@ function DocumentRow({
             onClick={() => void onPay(createCheckoutAuthorization('').consent)}
             className="site-button-secondary text-xs disabled:opacity-40"
           >
-            Dokončit platbu
+            Objednávka zavazující k platbě
           </button>
         </div>
       ) : null}
@@ -828,10 +829,15 @@ function DocumentForm({
 
       <div className="mt-5 flex flex-wrap gap-3">
         <button type="submit" disabled={busy || (!included && !consent)} className="site-button-primary disabled:opacity-40">
-          {included ? 'Vytvořit dokument' : `Připravit a zaplatit ${priceLabel}`}
+          {included ? 'Vytvořit dokument' : `Objednávka zavazující k platbě — ${priceLabel}`}
         </button>
         <button type="button" onClick={onCancel} className="site-button-secondary">Zrušit</button>
       </div>
+      {!included ? (
+        <p className="mt-3 text-xs leading-6 text-slate-400">
+          Cena je konečná, prodávající není plátcem DPH. Prodávající: {SELLER_IDENTIFICATION}.
+        </p>
+      ) : null}
       <p className="mt-3 text-xs leading-6 text-slate-400">Údaje dokumentu se ukládají v zakázce. Jména stran se předvyplní u dalšího dokumentu.</p>
     </form>
   );

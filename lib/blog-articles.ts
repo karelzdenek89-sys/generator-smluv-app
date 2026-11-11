@@ -105,7 +105,7 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
     href: '/blog/zkusebni-doba-2026',
   },
   {
-    slug: 'prodej-auta-prodavjici-2026',
+    slug: 'prodej-auta-prodavajici-2026',
     title: 'Prodej auta 2026: checklist pro prodávajícího',
     excerpt:
       'Co připravit před prodejem vozidla, co přesně zachytit v kupní smlouvě a předávacím protokolu a jak navázat na zápis změny vlastníka.',
@@ -113,7 +113,7 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
     readTime: '8 min',
     date: '9. července 2026',
     cluster: 'vehicle',
-    href: '/blog/prodej-auta-prodavjici-2026',
+    href: '/blog/prodej-auta-prodavajici-2026',
   },
   {
     slug: 'najem-na-dobu-urcitou-neurcitou-2026',

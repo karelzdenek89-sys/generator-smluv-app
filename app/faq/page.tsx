@@ -3,9 +3,18 @@ import Link from 'next/link';
 import { breadcrumbSchema, faqPageSchema, jsonLdScript, type FaqItem } from '@/lib/schemas';
 import { getMonetizationPolicy } from '@/lib/monetization-policy';
 import { SITE_URL } from '@/lib/seo/site';
+import { isThematicPackageAvailable, THEMATIC_PACKAGE_CONFIG } from '@/lib/packages';
+import { CHECKOUT_ADDONS } from '@/lib/checkout-addons';
 
 const BASE_URL = SITE_URL;
 const FREE_BASIC_DPP = getMonetizationPolicy('dpp', 'cs').mode === 'free_experiment';
+// Ceny se berou z konfigurace pokladny, aby FAQ nevynechávalo aktivní nabídku.
+const WORK_ORDER_PACKAGE = isThematicPackageAvailable('work_order')
+  ? `, balíček ${THEMATIC_PACKAGE_CONFIG.work_order.title} ${THEMATIC_PACKAGE_CONFIG.work_order.priceLabel}`
+  : '';
+const ADDON_PRICES = CHECKOUT_ADDONS.map((addon) => addon.priceCzk);
+const ADDONS_RANGE = `Volitelné doplňky v pokladně stojí ${Math.min(...ADDON_PRICES)}–${Math.max(...ADDON_PRICES)} Kč (např. editovatelná DOCX verze, archiv 90 dní nebo předávací protokol).`;
+const PRICE_FOOTER = `${ADDONS_RANGE} Ceny jsou konečné, provozovatel není plátcem DPH; žádné předplatné ani skryté poplatky. Kompletní přehled je v ceníku na ${SITE_URL}/cenik.`;
 
 export const metadata: Metadata = {
   title: 'Časté dotazy (FAQ) 2026',
@@ -39,8 +48,8 @@ const FAQ_GROUPS: FaqGroup[] = [
       {
         question: 'Kolik dokument stojí?',
         answer: FREE_BASIC_DPP
-          ? 'Základní DPP je v aktivním experimentu zdarma; rozšířená DPP stojí 199 Kč. U ostatních typů stojí Základní dokument 99 Kč, Rozšířený dokument 199 Kč, tematický balíček 299 Kč a personální balíček Zaměstnavatel Start 2026 599 Kč. Bez předplatného a skrytých poplatků.'
-          : 'Základní dokument 99 Kč, Rozšířený dokument s ochrannými klauzulemi 199 Kč, tematický balíček pro pronájem nebo prodej vozidla 299 Kč a personální balíček Zaměstnavatel Start 2026 za 599 Kč. Cena je konečná, žádné předplatné ani skryté poplatky.',
+          ? 'Základní DPP je v aktivním experimentu zdarma; rozšířená DPP stojí 199 Kč. U ostatních typů stojí Základní dokument 99 Kč, Rozšířený dokument 199 Kč, tematický balíček 299 Kč' + WORK_ORDER_PACKAGE + ' a personální balíček Zaměstnavatel Start 2026 599 Kč. ' + PRICE_FOOTER
+          : 'Základní dokument 99 Kč, Rozšířený dokument s ochrannými klauzulemi 199 Kč, tematický balíček pro pronájem nebo prodej vozidla 299 Kč' + WORK_ORDER_PACKAGE + ' a personální balíček Zaměstnavatel Start 2026 za 599 Kč. ' + PRICE_FOOTER,
       },
       {
         question: 'Jak probíhá platba?',
@@ -50,7 +59,7 @@ const FAQ_GROUPS: FaqGroup[] = [
       {
         question: 'Mohu dostat fakturu?',
         answer:
-          'Ano. Po platbě vám odešleme doklad na uvedený e-mail. Provozovatel není plátcem DPH; na dokladu lze uvést firemní IČO.',
+          'Ano. Nakupujete-li na firmu, vyplňte na platební stránce Stripe nepovinná pole IČO a název firmy. Po platbě obdržíte e-mailem potvrzení o zaplacení; doklad s firemními údaji vystavíme na požádání — stačí napsat na info@smlouvahned.cz e-mail použitý při objednávce. Provozovatel není plátcem DPH, doklad proto DPH neobsahuje.',
       },
       {
         question: 'Vrácení peněz?',
@@ -176,7 +185,10 @@ export default function FaqPage() {
           </h1>
           <p className="text-slate-400 text-base leading-relaxed max-w-2xl">
             Odpovědi na nejčastější otázky o SmlouvaHned — ceny, právní platnost, technika i GDPR.
-            Obsah je aktuální pro rok 2026.
+            Obsah je aktuální pro rok 2026. Všechny ceny přehledně najdete v{' '}
+            <Link href="/cenik" className="text-amber-400 hover:text-amber-300 underline underline-offset-2">
+              ceníku
+            </Link>.
             Pokud nenajdete odpověď, napište na{' '}
             <a href="mailto:info@smlouvahned.cz" className="text-amber-400 hover:text-amber-300 underline underline-offset-2">
               info@smlouvahned.cz
@@ -215,7 +227,7 @@ export default function FaqPage() {
             Nenašli jste odpověď?
           </h2>
           <p className="mx-auto mb-6 max-w-sm text-sm leading-relaxed text-slate-400">
-            Napište nám — odpovídáme zpravidla do několika hodin v pracovní dny.
+            Napište nám — odpovídáme zpravidla do 2 pracovních dnů.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
