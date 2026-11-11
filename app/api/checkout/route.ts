@@ -14,7 +14,9 @@ import { randomUUID, timingSafeEqual } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { getClientIp, isBoundedJsonObject, readFirstPartyJson } from '@/lib/api-security';
 import { redis } from '@/lib/redis';
+import type Stripe from 'stripe';
 import { stripe } from '@/lib/stripe';
+import { getCompanyCustomFields, isCompanyFieldsRejection } from '@/lib/checkout-company-fields';
 import {
   getEffectivePriceBand,
   getStripePriceIdForCheckout,
@@ -472,6 +474,7 @@ export async function POST(req: Request) {
       customer_email: deliveryEmail,
       locale:         (lang === 'cs' ? 'cs' : 'en') as 'cs' | 'en',
       line_items:     lineItems,
+      custom_fields:  getCompanyCustomFields(lang),
       success_url:    `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}${langQuery}${successTokenFragment}`,
       cancel_url:     `${baseUrl}${cancelPath}?${cancelParams.toString()}#formular`,
       metadata: {
@@ -491,7 +494,16 @@ export async function POST(req: Request) {
     // Bez payment_method_types → Stripe zobrazí vše povolené v Dashboardu
     // (Google Pay, Apple Pay, karty atd.)
     // automatic_payment_methods patří jen do PaymentIntent API, ne Checkout Sessions
-    const session = await stripe.checkout.sessions.create(sessionParams);
+    let session: Stripe.Checkout.Session;
+    try {
+      session = await stripe.checkout.sessions.create(sessionParams);
+    } catch (error) {
+      if (!isCompanyFieldsRejection(error)) throw error;
+      console.warn('[checkout] Stripe rejected optional company fields; retrying without them:', error);
+      const { custom_fields: _companyFields, ...paramsWithoutCompanyFields } = sessionParams;
+      void _companyFields;
+      session = await stripe.checkout.sessions.create(paramsWithoutCompanyFields);
+    }
 
     if (!session.url) throw new Error('Stripe nevrátil URL pro checkout.');
 

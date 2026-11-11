@@ -594,7 +594,7 @@ export const PORTAL_TOOLS: readonly PortalTool[] = [
     sources: [OZ, { label: 'Zákon č. 56/2001 Sb. — e-Sbírka', href: 'https://www.e-sbirka.cz/sb/2001/56' }],
     primaryDocument: { href: '/auto', label: 'Vytvořit kupní smlouvu na vozidlo' },
     related: [
-      { href: '/blog/prodej-auta-prodavjici-2026', label: 'Prodej auta z pohledu prodávajícího' },
+      { href: '/blog/prodej-auta-prodavajici-2026', label: 'Prodej auta z pohledu prodávajícího' },
       { href: '/blog/doklady-pri-prodeji-auta-2026', label: 'Doklady při prodeji auta' },
       { href: '/balicek-prodej-vozidla', label: 'Balíček pro prodej vozidla' },
     ],

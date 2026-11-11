@@ -103,6 +103,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...LEGAL_AUDIENCE_LIST.map((hub) => staticPage(hub.href, 0.85, 'weekly')),
     staticPage('/o-projektu', 0.6, 'yearly'),
     staticPage('/faq', 0.7),
+    staticPage('/cenik', 0.7),
     staticPage('/slovnik', 0.6),
     staticPage('/kontakt', 0.5, 'yearly'),
     staticPage('/partneri', 0.4, 'yearly'),

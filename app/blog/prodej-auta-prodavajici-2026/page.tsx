@@ -2,7 +2,7 @@ import ArticlePageLayout from '@/app/components/blog/ArticlePageLayout';
 import ArticleInlineCta from '@/app/components/blog/ArticleInlineCta';
 import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 
-export const metadata = blogArticlePageMetadata('prodej-auta-prodavjici-2026');
+export const metadata = blogArticlePageMetadata('prodej-auta-prodavajici-2026');
 
 export default function ProdejAutaProdavajici2026Page() {
   return (
@@ -12,7 +12,7 @@ export default function ProdejAutaProdavajici2026Page() {
       dateTime="2026-07-09"
       dateLabel="9. července 2026"
       breadcrumbLabel="Prodej auta pro prodávajícího"
-      slug="prodej-auta-prodavjici-2026"
+      slug="prodej-auta-prodavajici-2026"
       title="Prodej auta 2026: checklist pro prodávajícího před podpisem a přepisem"
       intro="Dobře připravený prodej auta není jen o podpisu kupní smlouvy. Prodávající potřebuje předem sladit údaje o vozidle, platební podmínky, předání klíčů a dokladů i následný zápis změny vlastníka. Písemný záznam chrání obě strany před nedorozuměním."
       toc={[
@@ -81,7 +81,7 @@ export default function ProdejAutaProdavajici2026Page() {
         buttonLabel="Pokračovat ke kupní smlouvě"
         href="/auto"
         variant="subtle"
-        articleSlug="prodej-auta-prodavjici-2026"
+        articleSlug="prodej-auta-prodavajici-2026"
       />
 
       <section id="predani" className="mb-12 scroll-mt-6">

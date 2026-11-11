@@ -39,7 +39,7 @@ const CS: WhyNotGenericCopy = {
   },
   bullets: [
     'Stažený Word nebo PDF nezná vaše jméno, cenu ani termíny — musíte vše dopisovat ručně.',
-    'U generického textu snadno přehlédnete kauci, předání vozidla nebo rozsah mlčenlivosti.',
+    'U obecného textu snadno přehlédnete ujednání, na kterém ve vaší situaci nejvíc záleží.',
     'Tady nejdřív doplníte údaje, projdete náhled a PDF odemknete až po dokončení objednávky.',
   ],
 };
@@ -70,7 +70,7 @@ const EN: WhyNotGenericCopy = {
   },
   bullets: [
     'A downloaded Word or PDF file does not know your name, price or dates — you must edit everything manually.',
-    'Generic text makes it easy to miss the deposit, vehicle handover or scope of confidentiality.',
+    'Generic text makes it easy to miss the clause that matters most in your situation.',
     'Here you fill in the form first, review the preview, and unlock the PDF only after checkout.',
   ],
 };
@@ -101,7 +101,7 @@ const UA: WhyNotGenericCopy = {
   },
   bullets: [
     'Завантажений Word або PDF не знає вашого імені, ціни чи термінів — усе дописуєте вручну.',
-    'У загальному тексті легко пропустити заставу, передачу авто чи обсяг конфіденційності.',
+    'У загальному тексті легко пропустити положення, яке у вашій ситуації найважливіше.',
     'Спочатку заповнюєте форму, переглядаєте попередній перегляд і відкриваєте PDF лише після оплати.',
   ],
 };

@@ -702,8 +702,15 @@ const carUi = (locale: AppLocale) =>
     { en: CAR_LABELS_EN, ua: CAR_LABELS_UA },
   );
 
-const poaUi = (locale: AppLocale) =>
-  genericUi(
+const POA_GENERATE_CTA: Record<AppLocale, string> = {
+  cs: 'Vygenerovat plnou moc →',
+  en: 'Generate power of attorney →',
+  ua: 'Згенерувати довіреність →',
+};
+
+// Plná moc není smlouva: tlačítko nesmí převzít obecné „Generate contract“.
+const poaUi = (locale: AppLocale): ExpatBuilderFormUi => {
+  const ui = genericUi(
     'power_of_attorney',
     locale,
     {
@@ -722,7 +729,7 @@ const poaUi = (locale: AppLocale) =>
       form: {
         title: 'Vyplňte údaje dokumentu',
         requiredHint: 'Povinná pole *',
-        generate: 'Vygenerovat smlouvu →',
+        generate: 'Vygenerovat plnou moc →',
         previewHint: 'Náhled před platbou',
         analysisTitle: 'Analýza dokumentu',
         scoreOf: 'ze 100',
@@ -754,6 +761,8 @@ const poaUi = (locale: AppLocale) =>
     },
     { en: POA_LABELS_EN, ua: POA_LABELS_UA },
   );
+  return { ...ui, form: { ...ui.form, generate: POA_GENERATE_CTA[locale] } };
+};
 
 const UI_GETTERS: Record<Exclude<ExpatContractType, 'lease'>, (locale: AppLocale) => ExpatBuilderFormUi> = {
   employment: employmentUi,

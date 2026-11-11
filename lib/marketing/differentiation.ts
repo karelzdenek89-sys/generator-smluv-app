@@ -100,7 +100,7 @@ export const NOT_A_LAW_FIRM_POINTS = [
 
 export const WHY_NOT_GENERIC_BULLETS = [
   'Stažený Word nebo PDF nezná vaše jméno, cenu ani termíny — musíte vše dopisovat ručně.',
-  'U generického textu snadno přehlédnete kauci, předání vozidla nebo rozsah mlčenlivosti.',
+  'U obecného textu snadno přehlédnete ujednání, na kterém ve vaší situaci nejvíc záleží.',
   'Tady nejdřív doplníte údaje, projdete náhled a PDF odemknete až po dokončení objednávky.',
 ] as const;
 

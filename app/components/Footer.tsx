@@ -7,12 +7,15 @@ import NewsletterSignup from '@/app/components/NewsletterSignup';
 import { SEO_LANDINGS, FOOTER_GROUPS } from '@/lib/internal-links';
 import { getLocaleFromPathname, normalizeLocale, type AppLocale } from '@/lib/locale';
 import { privacyHref, termsHref } from '@/lib/legal/links';
+import { SELLER } from '@/lib/legal/seller';
 
 type FooterCopy = {
   softwareTool: string;
   tagline: string;
   operator: string;
+  address: string;
   navHeading: string;
+  navPricing: string;
   navGlossary: string;
   navFaq: string;
   navAbout: string;
@@ -31,7 +34,9 @@ const FOOTER_COPY: Record<AppLocale, FooterCopy> = {
     softwareTool: 'Softwarový nástroj',
     tagline: 'Standardizované smluvní dokumenty z údajů, které zadáte ve formuláři.',
     operator: 'Provozovatel',
+    address: 'Místo podnikání',
     navHeading: 'Navigace',
+    navPricing: 'Ceník',
     navGlossary: 'Slovník pojmů',
     navFaq: 'Časté dotazy',
     navAbout: 'O projektu',
@@ -49,7 +54,9 @@ const FOOTER_COPY: Record<AppLocale, FooterCopy> = {
     softwareTool: 'Software tool',
     tagline: 'Standardized contract documents built from the details you enter in the form.',
     operator: 'Operator',
+    address: 'Place of business',
     navHeading: 'Navigation',
+    navPricing: 'Pricing',
     navGlossary: 'Glossary',
     navFaq: 'FAQ',
     navAbout: 'About',
@@ -67,7 +74,9 @@ const FOOTER_COPY: Record<AppLocale, FooterCopy> = {
     softwareTool: 'Програмний інструмент',
     tagline: 'Стандартизовані договірні документи з даних, які ви вводите у формі.',
     operator: 'Оператор',
+    address: 'Місце діяльності',
     navHeading: 'Навігація',
+    navPricing: 'Ціни',
     navGlossary: 'Словник термінів',
     navFaq: 'Часті запитання',
     navAbout: 'Про проєкт',
@@ -124,11 +133,12 @@ function FooterContent({
               {t.tagline}
             </p>
             <div className="mt-3 space-y-0.5 text-[11px] text-slate-400">
-              <p>{t.operator}: Karel Zdeněk</p>
-              <p>IČO: 23660295</p>
+              <p>{t.operator}: {SELLER.name}</p>
+              <p>IČO: {SELLER.ico}</p>
+              <p>{t.address}: {SELLER.address}</p>
               <p>
-                <a href="mailto:info@smlouvahned.cz" className="hover:text-[#c9a852] transition-colors">
-                  info@smlouvahned.cz
+                <a href={`mailto:${SELLER.email}`} className="hover:text-[#c9a852] transition-colors">
+                  {SELLER.email}
                 </a>
               </p>
             </div>
@@ -163,6 +173,7 @@ function FooterContent({
                   Expat guides (EN / UA)
                 </Link>
                 <Link href="/slovnik" className="hover:text-white transition-colors">{t.navGlossary}</Link>
+                {locale === 'cs' ? <Link href="/cenik" className="hover:text-white transition-colors">{t.navPricing}</Link> : null}
                 <Link href="/faq" className="hover:text-white transition-colors">{t.navFaq}</Link>
                 <Link href="/o-projektu" className="hover:text-white transition-colors">{t.navAbout}</Link>
                 <Link href="/kontakt" className="hover:text-white transition-colors">{t.navContact}</Link>
