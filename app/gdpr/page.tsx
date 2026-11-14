@@ -2,6 +2,10 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { SITE_URL } from '@/lib/seo/site';
 import AnalyticsConsentSettings from '@/app/components/analytics/AnalyticsConsentSettings';
+import { isGoogleAnalyticsConfigured } from '@/lib/google-analytics';
+
+// Odstavce o Google Analytics 4 se zobrazí jen při nastaveném NEXT_PUBLIC_GA_MEASUREMENT_ID.
+const googleAnalyticsEnabled = isGoogleAnalyticsConfigured();
 
 const canonicalUrl = `${SITE_URL}/gdpr`;
 
@@ -163,6 +167,9 @@ export default function GdprPage() {
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Upstash (Redis)</strong> — údaje zakázky (Moje zakázka) po dobu 12 měsíců od poslední změny (uzavřená zakázka 6 měsíců), hash návratových tokenů a plán připomínek; poptávky navazujících služeb po dobu 6 měsíců.</span></li>
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Stripe, Inc.</strong> — také platba za navazující dokument zakázky (99 Kč); Stripe obdrží váš e-mail a název dokumentu, nikoli jeho obsah.</span></li>
               <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Vercel</strong> — hosting platformy. Údaje jsou zpracovávány v rámci EHP nebo za odpovídajících záruk.</span></li>
+              {googleAnalyticsEnabled ? (
+                <li className="flex gap-3"><span className="text-amber-400 font-bold flex-shrink-0">→</span><span><strong className="text-white">Google Ireland Limited / Google LLC</strong> — statistika návštěvnosti přes Google Analytics&nbsp;4, pouze po vašem souhlasu s&nbsp;analytikou.</span></li>
+              ) : null}
             </ul>
             <p className="mt-3 text-xs text-slate-400">
               Navazující partner není příjemcem obsahu smlouvy ani kontaktních údajů automaticky. Nabídka se vybírá z minimalizovaných kategorií. Teprve vědomým kliknutím uživatel přejde na web konkrétního poskytovatele; případné předání kontaktních údajů vyžaduje samostatný, konkrétní souhlas pro daného partnera.
@@ -180,6 +187,12 @@ export default function GdprPage() {
             <p>
               Stripe, Inc. a Resend sídlí v USA. Předávání je zabezpečeno prostřednictvím standardních smluvních doložek (SCC) schválených Evropskou komisí a doplňkových technických opatření. Upstash a Vercel umožňují volbu regionu EU (platí pro naše nasazení).
             </p>
+            {googleAnalyticsEnabled ? (
+              <p className="mt-3">
+                Při souhlasu s&nbsp;analytikou mohou být údaje z&nbsp;Google Analytics&nbsp;4 předány společnosti Google LLC do USA.
+                Google LLC je certifikována podle rámce EU–USA pro ochranu osobních údajů (Data Privacy Framework).
+              </p>
+            ) : null}
           </section>
 
           <section>
@@ -221,6 +234,18 @@ export default function GdprPage() {
               checkout) odesíláme pouze po vašem volitelném souhlasu a bez propojení s platební kartou; dokončené
               platby eviduje až server po potvrzení Stripe.
             </p>
+            {googleAnalyticsEnabled ? (
+              <p className="mt-3">
+                Pouze pokud v&nbsp;liště cookies zvolíte „Přijmout analytiku“, načteme také{' '}
+                <strong className="text-white">Google Analytics&nbsp;4</strong> (Google Ireland Limited). Před souhlasem
+                se skript Google vůbec nestahuje. Po souhlasu ukládá do prohlížeče cookies <code>_ga</code> a&nbsp;<code>_ga_*</code>{' '}
+                (platnost až 2&nbsp;roky) a&nbsp;měří zobrazení stránek, zdroj návštěvy a&nbsp;základní údaje o&nbsp;zařízení. Slouží
+                nám ke statistice návštěvnosti a&nbsp;k&nbsp;propojení s&nbsp;Google Search Console. Google signály, reklamní funkce ani
+                personalizaci reklam nezapínáme. Na stránkách po zaplacení, ke stažení dokumentu a&nbsp;v&nbsp;zákaznickém účtu se
+                Google Analytics nespouští. Souhlas můžete kdykoli odvolat odkazem „Nastavení cookies“ v&nbsp;patičce nebo níže;
+                po odvolání měření zastavíme a&nbsp;cookies <code>_ga</code> z&nbsp;prohlížeče smažeme.
+              </p>
+            ) : null}
             <p className="mt-3">
               Bez ohledu na tuto volbu může server evidovat nezbytné agregované bezpečnostní a provozní signály
               odmítnutých nebo neplatných požadavků, aby bylo možné chránit checkout a odhalit jeho výpadek. Tyto

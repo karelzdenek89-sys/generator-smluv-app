@@ -1,3 +1,5 @@
+import { isGoogleAnalyticsConfigured } from './google-analytics';
+
 export type TrafficAttribution = {
   source: string;
   label: string;
@@ -169,6 +171,29 @@ export function isProductAnalyticsConsentGranted() {
   return getProductAnalyticsConsent() === 'granted';
 }
 
+/**
+ * Souhlas s Google Analytics 4 patří do téže kategorie „analytika“, ale
+ * eviduje se zvlášť a s vlastní verzí: souhlas udělený dřív v liště, která
+ * Google nezmiňovala (jen `…_consent_v1`), se na GA nevztahuje. Takový
+ * návštěvník proto po zapnutí GA dostane lištu znovu.
+ */
+export const GOOGLE_ANALYTICS_CONSENT_STORAGE_KEY = 'sh_ga4_consent_v1';
+
+export function getGoogleAnalyticsConsent(): ProductAnalyticsConsent {
+  const product = getProductAnalyticsConsent();
+  if (product !== 'granted') return product;
+  try {
+    return localStorage.getItem(GOOGLE_ANALYTICS_CONSENT_STORAGE_KEY) === 'granted' ? 'granted' : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Platný stav souhlasu s analytikou pro lištu a nastavení podle toho, zda je GA zapnuté. */
+export function getAnalyticsConsent(): ProductAnalyticsConsent {
+  return isGoogleAnalyticsConfigured() ? getGoogleAnalyticsConsent() : getProductAnalyticsConsent();
+}
+
 export function setProductAnalyticsConsent(granted: boolean) {
   if (typeof window === 'undefined') return;
   try {
@@ -176,11 +201,38 @@ export function setProductAnalyticsConsent(granted: boolean) {
       PRODUCT_ANALYTICS_CONSENT_STORAGE_KEY,
       granted ? 'granted' : 'denied',
     );
+    // Souhlas s GA zapisujeme jen tehdy, když lišta Google skutečně uváděla.
+    if (granted && isGoogleAnalyticsConfigured()) {
+      localStorage.setItem(GOOGLE_ANALYTICS_CONSENT_STORAGE_KEY, 'granted');
+    } else if (!granted) {
+      localStorage.removeItem(GOOGLE_ANALYTICS_CONSENT_STORAGE_KEY);
+    }
   } catch {
     // Bez trvalé preference vlastní produktovou analytiku nespouštíme.
   }
   if (!granted) clearTrafficAttribution();
   window.dispatchEvent(new Event(PRODUCT_ANALYTICS_CONSENT_EVENT));
+}
+
+/** Volá callback při každé změně souhlasu (udělení i odvolání). */
+export function subscribeToAnalyticsConsentChange(callback: () => void) {
+  if (typeof window === 'undefined') return () => undefined;
+  window.addEventListener(PRODUCT_ANALYTICS_CONSENT_EVENT, callback);
+  return () => window.removeEventListener(PRODUCT_ANALYTICS_CONSENT_EVENT, callback);
+}
+
+const OPEN_COOKIE_SETTINGS_EVENT = 'sh:open-cookie-settings';
+
+/** Znovu otevře lištu cookies (odkaz „Nastavení cookies“ v patičce). */
+export function openCookieSettings() {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(new Event(OPEN_COOKIE_SETTINGS_EVENT));
+}
+
+export function subscribeToCookieSettingsRequest(callback: () => void) {
+  if (typeof window === 'undefined') return () => undefined;
+  window.addEventListener(OPEN_COOKIE_SETTINGS_EVENT, callback);
+  return () => window.removeEventListener(OPEN_COOKIE_SETTINGS_EVENT, callback);
 }
 
 export function subscribeToProductAnalyticsConsent(callback: () => void) {

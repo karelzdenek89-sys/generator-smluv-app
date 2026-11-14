@@ -2,6 +2,7 @@ import path from 'path';
 import type { NextConfig } from 'next';
 import { CONTENT_CONSOLIDATION_REDIRECTS } from './lib/seo/content-consolidation-redirects';
 import { LEGACY_EXPAT_BLOG_REDIRECTS } from './lib/seo/legacy-expat-blog-redirects';
+import { GOOGLE_ANALYTICS_CSP } from './lib/google-analytics';
 
 const isDev = process.env.NODE_ENV !== 'production';
 
@@ -27,6 +28,8 @@ const securityHeaders = [
         'https://js.stripe.com',
         'https://checkout.stripe.com',
         'https://va.vercel-scripts.com',
+        // GA4 jen při nastaveném NEXT_PUBLIC_GA_MEASUREMENT_ID (jinak prázdné pole).
+        ...GOOGLE_ANALYTICS_CSP.scriptSrc,
       ].filter(Boolean).join(' '),
       [
         "style-src 'self'",
@@ -35,8 +38,14 @@ const securityHeaders = [
       ].filter(Boolean).join(' '),
       "style-src-attr 'unsafe-inline'",
       "font-src 'self' https://fonts.gstatic.com",
-      "img-src 'self' data: https://www.smlouvahned.cz https://smlouvahned.cz https://*.stripe.com",
-      "connect-src 'self' https://api.stripe.com https://checkout.stripe.com https://*.upstash.io https://api.resend.com https://vitals.vercel-insights.com",
+      [
+        "img-src 'self' data: https://www.smlouvahned.cz https://smlouvahned.cz https://*.stripe.com",
+        ...GOOGLE_ANALYTICS_CSP.imgSrc,
+      ].join(' '),
+      [
+        "connect-src 'self' https://api.stripe.com https://checkout.stripe.com https://*.upstash.io https://api.resend.com https://vitals.vercel-insights.com",
+        ...GOOGLE_ANALYTICS_CSP.connectSrc,
+      ].join(' '),
       'frame-src https://js.stripe.com https://hooks.stripe.com https://checkout.stripe.com',
       "object-src 'none'",
       "script-src-attr 'none'",
