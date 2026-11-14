@@ -24,14 +24,14 @@ test('first-party product analytics stays off until explicit opt-in and can be r
   expect(await page.evaluate(() => sessionStorage.getItem('sh_traffic_attribution'))).toBeNull();
   expect(analyticsPayloads).toHaveLength(0);
 
-  await page.getByRole('button', { name: 'Jen nezbytné' }).click();
+  await page.getByRole('button', { name: 'Odmítnout' }).click();
   await expect(page.getByRole('dialog', { name: 'Informace o cookies' })).toBeHidden();
   expect(await page.evaluate(() => localStorage.getItem('sh_product_analytics_consent_v1'))).toBe('denied');
   expect(await page.evaluate(() => sessionStorage.getItem('sh_traffic_attribution'))).toBeNull();
   expect(analyticsPayloads).toHaveLength(0);
 
   await page.goto('/gdpr');
-  await page.getByRole('button', { name: 'Povolit měření' }).click();
+  await page.getByRole('button', { name: 'Přijmout analytiku' }).click();
   await page.goto('/blog/dpp-dohoda-provedeni-prace');
   await expect.poll(() => analyticsPayloads.some((payload) => payload.event === 'blog_article_view')).toBeTruthy();
   expect(await page.evaluate(() => {
@@ -40,7 +40,7 @@ test('first-party product analytics stays off until explicit opt-in and can be r
   })).toBe('blog_article');
 
   await page.goto('/gdpr');
-  await page.getByRole('button', { name: 'Jen nezbytné' }).click();
+  await page.getByRole('button', { name: 'Odmítnout' }).click();
   expect(await page.evaluate(() => sessionStorage.getItem('sh_traffic_attribution'))).toBeNull();
 });
 
