@@ -6,6 +6,8 @@ import CookiesBanner from '@/app/components/CookiesBanner';
 import Footer from '@/app/components/Footer';
 import RouteChrome from '@/app/components/RouteChrome';
 import SiteAnalytics from '@/app/components/SiteAnalytics';
+import GoogleAnalytics from '@/app/components/analytics/GoogleAnalytics';
+import { GA_MEASUREMENT_ID } from '@/lib/google-analytics';
 import { OG_IMAGE_PATH, SITE_URL } from '@/lib/seo/site';
 
 const inter = Inter({
@@ -96,6 +98,7 @@ export default function RootLayout({
         <Footer />
         <CookiesBanner />
         <SiteAnalytics />
+        {GA_MEASUREMENT_ID ? <GoogleAnalytics measurementId={GA_MEASUREMENT_ID} /> : null}
       </body>
     </html>
   );

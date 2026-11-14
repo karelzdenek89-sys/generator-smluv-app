@@ -30,8 +30,8 @@ test('mobile homepage exposes the main action and a working menu without overflo
   const cta = page.getByRole('link', { name: 'Vybrat, co řeším', exact: true }).first();
   await expect(cta).toBeVisible();
   const cookieDialog = page.getByRole('dialog', { name: 'Informace o cookies' });
-  await expect(cookieDialog.getByRole('button', { name: 'Jen nezbytné' })).toBeVisible();
-  await expect(cookieDialog.getByRole('button', { name: 'Povolit měření' })).toBeVisible();
+  await expect(cookieDialog.getByRole('button', { name: 'Odmítnout' })).toBeVisible();
+  await expect(cookieDialog.getByRole('button', { name: 'Přijmout analytiku' })).toBeVisible();
   const cookieBox = await cookieDialog.boundingBox();
   expect(cookieBox).not.toBeNull();
   expect(cookieBox!.height).toBeLessThan(220);

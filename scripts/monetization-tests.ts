@@ -785,8 +785,8 @@ function testPrivacySafeRevenueAttribution() {
   assert.match(analyticsClient, /!isProductAnalyticsConsentGranted\(\)/);
   assert.match(attributionClient, /PRODUCT_ANALYTICS_CONSENT_STORAGE_KEY/);
   assert.match(attributionClient, /if \(!granted\) clearTrafficAttribution\(\)/);
-  assert.match(cookiesBanner, /Povolit měření/);
-  assert.match(cookiesBanner, /Jen nezbytné/);
+  assert.match(cookiesBanner, /Přijmout analytiku/);
+  assert.match(cookiesBanner, /Odmítnout/);
   assert.match(reporting, /MAX_STORED_ANALYTICS_EVENTS - 1/);
   assert.match(reporting, /partnerConversionsKnown/);
   assert.match(reporting, /partnerImpressions/);

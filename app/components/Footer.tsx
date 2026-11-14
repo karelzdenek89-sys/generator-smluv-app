@@ -8,6 +8,7 @@ import { SEO_LANDINGS, FOOTER_GROUPS } from '@/lib/internal-links';
 import { getLocaleFromPathname, normalizeLocale, type AppLocale } from '@/lib/locale';
 import { privacyHref, termsHref } from '@/lib/legal/links';
 import { SELLER } from '@/lib/legal/seller';
+import { openCookieSettings } from '@/lib/analytics-attribution';
 
 type FooterCopy = {
   softwareTool: string;
@@ -27,6 +28,7 @@ type FooterCopy = {
   disclaimer: string;
   lawyerDirectory: string;
   terms: string;
+  cookieSettings: string;
 };
 
 const FOOTER_COPY: Record<AppLocale, FooterCopy> = {
@@ -49,6 +51,7 @@ const FOOTER_COPY: Record<AppLocale, FooterCopy> = {
       'SmlouvaHned vytváří standardizované dokumenty z vašich vstupů; nejde o individuální právní poradenství. U sporné nebo nestandardní věci je vhodné obrátit se na advokáta — seznam na',
     lawyerDirectory: 'cak.cz',
     terms: 'Obchodní podmínky',
+    cookieSettings: 'Nastavení cookies',
   },
   en: {
     softwareTool: 'Software tool',
@@ -69,6 +72,7 @@ const FOOTER_COPY: Record<AppLocale, FooterCopy> = {
       'SmlouvaHned creates standardized documents from your inputs; it does not provide individual legal advice. For a dispute or a non-standard matter, consider consulting a lawyer — directory at',
     lawyerDirectory: 'cak.cz',
     terms: 'Terms & Conditions',
+    cookieSettings: 'Cookie settings',
   },
   ua: {
     softwareTool: 'Програмний інструмент',
@@ -89,6 +93,7 @@ const FOOTER_COPY: Record<AppLocale, FooterCopy> = {
       'SmlouvaHned створює стандартизовані документи з ваших даних; це не індивідуальна юридична консультація. Для спору або нестандартної ситуації варто звернутися до адвоката — каталог на',
     lawyerDirectory: 'cak.cz',
     terms: 'Умови використання',
+    cookieSettings: 'Налаштування cookie',
   },
 };
 
@@ -273,6 +278,13 @@ function FooterContent({
             <div className="flex flex-wrap gap-4">
               <Link href={termsHref(locale)} className="hover:text-slate-400 transition-colors">{t.terms}</Link>
               <Link href={privacyHref(locale)} className="hover:text-slate-400 transition-colors">GDPR</Link>
+              <button
+                type="button"
+                onClick={openCookieSettings}
+                className="rounded-sm text-left underline-offset-2 transition-colors hover:text-slate-300 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d8bd73] motion-reduce:transition-none"
+              >
+                {t.cookieSettings}
+              </button>
               <Link href="/sitemap.xml" className="hover:text-slate-400 transition-colors">Sitemap</Link>
             </div>
           </div>

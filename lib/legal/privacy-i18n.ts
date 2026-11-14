@@ -1,4 +1,5 @@
-import type { LegalDocument, LegalSection } from '@/lib/legal/types';
+import type { LegalBlock, LegalDocument, LegalSection } from '@/lib/legal/types';
+import { isGoogleAnalyticsConfigured } from '@/lib/google-analytics';
 
 /**
  * Zásady ochrany osobních údajů v angličtině a ukrajinštině.
@@ -9,6 +10,22 @@ import type { LegalDocument, LegalSection } from '@/lib/legal/types';
  */
 
 export const PRIVACY_VERSION = '2026-09-17';
+
+/**
+ * Odstavec o Google Analytics 4 — jen při nastaveném NEXT_PUBLIC_GA_MEASUREMENT_ID.
+ * Bez měřicího ID zůstává dokument beze změny.
+ */
+function googleAnalyticsBlocks(locale: 'en' | 'ua'): LegalBlock[] {
+  if (!isGoogleAnalyticsConfigured()) return [];
+  return [
+    {
+      kind: 'p',
+      text: locale === 'en'
+        ? 'Only if you choose “Accept analytics” in the cookie bar do we also load Google Analytics 4 (Google Ireland Limited). Before consent the Google script is not downloaded at all. After consent it stores the _ga and _ga_* cookies in your browser (valid for up to 2 years) and measures page views, the visit source and basic device data. We use it for traffic statistics and for linking with Google Search Console. Google signals, advertising features and ad personalisation are switched off. Google Analytics does not run on the post-payment, document download and customer account pages. Data may be transferred to Google LLC in the USA, which is certified under the EU–US Data Privacy Framework. You can withdraw consent at any time via the “Cookie settings” link in the footer; we then stop measuring and delete the _ga cookies from your browser.'
+        : 'Лише якщо на панелі cookie ви оберете «Прийняти аналітику», ми також завантажимо Google Analytics 4 (Google Ireland Limited). До надання згоди скрипт Google взагалі не завантажується. Після згоди він зберігає у вашому браузері файли cookie _ga та _ga_* (строк дії до 2 років) і вимірює перегляди сторінок, джерело відвідування та базові дані про пристрій. Ми використовуємо його для статистики відвідуваності та для зв’язку з Google Search Console. Сигнали Google, рекламні функції та персоналізацію реклами ми не вмикаємо. На сторінках після оплати, завантаження документа та в обліковому записі клієнта Google Analytics не запускається. Дані можуть передаватися компанії Google LLC у США, яка сертифікована за рамкою EU–US Data Privacy Framework. Згоду можна будь-коли відкликати через посилання «Налаштування cookie» у нижній частині сторінки; після цього ми припиняємо вимірювання та видаляємо файли cookie _ga з вашого браузера.',
+    },
+  ];
+}
 
 function enSections(): LegalSection[] {
   return [
@@ -208,6 +225,7 @@ function enSections(): LegalSection[] {
           text:
             'For anonymised traffic statistics we use Vercel Web Analytics (aggregated page views, without identifying a specific person). Our own product events (for example entering a form or clicking through to checkout) are sent only after your optional consent and without any link to a payment card; completed payments are recorded by the server only after Stripe confirms them.',
         },
+        ...googleAnalyticsBlocks('en'),
         {
           kind: 'p',
           text:
@@ -446,6 +464,7 @@ function uaSections(): LegalSection[] {
           text:
             'Для анонімізованої статистики відвідуваності ми використовуємо Vercel Web Analytics (агреговані перегляди сторінок, без ідентифікації конкретної особи). Власні продуктові події (наприклад, вхід у форму або клік на оплату) ми надсилаємо лише після вашої необов’язкової згоди і без пов’язання з платіжною карткою; завершені платежі сервер фіксує аж після підтвердження від Stripe.',
         },
+        ...googleAnalyticsBlocks('ua'),
         {
           kind: 'p',
           text:
