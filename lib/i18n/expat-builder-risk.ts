@@ -1,4 +1,5 @@
 import type { AppLocale } from '@/lib/locale';
+import { parseMoney } from '@/lib/money';
 import {
   getDppLegalIssues,
   getEmploymentLegalIssues,
@@ -142,9 +143,36 @@ export function dppRiskWarnings(
   }[L];
   const warnings: RiskWarning[] = [];
   if (!form.taskDescription) warnings.push({ text: m.task, level: 'high' });
-  if (!form.estimatedHours && form.remunerationType !== 'fixed') warnings.push({ text: m.hours, level: 'medium' });
+  const hoursTrimmed = String(form.estimatedHours ?? '').trim();
+  const parsedHours = Number(hoursTrimmed.replace(',', '.'));
+  if (hoursTrimmed !== '' && (!Number.isFinite(parsedHours) || parsedHours <= 0)) {
+    warnings.push({
+      text:
+        L === 'en'
+          ? 'Estimated hours must be greater than 0 (max. 300 hours/year).'
+          : L === 'ua'
+            ? 'Кількість годин має бути більшою за 0 (макс. 300 год/рік).'
+            : 'Rozsah hodin u DPP musí být kladné číslo (1 až 300 hodin ročně).',
+      level: 'high',
+    });
+  } else if (!hoursTrimmed && form.remunerationType !== 'fixed') {
+    warnings.push({ text: m.hours, level: 'medium' });
+  }
   const activePay = form.remunerationType === 'hourly' ? form.hourlyRate : form.totalRemuneration;
-  if (!activePay) warnings.push({ text: m.pay, level: 'medium' });
+  const activePayTrimmed = String(activePay ?? '').trim();
+  if (!activePayTrimmed) {
+    warnings.push({ text: m.pay, level: 'medium' });
+  } else if (!parseMoney(activePayTrimmed)) {
+    warnings.push({
+      text:
+        L === 'en'
+          ? 'Remuneration must be a positive amount complying with the 2026 minimum wage (134.40 CZK/h).'
+          : L === 'ua'
+            ? 'Винагорода має бути додатною сумою не нижче мінімальної зарплати 2026 (134,40 Kč/год).'
+            : 'Odměna musí být kladná částka odpovídající alespoň minimální mzdě 2026 (134,40 Kč/h).',
+      level: 'high',
+    });
+  }
   for (const issue of getDppLegalIssues(form)) {
     warnings.push({
       text: getLaborValidationMessage(issue, L),

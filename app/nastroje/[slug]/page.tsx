@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import TrackView from '@/app/components/analytics/TrackView';
 import ChecklistToolView from '@/app/components/portal/ChecklistToolView';
+import ExtraWorkCalculator from '@/app/components/portal/ExtraWorkCalculator';
 import WizardToolView from '@/app/components/portal/WizardToolView';
 import PortalShell, {
   LinkList,
@@ -51,9 +52,19 @@ export default async function ToolPage({ params }: RouteProps) {
   if (!tool) notFound();
   const situation = getPortalSituation(tool.situation);
   const href = `/nastroje/${tool.slug}`;
-  const faq = tool.kind === 'wizard'
-    ? tool.outcomes.slice(0, 4).map((outcome) => ({ question: outcome.title, answer: outcome.summary }))
-    : [{ question: tool.title, answer: tool.answer }];
+  const faq = tool.faq && tool.faq.length > 0
+    ? [...tool.faq]
+    : tool.kind === 'wizard'
+      ? tool.outcomes.slice(0, 4).map((outcome) => ({
+          question: outcome.title.endsWith('?') ? outcome.title : `Kdy platí závěr: ${outcome.title}?`,
+          answer: outcome.summary,
+        }))
+      : [
+          {
+            question: tool.title.endsWith('?') ? tool.title : `Co obsahuje a řeší ${tool.title.toLowerCase()}?`,
+            answer: tool.answer,
+          },
+        ];
 
   return (
     <PortalShell
@@ -78,6 +89,8 @@ export default async function ToolPage({ params }: RouteProps) {
           <p className="text-base leading-8 text-white">{tool.answer}</p>
           {tool.legalNote ? <p className="mt-3 text-xs leading-6 text-slate-400">{tool.legalNote}</p> : null}
         </PortalCard>
+
+        {tool.slug === 'pruvodce-vicepracemi' ? <ExtraWorkCalculator /> : null}
 
         {tool.kind === 'checklist' ? <ChecklistToolView tool={tool} /> : <WizardToolView tool={tool} />}
 

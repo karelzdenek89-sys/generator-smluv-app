@@ -19,7 +19,7 @@ import { SITE_URL } from '../lib/seo/site';
 import { LEGAL_AUDIENCE_LIST } from '../lib/legal/radar';
 import { ANSWER_FIRST_ARTICLES, articleHref } from '../lib/portal/articles';
 import { PORTAL_TOOLS } from '../lib/portal/tools';
-import { buildLlmsTxt } from '../lib/seo/llms-txt';
+import { buildLlmsFullTxt, buildLlmsTxt } from '../lib/seo/llms-txt';
 import { DOCUMENT_CATALOG } from '../lib/document-catalog';
 import { PRICING_TIER_CONFIG } from '../lib/pricing';
 
@@ -273,9 +273,15 @@ function assertLlmsTxt() {
   for (const [, url] of text.matchAll(/\]\((https?:[^)]+)\)/g)) {
     assertCanonicalUrl(url, 'llms.txt link');
     const path = url.slice(CANONICAL_ORIGIN.length);
-    if (['/sitemap.xml', '/obchodni-podminky', '/gdpr'].includes(path)) continue;
+    if (['/sitemap.xml', '/llms-full.txt', '/obchodni-podminky', '/gdpr'].includes(path)) continue;
     assert.ok(sitemapUrls.has(url.replace(/\/$/, '')), `llms.txt links ${url}, which is not an indexable sitemap URL`);
   }
+
+  const fullText = buildLlmsFullTxt();
+  assert.ok(fullText.length > text.length, 'llms-full.txt must expand upon llms.txt');
+  assert.ok(fullText.includes('283/2021 Sb.'), 'llms-full.txt must include Nový stavební zákon citation');
+  assert.ok(fullText.includes('235/2004 Sb.'), 'llms-full.txt must include VAT Act citation');
+  assert.ok(fullText.includes('134,40 Kč'), 'llms-full.txt must include 2026 minimum hourly wage');
 }
 
 assertSitemapArchitecture();

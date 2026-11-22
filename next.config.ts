@@ -7,6 +7,7 @@ import { GOOGLE_ANALYTICS_CSP } from './lib/google-analytics';
 const isDev = process.env.NODE_ENV !== 'production';
 
 const securityHeaders = [
+  { key: 'Access-Control-Allow-Origin', value: 'https://www.smlouvahned.cz' },
   { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
   { key: 'X-Content-Type-Options', value: 'nosniff' },
   { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },

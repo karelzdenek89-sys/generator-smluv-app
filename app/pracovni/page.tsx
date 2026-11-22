@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import { use, useEffect, useMemo, useState } from 'react';
+import React, { use, useEffect, useId, useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import { useBuilderDraft } from '@/lib/use-builder-draft';
@@ -68,10 +68,15 @@ function SectionTitle({ index, title, subtitle }: { index: string; title: string
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  const autoId = useId();
+  const child = React.isValidElement<{ id?: string }>(children)
+    ? React.cloneElement(children, { id: children.props.id ?? autoId })
+    : children;
+  const targetId = React.isValidElement<{ id?: string }>(child) ? child.props.id : autoId;
   return (
-    <label className="block">
+    <label htmlFor={targetId} className="block">
       <span className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</span>
-      {children}
+      {child}
     </label>
   );
 }

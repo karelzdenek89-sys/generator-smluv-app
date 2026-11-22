@@ -28,6 +28,12 @@ export const metadata: Metadata = {
   },
 };
 
+function formatItemsCountCz(count: number): string {
+  if (count === 1) return '1 položka';
+  if (count >= 2 && count <= 4) return `${count} položky`;
+  return `${count} položek`;
+}
+
 export default function LegalRadarPage() {
   const verifiedAt = getRadarVerifiedAt();
   const counts = Object.fromEntries(
@@ -77,7 +83,7 @@ export default function LegalRadarPage() {
                   <span className="text-[10px] font-black uppercase tracking-widest text-[#c9a852]">{hub.shortTitle}</span>
                   <span className="mt-2 font-serif italic text-lg font-bold text-white group-hover:text-[#e2c77b]">{hub.title}</span>
                   <span className="mt-2 flex-grow text-sm leading-7 text-slate-400">{hub.description}</span>
-                  <span className="mt-4 text-xs text-slate-400">{hubChanges.length} položek · otevřít →</span>
+                  <span className="mt-4 text-xs text-slate-400">{formatItemsCountCz(hubChanges.length)} · otevřít →</span>
                 </Link>
               );
             })}

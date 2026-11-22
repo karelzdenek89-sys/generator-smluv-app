@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { isValidMoney } from '@/lib/money';
+import { isValidMoney, parseMoney } from '@/lib/money';
 import {
   getDppLegalIssues,
   getEmploymentLegalIssues,
@@ -60,9 +60,19 @@ const schemas: Record<ContractType, z.ZodType<Record<string, unknown>>> = {
     startDate: shortText,
     duration: z.enum(['fixed', 'indefinite']).optional(),
     endDate: optionalText,
+    utilityAmount: optionalNumber,
+    depositAmount: optionalNumber,
   }).superRefine((data, ctx) => {
     if (data.duration === 'fixed' && !data.endDate?.trim()) {
       ctx.addIssue({ code: 'custom', path: ['endDate'], message: 'Datum konce je povinné pro dobu určitou.' });
+    }
+    const utilStr = String(data.utilityAmount ?? '').trim();
+    if (utilStr && Number(utilStr.replace(',', '.')) < 0) {
+      ctx.addIssue({ code: 'custom', path: ['utilityAmount'], message: 'Služby nemohou být záporné.' });
+    }
+    const depStr = String(data.depositAmount ?? '').trim();
+    if (depStr && Number(depStr.replace(',', '.')) < 0) {
+      ctx.addIssue({ code: 'custom', path: ['depositAmount'], message: 'Kauce nemůže být záporná.' });
     }
   }),
   car_sale: base.extend({
@@ -98,11 +108,30 @@ const schemas: Record<ContractType, z.ZodType<Record<string, unknown>>> = {
     workTitle: shortText,
     workDescription: text,
     priceAmount: money,
+    paymentType: z.string().optional(),
+    depositAmount: optionalText,
+    warrantyMonths: optionalNumber,
+  }).superRefine((data, ctx) => {
+    const depRaw = String(data.depositAmount ?? '').trim();
+    if (data.paymentType === 'with_deposit' && depRaw) {
+      const depMoney = parseMoney(depRaw);
+      const priceMoney = parseMoney(data.priceAmount as string | number);
+      if (!depMoney) {
+        ctx.addIssue({ code: 'custom', path: ['depositAmount'], message: 'Záloha musí být kladná částka.' });
+      } else if (priceMoney && depMoney > priceMoney) {
+        ctx.addIssue({ code: 'custom', path: ['depositAmount'], message: 'Záloha nesmí převyšovat celkovou cenu díla.' });
+      }
+    }
+    const warRaw = String(data.warrantyMonths ?? '').trim();
+    if (warRaw && Number(warRaw.replace(',', '.')) < 0) {
+      ctx.addIssue({ code: 'custom', path: ['warrantyMonths'], message: 'Záruční doba nemůže být záporná.' });
+    }
   }),
   loan: base.extend({
     lenderName: shortText,
     borrowerName: shortText,
     loanAmount: money,
+    interestRate: optionalNumber,
     repaymentType: z.enum(['lump_sum', 'installments']).optional(),
     repaymentDate: optionalText,
     installmentCount: z.union([z.string(), z.number()]).optional(),
@@ -110,6 +139,10 @@ const schemas: Record<ContractType, z.ZodType<Record<string, unknown>>> = {
     securityType: z.string().optional(),
     guarantorName: optionalText,
   }).superRefine((data, ctx) => {
+    const intRaw = String(data.interestRate ?? '').trim();
+    if (intRaw && Number(intRaw.replace(',', '.')) < 0) {
+      ctx.addIssue({ code: 'custom', path: ['interestRate'], message: 'Úroková sazba nemůže být záporná.' });
+    }
     if (data.repaymentType === 'lump_sum' && !data.repaymentDate?.trim()) {
       ctx.addIssue({ code: 'custom', path: ['repaymentDate'], message: 'Datum splatnosti je povinné.' });
     }
@@ -238,9 +271,19 @@ const schemas: Record<ContractType, z.ZodType<Record<string, unknown>>> = {
     startDate: shortText,
     duration: z.enum(['fixed', 'indefinite']).optional(),
     endDate: optionalText,
+    utilityAmount: optionalNumber,
+    depositAmount: optionalNumber,
   }).superRefine((data, ctx) => {
     if (data.duration === 'fixed' && !data.endDate?.trim()) {
       ctx.addIssue({ code: 'custom', path: ['endDate'], message: 'Datum konce je povinné pro dobu určitou.' });
+    }
+    const utilStr = String(data.utilityAmount ?? '').trim();
+    if (utilStr && Number(utilStr.replace(',', '.')) < 0) {
+      ctx.addIssue({ code: 'custom', path: ['utilityAmount'], message: 'Služby nemohou být záporné.' });
+    }
+    const depStr = String(data.depositAmount ?? '').trim();
+    if (depStr && Number(depStr.replace(',', '.')) < 0) {
+      ctx.addIssue({ code: 'custom', path: ['depositAmount'], message: 'Kauce nemůže být záporná.' });
     }
   }),
   power_of_attorney: base.extend({

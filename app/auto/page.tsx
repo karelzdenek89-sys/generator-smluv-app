@@ -585,7 +585,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
               <SectionTitle
                 index="01"
                 title={sec('s01', 'Smluvní strany').title}
-                subtitle={sec('s01', 'Smluvní strany', 'Doplň co nejpřesnější identifikaci obou stran. To je základ vymahatelnosti.').subtitle}
+                subtitle={sec('s01', 'Smluvní strany', 'Doplňte co nejpřesnější identifikaci obou stran. To je základ vymahatelnosti.').subtitle}
               />
               <div className="mb-4">
                 <input
@@ -810,23 +810,25 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
               </div>
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-[0.10em] text-slate-400 mb-1.5">{fl('stkValidUntil', 'STK platná do')}</label>
+                  <label htmlFor="f-auto-stk" className="block text-xs font-bold uppercase tracking-[0.10em] text-slate-400 mb-1.5">{fl('stkValidUntil', 'STK platná do')}</label>
                   <input
+                    id="f-auto-stk"
                     type="date"
                     name="stkValidUntil"
                     value={formData.stkValidUntil}
                     onChange={handleChange}
-                    className={inputClass} aria-label="Stk Valid Until"
+                    className={inputClass} aria-label={fl('stkValidUntil', 'STK platná do')}
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-[0.10em] text-slate-400 mb-1.5">{fl('emissionsValidUntil', 'Emise platné do')}</label>
+                  <label htmlFor="f-auto-emissions" className="block text-xs font-bold uppercase tracking-[0.10em] text-slate-400 mb-1.5">{fl('emissionsValidUntil', 'Emise platné do')}</label>
                   <input
+                    id="f-auto-emissions"
                     type="date"
                     name="emissionsValidUntil"
                     value={formData.emissionsValidUntil}
                     onChange={handleChange}
-                    className={inputClass} aria-label="Emissions Valid Until"
+                    className={inputClass} aria-label={fl('emissionsValidUntil', 'Emise platné do')}
                   />
                 </div>
               </div>
@@ -910,7 +912,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                 </div>
               ) : (
                 <div className="mb-4 rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4 text-sm text-amber-100">
-                  {fl('cashLimitWarning', 'U hotovosti zkontroluj zákonný limit. Nad 270 000 Kč checkout zablokuji.')}
+                  {fl('cashLimitWarning', 'U hotovosti zkontrolujte zákonný limit. Nad 270 000 Kč checkout zablokuji.')}
                 </div>
               )}
 
@@ -973,8 +975,8 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   name="knownDefects"
                   value={formData.knownDefects}
                   onChange={handleChange}
-                  placeholder="Popiš všechny známé vady: lak, koroze, motor, převodovka, podvozek, elektronika, klima, interiér..."
-                  className={textareaClass} aria-label="Popiš všechny známé vady: lak, koroze, motor, převodovka, podvozek, elektronika, klima, interiér..."
+                  placeholder="Popište všechny známé vady: lak, koroze, motor, převodovka, podvozek, elektronika, klima, interiér..."
+                  className={textareaClass} aria-label="Popište všechny známé vady: lak, koroze, motor, převodovka, podvozek, elektronika, klima, interiér..."
                 />
               </div>
 
@@ -1027,7 +1029,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                   name="odometerGuaranteed"
                   checked={formData.odometerGuaranteed}
                   label={fl('odometerGuaranteed', 'Garantovat stav tachometru')}
-                  hint="Silnější ochrana kupujícího, ale jen pokud si jsi tím jistý."
+                  hint="Silnější ochrana kupujícího, ale jen pokud jste si tím jisti."
                 />
                 <ToggleCard
                   name="buyerInspectedVehicle"
@@ -1134,7 +1136,7 @@ ${formData.knownDefects || 'Bez výslovně uvedených vad.'}`.trim();
                           : 'bg-red-500/10 text-red-300 border border-red-500/20'
                     }`}
                   >
-                    {completion === 100 ? (builderLocale === 'en' ? 'Ready to continue' : builderLocale === 'ua' ? 'Можна продовжити' : 'Připraveno k pokračování') : completion === 0 ? (builderLocale === 'en' ? 'Start filling in' : builderLocale === 'ua' ? 'Почніть заповнення' : 'Začněte vyplňovat') : completion >= 60 ? 'Dobré' : 'Doplň údaje'}
+                    {completion === 100 ? (builderLocale === 'en' ? 'Ready to continue' : builderLocale === 'ua' ? 'Можна продовжити' : 'Připraveno k pokračování') : completion === 0 ? (builderLocale === 'en' ? 'Start filling in' : builderLocale === 'ua' ? 'Почніть заповнення' : 'Začněte vyplňovat') : completion >= 60 ? 'Dobré' : 'Doplňte údaje'}
                   </div>
                 </div>
 

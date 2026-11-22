@@ -59,6 +59,7 @@ export type ToolBase = {
   /** Dokument, ke kterému nástroj přirozeně vede. */
   primaryDocument: PortalLink;
   related: readonly PortalLink[];
+  faq?: readonly { question: string; answer: string }[];
   updatedAt: string;
 };
 
@@ -74,6 +75,9 @@ export type PortalTool = ChecklistTool | WizardTool;
 const UPDATED = '2026-09-17';
 const OZ = { label: 'Občanský zákoník (zákon č. 89/2012 Sb.) — e-Sbírka', href: 'https://www.e-sbirka.cz/sb/2012/89' };
 const ZP = { label: 'Zákoník práce (zákon č. 262/2006 Sb.) — e-Sbírka', href: 'https://www.e-sbirka.cz/sb/2006/262' };
+const STAVEBNI_ZAKON = { label: 'Stavební zákon (zákon č. 283/2021 Sb., § 166 stavební deník) — e-Sbírka', href: 'https://www.e-sbirka.cz/sb/2021/283' };
+const VYHLASKA_DOKUMENTACE = { label: 'Vyhláška č. 131/2024 Sb., o dokumentaci staveb — e-Sbírka', href: 'https://www.e-sbirka.cz/sb/2024/131' };
+const ZDPH = { label: 'Zákon o dani z přidané hodnoty (zákon č. 235/2004 Sb., § 48, § 48a, § 92e) — e-Sbírka', href: 'https://www.e-sbirka.cz/sb/2004/235' };
 
 export const PORTAL_TOOLS: readonly PortalTool[] = [
   // ── Zakázka ─────────────────────────────────────────────────────────────
@@ -147,8 +151,8 @@ export const PORTAL_TOOLS: readonly PortalTool[] = [
     situation: 'zakazka',
     answer:
       'Dílo se předává společnou prohlídkou a písemným protokolem. Objednatel převezme dílo bez výhrad, nebo s výhradami (soupis vad a lhůta k odstranění). Vady, které mohl při převzetí zjistit a nevytkl, později zpravidla neuplatní.',
-    legalNote: 'Předání a převzetí díla upravuje § 2604–2606 OZ, práva z vad § 2615 a násl. OZ. U stavby nelze odmítnout převzetí pro ojedinělé drobné vady (§ 2628 OZ).',
-    sources: [OZ],
+    legalNote: 'Předání a převzetí díla upravuje § 2604–2606 OZ, práva z vad § 2615 a násl. OZ. U stavby nelze odmítnout převzetí pro ojedinělé drobné vady (§ 2628 OZ). U staveb vedených podle zákona č. 283/2021 Sb. zkontrolujte také uzavření stavebního deníku (§ 166) a dokumentaci skutečného provedení stavby dle vyhlášky č. 131/2024 Sb.',
+    sources: [OZ, STAVEBNI_ZAKON, VYHLASKA_DOKUMENTACE],
     primaryDocument: { href: '/zakazka#moje-zakazka', label: 'Připravit předávací protokol v zakázce' },
     related: [
       { href: '/blog/predavaci-protokol-vzor-2026', label: 'Předávací protokol — průvodce' },
@@ -196,8 +200,25 @@ export const PORTAL_TOOLS: readonly PortalTool[] = [
     situation: 'zakazka',
     answer:
       'Práce navíc je bezpečné provádět až po písemném odsouhlasení rozsahu, ceny a dopadu na termín. Při pevné ceně nebo zaručeném rozpočtu nelze cenu jednostranně zvýšit; u rozpočtu s výhradou nezávaznosti musí zhotovitel potřebu prací navíc oznámit bez zbytečného odkladu.',
-    legalNote: 'Cena díla a rozpočet: § 2620–2622 OZ. Změna smlouvy sjednané písemně: § 564 OZ.',
-    sources: [OZ],
+    legalNote: 'Cena díla a rozpočet: § 2612 a § 2620–2622 OZ. Změna smlouvy sjednané písemně: § 564 OZ. Evidence změn ve stavebním deníku: § 166 zákona č. 283/2021 Sb. a vyhláška č. 131/2024 Sb. Sazby DPH ve stavebnictví (12 % / 21 %) a přenesená daňová povinnost: § 48, § 48a a § 92e zákona č. 235/2004 Sb.',
+    sources: [OZ, STAVEBNI_ZAKON, VYHLASKA_DOKUMENTACE, ZDPH],
+    faq: [
+      {
+        question: 'Kdy má řemeslník nebo zhotovitel nárok na proplacení víceprací?',
+        answer:
+          'Při pevné ceně nebo rozpočtu se zaručenou úplností (§ 2620 OZ) jen tehdy, pokud vícepráce a jejich cenu objednatel předem písemně odsouhlasí (§ 564 OZ). U rozpočtu s výhradou neúplnosti nebo nezávaznosti (§ 2621–2622 OZ) musí zhotovitel potřebu prací navíc a zvýšení ceny oznámit bez zbytečného odkladu poté, co se jejich potřeba ukáže, jinak nárok na rozdíl v ceně zaniká.',
+      },
+      {
+        question: 'Kdy může objednatel odstoupit od smlouvy o dílo kvůli navýšení rozpočtu?',
+        answer:
+          'Podle § 2622 odst. 2 občanského zákoníku může objednatel bez zbytečného odkladu odstoupit od smlouvy, pokud zhotovitel požaduje zvýšení ceny přesahující 10 % ceny podle původního rozpočtu. V takovém případě je objednatel povinen nahradit zhotoviteli poměrnou část ceny za již provedenou část díla.',
+      },
+      {
+        question: 'Jaká sazba DPH (12 % vs. 21 % nebo přenesená daňová povinnost) platí u stavebních víceprací?',
+        answer:
+          'Podle § 48 a § 48a zákona č. 235/2004 Sb. o DPH se u stavebních a montážních prací na dokončené stavbě pro bydlení nebo sociální bydlení (byt do 120 m², rodinný dům do 350 m²) uplatní snížená sazba 12 %. Mezi dvěma plátci DPH při poskytnutí stavebních a montážních prací (CZ-CPA 41–43) se uplatní režim přenesení daňové povinnosti podle § 92e ZDPH.',
+      },
+    ],
     primaryDocument: { href: '/zakazka#moje-zakazka', label: 'Připravit potvrzení víceprací v zakázce' },
     related: [
       { href: '/blog/viceprace-smlouva-o-dilo-2026', label: 'Vícepráce — podrobný článek' },
@@ -426,6 +447,23 @@ export const PORTAL_TOOLS: readonly PortalTool[] = [
         ],
         documents: [{ href: '/smlouva-o-dilo', label: 'Smlouva o dílo online' }],
         related: [{ href: '/blog/smlouva-o-dilo-vs-dpp-2026', label: 'Smlouva o dílo vs. DPP' }],
+      },
+    ],
+    faq: [
+      {
+        question: 'Kdy musím uzavřít pracovní smlouvu místo spolupráce s OSVČ (švarcsystém)?',
+        answer:
+          'Pokud je práce vykonávána osobně, dlouhodobě, ve vztahu nadřízenosti a podřízenosti, jménem zaměstnavatele a podle jeho pokynů (§ 2 a § 3 zákoníku práce), jde o závislou práci. Tu nelze nahradit fakturací na IČO, ale musí být vykonávána v pracovněprávním vztahu (pracovní smlouva, DPP nebo DPČ).',
+      },
+      {
+        question: 'Kdy se vyplatí dohoda o provedení práce (DPP) a jaké má v roce 2026 limity?',
+        answer:
+          'DPP je vhodná pro jednorázovou nebo omezenou práci do 300 hodin za kalendářní rok u jednoho zaměstnavatele (§ 75 ZP). V roce 2026 musí hodinová odměna činit nejméně 134,40 Kč/h a účast na pojistném vzniká při měsíční odměně od 12 000 Kč.',
+      },
+      {
+        question: 'Kdy použít smlouvu o dílo nebo smlouvu o spolupráci s OSVČ?',
+        answer:
+          'Smlouva o dílo (§ 2586 OZ) nebo smlouva o spolupráci (§ 1746 OZ) je vhodná tehdy, když samostatný podnikatel nebo řemeslník dodává konkrétní výsledek či službu samostatně, vlastními prostředky, na vlastní podnikatelské riziko a bez pevné pracovní doby řízené objednatelem.',
       },
     ],
   },

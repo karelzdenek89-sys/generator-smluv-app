@@ -1,6 +1,6 @@
 'use client';
 
-import { useId, useState, useSyncExternalStore } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { ArrowUpRight, Search, X } from 'lucide-react';
 import TrackedLink from '@/app/components/analytics/TrackedLink';
 import styles from './homepage.module.css';
@@ -11,9 +11,15 @@ const normalize = (value: string) => value.normalize('NFD').replace(/[\u0300-\u0
 const subscribeNoop = () => () => {};
 const useHydrated = () => useSyncExternalStore(subscribeNoop, () => true, () => false);
 
+function formatResultCount(n: number): string {
+  if (n === 1) return 'Nalezen 1 výsledek.';
+  if (n >= 2 && n <= 4) return `Nalezeny ${n} výsledky.`;
+  return `Nalezeno ${n} výsledků.`;
+}
+
 export default function ContentFinder({ items }: { items: FinderItem[] }) {
   const [query, setQuery] = useState('');
-  const id = useId();
+  const id = 'homepage-content-finder';
   const hydrated = useHydrated();
   const words = normalize(query).split(/\s+/).filter(Boolean);
   const results = words.length ? items.filter(item => words.every(word => normalize(`${item.title} ${item.keywords}`).includes(word))).slice(0, 6) : [];
@@ -26,7 +32,7 @@ export default function ContentFinder({ items }: { items: FinderItem[] }) {
         {query ? <button type="button" onClick={() => setQuery('')} aria-label="Vymazat hledání"><X size={18} /></button> : <span className={styles.finderHint}>Návody · nástroje · dokumenty</span>}
       </div>
       <p id={`${id}-hint`} className={styles.searchPrivacy}>Hledáte pouze v obsahu webu. Text hledání nikam neodesíláme.</p>
-      <div role="status" className="sr-only">{words.length ? (results.length ? `Nalezeno ${results.length} výsledků.` : 'Žádný výsledek. Zkuste obecnější výraz.') : ''}</div>
+      <div role="status" className="sr-only">{words.length ? (results.length ? formatResultCount(results.length) : 'Žádný výsledek. Zkuste obecnější výraz.') : ''}</div>
       {words.length ? (
         <div id={`${id}-results`} className={`${styles.glass} ${styles.finderResults}`}>
           {results.length ? results.map(item => (

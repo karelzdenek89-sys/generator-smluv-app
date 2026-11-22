@@ -3,7 +3,7 @@
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import { useBuilderDraft } from '@/lib/use-builder-draft';
 import { getPriceRevealCopy } from '@/lib/price-reveal-copy';
-import { use, useMemo, useState } from 'react';
+import React, { use, useId, useMemo, useState } from 'react';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
 import ContractPreview from '@/app/components/ContractPreview';
 import BuilderCheckoutSummary from '@/app/components/BuilderCheckoutSummary';
@@ -45,7 +45,12 @@ const textareaClass = 'w-full min-h-[100px] resize-y bg-[#111c31] border border-
 const cardClass = 'bg-[#0c1426] border border-slate-800/90 rounded-3xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.25)]';
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (<label className="block"><span className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</span>{children}</label>);
+  const autoId = useId();
+  const child = React.isValidElement<{ id?: string }>(children)
+    ? React.cloneElement(children, { id: children.props.id ?? autoId })
+    : children;
+  const targetId = React.isValidElement<{ id?: string }>(child) ? child.props.id : autoId;
+  return (<label htmlFor={targetId} className="block"><span className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">{label}</span>{child}</label>);
 }
 function SectionTitle({ index, title, subtitle }: { index: string; title: string; subtitle?: string }) {
   return (<div className="mb-6"><div className="text-[11px] font-black uppercase tracking-[0.22em] text-amber-400/90">{index}. {title}</div>{subtitle && <p className="mt-2 text-sm text-slate-400">{subtitle}</p>}</div>);

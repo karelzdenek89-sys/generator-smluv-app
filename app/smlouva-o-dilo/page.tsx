@@ -123,8 +123,48 @@ export default function WorkContractPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [packageKeyFromUrl, setPackageKeyFromUrl] = useState<string | null>(null);
+  const [aresStatus, setAresStatus] = useState<{ client?: string; contractor?: string }>({});
+  const [aresLoading, setAresLoading] = useState<{ client?: boolean; contractor?: boolean }>({});
   const updateField = (field: keyof WorkContractData, value: string | boolean) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleAresLookup = async (role: 'client' | 'contractor') => {
+    const rawIco = (role === 'client' ? formData.clientRegNo : formData.contractorRegNo).replace(/\s+/g, '');
+    if (!/^\d{8}$/.test(rawIco)) {
+      setAresStatus((prev) => ({ ...prev, [role]: 'Zadejte platné 8místné IČO.' }));
+      return;
+    }
+    setAresLoading((prev) => ({ ...prev, [role]: true }));
+    setAresStatus((prev) => ({ ...prev, [role]: undefined }));
+    try {
+      const res = await fetch(`/api/ares?ico=${encodeURIComponent(rawIco)}`);
+      const data = (await res.json()) as { ok?: boolean; name?: string; address?: string; error?: string };
+      if (!res.ok || !data.ok) {
+        setAresStatus((prev) => ({ ...prev, [role]: data.error || 'Subjekt nebyl v ARES nalezen.' }));
+        return;
+      }
+      setFormData((prev) =>
+        role === 'client'
+          ? {
+              ...prev,
+              clientRegNo: rawIco,
+              clientName: data.name || prev.clientName,
+              clientAddress: data.address || prev.clientAddress,
+            }
+          : {
+              ...prev,
+              contractorRegNo: rawIco,
+              contractorName: data.name || prev.contractorName,
+              contractorAddress: data.address || prev.contractorAddress,
+            },
+      );
+      setAresStatus((prev) => ({ ...prev, [role]: '✓ Ověřeno v ARES (MFČR)' }));
+    } catch {
+      setAresStatus((prev) => ({ ...prev, [role]: 'Registr ARES je dočasně nedostupný.' }));
+    } finally {
+      setAresLoading((prev) => ({ ...prev, [role]: false }));
+    }
   };
 
   useEffect(() => {
@@ -176,9 +216,9 @@ export default function WorkContractPage() {
       warnings.push({ text: 'Doplňte předmět díla – nedostatečně specifikován.', level: 'high' });
     }
 
-    if (!formData.priceAmount) {
-      score -= 20;
-      warnings.push({ text: 'Doplňte cenu díla.', level: 'high' });
+    if (!formData.priceAmount || Number(formData.priceAmount) <= 0) {
+      score -= 25;
+      warnings.push({ text: 'Zadejte kladnou celkovou cenu díla.', level: 'high' });
     }
 
     if (!formData.endDate) {
@@ -186,9 +226,14 @@ export default function WorkContractPage() {
       warnings.push({ text: 'Doplňte termín dokončení díla.', level: 'high' });
     }
 
-    if (formData.paymentType === 'with_deposit' && !formData.depositAmount) {
-      score -= 10;
-      warnings.push({ text: 'Doplňte výši zálohy.', level: 'medium' });
+    if (formData.paymentType === 'with_deposit') {
+      if (!formData.depositAmount || Number(formData.depositAmount) <= 0) {
+        score -= 10;
+        warnings.push({ text: 'Doplňte kladnou výši zálohy.', level: 'medium' });
+      } else if (Number(formData.priceAmount) > 0 && Number(formData.depositAmount) > Number(formData.priceAmount)) {
+        score -= 25;
+        warnings.push({ text: 'Výše zálohy nesmí převyšovat celkovou cenu díla.', level: 'high' });
+      }
     }
 
     if (Number(formData.delayPenaltyPerDay) < 0.01) {
@@ -196,7 +241,10 @@ export default function WorkContractPage() {
       warnings.push({ text: 'Nízká nebo žádná smluvní pokuta za prodlení.', level: 'medium' });
     }
 
-    if (Number(formData.warrantyMonths) < 24) {
+    if (String(formData.warrantyMonths ?? '').trim() !== '' && Number(formData.warrantyMonths) < 0) {
+      score -= 25;
+      warnings.push({ text: 'Záruční doba nemůže být záporná.', level: 'high' });
+    } else if (Number(formData.warrantyMonths) < 24) {
       score -= 5;
       warnings.push({ text: 'Záruka kratší než 24 měsíců – zvažte prodloužení.', level: 'medium' });
     }
@@ -231,6 +279,16 @@ export default function WorkContractPage() {
     if (!formData.workTitle?.trim()) missing.push('název díla');
     if (!formData.workDescription?.trim()) missing.push('popis díla');
     if (!isValidMoney(formData.priceAmount)) missing.push('cenu díla');
+    if (formData.paymentType === 'with_deposit' && formData.depositAmount.trim() !== '') {
+      if (!isValidMoney(formData.depositAmount)) {
+        missing.push('kladnou výši zálohy');
+      } else if (Number(formData.depositAmount) > Number(formData.priceAmount)) {
+        missing.push('zálohu nepřevyšující celkovou cenu díla');
+      }
+    }
+    if (String(formData.warrantyMonths ?? '').trim() !== '' && Number(formData.warrantyMonths) < 0) {
+      missing.push('nezápornou záruční dobu');
+    }
     if (missing.length > 0) { alert(`Smlouva o dílo vyžaduje: ${missing.join(', ')}.`); return; }
     try {
       setIsProcessing(true);
@@ -381,39 +439,72 @@ export default function WorkContractPage() {
                     1. Objednatel
                   </h3>
                   <div className="space-y-4">
-                    <input
-                    name="clientName"
-                      type="text"
-                      placeholder="Jméno / Název firmy"
-                      aria-label="Jméno / Název firmy"
-                      className={inputClass}
-                      value={formData.clientName}
-                      onChange={(e) => updateField('clientName', e.target.value)}
-                    />
-                    <input
-                      type="text"
-                      placeholder="IČO"
-                      aria-label="IČO"
-                      className={inputClass}
-                      value={formData.clientRegNo}
-                      onChange={(e) => updateField('clientRegNo', e.target.value)}
-                    />
-                    <input
-                      type="text"
-                      placeholder="Adresa / Sídlo"
-                      aria-label="Adresa / Sídlo"
-                      className={inputClass}
-                      value={formData.clientAddress}
-                      onChange={(e) => updateField('clientAddress', e.target.value)}
-                    />
-                    <input
-                      type="email"
-                      placeholder="E-mail objednatele (volitelné)"
-                      aria-label="E-mail objednatele"
-                      className={inputClass}
-                      value={formData.clientEmail}
-                      onChange={(e) => updateField('clientEmail', e.target.value)}
-                    />
+                    <div>
+                      <label htmlFor="f-dilo-client-name" className="sr-only">Jméno / Název firmy objednatele</label>
+                      <input
+                        id="f-dilo-client-name"
+                        name="clientName"
+                        type="text"
+                        placeholder="Jméno / Název firmy"
+                        aria-label="Jméno / Název firmy"
+                        className={inputClass}
+                        value={formData.clientName}
+                        onChange={(e) => updateField('clientName', e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="f-dilo-client-ico" className="sr-only">IČO objednatele</label>
+                      <div className="flex gap-2">
+                        <input
+                          id="f-dilo-client-ico"
+                          type="text"
+                          placeholder="IČO"
+                          aria-label="IČO"
+                          className={inputClass}
+                          value={formData.clientRegNo}
+                          onChange={(e) => updateField('clientRegNo', e.target.value)}
+                        />
+                        {/^\d{8}$/.test(formData.clientRegNo.replace(/\s+/g, '')) ? (
+                          <button
+                            type="button"
+                            onClick={() => handleAresLookup('client')}
+                            disabled={aresLoading.client}
+                            className="shrink-0 rounded-xl border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs font-semibold text-amber-300 transition hover:bg-amber-500/20"
+                          >
+                            {aresLoading.client ? 'Ověřuji…' : 'Načíst z ARES'}
+                          </button>
+                        ) : null}
+                      </div>
+                      {aresStatus.client ? (
+                        <p className={`mt-1 text-xs ${aresStatus.client.startsWith('✓') ? 'text-emerald-400' : 'text-amber-300'}`}>
+                          {aresStatus.client}
+                        </p>
+                      ) : null}
+                    </div>
+                    <div>
+                      <label htmlFor="f-dilo-client-addr" className="sr-only">Adresa / Sídlo objednatele</label>
+                      <input
+                        id="f-dilo-client-addr"
+                        type="text"
+                        placeholder="Adresa / Sídlo"
+                        aria-label="Adresa / Sídlo"
+                        className={inputClass}
+                        value={formData.clientAddress}
+                        onChange={(e) => updateField('clientAddress', e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="f-dilo-client-email" className="sr-only">E-mail objednatele</label>
+                      <input
+                        id="f-dilo-client-email"
+                        type="email"
+                        placeholder="E-mail objednatele (volitelné)"
+                        aria-label="E-mail objednatele"
+                        className={inputClass}
+                        value={formData.clientEmail}
+                        onChange={(e) => updateField('clientEmail', e.target.value)}
+                      />
+                    </div>
                   </div>
                 </section>
 
@@ -422,39 +513,72 @@ export default function WorkContractPage() {
                     2. Zhotovitel
                   </h3>
                   <div className="space-y-4">
-                    <input
-                    name="contractorName"
-                      type="text"
-                      placeholder="Jméno / Název firmy"
-                      aria-label="Jméno / Název firmy"
-                      className={inputClass}
-                      value={formData.contractorName}
-                      onChange={(e) => updateField('contractorName', e.target.value)}
-                    />
-                    <input
-                      type="text"
-                      placeholder="IČO (povinné)"
-                      aria-label="IČO (povinné)"
-                      className={inputClass}
-                      value={formData.contractorRegNo}
-                      onChange={(e) => updateField('contractorRegNo', e.target.value)}
-                    />
-                    <input
-                      type="text"
-                      placeholder="Adresa / Místo podnikání"
-                      aria-label="Adresa / Místo podnikání"
-                      className={inputClass}
-                      value={formData.contractorAddress}
-                      onChange={(e) => updateField('contractorAddress', e.target.value)}
-                    />
-                    <input
-                      type="email"
-                      placeholder="E-mail zhotovitele (volitelné)"
-                      aria-label="E-mail zhotovitele"
-                      className={inputClass}
-                      value={formData.contractorEmail}
-                      onChange={(e) => updateField('contractorEmail', e.target.value)}
-                    />
+                    <div>
+                      <label htmlFor="f-dilo-contractor-name" className="sr-only">Jméno / Název firmy zhotovitele</label>
+                      <input
+                        id="f-dilo-contractor-name"
+                        name="contractorName"
+                        type="text"
+                        placeholder="Jméno / Název firmy"
+                        aria-label="Jméno / Název firmy"
+                        className={inputClass}
+                        value={formData.contractorName}
+                        onChange={(e) => updateField('contractorName', e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="f-dilo-contractor-ico" className="sr-only">IČO zhotovitele (povinné)</label>
+                      <div className="flex gap-2">
+                        <input
+                          id="f-dilo-contractor-ico"
+                          type="text"
+                          placeholder="IČO (povinné)"
+                          aria-label="IČO (povinné)"
+                          className={inputClass}
+                          value={formData.contractorRegNo}
+                          onChange={(e) => updateField('contractorRegNo', e.target.value)}
+                        />
+                        {/^\d{8}$/.test(formData.contractorRegNo.replace(/\s+/g, '')) ? (
+                          <button
+                            type="button"
+                            onClick={() => handleAresLookup('contractor')}
+                            disabled={aresLoading.contractor}
+                            className="shrink-0 rounded-xl border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs font-semibold text-amber-300 transition hover:bg-amber-500/20"
+                          >
+                            {aresLoading.contractor ? 'Ověřuji…' : 'Načíst z ARES'}
+                          </button>
+                        ) : null}
+                      </div>
+                      {aresStatus.contractor ? (
+                        <p className={`mt-1 text-xs ${aresStatus.contractor.startsWith('✓') ? 'text-emerald-400' : 'text-amber-300'}`}>
+                          {aresStatus.contractor}
+                        </p>
+                      ) : null}
+                    </div>
+                    <div>
+                      <label htmlFor="f-dilo-contractor-addr" className="sr-only">Adresa / Místo podnikání zhotovitele</label>
+                      <input
+                        id="f-dilo-contractor-addr"
+                        type="text"
+                        placeholder="Adresa / Místo podnikání"
+                        aria-label="Adresa / Místo podnikání"
+                        className={inputClass}
+                        value={formData.contractorAddress}
+                        onChange={(e) => updateField('contractorAddress', e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="f-dilo-contractor-email" className="sr-only">E-mail zhotovitele</label>
+                      <input
+                        id="f-dilo-contractor-email"
+                        type="email"
+                        placeholder="E-mail zhotovitele (volitelné)"
+                        aria-label="E-mail zhotovitele"
+                        className={inputClass}
+                        value={formData.contractorEmail}
+                        onChange={(e) => updateField('contractorEmail', e.target.value)}
+                      />
+                    </div>
                   </div>
                 </section>
               </div>
@@ -542,18 +666,21 @@ export default function WorkContractPage() {
                 </h3>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="text-xs text-slate-400">Celková cena</label>
+                    <label htmlFor="f-dilo-price" className="text-xs text-slate-400">Celková cena</label>
                     <div className="flex mt-2">
                       <input
-                    name="priceAmount"
+                        id="f-dilo-price"
+                        name="priceAmount"
                         type="number"
+                        min="1"
                         placeholder="0"
-                        aria-label="0"
+                        aria-label="Celková cena díla (Kč)"
                         className="flex-1 bg-[#111c31] border border-slate-700/80 text-white px-4 py-3 rounded-l-xl outline-none focus:border-amber-500/60 transition text-sm"
                         value={formData.priceAmount}
                         onChange={(e) => updateField('priceAmount', e.target.value)}
                       />
                       <input
+                        id="f-dilo-currency"
                         type="text"
                         aria-label="Měna"
                         className="w-20 bg-[#111c31] border border-l-0 border-slate-700/80 text-white px-4 py-3 rounded-r-xl text-center outline-none text-sm"
@@ -564,8 +691,9 @@ export default function WorkContractPage() {
                   </div>
 
                   <div>
-                    <label className="text-xs text-slate-400">Způsob platby</label>
+                    <label htmlFor="f-dilo-paytype" className="text-xs text-slate-400">Způsob platby</label>
                     <select
+                      id="f-dilo-paytype"
                       value={formData.paymentType}
                       onChange={(e) => updateField('paymentType', e.target.value as PaymentType)}
                       aria-label="Způsob platby"
@@ -580,9 +708,11 @@ export default function WorkContractPage() {
                   {formData.paymentType === 'with_deposit' && (
                     <>
                       <div>
-                        <label className="text-xs text-slate-400">Výše zálohy</label>
+                        <label htmlFor="f-dilo-deposit" className="text-xs text-slate-400">Výše zálohy</label>
                         <input
+                          id="f-dilo-deposit"
                           type="number"
+                          min="1"
                           placeholder="Záloha"
                           aria-label="Záloha"
                           className={`${inputClass} mt-2`}
@@ -591,9 +721,11 @@ export default function WorkContractPage() {
                         />
                       </div>
                       <div>
-                        <label className="text-xs text-slate-400">Splatnost zálohy (prac. dnů)</label>
+                        <label htmlFor="f-dilo-deposit-due" className="text-xs text-slate-400">Splatnost zálohy (prac. dnů)</label>
                         <input
+                          id="f-dilo-deposit-due"
                           type="number"
+                          min="1"
                           aria-label="Splatnost zálohy"
                           className={`${inputClass} mt-2`}
                           value={formData.depositDueDays}
@@ -604,9 +736,11 @@ export default function WorkContractPage() {
                   )}
 
                   <div>
-                    <label className="text-xs text-slate-400">Splatnost doplatku (dnů)</label>
+                    <label htmlFor="f-dilo-final-due" className="text-xs text-slate-400">Splatnost doplatku (dnů)</label>
                     <input
+                      id="f-dilo-final-due"
                       type="number"
+                      min="1"
                       aria-label="Splatnost doplatku"
                       className={`${inputClass} mt-2`}
                       value={formData.finalPaymentDays}
@@ -614,9 +748,11 @@ export default function WorkContractPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Splatnost faktur (dnů)</label>
+                    <label htmlFor="f-dilo-invoice-due" className="text-xs text-slate-400">Splatnost faktur (dnů)</label>
                     <input
+                      id="f-dilo-invoice-due"
                       type="number"
+                      min="1"
                       aria-label="Splatnost faktur"
                       className={`${inputClass} mt-2`}
                       value={formData.invoiceDueDays}
@@ -624,8 +760,9 @@ export default function WorkContractPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Bankovní účet zhotovitele</label>
+                    <label htmlFor="f-dilo-bank" className="text-xs text-slate-400">Bankovní účet zhotovitele</label>
                     <input
+                      id="f-dilo-bank"
                       type="text"
                       aria-label="Bankovní účet"
                       placeholder="123456789/0100"
@@ -635,8 +772,9 @@ export default function WorkContractPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Variabilní symbol</label>
+                    <label htmlFor="f-dilo-vs" className="text-xs text-slate-400">Variabilní symbol</label>
                     <input
+                      id="f-dilo-vs"
                       type="text"
                       aria-label="Variabilní symbol"
                       className={`${inputClass} mt-2`}
@@ -645,8 +783,9 @@ export default function WorkContractPage() {
                     />
                   </div>
                   <div className="md:col-span-2">
-                    <label className="flex items-center gap-3 text-sm text-slate-300 cursor-pointer">
+                    <label htmlFor="f-dilo-vat" className="flex items-center gap-3 text-sm text-slate-300 cursor-pointer">
                       <input
+                        id="f-dilo-vat"
                         type="checkbox"
                         checked={formData.vatIncluded}
                         onChange={(e) => updateField('vatIncluded', e.target.checked)}
@@ -657,8 +796,9 @@ export default function WorkContractPage() {
                   </div>
 
                   <div>
-                    <label className="text-xs text-slate-400">Zahájení prací</label>
+                    <label htmlFor="f-dilo-start" className="text-xs text-slate-400">Zahájení prací</label>
                     <input
+                      id="f-dilo-start"
                       aria-label="Zahájení prací"
                       type="date"
                       className={`${inputClass} mt-2`}
@@ -667,8 +807,9 @@ export default function WorkContractPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Dokončení díla</label>
+                    <label htmlFor="f-dilo-end" className="text-xs text-slate-400">Dokončení díla</label>
                     <input
+                      id="f-dilo-end"
                       aria-label="Dokončení díla"
                       type="date"
                       className={`${inputClass} mt-2`}
@@ -685,20 +826,24 @@ export default function WorkContractPage() {
                 </h3>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="text-xs text-slate-400">Záruka (měsíce)</label>
+                    <label htmlFor="f-dilo-warranty" className="text-xs text-slate-400">Záruka (měsíce)</label>
                     <input
+                      id="f-dilo-warranty"
                       aria-label="Záruka (měsíce)"
                       type="number"
+                      min="0"
                       className={`${inputClass} mt-2`}
                       value={formData.warrantyMonths}
                       onChange={(e) => updateField('warrantyMonths', e.target.value)}
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Pokuta za prodlení zhotovitele (%/den)</label>
+                    <label htmlFor="f-dilo-delay-pen" className="text-xs text-slate-400">Pokuta za prodlení zhotovitele (%/den)</label>
                     <input
+                      id="f-dilo-delay-pen"
                       aria-label="Pokuta za prodlení zhotovitele"
                       type="number"
+                      min="0"
                       step="0.01"
                       className={`${inputClass} mt-2`}
                       value={formData.delayPenaltyPerDay}
@@ -706,10 +851,12 @@ export default function WorkContractPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Pokuta za prodlení objednatele (%/den)</label>
+                    <label htmlFor="f-dilo-client-pen" className="text-xs text-slate-400">Pokuta za prodlení objednatele (%/den)</label>
                     <input
+                      id="f-dilo-client-pen"
                       aria-label="Pokuta za prodlení objednatele"
                       type="number"
+                      min="0"
                       step="0.01"
                       className={`${inputClass} mt-2`}
                       value={formData.clientPenaltyPerDay}
@@ -717,20 +864,24 @@ export default function WorkContractPage() {
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Pokuta za vady (% z ceny)</label>
+                    <label htmlFor="f-dilo-defect-pen" className="text-xs text-slate-400">Pokuta za vady (% z ceny)</label>
                     <input
+                      id="f-dilo-defect-pen"
                       aria-label="Pokuta za vady"
                       type="number"
+                      min="0"
                       className={`${inputClass} mt-2`}
                       value={formData.defectPenaltyPercent}
                       onChange={(e) => updateField('defectPenaltyPercent', e.target.value)}
                     />
                   </div>
                   <div>
-                    <label className="text-xs text-slate-400">Strop pokut celkem (% z ceny)</label>
+                    <label htmlFor="f-dilo-max-pen" className="text-xs text-slate-400">Strop pokut celkem (% z ceny)</label>
                     <input
+                      id="f-dilo-max-pen"
                       aria-label="Strop pokut"
                       type="number"
+                      min="0"
                       className={`${inputClass} mt-2`}
                       value={formData.maxPenaltyPercent}
                       onChange={(e) => updateField('maxPenaltyPercent', e.target.value)}

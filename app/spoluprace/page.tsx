@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import { useMemo, useState } from 'react';
+import React, { useId, useMemo, useState } from 'react';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import { useBuilderDraft } from '@/lib/use-builder-draft';
 import ContractPreview from '@/app/components/ContractPreview';
@@ -35,7 +35,12 @@ const inputClass = 'site-input';
 const cardClass = 'builder-card p-6';
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (<label className="block"><span className="site-form-label">{label}</span>{children}</label>);
+  const autoId = useId();
+  const child = React.isValidElement<{ id?: string }>(children)
+    ? React.cloneElement(children, { id: children.props.id ?? autoId })
+    : children;
+  const targetId = React.isValidElement<{ id?: string }>(child) ? child.props.id : autoId;
+  return (<label htmlFor={targetId} className="block"><span className="site-form-label">{label}</span>{child}</label>);
 }
 function SectionTitle({ index, title, subtitle }: { index: string; title: string; subtitle?: string }) {
   return (<div className="mb-6"><div className="builder-kicker">{index}. {title}</div>{subtitle && <p className="builder-help mt-2 text-sm">{subtitle}</p>}</div>);

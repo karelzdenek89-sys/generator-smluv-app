@@ -226,15 +226,22 @@ function LeaseBuilderContent() {
   };
 
   const numbers = useMemo(() => {
-    const rent = Number(formData.rentAmount) || 0;
-    const utils = Number(formData.utilityAmount) || 0;
-    const deposit = Number(formData.depositAmount) || 0;
+    const rawRent = Number(formData.rentAmount) || 0;
+    const rawUtils = Number(formData.utilityAmount) || 0;
+    const rawDeposit = Number(formData.depositAmount) || 0;
+    const rent = Math.max(0, rawRent);
+    const utils = Math.max(0, rawUtils);
+    const deposit = Math.max(0, rawDeposit);
 
     return {
       rent,
       utils,
       deposit,
       total: rent + utils,
+      hasNegative:
+        (formData.rentAmount.trim() !== '' && rawRent < 0) ||
+        (formData.utilityAmount.trim() !== '' && rawUtils < 0) ||
+        (formData.depositAmount.trim() !== '' && rawDeposit < 0),
     };
   }, [formData.rentAmount, formData.utilityAmount, formData.depositAmount]);
 
@@ -329,7 +336,20 @@ function LeaseBuilderContent() {
 
     const rentNum = Number(formData.rentAmount) || 0;
     const depositNum = Number(formData.depositAmount) || 0;
+    if (numbers.hasNegative || (formData.rentAmount.trim() !== '' && rentNum <= 0)) {
+      score -= 30;
+      warnings.push({
+        text:
+          builderLocale === 'en'
+            ? 'Rent, utilities and security deposit amounts cannot be negative or zero.'
+            : builderLocale === 'ua'
+              ? 'Суми орендної плати, комунальних послуг та застави не можуть бути від’ємними або нульовими.'
+              : 'Částky nájemného, služeb a kauce nesmí být záporné a nájemné musí být větší než 0 Kč.',
+        level: 'high',
+      });
+    }
     if (rentNum > 0 && depositNum > rentNum * 3) {
+      score -= 25;
       warnings.push({ text: ui.risk.depositMax, level: 'high' });
     }
 
@@ -792,53 +812,63 @@ function LeaseBuilderContent() {
               />
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-[0.12em] text-slate-400 mb-1.5">
+                  <label htmlFor="f-lease-start-date" className="block text-xs font-bold uppercase tracking-[0.12em] text-slate-400 mb-1.5">
                     {ui.form.labels.startDate}
                   </label>
                   <input
+                    id="f-lease-start-date"
                     value={formData.startDate}
                     onChange={handleChange}
                     type="date"
                     name="startDate"
                     data-testid="lease-start-date"
-                    className={inputClass} aria-label="Start Date" required
+                    className={inputClass} aria-label={ui.form.labels.startDate} required
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-[0.12em] text-slate-400 mb-1.5">
+                  <label htmlFor="f-lease-handover-date" className="block text-xs font-bold uppercase tracking-[0.12em] text-slate-400 mb-1.5">
                     {ui.form.labels.handoverDate}
                   </label>
                   <input
+                    id="f-lease-handover-date"
                     value={formData.handoverDate}
                     onChange={handleChange}
                     type="date"
                     name="handoverDate"
-                    className={inputClass} aria-label="Handover Date"
+                    className={inputClass} aria-label={ui.form.labels.handoverDate}
                   />
                 </div>
               </div>
 
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
-                <select
-                  value={formData.duration}
-                  onChange={handleChange}
-                  name="duration"
-                  className={inputClass}
-                  aria-label={ui.form.sections.term.title}
-                >
-                  <option value="fixed">{ui.form.duration.fixed}</option>
-                  <option value="indefinite">{ui.form.duration.indefinite}</option>
-                </select>
+                <div>
+                  <label htmlFor="f-lease-duration" className="sr-only">{ui.form.sections.term.title}</label>
+                  <select
+                    id="f-lease-duration"
+                    value={formData.duration}
+                    onChange={handleChange}
+                    name="duration"
+                    className={inputClass}
+                    aria-label={ui.form.sections.term.title}
+                  >
+                    <option value="fixed">{ui.form.duration.fixed}</option>
+                    <option value="indefinite">{ui.form.duration.indefinite}</option>
+                  </select>
+                </div>
 
                 {formData.duration === 'fixed' ? (
-                  <input
-                    value={formData.endDate}
-                    onChange={handleChange}
-                    type="date"
-                    name="endDate"
-                    data-testid="lease-end-date"
-                    className={inputClass} aria-label="End Date"
-                  />
+                  <div>
+                    <label htmlFor="f-lease-end-date" className="sr-only">{ui.form.duration.fixed}</label>
+                    <input
+                      id="f-lease-end-date"
+                      value={formData.endDate}
+                      onChange={handleChange}
+                      type="date"
+                      name="endDate"
+                      data-testid="lease-end-date"
+                      className={inputClass} aria-label={ui.form.duration.fixed}
+                    />
+                  </div>
                 ) : (
                   <div className="rounded-xl border border-dashed border-slate-700 px-4 py-3 text-sm text-slate-400 bg-[#111c31]">
                     {ui.form.duration.indefiniteHint}
@@ -847,66 +877,95 @@ function LeaseBuilderContent() {
               </div>
 
               <div className="grid sm:grid-cols-3 gap-4 mb-4">
-                <input
-                  value={formData.rentAmount}
-                  onChange={handleChange}
-                  type="number"
-                  name="rentAmount"
-                  data-testid="lease-rent-amount"
-                  placeholder={ui.form.placeholders.rent}
-                  className={inputClass} aria-label={ui.form.placeholders.rent} required
-                />
-                <input
-                  value={formData.utilityAmount}
-                  onChange={handleChange}
-                  type="number"
-                  name="utilityAmount"
-                  placeholder={ui.form.placeholders.utilities}
-                  className={inputClass} aria-label={ui.form.placeholders.utilities}
-                />
                 <div>
+                  <label htmlFor="f-lease-rent" className="sr-only">{ui.form.placeholders.rent}</label>
                   <input
+                    id="f-lease-rent"
+                    value={formData.rentAmount}
+                    onChange={handleChange}
+                    type="number"
+                    min="0"
+                    name="rentAmount"
+                    data-testid="lease-rent-amount"
+                    placeholder={ui.form.placeholders.rent}
+                    className={inputClass} aria-label={ui.form.placeholders.rent} required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="f-lease-utilities" className="sr-only">{ui.form.placeholders.utilities}</label>
+                  <input
+                    id="f-lease-utilities"
+                    value={formData.utilityAmount}
+                    onChange={handleChange}
+                    type="number"
+                    min="0"
+                    name="utilityAmount"
+                    placeholder={ui.form.placeholders.utilities}
+                    className={inputClass} aria-label={ui.form.placeholders.utilities}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="f-lease-deposit" className="sr-only">{ui.form.placeholders.deposit}</label>
+                  <input
+                    id="f-lease-deposit"
                     value={formData.depositAmount}
                     onChange={handleChange}
                     type="number"
+                    min="0"
                     name="depositAmount"
                     placeholder={ui.form.placeholders.deposit}
                     className={inputClass} aria-label={ui.form.placeholders.deposit}
                   />
                   {Number(formData.rentAmount) > 0 &&
                     Number(formData.depositAmount) > 0 &&
-                    (Number(formData.depositAmount) > Number(formData.rentAmount) * 3 || formData.strictPenalties) && (
+                    Number(formData.depositAmount) > Number(formData.rentAmount) * 3 && (
                     <p className="mt-1.5 text-xs text-red-400 font-medium">{ui.form.depositWarning}</p>
                   )}
                 </div>
               </div>
 
               <div className="grid sm:grid-cols-3 gap-4 mb-4">
-                <input
-                  value={formData.bankAccount}
-                  onChange={handleChange}
-                  name="bankAccount"
-                  placeholder={ui.form.placeholders.bankAccount}
-                  className={inputClass} aria-label={ui.form.placeholders.bankAccount}
-                />
-                <input
-                  value={formData.paymentDay}
-                  onChange={handleChange}
-                  type="number"
-                  name="paymentDay"
-                  placeholder={ui.form.placeholders.paymentDay}
-                  className={inputClass} aria-label={ui.form.placeholders.paymentDay}
-                />
-                <input
-                  value={formData.variableSymbol}
-                  onChange={handleChange}
-                  name="variableSymbol"
-                  placeholder={ui.form.placeholders.variableSymbol}
-                  className={inputClass} aria-label={ui.form.placeholders.variableSymbol}
-                />
+                <div>
+                  <label htmlFor="f-lease-bank" className="sr-only">{ui.form.placeholders.bankAccount}</label>
+                  <input
+                    id="f-lease-bank"
+                    value={formData.bankAccount}
+                    onChange={handleChange}
+                    name="bankAccount"
+                    placeholder={ui.form.placeholders.bankAccount}
+                    className={inputClass} aria-label={ui.form.placeholders.bankAccount}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="f-lease-payday" className="sr-only">{ui.form.placeholders.paymentDay}</label>
+                  <input
+                    id="f-lease-payday"
+                    value={formData.paymentDay}
+                    onChange={handleChange}
+                    type="number"
+                    min="1"
+                    max="31"
+                    name="paymentDay"
+                    placeholder={ui.form.placeholders.paymentDay}
+                    className={inputClass} aria-label={ui.form.placeholders.paymentDay}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="f-lease-vs" className="sr-only">{ui.form.placeholders.variableSymbol}</label>
+                  <input
+                    id="f-lease-vs"
+                    value={formData.variableSymbol}
+                    onChange={handleChange}
+                    name="variableSymbol"
+                    placeholder={ui.form.placeholders.variableSymbol}
+                    className={inputClass} aria-label={ui.form.placeholders.variableSymbol}
+                  />
+                </div>
               </div>
 
+              <label htmlFor="f-lease-utilities-text" className="sr-only">{ui.form.placeholders.utilitiesDetail}</label>
               <textarea
+                id="f-lease-utilities-text"
                 value={formData.utilitiesIncludedText}
                 onChange={handleChange}
                 name="utilitiesIncludedText"
@@ -919,10 +978,15 @@ function LeaseBuilderContent() {
                   {ui.form.paymentSummary.heading}
                 </div>
                 <div className="text-sm text-slate-300">
-                  {ui.form.paymentSummary.rent}: <span className="font-bold text-white">{numbers.rent || 0} Kč</span> ·
-                  {ui.form.paymentSummary.utilities}: <span className="font-bold text-white">{numbers.utils || 0} Kč</span> ·
-                  {ui.form.paymentSummary.total}: <span className="font-bold text-emerald-300">{numbers.total || 0} Kč</span>
+                  {ui.form.paymentSummary.rent}: <span className="font-bold text-white">{(numbers.rent || 0).toLocaleString('cs-CZ', { maximumFractionDigits: 2 })} Kč</span> ·
+                  {ui.form.paymentSummary.utilities}: <span className="font-bold text-white">{(numbers.utils || 0).toLocaleString('cs-CZ', { maximumFractionDigits: 2 })} Kč</span> ·
+                  {ui.form.paymentSummary.total}: <span className="font-bold text-emerald-300">{(numbers.total || 0).toLocaleString('cs-CZ', { maximumFractionDigits: 2 })} Kč</span>
                 </div>
+                {numbers.hasNegative ? (
+                  <p className="mt-1.5 text-xs text-red-400 font-medium" role="alert">
+                    ⚠ Částky nájemného, služeb a kauce nemohou být záporné.
+                  </p>
+                ) : null}
               </div>
             </section>
 
@@ -1141,15 +1205,17 @@ function LeaseBuilderContent() {
               </div>
 
               <div className="rounded-2xl border border-slate-700/80 bg-[#111c31] p-4 w-fit">
-                <div className="text-xs uppercase tracking-widest text-slate-400 mb-2">
+                <label htmlFor="f-lease-max-occupants" className="block text-xs uppercase tracking-widest text-slate-400 mb-2">
                   {ui.form.labels.maxOccupants}
-                </div>
+                </label>
                 <input
+                  id="f-lease-max-occupants"
                   value={formData.maxOccupants}
                   onChange={handleChange}
                   type="number"
+                  min="1"
                   name="maxOccupants"
-                  className="bg-transparent w-24 text-2xl font-black text-white outline-none" aria-label="Max Occupants"
+                  className="bg-transparent w-24 text-2xl font-black text-white outline-none" aria-label={ui.form.labels.maxOccupants}
                 />
               </div>
 

@@ -1,6 +1,8 @@
 import { DOCUMENT_CATALOG } from '@/lib/document-catalog';
 import { EXPAT_SEO_LOCALES, EXPAT_SEO_SLUGS, getExpatSeoLandingBySlug } from '@/lib/i18n/expat-seo-landings';
+import { LEGAL_CHANGES, LEGAL_CHANGE_STATUS_LABELS } from '@/lib/legal/radar';
 import { getAvailableThematicPackages } from '@/lib/packages';
+import { ANSWER_FIRST_ARTICLES, articleHref } from '@/lib/portal/articles';
 import { PORTAL_TOOLS } from '@/lib/portal/tools';
 import { BASIC_ARCHIVE_DAYS, COMPLETE_ARCHIVE_DAYS, PRICING_TIER_CONFIG } from '@/lib/pricing';
 import { SITE_URL } from '@/lib/seo/site';
@@ -85,7 +87,66 @@ export function buildLlmsTxt(): string {
     '',
     '## Optional',
     '',
+    `- [Úplný znalostní kontext pro AI (llms-full.txt)](${url('/llms-full.txt')}): kompletní přehled zákonných limitů 2026/2027, stavebních a daňových pravidel, nástrojů a legislativního radaru s oficiálními zdroji.`,
     `- [Sitemap](${url('/sitemap.xml')}): úplný seznam indexovatelných stránek.`,
+    '',
+  ].join('\n');
+}
+
+/**
+ * /llms-full.txt — rozšířený strojově čitelný znalostní kontext pro AI boty,
+ * vyhledávače a RAG systémy. Obsahuje plný přehled zákonných limitů 2026/2027,
+ * pravidel pro stavební zakázky a vícepráce, všech nástrojů, legislativního
+ * radaru 2027 a stručných odpovědí z průvodců včetně citací primárních zdrojů.
+ */
+export function buildLlmsFullTxt(): string {
+  const url = (path: string) => `${SITE_URL}${path}`;
+
+  const toolDetails = PORTAL_TOOLS.flatMap((tool) => [
+    `### ${tool.title} (${url(`/nastroje/${tool.slug}`)})`,
+    `- Shrnutí: ${tool.answer}`,
+    ...(tool.legalNote ? [`- Právní základ: ${tool.legalNote}`] : []),
+    ...tool.sources.map((src) => `- Oficiální zdroj: [${src.label}](${src.href})`),
+    '',
+  ]);
+
+  const radarDetails = LEGAL_CHANGES.flatMap((change) => [
+    `### ${change.title}`,
+    `- Status: ${LEGAL_CHANGE_STATUS_LABELS[change.status]} (${change.dateLabel})`,
+    `- Shrnutí: ${change.summary}`,
+    ...change.whatChanges.map((item) => `- Co se mění: ${item}`),
+    ...change.whatToDo.map((item) => `- Doporučený krok: ${item}`),
+    ...change.sources.map((src) => `- Oficiální zdroj (${src.publisher}): [${src.label}](${src.href})`),
+    '',
+  ]);
+
+  const articleSummaries = ANSWER_FIRST_ARTICLES.flatMap((art) => [
+    `- [${art.title}](${url(articleHref(art))}): ${art.answer}`,
+  ]);
+
+  return [
+    buildLlmsTxt().trimEnd(),
+    '',
+    '## Klíčové zákonné limity a konstanty (ČR 2026–2027, oficiální zdroje)',
+    '',
+    '- Minimální mzda 2026: 22 400 Kč měsíčně / 134,40 Kč za hodinu při 40h týdenní pracovní době (§ 111 zákoníku práce č. 262/2006 Sb., sdělení MPSV).',
+    '- Minimální mzda 2027 (schváleno vládou 7. 9. 2026, účinnost od 1. 1. 2027): 24 900 Kč měsíčně / 148,30 Kč za hodinu.',
+    '- Dohoda o provedení práce (DPP, § 75 ZP): maximálně 300 hodin v kalendářním roce u jednoho zaměstnavatele; rozhodná částka pro účast na nemocenském a důchodovém pojištění v roce 2026 činí 12 000 Kč měsíčně; nárok na dovolenou vzniká při trvání dohody alespoň 28 kalendářních dnů a odpracování alespoň 80 hodin.',
+    '- Nájem bytu (§ 2235 a násl. občanského zákoníku č. 89/2012 Sb.): peněžitá jistota (kauce) a smluvní pokuty nesmí v souhrnu překročit trojnásobek měsíčního nájemného (§ 2254 OZ).',
+    '- Smlouva o dílo, stavební zakázky a vícepráce (§ 2586–2650 OZ): při pevné ceně nebo zaručeném rozpočtu (§ 2620 OZ) nelze cenu zvýšit bez písemné dohody (§ 564 OZ). U rozpočtu s výhradou neúplnosti nebo nezávaznosti (§ 2621–2622 OZ) musí zhotovitel potřebu překročení oznámit bez zbytečného odkladu; požaduje-li zvýšení o více než 10 % původního rozpočtu, může objednatel bez zbytečného odkladu odstoupit (§ 2622 odst. 2 OZ). U stavby nelze odmítnout převzetí pro ojedinělé drobné vady, které samy o sobě ani ve spojení s jinými nebrání užívání stavby (§ 2628 OZ).',
+    '- Stavební deník a dokumentace stavby: vedení stavebního deníku upravuje § 166 stavebního zákona č. 283/2021 Sb. a náležitosti dokumentace vyhláška č. 131/2024 Sb.',
+    '- DPH ve stavebnictví (zákon č. 235/2004 Sb. o DPH): snížená sazba 12 % (§ 48 a § 48a ZDPH) pro stavební a montážní práce na dokončené stavbě pro bydlení či sociální bydlení (byt do 120 m², rodinný dům do 350 m²); základní sazba 21 % pro ostatní stavby; režim přenesení daňové povinnosti (§ 92e ZDPH) mezi dvěma plátci DPH u stavebních a montážních prací CZ-CPA 41–43.',
+    '- Smlouva o zápůjčce (§ 2390 a násl. OZ): při nepřiměřeně vysokém úroku (orientačně nad 15 % p.a. u běžných zajištěných či standardních vztahů) hrozí neplatnost pro lichvu (§ 1796 OZ, rozsudek Nejvyššího soudu sp. zn. 32 Cdo 2234/2021).',
+    '',
+    '## Podrobný přehled nástrojů a právních východisek',
+    '',
+    ...toolDetails,
+    '## Legislativní radar 2027 — sledované změny a oficiální zdroje',
+    '',
+    ...radarDetails,
+    '## Praktické právní průvodce (Stručné odpovědi)',
+    '',
+    ...articleSummaries,
     '',
   ].join('\n');
 }

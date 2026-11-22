@@ -1,7 +1,8 @@
 'use client';
 
-import { use, useMemo, useState } from 'react';
+import React, { use, useId, useMemo, useState } from 'react';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
+import { isValidMoney } from '@/lib/money';
 import { useBuilderDraft } from '@/lib/use-builder-draft';
 import ContractPreview from '@/app/components/ContractPreview';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
@@ -46,10 +47,15 @@ const inputClass = 'site-input';
 const cardClass = 'builder-card p-6';
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  const autoId = useId();
+  const child = React.isValidElement<{ id?: string }>(children)
+    ? React.cloneElement(children, { id: children.props.id ?? autoId })
+    : children;
+  const targetId = React.isValidElement<{ id?: string }>(child) ? child.props.id : autoId;
   return (
-    <label className="block">
+    <label htmlFor={targetId} className="block">
       <span className="site-form-label">{label}</span>
-      {children}
+      {child}
     </label>
   );
 }
@@ -128,7 +134,7 @@ function DppPageContent() {
     if (form.durationType === 'fixed' && !form.startDate) missing.push(validationFields.startDate);
     if (form.durationType === 'fixed' && !form.endDate) missing.push(validationFields.endDate);
     const activePay = form.remunerationType === 'hourly' ? form.hourlyRate : form.totalRemuneration;
-    if (!activePay) {
+    if (!isValidMoney(activePay)) {
       missing.push(validationFields.remuneration);
     }
     if (missing.length > 0) {
@@ -331,11 +337,11 @@ function DppPageContent() {
                     </select>
                   </Field>
                   {form.remunerationType === 'fixed'
-                    ? <Field label={ui.fields.totalRemuneration}><input className={inputClass} name="totalRemuneration" value={form.totalRemuneration} onChange={set} type="number" placeholder={ui.page.placeholders.totalRemuneration} /></Field>
+                    ? <Field label={ui.fields.totalRemuneration}><input className={inputClass} name="totalRemuneration" value={form.totalRemuneration} onChange={set} type="number" min="1" placeholder={ui.page.placeholders.totalRemuneration} /></Field>
                     : <Field label={ui.fields.hourlyRate}><input className={inputClass} name="hourlyRate" value={form.hourlyRate} onChange={set} type="number" min={MIN_WAGE_HOURLY_2026_CZK} step="0.1" placeholder={ui.page.placeholders.hourlyRate} /></Field>
                   }
                   <Field label={ui.fields.paymentAccount}><input className={inputClass} name="paymentAccount" value={form.paymentAccount} onChange={set} placeholder={ui.page.placeholders.paymentAccount} /></Field>
-                  <Field label={ui.fields.paymentDays}><input className={inputClass} name="paymentDays" value={form.paymentDays} onChange={set} type="number" /></Field>
+                  <Field label={ui.fields.paymentDays}><input className={inputClass} name="paymentDays" value={form.paymentDays} onChange={set} type="number" min="1" /></Field>
                 </div>
               </section>
 

@@ -116,5 +116,38 @@ assert.equal(
   false,
   'DPP fixed remuneration requires hours so minimum pay can be checked',
 );
+assert.equal(
+  validateContractPayload('work_contract', {
+    ...fixtures.work_contract,
+    paymentType: 'with_deposit',
+    depositAmount: '60000',
+  }).success,
+  false,
+  'work_contract deposit exceeding total priceAmount must fail',
+);
+assert.equal(
+  validateContractPayload('work_contract', {
+    ...fixtures.work_contract,
+    warrantyMonths: '-6',
+  }).success,
+  false,
+  'work_contract negative warrantyMonths must fail',
+);
+assert.equal(
+  validateContractPayload('loan', {
+    ...fixtures.loan,
+    interestRate: '-5',
+  }).success,
+  false,
+  'loan negative interestRate must fail',
+);
+assert.equal(
+  validateContractPayload('lease', {
+    ...fixtures.lease,
+    utilityAmount: '-500',
+  }).success,
+  false,
+  'lease negative utilityAmount must fail',
+);
 
 console.log(`Checkout validation tests passed for ${CONTRACT_TYPES.length} contract types.`);

@@ -122,7 +122,7 @@ const emptyLine = '—';
 const formatAmount = (amount?: unknown) => {
   if (amount === null || amount === undefined || amount === '') return '—';
   const num = Number(amount);
-  if (!Number.isFinite(num)) return '—';
+  if (!Number.isFinite(num) || num < 0) return '—';
   return num.toLocaleString('cs-CZ');
 };
 
@@ -455,7 +455,7 @@ function buildWorkContractSections(d: StoredContractData): ContractSection[] {
     {
       title: 'V. ODPOVĚDNOST ZA VADY, ZÁRUKA A SMLUVNÍ SANKCE',
       body: [
-        `Smluvní záruka za jakost díla: ${asText(d.warrantyMonths, '24')} měsíců od řádného předání a akceptace díla (§ 2619 OZ). Záruční doba počíná běžet dnem podpisu předávacího protokolu. U stavebního díla je třeba rozlišovat smluvní záruku od zákonné lhůty k oznámení skryté vady: skrytou vadu stavby je nutné vytknout bez zbytečného odkladu po zjištění, nejpozději do pěti let od převzetí (§ 2629 OZ); jde-li o spotřebitele, vada projevená do dvou let se považuje za existující již při převzetí, neprokáže-li se opak.`,
+        `Smluvní záruka za jakost díla: ${Number(d.warrantyMonths) >= 0 ? asText(d.warrantyMonths, '24') : '24'} měsíců od řádného předání a akceptace díla (§ 2619 OZ). Záruční doba počíná běžet dnem podpisu předávacího protokolu. U stavebního díla je třeba rozlišovat smluvní záruku od zákonné lhůty k oznámení skryté vady: skrytou vadu stavby je nutné vytknout bez zbytečného odkladu po zjištění, nejpozději do pěti let od převzetí (§ 2629 OZ); jde-li o spotřebitele, vada projevená do dvou let se považuje za existující již při převzetí, neprokáže-li se opak.`,
         `Smluvní pokuta za prodlení zhotovitele s předáním díla: ${asText(d.delayPenaltyPerDay, '0,05')} % z celkové ceny díla za každý den prodlení, max. ${asText(d.maxPenaltyPercent, '15')} % z ceny díla. Smluvní pokuta se neuplatní, bylo-li prodlení způsobeno výlučně okolností vyšší moci nebo prodlením objednatele s poskytnutím součinnosti.`,
         `Smluvní pokuta za prodlení objednatele s úhradou: ${asText(d.clientPenaltyPerDay, '0,05')} % z dlužné částky za každý den prodlení.`,
         `Smluvní pokuta za neodstranění vad v přiměřené lhůtě: ${asText(d.defectPenaltyPercent, '10')} % z ceny díla.`,

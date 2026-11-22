@@ -131,9 +131,9 @@ export default function LoanBuilderPage() {
       score -= 15;
       warnings.push({ text: 'Doporučujeme vyplnit rodné číslo / IČO obou stran.', level: 'medium' });
     }
-    if (!formData.loanAmount) {
-      score -= 20;
-      warnings.push({ text: 'Doplňte výši zápůjčky.', level: 'high' });
+    if (!formData.loanAmount || Number(formData.loanAmount) <= 0) {
+      score -= 25;
+      warnings.push({ text: 'Zadejte kladnou výši zápůjčky.', level: 'high' });
     }
     if (!formData.repaymentDate && formData.repaymentType === 'lump_sum') {
       score -= 15;
@@ -147,7 +147,11 @@ export default function LoanBuilderPage() {
       score -= 5;
       warnings.push({ text: 'Doporučujeme vyplnit číslo účtu pro splácení.', level: 'low' });
     }
-    if (Number(formData.interestRate) > 15) {
+    if (String(formData.interestRate ?? '').trim() !== '' && Number(formData.interestRate) < 0) {
+      score -= 25;
+      warnings.push({ text: 'Úroková sazba nemůže být záporná.', level: 'high' });
+    } else if (Number(formData.interestRate) > 15) {
+      score -= 20;
       warnings.push({ text: 'Úrok přesahuje 15 % p.a. — hrozí neplatnost pro lichvu (§ 1796 OZ, NS 32 Cdo 2234/2021). Doporučujeme max. 15 % p.a.', level: 'high' });
     }
     return {
@@ -173,6 +177,7 @@ export default function LoanBuilderPage() {
     if (!formData.lenderName?.trim()) missing.push('jméno věřitele');
     if (!formData.borrowerName?.trim()) missing.push('jméno vydlužitele');
     if (!isValidMoney(formData.loanAmount)) missing.push('výši zápůjčky');
+    if (String(formData.interestRate ?? '').trim() !== '' && Number(formData.interestRate) < 0) missing.push('nezápornou úrokovou sazbu');
     if (formData.repaymentType === 'lump_sum' && !formData.repaymentDate) missing.push('datum splatnosti');
     if (formData.repaymentType === 'installments' && (!formData.installmentCount || !formData.installmentAmount)) missing.push('počet a výši splátek');
     if (formData.securityType === 'guarantee' && !formData.guarantorName?.trim()) missing.push('jméno ručitele');
@@ -279,20 +284,20 @@ export default function LoanBuilderPage() {
                 <SectionTitle index="01" title="Věřitel (půjčující)" subtitle="Osoba nebo firma, která peníze poskytuje." />
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label className={labelClass}>Jméno / název *</label>
-                    <input name="lenderName" value={formData.lenderName} onChange={e => set('lenderName', e.target.value)} placeholder="Jan Novák" aria-label="Jméno / název *" className={inputClass} />
+                    <label htmlFor="f-loan-lender-name" className={labelClass}>Jméno / název *</label>
+                    <input id="f-loan-lender-name" name="lenderName" value={formData.lenderName} onChange={e => set('lenderName', e.target.value)} placeholder="Jan Novák" aria-label="Jméno / název *" className={inputClass} />
                   </div>
                   <div>
-                    <label className={labelClass}>Rodné číslo / IČO</label>
-                    <input value={formData.lenderId} onChange={e => set('lenderId', e.target.value)} placeholder="760101/1234" aria-label="Rodné číslo / IČO" className={inputClass} />
+                    <label htmlFor="f-loan-lender-id" className={labelClass}>Rodné číslo / IČO</label>
+                    <input id="f-loan-lender-id" value={formData.lenderId} onChange={e => set('lenderId', e.target.value)} placeholder="760101/1234" aria-label="Rodné číslo / IČO" className={inputClass} />
                   </div>
                   <div>
-                    <label className={labelClass}>Adresa / sídlo</label>
-                    <input value={formData.lenderAddress} onChange={e => set('lenderAddress', e.target.value)} placeholder="Ulice 1, Praha 1" aria-label="Adresa / sídlo" className={inputClass} />
+                    <label htmlFor="f-loan-lender-addr" className={labelClass}>Adresa / sídlo</label>
+                    <input id="f-loan-lender-addr" value={formData.lenderAddress} onChange={e => set('lenderAddress', e.target.value)} placeholder="Ulice 1, Praha 1" aria-label="Adresa / sídlo" className={inputClass} />
                   </div>
                   <div>
-                    <label className={labelClass}>E-mail</label>
-                    <input type="email" value={formData.lenderEmail} onChange={e => set('lenderEmail', e.target.value)} placeholder="jan@email.cz" aria-label="E-mail" className={inputClass} />
+                    <label htmlFor="f-loan-lender-email" className={labelClass}>E-mail</label>
+                    <input id="f-loan-lender-email" type="email" value={formData.lenderEmail} onChange={e => set('lenderEmail', e.target.value)} placeholder="jan@email.cz" aria-label="E-mail" className={inputClass} />
                   </div>
                 </div>
               </section>
@@ -302,24 +307,24 @@ export default function LoanBuilderPage() {
                 <SectionTitle index="02" title="Dlužník (přijímající)" subtitle="Osoba nebo firma, která peníze přijímá." />
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label className={labelClass}>Jméno / název *</label>
-                    <input name="borrowerName" value={formData.borrowerName} onChange={e => set('borrowerName', e.target.value)} placeholder="Petra Svobodová" aria-label="Jméno / název *" className={inputClass} />
+                    <label htmlFor="f-loan-borrower-name" className={labelClass}>Jméno / název *</label>
+                    <input id="f-loan-borrower-name" name="borrowerName" value={formData.borrowerName} onChange={e => set('borrowerName', e.target.value)} placeholder="Petra Svobodová" aria-label="Jméno / název *" className={inputClass} />
                   </div>
                   <div>
-                    <label className={labelClass}>Rodné číslo / IČO</label>
-                    <input value={formData.borrowerId} onChange={e => set('borrowerId', e.target.value)} placeholder="900315/5678" aria-label="Rodné číslo / IČO" className={inputClass} />
+                    <label htmlFor="f-loan-borrower-id" className={labelClass}>Rodné číslo / IČO</label>
+                    <input id="f-loan-borrower-id" value={formData.borrowerId} onChange={e => set('borrowerId', e.target.value)} placeholder="900315/5678" aria-label="Rodné číslo / IČO" className={inputClass} />
                   </div>
                   <div>
-                    <label className={labelClass}>Adresa / sídlo</label>
-                    <input value={formData.borrowerAddress} onChange={e => set('borrowerAddress', e.target.value)} placeholder="Dlouhá 5, Brno" aria-label="Adresa / sídlo" className={inputClass} />
+                    <label htmlFor="f-loan-borrower-addr" className={labelClass}>Adresa / sídlo</label>
+                    <input id="f-loan-borrower-addr" value={formData.borrowerAddress} onChange={e => set('borrowerAddress', e.target.value)} placeholder="Dlouhá 5, Brno" aria-label="Adresa / sídlo" className={inputClass} />
                   </div>
                   <div>
-                    <label className={labelClass}>E-mail</label>
-                    <input type="email" value={formData.borrowerEmail} onChange={e => set('borrowerEmail', e.target.value)} placeholder="petra@email.cz" aria-label="E-mail" className={inputClass} />
+                    <label htmlFor="f-loan-borrower-email" className={labelClass}>E-mail</label>
+                    <input id="f-loan-borrower-email" type="email" value={formData.borrowerEmail} onChange={e => set('borrowerEmail', e.target.value)} placeholder="petra@email.cz" aria-label="E-mail" className={inputClass} />
                   </div>
                   <div className="sm:col-span-2">
-                    <label className={labelClass}>Číslo účtu dlužníka (pro převod)</label>
-                    <input value={formData.borrowerBankAccount} onChange={e => set('borrowerBankAccount', e.target.value)} placeholder="CZ65 0800 0000 1920 0014 5399" aria-label="Číslo účtu dlužníka (pro převod)" className={inputClass} />
+                    <label htmlFor="f-loan-borrower-bank" className={labelClass}>Číslo účtu dlužníka (pro převod)</label>
+                    <input id="f-loan-borrower-bank" value={formData.borrowerBankAccount} onChange={e => set('borrowerBankAccount', e.target.value)} placeholder="CZ65 0800 0000 1920 0014 5399" aria-label="Číslo účtu dlužníka (pro převod)" className={inputClass} />
                   </div>
                 </div>
               </section>
@@ -329,52 +334,54 @@ export default function LoanBuilderPage() {
                 <SectionTitle index="03" title="Výše a účel zápůjčky" />
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
-                    <label className={labelClass}>Výše zápůjčky (Kč) *</label>
-                    <input name="loanAmount" type="number" value={formData.loanAmount} onChange={e => set('loanAmount', e.target.value)} placeholder="50 000" aria-label="Výše zápůjčky (Kč) *" className={inputClass} />
+                    <label htmlFor="f-loan-amount" className={labelClass}>Výše zápůjčky (Kč) *</label>
+                    <input id="f-loan-amount" name="loanAmount" type="number" min="1" value={formData.loanAmount} onChange={e => set('loanAmount', e.target.value)} placeholder="50 000" aria-label="Výše zápůjčky (Kč) *" className={inputClass} />
                   </div>
                   <div>
-                    <label className={labelClass}>Slovně (pro smlouvu)</label>
-                    <input value={formData.loanAmountWords} onChange={e => set('loanAmountWords', e.target.value)} placeholder="padesát tisíc korun českých" aria-label="Slovně (pro smlouvu)" className={inputClass} />
+                    <label htmlFor="f-loan-words" className={labelClass}>Slovně (pro smlouvu)</label>
+                    <input id="f-loan-words" value={formData.loanAmountWords} onChange={e => set('loanAmountWords', e.target.value)} placeholder="padesát tisíc korun českých" aria-label="Slovně (pro smlouvu)" className={inputClass} />
                   </div>
                   <div>
-                    <label className={labelClass}>Způsob předání</label>
-                    <select value={formData.transferMethod} onChange={e => set('transferMethod', e.target.value)} aria-label="Způsob předání" className={inputClass}>
+                    <label htmlFor="f-loan-transfer" className={labelClass}>Způsob předání</label>
+                    <select id="f-loan-transfer" value={formData.transferMethod} onChange={e => set('transferMethod', e.target.value)} aria-label="Způsob předání" className={inputClass}>
                       <option value="transfer">Bankovním převodem</option>
                       <option value="cash">V hotovosti</option>
                     </select>
                   </div>
                   {formData.transferMethod === 'transfer' && (
                     <div>
-                      <label className={labelClass}>Odeslat do (pracovní dny)</label>
-                      <input type="number" value={formData.disbursementDays} onChange={e => set('disbursementDays', e.target.value)} placeholder="5" aria-label="Odeslat do pracovních dnů" className={inputClass} />
+                      <label htmlFor="f-loan-disburse-days" className={labelClass}>Odeslat do (pracovní dny)</label>
+                      <input id="f-loan-disburse-days" type="number" min="0" value={formData.disbursementDays} onChange={e => set('disbursementDays', e.target.value)} placeholder="5" aria-label="Odeslat do pracovních dnů" className={inputClass} />
                     </div>
                   )}
                   <div>
-                    <label className={labelClass}>Úroková sazba (% p.a.)</label>
-                    <input type="number" step="0.1" value={formData.interestRate} onChange={e => set('interestRate', e.target.value)} placeholder="0" aria-label="Úroková sazba (% p.a.)" className={inputClass} />
-                    {Number(formData.interestRate) > 15
-                      ? <p className="text-xs text-red-400 font-medium mt-1">⚠ Nad 15 % p.a. hrozí neplatnost pro lichvu (§ 1796 OZ). Doporučujeme max. 15 %.</p>
-                      : <p className="text-xs text-slate-400 mt-1">Bezúročná zápůjčka = 0 %</p>
+                    <label htmlFor="f-loan-interest" className={labelClass}>Úroková sazba (% p.a.)</label>
+                    <input id="f-loan-interest" type="number" min="0" step="0.1" value={formData.interestRate} onChange={e => set('interestRate', e.target.value)} placeholder="0" aria-label="Úroková sazba (% p.a.)" className={inputClass} />
+                    {Number(formData.interestRate) < 0
+                      ? <p className="text-xs text-red-400 font-medium mt-1">⚠ Úroková sazba nemůže být záporná.</p>
+                      : Number(formData.interestRate) > 15
+                        ? <p className="text-xs text-red-400 font-medium mt-1">⚠ Nad 15 % p.a. hrozí neplatnost pro lichvu (§ 1796 OZ). Doporučujeme max. 15 %.</p>
+                        : <p className="text-xs text-slate-400 mt-1">Bezúročná zápůjčka = 0 %</p>
                     }
                   </div>
                   {Number(formData.interestRate) > 0 && (
                     <>
                       <div>
-                        <label className={labelClass}>Splatnost úroků</label>
-                        <select value={formData.interestPayment} onChange={e => set('interestPayment', e.target.value)} aria-label="Splatnost úroků" className={inputClass}>
+                        <label htmlFor="f-loan-interest-pay" className={labelClass}>Splatnost úroků</label>
+                        <select id="f-loan-interest-pay" value={formData.interestPayment} onChange={e => set('interestPayment', e.target.value)} aria-label="Splatnost úroků" className={inputClass}>
                           <option value="end">Jednorázově při splacení</option>
                           <option value="monthly">Měsíčně spolu s jistinou</option>
                         </select>
                       </div>
                       <div>
-                        <label className={labelClass}>Poplatek za předčasné splacení (%)</label>
-                        <input type="number" step="0.1" value={formData.prepaymentFee} onChange={e => set('prepaymentFee', e.target.value)} placeholder="0" aria-label="Poplatek za předčasné splacení" className={inputClass} />
+                        <label htmlFor="f-loan-prepay-fee" className={labelClass}>Poplatek za předčasné splacení (%)</label>
+                        <input id="f-loan-prepay-fee" type="number" min="0" step="0.1" value={formData.prepaymentFee} onChange={e => set('prepaymentFee', e.target.value)} placeholder="0" aria-label="Poplatek za předčasné splacení" className={inputClass} />
                       </div>
                     </>
                   )}
                   <div className="sm:col-span-2">
-                    <label className={labelClass}>Účel zápůjčky (dobrovolné)</label>
-                    <input value={formData.loanPurpose} onChange={e => set('loanPurpose', e.target.value)} placeholder="Nákup vozidla, rekonstrukce bytu, provozní náklady…" aria-label="Účel zápůjčky (dobrovolné)" className={inputClass} />
+                    <label htmlFor="f-loan-purpose" className={labelClass}>Účel zápůjčky (dobrovolné)</label>
+                    <input id="f-loan-purpose" value={formData.loanPurpose} onChange={e => set('loanPurpose', e.target.value)} placeholder="Nákup vozidla, rekonstrukce bytu, provozní náklady…" aria-label="Účel zápůjčky (dobrovolné)" className={inputClass} />
                   </div>
                 </div>
               </section>
@@ -401,46 +408,46 @@ export default function LoanBuilderPage() {
                   </div>
                   {formData.repaymentType === 'lump_sum' && (
                     <div>
-                      <label className={labelClass}>Datum splatnosti *</label>
-                      <input name="repaymentDate" type="date" value={formData.repaymentDate} onChange={e => set('repaymentDate', e.target.value)} aria-label="Datum splatnosti *" className={inputClass} />
+                      <label htmlFor="f-loan-repay-date" className={labelClass}>Datum splatnosti *</label>
+                      <input id="f-loan-repay-date" name="repaymentDate" type="date" value={formData.repaymentDate} onChange={e => set('repaymentDate', e.target.value)} aria-label="Datum splatnosti *" className={inputClass} />
                     </div>
                   )}
                   {formData.repaymentType === 'installments' && (
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div>
-                        <label className={labelClass}>Počet splátek</label>
-                        <input name="installmentCount" type="number" value={formData.installmentCount} onChange={e => set('installmentCount', e.target.value)} placeholder="12" aria-label="Počet splátek" className={inputClass} />
+                        <label htmlFor="f-loan-inst-count" className={labelClass}>Počet splátek</label>
+                        <input id="f-loan-inst-count" name="installmentCount" type="number" min="1" value={formData.installmentCount} onChange={e => set('installmentCount', e.target.value)} placeholder="12" aria-label="Počet splátek" className={inputClass} />
                       </div>
                       <div>
-                        <label className={labelClass}>Výše splátky (Kč)</label>
-                        <input name="installmentAmount" type="number" value={formData.installmentAmount} onChange={e => set('installmentAmount', e.target.value)} placeholder="4 500" aria-label="Výše splátky (Kč)" className={inputClass} />
+                        <label htmlFor="f-loan-inst-amount" className={labelClass}>Výše splátky (Kč)</label>
+                        <input id="f-loan-inst-amount" name="installmentAmount" type="number" min="1" value={formData.installmentAmount} onChange={e => set('installmentAmount', e.target.value)} placeholder="4 500" aria-label="Výše splátky (Kč)" className={inputClass} />
                       </div>
                       <div>
-                        <label className={labelClass}>Den splatnosti splátky</label>
-                        <input type="number" min="1" max="31" value={formData.paymentDay} onChange={e => set('paymentDay', e.target.value)} placeholder="15" aria-label="Den splatnosti splátky" className={inputClass} />
+                        <label htmlFor="f-loan-payday" className={labelClass}>Den splatnosti splátky</label>
+                        <input id="f-loan-payday" type="number" min="1" max="31" value={formData.paymentDay} onChange={e => set('paymentDay', e.target.value)} placeholder="15" aria-label="Den splatnosti splátky" className={inputClass} />
                       </div>
                       <div>
-                        <label className={labelClass}>Datum 1. splátky</label>
-                        <input type="date" value={formData.firstPaymentDate} onChange={e => set('firstPaymentDate', e.target.value)} aria-label="Datum 1. splátky" className={inputClass} />
+                        <label htmlFor="f-loan-first-date" className={labelClass}>Datum 1. splátky</label>
+                        <input id="f-loan-first-date" type="date" value={formData.firstPaymentDate} onChange={e => set('firstPaymentDate', e.target.value)} aria-label="Datum 1. splátky" className={inputClass} />
                       </div>
                     </div>
                   )}
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <label className={labelClass}>Číslo účtu pro splácení</label>
-                      <input value={formData.bankAccount} onChange={e => set('bankAccount', e.target.value)} placeholder="CZ65 0800 0000 1920 0014 5399" aria-label="Číslo účtu pro splácení" className={inputClass} />
+                      <label htmlFor="f-loan-bank" className={labelClass}>Číslo účtu pro splácení</label>
+                      <input id="f-loan-bank" value={formData.bankAccount} onChange={e => set('bankAccount', e.target.value)} placeholder="CZ65 0800 0000 1920 0014 5399" aria-label="Číslo účtu pro splácení" className={inputClass} />
                     </div>
                     <div>
-                      <label className={labelClass}>Variabilní symbol</label>
-                      <input value={formData.variableSymbol} onChange={e => set('variableSymbol', e.target.value)} placeholder="20260001" aria-label="Variabilní symbol" className={inputClass} />
+                      <label htmlFor="f-loan-vs" className={labelClass}>Variabilní symbol</label>
+                      <input id="f-loan-vs" value={formData.variableSymbol} onChange={e => set('variableSymbol', e.target.value)} placeholder="20260001" aria-label="Variabilní symbol" className={inputClass} />
                     </div>
                     <div>
-                      <label className={labelClass}>Úrok z prodlení (% denně)</label>
-                      <input type="number" step="0.001" value={formData.latePenaltyRate} onChange={e => set('latePenaltyRate', e.target.value)} placeholder="0.05" aria-label="Úrok z prodlení (% denně)" className={inputClass} />
+                      <label htmlFor="f-loan-late-rate" className={labelClass}>Úrok z prodlení (% denně)</label>
+                      <input id="f-loan-late-rate" type="number" min="0" step="0.001" value={formData.latePenaltyRate} onChange={e => set('latePenaltyRate', e.target.value)} placeholder="0.05" aria-label="Úrok z prodlení (% denně)" className={inputClass} />
                     </div>
                     <div>
-                      <label className={labelClass}>Minimální pokuta za prodlení (Kč)</label>
-                      <input type="number" value={formData.minLatePenalty} onChange={e => set('minLatePenalty', e.target.value)} placeholder="100" aria-label="Minimální pokuta za prodlení" className={inputClass} />
+                      <label htmlFor="f-loan-min-penalty" className={labelClass}>Minimální pokuta za prodlení (Kč)</label>
+                      <input id="f-loan-min-penalty" type="number" min="0" value={formData.minLatePenalty} onChange={e => set('minLatePenalty', e.target.value)} placeholder="100" aria-label="Minimální pokuta za prodlení" className={inputClass} />
                     </div>
                   </div>
                 </div>

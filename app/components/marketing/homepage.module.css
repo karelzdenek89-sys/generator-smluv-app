@@ -302,9 +302,8 @@
   .heroGrid > * { min-width: 0; }
   .heroTitle { font-size: clamp(50px, 14vw, 68px); }
   .heroTitle span { font-size: 19px; }
-  .heroCapsules { flex-wrap: nowrap; overflow-x: auto; gap: 8px; margin: 0 -24px 18px; padding: 4px 24px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
-  .heroCapsules::-webkit-scrollbar { display: none; }
-  .capsule { font-size: 10px; padding: 6px 11px; letter-spacing: .1em; }
+  .heroCapsules { flex-wrap: wrap; overflow-x: visible; gap: 6px; margin: 0 0 18px; padding: 0; }
+  .capsule { font-size: 10px; padding: 5px 10px; letter-spacing: .08em; white-space: normal; max-width: 100%; }
   .heroLead { font-size: 16px; margin-top: 20px; }
   .heroDescription { font-size: 14.5px; }
   .heroActions { gap: 12px; margin-top: 22px; }

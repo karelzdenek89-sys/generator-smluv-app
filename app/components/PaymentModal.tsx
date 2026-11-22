@@ -486,18 +486,26 @@ export default function PaymentModal({
                 </div>
                 <div className="space-y-5 px-6 py-6">
                   {hasSections ? (
-                    sections.slice(0, 8).map((section) => (
+                    sections.slice(0, 8).map((section, sectionIdx) => (
                       <div key={section.title}>
                         <div className="border-b border-[#e5d8bf] pb-2 text-[11px] font-bold uppercase tracking-[0.18em] text-[#9f7a40]">
                           {section.title}
                         </div>
-                        <div className="mt-3 space-y-2">
-                          {section.body.slice(0, 6).map((line, i) => {
-                            const text = String(line ?? '').trim();
-                            if (!text) return null;
-                            return <p key={i} className="text-[12px] leading-6 text-[#4a3d2c]">{text}</p>;
-                          })}
-                        </div>
+                        {sectionIdx === 0 ? (
+                          <div className="mt-3 space-y-2">
+                            {section.body.slice(0, 2).map((line, i) => {
+                              const text = String(line ?? '').trim();
+                              if (!text) return null;
+                              return <p key={i} className="text-[12px] leading-6 text-[#4a3d2c]">{text}</p>;
+                            })}
+                          </div>
+                        ) : (
+                          <div className="mt-3 space-y-2" aria-hidden="true">
+                            <div className="h-2.5 w-full rounded bg-[#dccdae]" />
+                            <div className="h-2.5 w-5/6 rounded bg-[#e5d8bf]" />
+                            <div className="h-2.5 w-4/6 rounded bg-[#e5d8bf]" />
+                          </div>
+                        )}
                       </div>
                     ))
                   ) : (

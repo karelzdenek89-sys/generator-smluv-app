@@ -2,9 +2,11 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import TrackView from '@/app/components/analytics/TrackView';
 import TrackedLink from '@/app/components/analytics/TrackedLink';
+import ExtraWorkCalculator from '@/app/components/portal/ExtraWorkCalculator';
 import PortalShell, {
   EscalationNotice,
   LinkList,
+  OfficialSourceList,
   PortalCard,
   PortalDisclaimer,
   PortalSection,
@@ -189,6 +191,17 @@ export default function ZakazkaHubPage() {
             ))}
           </div>
         </PortalSection>
+
+        <ExtraWorkCalculator />
+
+        <OfficialSourceList
+          sources={[
+            { label: 'Občanský zákoník (zákon č. 89/2012 Sb., § 2586–2650 smlouva o dílo) — e-Sbírka', href: 'https://www.e-sbirka.cz/sb/2012/89' },
+            { label: 'Stavební zákon (zákon č. 283/2021 Sb., § 166 stavební deník) — e-Sbírka', href: 'https://www.e-sbirka.cz/sb/2021/283' },
+            { label: 'Vyhláška č. 131/2024 Sb., o dokumentaci staveb — e-Sbírka', href: 'https://www.e-sbirka.cz/sb/2024/131' },
+            { label: 'Zákon o dani z přidané hodnoty (zákon č. 235/2004 Sb., § 48, § 48a, § 92e) — e-Sbírka', href: 'https://www.e-sbirka.cz/sb/2004/235' },
+          ]}
+        />
 
         <PortalSection id="odpovedi" kicker="Odpovědi" title="Co lidé u zakázek řeší nejčastěji">
           <div className="grid gap-6 md:grid-cols-2">

@@ -297,11 +297,11 @@ const LEASE_FORM_CS: LeaseFormUi = {
     requiredHint: 'Všechna povinná pole jsou označena *',
     sections: {
       landlord: { index: '01', title: 'Pronajímatel', subtitle: 'Přesná identifikace výrazně zvyšuje vymahatelnost smlouvy.' },
-      tenant: { index: '02', title: 'Nájemce', subtitle: 'Vyplň co nejpřesněji, zejména OP a adresu.' },
+      tenant: { index: '02', title: 'Nájemce', subtitle: 'Vyplňte co nejpřesněji, zejména OP a adresu.' },
       property: { index: '03', title: 'Nemovitost', subtitle: 'Tady se rozhoduje, jestli je byt ve smlouvě popsán profesionálně, nebo jen přibližně.' },
       term: { index: '04', title: 'Doba nájmu a platby', subtitle: 'Základ každé funkční smlouvy je jasný termín, cena a splatnost.' },
       handover: { index: '05', title: 'Předávací protokol', subtitle: 'Tohle je přesně ta část, která při sporu rozhoduje o škodě a vrácení kauce.' },
-      rules: { index: '06', title: 'Pravidla nájmu', subtitle: 'Tady nastavuješ, jak tvrdý nebo měkký režim bude smlouva mít.' },
+      rules: { index: '06', title: 'Pravidla nájmu', subtitle: 'Zde nastavujete, jak přísný nebo volný režim bude smlouva mít.' },
       tier: {
         index: '07',
         title: 'Vyberte úroveň zpracování',
@@ -396,7 +396,7 @@ const LEASE_FORM_CS: LeaseFormUi = {
     completionHint: 'Čím úplnější údaje zadáte, tím konkrétnější bude výsledný dokument.',
     badgeReady: 'Skoro hotovo',
     badgeGood: 'Dobré',
-    badgeFill: 'Doplň údaje',
+    badgeFill: 'Doplňte údaje',
     riskTitle: 'Kontrola nastavení',
     riskDisclaimer: 'Orientační kontrola vyplněných údajů a voleb. Nejde o individuální právní posouzení dokumentu.',
     riskOk: 'Smlouva je zatím nastavena velmi dobře. Rizikové prvky nejsou detekovány.',
