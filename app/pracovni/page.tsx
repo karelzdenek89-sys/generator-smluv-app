@@ -80,6 +80,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 function PracovniPageContent() {
   const [packageKeyFromUrl, setPackageKeyFromUrl] = useState<string | null>(null);
+  const trialWarningId = useId();
   const builderLocale = useBuilderLocale();
   const ui = useMemo(() => getEmploymentFormUi(builderLocale), [builderLocale]);
   const packageConfig = getThematicPackageConfig(packageKeyFromUrl);
@@ -147,6 +148,8 @@ function PracovniPageContent() {
   const usesRemoteWork = Boolean(form.remoteWork)
     && form.remoteWork !== ui.remoteWorkValues.none;
   const laborRates = getLaborRates(form.startDate, form.employmentType === 'fixed' ? form.endDate : undefined);
+  const trialLimit = form.isManager ? 8 : 4;
+  const trialLimitExceeded = Number(form.trialPeriodMonths) > trialLimit;
   const set = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     setForm(p => ({ ...p, [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value }));
@@ -375,12 +378,14 @@ function PracovniPageContent() {
                   </Field>
                   <Field label={ui.fields.startDate}><input className={inputClass} name="startDate" value={form.startDate} onChange={set} type="date" required /></Field>
                   {form.employmentType === 'fixed' && <Field label={ui.fields.endDate}><input className={inputClass} name="endDate" value={form.endDate} onChange={set} type="date" required /></Field>}
-                  <Field label={ui.fields.trialMonths}>
-                    <input className={inputClass} name="trialPeriodMonths" value={form.trialPeriodMonths} onChange={set} type="number" min="0" max={form.isManager ? 8 : 4} step="1" />
-                    {Number(form.trialPeriodMonths) > (form.isManager ? 8 : 4) && (
-                      <p className="mt-1.5 text-xs text-red-400 font-medium">⚠ {ui.page.hints.trialMaxWarning(form.isManager ? 8 : 4)}</p>
+                  <div>
+                    <Field label={ui.fields.trialMonths}>
+                      <input className={inputClass} name="trialPeriodMonths" value={form.trialPeriodMonths} onChange={set} type="number" min="0" max={trialLimit} step="1" aria-describedby={trialLimitExceeded ? trialWarningId : undefined} />
+                    </Field>
+                    {trialLimitExceeded && (
+                      <p id={trialWarningId} className="mt-1.5 text-xs text-red-400 font-medium">⚠ {ui.page.hints.trialMaxWarning(trialLimit)}</p>
                     )}
-                  </Field>
+                  </div>
                   <Field label={ui.fields.noticePeriod}><input className={inputClass} name="noticePeriod" value={form.noticePeriod} onChange={set} type="number" min="2" max="6" /></Field>
                   <label className={`col-span-2 flex items-start gap-3 rounded-2xl border p-4 cursor-pointer transition ${form.isManager ? 'border-amber-500/70 bg-amber-500/10' : 'border-slate-700/80 bg-[#111c31]'}`}>
                     <input type="checkbox" name="isManager" checked={form.isManager} onChange={set} className="mt-1 h-5 w-5 accent-amber-500" />
