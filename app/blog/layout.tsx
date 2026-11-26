@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     template: '%s | SmlouvaHned',
   },
   description:
-    'Praktické průvodce ke smluvním dokumentům a běžným právním situacím v Česku.',
+    'Praktické průvodce nájemními a pracovními smlouvami, DPP a dalšími smluvními situacemi v Česku. Najdete v nich příklady, termíny a oficiální zdroje.',
 };
 
 export default function BlogLayout({ children }: { children: ReactNode }) {
