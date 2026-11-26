@@ -89,13 +89,15 @@ const schemas: Record<ContractType, z.ZodType<Record<string, unknown>>> = {
     giftType: z.enum(['money', 'car', 'property', 'thing']),
     amount: optionalText,
     carVIN: optionalText,
-    propertyAddress: optionalText,
     thingDescription: optionalText,
   }).superRefine((data, ctx) => {
+    if (data.giftType === 'property') {
+      ctx.addIssue({ code: 'custom', path: ['giftType'], message: 'Generátor nepřijímá nové objednávky darovacích smluv pro nemovitosti.' });
+      return;
+    }
     const requiredByType = {
       money: ['amount', 'Darovaná částka'],
       car: ['carVIN', 'VIN vozidla'],
-      property: ['propertyAddress', 'Adresa nemovitosti'],
       thing: ['thingDescription', 'Popis darované věci'],
     } as const;
     const [field, label] = requiredByType[data.giftType];
@@ -221,7 +223,7 @@ const schemas: Record<ContractType, z.ZodType<Record<string, unknown>>> = {
     totalRemuneration: optionalMoney,
     estimatedHours: optionalNumber,
     durationType: z.enum(['fixed', 'indefinite']).optional(),
-    startDate: optionalText,
+    startDate: shortText,
     endDate: optionalText,
   }).superRefine((data, ctx) => {
     const remunerationType = data.remunerationType === 'hourly'
@@ -236,11 +238,11 @@ const schemas: Record<ContractType, z.ZodType<Record<string, unknown>>> = {
         message: remunerationType === 'hourly' ? 'Hodinová odměna je povinná.' : 'Celková odměna je povinná.',
       });
     }
-    if (data.durationType === 'fixed' && (!data.startDate?.trim() || !data.endDate?.trim())) {
+    if (data.durationType === 'fixed' && !data.endDate?.trim()) {
       ctx.addIssue({
         code: 'custom',
-        path: [!data.startDate?.trim() ? 'startDate' : 'endDate'],
-        message: 'Datum začátku a konce je povinné pro DPP na dobu určitou.',
+        path: ['endDate'],
+        message: 'Datum konce je povinné pro DPP na dobu určitou.',
       });
     }
     for (const issue of getDppLegalIssues(data)) {

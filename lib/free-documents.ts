@@ -26,6 +26,7 @@ export type FreeDocumentRecord = {
   analyticsConsentGranted?: boolean;
   analyticsAttribution?: CheckoutAnalyticsAttribution;
   createdAt: string;
+  laborTermsVersion?: number;
   expiresAt: string;
   downloadCount: number;
 };

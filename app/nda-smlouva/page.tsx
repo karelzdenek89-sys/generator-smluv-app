@@ -1,4 +1,5 @@
 ﻿import type { Metadata } from 'next';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/site';
 import GuideLandingPage from '@/app/components/GuideLandingPage';
 
 export const metadata: Metadata = {
@@ -19,6 +20,7 @@ export const metadata: Metadata = {
       'Přehledná průvodcová stránka k NDA smlouvě pro běžné situace, kdy potřebujete zachytit mlčenlivost a ochranu důvěrných informací.',
     url: 'https://www.smlouvahned.cz/nda-smlouva',
     type: 'website',
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',

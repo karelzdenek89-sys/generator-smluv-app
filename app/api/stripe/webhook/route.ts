@@ -11,6 +11,7 @@ import {
   type CheckoutAddonKey,
 } from '@/lib/checkout-addons';
 import { normalizePricingTier } from '@/lib/pricing';
+import { normalizeLocale, withLocale } from '@/lib/locale';
 import { recordAnalyticsEvent } from '@/lib/analytics-server';
 import {
   formatConsentTimestamp,
@@ -378,9 +379,8 @@ async function sendDownloadEmail(
   const tokenFragment = downloadToken ? `#token=${encodeURIComponent(downloadToken)}` : '';
   const downloadUrl = `${baseUrl}/stahnout?session_id=${encodeURIComponent(sessionId)}${langQuery}${tokenFragment}`;
   const docxDownloadUrl = `${baseUrl}/stahnout?session_id=${encodeURIComponent(sessionId)}${langQuery}&format=docx${tokenFragment}`;
-  const portalUrl = portalToken
-    ? `${baseUrl}/zakaznicka-zona#access=${encodeURIComponent(portalToken)}`
-    : `${baseUrl}/zakaznicka-zona`;
+  const portalPath = withLocale('/zakaznicka-zona', normalizeLocale(lang));
+  const portalUrl = `${baseUrl}${portalPath}${portalToken ? `#access=${encodeURIComponent(portalToken)}` : ''}`;
   const consentRecord = consent && typeof consent === 'object' && !Array.isArray(consent)
     ? (consent as Record<string, unknown>)
     : null;

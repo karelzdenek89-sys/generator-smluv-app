@@ -23,6 +23,8 @@ const newsreader = Newsreader({
   weight: ['400', '500', '600', '700'],
   variable: '--font-serif',
   display: 'swap',
+  // The introductory body copy uses Inter. Avoid preloading both serif subsets.
+  preload: false,
 });
 
 const BASE_URL = SITE_URL;

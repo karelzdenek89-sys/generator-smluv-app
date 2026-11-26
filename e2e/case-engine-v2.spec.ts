@@ -1,12 +1,16 @@
 import { expect, test } from '@playwright/test';
 
 test('customer zone preserves English and Ukrainian UI', async ({ page }) => {
-  await page.goto('/zakaznicka-zona?lang=en');
+  await page.goto('/en');
+  await page.getByRole('link', { name: 'My documents', exact: true }).click();
+  await expect(page).toHaveURL(/\/zakaznicka-zona\?lang=en$/);
   await expect(page.getByRole('heading', { name: 'My documents' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Send secure access link' })).toBeVisible();
   await expect(page.locator('main')).toHaveAttribute('lang', 'en');
 
-  await page.goto('/zakaznicka-zona?lang=ua');
+  await page.goto('/ua');
+  await page.getByRole('link', { name: 'Мої документи', exact: true }).click();
+  await expect(page).toHaveURL(/\/zakaznicka-zona\?lang=ua$/);
   await expect(page.getByRole('heading', { name: 'Мої документи' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Надіслати безпечне посилання' })).toBeVisible();
   await expect(page.locator('main')).toHaveAttribute('lang', 'uk');

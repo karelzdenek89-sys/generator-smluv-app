@@ -63,7 +63,6 @@ function ContractCard({
   return (
     <TrackedLink
       href={c.href}
-      aria-label={c.title}
       eventName="homepage_contract_card_click"
       eventParams={analyticsParams}
       data-contract-type={c.contractType}

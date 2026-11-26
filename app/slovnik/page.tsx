@@ -8,7 +8,7 @@ import {
   type GlossaryEntry,
 } from '@/lib/glossary';
 import InformativeDisclaimer from '@/app/components/blog/InformativeDisclaimer';
-import { SITE_URL } from '@/lib/seo/site';
+import { DEFAULT_OG_IMAGE, SITE_URL } from '@/lib/seo/site';
 
 const BASE_URL = SITE_URL;
 
@@ -23,6 +23,7 @@ export const metadata: Metadata = {
       'Slovník pojmů ze smluvního práva s odkazy na § OZ a ZP. Aktuální k roku 2026.',
     url: `${BASE_URL}/slovnik`,
     type: 'website',
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',

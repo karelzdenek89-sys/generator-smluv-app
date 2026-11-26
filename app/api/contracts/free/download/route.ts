@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getClientIp, readFirstPartyJson } from '@/lib/api-security';
 import { getContractMeta } from '@/lib/contracts';
+import { LEGACY_LABOR_TERMS_VERSION } from '@/lib/legal/labor-rates';
 import { renderContractPdf } from '@/lib/pdf';
 import { redis } from '@/lib/redis';
 import { takeRateLimit } from '@/lib/rate-limit';
@@ -52,7 +53,10 @@ export async function POST(req: Request) {
   }
 
   // Neúspěšný render nesmí zvýšit počítadlo ani vytvořit falešné stažení.
-  const pdf = await renderContractPdf(record.payload);
+  const pdf = await renderContractPdf({
+    ...record.payload,
+    laborTermsVersion: record.laborTermsVersion ?? LEGACY_LABOR_TERMS_VERSION,
+  });
   const meta = getContractMeta(record.contractType);
   const nextRecord = { ...record, downloadCount: record.downloadCount + 1 };
   const remainingTtl = Math.max(60, Math.ceil((expiresAt - Date.now()) / 1000));

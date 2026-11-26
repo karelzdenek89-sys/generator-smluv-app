@@ -11,6 +11,7 @@ import {
   PACKAGE_VERSION_WITH_FLAG_OUTPUTS,
 } from './packages';
 import { getEffectiveTrialPeriodMonths } from './labor-law-validation';
+import { formatHourlyMinimum, getDppDocumentLaborRates, LEGACY_LABOR_TERMS_VERSION } from './legal/labor-rates';
 
 export type ContractType =
   | 'lease'
@@ -1698,6 +1699,9 @@ function buildEmploymentContractSections(d: StoredContractData): ContractSection
       title: 'V. MZDA A ODMĚŇOVÁNÍ',
       body: [
         salaryDesc,
+        d.laborTermsVersion !== LEGACY_LABOR_TERMS_VERSION
+          ? 'Pokud mzda za vykonanou práci nedosáhne minimální mzdy platné v příslušném období, poskytne zaměstnavatel zaměstnanci doplatek podle § 111 zákoníku práce.'
+          : '',
         d.bonusDesc ? `Zaměstnanci mohou být přiznány pohyblivé složky mzdy (prémie/bonusy): ${asText(d.bonusDesc)}.` : '',
         'Zaměstnavatel je povinen zaměstnanci poskytnout při výplatě písemný doklad (výplatní pásku) s údaji o jednotlivých složkách mzdy a provedených srážkách.',
       ].filter(Boolean) as string[],
@@ -1823,8 +1827,15 @@ function buildDppContractSections(d: StoredContractData): ContractSection[] {
     ? `Sjednaná odměna za provedení celého úkolu/práce činí ${formatAmount(d.totalRemuneration)} Kč. Odměna bude vyplacena po splnění sjednaného úkolu.`
     : 'Výše odměny bude stanovena dohodou smluvních stran před zahájením práce a bude uvedena v písemném dodatku k této dohodě.';
 
-  const taxNote = `Účast na nemocenském a důchodovém pojištění u DPP vzniká při dosažení rozhodného příjmu u jednoho zaměstnavatele v kalendářním měsíci. ${DPP_THRESHOLD_NOTE} V roce 2026 tedy příjem bez vzniku účasti nedosahuje 12 000 Kč (nejvýše 11 999 Kč). Od 1. července 2026 musí zaměstnavatel zaměstnance přihlásit ještě před zahájením práce; u českého zaměstnance může provést předregistraci a úplnou registraci dokončit do 8 dnů od nástupu, zatímco zahraniční zaměstnanec musí být plně registrován před nástupem. Další evidenční a odvodové povinnosti plní zaměstnavatel prostřednictvím Jednotného měsíčního hlášení zaměstnavatele podle aktuální metodiky ČSSZ.`;
-  const minimumWageNote = `Odměna za skutečně odpracovanou dobu nesmí být nižší než minimální mzda; pro rok 2026 činí nejméně ${MIN_WAGE_HOURLY_2026_CZK.toLocaleString('cs-CZ', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} Kč za hodinu (§ 111 ZP).`;
+  const legacyLaborTerms = d.laborTermsVersion === LEGACY_LABOR_TERMS_VERSION;
+  const rates = getDppDocumentLaborRates(d.startDate, d.durationType === 'fixed' ? d.endDate : undefined);
+  const thresholdNote = legacyLaborTerms
+    ? `${DPP_THRESHOLD_NOTE} V roce 2026 tedy příjem bez vzniku účasti nedosahuje 12 000 Kč (nejvýše 11 999 Kč).`
+    : `Zveřejněné rozhodné částky: ${rates.map((rate) => `${rate.year}: ${rate.dppMonthlyThreshold.toLocaleString('cs-CZ')} Kč hrubého měsíčně`).join(', ')}. Pro další období se použije rozhodná částka platná pro daný kalendářní měsíc.`;
+  const taxNote = `Účast na nemocenském a důchodovém pojištění u DPP vzniká při dosažení rozhodného příjmu u jednoho zaměstnavatele v kalendářním měsíci. ${thresholdNote} Od 1. července 2026 musí zaměstnavatel zaměstnance přihlásit ještě před zahájením práce; u českého zaměstnance může provést předregistraci a úplnou registraci dokončit do 8 dnů od nástupu, zatímco zahraniční zaměstnanec musí být plně registrován před nástupem. Další evidenční a odvodové povinnosti plní zaměstnavatel prostřednictvím Jednotného měsíčního hlášení zaměstnavatele podle aktuální metodiky ČSSZ.`;
+  const minimumWageNote = legacyLaborTerms
+    ? `Odměna za skutečně odpracovanou dobu nesmí být nižší než minimální mzda; pro rok 2026 činí nejméně ${formatHourlyMinimum(MIN_WAGE_HOURLY_2026_CZK)} Kč za hodinu (§ 111 ZP).`
+    : `Odměna za skutečně odpracovanou dobu nesmí být nižší než minimální mzda účinná v době práce (§ 111 ZP). Zveřejněné hodinové sazby při stanovené týdenní pracovní době 40 hodin: ${rates.map((rate) => `${rate.year}: ${formatHourlyMinimum(rate.hourlyMinimum)} Kč`).join(', ')}.`;
 
   const premiumContent: ContractSection[] = hasPremiumClauses ? [
     {
@@ -1884,7 +1895,9 @@ function buildDppContractSections(d: StoredContractData): ContractSection[] {
     {
       title: 'III. DOBA TRVÁNÍ A UKONČENÍ DOHODY',
       body: [
-        `Dohoda se uzavírá na dobu: ${d.durationType === 'fixed' && d.startDate && d.endDate ? `určitou od ${formatDate(d.startDate)} do ${formatDate(d.endDate)}` : 'neurčitou'}`,
+        `Dohoda se uzavírá na dobu: ${d.durationType === 'fixed' && d.startDate && d.endDate
+          ? `určitou od ${formatDate(d.startDate)} do ${formatDate(d.endDate)}`
+          : `neurčitou${!legacyLaborTerms && d.startDate ? ` od ${formatDate(d.startDate)}` : ''}`}`,
         d.deadline ? `Pracovní úkol musí být splněn nejpozději do: ${asText(d.deadline)}` : '',
         'Dohodu lze ukončit písemnou dohodou smluvních stran. Není-li sjednáno jinak, může kterákoli ze stran dohodu vypovědět z jakéhokoli důvodu nebo bez uvedení důvodu s patnáctidenní výpovědní dobou, která začíná dnem doručení výpovědi druhé straně.',
         'Dohoda dále zaniká způsoby stanovenými zákoníkem práce, zejména splněním sjednaného pracovního úkolu, uplynutím sjednané doby, dohodou stran nebo okamžitým zrušením z důvodů stanovených zákonem.',

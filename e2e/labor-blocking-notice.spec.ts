@@ -1,5 +1,5 @@
 /**
- * Labour-law blocks (2026 minimum wage, the 300 h DPP cap) must stop the buyer
+ * Labour-law blocks (minimum wage, the 300 h DPP cap) must stop the buyer
  * at the generate button, not after they opened the payment modal, typed an
  * e-mail and ticked consent — there they surfaced only as an alert() that the
  * pay click silently swallowed.
@@ -42,6 +42,8 @@ test('DPP above the 300 hour cap is flagged before the payment modal opens', asy
   await page.locator('[name="employeeName"]').fill('Jan Novák');
   await page.locator('[name="taskDescription"]').fill('Inventura skladu');
   await page.locator('[name="workPlace"]').fill('Praha');
+  await page.locator('[name="startDate"]').fill('2026-12-01');
+  await page.locator('[name="endDate"]').fill('2026-12-31');
   await page.locator('[name="estimatedHours"]').fill('400');
   const remunerationType = await page.locator('[name="remunerationType"]').inputValue();
   await page.locator(remunerationType === 'hourly' ? '[name="hourlyRate"]' : '[name="totalRemuneration"]')
@@ -55,6 +57,33 @@ test('DPP above the 300 hour cap is flagged before the payment modal opens', asy
   await expect(page.getByTestId('lease-checkout-modal')).toHaveCount(0);
 
   await page.locator('[name="estimatedHours"]').fill('80');
+  await expect(notice).toHaveCount(0);
+  await generate.click();
+  await expect(page.getByTestId('lease-checkout-modal')).toBeVisible();
+});
+
+test('DPP spanning January 2027 uses the new rate for fixed remuneration', async ({ page }) => {
+  await page.goto('/dpp');
+  await waitForBuilder(page);
+  await page.locator('[name="employerName"]').fill('Test s.r.o.');
+  await page.locator('[name="employeeName"]').fill('Jan Novák');
+  await page.locator('[name="taskDescription"]').fill('Inventura skladu');
+  await page.locator('[name="workPlace"]').fill('Praha');
+  await page.locator('[name="startDate"]').fill('2026-12-20');
+  await page.locator('[name="endDate"]').fill('2027-01-31');
+  await page.locator('[name="estimatedHours"]').fill('20');
+  await page.locator('[name="remunerationType"]').selectOption('fixed');
+  const pay = page.locator('[name="totalRemuneration"]');
+  await pay.fill('2800');
+
+  const generate = page.locator('[data-builder-generate]').first();
+  await generate.click();
+  const notice = page.locator('[data-builder-blocking-notice]');
+  await expect(notice).toContainText('2027');
+  await expect(notice).toContainText('148,30');
+  await expect(page.getByTestId('lease-checkout-modal')).toHaveCount(0);
+
+  await pay.fill('2966');
   await expect(notice).toHaveCount(0);
   await generate.click();
   await expect(page.getByTestId('lease-checkout-modal')).toBeVisible();

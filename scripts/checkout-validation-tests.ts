@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict';
+import { buildContractSections } from '@/lib/contracts';
+import { LEGACY_LABOR_TERMS_VERSION } from '@/lib/legal/labor-rates';
 import { CONTRACT_TYPES, validateContractPayload, type ContractType } from '@/lib/checkout-validation';
 
 const fixtures: Record<ContractType, Record<string, unknown>> = {
@@ -41,6 +43,19 @@ assert.equal(
   false,
   'car gift requires VIN',
 );
+
+const propertyGift = validateContractPayload('gift', {
+  ...fixtures.gift,
+  giftType: 'property',
+  propertyAddress: 'Vzorová 1, Praha',
+  propertyLV: '123',
+  propertyCadastre: 'Vzorové území',
+});
+assert.equal(propertyGift.success, false, 'new real-estate gifts are unavailable at checkout');
+if (!propertyGift.success) {
+  assert.ok(propertyGift.error.issues.some(({ path }) => path[0] === 'giftType'));
+}
+
 
 assert.equal(
   validateContractPayload('employment', { ...fixtures.employment, salary: '20000' }).success,
@@ -149,5 +164,44 @@ assert.equal(
   false,
   'lease negative utilityAmount must fail',
 );
+
+const dppYearEnd = { ...fixtures.dpp, startDate: '2026-12-01', hourlyRate: '140' };
+const dppJanuary = { ...dppYearEnd, startDate: '2027-01-01', endDate: '2027-01-31' };
+assert.equal(validateContractPayload('dpp', dppYearEnd).success, true, 'DPP in 2026 still accepts the 2026 rate');
+assert.equal(validateContractPayload('dpp', dppJanuary).success, false, 'DPP starting in 2027 enforces the new hourly rate');
+assert.equal(validateContractPayload('dpp', { ...dppJanuary, hourlyRate: '148,30' }).success, true, 'DPP accepts an hourly rate exactly at the 2027 minimum');
+assert.equal(validateContractPayload('dpp', { ...dppJanuary, durationType: 'indefinite', startDate: '' }).success, false, 'the start date is required to check a DPP for an indefinite term');
+assert.equal(validateContractPayload('dpp', { ...dppJanuary, startDate: '2027-02-30' }).success, false, 'an invalid date cannot fall back to the older DPP minimum');
+
+const dppCrossing = {
+  ...dppYearEnd,
+  endDate: '2027-01-31',
+  remunerationType: 'fixed',
+  estimatedHours: '20',
+  totalRemuneration: '2800',
+};
+assert.equal(validateContractPayload('dpp', dppCrossing).success, false, 'a single fixed amount across the new year accounts for the higher minimum');
+assert.equal(validateContractPayload('dpp', { ...dppCrossing, totalRemuneration: '2966' }).success, true, 'DPP fixed amount at the required equivalent passes');
+
+const employmentYearEnd = { ...fixtures.employment, salary: '23000', startDate: '2026-12-01' };
+const employmentJanuary = { ...employmentYearEnd, startDate: '2027-01-01' };
+assert.equal(validateContractPayload('employment', employmentYearEnd).success, true, 'an indefinite employment contract can use the minimum at commencement');
+assert.equal(validateContractPayload('employment', employmentJanuary).success, false, 'a January start enforces the higher monthly employment minimum');
+for (const workHours of ['0', '-1']) {
+  const result = validateContractPayload('employment', { ...employmentJanuary, workHours });
+  assert.ok(!result.success && result.error.issues.some((issue) => issue.path[0] === 'workHours'), 'nonpositive hours cannot bypass the wage check');
+}
+assert.equal(validateContractPayload('employment', { ...employmentJanuary, workHours: '' }).success, false, 'missing hours default to full-time for the monthly minimum');
+assert.equal(validateContractPayload('employment', { ...employmentJanuary, salary: '12450', workHours: '20' }).success, true, 'monthly minimum is proportional to the working hours');
+assert.equal(validateContractPayload('employment', { ...employmentYearEnd, employmentType: 'fixed', endDate: '2027-01-01', trialPeriodMonths: '0' }).success, false, 'a single monthly amount for a fixed term crossing into 2027 accounts for the higher minimum');
+
+const dppDocument = { ...dppCrossing, contractType: 'dpp' as const, contractDate: '2026-11-26' };
+const dppSections = JSON.stringify(buildContractSections(dppDocument)).replace(/\s+/g, ' ');
+assert.match(dppSections, /134,40.+148,30/, 'cross-year DPP describes both Czech minimum rates');
+assert.match(dppSections, /148\.30/, 'the DPP English translation contains the new rate');
+assert.match(dppSections, /12 500/, 'cross-year DPP describes the new insurance threshold');
+const legacyDppSections = JSON.stringify(buildContractSections({ ...dppDocument, laborTermsVersion: LEGACY_LABOR_TERMS_VERSION }));
+assert.match(legacyDppSections, /pro rok 2026 činí nejméně 134,40 Kč/);
+assert.doesNotMatch(legacyDppSections, /148,30|148\.30/, 'archived DPP keeps the previously issued wording');
 
 console.log(`Checkout validation tests passed for ${CONTRACT_TYPES.length} contract types.`);

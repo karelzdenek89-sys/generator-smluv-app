@@ -51,7 +51,6 @@ const BUILDERS: Builder[] = [
     conditional: [
       { field: 'amount', value: '', label: 'amount prázdné při peněžním daru' },
       { field: 'carVIN', value: '', label: 'carVIN prázdné při darování auta', setup: [{ field: 'giftType', value: 'car' }] },
-      { field: 'propertyAddress', value: '', label: 'propertyAddress prázdné při darování nemovitosti', setup: [{ field: 'giftType', value: 'property' }] },
       { field: 'thingDescription', value: '', label: 'thingDescription prázdné při darování věci', setup: [{ field: 'giftType', value: 'thing' }] },
     ],
   },
@@ -300,3 +299,20 @@ for (const builder of BUILDERS) {
     ).toEqual([]);
   });
 }
+
+test('darovací formulář chrání starší rozpracovanou nemovitost před objednávkou', async ({ page }) => {
+  await page.addInitScript(() => {
+    sessionStorage.setItem('sh_builder_draft:/darovaci::cs', JSON.stringify({
+      value: { giftType: 'property', donorName: 'Testovací dárce', doneeName: 'Testovací obdarovaný' },
+      expiresAt: Date.now() + 60_000,
+    }));
+  });
+  await page.goto('/darovaci');
+  await expect(page.getByText('Rozpracovanou smlouvu pro nemovitost už v generátoru nelze objednat.', { exact: false })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Nemovitost', exact: false })).toHaveCount(0);
+  await expect(page.locator('[data-builder-generate]')).toBeDisabled();
+
+  await page.locator('[data-field-name="giftType"][data-field-value="thing"]').click();
+  await expect(page.locator('[data-builder-generate]')).toBeEnabled();
+  await expect(page.locator('input[name="donorName"]')).toHaveValue('Testovací dárce');
+});

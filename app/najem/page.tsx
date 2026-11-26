@@ -20,7 +20,6 @@ import { getLeaseFormUi } from '@/lib/i18n/lease-form';
 import {
   buildLeaseHandoverPreview,
   buildLeasePlainPreview,
-  buildLeasePreviewSections,
   getContractPreviewLabels,
   isExpatLeaseLocale,
 } from '@/lib/i18n/lease-preview';
@@ -31,6 +30,7 @@ import BuilderUserRoleField from '@/app/components/partners/BuilderUserRoleField
 import type { PartnerUserRole } from '@/lib/partners/types';
 import BuilderHeader from '@/app/components/BuilderHeader';
 import { trackEvent } from '@/lib/analytics';
+import type { buildLeasePreviewSections } from '@/lib/i18n/lease-preview-sections';
 
 type LeaseFormData = {
   partnerUserRole: PartnerUserRole;
@@ -104,6 +104,14 @@ const inputClass = 'site-input';
 const textareaClass = 'site-textarea';
 
 const cardClass = 'builder-card p-6';
+
+function RequiredLeaseLabel({ htmlFor, children }: { htmlFor: string; children: string }) {
+  return (
+    <label htmlFor={htmlFor} className="site-form-label">
+      {children}<span aria-hidden="true" className="ml-1 text-amber-200">*</span>
+    </label>
+  );
+}
 
 function LeaseBuilderContent() {
   const [packageKeyFromUrl, setPackageKeyFromUrl] = useState<string | null>(null);
@@ -191,6 +199,9 @@ function LeaseBuilderContent() {
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [buildPreviewSections, setBuildPreviewSections] = useState<typeof buildLeasePreviewSections>();
+  const [isLoadingPreview, setIsLoadingPreview] = useState(false);
+  const [previewLoadFailed, setPreviewLoadFailed] = useState(false);
   const requiredReadyTracked = useRef(false);
   const [wideDisclosureLayout, setWideDisclosureLayout] = useState(false);
   const [handoverOpen, setHandoverOpen] = useState(false);
@@ -374,14 +385,31 @@ function LeaseBuilderContent() {
     [builderLocale, formData],
   );
 
+  const hasPreviewDetails = Boolean(formData.landlordName || formData.tenantName);
+
+  useEffect(() => {
+    if (!hasPreviewDetails || buildPreviewSections) return;
+
+    let active = true;
+    // The complete builder is only needed once there is something to preview.
+    import('@/lib/i18n/lease-preview-sections')
+      .then(({ buildLeasePreviewSections }) => {
+        if (active) setBuildPreviewSections(() => buildLeasePreviewSections);
+      })
+      .catch(() => {
+        // A failed background load leaves the summary intact and checkout can retry.
+      });
+    return () => { active = false; };
+  }, [hasPreviewDetails, buildPreviewSections]);
+
   const previewSections = useMemo(() => {
     try {
-      if (!formData.landlordName && !formData.tenantName) return [];
-      return buildLeasePreviewSections(builderLocale, formData, packageConfig?.key ?? null);
+      if (!hasPreviewDetails || !buildPreviewSections) return [];
+      return buildPreviewSections(builderLocale, formData, packageConfig?.key ?? null);
     } catch {
       return [];
     }
-  }, [builderLocale, formData, packageConfig?.key]);
+  }, [builderLocale, formData, packageConfig?.key, hasPreviewDetails, buildPreviewSections]);
 
   const contractPreviewLabels = useMemo(
     () => getContractPreviewLabels(builderLocale),
@@ -389,6 +417,25 @@ function LeaseBuilderContent() {
   );
 
   const previewDateLocale = builderLocale === 'ua' ? 'uk-UA' : builderLocale === 'en' ? 'en-GB' : 'cs-CZ';
+
+  const openCheckout = async () => {
+    if (!canOpenCheckout || isLoadingPreview) return;
+
+    setPreviewLoadFailed(false);
+    if (!buildPreviewSections) {
+      setIsLoadingPreview(true);
+      try {
+        const { buildLeasePreviewSections } = await import('@/lib/i18n/lease-preview-sections');
+        setBuildPreviewSections(() => buildLeasePreviewSections);
+      } catch {
+        setPreviewLoadFailed(true);
+        return;
+      } finally {
+        setIsLoadingPreview(false);
+      }
+    }
+    setShowPreviewModal(true);
+  };
 
   const handlePayment = async (addOns: string[], authorization: CheckoutAuthorization) => {
     // Validace povinných polí
@@ -610,13 +657,15 @@ function LeaseBuilderContent() {
                 subtitle={ui.form.sections.landlord.subtitle}
               />
               <div className="mb-4">
+                <RequiredLeaseLabel htmlFor="f-lease-landlord-name">{ui.form.labels.landlordName}</RequiredLeaseLabel>
                 <input
+                  id="f-lease-landlord-name"
                   value={formData.landlordName}
                   onChange={handleChange}
                   name="landlordName"
                   data-testid="lease-landlord-name"
-                  placeholder={ui.form.placeholders.fullName}
-                  className={inputClass} aria-label={ui.form.placeholders.fullName} required
+                  className={inputClass}
+                  required
                 />
               </div>
               <details className="rounded-2xl border border-slate-700/60 bg-slate-800/20 p-4">
@@ -675,13 +724,15 @@ function LeaseBuilderContent() {
                 subtitle={ui.form.sections.tenant.subtitle}
               />
               <div className="mb-4">
+                <RequiredLeaseLabel htmlFor="f-lease-tenant-name">{ui.form.labels.tenantName}</RequiredLeaseLabel>
                 <input
+                  id="f-lease-tenant-name"
                   value={formData.tenantName}
                   onChange={handleChange}
                   name="tenantName"
                   data-testid="lease-tenant-name"
-                  placeholder={ui.form.placeholders.fullName}
-                  className={inputClass} aria-label={ui.form.placeholders.fullName} required
+                  className={inputClass}
+                  required
                 />
               </div>
               <details className="rounded-2xl border border-slate-700/60 bg-slate-800/20 p-4">
@@ -739,15 +790,19 @@ function LeaseBuilderContent() {
                 title={ui.form.sections.property.title}
                 subtitle={ui.form.sections.property.subtitle}
               />
-              <div className="grid sm:grid-cols-2 gap-4 mb-4">
-                <input
-                  value={formData.flatAddress}
-                  onChange={handleChange}
-                  name="flatAddress"
-                  data-testid="lease-flat-address"
-                  placeholder={ui.form.placeholders.flatAddress}
-                  className={inputClass} aria-label={ui.form.placeholders.flatAddress} required
-                />
+              <div className="grid sm:grid-cols-2 sm:items-end gap-4 mb-4">
+                <div>
+                  <RequiredLeaseLabel htmlFor="f-lease-flat-address">{ui.form.placeholders.flatAddress}</RequiredLeaseLabel>
+                  <input
+                    id="f-lease-flat-address"
+                    value={formData.flatAddress}
+                    onChange={handleChange}
+                    name="flatAddress"
+                    data-testid="lease-flat-address"
+                    className={inputClass}
+                    required
+                  />
+                </div>
                 <input
                   value={formData.flatLayout}
                   onChange={handleChange}
@@ -812,9 +867,7 @@ function LeaseBuilderContent() {
               />
               <div className="grid sm:grid-cols-2 gap-4 mb-4">
                 <div>
-                  <label htmlFor="f-lease-start-date" className="block text-xs font-bold uppercase tracking-[0.12em] text-slate-400 mb-1.5">
-                    {ui.form.labels.startDate}
-                  </label>
+                  <RequiredLeaseLabel htmlFor="f-lease-start-date">{ui.form.labels.startDate}</RequiredLeaseLabel>
                   <input
                     id="f-lease-start-date"
                     value={formData.startDate}
@@ -822,7 +875,8 @@ function LeaseBuilderContent() {
                     type="date"
                     name="startDate"
                     data-testid="lease-start-date"
-                    className={inputClass} aria-label={ui.form.labels.startDate} required
+                    className={inputClass}
+                    required
                   />
                 </div>
                 <div>
@@ -840,7 +894,7 @@ function LeaseBuilderContent() {
                 </div>
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-4 mb-4">
+              <div className="grid sm:grid-cols-2 sm:items-end gap-4 mb-4">
                 <div>
                   <label htmlFor="f-lease-duration" className="sr-only">{ui.form.sections.term.title}</label>
                   <select
@@ -858,7 +912,7 @@ function LeaseBuilderContent() {
 
                 {formData.duration === 'fixed' ? (
                   <div>
-                    <label htmlFor="f-lease-end-date" className="sr-only">{ui.form.duration.fixed}</label>
+                    <RequiredLeaseLabel htmlFor="f-lease-end-date">{ui.form.labels.endDate}</RequiredLeaseLabel>
                     <input
                       id="f-lease-end-date"
                       value={formData.endDate}
@@ -866,7 +920,8 @@ function LeaseBuilderContent() {
                       type="date"
                       name="endDate"
                       data-testid="lease-end-date"
-                      className={inputClass} aria-label={ui.form.duration.fixed}
+                      className={inputClass}
+                      required
                     />
                   </div>
                 ) : (
@@ -878,7 +933,7 @@ function LeaseBuilderContent() {
 
               <div className="grid sm:grid-cols-3 gap-4 mb-4">
                 <div>
-                  <label htmlFor="f-lease-rent" className="sr-only">{ui.form.placeholders.rent}</label>
+                  <RequiredLeaseLabel htmlFor="f-lease-rent">{ui.form.placeholders.rent}</RequiredLeaseLabel>
                   <input
                     id="f-lease-rent"
                     value={formData.rentAmount}
@@ -887,12 +942,12 @@ function LeaseBuilderContent() {
                     min="0"
                     name="rentAmount"
                     data-testid="lease-rent-amount"
-                    placeholder={ui.form.placeholders.rent}
-                    className={inputClass} aria-label={ui.form.placeholders.rent} required
+                    className={inputClass}
+                    required
                   />
                 </div>
                 <div>
-                  <label htmlFor="f-lease-utilities" className="sr-only">{ui.form.placeholders.utilities}</label>
+                  <label htmlFor="f-lease-utilities" className="site-form-label">{ui.form.placeholders.utilities}</label>
                   <input
                     id="f-lease-utilities"
                     value={formData.utilityAmount}
@@ -900,12 +955,11 @@ function LeaseBuilderContent() {
                     type="number"
                     min="0"
                     name="utilityAmount"
-                    placeholder={ui.form.placeholders.utilities}
-                    className={inputClass} aria-label={ui.form.placeholders.utilities}
+                    className={inputClass}
                   />
                 </div>
                 <div>
-                  <label htmlFor="f-lease-deposit" className="sr-only">{ui.form.placeholders.deposit}</label>
+                  <label htmlFor="f-lease-deposit" className="site-form-label">{ui.form.placeholders.deposit}</label>
                   <input
                     id="f-lease-deposit"
                     value={formData.depositAmount}
@@ -913,8 +967,7 @@ function LeaseBuilderContent() {
                     type="number"
                     min="0"
                     name="depositAmount"
-                    placeholder={ui.form.placeholders.deposit}
-                    className={inputClass} aria-label={ui.form.placeholders.deposit}
+                    className={inputClass}
                   />
                   {Number(formData.rentAmount) > 0 &&
                     Number(formData.depositAmount) > 0 &&
@@ -1371,7 +1424,7 @@ function LeaseBuilderContent() {
                         ? (builderLocale === 'en' ? 'Optional suggestions for a more precise document.' : builderLocale === 'ua' ? 'Необов’язкові рекомендації для точнішого документа.' : 'Nepovinná doporučení pro přesnější dokument.')
                         : (builderLocale === 'en' ? 'Complete the required details first.' : builderLocale === 'ua' ? 'Спочатку заповніть обов’язкові дані.' : 'Nejdříve vyplňte povinné údaje.')}
                     </p>
-                    <p className="mt-2 max-w-sm text-xs leading-5 text-slate-500">
+                    <p className="mt-2 max-w-sm text-xs leading-5 text-slate-400">
                       {ui.sidebar.riskDisclaimer}
                     </p>
                   </div>
@@ -1461,19 +1514,18 @@ function LeaseBuilderContent() {
                   type="button"
                   data-testid="lease-open-checkout"
                   data-builder-generate=""
-                  onClick={() => {
-                    if (!canOpenCheckout) {
-                      alert(`${ui.validation.alertPrefix}: ${requiredFieldsMissing.join(', ')}.`);
-                      return;
-                    }
-                    setShowPreviewModal(true);
-                  }}
-                  disabled={!canOpenCheckout}
-                  aria-disabled={!canOpenCheckout}
+                  onClick={openCheckout}
+                  disabled={!canOpenCheckout || isLoadingPreview}
+                  aria-busy={isLoadingPreview}
                   className="w-full py-5 bg-gradient-to-r from-amber-500 to-amber-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:brightness-100 disabled:active:scale-100"
                 >
                   {ui.sidebar.generateCta}
                 </button>
+                {previewLoadFailed ? (
+                  <p role="alert" className="mt-3 text-xs leading-relaxed text-red-200">
+                    {ui.validation.previewLoadError}
+                  </p>
+                ) : null}
                 {!canOpenCheckout ? (
                   <p className="mt-3 text-xs leading-relaxed text-amber-200/80">
                     {ui.validation.alertPrefix}: {requiredFieldsMissing.join(', ')}.

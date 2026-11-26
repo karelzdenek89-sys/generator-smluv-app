@@ -1,4 +1,5 @@
 import type { PortalSituationKey } from '@/lib/analytics';
+import { DPP_THRESHOLD_2027_SOURCE, formatHourlyMinimum, LABOR_RATES_2027, MINIMUM_WAGE_2027_SOURCE } from '@/lib/legal/labor-rates';
 import type { PortalLink } from './situations';
 
 /**
@@ -576,9 +577,10 @@ export const PORTAL_TOOLS: readonly PortalTool[] = [
       'Bezplatná kontrola připravenosti: minimální mzda 2027, jednotné měsíční hlášení, limity DPP, zálohy OSVČ, paušální daň. Každý bod s oficiálním zdrojem.',
     situation: 'zamestnavam',
     answer:
-      'Většina změn pro rok 2027 navazuje na už účinné předpisy (JMHZ, valorizace minimální mzdy, snížení minima OSVČ). Nové hodnoty pro rok 2027 se vyhlašují na podzim 2026 — zkontrolujte smlouvy a nastavení mzdového systému, jakmile budou známy.',
+      'Většina změn pro rok 2027 navazuje na už účinné předpisy. Minimální mzda a rozhodná částka pro DPP pro rok 2027 už byly vyhlášeny. Zkontrolujte smlouvy a nastavení mezd podle data nástupu a období práce.',
     sources: [
-      { label: 'MPSV — Minimální mzda', href: 'https://mpsv.gov.cz/minimalni-mzda' },
+      { label: 'Minimální mzda pro rok 2027 — sdělení MPSV č. 171/2026 Sb.', href: MINIMUM_WAGE_2027_SOURCE },
+      { label: 'Rozhodná částka u DPP — sdělení MPSV č. 184/2026 Sb.', href: DPP_THRESHOLD_2027_SOURCE },
       { label: 'ČSSZ — JMHZ', href: 'https://www.cssz.gov.cz/co-je-jmhz-' },
     ],
     primaryDocument: { href: '/zmeny-2027', label: 'Otevřít legislativní radar 2027' },
@@ -586,14 +588,14 @@ export const PORTAL_TOOLS: readonly PortalTool[] = [
       { href: '/zmeny-2027/zamestnavatele', label: 'Změny 2027 pro zaměstnavatele' },
       { href: '/zmeny-2027/osvc-a-podnikatele', label: 'Změny 2027 pro OSVČ' },
     ],
-    updatedAt: UPDATED,
+    updatedAt: '2026-11-26',
     sections: [
       {
         title: 'Zaměstnavatel',
         items: [
           { key: 'jmhz', label: 'Podáváme jednotné měsíční hlášení zaměstnavatele a máme potvrzení o podání.', link: { href: '/zmeny-2027/zamestnavatele#jmhz-jednotne-mesicni-hlaseni', label: 'JMHZ' } },
-          { key: 'minwage', label: 'Hodinové sazby v DPP a mzdy sledují minimální mzdu; po vyhlášení částky pro 2027 je přepočítáme.', link: { href: '/zmeny-2027/zamestnavatele#minimalni-mzda-2027', label: 'Minimální mzda 2027' } },
-          { key: 'dpp', label: 'U DPP hlídáme rozhodnou částku pro pojištění (12 000 Kč v roce 2026).', link: { href: '/zmeny-2027/zamestnavatele#dpp-rozhodna-castka-2026', label: 'DPP 2026' } },
+          { key: 'minwage', label: `Pro práci od 1. ledna 2027 zkontrolujeme minimum ${LABOR_RATES_2027.monthlyMinimum.toLocaleString('cs-CZ')} Kč měsíčně nebo ${formatHourlyMinimum(LABOR_RATES_2027.hourlyMinimum)} Kč/h při stanovené době 40 hodin týdně.`, link: { href: '/zmeny-2027/zamestnavatele#minimalni-mzda-2027', label: 'Minimální mzda 2027' } },
+          { key: 'dpp', label: `Od ledna 2027 u DPP hlídáme novou rozhodnou částku pro účast na pojištění ${LABOR_RATES_2027.dppMonthlyThreshold.toLocaleString('cs-CZ')} Kč za měsíc u jednoho zaměstnavatele.`, link: { href: '/zmeny-2027/zamestnavatele#dpp-rozhodna-castka-2026', label: 'DPP 2026 a 2027' } },
           { key: 'flexi', label: 'Vzory pracovních smluv odpovídají flexinovele (zkušební doba, doručování).', link: { href: '/zmeny-2027/zamestnavatele#flexinovela-zakoniku-prace', label: 'Flexinovela' } },
         ],
       },
@@ -601,7 +603,7 @@ export const PORTAL_TOOLS: readonly PortalTool[] = [
         title: 'OSVČ a podnikatel',
         items: [
           { key: 'osvc', label: 'Zálohy na pojistné od července 2026 odpovídají novému minimu (35 % průměrné mzdy).', link: { href: '/zmeny-2027/osvc-a-podnikatele#osvc-minimalni-zalohy-35-procent', label: 'Zálohy OSVČ' } },
-          { key: 'pausal', label: 'Do 11. 1. 2027 rozhodnu o vstupu do paušálního režimu nebo změně pásma.', link: { href: '/zmeny-2027/osvc-a-podnikatele#pausalni-dan-2027', label: 'Paušální daň' } },
+          { key: 'pausal', label: 'Do 11. 1. 2027 podám případné oznámení o vstupu do paušálního režimu nebo změně pásma.', link: { href: '/zmeny-2027/osvc-a-podnikatele#pausalni-dan-2027', label: 'Paušální daň' } },
           { key: 'accounting', label: 'Sleduji projednávání nového zákona o účetnictví (zatím beze změny povinností).', link: { href: '/zmeny-2027/osvc-a-podnikatele#novy-zakon-o-ucetnictvi', label: 'Zákon o účetnictví' } },
         ],
       },

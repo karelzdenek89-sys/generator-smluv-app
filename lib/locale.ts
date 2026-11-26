@@ -68,6 +68,13 @@ export function readBuilderLocaleFromBrowser(): AppLocale {
   return isSupportedLocaleInput(queryLocale) ? normalizeLocale(queryLocale) : 'cs';
 }
 
+export const LOCALIZED_QUERY_PATHS = [
+  ...EXPAT_CONTRACT_TYPES.map((contractType) => EXPAT_CONTRACT_ROUTES[contractType]),
+  '/success',
+  '/stahnout',
+  '/zakaznicka-zona',
+];
+
 export function getBuilderLocaleFromSearchParams(searchParams: BuilderSearchParams): AppLocale {
   const raw = Array.isArray(searchParams.lang) ? searchParams.lang[0] : searchParams.lang;
   return isSupportedLocaleInput(raw) ? normalizeLocale(raw) : 'cs';
@@ -90,9 +97,8 @@ export function isExpatContract(contractType: ContractType): contractType is Exp
 }
 
 /**
- * Carries locale only across builders that explicitly support the expat UI.
- * Private customer pages localize themselves from their own `?lang=` input or
- * from the stored order, so this shared helper keeps its established contract.
+ * Carries locale across the localized builders and the document recovery page.
+ * Other routes retain their existing URLs.
  */
 export function withLocale(href: string, locale: AppLocale): string {
   if (locale === 'cs') return href;
@@ -100,7 +106,7 @@ export function withLocale(href: string, locale: AppLocale): string {
   const [pathWithQuery, fragment] = href.split('#', 2);
   const path = pathWithQuery.split('?', 1)[0].replace(/\/$/, '') || '/';
   const contractType = getContractTypeByPath(path);
-  if (!contractType || !isExpatContract(contractType)) return href;
+  if (path !== '/zakaznicka-zona' && (!contractType || !isExpatContract(contractType))) return href;
   const separator = pathWithQuery.includes('?') ? '&' : '?';
   const localized = `${pathWithQuery}${separator}lang=${locale}`;
   return fragment ? `${localized}#${fragment}` : localized;

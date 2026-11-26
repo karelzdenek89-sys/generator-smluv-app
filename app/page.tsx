@@ -14,6 +14,7 @@ import { getAvailableThematicPackages, getEffectivePriceBand } from '@/lib/packa
 import { getFreeBasicPdfCopy } from '@/lib/monetization-copy';
 import { getMonetizationPolicy, isFreeBasicPolicy } from '@/lib/monetization-policy';
 import { PRICING_TIER_CONFIG } from '@/lib/pricing';
+import { contractOfferSchema } from '@/lib/schemas';
 import { CHECKOUT_ADDON_CONFIG } from '@/lib/checkout-addons';
 import { PRICE_TRANSPARENCY_LINE } from '@/lib/price-reveal-copy';
 import { SITE_URL } from '@/lib/seo/site';
@@ -170,13 +171,7 @@ const softwareSchema = {
     'Dobrovolný zákaznický účet s přihlášením a ověřeným propojením dokumentů a případů',
   ],
   provider: { '@type': 'Organization', name: 'SmlouvaHned', url: HOMEPAGE_BASE_URL },
-  offers: {
-    '@type': 'AggregateOffer',
-    priceCurrency: 'CZK',
-    lowPrice: FREE_BASIC_DPP ? '0' : String(PRICING_TIER_CONFIG.basic.priceCzk),
-    highPrice: '599',
-    offerCount: FREE_BASIC_DPP ? '5' : '4',
-  },
+  offers: contractOfferSchema('/', FREE_BASIC_DPP),
 };
 
 const organizationSchema = {
@@ -224,7 +219,7 @@ export default function Home() {
       <section className={styles.hero}>
         <div className={styles.aurora} aria-hidden="true" />
         <nav className="relative z-30 mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-7 md:px-10">
-          <Link href="/" className="flex items-center gap-3">
+          <Link href="/" prefetch={false} className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#c9a852]/40 bg-[#040c1a]/80 text-xs font-black text-[#c9a852]">SH</div>
             <div>
               <div className="font-serif text-sm font-semibold tracking-tight text-white">SmlouvaHned</div>
@@ -234,7 +229,7 @@ export default function Home() {
 
           <div className="hidden items-center gap-7 text-[13px] text-slate-300 lg:flex">
             {SITE_NAV_ITEMS.map((item) => (
-              <Link key={item.href} href={siteNavHref(item, true)} className="transition-colors hover:text-white">
+              <Link key={item.href} href={siteNavHref(item, true)} prefetch={item.homeHref ? false : undefined} className="transition-colors hover:text-white">
                 {item.label}
               </Link>
             ))}
@@ -255,7 +250,7 @@ export default function Home() {
               </summary>
               <div className="absolute right-0 z-40 mt-2 w-56 rounded-xl border border-[#c9a852]/25 bg-[#040c1a]/95 p-2 text-sm shadow-[0_18px_60px_rgba(0,0,0,0.45)] backdrop-blur-md">
                 {[...SITE_NAV_ITEMS, ...SITE_NAV_CUSTOMER_ITEMS].map((item) => (
-                  <Link key={item.href} href={siteNavHref(item, true)} className="block rounded-lg px-3 py-2 text-slate-200 hover:bg-white/5 hover:text-white">{item.label}</Link>
+                  <Link key={item.href} href={siteNavHref(item, true)} prefetch={item.homeHref ? false : undefined} className="block rounded-lg px-3 py-2 text-slate-200 hover:bg-white/5 hover:text-white">{item.label}</Link>
                 ))}
               </div>
             </NavigationMenu>
@@ -280,10 +275,10 @@ export default function Home() {
               U nájmu, převodu vozidla a smlouvy o dílo můžete pokračovat v Moje případy — soukromém přehledu s termíny, checklistem a připomínkami.
             </p>
             <div className={styles.heroActions}>
-              <TrackedLink href="#situace" eventName="situation_started" eventParams={{ surface: 'homepage_hero', cta_type: 'choose_situation' }} className={styles.primaryAction}>
+              <TrackedLink href="#situace" prefetch={false} eventName="situation_started" eventParams={{ surface: 'homepage_hero', cta_type: 'choose_situation' }} className={styles.primaryAction}>
                 Vybrat, co řeším <ArrowRight size={18} aria-hidden="true" />
               </TrackedLink>
-              <Link href="#smlouvy" className={styles.secondaryAction}>Vím, jaký dokument potřebuji <span aria-hidden="true">↓</span></Link>
+              <Link href="#smlouvy" prefetch={false} className={styles.secondaryAction}>Vím, jaký dokument potřebuji <span aria-hidden="true">↓</span></Link>
             </div>
             <p className={styles.heroPrice}><strong>Dokumenty {HOME_BASIC_PRICE_LABEL}</strong><span>· Rozšířená varianta od {PRICING_TIER_CONFIG.complete.priceLabel} · Bez registrace a předplatného</span></p>
             <p className={styles.heroFootnote}>{FREE_BASIC_DPP ? 'Základní DPP zdarma. ' : ''}Konkrétní cenu a obsah zvolené varianty uvidíte před objednávkou.</p>

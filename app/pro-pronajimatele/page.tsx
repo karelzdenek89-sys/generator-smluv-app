@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/site';
 import TrackView from '@/app/components/analytics/TrackView';
 import GuideLandingPage from '@/app/components/GuideLandingPage';
 import { getSituationLandingConfig } from '@/lib/situations';
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
     description: situation.openGraphDescription,
     url: `https://www.smlouvahned.cz${situation.href}`,
     type: 'website',
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',

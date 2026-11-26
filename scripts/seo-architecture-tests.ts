@@ -22,6 +22,7 @@ import { PORTAL_TOOLS } from '../lib/portal/tools';
 import { buildLlmsFullTxt, buildLlmsTxt } from '../lib/seo/llms-txt';
 import { DOCUMENT_CATALOG } from '../lib/document-catalog';
 import { PRICING_TIER_CONFIG } from '../lib/pricing';
+import { contractOfferSchema } from '../lib/schemas';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CANONICAL_ORIGIN = 'https://www.smlouvahned.cz';
@@ -60,6 +61,7 @@ function assertSitemapArchitecture() {
   assert.ok(entries.length > 0, 'sitemap must not be empty');
   assert.equal(new Set(entries.map(({ url }) => url)).size, entries.length, 'sitemap contains duplicate URLs');
 
+  const entriesByUrl = new Map(entries.map((entry) => [entry.url, entry]));
   for (const entry of entries) {
     assertCanonicalUrl(entry.url, `sitemap ${entry.url}`);
     const path = new URL(entry.url).pathname.replace(/\/$/, '') || '/';
@@ -67,6 +69,11 @@ function assertSitemapArchitecture() {
 
     for (const [language, alternate] of Object.entries(entry.alternates?.languages ?? {})) {
       assertCanonicalUrl(String(alternate), `sitemap hreflang ${language} for ${entry.url}`);
+      const targetLanguages = entriesByUrl.get(String(alternate))?.alternates?.languages;
+      assert.ok(
+        Object.values(targetLanguages ?? {}).includes(entry.url),
+        `sitemap hreflang ${language} for ${entry.url} must link back from ${alternate}`,
+      );
     }
   }
 
@@ -81,6 +88,38 @@ function assertSitemapArchitecture() {
       getExpatHreflangLanguages(contract),
       `${path}: Czech SEO landing must expose the reciprocal sitemap hreflang cluster`,
     );
+  }
+}
+
+function assertContractOfferSchema() {
+  const previousFlag = process.env.NEXT_PUBLIC_FEATURE_ZAKAZKA_PLUS;
+  process.env.NEXT_PUBLIC_FEATURE_ZAKAZKA_PLUS = 'false';
+  try {
+    const base = ['99', '199'];
+    const packagesByPath: Readonly<Record<string, string>> = {
+      '/najem': '299',
+      '/auto': '299',
+      '/pracovni': '599',
+    };
+    for (const { href } of DOCUMENT_CATALOG) {
+      const pkgPrice = packagesByPath[href];
+      const expected = pkgPrice ? [...base, pkgPrice] : base;
+      const schema = contractOfferSchema(href);
+      assert.deepEqual(schema.offers.map(({ price }) => price), expected, href);
+      assert.equal(schema.offerCount, String(expected.length), href);
+      assert.equal(schema.highPrice, expected.at(-1), href);
+    }
+    assert.equal(contractOfferSchema('/pracovni').offers.at(-1)?.url, `${CANONICAL_ORIGIN}/balicek-zamestnavatel`);
+    assert.equal(contractOfferSchema('/dpp', true).lowPrice, '0');
+    assert.equal(contractOfferSchema('/').offerCount, '5');
+    assert.equal(contractOfferSchema('/', true).offerCount, '6');
+
+    process.env.NEXT_PUBLIC_FEATURE_ZAKAZKA_PLUS = 'true';
+    assert.equal(contractOfferSchema('/smlouva-o-dilo').highPrice, '399');
+    assert.equal(contractOfferSchema('/').offerCount, '6');
+  } finally {
+    if (previousFlag === undefined) delete process.env.NEXT_PUBLIC_FEATURE_ZAKAZKA_PLUS;
+    else process.env.NEXT_PUBLIC_FEATURE_ZAKAZKA_PLUS = previousFlag;
   }
 }
 
@@ -285,6 +324,7 @@ function assertLlmsTxt() {
 }
 
 assertSitemapArchitecture();
+assertContractOfferSchema();
 assertRedirectArchitecture();
 assertContentLanguageArchitecture();
 assertNoInternalRedirectHops();

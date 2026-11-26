@@ -197,7 +197,7 @@ export default function SecureDownloadPage() {
   const copy = DOWNLOAD_COPY[locale];
 
   return (
-    <main className="min-h-screen bg-[#05080f] px-6 py-20 text-slate-200">
+    <main lang={locale === 'ua' ? 'uk' : locale} className="min-h-screen bg-[#05080f] px-6 py-20 text-slate-200">
       <div className="mx-auto max-w-lg rounded-3xl border border-white/10 bg-[#0c1426] p-8 text-center">
         <h1 className="text-3xl font-black text-white">{copy.title}</h1>
         {state === 'preparing' ? <p className="mt-4 text-slate-400">{copy.preparing}</p> : null}

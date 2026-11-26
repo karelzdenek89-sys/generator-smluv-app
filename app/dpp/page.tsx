@@ -22,7 +22,7 @@ import {
   getBuilderLocaleFromSearchParams,
   type BuilderSearchParams,
 } from '@/lib/locale';
-import { MIN_WAGE_HOURLY_2026_CZK } from '@/lib/legal-constants-2026';
+import { getLaborRates } from '@/lib/legal/labor-rates';
 import BuilderUserRoleField from '@/app/components/partners/BuilderUserRoleField';
 import type { PartnerUserRole } from '@/lib/partners/types';
 import { useMonetizationPolicy } from '@/app/components/useMonetizationPolicy';
@@ -131,7 +131,7 @@ function DppPageContent() {
     if (!form.employeeName?.trim()) missing.push(validationFields.employeeName);
     if (!form.taskDescription?.trim()) missing.push(validationFields.taskDescription);
     if (!form.workPlace?.trim()) missing.push(validationFields.workPlace);
-    if (form.durationType === 'fixed' && !form.startDate) missing.push(validationFields.startDate);
+    if (!form.startDate) missing.push(validationFields.startDate);
     if (form.durationType === 'fixed' && !form.endDate) missing.push(validationFields.endDate);
     const activePay = form.remunerationType === 'hourly' ? form.hourlyRate : form.totalRemuneration;
     if (!isValidMoney(activePay)) {
@@ -321,7 +321,7 @@ function DppPageContent() {
                       <option value="indefinite">{ui.options.durationIndefinite}</option>
                     </select>
                   </Field>
-                  <Field label={ui.fields.startDate}><input className={inputClass} name="startDate" value={form.startDate} onChange={set} type="date" required={form.durationType === 'fixed'} /></Field>
+                  <Field label={ui.fields.startDate}><input className={inputClass} name="startDate" value={form.startDate} onChange={set} type="date" required /></Field>
                   {form.durationType === 'fixed' && <Field label={ui.fields.endDate}><input className={inputClass} name="endDate" value={form.endDate} onChange={set} type="date" min={form.startDate || undefined} required /></Field>}
                   <Field label={ui.fields.deadline}><input className={inputClass} name="deadline" value={form.deadline} onChange={set} type="date" /></Field>
                 </div>
@@ -338,7 +338,7 @@ function DppPageContent() {
                   </Field>
                   {form.remunerationType === 'fixed'
                     ? <Field label={ui.fields.totalRemuneration}><input className={inputClass} name="totalRemuneration" value={form.totalRemuneration} onChange={set} type="number" min="1" placeholder={ui.page.placeholders.totalRemuneration} /></Field>
-                    : <Field label={ui.fields.hourlyRate}><input className={inputClass} name="hourlyRate" value={form.hourlyRate} onChange={set} type="number" min={MIN_WAGE_HOURLY_2026_CZK} step="0.1" placeholder={ui.page.placeholders.hourlyRate} /></Field>
+                    : <Field label={ui.fields.hourlyRate}><input className={inputClass} name="hourlyRate" value={form.hourlyRate} onChange={set} type="number" min={getLaborRates(form.startDate, form.durationType === 'fixed' ? form.endDate : undefined).hourlyMinimum} step="0.01" placeholder={ui.page.placeholders.hourlyRate} /></Field>
                   }
                   <Field label={ui.fields.paymentAccount}><input className={inputClass} name="paymentAccount" value={form.paymentAccount} onChange={set} placeholder={ui.page.placeholders.paymentAccount} /></Field>
                   <Field label={ui.fields.paymentDays}><input className={inputClass} name="paymentDays" value={form.paymentDays} onChange={set} type="number" min="1" /></Field>

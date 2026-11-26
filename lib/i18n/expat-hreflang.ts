@@ -94,3 +94,13 @@ export function getExpatBuilderSitemapAlternates(contractKey: ExpatContractType)
     ? getExpatHreflangLanguages(contractKey)
     : undefined;
 }
+
+export function getLegalHreflangLanguages(document: 'terms' | 'privacy') {
+  const czech = `${SITE_URL}${document === 'terms' ? '/obchodni-podminky' : '/gdpr'}`;
+  return {
+    cs: czech,
+    en: `${SITE_URL}/en/${document}`,
+    uk: `${SITE_URL}/ua/${document}`,
+    'x-default': czech,
+  };
+}

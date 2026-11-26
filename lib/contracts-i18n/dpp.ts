@@ -9,6 +9,7 @@
  */
 import type { ContractSection, StoredContractData } from '../contracts';
 import { DPP_MONTHLY_THRESHOLD_2026_CZK, MIN_WAGE_HOURLY_2026_CZK } from '../legal-constants-2026';
+import { formatHourlyMinimum, getDppDocumentLaborRates, LEGACY_LABOR_TERMS_VERSION } from '../legal/labor-rates';
 import { amt, buildBilingualTranslations, dateIn, disputeClauseIn, todayIn, txt, type ParaPair } from './helpers';
 
 const threshold = DPP_MONTHLY_THRESHOLD_2026_CZK.toLocaleString('cs-CZ');
@@ -16,13 +17,20 @@ const minWage = MIN_WAGE_HOURLY_2026_CZK.toLocaleString('cs-CZ', { minimumFracti
 
 // ── EN ─────────────────────────────────────────────────────────────────────
 function en(d: StoredContractData, hasPremium: boolean): ParaPair[] {
+  const legacyLaborTerms = d.laborTermsVersion === LEGACY_LABOR_TERMS_VERSION;
+  const rates = getDppDocumentLaborRates(d.startDate, d.durationType === 'fixed' ? d.endDate : undefined);
   const remunerationDesc = d.remunerationType === 'hourly'
     ? `The agreed remuneration for performing the work is CZK ${amt(d.hourlyRate)} per hour. The total remuneration will be calculated on the basis of the hours actually worked.`
     : d.remunerationType === 'fixed' || d.totalRemuneration
       ? `The agreed remuneration for performing the entire task/work is CZK ${amt(d.totalRemuneration)}. The remuneration will be paid after the agreed task has been completed.`
       : 'The amount of remuneration will be set by agreement of the contracting parties before the work begins and will be stated in a written addendum to this agreement.';
-  const taxNote = `Participation in sickness and pension insurance under a DPP arises when the decisive income from one employer is reached in a calendar month. For 2026, the decisive income for participation of an employee working under an agreement to perform work in sickness and pension insurance is CZK ${threshold} gross per month with one employer. When this amount is reached or exceeded, participation in insurance and the related contribution obligations of the employer arise. In 2026, income without participation arising is therefore below CZK 12,000 (at most CZK 11,999). From 1 July 2026 the employer must register the employee before the work begins; for a Czech employee it may carry out a pre-registration and complete the full registration within 8 days of commencement, whereas a foreign employee must be fully registered before commencement. The employer fulfils further record-keeping and contribution obligations through the Single Monthly Employer Report in accordance with the current methodology of the Czech Social Security Administration (ČSSZ).`;
-  const minimumWageNote = `The remuneration for the time actually worked may not be lower than the minimum wage; for 2026 it is at least CZK ${minWage} per hour (§ 111 of the Labour Code).`;
+  const thresholdNote = legacyLaborTerms
+    ? `For 2026, the decisive income for participation of an employee working under an agreement to perform work in sickness and pension insurance is CZK ${threshold} gross per month with one employer. When this amount is reached or exceeded, participation in insurance and the related contribution obligations of the employer arise. In 2026, income without participation arising is therefore below CZK 12,000 (at most CZK 11,999).`
+    : `Published decisive amounts: ${rates.map((rate) => `${rate.year}: CZK ${rate.dppMonthlyThreshold.toLocaleString('en-GB')} gross per month`).join(', ')}. For later periods the decisive amount applicable in the relevant calendar month applies.`;
+  const taxNote = `Participation in sickness and pension insurance under a DPP arises when the decisive income from one employer is reached in a calendar month. ${thresholdNote} From 1 July 2026 the employer must register the employee before the work begins; for a Czech employee it may carry out a pre-registration and complete the full registration within 8 days of commencement, whereas a foreign employee must be fully registered before commencement. The employer fulfils further record-keeping and contribution obligations through the Single Monthly Employer Report in accordance with the current methodology of the Czech Social Security Administration (ČSSZ).`;
+  const minimumWageNote = legacyLaborTerms
+    ? `The remuneration for the time actually worked may not be lower than the minimum wage; for 2026 it is at least CZK ${minWage} per hour (§ 111 of the Labour Code).`
+    : `Remuneration for time actually worked must meet the minimum wage in force at the time of work (§ 111 of the Labour Code). Published hourly rates for a standard 40-hour week: ${rates.map((rate) => `${rate.year}: CZK ${formatHourlyMinimum(rate.hourlyMinimum, 'en-GB')}`).join(', ')}.`;
 
   const premium: ParaPair[] = hasPremium ? [
     {
@@ -82,7 +90,7 @@ function en(d: StoredContractData, hasPremium: boolean): ParaPair[] {
     {
       title: 'III. DURATION AND TERMINATION OF THE AGREEMENT',
       body: [
-        `The Agreement is concluded for: ${d.durationType === 'fixed' && d.startDate && d.endDate ? `a fixed term from ${dateIn('en', d.startDate)} to ${dateIn('en', d.endDate)}` : 'an indefinite term'}`,
+        `The Agreement is concluded for: ${d.durationType === 'fixed' && d.startDate && d.endDate ? `a fixed term from ${dateIn('en', d.startDate)} to ${dateIn('en', d.endDate)}` : `an indefinite term${!legacyLaborTerms && d.startDate ? ` starting ${dateIn('en', d.startDate)}` : ''}`}`,
         d.deadline ? `The work task must be completed no later than: ${txt(d.deadline)}` : '',
         'The Agreement may be terminated by a written agreement of the contracting parties. Unless agreed otherwise, either party may terminate the Agreement by notice for any reason or without stating a reason with a fifteen-day notice period beginning on the day the notice is delivered to the other party.',
         'The Agreement also ends in the ways laid down by the Labour Code, in particular by completion of the agreed work task, expiry of the agreed term, agreement of the parties or immediate termination on the grounds laid down by law.',
@@ -136,13 +144,20 @@ function en(d: StoredContractData, hasPremium: boolean): ParaPair[] {
 
 // ── UA ─────────────────────────────────────────────────────────────────────
 function ua(d: StoredContractData, hasPremium: boolean): ParaPair[] {
+  const legacyLaborTerms = d.laborTermsVersion === LEGACY_LABOR_TERMS_VERSION;
+  const rates = getDppDocumentLaborRates(d.startDate, d.durationType === 'fixed' ? d.endDate : undefined);
   const remunerationDesc = d.remunerationType === 'hourly'
     ? `Погоджена винагорода за виконання роботи становить ${amt(d.hourlyRate)} крон за годину. Загальну винагороду буде обчислено на підставі фактично відпрацьованих годин.`
     : d.remunerationType === 'fixed' || d.totalRemuneration
       ? `Погоджена винагорода за виконання всього завдання/роботи становить ${amt(d.totalRemuneration)} крон. Винагороду буде виплачено після виконання погодженого завдання.`
       : 'Розмір винагороди буде встановлено за домовленістю сторін договору до початку роботи та зазначено в письмовій додатковій угоді до цієї угоди.';
-  const taxNote = `Участь у страхуванні на випадок хвороби та пенсійному страхуванні за DPP виникає при досягненні визначального доходу в одного роботодавця в календарному місяці. На 2026 рік визначальний дохід для участі працівника, який працює на підставі угоди про виконання роботи, у страхуванні на випадок хвороби та пенсійному страхуванні становить ${threshold} крон брутто на місяць в одного роботодавця. При досягненні або перевищенні цієї суми виникає участь у страхуванні та пов’язані з нею обов’язки роботодавця щодо сплати внесків. Отже, у 2026 році дохід без виникнення участі не досягає 12 000 крон (максимум 11 999 крон). З 1 липня 2026 року роботодавець повинен зареєструвати працівника ще до початку роботи; для чеського працівника він може здійснити попередню реєстрацію та завершити повну реєстрацію протягом 8 днів з дня початку роботи, тоді як іноземний працівник має бути повністю зареєстрований до початку роботи. Інші облікові обов’язки та обов’язки щодо сплати внесків роботодавець виконує через Єдиний щомісячний звіт роботодавця відповідно до чинної методики Чеської адміністрації соціального забезпечення (ČSSZ).`;
-  const minimumWageNote = `Винагорода за фактично відпрацьований час не може бути нижчою за мінімальну заробітну плату; на 2026 рік вона становить щонайменше ${minWage} крон за годину (§ 111 ТК).`;
+  const thresholdNote = legacyLaborTerms
+    ? `На 2026 рік визначальний дохід для участі працівника, який працює на підставі угоди про виконання роботи, у страхуванні на випадок хвороби та пенсійному страхуванні становить ${threshold} крон брутто на місяць в одного роботодавця. При досягненні або перевищенні цієї суми виникає участь у страхуванні та пов’язані з нею обов’язки роботодавця щодо сплати внесків. Отже, у 2026 році дохід без виникнення участі не досягає 12 000 крон (максимум 11 999 крон).`
+    : `Оприлюднені порогові суми: ${rates.map((rate) => `${rate.year}: ${rate.dppMonthlyThreshold.toLocaleString('uk-UA')} Kč брутто на місяць`).join(', ')}. Для подальших періодів застосовується поріг, чинний у відповідному календарному місяці.`;
+  const taxNote = `Участь у страхуванні на випадок хвороби та пенсійному страхуванні за DPP виникає при досягненні визначального доходу в одного роботодавця в календарному місяці. ${thresholdNote} З 1 липня 2026 року роботодавець повинен зареєструвати працівника ще до початку роботи; для чеського працівника він може здійснити попередню реєстрацію та завершити повну реєстрацію протягом 8 днів з дня початку роботи, тоді як іноземний працівник має бути повністю зареєстрований до початку роботи. Інші облікові обов’язки та обов’язки щодо сплати внесків роботодавець виконує через Єдиний щомісячний звіт роботодавця відповідно до чинної методики Чеської адміністрації соціального забезпечення (ČSSZ).`;
+  const minimumWageNote = legacyLaborTerms
+    ? `Винагорода за фактично відпрацьований час не може бути нижчою за мінімальну заробітну плату; на 2026 рік вона становить щонайменше ${minWage} крон за годину (§ 111 ТК).`
+    : `Винагорода за фактично відпрацьований час має відповідати мінімальній заробітній платі, чинній на час виконання роботи (§ 111 ТК). Оприлюднені погодинні ставки за встановленої тривалості роботи 40 годин на тиждень: ${rates.map((rate) => `${rate.year}: ${formatHourlyMinimum(rate.hourlyMinimum, 'uk-UA')} Kč`).join(', ')}.`;
 
   const premium: ParaPair[] = hasPremium ? [
     {
@@ -202,7 +217,7 @@ function ua(d: StoredContractData, hasPremium: boolean): ParaPair[] {
     {
       title: 'III. СТРОК ДІЇ ТА ПРИПИНЕННЯ УГОДИ',
       body: [
-        `Угода укладається на: ${d.durationType === 'fixed' && d.startDate && d.endDate ? `визначений строк з ${dateIn('ua', d.startDate)} до ${dateIn('ua', d.endDate)}` : 'невизначений строк'}`,
+        `Угода укладається на: ${d.durationType === 'fixed' && d.startDate && d.endDate ? `визначений строк з ${dateIn('ua', d.startDate)} до ${dateIn('ua', d.endDate)}` : `невизначений строк${!legacyLaborTerms && d.startDate ? ` з ${dateIn('ua', d.startDate)}` : ''}`}`,
         d.deadline ? `Робоче завдання має бути виконане не пізніше: ${txt(d.deadline)}` : '',
         'Угоду можна припинити письмовою домовленістю сторін договору. Якщо не погоджено інше, будь-яка зі сторін може розірвати Угоду з будь-якої причини або без зазначення причини з п’ятнадцятиденним строком попередження, який починається в день доставки повідомлення про розірвання іншій стороні.',
         'Угода також припиняється способами, встановленими Трудовим кодексом, зокрема виконанням погодженого робочого завдання, закінченням погодженого строку, за згодою сторін або шляхом негайного розірвання з підстав, установлених законом.',

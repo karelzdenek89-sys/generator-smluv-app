@@ -95,14 +95,16 @@ export const UK_LEASE_FORM_CONTENT = {
       },
     },
     labels: {
+      landlordName: 'Повне ім’я орендодавця',
+      tenantName: 'Повне ім’я орендаря',
       startDate: 'Дата початку оренди',
+      endDate: 'Дата закінчення оренди',
       handoverDate: 'Дата передачі',
       metersHeading: 'Показники лічильників при передачі',
       maxOccupants: 'Максимальна кількість мешканців',
       dispute: 'Вирішення спорів',
     },
     placeholders: {
-      fullName: 'Повне ім’я',
       birthId: 'Ідентифікаційний номер / дата народження',
       address: 'Постійна адреса',
       idCard: 'Номер посвідчення',
@@ -223,6 +225,7 @@ export const UK_LEASE_FORM_CONTENT = {
       endDate: 'дату закінчення (строковий договір)',
     },
     checkoutError: 'Не вдалося створити сесію оплати.',
+    previewLoadError: 'Не вдалося завантажити попередній перегляд. Спробуйте ще раз.',
     paymentError: 'Помилка платіжного шлюзу. Спробуйте знову або напишіть на info@smlouvahned.cz',
   },
   risk: {

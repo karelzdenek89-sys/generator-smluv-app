@@ -4,9 +4,8 @@ import { useEffect, useSyncExternalStore } from 'react';
 import { usePathname } from 'next/navigation';
 import SiteHeader from '@/app/components/SiteHeader';
 import {
-  getContractTypeByPath,
   getLocaleFromPathname,
-  isExpatContract,
+  LOCALIZED_QUERY_PATHS,
   normalizeLocale,
 } from '@/lib/locale';
 
@@ -20,9 +19,8 @@ function subscribeToLocation(callback: () => void) {
 }
 
 function getQueryLocaleSnapshot(): 'en' | 'ua' | null {
-  const pathname = window.location.pathname;
-  const contractType = getContractTypeByPath(pathname);
-  if ((!contractType || !isExpatContract(contractType)) && pathname !== '/zakaznicka-zona') return null;
+  const pathname = window.location.pathname.replace(/\/$/, '');
+  if (!LOCALIZED_QUERY_PATHS.includes(pathname)) return null;
   const raw = new URLSearchParams(window.location.search).get('lang');
   const normalized = raw ? normalizeLocale(raw) : 'cs';
   return normalized === 'en' || normalized === 'ua' ? normalized : null;

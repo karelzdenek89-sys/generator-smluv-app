@@ -282,7 +282,7 @@ function SuccessContent() {
 
   if (!sessionId || (accessResolved && !token)) {
     return (
-      <main className={pageShell}>
+      <main lang={lang === 'ua' ? 'uk' : lang} className={pageShell}>
         <div className="mx-auto max-w-xl pt-20 text-center">
           <h1 className="mb-4 text-3xl font-black uppercase tracking-tight text-white">
             {copy.missingTitle}
@@ -303,7 +303,7 @@ function SuccessContent() {
   }
 
   return (
-    <main className={pageShell}>
+    <main lang={lang === 'ua' ? 'uk' : lang} className={pageShell}>
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_10%,rgba(34,197,94,0.06),transparent_35%)]" />
 
       <div className="relative z-10 mx-auto max-w-xl">

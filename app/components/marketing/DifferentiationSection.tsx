@@ -54,10 +54,10 @@ export default function DifferentiationSection() {
 
       <div className="mt-8 grid gap-3 md:grid-cols-2">
         <div className="rounded-2xl border border-white/8 bg-white/[0.025] px-5 py-5">
-          <p className="mb-3 text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">{generic.label}</p>
+          <p className="mb-3 text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">{generic.label}</p>
           <div className="space-y-2">
             {generic.lines.map((line) => (
-              <p key={line} className="flex gap-2 text-xs leading-5 text-slate-500">
+              <p key={line} className="flex gap-2 text-xs leading-5 text-slate-400">
                 <span aria-hidden="true">—</span><span>{line}</span>
               </p>
             ))}

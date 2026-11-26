@@ -1,4 +1,5 @@
 ﻿import type { Metadata } from 'next';
+import { getLegalHreflangLanguages } from '@/lib/i18n/expat-hreflang';
 import Link from 'next/link';
 import {
   BASIC_ARCHIVE_DAYS,
@@ -20,12 +21,7 @@ export const metadata: Metadata = {
   description: 'Obchodní podmínky platné pro využívání automatizované platformy SmlouvaHned.cz pro tvorbu standardizovaných smluvních dokumentů.',
   alternates: {
     canonical: canonicalUrl,
-    languages: {
-      cs: `${SITE_URL}/obchodni-podminky`,
-      en: `${SITE_URL}/en/terms`,
-      uk: `${SITE_URL}/ua/terms`,
-      'x-default': `${SITE_URL}/obchodni-podminky`,
-    },
+    languages: getLegalHreflangLanguages('terms'),
   },
   openGraph: {
     title: 'Obchodní podmínky',

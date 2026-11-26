@@ -50,6 +50,10 @@ for (const [pathname, search, expected] of [
   ['/najem', '?lang=en', 'en'],
   ['/najem', '?lang=ua', 'uk'],
   ['/dpp', '?lang=ukr', 'uk'],
+  ['/success', '?lang=%20EN%20', 'en'],
+  ['/stahnout', '?lang=ua', 'uk'],
+  ['/zakaznicka-zona', '?lang=en', 'en'],
+  ['/darovaci', '?lang=ua', 'cs'],
 ] as const) {
   const documentElement = { lang: '' };
   const sandbox = {

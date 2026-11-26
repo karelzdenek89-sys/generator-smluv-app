@@ -166,10 +166,10 @@ export function dppRiskWarnings(
     warnings.push({
       text:
         L === 'en'
-          ? 'Remuneration must be a positive amount complying with the 2026 minimum wage (134.40 CZK/h).'
+          ? 'Enter a positive amount for the remuneration.'
           : L === 'ua'
-            ? 'Винагорода має бути додатною сумою не нижче мінімальної зарплати 2026 (134,40 Kč/год).'
-            : 'Odměna musí být kladná částka odpovídající alespoň minimální mzdě 2026 (134,40 Kč/h).',
+            ? 'Вкажіть додатну суму винагороди.'
+            : 'Zadejte kladnou částku odměny.',
       level: 'high',
     });
   }

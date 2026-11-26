@@ -8,6 +8,7 @@ import {
   packageIncludesDocx,
 } from '@/lib/packages';
 import { getContractMeta, type StoredContractData } from '@/lib/contracts';
+import { LEGACY_LABOR_TERMS_VERSION } from '@/lib/legal/labor-rates';
 import { renderContractPdf } from '@/lib/pdf';
 import { renderContractDocx } from '@/lib/docx';
 import { normalizeLocale } from '@/lib/locale';
@@ -59,6 +60,7 @@ type DraftRecord = {
   packageKey?: string | null;
   /** Verze obsahu balíčku zamrazená při nákupu; chybí u starších objednávek. */
   packageVersion?: number | null;
+  laborTermsVersion?: number;
   notaryUpsell?: boolean;
   payload: StoredContractData;
   paid: boolean;
@@ -193,6 +195,7 @@ export async function GET(req: NextRequest) {
       tier: resolvedTier,
       packageKey: resolvedPackageKey,
       packageVersion: resolvedPackageVersion,
+      laborTermsVersion: draft.laborTermsVersion ?? LEGACY_LABOR_TERMS_VERSION,
       addOns,
       lang: requestedLang !== 'cs'
         ? requestedLang

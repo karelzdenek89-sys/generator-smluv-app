@@ -1,11 +1,10 @@
 import {
   DPP_MAX_HOURS_PER_YEAR,
-  MIN_WAGE_HOURLY_2026_CZK,
-  MIN_WAGE_MONTHLY_2026_CZK,
   ZP_TRIAL_FIXED_TERM_MAX_RATIO,
   ZP_TRIAL_MONTHS_LEADERSHIP,
   ZP_TRIAL_MONTHS_STANDARD,
 } from '@/lib/legal-constants-2026';
+import { getLaborRates, getProportionalMonthlyMinimum, parseLaborDate } from '@/lib/legal/labor-rates';
 import { parseMoney } from '@/lib/money';
 
 export type LaborValidationLocale = 'cs' | 'en' | 'ua';
@@ -14,10 +13,12 @@ export type LaborValidationIssue = {
   code:
     | 'hourly_wage_below_minimum'
     | 'monthly_wage_below_minimum'
+    | 'weekly_hours_not_positive'
     | 'notice_period_below_minimum'
     | 'trial_period_invalid'
     | 'trial_period_above_role_maximum'
     | 'trial_period_above_fixed_term_half'
+    | 'labor_date_invalid'
     | 'fixed_term_dates_invalid'
     | 'dpp_hours_required_for_fixed_remuneration'
     | 'dpp_hours_above_maximum'
@@ -26,6 +27,7 @@ export type LaborValidationIssue = {
   actual?: number;
   minimum?: number;
   maximum?: number;
+  year?: number;
 };
 
 type EmploymentLegalData = {
@@ -63,16 +65,11 @@ function finiteNumber(value: unknown): number | null {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
-function parseDateOnly(value: unknown): Date | null {
-  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
-  const [year, month, day] = value.split('-').map(Number);
-  const parsed = new Date(Date.UTC(year, month - 1, day));
-  if (
-    parsed.getUTCFullYear() !== year
-    || parsed.getUTCMonth() !== month - 1
-    || parsed.getUTCDate() !== day
-  ) return null;
-  return parsed;
+function getLaborDateIssues(startDate: unknown, fixedEndDate: unknown): LaborValidationIssue[] {
+  const issues: LaborValidationIssue[] = [];
+  if (startDate && !parseLaborDate(startDate)) issues.push({ code: 'labor_date_invalid', field: 'startDate' });
+  if (fixedEndDate && !parseLaborDate(fixedEndDate)) issues.push({ code: 'labor_date_invalid', field: 'endDate' });
+  return issues;
 }
 
 function addCalendarMonths(date: Date, months: number): Date {
@@ -96,8 +93,8 @@ export function getMaximumFixedTermTrialMonths(
   endDateValue: unknown,
   roleMaximum: number,
 ): number | null {
-  const startDate = parseDateOnly(startDateValue);
-  const endDate = parseDateOnly(endDateValue);
+  const startDate = parseLaborDate(startDateValue);
+  const endDate = parseLaborDate(endDateValue);
   if (!startDate || !endDate || endDate.getTime() < startDate.getTime()) return null;
 
   // The fixed term includes its final calendar day. The probation period is
@@ -131,7 +128,11 @@ export function getEffectiveTrialPeriodMonths<T extends object>(input: T): numbe
 }
 
 export function getEmploymentLegalIssues(data: EmploymentLegalData): LaborValidationIssue[] {
-  const issues: LaborValidationIssue[] = [];
+  const fixedEndDate = data.employmentType === 'fixed' ? data.endDate : undefined;
+  const issues = getLaborDateIssues(data.startDate, fixedEndDate);
+  const rates = getLaborRates(data.startDate, fixedEndDate);
+  const weeklyHours = finiteNumber(data.workHours) ?? 40;
+  if (weeklyHours <= 0) issues.push({ code: 'weekly_hours_not_positive', field: 'workHours' });
   const salaryType = data.salaryType === 'hourly'
     || (!String(data.salary ?? '').trim() && String(data.hourlyRate ?? '').trim())
     ? 'hourly'
@@ -139,27 +140,26 @@ export function getEmploymentLegalIssues(data: EmploymentLegalData): LaborValida
 
   if (salaryType === 'hourly') {
     const hourlyRate = parseMoney(data.hourlyRate);
-    if (hourlyRate !== null && hourlyRate < MIN_WAGE_HOURLY_2026_CZK) {
+    if (hourlyRate !== null && hourlyRate < rates.hourlyMinimum) {
       issues.push({
         code: 'hourly_wage_below_minimum',
         field: 'hourlyRate',
         actual: hourlyRate,
-        minimum: MIN_WAGE_HOURLY_2026_CZK,
+        minimum: rates.hourlyMinimum,
+        year: rates.year,
       });
     }
   } else {
     const salary = parseMoney(data.salary);
-    const weeklyHours = finiteNumber(data.workHours) ?? 40;
     if (salary !== null && weeklyHours > 0) {
-      const proportionalMinimum = Math.ceil(
-        MIN_WAGE_MONTHLY_2026_CZK * Math.min(weeklyHours, 40) / 40 * 100,
-      ) / 100;
+      const proportionalMinimum = getProportionalMonthlyMinimum(rates.monthlyMinimum, weeklyHours);
       if (salary < proportionalMinimum) {
         issues.push({
           code: 'monthly_wage_below_minimum',
           field: 'salary',
           actual: salary,
           minimum: proportionalMinimum,
+          year: rates.year,
         });
       }
     }
@@ -195,8 +195,8 @@ export function getEmploymentLegalIssues(data: EmploymentLegalData): LaborValida
     }
 
     if (data.employmentType === 'fixed') {
-      const startDate = parseDateOnly(data.startDate);
-      const endDate = parseDateOnly(data.endDate);
+      const startDate = parseLaborDate(data.startDate);
+      const endDate = parseLaborDate(data.endDate);
       if (startDate && endDate && endDate.getTime() < startDate.getTime()) {
         issues.push({ code: 'fixed_term_dates_invalid', field: 'endDate' });
       } else {
@@ -216,8 +216,8 @@ export function getEmploymentLegalIssues(data: EmploymentLegalData): LaborValida
       }
     }
   } else if (data.employmentType === 'fixed') {
-    const startDate = parseDateOnly(data.startDate);
-    const endDate = parseDateOnly(data.endDate);
+    const startDate = parseLaborDate(data.startDate);
+    const endDate = parseLaborDate(data.endDate);
     if (startDate && endDate && endDate.getTime() < startDate.getTime()) {
       issues.push({ code: 'fixed_term_dates_invalid', field: 'endDate' });
     }
@@ -227,7 +227,9 @@ export function getEmploymentLegalIssues(data: EmploymentLegalData): LaborValida
 }
 
 export function getDppLegalIssues(data: DppLegalData): LaborValidationIssue[] {
-  const issues: LaborValidationIssue[] = [];
+  const fixedEndDate = data.durationType === 'fixed' ? data.endDate : undefined;
+  const issues = getLaborDateIssues(data.startDate, fixedEndDate);
+  const rates = getLaborRates(data.startDate, fixedEndDate);
   const estimatedHours = finiteNumber(data.estimatedHours);
 
   if (estimatedHours !== null && estimatedHours > DPP_MAX_HOURS_PER_YEAR) {
@@ -245,12 +247,13 @@ export function getDppLegalIssues(data: DppLegalData): LaborValidationIssue[] {
     : 'fixed';
   if (remunerationType === 'hourly') {
     const hourlyRate = parseMoney(data.hourlyRate);
-    if (hourlyRate !== null && hourlyRate < MIN_WAGE_HOURLY_2026_CZK) {
+    if (hourlyRate !== null && hourlyRate < rates.hourlyMinimum) {
       issues.push({
         code: 'hourly_wage_below_minimum',
         field: 'hourlyRate',
         actual: hourlyRate,
-        minimum: MIN_WAGE_HOURLY_2026_CZK,
+        minimum: rates.hourlyMinimum,
+        year: rates.year,
       });
     }
   } else {
@@ -262,20 +265,21 @@ export function getDppLegalIssues(data: DppLegalData): LaborValidationIssue[] {
       });
     } else if (totalRemuneration !== null && estimatedHours !== null && estimatedHours > 0) {
       const effectiveHourlyRate = totalRemuneration / estimatedHours;
-      if (effectiveHourlyRate < MIN_WAGE_HOURLY_2026_CZK) {
+      if (effectiveHourlyRate < rates.hourlyMinimum) {
         issues.push({
           code: 'dpp_fixed_remuneration_below_minimum',
           field: 'totalRemuneration',
           actual: effectiveHourlyRate,
-          minimum: MIN_WAGE_HOURLY_2026_CZK,
+          minimum: rates.hourlyMinimum,
+          year: rates.year,
         });
       }
     }
   }
 
   if (data.durationType === 'fixed') {
-    const startDate = parseDateOnly(data.startDate);
-    const endDate = parseDateOnly(data.endDate);
+    const startDate = parseLaborDate(data.startDate);
+    const endDate = parseLaborDate(data.endDate);
     if (startDate && endDate && endDate.getTime() < startDate.getTime()) {
       issues.push({ code: 'fixed_term_dates_invalid', field: 'endDate' });
     }
@@ -297,40 +301,46 @@ export function getLaborValidationMessage(
 ): string {
   const messages = {
     cs: {
-      hourly_wage_below_minimum: `Hodinová mzda nebo odměna musí být v roce 2026 alespoň ${czk(issue.minimum, locale)} Kč.`,
-      monthly_wage_below_minimum: `Zadaná měsíční mzda je pod poměrnou minimální mzdou ${czk(issue.minimum, locale)} Kč pro uvedený týdenní úvazek.`,
+      hourly_wage_below_minimum: `Hodinová mzda nebo odměna musí být v roce ${issue.year} alespoň ${czk(issue.minimum, locale)} Kč.`,
+      monthly_wage_below_minimum: `Zadaná měsíční mzda je pod poměrnou minimální mzdou ${czk(issue.minimum, locale)} Kč pro uvedený týdenní úvazek v roce ${issue.year}.`,
+      weekly_hours_not_positive: 'Týdenní pracovní doba musí být kladná.',
       notice_period_below_minimum: 'Obecná výpovědní doba musí být zadána v celých měsících a činit nejméně 2 měsíce; zvláštní jednoměsíční minimum podle § 52 písm. f) až h) se uplatní podle skutečného důvodu výpovědi.',
       trial_period_invalid: 'Zkušební dobu zadejte jako nezáporný počet celých měsíců.',
       trial_period_above_role_maximum: `Zkušební doba může činit nejvýše ${issue.maximum} měsíců (§ 35 ZP).`,
       trial_period_above_fixed_term_half: `U zadané doby určité lze ve formuláři sjednat zkušební dobu nejvýše ${issue.maximum} měsíců, aby nepřesáhla polovinu pracovního poměru (§ 35 odst. 5 ZP).`,
       fixed_term_dates_invalid: 'Datum konce doby určité nesmí předcházet dni nástupu.',
+      labor_date_invalid: 'Zadejte platné datum.',
       dpp_hours_required_for_fixed_remuneration: 'U pevné odměny doplňte předpokládaný počet hodin, aby bylo možné ověřit minimální hodinovou odměnu.',
       dpp_hours_above_maximum: `Rozsah DPP nesmí překročit ${issue.maximum} hodin za kalendářní rok u jednoho zaměstnavatele (§ 75 ZP).`,
-      dpp_fixed_remuneration_below_minimum: `Pevná odměna podle zadaného počtu hodin odpovídá pouze ${czk(issue.actual, locale)} Kč/hod.; minimum pro rok 2026 je ${czk(issue.minimum, locale)} Kč/hod.`,
+      dpp_fixed_remuneration_below_minimum: `Pevná odměna podle zadaného počtu hodin odpovídá pouze ${czk(issue.actual, locale)} Kč/hod. Minimum pro rok ${issue.year} je ${czk(issue.minimum, locale)} Kč/hod.`,
     },
     en: {
-      hourly_wage_below_minimum: `Hourly pay must be at least CZK ${czk(issue.minimum, locale)} in 2026.`,
-      monthly_wage_below_minimum: `The monthly pay is below the proportional minimum of CZK ${czk(issue.minimum, locale)} for the stated weekly hours.`,
+      hourly_wage_below_minimum: `Hourly pay must be at least CZK ${czk(issue.minimum, locale)} in ${issue.year}.`,
+      monthly_wage_below_minimum: `The monthly pay is below the proportional minimum of CZK ${czk(issue.minimum, locale)} for the stated weekly hours in ${issue.year}.`,
+      weekly_hours_not_positive: 'Weekly working hours must be greater than zero.',
       notice_period_below_minimum: 'Enter the general notice period as a whole number of at least 2 months; the special one-month statutory minimum under Section 52(f)–(h) depends on the actual reason for notice.',
       trial_period_invalid: 'Enter probation as a non-negative whole number of months.',
       trial_period_above_role_maximum: `Probation may not exceed ${issue.maximum} months (Section 35).`,
       trial_period_above_fixed_term_half: `For this fixed term, the builder permits at most ${issue.maximum} whole months of probation so it does not exceed half of the employment term (Section 35(5)).`,
       fixed_term_dates_invalid: 'The fixed-term end date must not precede the start date.',
+      labor_date_invalid: 'Enter a valid date.',
       dpp_hours_required_for_fixed_remuneration: 'For fixed remuneration, add estimated hours so the minimum hourly pay can be checked.',
       dpp_hours_above_maximum: `A DPP may not exceed ${issue.maximum} hours per calendar year for one employer (Section 75).`,
-      dpp_fixed_remuneration_below_minimum: `Based on the entered hours, fixed remuneration equals only CZK ${czk(issue.actual, locale)}/hour; the 2026 minimum is CZK ${czk(issue.minimum, locale)}/hour.`,
+      dpp_fixed_remuneration_below_minimum: `Based on the entered hours, fixed remuneration equals only CZK ${czk(issue.actual, locale)}/hour. The ${issue.year} minimum is CZK ${czk(issue.minimum, locale)}/hour.`,
     },
     ua: {
-      hourly_wage_below_minimum: `Погодинна оплата у 2026 році має становити щонайменше ${czk(issue.minimum, locale)} Kč.`,
-      monthly_wage_below_minimum: `Місячна зарплата нижча за пропорційний мінімум ${czk(issue.minimum, locale)} Kč для зазначеного тижневого часу.`,
+      hourly_wage_below_minimum: `Погодинна оплата у ${issue.year} році має становити щонайменше ${czk(issue.minimum, locale)} Kč.`,
+      monthly_wage_below_minimum: `Місячна зарплата нижча за пропорційний мінімум ${czk(issue.minimum, locale)} Kč для зазначеного тижневого часу у ${issue.year} році.`,
+      weekly_hours_not_positive: 'Кількість робочих годин на тиждень має бути більшою за нуль.',
       notice_period_below_minimum: 'Загальний строк попередження вкажіть цілою кількістю щонайменше 2 місяці; спеціальний мінімум один місяць за § 52(f)–(h) залежить від фактичної підстави.',
       trial_period_invalid: 'Вкажіть випробувальний строк як невід’ємну цілу кількість місяців.',
       trial_period_above_role_maximum: `Випробувальний строк не може перевищувати ${issue.maximum} місяців (§ 35).`,
       trial_period_above_fixed_term_half: `Для цього строкового договору форма допускає не більше ${issue.maximum} повних місяців випробування, щоб не перевищити половину строку (§ 35(5)).`,
       fixed_term_dates_invalid: 'Дата закінчення строкового договору не може передувати даті початку.',
+      labor_date_invalid: 'Вкажіть дійсну дату.',
       dpp_hours_required_for_fixed_remuneration: 'Для фіксованої винагороди вкажіть орієнтовні години, щоб перевірити мінімальну погодинну оплату.',
       dpp_hours_above_maximum: `DPP не може перевищувати ${issue.maximum} годин на календарний рік в одного роботодавця (§ 75).`,
-      dpp_fixed_remuneration_below_minimum: `За вказаними годинами фіксована винагорода становить лише ${czk(issue.actual, locale)} Kč/год; мінімум у 2026 році — ${czk(issue.minimum, locale)} Kč/год.`,
+      dpp_fixed_remuneration_below_minimum: `За вказаними годинами фіксована винагорода становить лише ${czk(issue.actual, locale)} Kč/год. Мінімум у ${issue.year} році — ${czk(issue.minimum, locale)} Kč/год.`,
     },
   } as const;
 

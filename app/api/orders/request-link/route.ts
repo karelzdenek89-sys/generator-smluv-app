@@ -4,7 +4,7 @@ import { redis } from '@/lib/redis';
 import { getClientIp, readFirstPartyJson } from '@/lib/api-security';
 import { takeRateLimit } from '@/lib/rate-limit';
 import { ensurePortalAccessToken } from '@/lib/orders-portal';
-import { normalizeLocale, type AppLocale } from '@/lib/locale';
+import { normalizeLocale, withLocale, type AppLocale } from '@/lib/locale';
 import { renderEmailShell, sendTransactionalEmail } from '@/lib/email/transactional';
 import { SITE_URL } from '@/lib/seo/site';
 
@@ -87,8 +87,8 @@ export async function POST(req: Request) {
     const active = await hasActivePaidOrder(email);
     if (active.active) {
       const token = await ensurePortalAccessToken(email, active.ttl);
-      const langQuery = locale === 'cs' ? '' : `?lang=${locale}`;
-      const url = `${baseUrl()}/zakaznicka-zona${langQuery}#access=${encodeURIComponent(token)}`;
+      const portalPath = withLocale('/zakaznicka-zona', locale);
+      const url = `${baseUrl()}${portalPath}#access=${encodeURIComponent(token)}`;
       const copy = COPY[locale];
       await sendTransactionalEmail({
         to: email,

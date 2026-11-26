@@ -15,6 +15,7 @@ import {
   getRadarVerifiedAt,
 } from '@/lib/legal/radar';
 import { getAllDocumentLegalVersions } from '@/lib/legal/document-versions';
+import { DPP_THRESHOLD_2027_SOURCE, MINIMUM_WAGE_2027_SOURCE } from '@/lib/legal/labor-rates';
 import { processLegislationWatches, type LegislationWatch } from '@/lib/legal/watch';
 import { ANSWER_FIRST_ARTICLES, articleHref } from '@/lib/portal/articles';
 import { HOMEPAGE_SITUATIONS, PORTAL_SITUATIONS, getPortalSituation } from '@/lib/portal/situations';
@@ -107,7 +108,7 @@ function testLegalRadar() {
     ok(change.audiences.length > 0, `${ctx}: audience`);
     ok(change.sources.length > 0, `${ctx}: at least one official source`);
     for (const source of change.sources) {
-      ok(/^https:\/\/(www\.)?(e-sbirka\.cz|mpsv\.gov\.cz|cssz\.gov\.cz|financnisprava\.gov\.cz|psp\.cz|mpo\.gov\.cz|eur-lex\.europa\.eu|ec\.europa\.eu|transport\.ec\.europa\.eu|mfcr\.gov\.cz)\//.test(source.href), `${ctx}: source ${source.href} is an official domain`);
+      ok(/^https:\/\/(www\.)?(e-sbirka\.(?:gov\.)?cz|mpsv\.gov\.cz|cssz\.gov\.cz|financnisprava\.gov\.cz|psp\.cz|mpo\.gov\.cz|eur-lex\.europa\.eu|ec\.europa\.eu|transport\.ec\.europa\.eu|mfcr\.gov\.cz)\//.test(source.href), `${ctx}: source ${source.href} is an official domain`);
     }
     ok(/^\d{4}-\d{2}-\d{2}$/.test(change.verifiedAt), `${ctx}: verifiedAt ISO`);
     ok(change.whatChanges.length > 0 && change.whatToDo.length > 0, `${ctx}: what changes / what to do`);
@@ -133,15 +134,18 @@ function testLegalRadar() {
     'audience entries sort by legal status priority even when a status bucket is empty',
   );
   eq(getLegalChangesNeedingReview(new Date('2026-09-18T00:00:00Z')).length, 0, 'nothing needs review on verification day');
-  ok(getLegalChangesNeedingReview(new Date('2027-01-01T00:00:00Z')).length === LEGAL_CHANGES.length, 'everything needs review after 90 days');
+  ok(getLegalChangesNeedingReview(new Date('2027-03-01T00:00:00Z')).length === LEGAL_CHANGES.length, 'everything needs review after 90 days');
   ok(/^\d{4}-\d{2}-\d{2}$/.test(getRadarVerifiedAt()), 'radar verified date');
 
   const minimumWage2027 = LEGAL_CHANGES.find((change) => change.key === 'minimalni-mzda-2027');
   ok(minimumWage2027, '2027 minimum wage radar entry exists');
   eq(minimumWage2027?.status, 'approved_pending', '2027 minimum wage is approved and waiting for effectiveness');
   eq(minimumWage2027?.effectiveFrom, '2027-01-01', '2027 minimum wage has the known effective date');
-  ok(Boolean(minimumWage2027?.summary.includes('24 900 Kč') && minimumWage2027.summary.includes('148,30 Kč')), '2027 minimum wage entry contains the MPSV-announced monthly and hourly amounts');
-  ok(Boolean(minimumWage2027?.sources.some((source) => source.href.includes('minimalni-mzda-v-roce-2027-vzroste-na-24-900-korun'))), '2027 minimum wage links the specific MPSV announcement');
+  ok(Boolean(minimumWage2027?.summary.replace(/\s+/g, ' ').includes('24 900 Kč') && minimumWage2027.summary.includes('148,30 Kč')), '2027 minimum wage entry contains the published monthly and hourly amounts');
+  ok(Boolean(minimumWage2027?.sources.some((source) => source.href === MINIMUM_WAGE_2027_SOURCE)), '2027 minimum wage links the specific official notice');
+  const dppThreshold = LEGAL_CHANGES.find((change) => change.key === 'dpp-rozhodna-castka-2026');
+  ok(Boolean(dppThreshold?.summary.replace(/\s+/g, ' ').includes('12 500 Kč od 1. 1. 2027')), 'DPP radar includes the published 2027 threshold without changing the existing anchor');
+  ok(Boolean(dppThreshold?.sources.some((source) => source.href === DPP_THRESHOLD_2027_SOURCE)), 'DPP radar links the specific official notice');
 
   const versions = getAllDocumentLegalVersions(new Date('2026-09-17T00:00:00Z'));
   eq(versions.length, 14, 'every contract type has a legal version');

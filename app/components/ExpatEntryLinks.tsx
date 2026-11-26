@@ -7,10 +7,10 @@ const EXPAT_HUB_LINKS = FOREIGN_LOCALES.map((locale) => {
     href: `/${meta.segment}`,
     flag: meta.flag,
     label: meta.nativeName,
-    ariaLabel:
-      locale === 'en'
-        ? 'English overview for foreigners in the Czech Republic'
-        : 'Огляд договорів українською для іноземців у Чехії',
+    lang: meta.htmlLang,
+    description: locale === 'en'
+      ? 'Overview of Czech contracts for foreigners'
+      : 'Огляд договорів українською для іноземців у Чехії',
   };
 });
 
@@ -28,7 +28,13 @@ export default function ExpatEntryLinks({
   return (
     <div className={className}>
       {EXPAT_HUB_LINKS.map((item) => (
-        <Link key={item.href} href={item.href} aria-label={item.ariaLabel} className={linkClassName}>
+        <Link
+          key={item.href}
+          href={item.href}
+          lang={item.lang}
+          aria-label={`${item.label} — ${item.description}`}
+          className={linkClassName}
+        >
           <span className="text-sm leading-none" aria-hidden="true">
             {item.flag}
           </span>
@@ -39,7 +45,6 @@ export default function ExpatEntryLinks({
         <Link
           href="/blog#expat-guides-heading"
           className={linkClassName}
-          aria-label="Blog guides for foreigners in English and Ukrainian"
         >
           Blog · EN / UA
         </Link>

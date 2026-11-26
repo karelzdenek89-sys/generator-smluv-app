@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/site';
 import Link from 'next/link';
 import RelatedContracts from '@/app/components/RelatedContracts';
 
@@ -20,6 +21,7 @@ export const metadata: Metadata = {
     description:
       'Co má obsahovat smlouva o zápůjčce podle § 2390 OZ, jak nastavit splatnost, úrok a vrácení peněz a na co si dát pozor před podpisem.',
     url: 'https://www.smlouvahned.cz/pujcka-smlouva',
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',

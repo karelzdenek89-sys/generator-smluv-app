@@ -9,6 +9,7 @@
 import type { ContractSection, StoredContractData } from '../contracts';
 import { formatRemoteWorkForContract } from '../i18n/employment-remote-work';
 import { getEffectiveTrialPeriodMonths } from '../labor-law-validation';
+import { LEGACY_LABOR_TERMS_VERSION } from '../legal/labor-rates';
 import { amt, buildBilingualTranslations, dateIn, disputeClauseIn, todayIn, txt, type ParaPair } from './helpers';
 
 type L = 'en' | 'ua';
@@ -155,6 +156,9 @@ function en(d: StoredContractData, hasPremium: boolean): ParaPair[] {
       title: 'V. WAGE AND REMUNERATION',
       body: [
         c.salaryDesc,
+        d.laborTermsVersion !== LEGACY_LABOR_TERMS_VERSION
+          ? 'If pay for work performed falls below the minimum wage in force for the relevant period, the Employer shall pay the Employee the difference under § 111 of the Labour Code.'
+          : '',
         d.bonusDesc ? `The Employee may be granted variable wage components (bonuses): ${txt(d.bonusDesc)}.` : '',
         'On payment of the wage the Employer shall provide the Employee with a written statement (payslip) showing the individual wage components and the deductions made.',
       ],
@@ -337,6 +341,9 @@ function ua(d: StoredContractData, hasPremium: boolean): ParaPair[] {
       title: 'V. ЗАРОБІТНА ПЛАТА ТА ВИНАГОРОДА',
       body: [
         c.salaryDesc,
+        d.laborTermsVersion !== LEGACY_LABOR_TERMS_VERSION
+          ? 'Якщо заробітна плата за виконану роботу нижча за мінімальну заробітну плату, чинну у відповідному періоді, Роботодавець доплачує Працівникові різницю згідно з § 111 Трудового кодексу.'
+          : '',
         d.bonusDesc ? `Працівнику можуть бути призначені змінні складові заробітної плати (премії/бонуси): ${txt(d.bonusDesc)}.` : '',
         'Під час виплати заробітної плати роботодавець зобов’язаний надати працівнику письмовий документ (розрахунковий листок) із даними про окремі складові заробітної плати та здійснені утримання.',
       ],

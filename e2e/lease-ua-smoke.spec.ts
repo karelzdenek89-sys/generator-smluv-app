@@ -64,9 +64,9 @@ async function mockCheckoutApi(page: Page, onPayload: (body: Record<string, unkn
 }
 
 async function fillMinimalLeaseForm(page: Page) {
-  await page.getByTestId('lease-landlord-name').fill('Jan Pronajimatel');
-  await page.getByTestId('lease-tenant-name').fill('Olena Orendar');
-  await page.getByTestId('lease-flat-address').fill('Praha 1, Ukrajinska 1');
+  await page.getByRole('textbox', { name: 'Повне ім’я орендодавця', exact: true }).fill('Jan Pronajimatel');
+  await page.getByRole('textbox', { name: 'Повне ім’я орендаря', exact: true }).fill('Olena Orendar');
+  await page.getByRole('textbox', { name: 'Адреса квартири', exact: true }).fill('Praha 1, Ukrajinska 1');
   await page.getByTestId('lease-rent-amount').fill('20000');
   await page.getByTestId('lease-start-date').fill('2026-06-01');
   await page.getByTestId('lease-end-date').fill('2027-05-31');

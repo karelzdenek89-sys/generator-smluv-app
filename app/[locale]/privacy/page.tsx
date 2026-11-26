@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
+import { getLegalHreflangLanguages } from '@/lib/i18n/expat-hreflang';
 import { notFound } from 'next/navigation';
 import LegalDocumentPage from '@/app/components/legal/LegalDocumentPage';
 import { getPrivacyDocument } from '@/lib/legal/privacy-i18n';
 import { getPublicLocalePath, normalizeLocale } from '@/lib/locale';
-import { SITE_URL } from '@/lib/seo/site';
+import { DEFAULT_OG_IMAGE, SITE_URL } from '@/lib/seo/site';
 
 type Props = { params: Promise<{ locale: string }> };
 
@@ -28,12 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description: document.metaDescription,
     alternates: {
       canonical: `${SITE_URL}/${locale}/privacy`,
-      languages: {
-        cs: `${SITE_URL}/gdpr`,
-        en: `${SITE_URL}/en/privacy`,
-        uk: `${SITE_URL}/ua/privacy`,
-        'x-default': `${SITE_URL}/gdpr`,
-      },
+      languages: getLegalHreflangLanguages('privacy'),
     },
     openGraph: {
       title: document.metaTitle,
@@ -42,6 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       siteName: 'SmlouvaHned',
       type: 'website',
       locale: locale === 'ua' ? 'uk_UA' : 'en_US',
+      images: [DEFAULT_OG_IMAGE],
     },
   };
 }

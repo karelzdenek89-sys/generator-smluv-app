@@ -2,6 +2,7 @@ import { DOCUMENT_CATALOG } from '@/lib/document-catalog';
 import { EXPAT_SEO_LOCALES, EXPAT_SEO_SLUGS, getExpatSeoLandingBySlug } from '@/lib/i18n/expat-seo-landings';
 import { LEGAL_CHANGES, LEGAL_CHANGE_STATUS_LABELS } from '@/lib/legal/radar';
 import { getAvailableThematicPackages } from '@/lib/packages';
+import { DPP_THRESHOLD_2027_SOURCE, formatHourlyMinimum, LABOR_RATES_2026, LABOR_RATES_2027, MINIMUM_WAGE_2027_SOURCE } from '@/lib/legal/labor-rates';
 import { ANSWER_FIRST_ARTICLES, articleHref } from '@/lib/portal/articles';
 import { PORTAL_TOOLS } from '@/lib/portal/tools';
 import { BASIC_ARCHIVE_DAYS, COMPLETE_ARCHIVE_DAYS, PRICING_TIER_CONFIG } from '@/lib/pricing';
@@ -50,7 +51,7 @@ export function buildLlmsTxt(): string {
     `- Výstup: PDF ihned po ověřené platbě, u vybraných dokumentů volitelně DOCX. Odkaz ke stažení platí ${BASIC_ARCHIVE_DAYS} dní (základní) nebo ${COMPLETE_ARCHIVE_DAYS} dní (rozšířená), s placeným doplňkem až 90 dní.`,
     '- Platba: Stripe (karta, Apple Pay, Google Pay). Údaje karty web neukládá.',
     '- Jazyky: rozhodující je české znění. U nájmu, podnájmu, pracovní smlouvy, DPP, plné moci a prodeje auta obsahuje PDF také úplný vysvětlující překlad do angličtiny nebo ukrajinštiny (každý článek a odstavec, stejné číslování). Při vyplnění formuláře anglicky (/en) nebo ukrajinsky (/ua) je překlad v ceně, k české verzi formuláře jako doplněk. Nejde o úřední překlad.',
-    '- Formuláře hlídají zákonné limity (např. minimální mzda 2026, 300 hodin ročně u DPP).',
+    '- Formuláře zohledňují vyhlášená minima 2026 a 2027 podle období práce a hlídají limit 300 hodin ročně u DPP.',
     '',
     'Jak objednat (i pro AI agenty): otevřete URL formuláře níže, vyplňte pole, klikněte na „Vygenerovat“, v náhledu zadejte e-mail pro doručení, potvrďte souhlas s obchodními podmínkami a zaplaťte přes Stripe. PDF se stáhne na stránce po platbě a odkaz přijde e-mailem.',
     '',
@@ -129,9 +130,10 @@ export function buildLlmsFullTxt(): string {
     '',
     '## Klíčové zákonné limity a konstanty (ČR 2026–2027, oficiální zdroje)',
     '',
-    '- Minimální mzda 2026: 22 400 Kč měsíčně / 134,40 Kč za hodinu při 40h týdenní pracovní době (§ 111 zákoníku práce č. 262/2006 Sb., sdělení MPSV).',
-    '- Minimální mzda 2027 (schváleno vládou 7. 9. 2026, účinnost od 1. 1. 2027): 24 900 Kč měsíčně / 148,30 Kč za hodinu.',
-    '- Dohoda o provedení práce (DPP, § 75 ZP): maximálně 300 hodin v kalendářním roce u jednoho zaměstnavatele; rozhodná částka pro účast na nemocenském a důchodovém pojištění v roce 2026 činí 12 000 Kč měsíčně; nárok na dovolenou vzniká při trvání dohody alespoň 28 kalendářních dnů a odpracování alespoň 80 hodin.',
+    `- Minimální mzda 2026 při stanovené týdenní pracovní době 40 hodin činí ${LABOR_RATES_2026.monthlyMinimum.toLocaleString('cs-CZ')} Kč měsíčně nebo ${formatHourlyMinimum(LABOR_RATES_2026.hourlyMinimum)} Kč za hodinu (§ 111 zákoníku práce, sdělení MPSV č. 356/2025 Sb.).`,
+    `- Od 1. 1. 2027 činí minimální mzda při stanovené týdenní pracovní době 40 hodin ${LABOR_RATES_2027.monthlyMinimum.toLocaleString('cs-CZ')} Kč měsíčně nebo ${formatHourlyMinimum(LABOR_RATES_2027.hourlyMinimum)} Kč za hodinu. [Sdělení MPSV č. 171/2026 Sb.](${MINIMUM_WAGE_2027_SOURCE})`,
+    `- Rozhodná částka pro účast na nemocenském a důchodovém pojištění u DPP činí ${LABOR_RATES_2026.dppMonthlyThreshold.toLocaleString('cs-CZ')} Kč měsíčně v roce 2026 a ${LABOR_RATES_2027.dppMonthlyThreshold.toLocaleString('cs-CZ')} Kč měsíčně od 1. 1. 2027 u jednoho zaměstnavatele. [Sdělení MPSV č. 184/2026 Sb.](${DPP_THRESHOLD_2027_SOURCE})`,
+    '- Dohoda o provedení práce (DPP, § 75 ZP) má limit 300 hodin v kalendářním roce u jednoho zaměstnavatele. Nárok na dovolenou vzniká při trvání dohody alespoň 28 kalendářních dnů a odpracování alespoň 80 hodin.',
     '- Nájem bytu (§ 2235 a násl. občanského zákoníku č. 89/2012 Sb.): peněžitá jistota (kauce) a smluvní pokuty nesmí v souhrnu překročit trojnásobek měsíčního nájemného (§ 2254 OZ).',
     '- Smlouva o dílo, stavební zakázky a vícepráce (§ 2586–2650 OZ): při pevné ceně nebo zaručeném rozpočtu (§ 2620 OZ) nelze cenu zvýšit bez písemné dohody (§ 564 OZ). U rozpočtu s výhradou neúplnosti nebo nezávaznosti (§ 2621–2622 OZ) musí zhotovitel potřebu překročení oznámit bez zbytečného odkladu; požaduje-li zvýšení o více než 10 % původního rozpočtu, může objednatel bez zbytečného odkladu odstoupit (§ 2622 odst. 2 OZ). U stavby nelze odmítnout převzetí pro ojedinělé drobné vady, které samy o sobě ani ve spojení s jinými nebrání užívání stavby (§ 2628 OZ).',
     '- Stavební deník a dokumentace stavby: vedení stavebního deníku upravuje § 166 stavebního zákona č. 283/2021 Sb. a náležitosti dokumentace vyhláška č. 131/2024 Sb.',

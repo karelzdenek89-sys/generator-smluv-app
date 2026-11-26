@@ -198,7 +198,7 @@ export const GLOSSARY: readonly GlossaryEntry[] = [
     term: 'Darovací smlouva',
     category: 'koupe-prodej',
     definition:
-      'Smlouva, kterou dárce bezúplatně převádí věc nebo právo na obdarovaného. U darování nemovitosti je nutná písemná forma s úředně ověřenými podpisy. U movitých věcí může postačit ústní forma a předání věci. Darování mezi blízkými příbuznými je obvykle osvobozeno od daně z příjmů.',
+      'Smlouva, kterou dárce bezúplatně převádí věc nebo právo na obdarovaného. U darování nemovitosti je nutná písemná smlouva. Při zápisu do katastru mají být podpisy na soukromé listině úředně ověřené. Bez ověření je nutné jejich pravost prokázat do 30 dnů od podání návrhu na vklad. U movitých věcí může postačit ústní forma a předání věci. Darování mezi blízkými příbuznými je obvykle osvobozeno od daně z příjmů.',
     legalReference: '§ 2055–2078 zákona č. 89/2012 Sb.; § 10 zákona č. 586/1992 Sb. (daň z příjmů)',
     relatedHref: '/darovaci',
     relatedLabel: 'Darovací smlouva online',

@@ -1,4 +1,5 @@
 import type { ContractType } from '@/lib/contracts';
+import { DPP_THRESHOLD_2027_SOURCE, formatHourlyMinimum, LABOR_RATES_2026, LABOR_RATES_2027, MINIMUM_WAGE_2027_SOURCE } from '@/lib/legal/labor-rates';
 
 /**
  * Legislativní radar 2027 — datový model a obsah.
@@ -166,35 +167,42 @@ export type LegalChange = {
 };
 
 const VERIFIED = '2026-09-17';
+const VERIFIED_LABOR_RATES = '2026-11-26';
+const wage2026 = LABOR_RATES_2026.monthlyMinimum.toLocaleString('cs-CZ');
+const wage2027 = LABOR_RATES_2027.monthlyMinimum.toLocaleString('cs-CZ');
+const hourlyWage2027 = formatHourlyMinimum(LABOR_RATES_2027.hourlyMinimum);
+const dppThreshold2026 = LABOR_RATES_2026.dppMonthlyThreshold.toLocaleString('cs-CZ');
+const dppThreshold2027 = LABOR_RATES_2027.dppMonthlyThreshold.toLocaleString('cs-CZ');
 
 export const LEGAL_CHANGES: readonly LegalChange[] = [
   {
     key: 'minimalni-mzda-2027',
-    title: 'Minimální mzda 2027: vláda schválila 24 900 Kč měsíčně',
+    title: `Minimální mzda 2027: od ledna vzroste na ${wage2027} Kč měsíčně`,
     audiences: ['employers', 'self_employed'],
     status: 'approved_pending',
     effectiveFrom: '2027-01-01',
-    dateLabel: 'Schváleno vládou 7. 9. 2026 pro období od 1. 1. 2027',
+    dateLabel: 'Vyhlášeno sdělením MPSV č. 171/2026 Sb. pro období od 1. 1. 2027',
     summary:
-      'MPSV oznámilo pro rok 2027 minimální mzdu 24 900 Kč měsíčně a 148,30 Kč za hodinu při stanovené týdenní pracovní době 40 hodin. Nejde již o neznámou částku; v roce 2026 nadále platí 22 400 Kč měsíčně.',
+      `Od 1. 1. 2027 činí minimální mzda ${wage2027} Kč měsíčně a ${hourlyWage2027} Kč za hodinu při stanovené týdenní pracovní době 40 hodin. Pro rok 2026 platí ${wage2026} Kč měsíčně.`,
     whatChanges: [
       'Vláda schválila koeficient 0,446 pro rok 2027 a 0,458 pro rok 2028.',
-      'Částku pro rok 2027 uvádí oficiální oznámení MPSV ze 7. 9. 2026. Tato položka nepotvrzuje číslo ani vyhlášení navazujícího sdělení ve Sbírce; finální znění ověřte v oficiálním zdroji.',
+      'Sdělení MPSV č. 171/2026 Sb. vyhlašuje minimální mzdu pro rok 2027.',
     ],
     whatToDo: [
       'Připravte přepočet mzdových nákladů na rok 2027 a zkontrolujte odměny v pracovních smlouvách i dohodách.',
-      'Před použitím nových sazeb ověřte sdělení MPSV pro rok 2027; sazby pro rok 2026 se tímto oznámením nemění.',
+      'Použijte sazbu platnou v období, kdy zaměstnanec práci vykonává.',
     ],
     affectedDocuments: [
       { contractType: 'employment', href: '/pracovni', label: 'Pracovní smlouva' },
       { contractType: 'dpp', href: '/dpp', label: 'Dohoda o provedení práce' },
     ],
     sources: [
+      { label: 'Sdělení MPSV č. 171/2026 Sb.', href: MINIMUM_WAGE_2027_SOURCE, publisher: 'e-Sbírka' },
       { label: 'MPSV — oznámení minimální mzdy 2027 (7. 9. 2026)', href: 'https://mpsv.gov.cz/minimalni-mzda-v-roce-2027-vzroste-na-24-900-korun', publisher: 'MPSV' },
       { label: 'MPSV — Minimální mzda a vyhlášené předpisy', href: 'https://mpsv.gov.cz/minimalni-mzda', publisher: 'MPSV' },
       { label: 'Zákoník práce, § 111 (e-Sbírka)', href: 'https://www.e-sbirka.cz/sb/2006/262', publisher: 'e-Sbírka' },
     ],
-    verifiedAt: '2026-09-18',
+    verifiedAt: VERIFIED_LABOR_RATES,
   },
   {
     key: 'jmhz-jednotne-mesicni-hlaseni',
@@ -229,17 +237,16 @@ export const LEGAL_CHANGES: readonly LegalChange[] = [
   },
   {
     key: 'dpp-rozhodna-castka-2026',
-    title: 'DPP: rozhodná částka pro účast na pojištění 12 000 Kč (2026)',
+    title: 'DPP: rozhodná částka pro účast na pojištění v letech 2026 a 2027',
     audiences: ['employers'],
     status: 'in_force',
     effectiveFrom: '2026-01-01',
-    dateLabel: 'Platí pro rok 2026; částka pro rok 2027 bude vyhlášena sdělením MPSV',
+    dateLabel: `Rok 2026: ${dppThreshold2026} Kč měsíčně. Od 1. 1. 2027: ${dppThreshold2027} Kč měsíčně.`,
     summary:
-      'Od 1. 1. 2026 vzniká zaměstnanci na DPP účast na nemocenském (a důchodovém) pojištění při měsíčním příjmu od 12 000 Kč u jednoho zaměstnavatele. Limit 300 hodin ročně zůstává.',
+      `U DPP se posuzuje měsíční příjem z dohod u jednoho zaměstnavatele. Rozhodná částka pro účast na nemocenském a důchodovém pojištění je ${dppThreshold2026} Kč v roce 2026 a ${dppThreshold2027} Kč od 1. 1. 2027. Limit 300 hodin ročně zůstává.`,
     whatChanges: [
-      'Rozhodná částka se odvozuje od průměrné mzdy a pro rok 2026 činí 12 000 Kč (sdělení MPSV).',
+      'Rozhodná částka se odvozuje od průměrné mzdy. Hodnotu pro rok 2027 vyhlásilo sdělení MPSV č. 184/2026 Sb.',
       'Při dosažení částky vzniká odvodová povinnost zaměstnavatele i zaměstnance.',
-      'Částka pro rok 2027 se vyhlásí na podzim 2026 — sledujte sdělení MPSV.',
     ],
     whatToDo: [
       'V DPP uvádějte odměnu tak, aby bylo zřejmé, zda se očekává překročení rozhodné částky.',
@@ -247,10 +254,11 @@ export const LEGAL_CHANGES: readonly LegalChange[] = [
     ],
     affectedDocuments: [{ contractType: 'dpp', href: '/dpp', label: 'Dohoda o provedení práce' }],
     sources: [
+      { label: 'Sdělení MPSV č. 184/2026 Sb.', href: DPP_THRESHOLD_2027_SOURCE, publisher: 'e-Sbírka' },
       { label: 'MPSV — Legislativní změny účinné od 1. 1. 2026 (sdělení o rozhodné částce)', href: 'https://mpsv.gov.cz/prehledne-legislativni-zmeny-z-gesce-mpsv-ucinne-od-1-ledna-2026', publisher: 'MPSV' },
       { label: 'Zákoník práce, § 75 a násl. (e-Sbírka)', href: 'https://www.e-sbirka.cz/sb/2006/262', publisher: 'e-Sbírka' },
     ],
-    verifiedAt: VERIFIED,
+    verifiedAt: VERIFIED_LABOR_RATES,
   },
   {
     key: 'flexinovela-zakoniku-prace',
@@ -293,7 +301,7 @@ export const LEGAL_CHANGES: readonly LegalChange[] = [
     whatChanges: [
       'Minimální záloha na pojistné pro hlavní činnost: do června 2026 5 720 Kč, od července 2026 5 005 Kč.',
       'Snížení minima od července mění měsíční předpis záloh do budoucna. Zaplacené zálohy se následně zohledňují při ročním Přehledu o příjmech a výdajích; případný doplatek nebo přeplatek závisí na skutečném ročním vyměřovacím základu a evidovaných platbách.',
-      'Vedlejší činnost má vlastní (nižší) minimum.',
+      'Pro rok 2027 vychází podle zákonného výpočtu běžná minimální záloha na důchodové pojištění při hlavní činnosti na 5 281 Kč měsíčně (35 % průměrné mzdy 51 663 Kč, pojistné 29,2 % z vyměřovacího základu po zaokrouhlení). Vedlejší činnost a některé začínající OSVČ mají odlišná pravidla.',
     ],
     whatToDo: [
       'Zkontrolujte předpis záloh od července 2026 v ePortálu ČSSZ.',
@@ -306,18 +314,20 @@ export const LEGAL_CHANGES: readonly LegalChange[] = [
     sources: [
       { label: 'ČSSZ — Informace pro OSVČ o změně pojistného od 1. 7. 2026', href: 'https://www.cssz.gov.cz/-/informace-pro-osvc-o-zmene-pojistneho-na-duchodove-pojisteni-od-1-7-2026', publisher: 'ČSSZ' },
       { label: 'ČSSZ — Zálohy na pojistné na důchodové pojištění', href: 'https://www.cssz.gov.cz/zalohy-na-pojistne-na-duchodove-pojisteni', publisher: 'ČSSZ' },
+      { label: 'Nařízení vlády č. 177/2026 Sb. a výpočet průměrné mzdy 2027', href: 'https://e-sbirka.gov.cz/sb/2026/177/2027-01-01?zalozka=duvodovazprava', publisher: 'e-Sbírka' },
+      { label: 'Zákon č. 589/1992 Sb. (§ 7, § 14 a § 23b)', href: 'https://e-sbirka.gov.cz/sb/1992/589?zalozka=text', publisher: 'e-Sbírka' },
     ],
-    verifiedAt: VERIFIED,
+    verifiedAt: '2026-11-26',
   },
   {
     key: 'pausalni-dan-2027',
-    title: 'Paušální daň: pásma 2026 platí, výše záloh pro rok 2027 se vyhlásí na podzim',
+    title: 'Paušální režim 2027: termín oznámení a výše záloh',
     audiences: ['self_employed'],
     status: 'in_force',
     effectiveFrom: '2026-01-01',
     dateLabel: 'Vstup nebo změna pásma pro rok 2027: nejpozději 11. 1. 2027 (10. 1. je neděle)',
     summary:
-      'Paušální režim zůstává třípásmový. Záloha v prvním pásmu se odvozuje od minimálního pojistného a zdravotního pojištění, proto se mění každý rok. Konkrétní částka pro rok 2027 bude známa po vyhlášení průměrné mzdy pro rok 2027.',
+      'Paušální režim zůstává třípásmový. Pro výpočet běžné zálohy v prvním pásmu pro rok 2027 se vychází z průměrné mzdy 51 663 Kč podle nařízení vlády č. 177/2026 Sb. Aktuální částku před první platbou ověřte u Finanční správy.',
     whatChanges: [
       'Pro rok 2026 se změnila výše zálohy v prvním pásmu; druhé a třetí pásmo zůstaly.',
       'Obecná zákonná lhůta pro vstup do paušálního režimu nebo změnu pásma je do 10. dne rozhodného zdaňovacího období. Protože 10. 1. 2027 připadá na neděli, posledním dnem lhůty je nejbližší následující pracovní den, pondělí 11. 1. 2027 (§ 33 odst. 4 daňového řádu).',
@@ -331,10 +341,11 @@ export const LEGAL_CHANGES: readonly LegalChange[] = [
       { contractType: 'service', href: '/sluzby', label: 'Smlouva o poskytování služeb' },
     ],
     sources: [
+      { label: 'Nařízení vlády č. 177/2026 Sb. a výpočet průměrné mzdy 2027', href: 'https://e-sbirka.gov.cz/sb/2026/177/2027-01-01?zalozka=duvodovazprava', publisher: 'e-Sbírka' },
       { label: 'Finanční správa — Paušální daň: obecné informace', href: 'https://financnisprava.gov.cz/cs/dane/dane/dan-z-prijmu/pausalni-dan/obecne-informace', publisher: 'Finanční správa' },
       { label: 'Finanční správa — Paušální daň 2026: novinky a termíny', href: 'https://financnisprava.gov.cz/cs/financni-sprava/media-a-verejnost/tiskove-zpravy-gfr/tiskove-zpravy-2025/pausalni-dan-2026-novinky-terminy', publisher: 'Finanční správa' },
     ],
-    verifiedAt: VERIFIED,
+    verifiedAt: '2026-11-26',
   },
   {
     key: 'novy-zakon-o-ucetnictvi',

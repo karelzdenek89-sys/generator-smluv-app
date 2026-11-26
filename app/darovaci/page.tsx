@@ -1,6 +1,7 @@
 ﻿'use client';
 
 import { useState, useMemo } from 'react';
+import Link from 'next/link';
 import type { CheckoutAuthorization } from '@/lib/checkout-authorization';
 import { useBuilderDraft } from '@/lib/use-builder-draft';
 import ContractLandingSection from '@/app/components/ContractLandingSection';
@@ -36,10 +37,6 @@ type FormDataType = {
   carPlate: string;
   carYear: string;
   carMileage: string;
-  propertyAddress: string;
-  propertyLV: string;
-  propertyCadastre: string;
-  cadastralOffice: string;
   thingDescription: string;
   giftDate: string;
   withReservation: boolean;
@@ -72,10 +69,6 @@ export default function GiftContractPage() {
     carPlate: '',
     carYear: '',
     carMileage: '',
-    propertyAddress: '',
-    propertyLV: '',
-    propertyCadastre: '',
-    cadastralOffice: '',
     thingDescription: '',
     giftDate: new Date().toISOString().split('T')[0],
     withReservation: false,
@@ -86,6 +79,8 @@ export default function GiftContractPage() {
     disputeResolution: 'court' as const,
   });
 
+  // Rozpracovaný formulář ze starší verze mohl mít předevolenou nemovitost.
+  const isPropertyGift = formData.giftType === 'property';
   const [isProcessing, setIsProcessing] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const updateField = (field: keyof FormDataType, value: string | boolean) => {
@@ -121,13 +116,6 @@ export default function GiftContractPage() {
       score -= 25;
       warnings.push('Doporučujeme doplnit základní údaje o vozidle (VIN, značka).');
     }
-    if (
-      formData.giftType === 'property' &&
-      (!formData.propertyAddress || !formData.propertyLV)
-    ) {
-      score -= 35;
-      warnings.push('Doporučujeme doplnit klíčové údaje o nemovitosti.');
-    }
     if (formData.giftType === 'thing' && !formData.thingDescription.trim()) {
       score -= 20;
       warnings.push('Doporučujeme doplnit popis darované věci.');
@@ -139,7 +127,7 @@ export default function GiftContractPage() {
 
   const previewSections = useMemo(() => {
     try {
-      if (!formData.donorName) return [];
+      if (formData.giftType === 'property' || !formData.donorName) return [];
       return buildContractSections({ ...formData, contractType: 'gift' } as StoredContractData);
     } catch {
       return [];
@@ -147,13 +135,14 @@ export default function GiftContractPage() {
   }, [formData]);
 
   const handlePayment = async (addOns: string[], authorization: CheckoutAuthorization) => {
+    if (isPropertyGift) return;
+
     // Validace povinných polí
     const missingFields: string[] = [];
     if (!formData.donorName.trim()) missingFields.push('jméno dárce');
     if (!formData.doneeName.trim()) missingFields.push('jméno obdarovaného');
     if (formData.giftType === 'money' && !formData.amount.trim()) missingFields.push('darovanou částku');
     if (formData.giftType === 'car' && !formData.carVIN.trim()) missingFields.push('VIN vozidla');
-    if (formData.giftType === 'property' && !formData.propertyAddress.trim()) missingFields.push('adresu nemovitosti');
     if (formData.giftType === 'thing' && !formData.thingDescription.trim()) missingFields.push('popis darované věci');
 
     if (missingFields.length > 0) {
@@ -209,9 +198,9 @@ export default function GiftContractPage() {
         badge="§ 2055 a násl. občanského zákoníku"
         h1Main="Darovací smlouva"
         h1Accent="online"
-        subtitle="Vytvořte darovací smlouvu pro darování peněz, vozidla, movité věci nebo jiného majetku. Dokument jasně vymezuje předmět daru, darování bez odměny a podmínky převodu."
+        subtitle="Vytvořte darovací smlouvu pro darování peněz, vozidla nebo jiné movité věci. Dokument jasně vymezuje předmět daru, darování bez odměny a podmínky převodu."
         benefits={[
-          { icon: '🎁', text: 'Pokrývá darování peněz, věci, vozidla i nemovitosti' },
+          { icon: '🎁', text: 'Pokrývá darování peněz, vozidla i jiné movité věci' },
           { icon: '⚖️', text: 'Sestaveno dle § 2055 OZ — bezplatný převod vlastnického práva' },
           { icon: '📄', text: 'PDF ke stažení ihned po ověřené platbě' },
           { icon: '🔒', text: 'Volitelná podmínka vrácení daru (odvolání daru)' },
@@ -228,13 +217,14 @@ export default function GiftContractPage() {
           'Darování peněz (finanční dar v rodině nebo blízkým)',
           'Darování vozidla (auto, motocykl)',
           'Darování movité věci (nábytek, elektronika, starožitnosti)',
-          'Situace, kde je třeba písemně doložit bezplatný převod majetku',
+          'Situace, kde je třeba písemně doložit bezplatný převod movitého majetku',
         ]}
         whenOther={[
           { label: 'Kupní smlouva na movitou věc', href: '/kupni', text: 'Pokud za věc obdržíte úplatu — darování je vždy bezplatné.' },
           { label: 'Kupní smlouva na vozidlo', href: '/auto', text: 'Pokud vozidlo prodáváte za kupní cenu, nikoli darujete.' },
         ]}
         faq={[
+          { q: 'Lze vytvořit smlouvu pro darování nemovitosti?', a: 'Generátor je určený pro peníze, vozidla a jiné movité věci. Smlouvu pro darování nemovitosti a zápis do katastru doporučujeme připravit s advokátem.' },
           { q: 'Musí být darovací smlouva písemná?', a: 'U movitých věcí předaných ihned písemná forma nutná není. Doporučujeme ji vždy — zejména u vyšší hodnoty daru (peníze, vozidlo), kde je dobré mít doložitelný právní základ.' },
           { q: 'Platí se daň z darování?', a: 'Darování mezi osobami blízkými (§ 22 zákona o daních z příjmů) je zpravidla osvobozeno od daně. U darování jiným osobám záleží na hodnotě daru a vztahu stran — doporučujeme konzultaci s daňovým poradcem.' },
           { q: 'Lze dar odvolat?', a: 'Ano, § 2068–2075 OZ umožňuje odvolání daru, pokud se obdarovaný zachová vůči dárci způsobem, který hrubě porušuje dobré mravy. Tento mechanismus lze do smlouvy výslovně zahrnout.' },
@@ -258,8 +248,8 @@ export default function GiftContractPage() {
               <h3 className="uppercase text-xs tracking-widest font-bold text-amber-400 mb-6">
                 1. Co darujete?
               </h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {(['money', 'car', 'property', 'thing'] as GiftType[]).map((type) => (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {(['money', 'car', 'thing'] as const).map((type) => (
                   <button
                     key={type}
                     type="button"
@@ -274,11 +264,19 @@ export default function GiftContractPage() {
                   >
                     {type === 'money' && '💰 Peníze'}
                     {type === 'car' && '🚗 Auto'}
-                    {type === 'property' && '🏠 Nemovitost'}
                     {type === 'thing' && '📦 Movitá věc'}
                   </button>
                 ))}
               </div>
+              <p className="mt-4 text-sm leading-relaxed text-slate-300">
+                Darování domu, bytu nebo pozemku vyžaduje samostatnou smlouvu pro zápis do katastru.
+                Přečtěte si <Link href="/darovaci-smlouva" className="text-amber-300 underline">průvodce darováním</Link>.
+              </p>
+              {isPropertyGift && (
+                <p role="status" className="mt-3 text-sm text-amber-300">
+                  Rozpracovanou smlouvu pro nemovitost už v generátoru nelze objednat. Pokud darujete něco jiného, zvolte druh daru výše.
+                </p>
+              )}
             </section>
 
             <div className="grid md:grid-cols-2 gap-8">
@@ -479,60 +477,6 @@ export default function GiftContractPage() {
                 </div>
               )}
 
-              {formData.giftType === 'property' && (
-                <div className="space-y-4">
-                  {/* Alert — darování nemovitosti vyžaduje notáře + katastr */}
-                  <div className="flex items-start gap-3 rounded-2xl border border-amber-500/40 bg-amber-500/10 p-5">
-                    <span className="mt-0.5 flex-shrink-0 text-xl">⚠️</span>
-                    <div>
-                      <div className="mb-1 text-sm font-black text-amber-300">
-                        Důležité upozornění k darování nemovitosti
-                      </div>
-                      <p className="text-xs leading-relaxed text-amber-100/80">
-                        Převod nemovitosti vyžaduje <strong className="text-amber-200">úředně ověřené podpisy obou stran</strong> a podání návrhu na vklad do katastru nemovitostí.
-                        Vygenerovaný dokument slouží jako podklad — k dokončení převodu je nutné zajistit ověření podpisů (Czech POINT, notář) a podat návrh na vklad.
-                        SmlouvaHned.cz nezajišťuje notářské ani katastrální služby.
-                      </p>
-                    </div>
-                  </div>
-                  <input
-                    name="propertyAddress"
-                    type="text"
-                    placeholder="Adresa nemovitosti"
-                    aria-label="Adresa nemovitosti"
-                    className={inputClass}
-                    value={formData.propertyAddress}
-                    onChange={(e) => updateField('propertyAddress', e.target.value)}
-                  />
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <input
-                      type="text"
-                      placeholder="List vlastnictví (LV)"
-                      aria-label="List vlastnictví (LV)"
-                      className={inputClass}
-                      value={formData.propertyLV}
-                      onChange={(e) => updateField('propertyLV', e.target.value)}
-                    />
-                    <input
-                      type="text"
-                      placeholder="Katastrální území"
-                      aria-label="Katastrální území"
-                      className={inputClass}
-                      value={formData.propertyCadastre}
-                      onChange={(e) => updateField('propertyCadastre', e.target.value)}
-                    />
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="Katastrální úřad"
-                    aria-label="Katastrální úřad"
-                    className={inputClass}
-                    value={formData.cadastralOffice}
-                    onChange={(e) => updateField('cadastralOffice', e.target.value)}
-                  />
-                </div>
-              )}
-
               {formData.giftType === 'thing' && (
                 <textarea
                     name="thingDescription"
@@ -662,8 +606,9 @@ export default function GiftContractPage() {
                                 {/* Tlačítko generování */}
                 <button
                   data-builder-generate=""
+                  disabled={isPropertyGift}
                   onClick={() => setShowPreviewModal(true)}
-                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-amber-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight"
+                  className="w-full py-5 bg-gradient-to-r from-amber-500 to-amber-400 text-black font-black text-base rounded-2xl hover:brightness-110 transition-all shadow-[0_0_40px_rgba(245,158,11,0.25)] active:scale-[0.98] uppercase tracking-tight disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Vygenerovat smlouvu →
                 </button>
@@ -677,7 +622,7 @@ export default function GiftContractPage() {
         </div>
       </div>
     </main>
-    {showPreviewModal && (
+    {showPreviewModal && !isPropertyGift && (
       <PaymentModal
         sections={previewSections}
         title="Darovací smlouva"

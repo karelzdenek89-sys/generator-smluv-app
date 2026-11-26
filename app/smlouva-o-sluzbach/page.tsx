@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/site';
 import Link from 'next/link';
 import RelatedContracts from '@/app/components/RelatedContracts';
 
@@ -20,6 +21,7 @@ export const metadata: Metadata = {
     description:
       'Praktický průvodce smlouvou o poskytování služeb: rozsah služby, cena, odpovědnost, termíny, ukončení spolupráce a nejčastější chyby.',
     url: 'https://www.smlouvahned.cz/smlouva-o-sluzbach',
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',

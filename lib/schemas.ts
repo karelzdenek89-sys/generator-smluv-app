@@ -1,4 +1,7 @@
-import { SITE_URL } from '@/lib/seo/site';
+import { getContractTypeByPath } from '@/lib/locale';
+import { getAvailableThematicPackages } from '@/lib/packages';
+import { PRICING_TIERS } from '@/lib/pricing';
+import { absoluteUrl, SITE_URL } from '@/lib/seo/site';
 
 const BASE_URL = SITE_URL;
 
@@ -111,33 +114,49 @@ export type SoftwareApplicationSchemaInput = {
   name: string;
   slug: string;
   description?: string;
-  /**
-   * Pokud false (default), použije se třístupňový pricing 99/199/299 Kč.
-   * Pokud true, jen 99/199 Kč (pro produkty bez tematického balíčku).
-   */
-  twoTierOnly?: boolean;
   /** Aktivní experiment, ve kterém je základní PDF skutečně zdarma. */
   freeBasic?: boolean;
 };
+
+export function contractOfferSchema(path: string, freeBasicDpp = false) {
+  const contractType = getContractTypeByPath(path);
+  const prices = PRICING_TIERS.map(({ key, title, priceCzk }) => ({
+    name: title,
+    price: freeBasicDpp && path === '/dpp' && key === 'basic' ? 0 : priceCzk,
+    path,
+  }));
+  if (freeBasicDpp && path === '/') {
+    prices.push({ name: 'Základní DPP', price: 0, path: '/dpp' });
+  }
+  for (const pkg of getAvailableThematicPackages()) {
+    if (path === '/' || pkg.contractType === contractType) {
+      prices.push({ name: pkg.title, price: pkg.priceCzk, path: pkg.href });
+    }
+  }
+
+  return {
+    '@type': 'AggregateOffer',
+    priceCurrency: 'CZK',
+    lowPrice: String(Math.min(...prices.map(({ price }) => price))),
+    highPrice: String(Math.max(...prices.map(({ price }) => price))),
+    offerCount: String(prices.length),
+    offers: prices.map(({ name, price, path: offerPath }) => ({
+      '@type': 'Offer',
+      name,
+      price: String(price),
+      priceCurrency: 'CZK',
+      url: absoluteUrl(offerPath),
+    })),
+  };
+}
 
 export function softwareApplicationSchema({
   name,
   slug,
   description,
-  twoTierOnly = false,
   freeBasic = false,
 }: SoftwareApplicationSchemaInput) {
   const url = `${BASE_URL}${slug}`;
-  const offers = twoTierOnly
-    ? [
-        { '@type': 'Offer', name: 'Základní dokument', price: freeBasic ? '0' : '99', priceCurrency: 'CZK', url },
-        { '@type': 'Offer', name: 'Rozšířený dokument', price: '199', priceCurrency: 'CZK', url },
-      ]
-    : [
-        { '@type': 'Offer', name: 'Základní dokument', price: freeBasic ? '0' : '99', priceCurrency: 'CZK', url },
-        { '@type': 'Offer', name: 'Rozšířený dokument', price: '199', priceCurrency: 'CZK', url },
-        { '@type': 'Offer', name: 'Tematický balíček', price: '299', priceCurrency: 'CZK', url },
-      ];
 
   return {
     '@context': 'https://schema.org',
@@ -153,14 +172,7 @@ export function softwareApplicationSchema({
       name: 'SmlouvaHned',
       url: BASE_URL,
     },
-    offers: {
-      '@type': 'AggregateOffer',
-      priceCurrency: 'CZK',
-      lowPrice: freeBasic ? '0' : '99',
-      highPrice: twoTierOnly ? '199' : '299',
-      offerCount: String(offers.length),
-      offers,
-    },
+    offers: contractOfferSchema(slug, freeBasic),
   };
 }
 

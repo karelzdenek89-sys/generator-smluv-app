@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/site';
 import TrackView from '@/app/components/analytics/TrackView';
 import GuideLandingPage from '@/app/components/GuideLandingPage';
 
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
       'Tematický balíček pro pronajímatele, kteří chtějí mít hlavní dokument i podklady k předání bytu pohromadě.',
     url: 'https://www.smlouvahned.cz/balicek-pronajimatel',
     type: 'website',
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',

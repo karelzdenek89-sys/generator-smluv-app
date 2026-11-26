@@ -24,6 +24,7 @@ import {
   resolvePurchasablePackageVersion,
 } from '@/lib/packages';
 import { normalizeLocale } from '@/lib/locale';
+import { CURRENT_LABOR_TERMS_VERSION } from '@/lib/legal/labor-rates';
 import { getMonetizationPolicy } from '@/lib/monetization-policy';
 import { normalizePricingTier } from '@/lib/pricing';
 import {
@@ -397,6 +398,9 @@ export async function POST(req: Request) {
           experimentId,
           experimentVariant,
           ...(analyticsAttribution ? { analyticsAttribution } : {}),
+          ...((contractType === 'dpp' || contractType === 'employment')
+            ? { laborTermsVersion: CURRENT_LABOR_TERMS_VERSION }
+            : {}),
           payload: {
             ...payload,
             contractType,

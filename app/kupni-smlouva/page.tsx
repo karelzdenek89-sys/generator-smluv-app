@@ -1,4 +1,5 @@
 ﻿import type { Metadata } from 'next';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/site';
 import GuideLandingPage from '@/app/components/GuideLandingPage';
 
 export const metadata: Metadata = {
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
     description: 'Přehledná průvodcová stránka ke kupní smlouvě pro běžné převody movitých věcí a vozidel.',
     url: 'https://www.smlouvahned.cz/kupni-smlouva',
     type: 'website',
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',

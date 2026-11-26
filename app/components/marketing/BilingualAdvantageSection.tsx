@@ -147,7 +147,7 @@ export default function BilingualAdvantageSection({
               <div key={fact.label} className="rounded-2xl border border-white/8 bg-white/[0.025] p-4">
                 <dt className="flex items-baseline gap-2">
                   <span className="font-serif text-2xl font-semibold text-[#e8d092]">{fact.value}</span>
-                  <span className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-500">{fact.label}</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.16em] text-slate-400">{fact.label}</span>
                 </dt>
                 <dd className="mt-1.5 text-xs leading-5 text-slate-400">{fact.text}</dd>
               </div>
@@ -158,10 +158,10 @@ export default function BilingualAdvantageSection({
 
       <div className="mt-8 grid gap-3 md:grid-cols-2">
         <div className="rounded-2xl border border-white/8 bg-white/[0.02] px-5 py-5">
-          <p className="mb-3 text-[10px] font-black uppercase tracking-[0.18em] text-slate-500">{copy.usualLabel}</p>
+          <p className="mb-3 text-[10px] font-black uppercase tracking-[0.18em] text-slate-400">{copy.usualLabel}</p>
           <ul className="space-y-2">
             {copy.usual.map((line) => (
-              <li key={line} className="flex gap-2 text-sm leading-6 text-slate-500">
+              <li key={line} className="flex gap-2 text-sm leading-6 text-slate-400">
                 <Minus size={16} className="mt-1 shrink-0" aria-hidden="true" /><span>{line}</span>
               </li>
             ))}
@@ -193,7 +193,7 @@ export default function BilingualAdvantageSection({
           ))}
         </nav>
       </div>
-      <p className="mt-4 text-xs leading-5 text-slate-500">{copy.disclaimer}</p>
+      <p className="mt-4 text-xs leading-5 text-slate-400">{copy.disclaimer}</p>
     </section>
   );
 }

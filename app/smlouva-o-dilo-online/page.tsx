@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/site';
 import Link from 'next/link';
 import RelatedContracts from '@/app/components/RelatedContracts';
 import ContextualProductOffer from '@/app/components/marketing/ContextualProductOffer';
@@ -17,6 +18,7 @@ export const metadata: Metadata = {
     title: 'Smlouva o dílo 2026: cena, termíny a předání',
     description: 'Co řešit ve smlouvě o dílo: cenu, termíny, předání, vady a změny zakázky.',
     url: 'https://www.smlouvahned.cz/smlouva-o-dilo-online',
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',

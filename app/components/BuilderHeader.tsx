@@ -91,7 +91,7 @@ export default function BuilderHeader({
         </div>
         <div className="flex flex-shrink-0 items-center gap-4">
           {badge ? <span className="text-[11px] font-semibold text-[#c9a852]">{badge}</span> : null}
-          <Link href={backHref} className="text-[11px] text-slate-400 transition-colors hover:text-white">
+          <Link href={backHref} prefetch={false} className="text-[11px] text-slate-400 transition-colors hover:text-white">
             {copy.back}
           </Link>
         </div>

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import NewsletterSignup from '@/app/components/NewsletterSignup';
 import { SEO_LANDINGS, FOOTER_GROUPS } from '@/lib/internal-links';
-import { getLocaleFromPathname, normalizeLocale, type AppLocale } from '@/lib/locale';
+import { getLocaleFromPathname, normalizeLocale, withLocale, type AppLocale } from '@/lib/locale';
 import { privacyHref, termsHref } from '@/lib/legal/links';
 import { SELLER } from '@/lib/legal/seller';
 import { openCookieSettings } from '@/lib/analytics-attribution';
@@ -184,7 +184,7 @@ function FooterContent({
                 <Link href="/kontakt" className="hover:text-white transition-colors">{t.navContact}</Link>
                 {locale === 'cs' ? <Link href="/moje" className="hover:text-white transition-colors">Můj účet</Link> : null}
                 {locale === 'cs' ? <Link href="/moje-pripady" className="hover:text-white transition-colors">Moje případy</Link> : null}
-                <Link href="/zakaznicka-zona" className="hover:text-white transition-colors">{t.navMyDocuments}</Link>
+                <Link href={withLocale('/zakaznicka-zona', locale)} className="hover:text-white transition-colors">{t.navMyDocuments}</Link>
               </div>
             </div>
 
@@ -235,7 +235,7 @@ function FooterContent({
                     <text x="2" y="18" fontSize="14" fontWeight="800" fill="#635BFF" fontFamily="Arial">stripe</text>
                   </svg>
                 </div>
-                <div className="rounded-md border border-white/8 bg-white/4 px-2.5 py-1 text-[10px] font-black text-[#1A1F71]">VISA</div>
+                <div className="rounded-md border border-white/8 bg-white/4 px-2.5 py-1 text-[10px] font-black text-[#b3b9f4]">VISA</div>
                 <div className="flex items-center justify-center rounded-md border border-white/8 bg-white/4 px-2 py-1">
                   <svg className="h-4 w-auto" viewBox="0 0 38 24" aria-label="Mastercard">
                     <circle cx="15" cy="12" r="10" fill="#EB001B" />
@@ -277,7 +277,7 @@ function FooterContent({
             </p>
             <div className="flex flex-wrap gap-4">
               <Link href={termsHref(locale)} className="hover:text-slate-400 transition-colors">{t.terms}</Link>
-              <Link href={privacyHref(locale)} className="hover:text-slate-400 transition-colors">GDPR</Link>
+              <Link href={privacyHref(locale)} prefetch={false} className="hover:text-slate-400 transition-colors">GDPR</Link>
               <button
                 type="button"
                 onClick={openCookieSettings}

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/site';
 import Link from 'next/link';
 import RelatedContracts from '@/app/components/RelatedContracts';
 import { faqPageSchema, jsonLdScript } from '@/lib/schemas';
@@ -26,6 +27,7 @@ export const metadata: Metadata = {
     title: PAGE_TITLE,
     description: PAGE_DESCRIPTION,
     url: `${BASE_URL}/smlouva-o-spolupraci`,
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',

@@ -1,4 +1,5 @@
 ﻿import type { Metadata } from 'next';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/site';
 import GuideLandingPage from '@/app/components/GuideLandingPage';
 
 export const metadata: Metadata = {
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
     description: 'Průvodcová stránka k darovací smlouvě pro běžné převody mezi známými nebo rodinnými příslušníky.',
     url: 'https://www.smlouvahned.cz/darovaci-smlouva',
     type: 'website',
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',
@@ -32,7 +34,7 @@ const faq = [
   },
   {
     q: 'Kdy už je situace nestandardní?',
-    a: 'Pokud řešíte nemovitost, věcná břemena, spory mezi členy rodiny, větší majetkové souvislosti nebo daňové otázky, doporučujeme konzultaci s advokátem nebo daňovým poradcem.',
+    a: 'U darování nemovitosti doporučujeme přípravu smlouvy s advokátem. Generátor pokrývá peníze, vozidla a jiné movité věci. U sporu, věcného břemene nebo daňových otázek doporučujeme obrátit se na příslušného odborníka.',
   },
   {
     q: 'Je po zaplacení výstup k dispozici hned?',

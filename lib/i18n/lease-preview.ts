@@ -1,9 +1,6 @@
 import type { AppLocale } from '@/lib/locale';
-import type { StoredContractData } from '@/lib/contracts';
-import { buildExpatTranslationSections } from '@/lib/i18n/expat-translation-registry';
-import { buildContractSections } from '@/lib/contracts';
 
-type LeasePreviewForm = {
+export type LeasePreviewForm = {
   landlordName: string;
   landlordId: string;
   landlordAddress: string;
@@ -112,24 +109,6 @@ export function isExpatLeaseLocale(locale: AppLocale): locale is 'en' | 'ua' {
 export function getContractPreviewLabels(locale: AppLocale): ContractPreviewLabels | null {
   if (!isExpatLeaseLocale(locale)) return null;
   return PREVIEW_LABELS[locale];
-}
-
-export function buildLeasePreviewSections(
-  locale: AppLocale,
-  form: LeasePreviewForm,
-  packageKey: string | null,
-): ReturnType<typeof buildContractSections> {
-  const payload = {
-    ...form,
-    contractType: 'lease',
-    packageKey,
-    lang: locale,
-    utilitiesIncludedText: '',
-    tier: 'basic',
-  } as StoredContractData;
-
-  if (locale === 'en' || locale === 'ua') return buildExpatTranslationSections('lease', locale, payload);
-  return buildContractSections(payload);
 }
 
 export function buildLeasePlainPreview(

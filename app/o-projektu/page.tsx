@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/site';
 import Link from 'next/link';
 import { O_PROJEKTU_COMPARISON_ROWS } from '@/lib/marketing/differentiation';
 import { jsonLdScript } from '@/lib/schemas';
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
     description:
       'Jak vznikly šablony, kdo provozuje nástroj a proč SmlouvaHned.cz neposkytuje právní poradenství.',
     url: 'https://www.smlouvahned.cz/o-projektu',
+    images: [DEFAULT_OG_IMAGE],
   },
   alternates: { canonical: 'https://www.smlouvahned.cz/o-projektu' },
   twitter: {

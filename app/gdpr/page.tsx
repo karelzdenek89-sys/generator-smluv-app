@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { getLegalHreflangLanguages } from '@/lib/i18n/expat-hreflang';
 import Link from 'next/link';
 import { SITE_URL } from '@/lib/seo/site';
 import AnalyticsConsentSettings from '@/app/components/analytics/AnalyticsConsentSettings';
@@ -14,12 +15,7 @@ export const metadata: Metadata = {
   description: 'Zásady zpracování osobních údajů platformy SmlouvaHned.cz v souladu s GDPR (nařízení EU 2016/679) — jaké údaje zpracováváme, proč a jak dlouho.',
   alternates: {
     canonical: canonicalUrl,
-    languages: {
-      cs: `${SITE_URL}/gdpr`,
-      en: `${SITE_URL}/en/privacy`,
-      uk: `${SITE_URL}/ua/privacy`,
-      'x-default': `${SITE_URL}/gdpr`,
-    },
+    languages: getLegalHreflangLanguages('privacy'),
   },
   openGraph: {
     title: 'Ochrana osobních údajů (GDPR)',

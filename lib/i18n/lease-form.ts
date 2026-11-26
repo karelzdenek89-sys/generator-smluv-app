@@ -54,14 +54,16 @@ export type LeaseFormUi = {
       tier: { index: string; title: string; subtitlePackage: string; subtitleChoice: string };
     };
     labels: {
+      landlordName: string;
+      tenantName: string;
       startDate: string;
+      endDate: string;
       handoverDate: string;
       metersHeading: string;
       maxOccupants: string;
       dispute: string;
     };
     placeholders: {
-      fullName: string;
       birthId: string;
       address: string;
       idCard: string;
@@ -160,6 +162,7 @@ export type LeaseFormUi = {
       endDate: string;
     };
     checkoutError: string;
+    previewLoadError: string;
     paymentError: string;
   };
   risk: {
@@ -311,14 +314,16 @@ const LEASE_FORM_CS: LeaseFormUi = {
       },
     },
     labels: {
+      landlordName: 'Celé jméno pronajímatele',
+      tenantName: 'Celé jméno nájemce',
       startDate: 'Začátek nájmu',
+      endDate: 'Konec nájmu',
       handoverDate: 'Předání bytu',
       metersHeading: 'Stav měřidel při předání',
       maxOccupants: 'Maximální počet osob',
       dispute: 'Řešení sporů',
     },
     placeholders: {
-      fullName: 'Celé jméno',
       birthId: 'Rodné číslo / datum narození',
       address: 'Trvalé bydliště',
       idCard: 'Číslo OP',
@@ -422,6 +427,7 @@ const LEASE_FORM_CS: LeaseFormUi = {
       endDate: 'datum konce nájmu (doba určitá)',
     },
     checkoutError: 'Nepodařilo se vytvořit checkout session.',
+    previewLoadError: 'Náhled se nepodařilo načíst. Zkuste to znovu.',
     paymentError: 'Chyba platební brány. Zkuste to prosím znovu nebo kontaktujte info@smlouvahned.cz',
   },
   risk: {
@@ -597,14 +603,16 @@ export const LEASE_FORM_EN: LeaseFormUi = {
       },
     },
     labels: {
+      landlordName: 'Landlord’s full name',
+      tenantName: 'Tenant’s full name',
       startDate: 'Lease start date',
+      endDate: 'Lease end date',
       handoverDate: 'Handover date',
       metersHeading: 'Meter readings at handover',
       maxOccupants: 'Maximum number of occupants',
       dispute: 'Dispute resolution',
     },
     placeholders: {
-      fullName: 'Full name',
       birthId: 'National ID / date of birth',
       address: 'Permanent address',
       idCard: 'ID card number',
@@ -715,6 +723,7 @@ export const LEASE_FORM_EN: LeaseFormUi = {
       endDate: 'lease end date (fixed term)',
     },
     checkoutError: 'Could not create checkout session.',
+    previewLoadError: 'The preview could not be loaded. Please try again.',
     paymentError: 'Payment gateway error. Please try again or contact info@smlouvahned.cz',
   },
   risk: {

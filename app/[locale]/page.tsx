@@ -19,6 +19,7 @@ import {
 import { getExpatSeoHref } from '@/lib/i18n/expat-seo-landings';
 import { LANDINGS } from '@/lib/i18n/landings';
 import { SITE_URL } from '@/lib/seo/site';
+import { getTierPriceCzk } from '@/lib/pricing';
 import { FOREIGN_LOCALES, LOCALE_META } from '@/lib/i18n/locales';
 import BilingualAdvantageSection from '@/app/components/marketing/BilingualAdvantageSection';
 
@@ -44,7 +45,7 @@ const pageCopy: Record<Exclude<AppLocale, 'cs'>, {
     eyebrow: 'Contracts for foreigners in the Czech Republic',
     title: 'SmlouvaHned for expats',
     subtitle:
-      'Fill in the form in English and get the Czech contract together with a complete English translation of every article, in one PDF. The translation is included in the price (explanatory, not certified).',
+      `Fill in the form in English and get the Czech contract and a complete English translation of every article in one PDF. Paid documents start at CZK ${getTierPriceCzk('basic')}, with the explanatory translation included.`,
     coreHeading: 'Most used contracts for foreigners in the Czech Republic',
     coreSub: 'Housing, work, representation and buying a car are covered first. Other documents stay available in Czech.',
     otherHeading: 'Other Czech documents available',
@@ -56,7 +57,7 @@ const pageCopy: Record<Exclude<AppLocale, 'cs'>, {
     eyebrow: 'Документи для іноземців у Чехії',
     title: 'SmlouvaHned для іноземців',
     subtitle:
-      'Заповніть форму українською й отримайте чеський договір разом із повним українським перекладом кожної статті в одному PDF. Переклад включено в ціну (пояснювальний, не офіційний).',
+      `Заповніть форму українською й отримайте чеський договір і повний український переклад кожної статті в одному PDF. Платні документи коштують від ${getTierPriceCzk('basic')} чеських крон. Пояснювальний переклад включено в ціну.`,
     coreHeading: 'Найпотрібніші договори для іноземців у Чехії',
     coreSub: 'Житло, робота, довіреність і купівля авто — на першому місці.',
     otherHeading: 'Інші документи лише чеською',
@@ -76,7 +77,7 @@ const localeLinks = FOREIGN_LOCALES.map((loc) => {
     href: `/${meta.segment}`,
     flag: meta.flag,
     label: meta.nativeName,
-    ariaLabel: loc === 'en' ? 'English overview' : 'Український огляд',
+    ariaLabel: loc === 'en' ? 'English overview' : 'Українська — огляд договорів',
   };
 });
 

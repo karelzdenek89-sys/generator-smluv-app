@@ -38,7 +38,7 @@ export default function ExpatBlogArticleView({ article }: Props) {
       : article.builderHref);
 
   return (
-    <article className="blog-listing mx-auto max-w-3xl px-6 py-12">
+    <article lang={locale === 'ua' ? 'uk' : locale} className="blog-listing mx-auto max-w-3xl px-6 py-12">
       <nav className="mb-8 text-xs text-[#bba98c]" aria-label="Breadcrumb">
         <Link href="/" className="transition hover:text-[#d6ac60]">
           SmlouvaHned

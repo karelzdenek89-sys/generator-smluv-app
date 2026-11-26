@@ -40,9 +40,9 @@ import {
 } from '../lib/i18n/expat-locale-copy';
 import {
   buildLeasePlainPreview,
-  buildLeasePreviewSections,
   getContractPreviewLabels,
 } from '../lib/i18n/lease-preview';
+import { buildLeasePreviewSections } from '../lib/i18n/lease-preview-sections';
 import {
   getAllExpatBlogSlugs,
   getExpatBlogAlternateSlug,
@@ -103,7 +103,9 @@ function testLocalePropagation() {
   assert.equal(withLocale('/darovaci', 'ua'), '/darovaci');
   assert.equal(withLocale('/', 'en'), '/en');
   assert.equal(withLocale('/', 'ua'), '/ua');
-  assert.equal(withLocale('/zakaznicka-zona', 'en'), '/zakaznicka-zona');
+  assert.equal(withLocale('/zakaznicka-zona', 'cs'), '/zakaznicka-zona');
+  assert.equal(withLocale('/zakaznicka-zona', 'en'), '/zakaznicka-zona?lang=en');
+  assert.equal(withLocale('/zakaznicka-zona#access=example', 'ua'), '/zakaznicka-zona?lang=ua#access=example');
   assert.equal(normalizeLocale('vi'), 'cs');
   assert.equal(normalizeLocale('vn'), 'cs');
   assert.equal(normalizeLocale('ua'), 'ua');
@@ -373,7 +375,8 @@ function testLeaseEnBuilderUi() {
   assert.equal(withLocale('/najem', 'en'), '/najem?lang=en');
   assert.equal(en.isEnglish, true);
   assert.equal(en.form.sections.landlord.title, 'Landlord');
-  assert.equal(en.form.placeholders.fullName, 'Full name');
+  assert.equal(en.form.labels.landlordName, 'Landlord’s full name');
+  assert.equal(en.form.labels.tenantName, 'Tenant’s full name');
   assert.ok(en.notices.legal.includes('Czech wording prevails'));
   assert.equal(en.notices.leaseUse, LEASE_USE_NOTICE_EN);
 
@@ -383,7 +386,8 @@ function testLeaseEnBuilderUi() {
   }
 
   assert.match(najem, /getLeaseFormUi\(builderLocale\)/);
-  assert.match(najem, /ui\.form\.placeholders\.fullName/);
+  assert.match(najem, /<RequiredLeaseLabel htmlFor="f-lease-landlord-name">\{ui\.form\.labels\.landlordName\}/);
+  assert.match(najem, /<RequiredLeaseLabel htmlFor="f-lease-tenant-name">\{ui\.form\.labels\.tenantName\}/);
   assert.match(najem, /lang: builderLocale/);
   assert.doesNotMatch(najem, /ui\.notices\.legal/);
   assert.match(read('app/components/BuilderLocaleNotice.tsx'), /LEGAL_NOTICE\[locale\]/);
@@ -588,7 +592,8 @@ function testLeaseUkBuilderUi() {
   assert.equal(withLocale('/najem', 'ua'), '/najem?lang=ua');
   assert.equal(uaForm.isEnglish, true);
   assert.equal(uaForm.form.sections.landlord.title, 'Орендодавець');
-  assert.equal(uaForm.form.placeholders.fullName, 'Повне ім’я');
+  assert.equal(uaForm.form.labels.landlordName, 'Повне ім’я орендодавця');
+  assert.equal(uaForm.form.labels.tenantName, 'Повне ім’я орендаря');
   assert.ok(uaForm.notices.legal.includes('чеськ'));
   assert.equal(uaForm.form.title, 'Заповніть дані документа');
   assert.equal(uaForm.paymentModal.includedHeading, 'Включено');

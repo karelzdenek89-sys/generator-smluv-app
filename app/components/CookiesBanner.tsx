@@ -104,6 +104,7 @@ export default function CookiesBanner() {
           {text}{' '}
           <Link
             href={`${privacyHref(locale)}#cookies`}
+            prefetch={false}
             className={`rounded-sm font-semibold text-[#d8bd73] underline decoration-[#d8bd73]/35 underline-offset-2 transition hover:text-[#f0d992] motion-reduce:transition-none ${FOCUS_RING}`}
           >
             {copy.more}

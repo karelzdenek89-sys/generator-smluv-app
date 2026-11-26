@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { getClientIp, isBoundedJsonObject, readFirstPartyJson } from '@/lib/api-security';
 import { validateContractPayload } from '@/lib/checkout-validation';
+import { CURRENT_LABOR_TERMS_VERSION } from '@/lib/legal/labor-rates';
 import { normalizeLocale } from '@/lib/locale';
 import { getMonetizationPolicy, isFreeBasicPolicy } from '@/lib/monetization-policy';
 import { buildPartnerContext, isContractType } from '@/lib/partners/context';
@@ -104,6 +105,7 @@ export async function POST(req: Request) {
     tier: 'basic',
     lang: locale,
     payload: storedPayload,
+    ...(body.contractType === 'dpp' ? { laborTermsVersion: CURRENT_LABOR_TERMS_VERSION } : {}),
     consent,
     policy,
     downloadToken,

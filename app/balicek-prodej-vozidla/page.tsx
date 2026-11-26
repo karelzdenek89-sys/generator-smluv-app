@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { DEFAULT_OG_IMAGE } from '@/lib/seo/site';
 import TrackView from '@/app/components/analytics/TrackView';
 import GuideLandingPage from '@/app/components/GuideLandingPage';
 import { isFeatureEnabled } from '@/lib/feature-flags';
@@ -14,6 +15,7 @@ export const metadata: Metadata = {
       'Tematický balíček pro standardní převod vozidla včetně souvisejících podkladů k předání.',
     url: 'https://www.smlouvahned.cz/balicek-prodej-vozidla',
     type: 'website',
+    images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',

@@ -24,10 +24,7 @@ import {
   getExpatPreviewDateLocale,
   getExpatPreviewLabels,
 } from '@/lib/i18n/expat-contract-preview';
-import {
-  MIN_WAGE_HOURLY_2026_CZK,
-  MIN_WAGE_MONTHLY_2026_CZK,
-} from '@/lib/legal-constants-2026';
+import { getLaborRates, getProportionalMonthlyMinimum } from '@/lib/legal/labor-rates';
 import { getThematicPackageConfig } from '@/lib/packages';
 import { getPackageBuilderFlowCopy, getPackageUpsellCopy } from '@/lib/i18n/package-upsell';
 import BuilderUserRoleField from '@/app/components/partners/BuilderUserRoleField';
@@ -149,6 +146,7 @@ function PracovniPageContent() {
 
   const usesRemoteWork = Boolean(form.remoteWork)
     && form.remoteWork !== ui.remoteWorkValues.none;
+  const laborRates = getLaborRates(form.startDate, form.employmentType === 'fixed' ? form.endDate : undefined);
   const set = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     setForm(p => ({ ...p, [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value }));
@@ -397,7 +395,7 @@ function PracovniPageContent() {
               <section className={cardClass}>
                 <SectionTitle index="05" title={ui.sections.hours.title} />
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label={ui.fields.workHours}><input className={inputClass} name="workHours" value={form.workHours} onChange={set} type="number" /></Field>
+                  <Field label={ui.fields.workHours}><input className={inputClass} name="workHours" value={form.workHours} onChange={set} type="number" min="0.01" step="0.01" /></Field>
                   <Field label={ui.fields.workSchedule}><input className={inputClass} name="workSchedule" value={form.workSchedule} onChange={set} placeholder={ui.page.placeholders.workSchedule} /></Field>
                   <Field label={ui.fields.breakMinutes}><input className={inputClass} name="breakMinutes" value={form.breakMinutes} onChange={set} type="number" /></Field>
                   <Field label={ui.fields.vacationWeeks}><input className={inputClass} name="vacationWeeks" value={form.vacationWeeks} onChange={set} type="number" /></Field>
@@ -414,8 +412,8 @@ function PracovniPageContent() {
                     </select>
                   </Field>
                   {form.salaryType === 'monthly'
-                    ? <Field label={ui.fields.salary}><input className={inputClass} name="salary" value={form.salary} onChange={set} type="number" min={MIN_WAGE_MONTHLY_2026_CZK * Math.min(Number(form.workHours) || 40, 40) / 40} placeholder={ui.page.placeholders.salary} /></Field>
-                    : <Field label={ui.fields.hourlyRate}><input className={inputClass} name="hourlyRate" value={form.hourlyRate} onChange={set} type="number" min={MIN_WAGE_HOURLY_2026_CZK} step="0.1" placeholder={ui.page.placeholders.hourlyRate} /></Field>
+                    ? <Field label={ui.fields.salary}><input className={inputClass} name="salary" value={form.salary} onChange={set} type="number" min={getProportionalMonthlyMinimum(laborRates.monthlyMinimum, Number(form.workHours) || 40)} step="0.01" placeholder={ui.page.placeholders.salary} /></Field>
+                    : <Field label={ui.fields.hourlyRate}><input className={inputClass} name="hourlyRate" value={form.hourlyRate} onChange={set} type="number" min={laborRates.hourlyMinimum} step="0.01" placeholder={ui.page.placeholders.hourlyRate} /></Field>
                   }
                   <Field label={ui.fields.payDay}><input className={inputClass} name="payDay" value={form.payDay} onChange={set} type="number" min="1" max="31" /></Field>
                   <div className="sm:col-span-2">
