@@ -7,7 +7,7 @@ test('homepage search handles Czech accents and leads to a useful answer', async
   await page.goto('/');
   const search = page.getByRole('searchbox', { name: 'Hledáte něco konkrétního?' });
   await search.fill('viceprace');
-  await expect(page.getByRole('status')).toContainText('Nalezeno');
+  await expect(page.getByRole('status')).toHaveText(/^Nalezen[oy]? [1-9]\d* (výsledek|výsledky|výsledků)\.$/);
   const results = page.locator('[id$="-results"]');
   await expect(results.getByRole('link').first()).toBeVisible();
   const plainResults = await results.innerText();
