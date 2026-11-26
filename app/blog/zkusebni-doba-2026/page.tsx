@@ -6,9 +6,9 @@ import { PRICING_TIER_CONFIG } from '@/lib/pricing';
 import { blogArticlePageMetadata } from '@/lib/seo/blog-page-metadata';
 
 export const metadata = blogArticlePageMetadata('zkusebni-doba-2026', {
-  title: 'Zkušební doba 2026: 4 nebo 8 měsíců a pravidla',
+  title: 'Zkušební doba 2027: délka, 4 nebo 8 měsíců',
   description:
-    'V roce 2026 trvá zkušební doba nejvýše 4 měsíce, u vedoucích 8. U smlouvy na dobu určitou smí činit nejvýše polovinu její délky. Kdy ji sjednat a prodloužit?',
+    'Jak dlouhá je zkušební doba v roce 2027? Nejvýše 4 měsíce, u vedoucích 8. Příklad pro smlouvu na dobu určitou a pravidla prodloužení při absenci.',
 });
 
 const employerOffer = getContextualOffer('employment');
@@ -20,15 +20,15 @@ export default function ZkusebniDoba2026Page() {
       readTime="7 min"
       dateTime="2026-07-09"
       dateLabel="9. července 2026"
-      dateModified="2026-09-28"
-      dateModifiedLabel="28. září 2026"
-      breadcrumbLabel="Zkušební doba 2026"
+      dateModified="2026-11-27"
+      dateModifiedLabel="27. listopadu 2026"
+      breadcrumbLabel="Zkušební doba"
       slug="zkusebni-doba-2026"
-      title="Zkušební doba 2026: 4 nebo 8 měsíců a pravidla"
-      intro="V roce 2026 může zkušební doba trvat nejvýše 4 měsíce, u vedoucího zaměstnance 8 měsíců. U pracovního poměru na dobu určitou navíc nesmí přesáhnout polovinu sjednané doby. Musí být písemně sjednána nejpozději v den nástupu; automaticky nevzniká."
+      title="Zkušební doba 2027: délka, 4 nebo 8 měsíců"
+      intro="V roce 2027 může zkušební doba trvat nejvýše 4 měsíce, u vedoucího zaměstnance 8 měsíců. U pracovního poměru na dobu určitou navíc nesmí přesáhnout polovinu sjednané doby. Musí být písemně sjednána nejpozději v den nástupu; automaticky nevzniká."
       toc={[
         { href: '#kdy-ji-sjednat', label: 'Kdy lze zkušební dobu sjednat' },
-        { href: '#maximalni-delka', label: 'Maximální délka v roce 2026' },
+        { href: '#maximalni-delka', label: 'Maximální délka v roce 2027' },
         { href: '#doba-urcita', label: 'Pracovní poměr na dobu určitou' },
         { href: '#prodlouzeni', label: 'Prodloužení a absence' },
         { href: '#co-do-smlouvy', label: 'Co zkontrolovat ve smlouvě' },
@@ -52,6 +52,7 @@ export default function ZkusebniDoba2026Page() {
         href: '/pracovni',
       }}
       relatedLinks={[
+        { href: '/blog/zruseni-pracovniho-pomeru-ve-zkusebni-dobe', label: 'Zrušení pracovního poměru ve zkušební době' },
         { href: '/pracovni', label: `Pracovní smlouva online od ${PRICING_TIER_CONFIG.basic.priceLabel}` },
         { href: '/balicek-zamestnavatel', label: 'Dokumenty k nástupu zaměstnance' },
         { href: '/blog/pracovni-smlouva-2026', label: 'Co musí obsahovat pracovní smlouva' },
@@ -72,7 +73,7 @@ export default function ZkusebniDoba2026Page() {
       </section>
 
       <section id="maximalni-delka" className="mb-12 scroll-mt-6">
-        <h2 className="mb-4 text-2xl font-black tracking-tight text-white">2. Maximální délka v roce 2026</h2>
+        <h2 className="mb-4 text-2xl font-black tracking-tight text-white">2. Maximální délka v roce 2027</h2>
         <div className="rounded-2xl border border-white/8 bg-[#0c1426] p-5 text-sm leading-7 text-slate-400">
           <ul className="space-y-2">
             <li>• u běžného zaměstnance nejvýše 4 měsíce po sobě jdoucí,</li>
@@ -81,8 +82,8 @@ export default function ZkusebniDoba2026Page() {
           </ul>
         </div>
         <p className="mt-4 leading-relaxed text-slate-400">
-          Limity se po flexinovele zvýšily od 1. června 2025. Delší ujednání proto není bezpečná „rezerva“: podle
-          metodiky MPSV se zkušební doba v takovém případě omezí na zákonné maximum.
+          Limity se zvýšily 1. června 2025 a platily i v roce 2026. Podle metodiky MPSV se při ujednání delší
+          zkušební doby použije zákonné maximum. Minimální délku zákon nestanoví.
         </p>
       </section>
 
@@ -109,7 +110,8 @@ export default function ZkusebniDoba2026Page() {
         <p className="mb-4 leading-relaxed text-slate-400">
           Zkušební doba se ze zákona prodlužuje o pracovní dny, kdy zaměstnanec během ní neodpracoval celou směnu pro
           překážku v práci, dovolenou nebo neomluvené zameškání. Nejde tedy vždy jen o prosté počítání kalendářních
-          měsíců od data nástupu.
+          měsíců od data nástupu. Když zaměstnanec kvůli nemoci zamešká tři celé rozvržené směny, zkušební doba
+          se prodlouží o tři jeho pracovní dny. Pokud z další směny zamešká jen část, tato směna ji neprodlouží.
         </p>
         <p className="leading-relaxed text-slate-400">
           U zkušební doby sjednané od 1. června 2025 ji mohou strany během jejího běhu písemně prodloužit, ale jen do

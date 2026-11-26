@@ -11,6 +11,7 @@ export type BlogArticleMeta = {
   category: string;
   readTime: string;
   date: string;
+  dateModified?: string;
   cluster: BlogClusterKey;
   href: string;
   /** Expat guides: en / ua. Czech articles omit this field. */
@@ -28,13 +29,47 @@ export type BlogClusterMeta = {
 
 export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   {
+    slug: 'limit-dpp-2027',
+    title: 'Limit DPP 2027: odvody od 12 500 Kč měsíčně',
+    excerpt:
+      'Od ledna 2027 se z DPP odvádí pojistné od 12 500 Kč včetně. Zjistěte, jak sčítat více dohod a kdo řeší zdravotní pojištění pod limitem.',
+    category: 'Práce a zaměstnání',
+    readTime: '5 min',
+    date: '27. listopadu 2026',
+    cluster: 'general',
+    href: '/blog/limit-dpp-2027',
+  },
+  {
+    slug: 'vyuctovani-sluzeb-najem',
+    title: 'Vyúčtování služeb v nájmu 2027: termíny a námitky',
+    excerpt:
+      'Dokdy musí přijít vyúčtování služeb za rok 2026, kdy se vrací přeplatek, jak žádat o podklady a co se od ledna 2027 mění u dálkových odečtů.',
+    category: 'Bydlení',
+    readTime: '6 min',
+    date: '27. listopadu 2026',
+    cluster: 'landlord',
+    href: '/blog/vyuctovani-sluzeb-najem',
+  },
+  {
+    slug: 'zruseni-pracovniho-pomeru-ve-zkusebni-dobe',
+    title: 'Zrušení pracovního poměru ve zkušební době 2027',
+    excerpt:
+      'Jak písemně zrušit pracovní poměr ve zkušební době, kdy skončí, co platí při pracovní neschopnosti a dokdy se lze bránit u soudu.',
+    category: 'Práce a zaměstnání',
+    readTime: '5 min',
+    date: '27. listopadu 2026',
+    cluster: 'general',
+    href: '/blog/zruseni-pracovniho-pomeru-ve-zkusebni-dobe',
+  },
+  {
     slug: 'dovolena-dpp-2026',
-    title: 'Dovolená u DPP 2026: 28 dní, 80 hodin a výpočet',
+    title: 'Dovolená u DPP 2027: nárok, 80 hodin a výpočet',
     excerpt:
       'Kdy u dohody o provedení práce vzniká dovolená, proč rozhoduje 28 dní a 80 hodin a jak se nárok počítá z fiktivní 20hodinové týdenní pracovní doby.',
     category: 'Práce a zaměstnání',
     readTime: '8 min',
     date: '13. srpna 2026',
+    dateModified: '2026-11-27',
     cluster: 'general',
     href: '/blog/dovolena-dpp-2026',
   },
@@ -95,12 +130,13 @@ export const BLOG_ARTICLES: readonly BlogArticleMeta[] = [
   },
   {
     slug: 'zkusebni-doba-2026',
-    title: 'Zkušební doba 2026: 4 nebo 8 měsíců a pravidla',
+    title: 'Zkušební doba 2027: délka, 4 nebo 8 měsíců',
     excerpt:
-      'V roce 2026 trvá zkušební doba nejvýše 4 měsíce, u vedoucích 8. U doby určité platí také limit poloviny sjednané doby. Kdy ji písemně sjednat a prodloužit?',
+      'Jak dlouhá je zkušební doba v roce 2027? Nejvýše 4 měsíce, u vedoucích 8. Příklad pro smlouvu na dobu určitou a pravidla prodloužení při absenci.',
     category: 'Práce a zaměstnání',
     readTime: '7 min',
     date: '9. července 2026',
+    dateModified: '2026-11-27',
     cluster: 'general',
     href: '/blog/zkusebni-doba-2026',
   },

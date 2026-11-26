@@ -56,6 +56,7 @@ export default function VraceniKaucePage() {
       }}
       relatedLinks={[
         { href: '/najem', label: 'Nájemní smlouva - formulář online' },
+        { href: '/blog/vyuctovani-sluzeb-najem', label: 'Vyúčtování služeb v nájmu: termíny a námitky' },
         { href: '/blog/kauce-pronajem-bytu-2026', label: 'Kauce při pronájmu bytu' },
         { href: '/blog/predani-bytu-najemci-2026', label: 'Předání bytu nájemci' },
         { href: '/blog/vypoved-z-najmu-bytu-2026', label: 'Výpověď z nájmu bytu' },

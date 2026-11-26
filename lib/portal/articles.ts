@@ -223,7 +223,7 @@ const CORE_ARTICLES: readonly AnswerFirstArticle[] = [
     ],
     related: [
       { href: '/blog/pracovni-smlouva-2026', label: 'Pracovní smlouva 2026 — vzor a náležitosti' },
-      { href: '/blog/zkusebni-doba-2026', label: 'Zkušební doba 2026' },
+      { href: '/blog/zkusebni-doba-2026', label: 'Délka a prodloužení zkušební doby' },
       { href: '/zmeny-2027/zamestnavatele', label: 'Změny 2027 pro zaměstnavatele' },
     ],
     sources: [ZP, MPSV_MZDA],

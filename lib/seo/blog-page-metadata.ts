@@ -48,13 +48,13 @@ export function blogArticlePageMetadata(
 export function blogIndexMetadata(): Metadata {
   const url = canonicalUrl('/blog');
   return {
-    title: 'Blog | Právní průvodce 2026',
+    title: 'Blog | Průvodce smlouvami a legislativou',
     description:
-      'Praktické průvodce ke smlouvám a běžným právním situacím. Obecně informační obsah aktuální pro legislativu 2026.',
+      'Přehledy k nájmu, pracovním smlouvám, DPP a dalším smluvním situacím. Termíny, příklady a odkazy na oficiální zdroje.',
     alternates: { canonical: url },
     openGraph: {
-      title: 'Blog — Právní průvodce 2026',
-      description: 'Praktické průvodce ke smlouvám a běžným právním situacím dle legislativy 2026.',
+      title: 'Blog — Průvodce smlouvami a legislativou',
+      description: 'Praktické průvodce k nájmu, pracovním smlouvám, DPP a dalším smluvním situacím.',
       url,
       type: 'website',
       siteName: 'SmlouvaHned',
@@ -62,8 +62,8 @@ export function blogIndexMetadata(): Metadata {
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Blog - Právní průvodce 2026',
-      description: 'Praktické průvodce ke smlouvám a běžným právním situacím dle legislativy 2026.',
+      title: 'Blog — Průvodce smlouvami a legislativou',
+      description: 'Praktické průvodce k nájmu, pracovním smlouvám, DPP a dalším smluvním situacím.',
       images: [OG_IMAGE_PATH],
     },
   };

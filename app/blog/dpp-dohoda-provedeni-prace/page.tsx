@@ -347,7 +347,8 @@ export default function DppPage() {
             { href: '/pracovni', label: '📋 Vytvořit pracovní smlouvu' },
             { href: '/blog/smlouva-o-dilo-2026', label: '🔨 Smlouva o dílo' },
             { href: '/blog/smlouva-o-dilo-vs-dpp-2026', label: 'DPP, nebo smlouva o dílo?' },
-            { href: '/blog/zkusebni-doba-2026', label: 'Zkušební doba 2026' },
+            { href: '/blog/limit-dpp-2027', label: 'Limit DPP a odvody od ledna 2027' },
+            { href: '/blog/zkusebni-doba-2026', label: 'Délka a prodloužení zkušební doby' },
             { href: '/', label: '📋 Všechny smlouvy' },
           ].map(l => (
             <Link key={l.href} href={l.href} className="rounded-xl border border-white/8 bg-white/3 px-4 py-2 text-sm text-slate-400 transition hover:border-white/15 hover:text-white">{l.label}</Link>

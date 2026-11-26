@@ -12,8 +12,8 @@ const dppOffer = getContextualOffer('dpp');
 
 export const metadata = {
   ...blogArticlePageMetadata(SLUG, {
-    description: 'Nárok na dovolenou u DPP v roce 2026 vzniká po 28 dnech trvání dohody a 80 započtených hodinách. Výpočet, čerpání a povinnosti zaměstnavatele přehledně.',
-    keywords: ['dovolená DPP 2026', 'nárok na dovolenou DPP', '80 hodin DPP', 'výpočet dovolené DPP'],
+    description: 'Nárok na dovolenou u DPP v roce 2027 vzniká po 28 dnech trvání dohody a 80 započtených hodinách. Výpočet, čerpání a povinnosti zaměstnavatele přehledně.',
+    keywords: ['dovolená DPP 2027', 'nárok na dovolenou DPP', '80 hodin DPP', 'výpočet dovolené DPP'],
   }),
   alternates: {
     canonical: canonicalUrl(`/blog/${SLUG}`),
@@ -28,12 +28,12 @@ export default function DovolenaDppPage() {
       readTime="8 min"
       dateTime="2026-08-13"
       dateLabel="13. srpna 2026"
-      dateModified="2026-09-28"
-      dateModifiedLabel="28. září 2026"
-      breadcrumbLabel="Dovolená u DPP 2026"
+      dateModified="2026-11-27"
+      dateModifiedLabel="27. listopadu 2026"
+      breadcrumbLabel="Dovolená u DPP"
       slug={SLUG}
-      title="Dovolená u DPP 2026: 28 dní, 80 hodin a výpočet"
-      intro="Také práce na dohodu o provedení práce může založit právo na placenou dovolenou. V roce 2026 rozhodují dvě současně splněné podmínky: nepřetržité trvání dohody alespoň 28 kalendářních dní a nejméně 80 hodin započtených pro účely dovolené. Přehled vychází z aktuálních informací MPSV a zákoníku práce; neřeší individuální mzdový nebo pojistný případ."
+      title="Dovolená u DPP 2027: nárok, 80 hodin a výpočet"
+      intro="Také práce na dohodu o provedení práce může založit právo na placenou dovolenou. V roce 2027 rozhodují dvě současně splněné podmínky: nepřetržité trvání dohody alespoň 28 kalendářních dní a nejméně 80 hodin započtených pro účely dovolené. Přehled vychází z aktuálních informací MPSV a zákoníku práce; neřeší individuální mzdový nebo pojistný případ."
       toc={[
         { href: '#podminky', label: 'Podmínky 28 dní a 80 hodin' },
         { href: '#vypocet', label: 'Jak se dovolená počítá' },
@@ -60,7 +60,7 @@ export default function DovolenaDppPage() {
       }}
       relatedLinks={[
         { href: '/dpp', label: `DPP online od ${PRICING_TIER_CONFIG.basic.priceLabel}` },
-        { href: '/blog/dpp-dohoda-provedeni-prace', label: 'DPP 2026: pravidla a limity' },
+        { href: '/blog/limit-dpp-2027', label: 'Limit DPP 2027 pro sociální a zdravotní pojištění' },
         { href: '/blog/dpp-dpc-porovnani-2026', label: 'DPP nebo DPČ' },
         { href: '/blog/minimalni-mzda-dpp-pracovni-smlouva-2026', label: 'Minimální mzda a DPP' },
       ]}
@@ -86,6 +86,11 @@ export default function DovolenaDppPage() {
           Do započtené doby mohou vstoupit i některé náhradní doby, například již čerpaná dovolená
           nebo vybrané překážky v práci. Proto nemusí být konečný údaj vždy totožný jen se součtem
           fyzicky odpracovaných směn.
+        </p>
+        <p className="mt-4 leading-relaxed text-slate-400">
+          Při bezprostředně navazujících pracovněprávních vztazích u stejného zaměstnavatele se pro účely dovolené
+          posuzuje trvání jako nepřetržité (§ 216 odst. 1). U dohody přes přelom roku se podmínky vzniku dovolené
+          posuzují za každý kalendářní rok zvlášť.
         </p>
       </section>
 
@@ -125,9 +130,9 @@ export default function DovolenaDppPage() {
           vyčerpal.
         </p>
         <p className="leading-relaxed text-slate-400">
-          U krátké dohody, která skončí s nevyčerpanou dovolenou, může být zbývající nárok při
-          skončení pracovněprávního vztahu nahrazen penězi. Konkrétní postup závisí na průběhu dohody
-          a mzdových podkladech; při sporu je vhodná kontrola mzdovou účetní nebo advokátem.
+          Při skončení pracovněprávního vztahu přísluší za nevyčerpanou dovolenou náhrada odměny ve výši
+          průměrného výdělku (§ 222 zákoníku práce). Pokud další pracovněprávní vztah u téhož zaměstnavatele
+          bezprostředně navazuje, právo na dovolenou přechází do navazujícího vztahu.
         </p>
       </section>
 
@@ -154,8 +159,8 @@ export default function DovolenaDppPage() {
       <OfficialSources
         sources={[
           { label: 'MPSV: Dohoda o provedení práce', href: 'https://mpsv.gov.cz/slovnik-pojmu-dohoda-o-provedeni-prace' },
-          { label: 'MPSV: Novinky v pracovním právu — dovolená u DPP a příklady', href: 'https://mpsv.gov.cz/novinky-v-pracovnim-pravu' },
-          { label: 'e-Sbírka: zákon č. 262/2006 Sb., zákoník práce, aktuální znění', href: 'https://e-sbirka.gov.cz/sb/2006/262/2026-01-01' },
+          { label: 'MPSV: Dovolená za kalendářní rok a její poměrná část', href: 'https://ppropo.mpsv.cz/X1Dovolenazakalendarnirokajejipo' },
+          { label: 'e-Sbírka: zákon č. 262/2006 Sb., zákoník práce, aktuální znění', href: 'https://e-sbirka.gov.cz/sb/2006/262' },
         ]}
       />
     </ArticlePageLayout>

@@ -225,7 +225,7 @@ function assertPriorityCtrCopy() {
     'app/blog/dpp-dohoda-provedeni-prace/page.tsx':
       'DPP 2026: limit 300 hodin, odvody a povinnosti',
     'app/blog/zkusebni-doba-2026/page.tsx':
-      'Zkušební doba 2026: 4 nebo 8 měsíců a pravidla',
+      'Zkušební doba 2027: délka, 4 nebo 8 měsíců',
     'app/blog/plna-moc-2026/page.tsx':
       'Plná moc 2026: vzor, náležitosti a ověření podpisu',
     'app/blog/smlouva-o-dilo-2026/page.tsx':

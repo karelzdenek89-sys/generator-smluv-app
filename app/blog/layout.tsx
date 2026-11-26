@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     template: '%s | SmlouvaHned',
   },
   description:
-    'Praktické průvodce ke smluvním dokumentům a běžným právním situacím. Obecně informační obsah aktuální pro legislativu 2026.',
+    'Praktické průvodce ke smluvním dokumentům a běžným právním situacím v Česku.',
 };
 
 export default function BlogLayout({ children }: { children: ReactNode }) {

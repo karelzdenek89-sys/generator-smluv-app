@@ -61,7 +61,7 @@ export default function VypovedniDobaPage() {
         { href: '/pracovni', label: 'Pracovní smlouva online' },
         { href: '/blog/pracovni-smlouva-2026', label: 'Pracovní smlouva 2026' },
         { href: '/blog/flexinovela-zakoniku-prace-2026', label: 'Flexinovela zákoníku práce' },
-        { href: '/blog/zkusebni-doba-2026', label: 'Zkušební doba 2026' },
+        { href: '/blog/zkusebni-doba-2026', label: 'Délka a prodloužení zkušební doby' },
       ]}
     >
       <section id="zacatek" className="mb-12 scroll-mt-6">

@@ -50,7 +50,7 @@ export function czechBlogSitemapEntries(): MetadataRoute.Sitemap {
       url: `${SITE_URL}${article.href}`,
       lastModified: article.slug === 'pracovni-smlouva-2026'
         ? new Date('2026-09-28T00:00:00+02:00')
-        : czechDateToDate(article.date),
+        : czechDateToDate(article.dateModified ?? article.date),
       changeFrequency: 'monthly' as const,
       priority: PILLAR_SLUGS.has(article.slug) ? 0.92 : 0.88,
       ...(languages ? { alternates: { languages } } : {}),
