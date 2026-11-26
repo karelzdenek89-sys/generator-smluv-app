@@ -273,7 +273,7 @@ function main() {
 
   const leasePage = read('app/najem/page.tsx');
   assert.doesNotMatch(leasePage, /<pre\b/, '/najem preview must not use pre/code block rendering');
-  assert.match(leasePage, /disabled=\{!canOpenCheckout\}/, '/najem checkout CTA must be disabled until required fields are present');
+  assert.match(leasePage, /disabled=\{!canOpenCheckout \|\| isLoadingPreview\}/, '/najem checkout CTA must wait for required fields and the preview');
   assert.doesNotMatch(leasePage, /formData\.paymentDay,\s*\n\s*formData\.bankAccount,\s*\n\s*formData\.maxOccupants/, '/najem empty progress must not count default payment day/max occupants');
 
   const rootLayout = read('app/layout.tsx');
